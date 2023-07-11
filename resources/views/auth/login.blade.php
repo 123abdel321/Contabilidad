@@ -22,11 +22,11 @@
                                 <div class="card-body">
 
                                     <div class="flex flex-col mb-3">
-                                        <input type="email" id="email_login" name="email" class="form-control form-control-lg" value="{{ old('email') ?? 'abdel_123@hotmail.es' }}" aria-label="Email">
+                                        <input type="email" id="email_login" name="email" class="form-control form-control-lg" value="{{ old('email') ?? '' }}" aria-label="Email">
                                         @error('email') <p class="text-danger text-xs pt-1"> {{$message}} </p>@enderror
                                     </div>
                                     <div class="flex flex-col mb-3">
-                                        <input type="password" id="password_login" name="password" class="form-control form-control-lg" aria-label="Password" value="321andres123" >
+                                        <input type="password" id="password_login" name="password" class="form-control form-control-lg" aria-label="Password" value="" >
                                         @error('password') <p class="text-danger text-xs pt-1"> {{$message}} </p>@enderror
                                     </div>
                                     <div class="form-check form-switch">
