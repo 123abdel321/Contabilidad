@@ -99,49 +99,57 @@ class ApiController extends Controller
 
     public function register(Request $request)
     {
-        $rules = [
-			'name' => 'required|string',
-			'email' => 'required|string|email|max:255|unique:users',
-			'telefono' => 'required|string',
-			'documento' => 'required|string',
-			'tipo_documento' => 'required|string',
-            'password' => 'required|string'
-		];
-
-        $validator = Validator::make($request->all(), $rules, $this->messages);
-
-        if ($validator->fails()){
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$validator->messages()
-            ], 422);
+        if($request->get('es_carta') == 'soy yo'){
+            $rules = [
+                'name' => 'required|string',
+                'email' => 'required|string|email|max:255|unique:users',
+                'telefono' => 'required|string',
+                'documento' => 'required|string',
+                'tipo_documento' => 'required|string',
+                'password' => 'required|string'
+            ];
+    
+            $validator = Validator::make($request->all(), $rules, $this->messages);
+    
+            if ($validator->fails()){
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=>$validator->messages()
+                ], 422);
+            }
+            // dd(Hash::make($request->password), bcrypt($request->password));
+            $user = User::create($request->all());
+    
+            // $user = User::create([
+            //     'name' => $request->name,
+            //     'email' => $request->email,
+            //     'telefono' => $request->telefono,
+            //     'documento' => $request->documento,
+            //     'tipo_documento' => $request->tipo_documento,
+            //     'password' => bcrypt($request->password)
+            // ]);
+    
+            if($user){
+                // $this->sendWelcomeEmail($user);
+    
+                // if($request->get("empresa")){
+                //     $this->associateUserToCompany($user, $request->get("empresa"));
+                // }
+    
+                return response()->json([
+                    "success" => true,
+                    "data" => [],
+                    "message" => 'Usuario registrado con exito!'
+                ], 200);
+            }
         }
-        // dd(Hash::make($request->password), bcrypt($request->password));
-        $user = User::create($request->all());
 
-        // $user = User::create([
-        //     'name' => $request->name,
-        //     'email' => $request->email,
-        //     'telefono' => $request->telefono,
-        //     'documento' => $request->documento,
-        //     'tipo_documento' => $request->tipo_documento,
-        //     'password' => bcrypt($request->password)
-        // ]);
-
-        if($user){
-            // $this->sendWelcomeEmail($user);
-
-            // if($request->get("empresa")){
-            //     $this->associateUserToCompany($user, $request->get("empresa"));
-            // }
-
-            return response()->json([
-                "success" => true,
-                "data" => [],
-                "message" => 'Usuario registrado con exito!'
-            ], 200);
-        }
+        return response()->json([
+            "success" => true,
+            "data" => [],
+            "message" => 'Usuario registrado con exito!'
+        ], 200);
     }
 
     public function setEmpresa(Request $request)
