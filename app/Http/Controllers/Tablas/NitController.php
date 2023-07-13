@@ -172,7 +172,15 @@ class NitController extends Controller
     {
 
         $nits = Nits::select(
-            \DB::raw('*'),
+            'id',
+            'id_tipo_documento',
+            'id_ciudad',
+            'primer_nombre',
+            \DB::raw('numero_documento AS segundo_nombre'),
+            'primer_apellido',
+            'segundo_apellido',
+            'email',
+            \DB::raw('telefono_1 AS telefono'),
             \DB::raw("(CASE
 					WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)
 					WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( numero_documento, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))

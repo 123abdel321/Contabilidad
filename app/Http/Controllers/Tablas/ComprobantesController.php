@@ -82,7 +82,10 @@ class ComprobantesController extends Controller
     public function comboComprobante(Request $request)
     {
         $comprobantes = Comprobantes::select(
-            \DB::raw('*'),
+            'id',
+            'codigo',
+            'nombre',
+            'consecutivo_siguiente',
             \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
         );
 
