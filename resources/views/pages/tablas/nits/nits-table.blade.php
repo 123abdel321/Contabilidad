@@ -1,16 +1,14 @@
 <table id="nitTable" class="table table-bordered display responsive" width="100%">
-    <thead>
+    <thead style="background-color: #7ea1ff2b;">
         <tr>
             <th>Numero documento</th>
-            <th>Tipo documento</th>
-            <th>Tipo contribuyente</th>
-            <th>Primero apellido</th>
-            <th>Segundo apellido</th>
-            <th>Primer nombre</th>
-            <th>Otros nombre</th> 
-            <th>Razon social</th> 
+            <th>Nombre completo</th>
+            <th>Razon social</th>
             <th>Dirección</th> 
             <th>Email</th> 
+            <th>Telefono</th> 
+            <th>Tipo documento</th>
+            <th>Tipo contribuyente</th>
             <th>Acciones</th>
         </tr>
     </thead>

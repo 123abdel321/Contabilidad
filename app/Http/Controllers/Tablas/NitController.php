@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Tablas;
 
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Sistema\TipoDocumentos;
@@ -11,6 +13,20 @@ use App\Models\Sistema\DocumentosGeneral;
 
 class NitController extends Controller
 {
+    protected $messages = null;
+
+    public function __construct()
+	{
+		$this->messages = [
+            'required' => 'El campo :attribute es requerido.',
+            'exists' => 'El :attribute es inválido.',
+            'numeric' => 'El campo :attribute debe ser un valor numérico.',
+            'string' => 'El campo :attribute debe ser texto',
+            'array' => 'El campo :attribute debe ser un arreglo.',
+            'date' => 'El campo :attribute debe ser una fecha válida.',
+        ];
+	}
+
     public function index ()
     {
         return view('pages.tablas.nits.nits-view');
@@ -46,11 +62,15 @@ class NitController extends Controller
                 ->orWhere('segundo_apellido', 'like', '%' .$searchValue . '%')
                 ->orWhere('primer_nombre', 'like', '%' .$searchValue . '%')
                 ->orWhere('otros_nombres', 'like', '%' .$searchValue . '%')
+                ->orWhere('email', 'like', '%' .$searchValue . '%')
+                ->orWhere('telefono_1', 'like', '%' .$searchValue . '%')
                 ->orWhere('razon_social', 'like', '%' .$searchValue . '%');
             $totalRecordswithFilter->where('primer_apellido', 'like', '%' .$searchValue . '%')
                 ->orWhere('segundo_apellido', 'like', '%' .$searchValue . '%')
                 ->orWhere('primer_nombre', 'like', '%' .$searchValue . '%')
                 ->orWhere('otros_nombres', 'like', '%' .$searchValue . '%')
+                ->orWhere('email', 'like', '%' .$searchValue . '%')
+                ->orWhere('telefono_1', 'like', '%' .$searchValue . '%')
                 ->orWhere('razon_social', 'like', '%' .$searchValue . '%');
         }
 
@@ -67,33 +87,78 @@ class NitController extends Controller
 
     public function create (Request $request)
     {
-        $nitsExist = Nits::where('numero_documento', $request->get('numero_documento'));
-        if($nitsExist->count() > 0){
+        $tipoDocumentoNit = TipoDocumentos::where('nombre', 'NIT')->first(['id']);
+		$idTipoDocumentoNit = $tipoDocumentoNit ? $tipoDocumentoNit->id : 0;
+
+        $rules = [
+			'id_tipo_documento' => 'required|exists:sam.tipos_documentos,id',
+			// 'id_ciudad' => 'nullable|exists:sam.ciudades,id',
+			'id_actividad_econo' => 'nullable|exists:sam.actividades_economicas,id',
+			'numero_documento' => 'required|unique:sam.nits,numero_documento|max:30',
+			'digito_verificacion' => "nullable|between:0,9|numeric|required_if:id_tipo_documento,$idTipoDocumentoNit", // Campo requerido si el tipo de documento es nit (codigo: 31)
+			'tipo_contribuyente' => 'required|in:1,2',
+			'primer_apellido' => 'nullable|string|max:60|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_NATURAL, // Campo requerido si el tipo contribuyente es persona natural (id: 2)
+			'segundo_apellido' => 'nullable|string|max:60|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_NATURAL, // Campo requerido si el tipo contribuyente es persona natural (id: 2)
+			'primer_nombre' => 'nullable|string|max:60|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_NATURAL, // Campo requerido si el tipo contribuyente es persona natural (id: 2)
+			'otros_nombres' => 'nullable|string|max:60',
+			'razon_social' => 'nullable|string|max:120|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_JURIDICA, // Campo requerido si el tipo contribuyente es persona jurídica (id: 1)
+			'nombre_comercial' => 'nullable|string|max:120',
+			'direccion' => 'required|min:3|max:100',
+			'email' => 'required|email|max:250',
+			'email_recepcion_factura_electronica' => 'nullable|email|max:60',
+			'telefono_1' => 'nullable|numeric|digits_between:1,30',
+			'telefono_2' => 'nullable|numeric|digits_between:1,30',
+			'tipo_cuenta_banco' => 'nullable|in:0,1',
+			'cuenta_bancaria' => 'nullable|string|max:20',
+			'plazo' => 'nullable|numeric|min:0|digits_between:1,3',
+			'cupo' => 'nullable|numeric|min:0|digits_between:1,13',
+			'descuento' => 'nullable|numeric|min:0|max:100',
+			'no_calcular_iva' => 'nullable|boolean',
+			'inactivar' => 'nullable',
+		];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
             return response()->json([
-                'success'=>	false,
-                'data' => '',
-                'message'=> 'El numero de documento ya esta siendo usado!'
-            ]);
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->messages()
+            ], 422);
         }
 
-        $nit = Nits::create([
-            'id_tipo_documento' => $request->get('id_tipo_documento'),
-            'numero_documento' => $request->get('numero_documento'),
-            'tipo_contribuyente' => $request->get('tipo_contribuyente'),
-            'primer_apellido' => $request->get('primer_apellido'),
-            'segundo_apellido' => $request->get('segundo_apellido'),
-            'primer_nombre' => $request->get('primer_nombre'),
-            'otros_nombres' => $request->get('otros_nombres'),
-            'razon_social' => $request->get('razon_social'),
-            'direccion' => $request->get('direccion'),
-            'email' => $request->get('email'),
-        ]);
+        try {
+            DB::connection('sam')->beginTransaction();
+            $nit = Nits::create([
+                'id_tipo_documento' => $request->get('id_tipo_documento'),
+                'numero_documento' => $request->get('numero_documento'),
+                'tipo_contribuyente' => $request->get('tipo_contribuyente'),
+                'primer_apellido' => $request->get('primer_apellido'),
+                'segundo_apellido' => $request->get('segundo_apellido'),
+                'primer_nombre' => $request->get('primer_nombre'),
+                'otros_nombres' => $request->get('otros_nombres'),
+                'razon_social' => $request->get('razon_social'),
+                'direccion' => $request->get('direccion'),
+                'email' => $request->get('email'),
+                'telefono_1' => $request->get('telefono_1'),
+            ]);
 
-        return response()->json([
-            'success'=>	true,
-            'data' => $nit,
-            'message'=> 'Nit creado con exito!'
-        ]);
+			DB::connection('sam')->commit();
+    
+            return response()->json([
+                'success'=>	true,
+                'data' => $nit,
+                'message'=> 'Nit creado con exito!'
+            ]);
+
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
     }
 
     public function update (Request $request)
