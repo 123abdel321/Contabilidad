@@ -9,11 +9,13 @@ class RegisterController extends Controller
 {
     public function create()
     {
+        return 'none';
         return view('auth.register');
     }
 
     public function store()
     {
+        return 'none';
         $attributes = request()->validate([
             'username' => 'required|max:255|min:2',
             'email' => 'required|email|max:255|unique:users,email',
