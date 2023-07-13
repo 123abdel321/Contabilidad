@@ -20,8 +20,13 @@
     
     <div class="container-fluid py-4">
         <div class="row">
-            <div style="z-index: 9;">
-                <button type="button" class="btn btn-success btn-sm" id="createNits">Agregar nit</button>
+            <div class="row" style="z-index: 9;">
+                <div class="col-4 col-md-4 col-sm-4">
+                    <button type="button" class="btn btn-success btn-sm" id="createNits">Agregar nit</button>
+                </div>
+                <div class="col-8 col-md-8 col-sm-8">
+                    <input type="text" id="searchInput" class="form-control form-control-sm search-table" placeholder="Buscar">
+                </div>
             </div>
 
             <div class="card mb-4" style="content-visibility: auto; overflow: auto;">
@@ -43,12 +48,13 @@
 
         var nits_table = $('#nitTable').DataTable({
             pageLength: 15,
-            dom: 'ftip',
+            dom: 'tip',
             paging: true,
             responsive: true,
             processing: true,
             serverSide: true,
             initialLoad: true,
+            bFilter: true,
             language: lenguajeDatatable,
             ajax:  {
                 type: "GET",
@@ -98,6 +104,12 @@
                     }
                 }
             ]
+        });
+
+        $("#searchInput").on("input", function (e) {
+            console.log("searchInput");
+            nits_table.context[0].jqXHR.abort();
+            $('#nitTable').DataTable().search($("#searchInput").val()).draw();
         });
 
         $(document).on('click', '#createNits', function () {
@@ -157,7 +169,8 @@
                 $.ajax({
                     url: base_url + 'nit',
                     method: 'PUT',
-                    data: data,
+                    data: JSON.stringify(data),
+                    headers: headers,
                     dataType: 'json',
                 }).done((res) => {
                     if(res.success){
@@ -173,7 +186,6 @@
                     $('#saveNit').hide();
                     $('#updateNit').show();
                     $("#saveNitLoading").hide();
-
                     var mensaje = res.mensages;
                     var errorsMsg = "";
                     for (field in mensaje) {
@@ -181,7 +193,6 @@
                         for (campo in errores) {
                             errorsMsg += "- "+errores[campo]+" <br>";
                         }
-                        
                     };
                     swalFire('Edición herrada', errorsMsg, false);
                 });
@@ -189,6 +200,8 @@
                 form.classList.add('was-validated');
             }
         });
+
+
 
         $(document).on('click', '#saveNit', function () {
             var form = document.querySelector('#nitsForm');

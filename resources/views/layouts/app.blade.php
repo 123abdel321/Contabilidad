@@ -49,6 +49,11 @@
         table.dataTable td {
             color: black;
         }
+
+        .search-table {
+            max-width: 300px;
+            float: right;
+        }
         
     </style>
 </head>
