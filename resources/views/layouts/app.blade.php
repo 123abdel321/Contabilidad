@@ -103,10 +103,13 @@
     <script src="assets/js/sistema/jquery.validate.min.js"></script>
     <!-- sweetalert2 -->
     <script src="assets/js/sistema/sweetalert2.all.min.js"></script>
-    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.2.6/jquery.inputmask.bundle.min.js"></script>
     <script>
-        const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
-        const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
+        const base_url = 'http://localhost:8000/api/';
+        const base_web = 'http://localhost:8000/';
+        // const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
+        // const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
         const dateNow = new Date();
         const auth_token = localStorage.getItem("auth_token");
         const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
@@ -121,6 +124,17 @@
         let buttonMostrarLateral = document.getElementById('button-mostrar-lateral');
         let buttonocultarLateral = document.getElementById('button-ocultar-lateral');
         let iconSidenav = document.getElementById('iconSidenav');
+
+        $(".input_decimal").inputmask({
+            alias: 'decimal',
+            rightAlign: true,
+            groupSeparator: '.',
+            autoGroup: true
+        });
+
+        $('.form-control').keyup(function() {
+            $(this).val($(this).val().toUpperCase());
+        });
 
         $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
 

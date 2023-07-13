@@ -1,7 +1,7 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Nits'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Cedulas Nits'])
 
     <style>
         .error {
@@ -41,54 +41,6 @@
 @push('js')
     <script>
 
-        var $validator = $('#nitsForm').validate({
-            rules: {
-                id_tipo_documento: {
-                    required: true
-                },
-                numero_documento: {
-                    required: true,
-                    minlength: 2,
-                    maxlength: 100,
-                },
-                direccion: {
-                    required: true,
-                    minlength: 2,
-                    maxlength: 100,
-                },
-                numero_documento: {
-                    required: true,
-                    minlength: 2,
-                    maxlength: 100,
-                },
-            },
-            messages: {
-                id_tipo_cuenta: {
-                    required: "El campo Tipo documento es requerido",
-                },
-                numero_documento: {
-                    required: "El campo Numero documento es requerido",
-                    minlength: "El campo Numero documento debe tener minimo 2 caracteres",
-                    maxlength: "El campo Numero documento debe tener maximo 100 caracteres",
-                },
-                tipo_contribuyente: {
-                    required: "El campo Tipo contribuyente es requerido",
-                },
-                direccion: {
-                    required: "El campo Dirección documento es requerido",
-                    minlength: "El campo Dirección documento debe tener minimo 2 caracteres",
-                    maxlength: "El campo Dirección documento debe tener maximo 100 caracteres",
-                },
-            },
-
-            highlight: function(element) {
-                $(element).closest('.form-control').removeClass('is-valid').addClass('is-invalid');
-            },
-            success: function(element) {
-                $(element).closest('.form-control').removeClass('is-invalid').addClass('is-valid');
-            }
-        });
-
         var nits_table = $('#nitTable').DataTable({
             pageLength: 15,
             dom: 'ftip',
@@ -107,6 +59,19 @@
                 {"data":'numero_documento'},
                 {
                     "data": function (row, type, set){
+                        var primer_nombre = row.primer_nombre ? row.primer_nombre+' ' : '';
+                        var otros_nombres = row.otros_nombres ? row.otros_nombres+' ' : '';
+                        var primer_apellido = row.primer_apellido ? row.primer_apellido+' ' : '';
+                        var segundo_apellido = row.segundo_apellido ? row.segundo_apellido+' ' : '';
+                        return primer_nombre+otros_nombres+primer_apellido+segundo_apellido;
+                    }
+                },
+                {"data":'razon_social'},
+                {"data":'direccion'},
+                {"data":'email'},
+                {"data":'telefono_1'},
+                {
+                    "data": function (row, type, set){
                         if(row.tipo_documento){
                             return row.tipo_documento.nombre;
                         }
@@ -123,13 +88,7 @@
                         return '';
                     }
                 },
-                {"data":'primer_apellido'},
-                {"data":'segundo_apellido'},
-                {"data":'primer_nombre'},
-                {"data":'otros_nombres'},
-                {"data":'razon_social'},
-                {"data":'direccion'},
-                {"data":'email'},
+                
                 {
                     "data": function (row, type, set){
                         var html = '';
@@ -149,100 +108,134 @@
             $("#nitFormModal").modal('show');
         });
 
+        $("#tipo_contribuyente").on('change', function(e) {
+            var tipoContribuyente = $("#tipo_contribuyente").val();
+
+            if (tipoContribuyente == 1) {
+                $("#primer_nombre").prop('required',false);
+                $("#otros_nombres").prop('required',false);
+                $("#primer_apellido").prop('required',false);
+                $("#segundo_apellido").prop('required',false);
+                $("#razon_social").prop('required',true);
+            } else {
+                $("#primer_nombre").prop('required',true);
+                $("#otros_nombres").prop('required',true);
+                $("#primer_apellido").prop('required',true);
+                $("#segundo_apellido").prop('required',true);
+                $("#razon_social").prop('required',false);
+            }
+            $("#numero_documento").prop('required',false);
+            $("#direccion").prop('required',true);
+            $("#email").prop('required',true);
+            $("#telefono_1").prop('required',true);
+        });
+
         $(document).on('click', '#updateNit', function () {
-            var $valid = $('#nitsForm').valid();
-            if (!$valid) {
-                $validator.focusInvalid();
-                return false;
-            }
 
-            $("#saveNitLoading").show();
-            $("#updateNit").hide();
-            $("#saveNit").hide();
+            var form = document.querySelector('#nitsForm');
 
-            let data = {
-                id: $("#id_nit").val(),
-                id_tipo_documento: $("#id_tipo_documento").val(),
-                numero_documento: $("#numero_documento").val(),
-                tipo_contribuyente: $("#tipo_contribuyente").val(),
-                primer_apellido: $("#primer_apellido").val(),
-                segundo_apellido: $("#segundo_apellido").val(),
-                primer_nombre: $("#primer_nombre").val(),
-                otros_nombres: $("#otros_nombres").val(),
-                razon_social: $("#razon_social").val(),
-                direccion: $("#direccion").val(),
-                email: $("#email").val(),
-            }
-
-            $.ajax({
-                url: base_url + 'nit',
-                method: 'PUT',
-                data: data,
-                dataType: 'json',
-            }).done((res) => {
-                if(res.success){
-                    clearFormNits();
-                    $("#saveNit").show();
-                    $("#updateNit").hide();
-                    $("#saveNitLoading").hide();
-                    $("#nitFormModal").modal('hide');
-                    nits_table.row.add(res.data).draw();
-                    swalFire('Edición exitosa', 'Nit actualizado con exito!');
+            if(form.checkValidity()){
+                $("#saveNitLoading").show();
+                $("#updateNit").hide();
+                $("#saveNit").hide();
+                
+                let data = {
+                    id: $("#id_nit").val(),
+                    id_tipo_documento: $("#id_tipo_documento").val(),
+                    numero_documento: $("#numero_documento").val(),
+                    tipo_contribuyente: $("#tipo_contribuyente").val(),
+                    primer_apellido: $("#primer_apellido").val(),
+                    segundo_apellido: $("#segundo_apellido").val(),
+                    primer_nombre: $("#primer_nombre").val(),
+                    otros_nombres: $("#otros_nombres").val(),
+                    razon_social: $("#razon_social").val(),
+                    direccion: $("#direccion").val(),
+                    email: $("#email").val(),
+                    telefono_1: $("#telefono_1").val(),
                 }
-            }).fail((err) => {
-                $('#saveNit').show();
-                $('#updateNit').hide();
-                $("#saveNitLoading").hide();
-                swalFire('Edición herrada', 'Error al actualizar Nit!', false);
-            });
+
+                $.ajax({
+                    url: base_url + 'nit',
+                    method: 'PUT',
+                    data: data,
+                    dataType: 'json',
+                }).done((res) => {
+                    if(res.success){
+                        clearFormNits();
+                        $("#saveNit").show();
+                        $("#updateNit").hide();
+                        $("#saveNitLoading").hide();
+                        $("#nitFormModal").modal('hide');
+                        nits_table.row.add(res.data).draw();
+                        swalFire('Edición exitosa', 'Nit actualizado con exito!');
+                    }
+                }).fail((res) => {
+                    $('#saveNit').hide();
+                    $('#updateNit').show();
+                    $("#saveNitLoading").hide();
+
+                    var mensaje = res.mensages;
+                    var errorsMsg = "";
+                    for (field in mensaje) {
+                        var errores = mensaje[field];
+                        for (campo in errores) {
+                            errorsMsg += "- "+errores[campo]+" <br>";
+                        }
+                        
+                    };
+                    swalFire('Edición herrada', errorsMsg, false);
+                });
+            } else {
+                form.classList.add('was-validated');
+            }
         });
 
         $(document).on('click', '#saveNit', function () {
+            var form = document.querySelector('#nitsForm');
 
-            var $valid = $('#nitsForm').valid();
-            if (!$valid) {
-                $validator.focusInvalid();
-                return false;
-            }
-
-            $("#saveNitLoading").show();
-            $("#updateNit").hide();
-            $("#saveNit").hide();
-
-            let data = {
-                id_tipo_documento: $("#id_tipo_documento").val(),
-                numero_documento: $("#numero_documento").val(),
-                tipo_contribuyente: $("#tipo_contribuyente").val(),
-                primer_apellido: $("#primer_apellido").val(),
-                segundo_apellido: $("#segundo_apellido").val(),
-                primer_nombre: $("#primer_nombre").val(),
-                otros_nombres: $("#otros_nombres").val(),
-                razon_social: $("#razon_social").val(),
-                direccion: $("#direccion").val(),
-                email: $("#email").val(),
-            }
-
-            $.ajax({
-                url: base_url + 'nit',
-                method: 'POST',
-                data: JSON.stringify(data),
-                headers: headers,
-                dataType: 'json',
-            }).done((res) => {
-                if(res.success){
-                    clearFormNits();
-                    $("#saveNit").show();
-                    $("#updateNit").hide();
-                    $("#saveNitLoading").hide();
-                    $("#nitFormModal").modal('hide');
-                    nits_table.row.add(res.data).draw();
-                    swalFire('Creación exitosa', 'Nit creado con exito!');
+            if(form.checkValidity()){
+                $("#saveNitLoading").show();
+                $("#updateNit").hide();
+                $("#saveNit").hide();
+    
+                let data = {
+                    id_tipo_documento: $("#id_tipo_documento").val(),
+                    numero_documento: $("#numero_documento").val(),
+                    tipo_contribuyente: $("#tipo_contribuyente").val(),
+                    primer_apellido: $("#primer_apellido").val(),
+                    segundo_apellido: $("#segundo_apellido").val(),
+                    primer_nombre: $("#primer_nombre").val(),
+                    otros_nombres: $("#otros_nombres").val(),
+                    razon_social: $("#razon_social").val(),
+                    direccion: $("#direccion").val(),
+                    email: $("#email").val(),
+                    telefono_1: $("#telefono_1").val(),
                 }
-            }).fail((err) => {
-                $('#saveNit').show();
-                $('#saveNitLoading').hide();
-                swalFire('Creación herrada', 'Error al crear Nit!', false);
-            });
+    
+                $.ajax({
+                    url: base_url + 'nit',
+                    method: 'POST',
+                    data: JSON.stringify(data),
+                    headers: headers,
+                    dataType: 'json',
+                }).done((res) => {
+                    if(res.success){
+                        clearFormNits();
+                        $("#saveNit").show();
+                        $("#updateNit").hide();
+                        $("#saveNitLoading").hide();
+                        $("#nitFormModal").modal('hide');
+                        nits_table.row.add(res.data).draw();
+                        swalFire('Creación exitosa', 'Nit creado con exito!');
+                    }
+                }).fail((err) => {
+                    $('#saveNit').show();
+                    $('#saveNitLoading').hide();
+                    swalFire('Creación herrada', 'Error al crear Nit!', false);
+                });
+            } else {
+                form.classList.add('was-validated');
+            }
         });
 
         nits_table.on('click', '.edit-nits', function() {
@@ -277,6 +270,7 @@
             $("#razon_social").val(data.razon_social);
             $("#direccion").val(data.direccion);
             $("#email").val(data.email);
+            $("#telefono_1").val(data.telefono_1);
 
             $("#nitFormModal").modal('show');
         });
