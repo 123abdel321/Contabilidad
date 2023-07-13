@@ -158,9 +158,12 @@ class PlanCuentaController extends Controller
     public function comboCuenta(Request $request)
     {
         $planCuenta = PlanCuentas::where('cuenta', '<', '999999')->select(
-            \DB::raw('*'),
+            'id',
+            'cuenta',
+            'nombre',
+            'naturaleza_cuenta',
             \DB::raw("CONCAT(cuenta, ' - ', nombre) as text")
-        )->with('padre');
+        );
 
         if ($request->get("q")) {
             $planCuenta->where('cuenta', 'LIKE', '%' . $request->get("q") . '%')
