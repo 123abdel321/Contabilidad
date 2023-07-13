@@ -35,7 +35,7 @@ class ComprobantesController extends Controller
     {
         return response()->json([
             'success'=>	true,
-            'data' => Comprobantes::get(),
+            'data' => Comprobantes::orderBy('codigo')->get(),
             'message'=> 'Comprobante generado con exito!'
         ]);
     }

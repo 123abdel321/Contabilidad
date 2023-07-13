@@ -227,7 +227,6 @@
             $("#savePlanCuentaLoading").hide();
             $("#updatePlanCuenta").show();
             $("#savePlanCuenta").hide();
-            
 
             var trPlanCuenta = $(this).closest('tr');
             var id = this.id.split('_')[1];
@@ -290,7 +289,7 @@
             $.ajax({
                 url: base_url + 'plan-cuenta',
                 method: 'PUT',
-                data: data,
+                data: JSON.stringify(data),
                 headers: headers,
                 dataType: 'json',
             }).done((res) => {
@@ -329,7 +328,7 @@
                     $.ajax({
                         url: base_url + 'plan-cuenta',
                         method: 'DELETE',
-                        data: {id: id},
+                        data: JSON.stringify({id: id}),
                         headers: headers,
                         dataType: 'json',
                     }).done((res) => {

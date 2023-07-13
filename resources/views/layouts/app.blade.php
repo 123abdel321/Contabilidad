@@ -51,8 +51,8 @@
         }
 
         .search-table {
-            max-width: 300px;
-            float: right;
+            max-width: 300px !important;
+            float: right !important;
         }
         
     </style>

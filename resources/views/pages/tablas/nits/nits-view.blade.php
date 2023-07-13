@@ -107,7 +107,6 @@
         });
 
         $("#searchInput").on("input", function (e) {
-            console.log("searchInput");
             nits_table.context[0].jqXHR.abort();
             $('#nitTable').DataTable().search($("#searchInput").val()).draw();
         });

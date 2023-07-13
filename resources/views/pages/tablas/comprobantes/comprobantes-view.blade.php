@@ -14,9 +14,16 @@
     
     <div class="container-fluid py-4">
         <div class="row">
-            <div style="z-index: 9;">
-                <button type="button" class="btn btn-success btn-sm" id="createComprobante">Agregar comprobante</button>
+            <div class="row" style="z-index: 9;">
+                <div class="">
+                    <button type="button" class="btn btn-success btn-sm" id="createComprobante">Agregar comprobante</button>
+                </div>
+                <!-- <div class="col-8 col-md-8 col-sm-8">
+                    <input type="text" id="searchInput" class="form-control form-control-sm search-table" placeholder="Buscar">
+                </div> -->
             </div>
+            
+
             <div class="card mb-4" style="content-visibility: auto; overflow: auto;">
                 <div class="card-body">
 
@@ -97,6 +104,11 @@
 
             ]
         });
+
+        // $("#searchInput").on("input", function (e) {
+        //     comprobante_table.context[0].jqXHR.abort();
+        //     $('#comprobantesTable').DataTable().search($("#searchInput").val()).draw();
+        // });
         
         $(document).on('click', '#createComprobante', function () {
             clearFormComprobante();
