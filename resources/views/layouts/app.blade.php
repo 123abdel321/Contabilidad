@@ -132,7 +132,7 @@
 
         $(".input_decimal").inputmask({
             alias: 'decimal',
-            rightAlign: true,
+            rightAlign: false,
             groupSeparator: '.',
             autoGroup: true
         });

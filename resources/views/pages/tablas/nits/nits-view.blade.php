@@ -154,7 +154,7 @@
                 let data = {
                     id: $("#id_nit").val(),
                     id_tipo_documento: $("#id_tipo_documento").val(),
-                    numero_documento: $("#numero_documento").val(),
+                    numero_documento: document.getElementById('numero_documento').inputmask.unmaskedvalue(),
                     tipo_contribuyente: $("#tipo_contribuyente").val(),
                     primer_apellido: $("#primer_apellido").val(),
                     segundo_apellido: $("#segundo_apellido").val(),
@@ -213,7 +213,7 @@
     
                 let data = {
                     id_tipo_documento: $("#id_tipo_documento").val(),
-                    numero_documento: $("#numero_documento").val(),
+                    numero_documento: document.getElementById('numero_documento').inputmask.unmaskedvalue(),
                     tipo_contribuyente: $("#tipo_contribuyente").val(),
                     primer_apellido: $("#primer_apellido").val(),
                     segundo_apellido: $("#segundo_apellido").val(),
