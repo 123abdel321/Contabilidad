@@ -128,6 +128,18 @@ class ComprobantesSeeder extends Seeder
                 'tesoreria' => 0,
                 'maestra_padre' => NULL,
             ),
+            array (
+                'id' => 9,
+                'codigo' => '04',
+                'nombre' => 'VENTAS',
+                'tipo_comprobante' => 3,
+                'tipo_consecutivo' => 0,
+                'consecutivo_siguiente' => 1,
+                'bloquear_en_capturas' => 0,
+                'mostrar_nit_impresion' => 0,
+                'tesoreria' => 0,
+                'maestra_padre' => NULL,
+            ),
         ));
     }
 }

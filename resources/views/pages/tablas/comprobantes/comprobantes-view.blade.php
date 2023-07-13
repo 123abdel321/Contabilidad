@@ -33,35 +33,6 @@
 
 @push('js')
     <script>
-        
-        var $validator = $('#comprobanteForm').validate({
-            rules: {
-                codigo: {
-                    required: true
-                },
-                nombre: {
-                    required: true,
-                    minlength: 2,
-                    maxlength: 20,
-                }
-            },
-            messages: {
-                codigo: {
-                    required: "El campo codigo es requerido"
-                },
-                nombre: {
-                    required: "El campo nombre es requerido",
-                    minlength: "El campo nombre debe tener minimo 2 caracteres"
-                }
-            },
-
-            highlight: function(element) {
-                $(element).closest('.form-control').removeClass('is-valid').addClass('is-invalid');
-            },
-            success: function(element) {
-                $(element).closest('.form-control').removeClass('is-invalid').addClass('is-valid');
-            }
-        });
 
         var comprobante_table = $('#comprobantesTable').DataTable({
             dom: '',
@@ -106,7 +77,7 @@
                 {"data": function (row, type, set){
                     switch (row.tipo_consecutivo) {
                         case 0:
-                            return 'NORMAL'
+                            return 'ACUMULADO'
                             break;
                         case 1:
                             return 'MENSUAL'
@@ -136,10 +107,11 @@
 
         $(document).on('click', '#saveComprobante', function () {
 
-            var $valid = $('#comprobanteForm').valid();
-            if (!$valid) {
-                $validator.focusInvalid();
-                return false;
+            var form = document.querySelector('#comprobanteForm');
+
+            if(!form.checkValidity()){
+                form.classList.add('was-validated');
+                return;
             }
 
             $("#saveComprobanteLoading").show();
@@ -170,9 +142,21 @@
                     swalFire('Creación exitosa', 'Comprobante creado con exito!');
                 }
             }).fail((err) => {
-                $('#createClient').show();
-                $('#createClientLoding').hide();
-                swalFire('Creación herrada', 'Error al crear Comprobante!', false);
+                $('#saveComprobante').show();
+                $('#saveComprobanteLoading').hide();
+                var errorsMsg = "";
+                var mensaje = err.responseJSON.message;
+                if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                    for (field in mensaje) {
+                        var errores = mensaje[field];
+                        for (campo in errores) {
+                            errorsMsg += "- "+errores[campo]+" <br>";
+                        }
+                    };
+                } else {
+                    errorsMsg = mensaje
+                }
+                swalFire('Creación herrada', errorsMsg, false);
             });
         });
 
@@ -212,10 +196,11 @@
 
         $(document).on('click', '#updateComprobante', function () {
 
-            var $valid = $('#comprobanteForm').valid();
-            if (!$valid) {
-                $validator.focusInvalid();
-                return false;
+            var form = document.querySelector('#comprobanteForm');
+
+            if(!form.checkValidity()){
+                form.classList.add('was-validated');
+                return;
             }
 
             $("#saveComprobanteLoading").show();
@@ -234,7 +219,7 @@
             $.ajax({
                 url: base_url + 'comprobantes',
                 method: 'PUT',
-                data: data,
+                data: JSON.stringify(data),
                 headers: headers,
                 dataType: 'json',
             }).done((res) => {
@@ -245,12 +230,24 @@
                 $("#saveComprobanteLoading").hide();
                 $("#comprobanteFormModal").modal('hide');
                 comprobante_table.ajax.reload();
-                swalFire('Creación exitosa', 'Comprobante creado con exito!');
+                swalFire('Actualización exitosa', 'Comprobante creado con exito!');
             }
             }).fail((err) => {
                 $('#updateComprobante').show();
-                $('#createClientLoding').hide();
-                swalFire('Creación herrada', 'Error al crear Comprobante!', false);
+                $('#saveComprobanteLoading').hide();
+                var errorsMsg = "";
+                var mensaje = err.responseJSON.message;
+                if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                    for (field in mensaje) {
+                        var errores = mensaje[field];
+                        for (campo in errores) {
+                            errorsMsg += "- "+errores[campo]+" <br>";
+                        }
+                    };
+                } else {
+                    errorsMsg = mensaje
+                }
+                swalFire('Actualización herrada', errorsMsg, false);
             });
         });
 
@@ -258,7 +255,6 @@
             var trComprobante = $(this).closest('tr');
             var id = this.id.split('_')[1];
             var data = getDataById(id, comprobante_table);
-            console.log('heolaaa');
             Swal.fire({
                 title: 'Eliminar comprobante: '+data.nombre+'?',
                 text: "No se podrá revertir!",
@@ -274,7 +270,7 @@
                     $.ajax({
                         url: base_url + 'comprobantes',
                         method: 'DELETE',
-                        data: {id: id},
+                        data: JSON.stringify({id: id}),
                         headers: headers,
                         dataType: 'json',
                     }).done((res) => {

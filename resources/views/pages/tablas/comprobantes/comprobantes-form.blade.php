@@ -14,33 +14,33 @@
                         <input type="text" class="form-control" name="id_comprobante" id="id_comprobante" style="display: none;">
                         <div class="form-group col-md-6">
                             <label for="example-text-input" class="form-control-label">Codigo</label>
-                            <input type="text" class="form-control form-control-sm" name="codigo" id="codigo" placeholder="123">
+                            <input type="text" class="form-control form-control-sm" name="codigo" id="codigo" placeholder="123" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="example-text-input" class="form-control-label">Nombre</label>
-                            <input type="text" class="form-control form-control-sm" name="nombre" id="nombre" placeholder="comprobante">
+                            <input type="text" class="form-control form-control-sm" name="nombre" id="nombre" placeholder="comprobante" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlSelect1">Tipo comprobante</label>
                             <select class="form-control form-control-sm" id="tipo_comprobante">
-                                <option value="0">Ingresos</option>
-                                <option value="1">Egresos</option>
-                                <option value="2">Compras</option>
-                                <option value="3">Ventas</option>
-                                <option value="4">Otros</option>
-                                <option value="4">Cierre</option>
+                                <option value="0">INGRESOS</option>
+                                <option value="1">EGRESOS</option>
+                                <option value="2">COMPRAS</option>
+                                <option value="3">VENTAS</option>
+                                <option value="4">OTROS</option>
+                                <option value="4">CIERRE</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlSelect1">Tipo consecutivo</label>
                             <select class="form-control form-control-sm" id="tipo_consecutivo">
-                                <option value="0">Normal</option>
-                                <option value="1">Mensual</option>
+                                <option value="0">ACUMULADO</option>
+                                <option value="1">MENSUAL</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="example-text-input" class="form-control-label">Consecutivo</label>
-                            <input type="number" class="form-control form-control-sm" name="consecutivo_siguiente" id="consecutivo_siguiente" value="1">
+                            <input type="number" class="form-control form-control-sm" name="consecutivo_siguiente" id="consecutivo_siguiente" value="1" required>
                         </div>
                     </div>  
                 </form>

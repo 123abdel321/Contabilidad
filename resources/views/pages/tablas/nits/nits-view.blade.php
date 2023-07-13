@@ -186,14 +186,18 @@
                     $('#saveNit').hide();
                     $('#updateNit').show();
                     $("#saveNitLoading").hide();
-                    var mensaje = res.mensages;
                     var errorsMsg = "";
-                    for (field in mensaje) {
-                        var errores = mensaje[field];
-                        for (campo in errores) {
-                            errorsMsg += "- "+errores[campo]+" <br>";
-                        }
-                    };
+                    var mensaje = err.responseJSON.message;
+                    if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                        for (field in mensaje) {
+                            var errores = mensaje[field];
+                            for (campo in errores) {
+                                errorsMsg += "- "+errores[campo]+" <br>";
+                            }
+                        };
+                    } else {
+                        errorsMsg = mensaje
+                    }
                     swalFire('Edición herrada', errorsMsg, false);
                 });
             } else {
@@ -244,7 +248,19 @@
                 }).fail((err) => {
                     $('#saveNit').show();
                     $('#saveNitLoading').hide();
-                    swalFire('Creación herrada', 'Error al crear Nit!', false);
+                    var errorsMsg = "";
+                    var mensaje = err.responseJSON.message;
+                    if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                        for (field in mensaje) {
+                            var errores = mensaje[field];
+                            for (campo in errores) {
+                                errorsMsg += "- "+errores[campo]+" <br>";
+                            }
+                        };
+                    } else {
+                        errorsMsg = mensaje
+                    }
+                    swalFire('Creación herrada', errorsMsg, false);
                 });
             } else {
                 form.classList.add('was-validated');
