@@ -137,7 +137,7 @@
             autoGroup: true
         });
 
-        $('.form-control').keyup(function() {
+        $('.form-control-sm').keyup(function() {
             $(this).val($(this).val().toUpperCase());
         });
 
