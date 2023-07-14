@@ -130,15 +130,16 @@
                 $("#razon_social").prop('required',true);
             } else {
                 $("#primer_nombre").prop('required',true);
-                $("#otros_nombres").prop('required',true);
+                $("#otros_nombres").prop('required',false);
                 $("#primer_apellido").prop('required',true);
-                $("#segundo_apellido").prop('required',true);
+                $("#segundo_apellido").prop('required',false);
                 $("#razon_social").prop('required',false);
             }
             $("#numero_documento").prop('required',false);
             $("#direccion").prop('required',true);
             $("#email").prop('required',true);
-            $("#telefono_1").prop('required',true);
+            $("#telefono_1").prop('required',false);
+            
         });
 
         $(document).on('click', '#updateNit', function () {
