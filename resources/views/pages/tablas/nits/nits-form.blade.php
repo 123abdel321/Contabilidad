@@ -2,8 +2,8 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="textNitCreate" style="display: none;">Agregar nit</h5>
-                <h5 class="modal-title" id="textNitUpdate" style="display: none;">Editar nit</h5>
+                <h5 class="modal-title" id="textNitCreate" style="display: none;">Agregar Cedulas nit</h5>
+                <h5 class="modal-title" id="textNitUpdate" style="display: none;">Editar Cedulas nit</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -14,7 +14,7 @@
 
                     <input type="text" class="form-control" name="id_nit" id="id_nit" style="display: none;">
                     <div class="form-group col-md-6">
-                        <label for="exampleFormid_tipo_documento">Tipo documento <span style="color: red">*</span></label>
+                        <label for="exampleFormid_tipo_documento">Tipo documento </label>
                         <select name="id_tipo_documento" id="id_tipo_documento" class="form-control form-control-sm">
                         </select>
                         <div class="invalid-feedback">
@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="example-text-input" class="form-control-label">Numero documento <span style="color: red">*</span></label>
+                        <label for="example-text-input" class="form-control-label">Numero documento </label>
                         <input type="text" class="form-control form-control-sm input_decimal" name="numero_documento" id="numero_documento">
                         <div class="invalid-feedback">
                             El campo es requerido
@@ -31,7 +31,7 @@
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="exampleFormControlSelect1">Tipo contribuyente <span style="color: red">*</span></label>
+                        <label for="exampleFormControlSelect1">Tipo contribuyente </label>
                         <select class="form-control form-control-sm" name="tipo_contribuyente" id="tipo_contribuyente" required>
                             <option value="">Seleccionar</option>
                             <option value="1">Persona jurídica</option>
@@ -83,7 +83,7 @@
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="example-text-input" class="form-control-label">Dirección <span style="color: red">*</span></label>
+                        <label for="example-text-input" class="form-control-label">Dirección </label>
                         <input type="text" class="form-control form-control-sm" name="direccion" id="direccion" >
                         <div class="invalid-feedback">
                             El campo es requerido
