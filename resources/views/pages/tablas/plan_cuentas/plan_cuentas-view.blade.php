@@ -246,7 +246,6 @@
                 $comboPadre.val('').trigger('change');
                 $("#cuenta").val(data.cuenta);
             }
-            id_cuenta
             $("#id_cuenta").val(data.id);
             $("#nombre").val(data.nombre);
             $("#naturaleza_cuenta").val(data.naturaleza_cuenta).change();

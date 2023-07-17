@@ -160,6 +160,10 @@ class PlanCuentaController extends Controller
         $planCuenta = PlanCuentas::where('cuenta', '<', '999999')->select(
             'id',
             'cuenta',
+            'exige_nit',
+            'exige_documento_referencia',
+            'exige_concepto',
+            'exige_centro_costos',
             'nombre',
             'naturaleza_cuenta',
             \DB::raw("CONCAT(cuenta, ' - ', nombre) as text")
