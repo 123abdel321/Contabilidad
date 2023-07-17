@@ -482,7 +482,7 @@ class AuxiliarController extends Controller
                 'id_cuenta' => $auxiliarDetalle->id_cuenta,
                 'cuenta' => $auxiliarDetalle->cuenta,
                 'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
-                'documento_referencia' => '',
+                'documento_referencia' => $auxiliarDetalle->documento_referencia,
                 'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
                 'id_centro_costos' => '',
                 'id_comprobante' => '',
