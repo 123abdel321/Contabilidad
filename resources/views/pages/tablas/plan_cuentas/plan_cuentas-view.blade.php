@@ -88,17 +88,41 @@
             columns: [
                 {"data":'cuenta'},
                 {"data":'nombre'},
-                // {
-                //     "data": function (row, type, set){
-                //         if(row.tipo_cuenta){
-                //             return row.tipo_cuenta.id + ' - ' + row.tipo_cuenta.nombre;
-                //         }
-                //         return '';
-                //     }
-                // },
                 {
                     "data": function (row, type, set){
                         if(row.naturaleza_cuenta){
+                            return 'Credito';
+                        }
+                        return 'Dedito';
+                    }
+                },
+                {
+                    "data": function (row, type, set){
+                        if(row.naturaleza_ingresos){
+                            return 'Credito';
+                        }
+                        return 'Dedito';
+                    }
+                },
+                {
+                    "data": function (row, type, set){
+                        if(row.naturaleza_egresos){
+                            return 'Credito';
+                        }
+                        return 'Dedito';
+                    }
+                },
+                {
+                    "data": function (row, type, set){
+                        if(row.naturaleza_compras){
+                            return 'Credito';
+                        }
+                        return 'Dedito';
+                    }
+                },
+                {
+                    "data": function (row, type, set){
+                        if(row.naturaleza_ventas){
                             return 'Credito';
                         }
                         return 'Dedito';
@@ -171,9 +195,12 @@
                 id_padre: $("#id_padre").val(),
                 cuenta: $("#cuenta").val(),
                 nombre: $("#nombre").val(),
-                naturaleza_cuenta: $("#naturaleza_cuenta").val(),
                 id_tipo_cuenta: $("#id_tipo_cuenta").val(),
                 naturaleza_cuenta: $("#naturaleza_cuenta").val(),
+                naturaleza_ingresos: $("#naturaleza_ingresos").val(),
+                naturaleza_egresos: $("#naturaleza_egresos").val(),
+                naturaleza_ventas: $("#naturaleza_ventas").val(),
+                naturaleza_compras: $("#naturaleza_compras").val(),
                 exige_nit: $("#exige_nit:checked").val() ? 1 : 0,
                 exige_documento_referencia: $("#exige_documento_referencia:checked").val() ? 1 : 0,
                 exige_concepto: $("#exige_concepto:checked").val() ? 1 : 0,
@@ -249,6 +276,10 @@
             $("#id_cuenta").val(data.id);
             $("#nombre").val(data.nombre);
             $("#naturaleza_cuenta").val(data.naturaleza_cuenta).change();
+            $("#naturaleza_ingresos").val(data.naturaleza_ingresos).change();
+            $("#naturaleza_egresos").val(data.naturaleza_egresos).change();
+            $("#naturaleza_compras").val(data.naturaleza_compras).change();
+            $("#naturaleza_ventas").val(data.naturaleza_ventas).change();
             $("#id_tipo_cuenta").val(data.id_tipo_cuenta).change();
             
             $("#exige_nit").prop( "checked", data.exige_nit == 1 ? true : false );
@@ -279,6 +310,10 @@
                 naturaleza_cuenta: $("#naturaleza_cuenta").val(),
                 id_tipo_cuenta: $("#id_tipo_cuenta").val(),
                 naturaleza_cuenta: $("#naturaleza_cuenta").val(),
+                naturaleza_ingresos: $("#naturaleza_ingresos").val(),
+                naturaleza_egresos: $("#naturaleza_egresos").val(),
+                naturaleza_ventas: $("#naturaleza_ventas").val(),
+                naturaleza_compras: $("#naturaleza_compras").val(),
                 exige_nit: $("#exige_nit:checked").val() ? 1 : 0,
                 exige_documento_referencia: $("#exige_documento_referencia:checked").val() ? 1 : 0,
                 exige_concepto: $("#exige_concepto:checked").val() ? 1 : 0,

@@ -31,7 +31,7 @@
 
                         <div class="form-group col-6 col-md-4 col-sm-4">
                             <label for="example-text-input" class="form-control-label">Consecutivo <span style="color: red">*</span></label>
-                            <input type="text" class="form-control form-control-sm" name="consecutivo" id="consecutivo" requiere>
+                            <input type="text" class="form-control form-control-sm" name="consecutivo" id="consecutivo" onkeypress="changeConcecutivo(event)" requiere>
                         </div>
                     </div>  
                 </form>

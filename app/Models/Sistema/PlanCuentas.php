@@ -29,6 +29,10 @@ class PlanCuentas extends Model
         'exige_concepto',
         'exige_centro_costos',
 		'naturaleza_cuenta',
+		'naturaleza_ingresos',
+		'naturaleza_egresos',
+		'naturaleza_compras',
+		'naturaleza_ventas',
 		'cuenta_corriente'
     ];
 

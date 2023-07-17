@@ -27,6 +27,10 @@ class CreatePlanCuentasTable extends Migration
             $table->boolean('exige_concepto');
             $table->boolean('exige_centro_costos');
 			$table->boolean('naturaleza_cuenta')->nullable()->comment('0:debito, 1:credito');
+            $table->boolean('naturaleza_ingresos')->nullable()->comment('0:debito, 1:credito');
+            $table->boolean('naturaleza_egresos')->nullable()->comment('0:debito, 1:credito');
+            $table->boolean('naturaleza_compras')->nullable()->comment('0:debito, 1:credito');
+            $table->boolean('naturaleza_ventas')->nullable()->comment('0:debito, 1:credito');
 			$table->boolean('cuenta_corriente')->default(0);
             $table->timestamps();
         });
