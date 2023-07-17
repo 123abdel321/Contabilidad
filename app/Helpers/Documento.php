@@ -59,7 +59,7 @@ class Documento
 	/**
 	 * @var string
 	 */
-	private $conceptoDefault = "FACTURA GENERADA POR EL SISTEMA";
+	private $conceptoDefault = "SIN OBSERVACIÓN";
 
     /**
      * @param int|null $id_comprobante

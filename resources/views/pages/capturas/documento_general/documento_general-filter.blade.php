@@ -31,7 +31,7 @@
 
                         <div class="form-group col-6 col-md-4 col-sm-4">
                             <label for="example-text-input" class="form-control-label">Consecutivo <span style="color: red">*</span></label>
-                            <input type="text" class="form-control form-control-sm" name="consecutivo" id="consecutivo" requiere>
+                            <input type="text" class="form-control form-control-sm" name="consecutivo" id="consecutivo" onkeypress="changeConcecutivo(event)" requiere>
                         </div>
                     </div>  
                 </form>
@@ -46,11 +46,12 @@
                         <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>
                     <span id="agregarDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; display:none;">
-                        <i class="fas fa-file-signature" style="font-size: 17px;"></i>&nbsp;
+                        <i class="fas fa-plus-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">AGREGAR DOCUMENTO</b>
                     </span>
                     <span id="cancelarCapturaDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="min-width: 40px; display:none;">
-                        <i class="fas fa-folder-minus" style="font-size: 17px;"></i>&nbsp;
+                        <!-- <i class="fas fa-folder-minus" style="font-size: 17px;"></i> -->
+                        <i class="fas fa-times-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">CANCELAR CAPTURA</b>
                     </span>
                     <span id="crearCapturaDocumentosDisabled" href="javascript:void(0)" class="badge bg-success" style="min-width: 40px; display:none; float: right; background-color: #2dce899c !important; cursor: no-drop;">
@@ -62,34 +63,7 @@
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR DOCUMENTOS</b>
                     </span>
-                    
-                    
-                    <!-- <span id="generarAuxiliarLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
-                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">BUSCANDO</b>
-                    </span>
-                    <span id="descargarExcelAuxiliar" class="btn badge bg-gradient-success" style="min-width: 40px; display:none;">
-                        <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">EXPORTAR</b>
-                    </span>
-                    <span id="descargarExcelAuxiliarDisabled" class="badge bg-dark" style="min-width: 40px; color: #adadad;">
-                        <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">EXPORTAR</b>
-                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
-                    </span>
-                    <span id="" class="badge bg-dark" style="min-width: 40px; color: #adadad;" >
-                        <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">EXPORTAR</b>
-                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
-                    </span> -->
                 </div>
-                <div>
-                    <!-- <button class="btn btn-success btn-sm ms-auto" id="iniciarCapturaDocumentos">Iniciar captura</button>
-                    <button class="btn btn-success btn-sm ms-auto" id="agregarDocumentos" style="display: none">Agregar</button>
-                    <button class="btn btn-danger btn-sm ms-auto" id="cancelarCapturaDocumentos" style="display: none">Cancelar</button>
-                    <button class="btn btn-info btn-sm ms-auto" id="crearCapturaDocumentos" style="float: right; display: none" disabled><i class="fa fa-upload" aria-hidden="true" style="font-size: 0.8rem;">&nbsp;&nbsp;</i>Grabar documentos</button> -->
-                </div>
-
             </div>
         </div>
     </div>

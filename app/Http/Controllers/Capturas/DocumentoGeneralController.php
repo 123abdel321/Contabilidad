@@ -39,7 +39,6 @@ class DocumentoGeneralController extends Controller
 
     public function create(Request $request)
     {
-		
 		$rules = [
             'id_comprobante' => 'sometimes|required_if:cod_comprobante,=,null|exists:sam.comprobantes,id',
 			'cod_comprobante' => 'sometimes|required_if:id_comprobante,=,null|exists:sam.comprobantes,codigo',

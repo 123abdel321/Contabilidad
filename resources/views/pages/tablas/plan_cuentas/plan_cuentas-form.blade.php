@@ -34,8 +34,40 @@
                         </div>
 
                         <div class="form-group col-md-6">
-                            <label for="exampleFormControlSelect1">Naturaleza <span style="color: red">*</span></label>
+                            <label for="exampleFormControlSelect1">Naturaleza cuenta<span style="color: red">*</span></label>
                             <select class="form-control form-control-sm" id="naturaleza_cuenta">
+                                <option value="0">Debito</option>
+                                <option value="1">Credito</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlSelect1">Naturaleza ingresos<span style="color: red">*</span></label>
+                            <select class="form-control form-control-sm" id="naturaleza_ingresos">
+                                <option value="0">Debito</option>
+                                <option value="1">Credito</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlSelect1">Naturaleza egresos<span style="color: red">*</span></label>
+                            <select class="form-control form-control-sm" id="naturaleza_egresos">
+                                <option value="0">Debito</option>
+                                <option value="1">Credito</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlSelect1">Naturaleza compras<span style="color: red">*</span></label>
+                            <select class="form-control form-control-sm" id="naturaleza_compras">
+                                <option value="0">Debito</option>
+                                <option value="1">Credito</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlSelect1">Naturaleza ventas<span style="color: red">*</span></label>
+                            <select class="form-control form-control-sm" id="naturaleza_ventas">
                                 <option value="0">Debito</option>
                                 <option value="1">Credito</option>
                             </select>

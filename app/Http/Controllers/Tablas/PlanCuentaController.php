@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 //MODELS
 use App\Models\Sistema\TipoCuenta;
 use App\Models\Sistema\PlanCuentas;
+use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\DocumentosGeneral;
 
 class PlanCuentaController extends Controller
@@ -82,6 +83,10 @@ class PlanCuentaController extends Controller
             'exige_concepto' => $request->get('exige_concepto'),
             'exige_centro_costos' => $request->get('exige_centro_costos'),
             'naturaleza_cuenta' => $request->get('naturaleza_cuenta'),
+            'naturaleza_ingresos' => $request->get('naturaleza_ingresos'),
+            'naturaleza_egresos' => $request->get('naturaleza_egresos'),
+            'naturaleza_compras' => $request->get('naturaleza_compras'),
+            'naturaleza_ventas' => $request->get('naturaleza_ventas'),
         ]);
 
         return response()->json([
@@ -94,7 +99,7 @@ class PlanCuentaController extends Controller
     public function update (Request $request)
     {
         $cuentaPadre = '';
-
+        
         if($request->get('id_padre')){
             $padre = PlanCuentas::find($request->get('id_padre'));
             $cuentaPadre = $padre->cuenta;
@@ -115,6 +120,10 @@ class PlanCuentaController extends Controller
                 'exige_concepto' => $request->get('exige_concepto'),
                 'exige_centro_costos' => $request->get('exige_centro_costos'),
                 'naturaleza_cuenta' => $request->get('naturaleza_cuenta'),
+                'naturaleza_ingresos' => $request->get('naturaleza_ingresos'),
+                'naturaleza_egresos' => $request->get('naturaleza_egresos'),
+                'naturaleza_compras' => $request->get('naturaleza_compras'),
+                'naturaleza_ventas' => $request->get('naturaleza_ventas'),
             ]);
 
         $planCuenta = PlanCuentas::where('id', $request->get('id_cuenta'))->with('tipo_cuenta', 'padre')->first();
@@ -157,11 +166,40 @@ class PlanCuentaController extends Controller
 
     public function comboCuenta(Request $request)
     {
+        $naturaleza = "naturaleza_cuenta AS naturaleza_cuenta";
+        if($request->has("id_comprobante")) {
+            $comprobante = Comprobantes::where('id', $request->get("id_comprobante"))->first();
+            if($comprobante){
+                $tipoComprobante = $comprobante->tipo_comprobante;
+                switch ($tipoComprobante) {
+                    case 0:
+                        $naturaleza = "naturaleza_ingresos AS naturaleza_cuenta";
+                        break;
+                    case 1:
+                        $naturaleza = "naturaleza_egresos AS naturaleza_cuenta";
+                        break;
+                    case 2:
+                        $naturaleza = "naturaleza_compras AS naturaleza_cuenta";
+                        break;
+                    case 3:
+                        $naturaleza = "naturaleza_ventas AS naturaleza_cuenta";
+                        break;
+                    default:
+                        $naturaleza = "naturaleza_cuenta AS naturaleza_cuenta";
+                        break;
+                }
+            }
+        }
+
         $planCuenta = PlanCuentas::where('cuenta', '<', '999999')->select(
             'id',
             'cuenta',
+            'exige_nit',
+            'exige_documento_referencia',
+            'exige_concepto',
+            'exige_centro_costos',
             'nombre',
-            'naturaleza_cuenta',
+            \DB::raw($naturaleza),
             \DB::raw("CONCAT(cuenta, ' - ', nombre) as text")
         )->where('auxiliar', 1);
 

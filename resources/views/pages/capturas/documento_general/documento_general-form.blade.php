@@ -25,8 +25,7 @@
 
                     <div class="form-group col-md-6">
                         <label for="exampleFormControlSelect1">Centro costos</label>
-                        <select name="id_centro_costos" id="id_centro_costos" class="form-control form-control-sm">
-                        </select>
+                        <select name="id_centro_costos" id="id_centro_costos" class="form-control form-control-sm"></select>
                     </div>
 
                     <div class="form-group col-md-6">
