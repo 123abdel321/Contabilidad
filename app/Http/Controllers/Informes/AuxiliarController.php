@@ -32,7 +32,7 @@ class AuxiliarController extends Controller
                     
         $auxiliares = DB::connection('sam')->select($this->queryAuxiliares($request));
         $auxiliaresDetalle = DB::connection('sam')->select($this->queryAuxiliaresDetalle($request));
-
+        // dd($auxiliares);
         foreach ($auxiliares as $auxiliar) {
             $cuentasAsociadas = $this->getCuentas($auxiliar->cuenta); //return ARRAY PADRES CUENTA
             
@@ -104,13 +104,13 @@ class AuxiliarController extends Controller
                     PC.id AS id_cuenta,
                     PC.cuenta,
                     PC.nombre AS nombre_cuenta,
+                    DG.documento_referencia,
                     DG.id_centro_costos,
                     CC.codigo AS codigo_cecos,
                     CC.nombre AS nombre_cecos,
                     DG.id AS id_comprobante,
                     CO.codigo AS codigo_comprobante,
                     CO.nombre AS nombre_comprobante,
-                    DG.documento_referencia,
                     DG.consecutivo,
                     DG.concepto,
                     DG.fecha_manual,
@@ -173,7 +173,7 @@ class AuxiliarController extends Controller
             ORDER BY cuenta, id_nit, documento_referencia
 
         ";
-        
+        // dd($query);
         return $query;
     }
 
