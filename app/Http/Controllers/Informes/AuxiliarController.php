@@ -46,7 +46,8 @@ class AuxiliarController extends Controller
         }
         $this->addTotalsData($auxiliares);
         $this->addDetilsData($auxiliaresDetalle);
-
+        $this->addTotalNitsData($auxiliares);
+        
 		ksort($this->auxiliarCollection, SORT_STRING | SORT_FLAG_CASE);
         
         return response()->json([
@@ -169,7 +170,6 @@ class AuxiliarController extends Controller
                     GROUP BY DG.id_cuenta, DG.id_nit, DG.documento_referencia
                 )) AS auxiliar
             GROUP BY id_cuenta, id_nit, documento_referencia
-            -- ORDER BY cuenta DESC
             ORDER BY cuenta, id_nit, documento_referencia
 
         ";
@@ -211,10 +211,10 @@ class AuxiliarController extends Controller
             consecutivo,
             concepto,
             fecha_manual,
-            SUM(saldo_anterior) AS saldo_anterior,
-            SUM(debito) AS debito,
-            SUM(credito) AS credito,
-            SUM(saldo_final) AS saldo_final
+            saldo_anterior,
+            debito,
+            credito,
+            saldo_final
         FROM ((SELECT
                 N.id AS id_nit,
                 N.numero_documento,
@@ -287,8 +287,7 @@ class AuxiliarController extends Controller
                 $wheres
             )) AS auxiliar
             -- ORDER BY cuenta DESC
-            GROUP BY id_cuenta, id_nit, documento_referencia
-            ORDER BY cuenta, id_nit, documento_referencia
+            ORDER BY cuenta, id_nit, documento_referencia, codigo_comprobante
         ";
     }
 
@@ -433,10 +432,10 @@ class AuxiliarController extends Controller
     {
         foreach ($auxiliaresDetalle as $auxiliarDetalle) {
             $cuentaNumero = 1;
-            $cuentaNueva = $auxiliarDetalle->cuenta.'A'.$cuentaNumero;
+            $cuentaNueva = $auxiliarDetalle->cuenta.'B'.$cuentaNumero.'B';
             while ($this->hasCuentaData($cuentaNueva)) {
                 $cuentaNumero++;
-                $cuentaNueva = $auxiliarDetalle->cuenta.'A'.$cuentaNumero;
+                $cuentaNueva = $auxiliarDetalle->cuenta.'B'.$cuentaNumero.'B';
             }
             $this->auxiliarCollection[$cuentaNueva] = [
                 'id_nit' => $auxiliarDetalle->id_nit,
@@ -462,6 +461,43 @@ class AuxiliarController extends Controller
                 'saldo_final' => $auxiliarDetalle->saldo_final,
                 'detalle' => false,
                 'detalle_group' => false,
+            ];
+        }
+    }
+
+    private function addTotalNitsData($auxiliaresDetalle)
+    {
+        foreach ($auxiliaresDetalle as $auxiliarDetalle) {
+            $cuentaNumero = 1;
+            $cuentaNueva = $auxiliarDetalle->cuenta.'B'.$cuentaNumero.'A';
+            while ($this->hasCuentaData($cuentaNueva)) {
+                $cuentaNumero++;
+                $cuentaNueva = $auxiliarDetalle->cuenta.'B'.$cuentaNumero.'A';
+            }
+            $this->auxiliarCollection[$cuentaNueva] = [
+                'id_nit' => $auxiliarDetalle->id_nit,
+                'numero_documento' => $auxiliarDetalle->numero_documento,
+                'nombre_nit' => $auxiliarDetalle->nombre_nit,
+                'razon_social' => $auxiliarDetalle->razon_social,
+                'id_cuenta' => $auxiliarDetalle->id_cuenta,
+                'cuenta' => $auxiliarDetalle->cuenta,
+                'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
+                'documento_referencia' => '',
+                'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
+                'id_centro_costos' => '',
+                'id_comprobante' => '',
+                'codigo_comprobante' => '',
+                'nombre_comprobante' => '',
+                'codigo_cecos' => '',
+                'nombre_cecos' =>  '',
+                'consecutivo' => '',
+                'concepto' => '',
+                'fecha_manual' => '',
+                'debito' => $auxiliarDetalle->debito,
+                'credito' => $auxiliarDetalle->credito,
+                'saldo_final' => $auxiliarDetalle->saldo_final,
+                'detalle' => false,
+                'detalle_group' => 'nits',
             ];
         }
     }

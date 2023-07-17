@@ -155,6 +155,11 @@
             language: lenguajeDatatable,
             ordering: false,
             'rowCallback': function(row, data, index){
+                if(data.detalle_group == 'nits'){
+                    $('td', row).css('background-color', 'antiquewhite');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
                 if(data.cuenta == "TOTALES"){
                     $('td', row).css('background-color', 'rgb(0 255 76 / 56%)');
                     $('td', row).css('font-weight', 'bold');
@@ -181,7 +186,7 @@
                     return;
                 }
                 if(data.detalle){
-                    $('td', row).css('background-color', 'rgb(0 0 0 / 7%)');
+                    $('td', row).css('background-color', 'rgb(197 228 241 / 56%)');
                     $('td', row).css('font-weight', 'bold');
                 }
             },
@@ -216,10 +221,10 @@
                     return row.codigo_cecos + ' - ' +row.nombre_cecos;
                 }},
                 {data: 'documento_referencia'},
-                { data: "saldo_anterior", render: $.fn.dataTable.render.number('.', ',', 0, '$')},
-                { data: "debito", render: $.fn.dataTable.render.number('.', ',', 0, '$')},
-                { data: "credito", render: $.fn.dataTable.render.number('.', ',', 0, '$')},
-                { data: "saldo_final", render: $.fn.dataTable.render.number('.', ',', 0, '$')},
+                { data: "saldo_anterior", render: $.fn.dataTable.render.number('.', ',', 0, '')},
+                { data: "debito", render: $.fn.dataTable.render.number('.', ',', 0, '')},
+                { data: "credito", render: $.fn.dataTable.render.number('.', ',', 0, '')},
+                { data: "saldo_final", render: $.fn.dataTable.render.number('.', ',', 0, '')},
                 {"data": function (row, type, set){
                     if(!row.codigo_comprobante){
                         return '';
