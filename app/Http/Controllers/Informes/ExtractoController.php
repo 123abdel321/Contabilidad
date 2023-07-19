@@ -81,6 +81,10 @@ class ExtractoController extends Controller
                 N.numero_documento,
                 CONCAT(N.otros_nombres, ' ', N.primer_apellido) AS nombre_nit,
                 N.razon_social,
+                N.telefono_1,
+                N.telefono_2,
+                N.email,
+                N.direccion,
                 PC.id AS id_cuenta,
                 PC.cuenta,
                 PC.nombre AS nombre_cuenta,
@@ -104,7 +108,7 @@ class ExtractoController extends Controller
                 SUM(DG.debito) AS debito,
                 SUM(DG.credito) AS credito,
                 DATEDIFF('$fecha', DG.fecha_manual) AS dias_cumplidos,
-                '' AS detalle,
+                'si' AS detalle,
                 CASE
                     WHEN CO.tipo_comprobante = 0 THEN IF(PC.naturaleza_ingresos = 0, SUM(debito), SUM(credito))
                     WHEN CO.tipo_comprobante = 1 THEN IF(PC.naturaleza_egresos = 0, SUM(debito), SUM(credito))
@@ -140,13 +144,13 @@ class ExtractoController extends Controller
                     
             GROUP BY DG.id_cuenta, DG.id_nit, DG.documento_referencia
 
-            -- HAVING (CASE
-            --     WHEN CO.tipo_comprobante = 0 THEN IF(PC.naturaleza_ingresos = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
-            --     WHEN CO.tipo_comprobante = 1 THEN IF(PC.naturaleza_egresos = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
-            --     WHEN CO.tipo_comprobante = 2 THEN IF(PC.naturaleza_compras = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
-            --     WHEN CO.tipo_comprobante = 3 THEN IF(PC.naturaleza_ventas = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
-            --     WHEN CO.tipo_comprobante > 3 THEN IF(PC.naturaleza_cuenta = 0, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
-            -- END) > 0  
+            HAVING (CASE
+                WHEN CO.tipo_comprobante = 0 THEN IF(PC.naturaleza_ingresos = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
+                WHEN CO.tipo_comprobante = 1 THEN IF(PC.naturaleza_egresos = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
+                WHEN CO.tipo_comprobante = 2 THEN IF(PC.naturaleza_compras = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
+                WHEN CO.tipo_comprobante = 3 THEN IF(PC.naturaleza_ventas = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
+                WHEN CO.tipo_comprobante > 3 THEN IF(PC.naturaleza_cuenta = 0, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
+            END) != 0  
         ";
         $extracto = DB::connection('sam')->select($query);
 
@@ -156,6 +160,10 @@ class ExtractoController extends Controller
                 N.numero_documento,
                 CONCAT(N.otros_nombres, ' ', N.primer_apellido) AS nombre_nit,
                 N.razon_social,
+                N.telefono_1,
+                N.telefono_2,
+                N.email,
+                N.direccion,
                 PC.id AS id_cuenta,
                 PC.cuenta,
                 PC.nombre AS nombre_cuenta,
@@ -215,6 +223,10 @@ class ExtractoController extends Controller
                     "numero_documento" => $extrac->numero_documento,
                     "nombre_nit" => $extrac->nombre_nit,
                     "razon_social" => $extrac->razon_social,
+                    "telefono_1" => $extrac->telefono_1,
+                    "telefono_2" => $extrac->telefono_2,
+                    "email" => $extrac->email,
+                    "direccion" => $extrac->direccion,
                     "id_cuenta" => $extrac->id_cuenta,
                     "cuenta" => $extrac->cuenta,
                     "nombre_cuenta" => $extrac->nombre_cuenta,
@@ -248,9 +260,13 @@ class ExtractoController extends Controller
             foreach ($extractoDetalle as $detalle) {
                 $this->carteraCollection[$detalle->id_nit.'-'.$detalle->id_cuenta.'-'.$detalle->documento_referencia][] = (object)[
                     "id_nit" => $detalle->id_nit,
-                    "numero_documento" => $detalle->numero_documento,
-                    "nombre_nit" => $detalle->nombre_nit,
+                    "numero_documento" => '',
+                    "nombre_nit" => '',
                     "razon_social" => $detalle->razon_social,
+                    "telefono_1" => $extrac->telefono_1,
+                    "telefono_2" => $extrac->telefono_2,
+                    "email" => $extrac->email,
+                    "direccion" => $extrac->direccion,
                     "id_cuenta" => $detalle->id_cuenta,
                     "cuenta" => $detalle->cuenta,
                     "nombre_cuenta" => $detalle->nombre_cuenta,

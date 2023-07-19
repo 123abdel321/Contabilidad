@@ -76,7 +76,7 @@
         var cartera_table = $('#CarteraInformeTable').DataTable({
             dom: '',
             autoWidth: true,
-            responsive: false,
+            responsive: true,
             processing: true,
             serverSide: true,
             deferLoading: 0,
@@ -113,13 +113,7 @@
                         return row.numero_documento +' - '+ row.razon_social;
                     }
                     return row.numero_documento + ' - ' +row.nombre_nit;
-                }},
-                {"data": function (row, type, set){
-                    if(!row.codigo_cecos){
-                        return '';
-                    }
-                    return row.codigo_cecos + ' - ' +row.nombre_cecos;
-                }},
+                }, responsivePriority: 1, targets: 0},
                 {"data": function (row, type, set){
                     if(!row.codigo_comprobante){
                         return '';
@@ -127,11 +121,22 @@
                     return row.codigo_comprobante + ' - ' +row.nombre_comprobante;
                 }},
                 {data: 'documento_referencia'},
+                
+                {data: 'total_facturas', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 4, targets: -3},
+                {data: 'total_abono', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 3, targets: -2},
+                {data: 'saldo', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 2, targets: -1},
                 {data: 'fecha_manual'},
                 {data: 'dias_cumplidos'},
-                {data: 'total_facturas'},
-                {data: 'total_abono'},
-                {data: 'saldo'},
+                {"data": function (row, type, set){
+                    if(row.detalle == 'si' || row.detalle == 'total'){
+                        console.log(row);
+                        var datos = '<b style="color: #374b69;">Telefono: </b> '+row.telefono_1+'<br/>';
+                        datos+= '<b style="color: #374b69;">Dirección: </b> '+row.direccion+'<br/>';
+                        datos+= '<b style="color: #374b69;">Correo: </b>'+row.email+'<br/>';
+                        return datos;
+                    }
+                    return '';
+                }},
                 {data: 'concepto'},
             ]
         });

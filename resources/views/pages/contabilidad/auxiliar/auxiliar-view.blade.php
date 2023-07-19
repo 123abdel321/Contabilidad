@@ -221,10 +221,10 @@
                     return row.codigo_cecos + ' - ' +row.nombre_cecos;
                 }},
                 {data: 'documento_referencia'},
-                { data: "saldo_anterior", render: $.fn.dataTable.render.number('.', ',', 0, '')},
-                { data: "debito", render: $.fn.dataTable.render.number('.', ',', 0, '')},
-                { data: "credito", render: $.fn.dataTable.render.number('.', ',', 0, '')},
-                { data: "saldo_final", render: $.fn.dataTable.render.number('.', ',', 0, '')},
+                { data: "saldo_anterior", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
+                { data: "debito", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
+                { data: "credito", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
+                { data: "saldo_final", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
                 {"data": function (row, type, set){
                     if(!row.codigo_comprobante){
                         return '';
