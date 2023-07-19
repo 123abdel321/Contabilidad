@@ -140,13 +140,13 @@ class ExtractoController extends Controller
                     
             GROUP BY DG.id_cuenta, DG.id_nit, DG.documento_referencia
 
-            HAVING (CASE
-                WHEN CO.tipo_comprobante = 0 THEN IF(PC.naturaleza_ingresos = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
-                WHEN CO.tipo_comprobante = 1 THEN IF(PC.naturaleza_egresos = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
-                WHEN CO.tipo_comprobante = 2 THEN IF(PC.naturaleza_compras = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
-                WHEN CO.tipo_comprobante = 3 THEN IF(PC.naturaleza_ventas = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
-                WHEN CO.tipo_comprobante > 3 THEN IF(PC.naturaleza_cuenta = 0, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
-            END) > 0  
+            -- HAVING (CASE
+            --     WHEN CO.tipo_comprobante = 0 THEN IF(PC.naturaleza_ingresos = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
+            --     WHEN CO.tipo_comprobante = 1 THEN IF(PC.naturaleza_egresos = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
+            --     WHEN CO.tipo_comprobante = 2 THEN IF(PC.naturaleza_compras = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
+            --     WHEN CO.tipo_comprobante = 3 THEN IF(PC.naturaleza_ventas = 1, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
+            --     WHEN CO.tipo_comprobante > 3 THEN IF(PC.naturaleza_cuenta = 0, SUM(DG.debito) - SUM(DG.credito), SUM(DG.credito) - SUM(DG.debito))
+            -- END) > 0  
         ";
         $extracto = DB::connection('sam')->select($query);
 
