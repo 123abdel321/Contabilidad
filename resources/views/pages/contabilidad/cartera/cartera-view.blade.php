@@ -90,6 +90,7 @@
                 data: function ( d ) {
                     d.id_tipo_cuenta = $('#id_tipo_cuenta').val();
                     d.id_nit = $('#id_nit').val();
+                    d.fecha = $('#fecha').val();
                 }
             },
             "columns": [

@@ -37,7 +37,7 @@ class ExtractoController extends Controller
 			"numero_documento" => "nullable|exists:sam.nits,numero_documento",
 			// "id_cuenta" => "required_without_all:cuenta,id_tipo_cuenta",
 			// "cuenta" => "required_without:id_tipo_cuenta|sometimes|nullable|exists:sam.con_plan_cuentas,cuenta",
-			"id_tipo_cuenta" => "required|exists:sam.tipo_cuentas,id",
+			"id_tipo_cuenta" => "nullable|exists:sam.tipo_cuentas,id",
 		];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -51,6 +51,11 @@ class ExtractoController extends Controller
         }
 
         $wheres = '';
+        $fecha = Carbon::now();
+
+        if($request->has('id_tipo_cuenta') && $request->get('id_tipo_cuenta')) {
+            $wheres.= ' AND PC.id_tipo_cuenta = '.$request->get('id_tipo_cuenta');
+        }
 
         if($request->has('id_nit') && $request->get('id_nit')){
             $wheres.= ' AND N.id = '.$request->get('id_nit');
@@ -65,9 +70,10 @@ class ExtractoController extends Controller
             $wheres.= ' AND DG.documento_referencia = '.$request->get('documento_referencia');
         }
 
-        $id_tipo_cuenta = $request->get('id_tipo_cuenta');
-
-        $fecha = Carbon::now();
+        if($request->has('fecha') && $request->get('fecha')) {
+            $wheres.= " AND DG.fecha_manual <= '{$request->get('fecha')}'";
+            $fecha = $request->get('fecha');
+        }
 
         $query = "SELECT
                 N.id AS id_nit,
@@ -127,7 +133,7 @@ class ExtractoController extends Controller
             LEFT JOIN centro_costos CC ON DG.id_centro_costos = CC.id
             LEFT JOIN comprobantes CO ON DG.id_comprobante = CO.id
                     
-            WHERE PC.id_tipo_cuenta = $id_tipo_cuenta
+            WHERE DG.id IS NOT NULL
                 $wheres
                     
             GROUP BY DG.id_cuenta, DG.id_nit, DG.documento_referencia

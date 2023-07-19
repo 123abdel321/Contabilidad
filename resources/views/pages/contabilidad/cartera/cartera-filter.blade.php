@@ -15,6 +15,7 @@
                         <div class="form-group col-md">
                             <label for="exampleFormControlSelect1">Tipo cuenta</label>
                             <select name="id_tipo_cuenta" id="id_tipo_cuenta" class="form-control form-control-sm">
+                                <option value="">Seleccionar</option>
                                 <option value="3">Cuentas por cobrar</option>
                                 <option value="4">Cuentas por pagar</option>
                             </select>
@@ -23,6 +24,10 @@
                             <label for="exampleFormControlSelect1">Nit</label>
                             <select class="form-control form-control-sm" name="id_nit" id="id_nit">
                             </select>
+                        </div>
+                        <div class="form-group col-md">
+                            <label for="example-text-input" class="form-control-label">Fecha</label>
+                            <input name="fecha" id="fecha" class="form-control form-control-sm" type="date">
                         </div>
                         <!-- <div class="form-group col-md">
                             <label for="example-text-input" class="form-control-label">Fecha desde</label>
