@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Informes;
 
 use DB;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -66,6 +67,8 @@ class ExtractoController extends Controller
 
         $id_tipo_cuenta = $request->get('id_tipo_cuenta');
 
+        $fecha = Carbon::now();
+
         $query = "SELECT
                 N.id AS id_nit,
                 N.numero_documento,
@@ -93,7 +96,7 @@ class ExtractoController extends Controller
                 PC.naturaleza_cuenta,
                 SUM(DG.debito) AS debito,
                 SUM(DG.credito) AS credito,
-                DATEDIFF('2023-07-30', DG.fecha_manual) AS dias_cumplidos,
+                DATEDIFF('$fecha', DG.fecha_manual) AS dias_cumplidos,
                 CASE
                     WHEN CO.tipo_comprobante = 0 THEN IF(PC.naturaleza_ingresos = 0, SUM(debito), SUM(credito))
                     WHEN CO.tipo_comprobante = 1 THEN IF(PC.naturaleza_egresos = 0, SUM(debito), SUM(credito))
