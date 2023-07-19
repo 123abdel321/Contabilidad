@@ -103,7 +103,10 @@
             },
             "columns": [
                 {"data": function (row, type, set){
-                    return row.cuenta + ' - ' +row.nombre_cuenta;
+                    if(row.detalle == 'si' || row.detalle == 'total') {
+                        return row.cuenta + ' - ' +row.nombre_cuenta;
+                    }
+                    return '';      
                 }},
                 {"data": function (row, type, set){
                     if(!row.numero_documento){
