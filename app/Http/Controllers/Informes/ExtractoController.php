@@ -270,7 +270,7 @@ class ExtractoController extends Controller
                     "id_cuenta" => $detalle->id_cuenta,
                     "cuenta" => $detalle->cuenta,
                     "nombre_cuenta" => $detalle->nombre_cuenta,
-                    "documento_referencia" => $detalle->documento_referencia,
+                    "documento_referencia" => '',
                     "id_centro_costos" => $detalle->id_centro_costos,
                     "codigo_cecos" => $detalle->codigo_cecos,
                     "nombre_cecos" => $detalle->nombre_cecos,
