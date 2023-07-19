@@ -195,22 +195,22 @@
                 {
                     data: 'saldo_anterior',
                     render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                    className: "column-number"
+                    className: "column-number", className: 'dt-body-right'
                 },
                 {
                     data: 'debito',
                     render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                    className: "column-number"
+                    className: "column-number", className: 'dt-body-right'
                 },
                 {
                     data: 'credito',
                     render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                    className: "column-number"
+                    className: "column-number", className: 'dt-body-right'
                 },
                 {
                     data: 'saldo_final',
                     render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                    className: "column-number"
+                    className: "column-number", className: 'dt-body-right'
                 },
             ]
         });
