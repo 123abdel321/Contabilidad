@@ -13,8 +13,10 @@
                 <form id="carteraInformeForm" style="margin-top: 10px;">
                     <div class="row">
                         <div class="form-group col-md">
-                            <label for="exampleFormControlSelect1">Cuenta</label>
-                            <select name="id_cuenta" id="id_cuenta" class="form-control form-control-sm">
+                            <label for="exampleFormControlSelect1">Tipo cuenta</label>
+                            <select name="id_tipo_cuenta" id="id_tipo_cuenta" class="form-control form-control-sm">
+                                <option value="3">Cuentas por cobrar</option>
+                                <option value="4">Cuentas por pagar</option>
                             </select>
                         </div>
                         <div class="form-group col-md">
@@ -22,14 +24,14 @@
                             <select class="form-control form-control-sm" name="id_nit" id="id_nit">
                             </select>
                         </div>
-                        <div class="form-group col-md">
+                        <!-- <div class="form-group col-md">
                             <label for="example-text-input" class="form-control-label">Fecha desde</label>
                             <input name="fecha_desde" id="fecha_desde" class="form-control form-control-sm" type="date" require>
                         </div>
                         <div class="form-group col-md">
                             <label for="example-text-input" class="form-control-label">Fecha hasta</label>
                             <input name="fecha_hasta" id="fecha_hasta" class="form-control form-control-sm" type="date" require>
-                        </div>
+                        </div> -->
                     </div>  
                 </form>
                 <div class="col-md normal-rem">

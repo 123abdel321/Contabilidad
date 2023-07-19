@@ -91,6 +91,7 @@ class AuxiliarController extends Controller
                 consecutivo,
                 concepto,
                 fecha_manual,
+                created_at,
                 SUM(saldo_anterior) AS saldo_anterior,
                 SUM(debito) AS debito,
                 SUM(credito) AS credito,
@@ -114,6 +115,7 @@ class AuxiliarController extends Controller
                     DG.consecutivo,
                     DG.concepto,
                     DG.fecha_manual,
+                    DG.created_at,
                     SUM(debito) - SUM(credito) AS saldo_anterior,
                     0 AS debito,
                     0 AS credito,
@@ -151,6 +153,7 @@ class AuxiliarController extends Controller
                         DG.consecutivo,
                         DG.concepto,
                         DG.fecha_manual,
+                        DG.created_at,
                         0 AS saldo_anterior,
                         SUM(DG.debito) AS debito,
                         SUM(DG.credito) AS credito,
@@ -170,7 +173,7 @@ class AuxiliarController extends Controller
                     GROUP BY DG.id_cuenta, DG.id_nit, DG.documento_referencia
                 )) AS auxiliar
             GROUP BY id_cuenta, id_nit, documento_referencia
-            ORDER BY cuenta, id_nit, documento_referencia
+            ORDER BY cuenta, id_nit, documento_referencia, created_at
 
         ";
         // dd($query);
@@ -211,6 +214,7 @@ class AuxiliarController extends Controller
             consecutivo,
             concepto,
             fecha_manual,
+            created_at,
             saldo_anterior,
             debito,
             credito,
@@ -233,6 +237,7 @@ class AuxiliarController extends Controller
                 DG.consecutivo,
                 DG.concepto,
                 DG.fecha_manual,
+                DG.created_at,
                 0 AS saldo_anterior,
                 DG.debito,
                 DG.credito,
@@ -249,7 +254,7 @@ class AuxiliarController extends Controller
                 AND DG.fecha_manual <= '$fechaHasta'
                 $wheres
             
-            ORDER BY cuenta, id_nit, documento_referencia
+            ORDER BY cuenta, id_nit, documento_referencia, created_at
             )
             UNION
             (
@@ -271,10 +276,11 @@ class AuxiliarController extends Controller
                 DG.consecutivo,
                 DG.concepto,
                 DG.fecha_manual,
-                DG.debito - DG.credito AS saldo_anterior,
+                DG.created_at,
+                SUM(DG.debito) - SUM(DG.credito) AS saldo_anterior,
                 0 AS debito,
                 0 AS credito,
-                DG.debito - DG.credito AS saldo_final
+                0 AS saldo_final
             FROM
                 documentos_generals DG
                 
@@ -285,9 +291,10 @@ class AuxiliarController extends Controller
                 
             WHERE DG.fecha_manual < '$fechaDesde'
                 $wheres
+            GROUP BY DG.id_cuenta, DG.id_nit, DG.documento_referencia
             )) AS auxiliar
             -- ORDER BY cuenta DESC
-            ORDER BY cuenta, id_nit, documento_referencia, codigo_comprobante
+            ORDER BY created_at
         ";
     }
 
@@ -458,7 +465,7 @@ class AuxiliarController extends Controller
                 'fecha_manual' => $auxiliarDetalle->fecha_manual,
                 'debito' => $auxiliarDetalle->debito,
                 'credito' => $auxiliarDetalle->credito,
-                'saldo_final' => $auxiliarDetalle->saldo_final,
+                'saldo_final' => '0',
                 'detalle' => false,
                 'detalle_group' => false,
             ];

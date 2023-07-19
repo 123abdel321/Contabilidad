@@ -39,7 +39,7 @@
 
         var $validator = $('#carteraInformeForm').validate({
             rules: {
-                id_cuenta: {
+                id_tipo_cuenta: {
                     required: false,
                 },
                 fecha_desde: {
@@ -54,8 +54,8 @@
                 }
             },
             messages: {
-                id_cuenta: {
-                    required: "El campo Cuenta es requerido"
+                id_tipo_cuenta: {
+                    required: "El campo tipo cuenta es requerido"
                 },
                 fecha_desde: {
                     required: "El campo Fecha desde es requerido"
@@ -83,45 +83,12 @@
             initialLoad: false,
             headers: headers,
             language: lenguajeDatatable,
-            'rowCallback': function(row, data, index){
-                if(data.cuenta == "TOTALES"){
-                    $('td', row).css('background-color', 'rgb(0 255 76 / 56%)');
-                    $('td', row).css('font-weight', 'bold');
-                    return;
-                }
-                if(data.cuenta.length == 1){
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
-                    $('td', row).css('font-weight', 'bold');
-                    return;
-                }
-                if(data.cuenta.length == 2){
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
-                    $('td', row).css('font-weight', 'bold');
-                    return;
-                }
-                if(data.cuenta.length == 4){
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
-                    $('td', row).css('font-weight', 'bold');
-                    return;
-                }
-                if(data.detalle_group && !data.detalle){
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
-                    $('td', row).css('font-weight', 'bold');
-                    return;
-                }
-                if(data.detalle){
-                    $('td', row).css('background-color', 'rgb(0 0 0 / 7%)');
-                    $('td', row).css('font-weight', 'bold');
-                }
-            },
             ajax:  {
                 type: "GET",
-                url: base_url + 'cartera',
+                url: base_url + 'extracto',
                 headers: headers,
                 data: function ( d ) {
-                    d.fecha_desde = $('#fecha_desde').val();
-                    d.fecha_hasta = $('#fecha_hasta').val();
-                    d.id_cuenta = $('#id_cuenta').val();
+                    d.id_tipo_cuenta = $('#id_tipo_cuenta').val();
                     d.id_nit = $('#id_nit').val();
                 }
             },
@@ -138,27 +105,25 @@
                     }
                     return row.numero_documento + ' - ' +row.nombre_nit;
                 }},
+                {"data": function (row, type, set){
+                    if(!row.codigo_cecos){
+                        return '';
+                    }
+                    return row.codigo_cecos + ' - ' +row.nombre_cecos;
+                }},
+                {"data": function (row, type, set){
+                    if(!row.codigo_comprobante){
+                        return '';
+                    }
+                    return row.codigo_comprobante + ' - ' +row.nombre_comprobante;
+                }},
                 {data: 'documento_referencia'},
-                {
-                    data: 'saldo_anterior',
-                    render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                    className: "column-number"
-                },
-                {
-                    data: 'debito',
-                    render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                    className: "column-number"
-                },
-                {
-                    data: 'credito',
-                    render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                    className: "column-number"
-                },
-                {
-                    data: 'saldo_final',
-                    render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                    className: "column-number"
-                },
+                {data: 'fecha_manual'},
+                {data: 'dias_cumplidos'},
+                {data: 'total_abono'},
+                {data: 'total_facturas'},
+                {data: 'saldo'},
+                {data: 'concepto'},
             ]
         });
 
