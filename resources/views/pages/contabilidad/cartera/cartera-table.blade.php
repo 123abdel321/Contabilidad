@@ -8,8 +8,8 @@
             <th>Dcto refe</th>
             <th>Fecha</th>
             <th>Dias cumplido</th>
-            <th>Total abono</th>
             <th>Total factura</th>
+            <th>Total abono</th>
             <th>Saldo</th>
             <th>Concepto</th>
         </tr>

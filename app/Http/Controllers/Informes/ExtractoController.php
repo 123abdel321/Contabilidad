@@ -13,6 +13,7 @@ use App\Models\Sistema\Nits;
 class ExtractoController extends Controller
 {
     public $messages;
+    public $carteraCollection = [];
 
     public function __construct()
     {
@@ -88,8 +89,8 @@ class ExtractoController extends Controller
                 CC.codigo AS codigo_cecos,
                 CC.nombre AS nombre_cecos,
                 DG.id_comprobante AS id_comprobante,
-                CO.codigo AS codigo_comprobante,
-                CO.nombre AS nombre_comprobante,
+                '' AS codigo_comprobante,
+                '' AS nombre_comprobante,
                 CO.tipo_comprobante,
                 DG.consecutivo,
                 DG.concepto,
@@ -103,6 +104,7 @@ class ExtractoController extends Controller
                 SUM(DG.debito) AS debito,
                 SUM(DG.credito) AS credito,
                 DATEDIFF('$fecha', DG.fecha_manual) AS dias_cumplidos,
+                '' AS detalle,
                 CASE
                     WHEN CO.tipo_comprobante = 0 THEN IF(PC.naturaleza_ingresos = 0, SUM(debito), SUM(credito))
                     WHEN CO.tipo_comprobante = 1 THEN IF(PC.naturaleza_egresos = 0, SUM(debito), SUM(credito))
@@ -133,7 +135,7 @@ class ExtractoController extends Controller
             LEFT JOIN centro_costos CC ON DG.id_centro_costos = CC.id
             LEFT JOIN comprobantes CO ON DG.id_comprobante = CO.id
                     
-            WHERE DG.id IS NOT NULL
+            WHERE DG.documento_referencia IS NOT NULL
                 $wheres
                     
             GROUP BY DG.id_cuenta, DG.id_nit, DG.documento_referencia
@@ -147,6 +149,151 @@ class ExtractoController extends Controller
             END) > 0  
         ";
         $extracto = DB::connection('sam')->select($query);
+
+        if($request->has('detallar_cartera') && $request->get('detallar_cartera')) {
+            $queryDetalle = "SELECT
+                N.id AS id_nit,
+                N.numero_documento,
+                CONCAT(N.otros_nombres, ' ', N.primer_apellido) AS nombre_nit,
+                N.razon_social,
+                PC.id AS id_cuenta,
+                PC.cuenta,
+                PC.nombre AS nombre_cuenta,
+                DG.documento_referencia,
+                DG.id_centro_costos,
+                CC.codigo AS codigo_cecos,
+                CC.nombre AS nombre_cecos,
+                DG.id_comprobante,
+                CO.codigo AS codigo_comprobante,
+                CO.nombre AS nombre_comprobante,
+                CO.tipo_comprobante,
+                DG.consecutivo,
+                DG.concepto,
+                DG.fecha_manual,
+                DG.created_at,
+                PC.naturaleza_ingresos,
+                PC.naturaleza_egresos,
+                PC.naturaleza_compras,
+                PC.naturaleza_ventas,
+                PC.naturaleza_cuenta,
+                DG.debito,
+                DG.credito,
+                'detalle' AS detalle,
+                CASE
+                    WHEN CO.tipo_comprobante = 0 THEN IF(PC.naturaleza_ingresos = 0, debito, credito)
+                    WHEN CO.tipo_comprobante = 1 THEN IF(PC.naturaleza_egresos = 0, debito, credito)
+                    WHEN CO.tipo_comprobante = 2 THEN IF(PC.naturaleza_compras = 0, debito, credito)
+                    WHEN CO.tipo_comprobante = 3 THEN IF(PC.naturaleza_ventas = 0, debito, credito)
+                    WHEN CO.tipo_comprobante > 3 THEN IF(PC.naturaleza_cuenta = 1, debito, credito)
+                END AS total_abono,
+                CASE
+                    WHEN CO.tipo_comprobante = 0 THEN IF(PC.naturaleza_ingresos = 0, credito, debito)
+                    WHEN CO.tipo_comprobante = 1 THEN IF(PC.naturaleza_egresos = 0, credito, debito)
+                    WHEN CO.tipo_comprobante = 2 THEN IF(PC.naturaleza_compras = 0, credito, debito)
+                    WHEN CO.tipo_comprobante = 3 THEN IF(PC.naturaleza_ventas = 0, credito, debito)
+                    WHEN CO.tipo_comprobante > 3 THEN IF(PC.naturaleza_cuenta = 0, debito, credito)
+                END AS total_facturas
+            FROM
+                documentos_generals DG
+                
+            LEFT JOIN nits N ON DG.id_nit = N.id
+            LEFT JOIN plan_cuentas PC ON DG.id_cuenta = PC.id
+            LEFT JOIN centro_costos CC ON DG.id_centro_costos = CC.id
+            LEFT JOIN comprobantes CO ON DG.id_comprobante = CO.id
+                
+            WHERE DG.documento_referencia IS NOT NULL
+                $wheres
+            
+            ORDER BY cuenta, id_nit, documento_referencia, created_at
+            ";
+
+            $extractoDetalle = DB::connection('sam')->select($queryDetalle);
+
+            foreach ($extracto as $extrac) {
+                $this->carteraCollection[$extrac->id_nit.'-'.$extrac->id_cuenta.'-'.$extrac->documento_referencia][] = (object)[
+                    "id_nit" => $extrac->id_nit,
+                    "numero_documento" => $extrac->numero_documento,
+                    "nombre_nit" => $extrac->nombre_nit,
+                    "razon_social" => $extrac->razon_social,
+                    "id_cuenta" => $extrac->id_cuenta,
+                    "cuenta" => $extrac->cuenta,
+                    "nombre_cuenta" => $extrac->nombre_cuenta,
+                    "documento_referencia" => $extrac->documento_referencia,
+                    "id_centro_costos" => $extrac->id_centro_costos,
+                    "codigo_cecos" => $extrac->codigo_cecos,
+                    "nombre_cecos" => $extrac->nombre_cecos,
+                    "id_comprobante" => $extrac->id_comprobante,
+                    "codigo_comprobante" => $extrac->codigo_comprobante,
+                    "nombre_comprobante" => $extrac->nombre_comprobante,
+                    "tipo_comprobante" => $extrac->tipo_comprobante,
+                    "consecutivo" => $extrac->consecutivo,
+                    "concepto" => $extrac->concepto,
+                    "fecha_manual" => $extrac->fecha_manual,
+                    "created_at" => $extrac->created_at,
+                    "naturaleza_ingresos" => $extrac->naturaleza_ingresos,
+                    "naturaleza_egresos" => $extrac->naturaleza_egresos,
+                    "naturaleza_compras" => $extrac->naturaleza_compras,
+                    "naturaleza_ventas" => $extrac->naturaleza_ventas,
+                    "naturaleza_cuenta" => $extrac->naturaleza_cuenta,
+                    "debito" => $extrac->debito,
+                    "credito" => $extrac->credito,
+                    "dias_cumplidos" => $extrac->dias_cumplidos,
+                    "total_abono" => $extrac->total_abono,
+                    "total_facturas" => $extrac->total_facturas,
+                    "saldo" => $extrac->saldo,
+                    "detalle" => 'total'
+                ];
+            }
+
+            foreach ($extractoDetalle as $detalle) {
+                $this->carteraCollection[$detalle->id_nit.'-'.$detalle->id_cuenta.'-'.$detalle->documento_referencia][] = (object)[
+                    "id_nit" => $detalle->id_nit,
+                    "numero_documento" => $detalle->numero_documento,
+                    "nombre_nit" => $detalle->nombre_nit,
+                    "razon_social" => $detalle->razon_social,
+                    "id_cuenta" => $detalle->id_cuenta,
+                    "cuenta" => $detalle->cuenta,
+                    "nombre_cuenta" => $detalle->nombre_cuenta,
+                    "documento_referencia" => $detalle->documento_referencia,
+                    "id_centro_costos" => $detalle->id_centro_costos,
+                    "codigo_cecos" => $detalle->codigo_cecos,
+                    "nombre_cecos" => $detalle->nombre_cecos,
+                    "id_comprobante" => $detalle->id_comprobante,
+                    "codigo_comprobante" => $detalle->codigo_comprobante,
+                    "nombre_comprobante" => $detalle->nombre_comprobante,
+                    "tipo_comprobante" => $detalle->tipo_comprobante,
+                    "consecutivo" => $detalle->consecutivo,
+                    "concepto" => $detalle->concepto,
+                    "fecha_manual" => $detalle->fecha_manual,
+                    "created_at" => $detalle->created_at,
+                    "naturaleza_ingresos" => '',
+                    "naturaleza_egresos" => '',
+                    "naturaleza_compras" => '',
+                    "naturaleza_ventas" => '',
+                    "naturaleza_cuenta" => '',
+                    "debito" => $detalle->debito,
+                    "credito" => $detalle->credito,
+                    "dias_cumplidos" => '',
+                    "total_abono" => $detalle->total_abono,
+                    "total_facturas" => $detalle->total_facturas,
+                    "saldo" => '0',
+                    "detalle" => ''
+                ];
+            }
+            // dd($this->carteraCollection);
+            $extractoDetallado = [];
+            foreach ($this->carteraCollection as $carteraDatos) {
+                foreach ($carteraDatos as $cartera) {
+                    $extractoDetallado[] = $cartera;
+                }
+            }
+            
+            return response()->json([
+                'success'=>	true,
+                'data' => $extractoDetallado,
+                'message'=> 'Extracto detallado generado con exito!'
+            ]);
+        }
 
         return response()->json([
             'success'=>	true,
