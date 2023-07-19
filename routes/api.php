@@ -35,6 +35,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //INFORMES
         Route::get('cartera', 'App\Http\Controllers\Informes\CarteraController@generate');
         Route::get('balances', 'App\Http\Controllers\Informes\BalanceController@generate');
+        Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
         Route::get('auxiliares', 'App\Http\Controllers\Informes\AuxiliarController@generate');
         //PLAN DE CUENTAS
         Route::controller(PlanCuentaController::class)->group(function () {

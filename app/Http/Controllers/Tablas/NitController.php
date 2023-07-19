@@ -205,7 +205,7 @@ class NitController extends Controller
             return response()->json([
                 'success'=>	false,
                 'data' => '',
-                'message'=> 'No se puede eliminar una cuenta usado por los documentos!'
+                'message'=> 'Este nit tiene transacciones contables, no puede ser eliminado!'
             ]);
         }
 

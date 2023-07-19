@@ -154,7 +154,7 @@
                 let data = {
                     id: $("#id_nit").val(),
                     id_tipo_documento: $("#id_tipo_documento").val(),
-                    numero_documento: document.getElementById('numero_documento').inputmask.unmaskedvalue(),
+                    numero_documento: $("#numero_documento").val(),
                     tipo_contribuyente: $("#tipo_contribuyente").val(),
                     primer_apellido: $("#primer_apellido").val(),
                     segundo_apellido: $("#segundo_apellido").val(),
@@ -217,7 +217,7 @@
     
                 let data = {
                     id_tipo_documento: $("#id_tipo_documento").val(),
-                    numero_documento: document.getElementById('numero_documento').inputmask.unmaskedvalue(),
+                    numero_documento: $("#numero_documento").val(),
                     tipo_contribuyente: $("#tipo_contribuyente").val(),
                     primer_apellido: $("#primer_apellido").val(),
                     segundo_apellido: $("#segundo_apellido").val(),
@@ -323,7 +323,7 @@
                     $.ajax({
                         url: base_url + 'nit',
                         method: 'DELETE',
-                        data: {id: id},
+                        data: JSON.stringify({id: id}),
                         headers: headers,
                         dataType: 'json',
                     }).done((res) => {

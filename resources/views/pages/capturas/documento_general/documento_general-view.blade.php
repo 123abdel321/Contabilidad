@@ -208,12 +208,7 @@
                             }
                         }
                     });
-                    $(".input_number").inputmask({
-                        alias: 'decimal',
-                        rightAlign: true,
-                        groupSeparator: '.',
-                        autoGroup: true
-                    });
+                    
                 });
             }
         });
@@ -911,8 +906,9 @@
                 $("#crearCapturaDocumentosDisabled").hide();
                 
                 for (let index = 0; index < dataDocumento.length; index++) {
-                    var deb = document.getElementById('debito_'+index).inputmask.unmaskedvalue();
-                    var cre = document.getElementById('credito_'+index).inputmask.unmaskedvalue();
+                    // $('#debito_'+index).val();
+                    var deb = $('#debito_'+index).val();
+                    var cre = $('#credito_'+index).val();
                     debito+= parseInt(deb ? deb : 0);
                     credito+= parseInt(cre ? cre : 0);
                 }
@@ -963,8 +959,8 @@
             
             if(dataDocumento.length > 0) {
                 for (let index = 0; index < dataDocumento.length; index++) {
-                    var deb = document.getElementById('debito_'+index).inputmask.unmaskedvalue();
-                    var cre = document.getElementById('credito_'+index).inputmask.unmaskedvalue();
+                    var deb = $('#debito_'+index).val();
+                    var cre = $('#credito_'+index).val();
                     debito+= parseInt(deb ? deb : 0);
                     credito+= parseInt(cre ? cre : 0);
                 }
@@ -1070,8 +1066,8 @@
             if(dataDocumento.length > 0){
                 for (let index = 0; index < dataDocumento.length; index++) {
                     
-                    var debito = document.getElementById('debito_'+index).inputmask.unmaskedvalue();
-                    var credito = document.getElementById('credito_'+index).inputmask.unmaskedvalue();
+                    var debito = $('#debito_'+index).val();
+                    var credito = $('#credito_'+index).val();
 
                     if(debito || credito) {
 
