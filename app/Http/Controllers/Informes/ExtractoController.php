@@ -60,6 +60,10 @@ class ExtractoController extends Controller
             }
         }
 
+        if($request->has('documento_referencia') && $request->get('documento_referencia')) {
+            $wheres.= ' AND DG.documento_referencia = '.$request->get('documento_referencia');
+        }
+
         $id_tipo_cuenta = $request->get('id_tipo_cuenta');
 
         $query = "SELECT
