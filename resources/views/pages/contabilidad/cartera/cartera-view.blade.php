@@ -34,8 +34,8 @@
     <script>
         var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
         
-        $('#fecha_desde').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-        $('#fecha_hasta').val(fechaDesde);
+        $('#fecha').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
+        $('#fecha').val(fechaDesde);
 
         var $validator = $('#carteraInformeForm').validate({
             rules: {
@@ -83,6 +83,13 @@
             initialLoad: false,
             headers: headers,
             language: lenguajeDatatable,
+            'rowCallback': function(row, data, index){
+                if(data.detalle == 'total'){
+                    $('td', row).css('background-color', 'antiquewhite');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+            },
             ajax:  {
                 type: "GET",
                 url: base_url + 'extracto',
@@ -91,6 +98,7 @@
                     d.id_tipo_cuenta = $('#id_tipo_cuenta').val();
                     d.id_nit = $('#id_nit').val();
                     d.fecha = $('#fecha').val();
+                    d.detallar_cartera = $('#detallar_cartera').val();
                 }
             },
             "columns": [
@@ -121,8 +129,8 @@
                 {data: 'documento_referencia'},
                 {data: 'fecha_manual'},
                 {data: 'dias_cumplidos'},
-                {data: 'total_abono'},
                 {data: 'total_facturas'},
+                {data: 'total_abono'},
                 {data: 'saldo'},
                 {data: 'concepto'},
             ]
