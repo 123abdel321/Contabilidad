@@ -3,11 +3,15 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstaladorController;
+//TABLAS
 use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
+//CAPTURAS
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
+//SISTEMA
+use App\Http\Controllers\Sistema\UbicacionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +26,12 @@ use App\Http\Controllers\Capturas\DocumentoGeneralController;
 
 Route::post('login', 'App\Http\Controllers\ApiController@login');
 Route::post('register', 'App\Http\Controllers\ApiController@register');
+//UBICACION
+Route::controller(UbicacionController::class)->group(function () {
+    Route::get('paises', 'getPais');
+    Route::get('ciudades', 'getCiudad');
+    Route::get('departamentos', 'getDepartamento');
+});
 
 Route::group(['middleware' => ['auth:sanctum']], function() {
 
