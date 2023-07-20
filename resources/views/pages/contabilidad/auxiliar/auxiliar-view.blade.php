@@ -155,8 +155,13 @@
             language: lenguajeDatatable,
             ordering: false,
             'rowCallback': function(row, data, index){
-                if(data.detalle_group == 'nits'){
+                if(data.detalle_group == 'nits-totales'){
                     $('td', row).css('background-color', 'rgb(128 207 120 / 40%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+                if(data.detalle_group == 'nits'){
+                    $('td', row).css('background-color', 'rgb(161 182 193 / 40%)');
                     $('td', row).css('font-weight', 'bold');
                     return;
                 }
