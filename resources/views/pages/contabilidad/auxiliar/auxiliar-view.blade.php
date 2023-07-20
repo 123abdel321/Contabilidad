@@ -147,7 +147,7 @@
 
         var auxiliar_table = $('#auxiliarInformeTable').DataTable({
             dom: '',
-            responsive: false,
+            responsive: true,
             processing: true,
             serverSide: true,
             deferLoading: 0,
@@ -156,12 +156,12 @@
             ordering: false,
             'rowCallback': function(row, data, index){
                 if(data.detalle_group == 'nits'){
-                    $('td', row).css('background-color', '#cf787854');
+                    $('td', row).css('background-color', 'rgb(128 207 120 / 40%)');
                     $('td', row).css('font-weight', 'bold');
                     return;
                 }
                 if(data.cuenta == "TOTALES"){
-                    $('td', row).css('background-color', 'rgb(0 255 76 / 56%)');
+                    $('td', row).css('background-color', 'rgb(0 215 64 / 60%)');
                     $('td', row).css('font-weight', 'bold');
                     return;
                 }
@@ -181,7 +181,7 @@
                     return;
                 }
                 if(data.detalle_group && !data.detalle){
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
                     $('td', row).css('font-weight', 'bold');
                     return;
                 }

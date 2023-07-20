@@ -420,10 +420,16 @@ class ExtractoController extends Controller
     {
         foreach ($extractosDetalle as $extractoDetalle) {
             $cuentaNumero = 1;
-            $cuentaNueva = $extractoDetalle->cuenta.'-'.$extractoDetalle->documento_referencia.'B'.$cuentaNumero.'B';
+            $cuentaNueva = $extractoDetalle->cuenta.'-'.
+                $extractoDetalle->id_nit.'B'.
+                $extractoDetalle->documento_referencia.'B'.
+                $cuentaNumero.'B';
             while ($this->hasCuentaData($cuentaNueva)) {
                 $cuentaNumero++;
-                $cuentaNueva = $extractoDetalle->cuenta.'-'.$extractoDetalle->documento_referencia.'B'.$cuentaNumero.'B';
+                $cuentaNueva = $extractoDetalle->cuenta.'-'.
+                    $extractoDetalle->id_nit.'B'.
+                    $extractoDetalle->documento_referencia.'B'.
+                    $cuentaNumero.'B';
             }
             $this->carteraCollection[$cuentaNueva] = [
                 'id_nit' => $extractoDetalle->id_nit,
@@ -472,10 +478,16 @@ class ExtractoController extends Controller
     {
         foreach ($extractosDetalle as $extractoDetalle) {
             $cuentaNumero = 1;
-            $cuentaNueva = $extractoDetalle->cuenta.'-'.$extractoDetalle->documento_referencia.'B'.$cuentaNumero.'A';
+            $cuentaNueva = $extractoDetalle->cuenta.'-'.
+                $extractoDetalle->id_nit.'B'.
+                $extractoDetalle->documento_referencia.'B'.
+                $cuentaNumero.'B';
             while ($this->hasCuentaData($cuentaNueva)) {
                 $cuentaNumero++;
-                $cuentaNueva = $extractoDetalle->cuenta.'-'.$extractoDetalle->documento_referencia.'B'.$cuentaNumero.'A';
+                $cuentaNueva = $extractoDetalle->cuenta.'-'.
+                    $extractoDetalle->id_nit.'B'.
+                    $extractoDetalle->documento_referencia.'B'.
+                    $cuentaNumero.'B';
             }
             $this->carteraCollection[$cuentaNueva] = [
                 'id_nit' => $extractoDetalle->id_nit,
