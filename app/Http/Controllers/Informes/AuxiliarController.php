@@ -98,7 +98,11 @@ class AuxiliarController extends Controller
                 SELECT
                     N.id AS id_nit,
                     N.numero_documento,
-                    CONCAT(N.otros_nombres, ' ', N.primer_apellido) AS nombre_nit,
+                    CASE
+                        WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                        WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
+                        ELSE NULL
+                    END AS nombre_nit,
                     N.razon_social,
                     PC.id AS id_cuenta,
                     PC.cuenta,
@@ -136,7 +140,11 @@ class AuxiliarController extends Controller
                     SELECT
                         N.id AS id_nit,
                         N.numero_documento,
-                        CONCAT(N.otros_nombres, ' ', N.primer_apellido) AS nombre_nit,
+                        CASE
+                            WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                            WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
+                            ELSE NULL
+                        END AS nombre_nit,
                         N.razon_social,
                         PC.id AS id_cuenta,
                         PC.cuenta,
@@ -220,7 +228,11 @@ class AuxiliarController extends Controller
         FROM ((SELECT
                 N.id AS id_nit,
                 N.numero_documento,
-                CONCAT(N.otros_nombres, ' ', N.primer_apellido) AS nombre_nit,
+                CASE
+                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
+                    ELSE NULL
+                END AS nombre_nit,
                 N.razon_social,
                 PC.id AS id_cuenta,
                 PC.cuenta,
@@ -259,7 +271,11 @@ class AuxiliarController extends Controller
                 SELECT
                 N.id AS id_nit,
                 N.numero_documento,
-                CONCAT(N.otros_nombres, ' ', N.primer_apellido) AS nombre_nit,
+                CASE
+                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
+                    ELSE NULL
+                END AS nombre_nit,
                 N.razon_social,
                 PC.id AS id_cuenta,
                 PC.cuenta,
