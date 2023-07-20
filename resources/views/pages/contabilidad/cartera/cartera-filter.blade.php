@@ -23,6 +23,7 @@
                         <div class="form-group col-4 col-md-4 col-sm-4">
                             <label for="exampleFormControlSelect1">Nit</label>
                             <select class="form-control form-control-sm" name="id_nit" id="id_nit">
+                                <option value="">Seleccionar</option>
                             </select>
                         </div>
                         <div class="form-group col-4 col-md-4 col-sm-4">

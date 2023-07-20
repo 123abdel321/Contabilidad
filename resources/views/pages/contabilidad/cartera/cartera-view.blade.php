@@ -37,6 +37,15 @@
         $('#fecha').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
         $('#fecha').val(fechaDesde);
 
+        $(document).on('change', '#detallar_cartera', function () {
+            if($('#detallar_cartera').val()){
+                cartera_table.column( 6 ).visible( true );
+            } else {
+                cartera_table.column( 6 ).visible( false );
+            }
+            document.getElementById("generarCartera").click();
+        });
+
         var $validator = $('#carteraInformeForm').validate({
             rules: {
                 id_tipo_cuenta: {
@@ -90,6 +99,46 @@
                     return;
                 }
             },
+            ordering: false,
+            'rowCallback': function(row, data, index){
+                if(data.detalle_group == 'nits'){
+                    if(!$('#detallar_cartera').val()) {
+                        return;
+                    }
+                    $('td', row).css('background-color', '#cf787854');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+                if(data.cuenta == "TOTALES"){
+                    $('td', row).css('background-color', 'rgb(0 255 76 / 56%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+                if(data.cuenta.length == 1){
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+                if(data.cuenta.length == 2){
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+                if(data.cuenta.length == 4){
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+                if(data.detalle_group && !data.detalle){
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+                if(data.detalle){
+                    $('td', row).css('background-color', 'rgb(197 228 241 / 56%)');
+                    $('td', row).css('font-weight', 'bold');
+                }
+            },
             ajax:  {
                 type: "GET",
                 url: base_url + 'extracto',
@@ -103,10 +152,9 @@
             },
             "columns": [
                 {"data": function (row, type, set){
-                    if(row.detalle == 'si' || row.detalle == 'total') {
-                        return row.cuenta + ' - ' +row.nombre_cuenta;
-                    }
-                    return '';      
+                    console.log('row: ',row);
+                    
+                    return row.cuenta + ' - ' +row.nombre_cuenta;
                 }},
                 {"data": function (row, type, set){
                     if(!row.numero_documento){
@@ -117,27 +165,37 @@
                     }
                     return row.numero_documento + ' - ' +row.nombre_nit;
                 }, responsivePriority: 1, targets: 0},
+                
+                {data: 'documento_referencia'},
+                {data: 'total_facturas', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 4, targets: -3},
+                {data: 'total_abono', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 3, targets: -2},
+                {data: 'saldo', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 2, targets: -1},
                 {"data": function (row, type, set){
                     if(!row.codigo_comprobante){
                         return '';
                     }
                     return row.codigo_comprobante + ' - ' +row.nombre_comprobante;
-                }},
-                {data: 'documento_referencia'},
-                
-                {data: 'total_facturas', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 4, targets: -3},
-                {data: 'total_abono', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 3, targets: -2},
-                {data: 'saldo', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 2, targets: -1},
+                }, visible: false},
                 {data: 'fecha_manual'},
-                {data: 'dias_cumplidos'},
+                {data: 'dias_cumplidos', responsivePriority: 5, targets: -4},
+                {data: 'plazo'},
+                {"data": function (row, type, set){
+                    if(row.plazo > 0){
+                        var mora = row.dias_cumplidos - row.plazo;
+                        if(mora <= 0) {
+                            return 0
+                        }
+                        return mora;
+                    }
+                    return row.dias_cumplidos;
+                }},
                 {"data": function (row, type, set){
                     if(row.detalle == 'si' || row.detalle == 'total'){
-                        console.log(row);
-                        var datos = '<b style="color: #374b69;">Telefono: </b> '+row.telefono_1+'<br/>';
-                        datos+= '<b style="color: #374b69;">Dirección: </b> '+row.direccion+'<br/>';
-                        datos+= '<b style="color: #374b69;">Correo: </b>'+row.email+'<br/>';
-                        return datos;
                     }
+                    var datos = '<b style="color: #374b69;">Telefono: </b> '+row.telefono_1+'<br/>';
+                    datos+= '<b style="color: #374b69;">Dirección: </b> '+row.direccion+'<br/>';
+                    datos+= '<b style="color: #374b69;">Correo: </b>'+row.email+'<br/>';
+                    return datos;
                     return '';
                 }},
                 {data: 'concepto'},

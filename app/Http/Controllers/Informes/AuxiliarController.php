@@ -27,12 +27,10 @@ class AuxiliarController extends Controller
                 'message'=> 'Por favor ingresa un rango de fechas válido para iniciar la busqueda.'
             ]);
 		}
-
-        $user = $request->user();
                     
         $auxiliares = DB::connection('sam')->select($this->queryAuxiliares($request));
         $auxiliaresDetalle = DB::connection('sam')->select($this->queryAuxiliaresDetalle($request));
-        // dd($auxiliares);
+        
         foreach ($auxiliares as $auxiliar) {
             $cuentasAsociadas = $this->getCuentas($auxiliar->cuenta); //return ARRAY PADRES CUENTA
             
@@ -49,7 +47,7 @@ class AuxiliarController extends Controller
         $this->addTotalNitsData($auxiliares);
         
 		ksort($this->auxiliarCollection, SORT_STRING | SORT_FLAG_CASE);
-        
+
         return response()->json([
             'success'=>	true,
             'data' => array_values($this->auxiliarCollection),
@@ -294,7 +292,7 @@ class AuxiliarController extends Controller
             GROUP BY DG.id_cuenta, DG.id_nit, DG.documento_referencia
             )) AS auxiliar
             -- ORDER BY cuenta DESC
-            ORDER BY created_at
+            ORDER BY cuenta, id_nit, documento_referencia, created_at
         ";
     }
 
@@ -439,10 +437,10 @@ class AuxiliarController extends Controller
     {
         foreach ($auxiliaresDetalle as $auxiliarDetalle) {
             $cuentaNumero = 1;
-            $cuentaNueva = $auxiliarDetalle->cuenta.'B'.$cuentaNumero.'B';
+            $cuentaNueva = $auxiliarDetalle->cuenta.'-'.$auxiliarDetalle->documento_referencia.'B'.$cuentaNumero.'B';
             while ($this->hasCuentaData($cuentaNueva)) {
                 $cuentaNumero++;
-                $cuentaNueva = $auxiliarDetalle->cuenta.'B'.$cuentaNumero.'B';
+                $cuentaNueva = $auxiliarDetalle->cuenta.'-'.$auxiliarDetalle->documento_referencia.'B'.$cuentaNumero.'B';
             }
             $this->auxiliarCollection[$cuentaNueva] = [
                 'id_nit' => $auxiliarDetalle->id_nit,
@@ -476,10 +474,10 @@ class AuxiliarController extends Controller
     {
         foreach ($auxiliaresDetalle as $auxiliarDetalle) {
             $cuentaNumero = 1;
-            $cuentaNueva = $auxiliarDetalle->cuenta.'B'.$cuentaNumero.'A';
+            $cuentaNueva = $auxiliarDetalle->cuenta.'-'.$auxiliarDetalle->documento_referencia.'B'.$cuentaNumero.'A';
             while ($this->hasCuentaData($cuentaNueva)) {
                 $cuentaNumero++;
-                $cuentaNueva = $auxiliarDetalle->cuenta.'B'.$cuentaNumero.'A';
+                $cuentaNueva = $auxiliarDetalle->cuenta.'-'.$auxiliarDetalle->documento_referencia.'B'.$cuentaNumero.'A';
             }
             $this->auxiliarCollection[$cuentaNueva] = [
                 'id_nit' => $auxiliarDetalle->id_nit,

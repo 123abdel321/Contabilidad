@@ -201,7 +201,7 @@ class PlanCuentaController extends Controller
             'nombre',
             \DB::raw($naturaleza),
             \DB::raw("CONCAT(cuenta, ' - ', nombre) as text")
-        )->where('auxiliar', 1);
+        );
 
         if ($request->get("q")) {
             $planCuenta->where('cuenta', 'LIKE', '%' . $request->get("q") . '%')
