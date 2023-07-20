@@ -68,9 +68,9 @@ class ExtractoController extends Controller
             }
             //AGREGAR ROWS DETALLE EXTRACTO
             $this->addDetilsData($extractosDetalle);
+            //AGREGAR ROW TOTALES
+            $this->addTotalsData($extractos);
         }
-        //AGREGAR ROW TOTALES
-        $this->addTotalsData($extractos);
         //AGREGAR ROWS EXTRACTO
         $this->addTotalNitsData($extractos);
 
