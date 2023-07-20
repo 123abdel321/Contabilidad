@@ -576,11 +576,13 @@ class AuxiliarController extends Controller
                 $debito = 0;
                 $credito = 0;
                 $saldo_final = 0;
+                $saldo_anterior = 0;
                 foreach ($collecion as $data) {
                     // dd('$data: ',$data);
                     $debito+= $data['debito'];
                     $credito+= $data['credito'];
                     $saldo_final+= $data['saldo_final'];
+                    $saldo_anterior+= $data['saldo_anterior'];
                 }
                 $this->auxiliarCollection[$key] = [
                     'id_nit' => $collecion[0]['id_nit'],
@@ -591,7 +593,7 @@ class AuxiliarController extends Controller
                     'cuenta' => $collecion[0]['cuenta'],
                     'nombre_cuenta' => $collecion[0]['nombre_cuenta'],
                     'documento_referencia' => $collecion[0]['documento_referencia'],
-                    'saldo_anterior' => $collecion[0]['saldo_anterior'],
+                    'saldo_anterior' => $saldo_anterior,
                     'id_centro_costos' => '',
                     'id_comprobante' => '',
                     'codigo_comprobante' => '',
