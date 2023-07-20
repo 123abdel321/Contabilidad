@@ -27,7 +27,7 @@ class AuxiliarController extends Controller
                 'message'=> 'Por favor ingresa un rango de fechas válido para iniciar la busqueda.'
             ]);
 		}
-                    
+
         $auxiliares = DB::connection('sam')->select($this->queryAuxiliares($request));
         $auxiliaresDetalle = DB::connection('sam')->select($this->queryAuxiliaresDetalle($request));
         
@@ -42,10 +42,12 @@ class AuxiliarController extends Controller
                 }
             }
         }
+
         $this->addTotalsData($auxiliares);
         $this->addDetilsData($auxiliaresDetalle);
+        $this->addTotalNits($auxiliares);
         $this->addTotalNitsData($auxiliares);
-        
+
 		ksort($this->auxiliarCollection, SORT_STRING | SORT_FLAG_CASE);
 
         return response()->json([
@@ -534,9 +536,89 @@ class AuxiliarController extends Controller
         }
     }
 
+    private function addTotalNits($auxiliaresDetalle)
+    {
+        $collecionTotalNits = [];
+        foreach ($auxiliaresDetalle as $auxiliarDetalle) {
+
+            $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
+                $auxiliarDetalle->id_nit.'A';
+
+            $collecionTotalNits[$cuentaNueva][] = [
+                'id_nit' => $auxiliarDetalle->id_nit,
+                'numero_documento' => $auxiliarDetalle->numero_documento,
+                'nombre_nit' => $auxiliarDetalle->nombre_nit,
+                'razon_social' => $auxiliarDetalle->razon_social,
+                'id_cuenta' => $auxiliarDetalle->id_cuenta,
+                'cuenta' => $auxiliarDetalle->cuenta,
+                'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
+                'documento_referencia' => '',
+                'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
+                'id_centro_costos' => '',
+                'id_comprobante' => '',
+                'codigo_comprobante' => '',
+                'nombre_comprobante' => '',
+                'codigo_cecos' => '',
+                'nombre_cecos' =>  '',
+                'consecutivo' => '',
+                'concepto' => '',
+                'fecha_manual' => '',
+                'debito' => $auxiliarDetalle->debito,
+                'credito' => $auxiliarDetalle->credito,
+                'saldo_final' => $auxiliarDetalle->saldo_final,
+                'detalle' => false,
+                'detalle_group' => 'nits-totales',
+            ];
+        }
+
+        foreach ($collecionTotalNits as $key => $collecion) {
+            if(count($collecion) > 1) {
+                $debito = 0;
+                $credito = 0;
+                $saldo_final = 0;
+                foreach ($collecion as $data) {
+                    // dd('$data: ',$data);
+                    $debito+= $data['debito'];
+                    $credito+= $data['credito'];
+                    $saldo_final+= $data['saldo_final'];
+                }
+                $this->auxiliarCollection[$key] = [
+                    'id_nit' => $collecion[0]['id_nit'],
+                    'numero_documento' => $collecion[0]['numero_documento'],
+                    'nombre_nit' => $collecion[0]['nombre_nit'],
+                    'razon_social' => $collecion[0]['razon_social'],
+                    'id_cuenta' => $collecion[0]['id_cuenta'],
+                    'cuenta' => $collecion[0]['cuenta'],
+                    'nombre_cuenta' => $collecion[0]['nombre_cuenta'],
+                    'documento_referencia' => $collecion[0]['documento_referencia'],
+                    'saldo_anterior' => $collecion[0]['saldo_anterior'],
+                    'id_centro_costos' => '',
+                    'id_comprobante' => '',
+                    'codigo_comprobante' => '',
+                    'nombre_comprobante' => '',
+                    'codigo_cecos' => '',
+                    'nombre_cecos' =>  '',
+                    'consecutivo' => '',
+                    'concepto' => '',
+                    'fecha_manual' => '',
+                    'debito' => $debito,
+                    'credito' => $credito,
+                    'saldo_final' => $saldo_final,
+                    'detalle' => false,
+                    'detalle_group' => 'nits-totales',
+                ];
+            }
+        }
+    }
+
 	private function hasCuentaData($cuenta)
 	{
 		return isset($this->auxiliarCollection[$cuenta]);
 	}
+
+    private function hasNitData($collecionTotalNits, $cuenta)
+    {
+        return isset($collecionTotalNits[$cuenta]);
+    }
 
 }
