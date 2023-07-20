@@ -152,8 +152,9 @@
             },
             "columns": [
                 {"data": function (row, type, set){
-                    console.log('row: ',row);
-                    
+                    if(!row.cuenta) {
+                        return '';
+                    }
                     return row.cuenta + ' - ' +row.nombre_cuenta;
                 }},
                 {"data": function (row, type, set){
