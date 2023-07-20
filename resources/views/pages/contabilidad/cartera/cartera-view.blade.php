@@ -105,12 +105,12 @@
                     if(!$('#detallar_cartera').val()) {
                         return;
                     }
-                    $('td', row).css('background-color', '#cf787854');
+                    $('td', row).css('background-color', 'rgb(128 207 120 / 40%)');
                     $('td', row).css('font-weight', 'bold');
                     return;
                 }
                 if(data.cuenta == "TOTALES"){
-                    $('td', row).css('background-color', 'rgb(0 255 76 / 56%)');
+                    $('td', row).css('background-color', 'rgb(0 215 64 / 60%)');
                     $('td', row).css('font-weight', 'bold');
                     return;
                 }

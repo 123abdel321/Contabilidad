@@ -180,9 +180,8 @@ class AuxiliarController extends Controller
                 )) AS auxiliar
             GROUP BY id_cuenta, id_nit, documento_referencia
             ORDER BY cuenta, id_nit, documento_referencia, created_at
-
         ";
-        // dd($query);
+        
         return $query;
     }
 
@@ -453,10 +452,16 @@ class AuxiliarController extends Controller
     {
         foreach ($auxiliaresDetalle as $auxiliarDetalle) {
             $cuentaNumero = 1;
-            $cuentaNueva = $auxiliarDetalle->cuenta.'-'.$auxiliarDetalle->documento_referencia.'B'.$cuentaNumero.'B';
+            $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
+                $auxiliarDetalle->id_nit.'B'.
+                $auxiliarDetalle->documento_referencia.'B'.
+                $cuentaNumero.'B';
             while ($this->hasCuentaData($cuentaNueva)) {
                 $cuentaNumero++;
-                $cuentaNueva = $auxiliarDetalle->cuenta.'-'.$auxiliarDetalle->documento_referencia.'B'.$cuentaNumero.'B';
+                $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
+                    $auxiliarDetalle->id_nit.'B'.
+                    $auxiliarDetalle->documento_referencia.'B'.
+                    $cuentaNumero.'B';
             }
             $this->auxiliarCollection[$cuentaNueva] = [
                 'id_nit' => $auxiliarDetalle->id_nit,
@@ -490,10 +495,16 @@ class AuxiliarController extends Controller
     {
         foreach ($auxiliaresDetalle as $auxiliarDetalle) {
             $cuentaNumero = 1;
-            $cuentaNueva = $auxiliarDetalle->cuenta.'-'.$auxiliarDetalle->documento_referencia.'B'.$cuentaNumero.'A';
+            $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
+                $auxiliarDetalle->id_nit.'B'.
+                $auxiliarDetalle->documento_referencia.'B'.
+                $cuentaNumero.'A';
             while ($this->hasCuentaData($cuentaNueva)) {
                 $cuentaNumero++;
-                $cuentaNueva = $auxiliarDetalle->cuenta.'-'.$auxiliarDetalle->documento_referencia.'B'.$cuentaNumero.'A';
+                $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
+                    $auxiliarDetalle->id_nit.'B'.
+                    $auxiliarDetalle->documento_referencia.'B'.
+                    $cuentaNumero.'A';
             }
             $this->auxiliarCollection[$cuentaNueva] = [
                 'id_nit' => $auxiliarDetalle->id_nit,
