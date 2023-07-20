@@ -3,13 +3,15 @@
         <tr>
             <th>Cuenta</th>
             <th>Nit</th>
-            <th>Comprobante</th>
             <th>Dcto refe</th>
             <th>Total factura</th>
             <th>Total abono</th>
-            <th>Saldo</th>
+            <th>Saldo final</th>
+            <th>Comprobante</th>
             <th>Fecha</th>
-            <th>Dias cumplido</th>
+            <th>Dias Cumplidos</th>
+            <th>Plazo</th>
+            <th>Mora</th>
             <th>Detalle nit</th>
             <th>Concepto</th>
         </tr>

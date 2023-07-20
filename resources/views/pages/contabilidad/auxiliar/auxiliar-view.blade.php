@@ -156,7 +156,7 @@
             ordering: false,
             'rowCallback': function(row, data, index){
                 if(data.detalle_group == 'nits'){
-                    $('td', row).css('background-color', 'antiquewhite');
+                    $('td', row).css('background-color', '#cf787854');
                     $('td', row).css('font-weight', 'bold');
                     return;
                 }
