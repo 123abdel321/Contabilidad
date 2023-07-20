@@ -480,13 +480,13 @@ class ExtractoController extends Controller
             $cuentaNumero = 1;
             $cuentaNueva = $extractoDetalle->cuenta.'-'.
                 $extractoDetalle->id_nit.'B'.
-                $extractoDetalle->documento_referencia.'B'.
+                $extractoDetalle->documento_referencia.'A'.
                 $cuentaNumero.'B';
             while ($this->hasCuentaData($cuentaNueva)) {
                 $cuentaNumero++;
                 $cuentaNueva = $extractoDetalle->cuenta.'-'.
                     $extractoDetalle->id_nit.'B'.
-                    $extractoDetalle->documento_referencia.'B'.
+                    $extractoDetalle->documento_referencia.'A'.
                     $cuentaNumero.'B';
             }
             $this->carteraCollection[$cuentaNueva] = [
