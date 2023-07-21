@@ -9,7 +9,7 @@ class Ciudades extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql';
+    protected $connection = 'clientes';
 
     protected $table = 'ciudades';
 
