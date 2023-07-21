@@ -35,15 +35,16 @@ class DocumentoController extends Controller
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
-        $FacDocumentos = FacDocumentos::skip($start)
-            ->select(
+        $FacDocumentos = FacDocumentos::select(
                 '*',
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') fecha_creacion"),
                 DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') fecha_edicion")
             )
+            ->skip($start)
             ->with('comprobante')
             ->take($rowperpage);
 
+        
         if($columnName){
             // $FacDocumentos->orderBy($columnName,$columnSortOrder);
         }
@@ -51,7 +52,7 @@ class DocumentoController extends Controller
         if($request->has('id_comprobante') && $request->get('id_comprobante')) {
             $FacDocumentos->where('id_comprobante', $request->get('id_comprobante'));
         }
-
+        
         if($request->has('fecha_hasta') && $request->get('fecha_hasta')) {
             $FacDocumentos->where('fecha_manual', $request->get('fecha_manual'));
         }
@@ -59,7 +60,7 @@ class DocumentoController extends Controller
         if($request->has('consecutivo') && $request->get('consecutivo')) {
             $FacDocumentos->where('consecutivo', $request->get('consecutivo'));
         }
-
+        
         if($request->has('tipo_factura') && $request->get('tipo_factura') == 'anuladas') {
             $FacDocumentos->where('anulado', 1);
         }
@@ -74,7 +75,7 @@ class DocumentoController extends Controller
             //     ->orWhere('debito', 'like', '%' .$searchValue . '%')
             //     ->orWhere('credito', 'like', '%' .$searchValue . '%');
         }
-
+        // dd(FacDocumentos::all());
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
