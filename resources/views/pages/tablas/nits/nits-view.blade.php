@@ -78,6 +78,15 @@
                 {"data":'telefono_1'},
                 {
                     "data": function (row, type, set){
+                        if(row.ciudad){
+                            return row.ciudad.nombre_completo;
+                        }
+                        return '';
+                    }
+                },
+                {"data":'observaciones'},
+                {
+                    "data": function (row, type, set){
                         if(row.tipo_documento){
                             return row.tipo_documento.nombre;
                         }
@@ -94,7 +103,18 @@
                         return '';
                     }
                 },
-                
+                {"data": function (row, type, set){  
+                    var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                    if(!row.created_by && !row.fecha_creacion) return '';
+                    if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
+                    return html;
+                }},
+                {"data": function (row, type, set){
+                    var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                    if(!row.updated_by && !row.fecha_edicion) return '';
+                    if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
+                    return html;
+                }},
                 {
                     "data": function (row, type, set){
                         var html = '';
@@ -307,6 +327,17 @@
                 $comboTipoDocumento.val(dataCuenta.id).trigger('change');
             }
 
+
+            if(data.ciudad){
+                var dataCiudad = {
+                    id: data.ciudad.id,
+                    text: data.ciudad.nombre_completo
+                };
+                var newOption = new Option(dataCiudad.text, dataCiudad.id, false, false);
+                $comboCiudad.append(newOption).trigger('change');
+                $comboCiudad.val(dataCiudad.id).trigger('change');
+            }
+
             $("#id_nit").val(data.id);
             $("#numero_documento").val(data.numero_documento);
             $("#tipo_contribuyente").val(data.tipo_contribuyente).change();
@@ -318,6 +349,7 @@
             $("#direccion").val(data.direccion);
             $("#email").val(data.email);
             $("#telefono_1").val(data.telefono_1);
+            $("#observaciones").val(data.observaciones);
 
             $("#nitFormModal").modal('show');
         });

@@ -49,7 +49,14 @@ class NitController extends Controller
         $searchValue = $search_arr['value']; // Search value
 
         $nits = Nits::skip($start)
-            ->with('tipo_documento')
+            ->with('tipo_documento', 'ciudad')
+            ->select(
+                '*',
+                DB::raw("DATE_FORMAT(nits.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                DB::raw("DATE_FORMAT(nits.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                'nits.created_by',
+                'nits.updated_by'
+            )
             ->take($rowperpage);
 
         if($columnName){

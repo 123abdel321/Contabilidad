@@ -47,7 +47,11 @@ class Nits extends Model
 		'descuento',
 		'no_calcular_iva',
 		'inactivar',
-		'observaciones'
+		'observaciones',
+		'created_by',
+		'updated_by',
+		'created_at',
+		'updated_at',
 	];
 
 	public function tipo_documento()

@@ -6,9 +6,13 @@
             <th>Razon social</th>
             <th>Dirección</th> 
             <th>Email</th> 
-            <th>Telefono</th> 
+            <th>Telefono</th>
+            <th>Ciudad</th>
+            <th>Observaciones</th>
             <th>Tipo documento</th>
             <th>Tipo contribuyente</th>
+            <th>Creación registro</th>
+            <th>Ultima actualización</th>
             <th>Acciones</th>
         </tr>
     </thead>
