@@ -49,7 +49,7 @@
                     d.id_comprobante = $('#id_comprobante').val();
                     d.fecha_manual = $('#fecha_manual').val();
                     d.consecutivo = $('#consecutivo').val();
-                    d.tipo_factura = $("input[type='radio']#detallar_cartera1").is(':checked') ? 'todas' : 'anuladas';
+                    d.tipo_factura = $("input[type='radio']#tipo_factura1").is(':checked') ? 'todas' : 'anuladas';
                 }
             },
             "columns": [
