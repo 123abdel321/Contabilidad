@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 //MODELS
 use App\Models\User;
+use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 
 class ApiController extends Controller
@@ -271,6 +272,5 @@ class ApiController extends Controller
             "data"=>$usuario
         ], 200);
     }
-
 
 }

@@ -15,21 +15,37 @@
 
                         <input name="editing_documento" id="editing_documento" class="form-control form-control-sm" type="text" style="display: none;">
 
-                        <div class="form-group col-6 col-md-4 col-sm-4">
+                        <div class="form-group col-3 col-md-3 col-sm-3">
                             <label>Comprobante</label>
                             <select name="id_comprobante" id="id_comprobante" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                                 <option value="">Ninguno</option>
                             </select>
                         </div>
 
-                        <div class="form-group col-6 col-md-4 col-sm-4">
+                        <div class="form-group col-3 col-md-3 col-sm-3">
                             <label for="example-text-input" class="form-control-label">Fecha</label>
                             <input name="fecha_manual" id="fecha_manual" class="form-control form-control-sm" type="date">
                         </div>
 
-                        <div class="form-group col-6 col-md-4 col-sm-4">
+                        <div class="form-group col-3 col-md-3 col-sm-3">
                             <label for="example-text-input" class="form-control-label">Consecutivo</label>
                             <input type="text" class="form-control form-control-sm" name="consecutivo" id="consecutivo">
+                        </div>
+                        
+                        <div class="form-group col-3 col-md-3 col-sm-3 row">
+                            <label for="example-text-input" class="form-control-label">Tipo documento</label>
+                            <div class="form-check col-6 col-md-6 col-sm-6">
+                                <input class="form-check-input" type="radio" name="tipo_factura" id="tipo_factura1" checked>
+                                <label class="form-check-label" for="tipo_factura1">
+                                    Todas
+                                </label>
+                            </div>
+                            <div class="form-check col-6 col-md-6 col-sm-6">
+                                <input class="form-check-input" type="radio" name="tipo_factura" id="tipo_factura2">
+                                <label class="form-check-label" for="tipo_factura2">
+                                    Anuladas
+                                </label>
+                            </div>
                         </div>
                     </div>  
                 </form>

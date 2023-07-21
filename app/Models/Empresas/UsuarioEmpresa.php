@@ -9,6 +9,8 @@ class UsuarioEmpresa extends Model
 {
     use HasFactory;
 
+	protected $connection = 'mysql';
+
 	protected $table = 'usuario_empresas';
 
     protected $fillable = [

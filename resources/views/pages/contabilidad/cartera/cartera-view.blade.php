@@ -37,11 +37,12 @@
         $('#fecha').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
         $('#fecha').val(fechaDesde);
 
-        $(document).on('change', '#detallar_cartera', function () {
-            if($('#detallar_cartera').val()){
-                cartera_table.column( 6 ).visible( true );
-            } else {
+        $('input[type=radio][name=detallar_cartera]').change(function() {
+            console.log('change cnartera');
+            if(!$("input[type='radio']#detallar_cartera1").is(':checked')){
                 cartera_table.column( 6 ).visible( false );
+            } else {
+                cartera_table.column( 6 ).visible( true );
             }
             document.getElementById("generarCartera").click();
         });
@@ -92,17 +93,10 @@
             initialLoad: false,
             headers: headers,
             language: lenguajeDatatable,
-            'rowCallback': function(row, data, index){
-                if(data.detalle == 'total'){
-                    $('td', row).css('background-color', 'antiquewhite');
-                    $('td', row).css('font-weight', 'bold');
-                    return;
-                }
-            },
             ordering: false,
             'rowCallback': function(row, data, index){
                 if(data.detalle_group == 'nits'){
-                    if(!$('#detallar_cartera').val()) {
+                    if(!$("input[type='radio']#detallar_cartera1").is(':checked')) {
                         return;
                     }
                     $('td', row).css('background-color', 'rgb(128 207 120 / 40%)');
@@ -147,7 +141,7 @@
                     d.id_tipo_cuenta = $('#id_tipo_cuenta').val();
                     d.id_nit = $('#id_nit').val();
                     d.fecha = $('#fecha').val();
-                    d.detallar_cartera = $('#detallar_cartera').val();
+                    d.detallar_cartera = $("input[type='radio']#detallar_cartera1").is(':checked') ? '1' : '';
                 }
             },
             "columns": [
@@ -200,6 +194,18 @@
                     return '';
                 }},
                 {data: 'concepto'},
+                {"data": function (row, type, set){  
+                    var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                    if(!row.created_by && !row.fecha_creacion) return '';
+                    if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
+                    return html;
+                }},
+                {"data": function (row, type, set){
+                    var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                    if(!row.updated_by && !row.fecha_edicion) return '';
+                    if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
+                    return html;
+                }},
             ]
         });
 

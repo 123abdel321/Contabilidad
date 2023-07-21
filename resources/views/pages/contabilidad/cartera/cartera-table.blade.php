@@ -9,11 +9,13 @@
             <th>Saldo final</th>
             <th>Comprobante</th>
             <th>Fecha</th>
-            <th>Dias Cumplidos</th>
+            <th>Dias</th>
             <th>Plazo</th>
             <th>Mora</th>
             <th>Detalle nit</th>
             <th>Concepto</th>
+            <th>Creación registro</th>
+            <th>Ultima actualización</th>
         </tr>
     </thead>
 </table>

@@ -55,4 +55,15 @@ class Nits extends Model
         return $this->belongsTo("App\Models\Sistema\TipoDocumentos", "id_tipo_documento");
     }
 
+	public function ciudad() {
+		return $this->belongsTo('App\Models\Empresas\Ciudades', 'id_ciudad', 'id');
+	}
+
+	public function departamento() {
+		return $this->belongsTo('App\Models\Empresas\Departamentos', 'id_departamento', 'id');
+	}
+	public function pais() {
+		return $this->belongsTo('App\Models\Empresas\Paises', 'id_pais', 'id');
+	}
+
 }

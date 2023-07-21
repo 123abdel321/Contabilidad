@@ -7,8 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png">
     <link rel="icon" type="image/png" href="/img/logo192.png">
-    <title>
-        Maximo Contable
+    <title id="titulo-empresa">
     </title>
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -77,6 +76,15 @@
             cursor: pointer;
         }
 
+        .navbar-nav > .nav-item > .nav-link.active {
+            background-image: linear-gradient(310deg, #344767 0%, #344767 100%) !important;
+            color: white !important;
+        }
+
+        .navbar-nav > .nav-item > .nav-link.active > .icon > .text-dark {
+            color: white !important;
+        }
+
         .icon-user {
             font-size: 15px;
             padding: 5px;
@@ -85,6 +93,11 @@
             -ms-animation: color_change 2s infinite alternate;
             -o-animation: color_change 2s infinite alternate;
             animation: color_change 2s infinite alternate;
+        }
+
+        .icon-user-none {
+            font-size: 15px;
+            padding: 5px;
         }
 
         @-webkit-keyframes color_change {
@@ -168,7 +181,63 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger ml-auto" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-sm btn-danger ml-auto" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL NIT INFORMACIÓN-->
+    <div class="modal fade" id="modal-nit-informacion" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+        <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="modal-title-usuario-accion">Cedula Nit</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                <span >×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">  
+
+                    
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Nombre completo</label>
+                        <input id="nombre_completo" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Documento</label>
+                        <input id="numero_documento" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Direccion</label>
+                        <input id="direccion" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Telefono</label>
+                        <input id="telefono_1" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Correo</label>
+                        <input id="email" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Ciudad</label>
+                        <input id="ciudad" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12 col-md-12 col-sm-12">
+                        <label for="example-text-input" class="form-control-label">Observaciones</label>
+                        <input id="observaciones" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-danger ml-auto" data-bs-dismiss="modal">Cerrar</button>
             </div>
             </div>
         </div>
@@ -234,6 +303,7 @@
         });
 
         $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
+        $("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
 
         if (iconNavbarSidenavMaximo) {
             iconNavbarSidenavMaximo.addEventListener("click", toggleSidenavMaximo);
@@ -412,6 +482,45 @@
                 }
             }).fail((err) => {
                 swalFire('Error al cargar usuario', '', false);
+            });
+        }
+
+        function showNit (numero_documento) {
+
+            if(!numero_documento) {
+                return;
+            }
+
+            $('#numero_documento').val('');
+            $('#nombre_completo').val('');
+            $('#direccion').val('');
+            $('#telefono_1').val('');
+            $('#email').val('');
+            $('#observaciones').val('');
+            $('#ciudad').val('');
+
+            $('#modal-nit-informacion').modal('show');
+
+            $.ajax({
+                url: base_url + 'nit/informacion',
+                method: 'GET',
+                data: {numero_documento: numero_documento},
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                if(res.success){
+                    console.log(res);
+                    var data = res.data;
+                    $('#numero_documento').val(data.numero_documento);
+                    $('#nombre_completo').val(data.nombre_nit);
+                    $('#direccion').val(data.direccion);
+                    $('#telefono_1').val(data.telefono_1);
+                    $('#email').val(data.email);
+                    $('#observaciones').val(data.observaciones);
+                    $('#ciudad').val(data.ciudad.nombre_completo);
+                }
+            }).fail((err) => {
+                swalFire('Error al cargar nit', '', false);
             });
         }
 

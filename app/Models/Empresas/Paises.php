@@ -9,6 +9,8 @@ class Paises extends Model
 {
     use HasFactory;
 
+	protected $connection = 'mysql';
+
     protected $table = 'paises';
 
 	protected $fillable = [

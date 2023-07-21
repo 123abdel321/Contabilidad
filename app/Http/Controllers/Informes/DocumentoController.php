@@ -60,6 +60,10 @@ class DocumentoController extends Controller
             $FacDocumentos->where('consecutivo', $request->get('consecutivo'));
         }
 
+        if($request->has('tipo_factura') && $request->get('tipo_factura') == 'anuladas') {
+            $FacDocumentos->where('anulado', 1);
+        }
+
         if($searchValue) {
             // $FacDocumentos->whereHas('comprobante', function ($query) use ($searchValue) {
             //         $query->where('codigo', 'like', '%' .$searchValue . '%')

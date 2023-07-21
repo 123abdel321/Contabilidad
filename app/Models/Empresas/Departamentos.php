@@ -9,6 +9,8 @@ class Departamentos extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
+
     protected $table = 'departamentos';
 
     protected $fillable = [

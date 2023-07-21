@@ -30,12 +30,27 @@
                             <label for="example-text-input" class="form-control-label">Fecha</label>
                             <input name="fecha" id="fecha" class="form-control form-control-sm" type="date">
                         </div>
-                        <div class="form-group col-4 col-md-4 col-sm-4">
+                        <!-- <div class="form-group col-4 col-md-4 col-sm-4">
                             <label for="exampleFormControlSelect1">Detallar cartera</label>
                             <select name="detallar_cartera" id="detallar_cartera" class="form-control form-control-sm">
                                 <option value="">No</option>
                                 <option value="1">Si</option>
                             </select>
+                        </div> -->
+                        <div class="form-group col-3 col-md-3 col-sm-3 row">
+                            <label for="example-text-input" class="form-control-label">Detallar cartera</label>
+                            <div class="form-check col-6 col-md-6 col-sm-6">
+                                <input class="form-check-input" type="radio" name="detallar_cartera" id="detallar_cartera1" >
+                                <label class="form-check-label" for="detallar_cartera1">
+                                    Si
+                                </label>
+                            </div>
+                            <div class="form-check col-6 col-md-6 col-sm-6">
+                                <input class="form-check-input" type="radio" name="detallar_cartera" id="detallar_cartera2" checked> 
+                                <label class="form-check-label" for="detallar_cartera2">
+                                    No
+                                </label>
+                            </div>
                         </div>
                         <!-- <div class="form-group col-md">
                             <label for="example-text-input" class="form-control-label">Fecha desde</label>

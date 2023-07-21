@@ -13,6 +13,8 @@
             <th>Consecutivo</th>
             <th>Fecha</th>
             <th>Concepto</th>
+            <th>Creación registro</th>
+            <th>Ultima actualización</th>
         </tr>
     </thead>
 </table>

@@ -20,6 +20,7 @@ class FacDocumentos extends Model
         'debito',
         'credito',
         'saldo_final',
+        'anulado',
         'created_by',
         'updated_by',
         'created_at',

@@ -49,6 +49,7 @@
                     d.id_comprobante = $('#id_comprobante').val();
                     d.fecha_manual = $('#fecha_manual').val();
                     d.consecutivo = $('#consecutivo').val();
+                    d.tipo_factura = $("input[type='radio']#detallar_cartera1").is(':checked') ? 'todas' : 'anuladas';
                 }
             },
             "columns": [
@@ -92,15 +93,21 @@
                     return 'No';
                 }},
                 {"data": function (row, type, set){  
-                    return '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,1)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
+                    var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                    if(!row.created_by && !row.fecha_creacion) return '';
+                    if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
+                    return html;
                 }},
-                {"data": function (row, type, set){  
-                    return '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                {"data": function (row, type, set){
+                    var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                    if(!row.updated_by && !row.fecha_edicion) return '';
+                    if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
+                    return html;
                 }},
                 {
                     "data": function (row, type, set){
                         if(row.anulado == 1) {
-                            return 'Anulado'
+                            return ''
                         }
                         var html = '';
                         html+= '<span id="anulardocumento_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger anular-documento" style="margin-bottom: 0rem !important">Anular</span>';
@@ -108,6 +115,10 @@
                     }
                 }
             ]
+        });
+        
+        $('input[type=radio][name=tipo_factura]').change(function() {
+            document.getElementById("generarDocumento").click();
         });
 
         $(document).on('click', '#generarDocumento', function () {
