@@ -15,6 +15,8 @@ return new class extends Migration
             $table->integer('id', true);
             $table->string('codigo', 10)->unique();
             $table->string('nombre', 200);
+            $table->integer('created_by');
+            $table->integer('updated_by');
             $table->timestamps();
         });
     }

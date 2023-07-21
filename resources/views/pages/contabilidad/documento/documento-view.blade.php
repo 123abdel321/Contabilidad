@@ -1,0 +1,191 @@
+@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
+
+@section('content')
+    @include('layouts.navbars.auth.topnav', ['title' => 'Documentos capturados'])
+
+    <style>
+        .error {
+            color: red;
+        }
+        .column-number {
+            text-align: -webkit-right;
+        }
+    </style>
+    
+    <div class="container-fluid py-2">
+        <div class="row">
+
+            <div class="card mb-4">
+                <div class="card-body" style="padding: 0 !important;">
+                    @include('pages.contabilidad.documento.documento-filter')
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-body" style="content-visibility: auto; overflow: auto;">
+                    @include('pages.contabilidad.documento.documento-table')
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push('js')
+    <script>
+        var documento_table = $('#DocumentosInformeTable').DataTable({
+            dom: 'tip',
+            autoWidth: true,
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            initialLoad: true,
+            bFilter: true,
+            language: lenguajeDatatable,
+            ajax:  {
+                type: "GET",
+                url: base_url + 'documento',
+                headers: headers,
+                data: function ( d ) {
+                    d.id_comprobante = $('#id_comprobante').val();
+                    d.fecha_manual = $('#fecha_manual').val();
+                    d.consecutivo = $('#consecutivo').val();
+                }
+            },
+            "columns": [
+                {"data": function (row, type, set){
+                    if(!row.comprobante){
+                        return '';
+                    }
+                    return row.comprobante.codigo + ' - ' +row.comprobante.nombre;
+                }},
+                {"data": function (row, type, set){
+                    if(!row.consecutivo){
+                        return '';
+                    }
+                    return row.consecutivo;
+                }},
+                {"data": function (row, type, set){
+                    if(!row.fecha_manual){
+                        return '';
+                    }
+                    return row.fecha_manual;
+                }},
+                {
+                    data: 'debito',
+                    render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                    className: "column-number", className: 'dt-body-right'
+                },
+                {
+                    data: 'credito',
+                    render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                    className: "column-number", className: 'dt-body-right'
+                },
+                {
+                    data: 'saldo_final',
+                    render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                    className: "column-number", className: 'dt-body-right'
+                },
+                {"data": function (row, type, set){
+                    if(row.anulado){
+                        return 'Si';
+                    }
+                    return 'No';
+                }},
+                {"data": function (row, type, set){  
+                    return '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,1)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
+                }},
+                {"data": function (row, type, set){  
+                    return '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                }},
+                {
+                    "data": function (row, type, set){
+                        if(row.anulado == 1) {
+                            return 'Anulado'
+                        }
+                        var html = '';
+                        html+= '<span id="anulardocumento_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger anular-documento" style="margin-bottom: 0rem !important">Anular</span>';
+                        return html;
+                    }
+                }
+            ]
+        });
+
+        $(document).on('click', '#generarDocumento', function () {
+            $("#generarDocumento").hide();
+            $("#generarDocumentoLoading").show();
+            documento_table.ajax.reload(function() {
+                $("#generarDocumento").show();
+                $("#generarDocumentoLoading").hide();
+            },false);
+        });
+
+        $(document).on('click', '.anular-documento', function () {
+            var trNit = $(this).closest('tr');
+            var id = this.id.split('_')[1];
+            console.log('id: ',id);
+            var data = getDataById(id, documento_table);
+            console.log('data: ',data);
+
+            Swal.fire({
+                title: 'Anular documento ?',
+                type: 'warning',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Anular!',
+                input: 'text',
+                inputLabel: 'Motivo de anulación',
+                reverseButtons: true,
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'El motivo de anulación es requerido'
+                    }
+                },
+            }).then((result) => {
+                if (result.isConfirmed){
+
+                    $.ajax({
+                        url: base_url + 'documentos',
+                        method: 'PUT',
+                        data: JSON.stringify({
+                            id_comprobante: data.id_comprobante,
+                            consecutivo: data.consecutivo,
+                            fecha_manual: data.fecha_manual,
+                            motivo_anulacion: result.value
+                        }),
+                        headers: headers,
+                        dataType: 'json',
+                    }).done((res) => {
+                        if(res.success){
+                            documento_table.row(trPlanCuenta).remove().draw();
+                            swalFire('Anulación exitosa', 'Documentos anulados con exito!');
+                        } else {
+                            swalFire('Anulación herrada', res.message, false);
+                        }
+                    }).fail((res) => {
+                        swalFire('Anulación herrada', res.message, false);
+                    });
+                }
+            })
+
+        });
+
+        
+
+        var $comboComprobante = $('#id_comprobante').select2({
+            theme: 'bootstrap-5',
+            delay: 250,
+            ajax: {
+                url: 'api/comprobantes/combo-comprobante',
+                headers: headers,
+                dataType: 'json',
+                processResults: function (data) {
+                    return {
+                        results: data.data
+                    };
+                }
+            }
+        });
+    </script>
+@endpush

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Sistema;
 
+
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 //MODELS
 use App\Models\Empresas\Paises;
 use App\Models\Empresas\Ciudades;
@@ -42,7 +44,15 @@ class UbicacionController extends Controller
 	public function getCiudad (Request $request)
     {
 		$query = $request->get("q");
-		$queryModel = Ciudades::whereNotNull("id");
+		$queryModel = Ciudades::whereNotNull("id")->select(
+			'id_pais',
+			'id_departamento',
+			'codigo',
+			'indicativo',
+			'nombre',
+			'nombre_completo',
+			\DB::raw("nombre_completo as text")
+		);
 
 		if($query){
 			$queryModel->where("nombre","LIKE","%".$query."%");

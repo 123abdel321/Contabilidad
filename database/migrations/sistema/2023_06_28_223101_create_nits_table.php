@@ -45,6 +45,8 @@ class CreateNitsTable extends Migration
             $table->boolean('no_calcular_iva')->default(false);
             $table->boolean('inactivar')->nullable();
             $table->longText('observaciones')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
         });
     }

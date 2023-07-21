@@ -54,6 +54,59 @@
             max-width: 300px !important;
             float: right !important;
         }
+
+        label, .form-label {
+            margin-bottom: 2px !important;
+        }
+
+        .fondo-sistema {
+            background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg');
+            background-position-y: 50%;
+            min-height: 300px !important;
+        }
+
+        .btn {
+            margin-bottom: 0.8rem !important;
+        }
+
+        .form-group {
+            margin-bottom: 0.8rem !important;
+        }
+
+        .button-user {
+            cursor: pointer;
+        }
+
+        .icon-user {
+            font-size: 15px;
+            padding: 5px;
+            -webkit-animation: color_change 2s infinite alternate;
+            -moz-animation: color_change 2s infinite alternate;
+            -ms-animation: color_change 2s infinite alternate;
+            -o-animation: color_change 2s infinite alternate;
+            animation: color_change 2s infinite alternate;
+        }
+
+        @-webkit-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @-moz-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @-ms-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @-o-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
         
     </style>
 </head>
@@ -69,7 +122,9 @@
             @yield('content')
         @else
             @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
-                <div class="min-height-300 bg-dark position-absolute w-100"></div>
+                <div class="min-height-300 bg-dark position-absolute w-100 fondo-sistema">
+                    <span class="mask bg-dark opacity-6"></span>
+                </div>
             @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
                 <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
                     <span class="mask bg-primary opacity-6"></span>
@@ -82,6 +137,42 @@
             @include('components.fixed-plugin')
         @endif
     @endauth
+    <!-- MODAL USUARIO ACCIÓN-->
+    <div class="modal fade" id="modal-usuario-accion" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+        <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="modal-title-usuario-accion">Creado por</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">  
+
+                    <div class="form-group col-12">
+                        <label for="example-text-input" class="form-control-label">Usuario</label>
+                        <input id="usuario_accion" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12">
+                        <label for="example-text-input" class="form-control-label">Correo</label>
+                        <input id="correo_accion" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12">
+                        <label for="example-text-input" class="form-control-label">Fecha acción</label>
+                        <input id="fecha_accion" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger ml-auto" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+            </div>
+        </div>
+    </div>
 
     <!--   Core JS Files   -->
     <script src="assets/js/core/popper.min.js"></script>
@@ -108,9 +199,10 @@
     <script src="assets/js/sistema/jquery.validate.min.js"></script>
     <!-- sweetalert2 -->
     <script src="assets/js/sistema/sweetalert2.all.min.js"></script>
-
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.2.6/jquery.inputmask.bundle.min.js"></script>
     <script>
+        
         // const base_url = 'http://localhost:8000/api/';
         // const base_web = 'http://localhost:8000/';
         const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
@@ -130,12 +222,12 @@
         let buttonocultarLateral = document.getElementById('button-ocultar-lateral');
         let iconSidenav = document.getElementById('iconSidenav');
 
-        $(".input_decimal").inputmask({
-            alias: 'decimal',
-            rightAlign: false,
-            groupSeparator: '.',
-            autoGroup: true
-        });
+        // $(".input_decimal").inputmask({
+        //     alias: 'decimal',
+        //     rightAlign: false,
+        //     groupSeparator: '.',
+        //     autoGroup: true
+        // });
 
         $('.form-control-sm').keyup(function() {
             $(this).val($(this).val().toUpperCase());
@@ -285,8 +377,46 @@
             return false;
         }
 
+        function showUser (id_usuario, fecha, creado) {
+
+            if(!id_usuario) {
+                return;
+            }
+
+            $('#usuario_accion').val('');
+            $('#correo_accion').val('');
+            $('#fecha_accion').val('');
+            $("#modal-title-usuario-accion").html("Buscando usuario ...");
+
+            $('#modal-usuario-accion').modal('show');
+
+            $.ajax({
+                url: base_url + 'usuario-accion',
+                method: 'GET',
+                data: {id: id_usuario},
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                if(res.success){
+                    console.log(res);
+                    var data = res.data;
+                    $('#usuario_accion').val(data.username);
+                    $('#correo_accion').val(data.email);
+                    $('#fecha_accion').val(fecha);
+
+                    if (creado) {
+                        $("#modal-title-usuario-accion").html("Creado por: "+ data.username);
+                    } else {
+                        $("#modal-title-usuario-accion").html("Actualizado por: "+ data.username);
+                    }
+                }
+            }).fail((err) => {
+                swalFire('Error al cargar usuario', '', false);
+            });
+        }
+
     </script>
-    @stack('js');
+    @stack('js')
 </body>
 
 </html>

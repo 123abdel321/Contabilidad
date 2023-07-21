@@ -30,7 +30,7 @@
         }
     </style>
     
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-2">
         <div class="row">
             <div class="card mb-4">
                 <div class="card-body" style="padding: 0 !important;">
@@ -61,11 +61,13 @@
                                             <div class="form-group col-6 col-md-3 col-sm-3">
                                                 <label for="exampleFormControlSelect1" style=" width: 100%;">Cuenta</label>
                                                 <select name="id_cuenta" id="id_cuenta" class="form-control form-control-sm">
+                                                    <option value="">Ninguna</option>
                                                 </select>
                                             </div>
                                             <div class="form-group col-6 col-md-3 col-sm-3">
                                                 <label for="exampleFormControlSelect1" style=" width: 100%;">Nit</label>
                                                 <select class="form-control form-control-sm" name="id_nit" id="id_nit">
+                                                    <option value="">Ninguno</option>
                                                 </select>
                                             </div>
                                         </div>  
@@ -226,10 +228,10 @@
                     return row.codigo_cecos + ' - ' +row.nombre_cecos;
                 }},
                 {data: 'documento_referencia'},
-                { data: "saldo_anterior", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
-                { data: "debito", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
-                { data: "credito", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
-                { data: "saldo_final", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
+                { data: "saldo_anterior",render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                { data: "debito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                { data: "credito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                { data: "saldo_final", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
                 {"data": function (row, type, set){
                     if(!row.codigo_comprobante){
                         return '';

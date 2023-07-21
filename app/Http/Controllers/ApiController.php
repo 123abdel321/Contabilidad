@@ -262,5 +262,15 @@ class ApiController extends Controller
         return $res;
     }
 
+    public function getUsuario (Request $request)
+    {
+        $usuario = User::where('id', $request->get('id'))->first();
+
+        return response()->json([
+            "success"=>true,
+            "data"=>$usuario
+        ], 200);
+    }
+
 
 }

@@ -18,7 +18,7 @@
         }
     </style>
     
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-2">
         <div class="row">
             <div class="row" style="z-index: 9;">
                 <div class="col-4 col-md-4 col-sm-4">
@@ -164,6 +164,8 @@
                     direccion: $("#direccion").val(),
                     email: $("#email").val(),
                     telefono_1: $("#telefono_1").val(),
+                    id_ciudad: $("#id_ciudad").val(),
+                    observaciones: $("#observaciones").val(),
                 }
 
                 $.ajax({
@@ -205,7 +207,21 @@
             }
         });
 
-
+        var $comboCiudad = $('#id_ciudad').select2({
+            theme: 'bootstrap-5',
+            delay: 250,
+            dropdownParent: $('#nitFormModal'),
+            ajax: {
+                url: 'api/ciudades',
+                dataType: 'json',
+                headers: headers,
+                processResults: function (data) {
+                    return {
+                        results: data.data
+                    };
+                }
+            }
+        });
 
         $(document).on('click', '#saveNit', function () {
             var form = document.querySelector('#nitsForm');
@@ -227,6 +243,8 @@
                     direccion: $("#direccion").val(),
                     email: $("#email").val(),
                     telefono_1: $("#telefono_1").val(),
+                    id_ciudad: $("#id_ciudad").val(),
+                    observaciones: $("#observaciones").val(),
                 }
     
                 $.ajax({

@@ -12,7 +12,7 @@
         }
     </style>
     
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-2">
         <div class="row">
             <div class="card mb-4">
                 <div class="card-body" style="padding: 0 !important;">
@@ -168,9 +168,9 @@
                 }, responsivePriority: 1, targets: 0},
                 
                 {data: 'documento_referencia'},
-                {data: 'total_facturas', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 4, targets: -3},
-                {data: 'total_abono', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 3, targets: -2},
-                {data: 'saldo', render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right', responsivePriority: 2, targets: -1},
+                {data: 'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 4, targets: -3},
+                {data: 'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 3, targets: -2},
+                {data: 'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 2, targets: -1},
                 {"data": function (row, type, set){
                     if(!row.codigo_comprobante){
                         return '';

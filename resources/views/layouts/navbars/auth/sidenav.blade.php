@@ -9,7 +9,7 @@
         display: none;
     }
 </style>
-<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 side-nav-maximo-close" id="sidenav-main" style="z-index: 99 !important; border-radius: 0px 10px 10px 0px;">
+<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 side-nav-maximo-close" id="sidenav-main" style="z-index: 99 !important; border-radius: 0px 10px 10px 0px;">
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand m-0" href="{{ route('home') }}" target="_blank" style="text-align: -webkit-center;">
@@ -121,6 +121,16 @@
                                     <i class="ni ni-collection text-dark text-sm opacity-10"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">Cartera</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::currentRouteName() == 'documentos' ? 'active' : '' }}" href="{{ route('documentos') }}">
+                                <div
+                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                    
+                                    <i class="ni ni-collection text-dark text-sm opacity-10"></i>
+                                </div>
+                                <span class="nav-link-text ms-1">Documentos</span>
                             </a>
                         </li>
 

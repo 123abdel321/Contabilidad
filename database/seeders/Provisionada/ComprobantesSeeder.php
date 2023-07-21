@@ -129,7 +129,7 @@ class ComprobantesSeeder extends Seeder
                 'maestra_padre' => NULL,
             ),
             array (
-                'id' => 9,
+                'id' => 10,
                 'codigo' => '04',
                 'nombre' => 'VENTAS',
                 'tipo_comprobante' => 3,
