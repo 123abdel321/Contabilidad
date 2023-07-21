@@ -22,6 +22,8 @@ return new class extends Migration
             $table->boolean('mostrar_nit_impresion')->nullable();
             $table->boolean('tesoreria')->nullable();
             $table->integer('maestra_padre')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
         });
 

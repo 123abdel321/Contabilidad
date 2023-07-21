@@ -73,6 +73,10 @@ class AuxiliarController extends Controller
             $wheres.= ' AND N.id = '.$request->get('id_nit');
         }
 
+        if($request->has('tipo_documento') && $request->get('tipo_documento') == 'anuladas') {
+            $wheres.= ' AND DG.anulado = 1';
+        }
+
         $query = "SELECT
                 id_nit,
                 numero_documento,
@@ -92,6 +96,11 @@ class AuxiliarController extends Controller
                 concepto,
                 fecha_manual,
                 created_at,
+                fecha_creacion,
+                fecha_edicion,
+                created_by,
+                updated_by,
+                anulado,
                 SUM(saldo_anterior) AS saldo_anterior,
                 SUM(debito) AS debito,
                 SUM(credito) AS credito,
@@ -102,7 +111,7 @@ class AuxiliarController extends Controller
                     N.numero_documento,
                     CASE
                         WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                        WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
+                        WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
                         ELSE NULL
                     END AS nombre_nit,
                     N.razon_social,
@@ -120,6 +129,11 @@ class AuxiliarController extends Controller
                     DG.concepto,
                     DG.fecha_manual,
                     DG.created_at,
+                    DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion,
+                    DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion,
+                    DG.created_by,
+                    DG.updated_by,
+                    DG.anulado,
                     SUM(debito) - SUM(credito) AS saldo_anterior,
                     0 AS debito,
                     0 AS credito,
@@ -144,7 +158,7 @@ class AuxiliarController extends Controller
                         N.numero_documento,
                         CASE
                             WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                            WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
+                            WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
                             ELSE NULL
                         END AS nombre_nit,
                         N.razon_social,
@@ -162,6 +176,11 @@ class AuxiliarController extends Controller
                         DG.concepto,
                         DG.fecha_manual,
                         DG.created_at,
+                        DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion,
+                        DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion,
+                        DG.created_by,
+                        DG.updated_by,
+                        DG.anulado,
                         0 AS saldo_anterior,
                         SUM(DG.debito) AS debito,
                         SUM(DG.credito) AS credito,
@@ -203,6 +222,10 @@ class AuxiliarController extends Controller
             $wheres.= ' AND N.id = '.$request->get('id_nit');
         }
 
+        if($request->has('tipo_documento') && $request->get('tipo_documento') == 'anuladas') {
+            $wheres.= ' AND DG.anulado = 1';
+        }
+
         return "SELECT
             id_nit,
             numero_documento,
@@ -222,6 +245,11 @@ class AuxiliarController extends Controller
             concepto,
             fecha_manual,
             created_at,
+            fecha_creacion,
+            fecha_edicion,
+            created_by,
+            updated_by,
+            anulado,
             saldo_anterior,
             debito,
             credito,
@@ -231,7 +259,7 @@ class AuxiliarController extends Controller
                 N.numero_documento,
                 CASE
                     WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
                     ELSE NULL
                 END AS nombre_nit,
                 N.razon_social,
@@ -249,6 +277,11 @@ class AuxiliarController extends Controller
                 DG.concepto,
                 DG.fecha_manual,
                 DG.created_at,
+                DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion,
+                DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion,
+                DG.created_by,
+                DG.updated_by,
+                DG.anulado,
                 0 AS saldo_anterior,
                 DG.debito,
                 DG.credito,
@@ -274,7 +307,7 @@ class AuxiliarController extends Controller
                 N.numero_documento,
                 CASE
                     WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
                     ELSE NULL
                 END AS nombre_nit,
                 N.razon_social,
@@ -292,6 +325,11 @@ class AuxiliarController extends Controller
                 DG.concepto,
                 DG.fecha_manual,
                 DG.created_at,
+                DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion,
+                DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion,
+                DG.created_by,
+                DG.updated_by,
+                DG.anulado,
                 SUM(DG.debito) - SUM(DG.credito) AS saldo_anterior,
                 0 AS debito,
                 0 AS credito,
@@ -392,6 +430,11 @@ class AuxiliarController extends Controller
             'consecutivo' => '',
             'concepto' => '',
             'fecha_manual' => '',
+            'fecha_creacion' => '',
+            'fecha_edicion' => '',
+            'created_by' => '',
+            'updated_by' => '',
+            'anulado' => '',
             'saldo_anterior' => number_format((float)$auxiliar->saldo_anterior, 2, '.', ''),
             'debito' => number_format((float)$auxiliar->debito, 2, '.', ''),
             'credito' => number_format((float)$auxiliar->credito, 2, '.', ''),
@@ -441,6 +484,11 @@ class AuxiliarController extends Controller
             'consecutivo' => '',
             'concepto' => '',
             'fecha_manual' => '',
+            'fecha_creacion' => '',
+            'fecha_edicion' => '',
+            'created_by' => '',
+            'updated_by' => '',
+            'anulado' => '',
             'saldo_anterior' => $saldo_anterior,
             'debito' => $debito,
             'credito' => $credito,
@@ -484,6 +532,11 @@ class AuxiliarController extends Controller
                 'consecutivo' => $auxiliarDetalle->consecutivo,
                 'concepto' => $auxiliarDetalle->concepto,
                 'fecha_manual' => $auxiliarDetalle->fecha_manual,
+                'fecha_creacion' => $auxiliarDetalle->fecha_creacion,
+                'fecha_edicion' => $auxiliarDetalle->fecha_edicion,
+                'created_by' => $auxiliarDetalle->created_by,
+                'updated_by' => $auxiliarDetalle->updated_by,
+                'anulado' => $auxiliarDetalle->anulado,
                 'debito' => $auxiliarDetalle->debito,
                 'credito' => $auxiliarDetalle->credito,
                 'saldo_final' => '0',
@@ -527,6 +580,11 @@ class AuxiliarController extends Controller
                 'consecutivo' => '',
                 'concepto' => '',
                 'fecha_manual' => '',
+                'fecha_creacion' => '',
+                'fecha_edicion' => '',
+                'created_by' => '',
+                'updated_by' => '',
+                'anulado' => '',
                 'debito' => $auxiliarDetalle->debito,
                 'credito' => $auxiliarDetalle->credito,
                 'saldo_final' => $auxiliarDetalle->saldo_final,
@@ -563,6 +621,11 @@ class AuxiliarController extends Controller
                 'consecutivo' => '',
                 'concepto' => '',
                 'fecha_manual' => '',
+                'fecha_creacion' => '',
+                'fecha_edicion' => '',
+                'created_by' => '',
+                'updated_by' => '',
+                'anulado' => '',
                 'debito' => $auxiliarDetalle->debito,
                 'credito' => $auxiliarDetalle->credito,
                 'saldo_final' => $auxiliarDetalle->saldo_final,
@@ -603,6 +666,11 @@ class AuxiliarController extends Controller
                     'consecutivo' => '',
                     'concepto' => '',
                     'fecha_manual' => '',
+                    'fecha_creacion' => '',
+                    'fecha_edicion' => '',
+                    'created_by' => '',
+                    'updated_by' => '',
+                    'anulado' => '',
                     'debito' => $debito,
                     'credito' => $credito,
                     'saldo_final' => $saldo_final,
@@ -617,10 +685,5 @@ class AuxiliarController extends Controller
 	{
 		return isset($this->auxiliarCollection[$cuenta]);
 	}
-
-    private function hasNitData($collecionTotalNits, $cuenta)
-    {
-        return isset($collecionTotalNits[$cuenta]);
-    }
 
 }

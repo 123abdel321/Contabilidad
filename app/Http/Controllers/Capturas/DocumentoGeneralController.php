@@ -12,6 +12,7 @@ use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Models\Sistema\Nits;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\CentroCostos;
+use App\Models\Sistema\FacDocumentos;
 use App\Models\Sistema\DocumentosGeneral;
 
 class DocumentoGeneralController extends Controller
@@ -69,15 +70,36 @@ class DocumentoGeneralController extends Controller
 		try {
 
 			DB::connection('sam')->beginTransaction();
-
-			$documento = $request->get('documento');
-			$documentoGeneral = new Documento($request->get('id_comprobante'), null, $request->get('fecha_manual'), $request->get('consecutivo'));
 			
 			DocumentosGeneral::whereDocumento(
 				$request->get('id_comprobante'),
 				$request->get('consecutivo'),
-				$request->get('fecha')
+				$request->get('fecha_manual')
 			)->delete();
+
+			$documento = $request->get('documento');
+			
+			$debito = 0;
+			$credito = 0;
+			foreach ($documento as $doc) {
+				$debito+= $doc['debito'];
+				$credito+= $doc['credito'];
+			}
+
+			$consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
+
+			$facDocumento = FacDocumentos::create([
+				'id_comprobante' => $request->get('id_comprobante'),
+				'fecha_manual' => $request->get('fecha_manual'),
+				'consecutivo' => $consecutivo,
+				'debito' => $debito,
+				'credito' => $credito,
+				'saldo_final' => $debito - $credito,
+				'created_by' => request()->user()->id,
+				'updated_by' => request()->user()->id,
+			]);
+
+			$documentoGeneral = new Documento($request->get('id_comprobante'), $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
 
 			foreach ($documento as $doc) {
 				
@@ -106,6 +128,9 @@ class DocumentoGeneralController extends Controller
 					unset($doc['numero_documento']);
 				}
 
+				$doc['created_by'] = request()->user()->id;
+				$doc['updated_by'] = request()->user()->id;
+				
 				$doc['consecutivo'] = $request->get('consecutivo');
 				$doc = new DocumentosGeneral($doc);
 				$documentoGeneral->addRow($doc, $naturaleza);
@@ -155,6 +180,69 @@ class DocumentoGeneralController extends Controller
 			'message'=> 'Documentos creados con exito!'
 		]);
     }
+
+	public function anular (Request $request)
+	{
+		$rules = [
+            'id_comprobante' => 'required|exists:sam.comprobantes,id',
+			'consecutivo' => 'required|numeric',
+			'motivo_anulacion' => 'required|string',
+			'fecha_manual' => 'required',
+        ];
+
+		$validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->messages()
+            ], 422);
+        }
+
+		try {
+
+			DB::connection('sam')->beginTransaction();
+
+			$documento = DocumentosGeneral::whereDocumento(
+				$request->get('id_comprobante'),
+				$request->get('consecutivo'),
+				$request->get('fecha_manual')
+			)->with('relation')->get();
+
+			// dd();
+			$documento[0]->relation->anulado = 1;
+			$documento[0]->relation->save();
+
+			// relation
+
+			foreach ($documento as $doc) {
+				$doc->anulado = 1;
+				$doc->concepto .= ' - motivo anulación: ' . $request->get('motivo_anulacion');
+				$doc->save();
+			}
+
+			DB::connection('sam')->commit();
+
+			return response()->json([
+                'success'=>	true,
+                'data' => [],
+                'message'=> 'Documentos anulados con exito!'
+            ]);
+
+		} catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+
+		DB::connection('sam')->beginTransaction();
+
+	}
 
     public function vacio(Request $request)
     {

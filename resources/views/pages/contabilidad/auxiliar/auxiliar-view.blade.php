@@ -30,107 +30,21 @@
         }
     </style>
     
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-2">
         <div class="row">
+
             <div class="card mb-4">
                 <div class="card-body" style="padding: 0 !important;">
-
-                    <div class="accordion" id="accordionRental">
-                        <div class="accordion-item">
-                            <h5 class="accordion-header" id="filtrosAuxiliar">
-                                <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                    Filtros de auxiliar
-                                    <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
-                                    <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
-                                </button>
-                            </h5>
-                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="filtrosAuxiliar" data-bs-parent="#accordionRental">
-                                <div class="accordion-body text-sm" style="padding: 0 !important;">
-                                
-                                    <form id="auxiliarInformeForm" style="margin-top: 10px;">
-                                        <div class="row">
-                                        
-                                            <div class="form-group col-6 col-md-3 col-sm-3">
-                                                <label for="example-text-input" class="form-control-label">Fecha desde</label>
-                                                <input name="fecha_desde" id="fecha_desde" class="form-control form-control-sm" type="date" require>
-                                            </div>
-                                            <div class="form-group col-6 col-md-3 col-sm-3">
-                                                <label for="example-text-input" class="form-control-label">Fecha hasta</label>
-                                                <input name="fecha_hasta" id="fecha_hasta" class="form-control form-control-sm" type="date" require>
-                                            </div>
-                                            <div class="form-group col-6 col-md-3 col-sm-3">
-                                                <label for="exampleFormControlSelect1" style=" width: 100%;">Cuenta</label>
-                                                <select name="id_cuenta" id="id_cuenta" class="form-control form-control-sm">
-                                                </select>
-                                            </div>
-                                            <div class="form-group col-6 col-md-3 col-sm-3">
-                                                <label for="exampleFormControlSelect1" style=" width: 100%;">Nit</label>
-                                                <select class="form-control form-control-sm" name="id_nit" id="id_nit">
-                                                </select>
-                                            </div>
-                                        </div>  
-                                    </form>
-                                    <div class="col-md normal-rem">
-                                        <!-- BOTON GENERAR -->
-                                        <span id="generarAuxiliar" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
-                                            <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
-                                            <b style="vertical-align: text-top;">BUSCAR</b>
-                                        </span>
-                                        <span id="generarAuxiliarLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
-                                            <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                                            <b style="vertical-align: text-top;">BUSCANDO</b>
-                                        </span>
-                                        <span id="descargarExcelAuxiliar" class="btn badge bg-gradient-success" style="min-width: 40px; display:none;">
-                                            <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
-                                            <b style="vertical-align: text-top;">EXPORTAR</b>
-                                        </span>
-                                        <span id="descargarExcelAuxiliarDisabled" class="badge bg-dark" style="min-width: 40px; color: #adadad;">
-                                            <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
-                                            <b style="vertical-align: text-top;">EXPORTAR</b>
-                                            <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
-                                        </span>
-                                        <span id="" class="badge bg-dark" style="min-width: 40px; color: #adadad;" >
-                                            <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>&nbsp;
-                                            <b style="vertical-align: text-top;">EXPORTAR</b>
-                                            <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
+                    @include('pages.contabilidad.auxiliar.auxiliar-filter')
                 </div>
             </div>
+
             <div class="card mb-4" style="content-visibility: auto; overflow: auto;">
                 <div class="card-body">
                     @include('pages.contabilidad.auxiliar.auxiliar-table')
                 </div>
+
             </div>
-            <!-- <div class="card mb-4" style="content-visibility: auto; overflow: auto;">
-                <div class="card-body" style="max-height: 500px;">
-                    <table id="auxiliarInformeTableTotal" class="table align-items-center mb-0">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Saldo anterior</th>
-                                <th>Debito</th>
-                                <th>Credito</th>
-                                <th>Saldo final</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>TOTALES</td>
-                                <td>0.00</td>
-                                <td>0.00</td>
-                                <td>0.00</td>
-                                <td>0.00</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div> -->
         </div>
         
     </div>
@@ -204,6 +118,7 @@
                     d.fecha_hasta = $('#fecha_hasta').val();
                     d.id_cuenta = $('#id_cuenta').val();
                     d.id_nit = $('#id_nit').val();
+                    d.tipo_documento = $("input[type='radio']#tipo_documento1").is(':checked') ? 'todas' : 'anuladas';
                 }
             },
             "columns": [
@@ -214,10 +129,15 @@
                     if(!row.numero_documento){
                         return '';
                     }
+                    var nombre = row.numero_documento + ' - ' +row.nombre_nit;
                     if(row.razon_social){
-                        return row.numero_documento +' - '+ row.razon_social;
+                        nombre = row.numero_documento +' - '+ row.razon_social;
                     }
-                    return row.numero_documento + ' - ' +row.nombre_nit;
+                    
+                    var html = '<div class="button-user" onclick="showNit('+row.numero_documento+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
+                    return html;
+
+
                 }},
                 {"data": function (row, type, set){
                     if(!row.codigo_cecos){
@@ -226,10 +146,10 @@
                     return row.codigo_cecos + ' - ' +row.nombre_cecos;
                 }},
                 {data: 'documento_referencia'},
-                { data: "saldo_anterior", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
-                { data: "debito", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
-                { data: "credito", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
-                { data: "saldo_final", render: $.fn.dataTable.render.number('.', ',', 0, ''), className: 'dt-body-right'},
+                { data: "saldo_anterior",render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                { data: "debito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                { data: "credito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                { data: "saldo_final", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
                 {"data": function (row, type, set){
                     if(!row.codigo_comprobante){
                         return '';
@@ -253,6 +173,18 @@
                         return '';
                     }
                     return row.concepto;
+                }},
+                {"data": function (row, type, set){  
+                    var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                    if(!row.created_by && !row.fecha_creacion) return '';
+                    if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
+                    return html;
+                }},
+                {"data": function (row, type, set){
+                    var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                    if(!row.updated_by && !row.fecha_edicion) return '';
+                    if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
+                    return html;
                 }},
             ]
         });

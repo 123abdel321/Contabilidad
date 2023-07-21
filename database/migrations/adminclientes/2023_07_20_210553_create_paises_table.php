@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('centro_costos', function (Blueprint $table) {
-            $table->integer('id', true);
-            $table->string('codigo', 10)->unique();
-            $table->string('nombre', 200);
+        Schema::create('paises', function (Blueprint $table) {
+            $table->id();
+            $table->string('codigo', 10)->nullable();
+            $table->integer('indicativo');
+            $table->string('nombre', 100)->unique();
             $table->integer('created_by');
             $table->integer('updated_by');
             $table->timestamps();
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('centro_costos');
+        Schema::dropIfExists('paises');
     }
 };

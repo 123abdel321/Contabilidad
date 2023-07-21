@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 //MODELS
 use App\Models\User;
+use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 
 class ApiController extends Controller
@@ -262,5 +263,14 @@ class ApiController extends Controller
         return $res;
     }
 
+    public function getUsuario (Request $request)
+    {
+        $usuario = User::where('id', $request->get('id'))->first();
+
+        return response()->json([
+            "success"=>true,
+            "data"=>$usuario
+        ], 200);
+    }
 
 }

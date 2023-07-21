@@ -32,6 +32,8 @@ class CreatePlanCuentasTable extends Migration
             $table->boolean('naturaleza_compras')->nullable()->comment('0:debito, 1:credito');
             $table->boolean('naturaleza_ventas')->nullable()->comment('0:debito, 1:credito');
 			$table->boolean('cuenta_corriente')->default(0);
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
         });
     }

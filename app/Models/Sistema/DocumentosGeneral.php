@@ -23,9 +23,19 @@ class DocumentosGeneral extends Model
         'documento_referencia',
         'debito',
         'credito',
-        "saldo",
-        'concepto'
+        'saldo',
+        'concepto',
+        'anulado',
+        'created_by',
+        'updated_by',
+        'created_at',
+        'updated_at',
     ];
+
+    public function relation()
+    {
+        return $this->morphTo();
+    }
 
     public function nit(){
         return $this->belongsTo('App\Models\Sistema\Nits', 'id_nit');

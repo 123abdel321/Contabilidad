@@ -63,7 +63,9 @@
             @yield('content')
         @else
             @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
-                <div class="min-height-300 bg-dark position-absolute w-100"></div>
+                <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
+                    <span class="mask bg-dark opacity-6"></span>
+                </div>
             @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
                 <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
                     <span class="mask bg-primary opacity-6"></span>
@@ -101,6 +103,8 @@
 
     <script>
 
+        // const base_url = 'http://localhost:8000/api/';
+        // const base_web = 'http://localhost:8000/';
         const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
         const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
         const dateNow = new Date();

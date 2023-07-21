@@ -241,7 +241,7 @@
             </div>
         </nav>
         <!-- End Navbar -->
-        <div class="container-fluid py-4">
+        <div class="container-fluid py-2">
             <div class="row">
                 <div class="col-lg-3 col-sm-6 mb-lg-0 mb-4">
                     <div class="card">

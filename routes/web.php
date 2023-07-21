@@ -10,9 +10,10 @@ use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\ApiController;
 //INFORMES
+use App\Http\Controllers\Informes\CarteraController;
 use App\Http\Controllers\Informes\BalanceController;
 use App\Http\Controllers\Informes\AuxiliarController;
-use App\Http\Controllers\Informes\CarteraController;
+use App\Http\Controllers\Informes\DocumentoController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
@@ -56,6 +57,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 	//SISTEMA
 	Route::group(['middleware' => ['clientconnectionweb']], function () {
+		// >> INFORMES <<
 		Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 		Route::get('/home', [HomeController::class, 'index'])->name('home');
 		//AUXILIARES
@@ -66,7 +68,6 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/balance-excel', [BalanceController::class, 'exportExcel'])->name('balance-excel');
 		//CUENTAS POR COBRAR
 		Route::get('/cartera', [CarteraController::class, 'index'])->name('cartera');
-		// Route::get('/cxc-excel', [CarteraController::class, 'exportExcel'])->name('cxc-excel');
 		//DOCUMENTO GENERAL
 		Route::get('/documento-general', [DocumentoGeneralController::class, 'index'])->name('documento-general');
 		//NITS
@@ -75,6 +76,9 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/plan-cuenta', [PlanCuentaController::class, 'index'])->name('plan-cuenta');
 		//COMPROBANTES
 		Route::get('/comprobante', [ComprobantesController::class, 'index'])->name('comprobante');
+		//DOCUMENTOS
+		Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos');
+
 	});
 
 	//ARGON

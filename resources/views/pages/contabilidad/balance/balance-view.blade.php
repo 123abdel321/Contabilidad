@@ -12,7 +12,7 @@
         }
     </style>
     
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-2">
         <div class="row">
             <div class="card mb-4">
                 <div class="card-body" style="padding: 0 !important;">

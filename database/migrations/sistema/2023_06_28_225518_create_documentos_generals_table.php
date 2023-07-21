@@ -19,6 +19,8 @@ class CreateDocumentosGeneralsTable extends Migration
             $table->integer('id_cuenta')->nullable();
             $table->integer('id_comprobante')->nullable();
             $table->integer('id_centro_costos')->nullable()->index();
+            $table->integer('relation_id');
+            $table->integer('relation_type');
             $table->integer('auxiliar')->default(0)->comment('0:no, 1:si');;
             $table->date('fecha_manual')->nullable();
             $table->string('consecutivo', 20);
@@ -27,6 +29,9 @@ class CreateDocumentosGeneralsTable extends Migration
             $table->decimal('credito', 15)->default(0);
             $table->decimal('saldo', 15)->nullable();
             $table->string('concepto', 600)->nullable();
+            $table->boolean('anulado')->default(false);
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
         });
     }

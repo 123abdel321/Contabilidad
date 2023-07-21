@@ -47,12 +47,27 @@ class Nits extends Model
 		'descuento',
 		'no_calcular_iva',
 		'inactivar',
-		'observaciones'
+		'observaciones',
+		'created_by',
+		'updated_by',
+		'created_at',
+		'updated_at',
 	];
 
 	public function tipo_documento()
     {
         return $this->belongsTo("App\Models\Sistema\TipoDocumentos", "id_tipo_documento");
     }
+
+	public function ciudad() {
+		return $this->belongsTo('App\Models\Empresas\Ciudades', 'id_ciudad', 'id');
+	}
+
+	public function departamento() {
+		return $this->belongsTo('App\Models\Empresas\Departamentos', 'id_departamento', 'id');
+	}
+	public function pais() {
+		return $this->belongsTo('App\Models\Empresas\Paises', 'id_pais', 'id');
+	}
 
 }

@@ -41,7 +41,7 @@
         }
     </style>
     
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-2">
         <div class="card mb-4" style="padding: 30px; align-items: center; min-height: 300px;">
             
             <div class="card-body" style="padding: 0 !important;">

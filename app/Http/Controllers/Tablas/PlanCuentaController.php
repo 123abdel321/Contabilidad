@@ -208,6 +208,6 @@ class PlanCuentaController extends Controller
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
 
-        return $planCuenta->orderBy('cuenta')->paginate(40);
+        return $planCuenta->orderBy('cuenta')->paginate(30);
     }
 }

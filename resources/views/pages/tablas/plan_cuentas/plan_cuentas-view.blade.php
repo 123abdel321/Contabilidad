@@ -18,7 +18,7 @@
         }
     </style>
     
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-2">
         <div class="row">
             <div style="z-index: 9;">
                 <button type="button" class="btn btn-success btn-sm" id="createPlanCuenta">Agregar cuenta</button>

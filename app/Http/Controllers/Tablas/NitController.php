@@ -47,10 +47,16 @@ class NitController extends Controller
         $columnName = $columnName_arr[$columnIndex]['data']; // Column name
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
-        $totalRecordswithFilter = Nits::select('count(*) as allcount');
 
         $nits = Nits::skip($start)
-            ->with('tipo_documento')
+            ->with('tipo_documento', 'ciudad')
+            ->select(
+                '*',
+                DB::raw("DATE_FORMAT(nits.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                DB::raw("DATE_FORMAT(nits.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                'nits.created_by',
+                'nits.updated_by'
+            )
             ->take($rowperpage);
 
         if($columnName){
@@ -65,22 +71,15 @@ class NitController extends Controller
                 ->orWhere('email', 'like', '%' .$searchValue . '%')
                 ->orWhere('telefono_1', 'like', '%' .$searchValue . '%')
                 ->orWhere('razon_social', 'like', '%' .$searchValue . '%');
-            $totalRecordswithFilter->where('primer_apellido', 'like', '%' .$searchValue . '%')
-                ->orWhere('segundo_apellido', 'like', '%' .$searchValue . '%')
-                ->orWhere('primer_nombre', 'like', '%' .$searchValue . '%')
-                ->orWhere('otros_nombres', 'like', '%' .$searchValue . '%')
-                ->orWhere('email', 'like', '%' .$searchValue . '%')
-                ->orWhere('telefono_1', 'like', '%' .$searchValue . '%')
-                ->orWhere('razon_social', 'like', '%' .$searchValue . '%');
         }
 
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
+            'iTotalRecords' => $nits->count(),
+            'iTotalDisplayRecords' => $nits->count(),
             'data' => $nits->get(),
             'perPage' => $rowperpage,
-            'iTotalRecords' => $totalRecordswithFilter->count(),
-            'iTotalDisplayRecords' => $totalRecordswithFilter->count(),
             'message'=> 'Comprobante generado con exito!'
         ]);
     }
@@ -92,7 +91,8 @@ class NitController extends Controller
 
         $rules = [
 			'id_tipo_documento' => 'required|exists:sam.tipos_documentos,id',
-			// 'id_ciudad' => 'nullable|exists:sam.ciudades,id',
+			'id_ciudad' => 'nullable|exists:sam.ciudades,id',
+            'observaciones' => 'nullable|string',
 			'id_actividad_econo' => 'nullable|exists:sam.actividades_economicas,id',
 			'numero_documento' => 'required|unique:sam.nits,numero_documento|max:30',
 			'digito_verificacion' => "nullable|between:0,9|numeric|required_if:id_tipo_documento,$idTipoDocumentoNit", // Campo requerido si el tipo de documento es nit (codigo: 31)
@@ -141,6 +141,8 @@ class NitController extends Controller
                 'direccion' => $request->get('direccion'),
                 'email' => $request->get('email'),
                 'telefono_1' => $request->get('telefono_1'),
+                'id_ciudad' => $request->get('id_ciudad'),
+                'observaciones' => $request->get('observaciones'),
             ]);
 
 			DB::connection('sam')->commit();
@@ -187,6 +189,9 @@ class NitController extends Controller
                 'razon_social' => $request->get('razon_social'),
                 'direccion' => $request->get('direccion'),
                 'email' => $request->get('email'),
+                'telefono_1' => $request->get('telefono_1'),
+                'id_ciudad' => $request->get('id_ciudad'),
+                'observaciones' => $request->get('observaciones'),
             ]);
 
         $nits = Nits::where('id', $request->get('id'))->with('tipo_documento')->first();
@@ -264,6 +269,27 @@ class NitController extends Controller
         }
 
         return $nits->paginate(40);
+    }
+
+    public function getNitInfo (Request $request)
+    {
+        $nit = Nits::where('numero_documento', $request->get('numero_documento'))
+            ->select(
+                '*',
+                DB::raw("CASE
+                    WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    ELSE NULL
+                END AS nombre_nit")
+            )
+            ->with('ciudad');
+
+        // $nit = Nits::whereNumeroDocumento($request->get("numero_documento"));
+
+        return response()->json([
+            "success"=>true,
+            "data"=>$nit->first()
+        ], 200);
     }
 
 }

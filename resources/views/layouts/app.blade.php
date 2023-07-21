@@ -7,8 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png">
     <link rel="icon" type="image/png" href="/img/logo192.png">
-    <title>
-        Maximo Contable
+    <title id="titulo-empresa">
     </title>
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -54,6 +53,73 @@
             max-width: 300px !important;
             float: right !important;
         }
+
+        label, .form-label {
+            margin-bottom: 2px !important;
+        }
+
+        .fondo-sistema {
+            background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg');
+            background-position-y: 50%;
+            min-height: 300px !important;
+        }
+
+        .btn {
+            margin-bottom: 0.8rem !important;
+        }
+
+        .form-group {
+            margin-bottom: 0.8rem !important;
+        }
+
+        .button-user {
+            cursor: pointer;
+        }
+
+        .navbar-nav > .nav-item > .nav-link.active {
+            background-image: linear-gradient(310deg, #344767 0%, #344767 100%) !important;
+            color: white !important;
+        }
+
+        .navbar-nav > .nav-item > .nav-link.active > .icon > .text-dark {
+            color: white !important;
+        }
+
+        .icon-user {
+            font-size: 15px;
+            padding: 5px;
+            -webkit-animation: color_change 2s infinite alternate;
+            -moz-animation: color_change 2s infinite alternate;
+            -ms-animation: color_change 2s infinite alternate;
+            -o-animation: color_change 2s infinite alternate;
+            animation: color_change 2s infinite alternate;
+        }
+
+        .icon-user-none {
+            font-size: 15px;
+            padding: 5px;
+        }
+
+        @-webkit-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @-moz-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @-ms-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @-o-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
         
     </style>
 </head>
@@ -69,7 +135,9 @@
             @yield('content')
         @else
             @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
-                <div class="min-height-300 bg-dark position-absolute w-100"></div>
+                <div class="min-height-300 bg-dark position-absolute w-100 fondo-sistema">
+                    <span class="mask bg-dark opacity-6"></span>
+                </div>
             @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
                 <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
                     <span class="mask bg-primary opacity-6"></span>
@@ -82,6 +150,98 @@
             @include('components.fixed-plugin')
         @endif
     @endauth
+    <!-- MODAL USUARIO ACCIÓN-->
+    <div class="modal fade" id="modal-usuario-accion" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+        <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="modal-title-usuario-accion">Creado por</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">  
+
+                    <div class="form-group col-12">
+                        <label for="example-text-input" class="form-control-label">Usuario</label>
+                        <input id="usuario_accion" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12">
+                        <label for="example-text-input" class="form-control-label">Correo</label>
+                        <input id="correo_accion" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12">
+                        <label for="example-text-input" class="form-control-label">Fecha acción</label>
+                        <input id="fecha_accion" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-danger ml-auto" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL NIT INFORMACIÓN-->
+    <div class="modal fade" id="modal-nit-informacion" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+        <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="modal-title-usuario-accion">Cedula Nit</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                <span >×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">  
+
+                    
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Nombre completo</label>
+                        <input id="nombre_completo" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Documento</label>
+                        <input id="numero_documento" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Direccion</label>
+                        <input id="direccion" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Telefono</label>
+                        <input id="telefono_1" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Correo</label>
+                        <input id="email" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12 col-md-6 col-sm-6">
+                        <label for="example-text-input" class="form-control-label">Ciudad</label>
+                        <input id="ciudad" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                    <div class="form-group col-12 col-md-12 col-sm-12">
+                        <label for="example-text-input" class="form-control-label">Observaciones</label>
+                        <input id="observaciones" class="form-control form-control-sm" type="text" disabled>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-danger ml-auto" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+            </div>
+        </div>
+    </div>
 
     <!--   Core JS Files   -->
     <script src="assets/js/core/popper.min.js"></script>
@@ -108,9 +268,10 @@
     <script src="assets/js/sistema/jquery.validate.min.js"></script>
     <!-- sweetalert2 -->
     <script src="assets/js/sistema/sweetalert2.all.min.js"></script>
-
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.2.6/jquery.inputmask.bundle.min.js"></script>
     <script>
+        
         // const base_url = 'http://localhost:8000/api/';
         // const base_web = 'http://localhost:8000/';
         const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
@@ -130,18 +291,19 @@
         let buttonocultarLateral = document.getElementById('button-ocultar-lateral');
         let iconSidenav = document.getElementById('iconSidenav');
 
-        $(".input_decimal").inputmask({
-            alias: 'decimal',
-            rightAlign: false,
-            groupSeparator: '.',
-            autoGroup: true
-        });
+        // $(".input_decimal").inputmask({
+        //     alias: 'decimal',
+        //     rightAlign: false,
+        //     groupSeparator: '.',
+        //     autoGroup: true
+        // });
 
         $('.form-control-sm').keyup(function() {
             $(this).val($(this).val().toUpperCase());
         });
 
         $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
+        $("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
 
         if (iconNavbarSidenavMaximo) {
             iconNavbarSidenavMaximo.addEventListener("click", toggleSidenavMaximo);
@@ -285,8 +447,85 @@
             return false;
         }
 
+        function showUser (id_usuario, fecha, creado) {
+
+            if(!id_usuario) {
+                return;
+            }
+
+            $('#usuario_accion').val('');
+            $('#correo_accion').val('');
+            $('#fecha_accion').val('');
+            $("#modal-title-usuario-accion").html("Buscando usuario ...");
+
+            $('#modal-usuario-accion').modal('show');
+
+            $.ajax({
+                url: base_url + 'usuario-accion',
+                method: 'GET',
+                data: {id: id_usuario},
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                if(res.success){
+                    console.log(res);
+                    var data = res.data;
+                    $('#usuario_accion').val(data.username);
+                    $('#correo_accion').val(data.email);
+                    $('#fecha_accion').val(fecha);
+
+                    if (creado) {
+                        $("#modal-title-usuario-accion").html("Creado por: "+ data.username);
+                    } else {
+                        $("#modal-title-usuario-accion").html("Actualizado por: "+ data.username);
+                    }
+                }
+            }).fail((err) => {
+                swalFire('Error al cargar usuario', '', false);
+            });
+        }
+
+        function showNit (numero_documento) {
+
+            if(!numero_documento) {
+                return;
+            }
+
+            $('#numero_documento').val('');
+            $('#nombre_completo').val('');
+            $('#direccion').val('');
+            $('#telefono_1').val('');
+            $('#email').val('');
+            $('#observaciones').val('');
+            $('#ciudad').val('');
+
+            $('#modal-nit-informacion').modal('show');
+
+            $.ajax({
+                url: base_url + 'nit/informacion',
+                method: 'GET',
+                data: {numero_documento: numero_documento},
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                if(res.success){
+                    console.log(res);
+                    var data = res.data;
+                    $('#numero_documento').val(data.numero_documento);
+                    $('#nombre_completo').val(data.nombre_nit);
+                    $('#direccion').val(data.direccion);
+                    $('#telefono_1').val(data.telefono_1);
+                    $('#email').val(data.email);
+                    $('#observaciones').val(data.observaciones);
+                    $('#ciudad').val(data.ciudad.nombre_completo);
+                }
+            }).fail((err) => {
+                swalFire('Error al cargar nit', '', false);
+            });
+        }
+
     </script>
-    @stack('js');
+    @stack('js')
 </body>
 
 </html>
