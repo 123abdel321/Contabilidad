@@ -15,12 +15,14 @@
     <div class="container-fluid py-2">
         <div class="row">
             <div class="row" style="z-index: 9;">
-                <div class="">
-                    <button type="button" class="btn btn-success btn-sm" id="createComprobante">Agregar comprobante</button>
+                <div class="row" style="z-index: 9;">
+                    <div class="col-4 col-md-4 col-sm-4">
+                        <button type="button" class="btn btn-primary btn-sm" id="createComprobante">Agregar comprobante</button>
+                    </div>
+                    <div class="col-8 col-md-8 col-sm-8">
+                        <input type="text" id="searchInput" class="form-control form-control-sm search-table" placeholder="Buscar">
+                    </div>
                 </div>
-                <!-- <div class="col-8 col-md-8 col-sm-8">
-                    <input type="text" id="searchInput" class="form-control form-control-sm search-table" placeholder="Buscar">
-                </div> -->
             </div>
             
 
@@ -96,7 +98,7 @@
                 {
                     "data": function (row, type, set){
                         var html = '';
-                        html+= '<span id="editcomprobante_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info edit-comprobante" style="margin-bottom: 0rem !important;">Editar</span>&nbsp;';
+                        html+= '<span id="editcomprobante_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-comprobante" style="margin-bottom: 0rem !important;">Editar</span>&nbsp;';
                         html+= '<span id="deletecomprobante_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-comprobante" style="margin-bottom: 0rem !important">Eliminar</span>';
                         return html;
                     }
@@ -105,10 +107,10 @@
             ]
         });
 
-        // $("#searchInput").on("input", function (e) {
-        //     comprobante_table.context[0].jqXHR.abort();
-        //     $('#comprobantesTable').DataTable().search($("#searchInput").val()).draw();
-        // });
+        $("#searchInput").on("input", function (e) {
+            comprobante_table.context[0].jqXHR.abort();
+            $('#comprobantesTable').DataTable().search($("#searchInput").val()).draw();
+        });
         
         $(document).on('click', '#createComprobante', function () {
             clearFormComprobante();

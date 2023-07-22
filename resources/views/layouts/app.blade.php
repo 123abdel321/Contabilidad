@@ -60,8 +60,8 @@
 
         .fondo-sistema {
             background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg');
-            background-position-y: 50%;
-            min-height: 300px !important;
+            min-height: 350px !important;
+            background-position: center center;
         }
 
         .btn {
@@ -97,6 +97,14 @@
 
         .icon-user-none {
             font-size: 15px;
+            padding: 5px;
+        }
+
+        .form-check-input:checked[type=radio] {
+            background-image: linear-gradient(310deg, #344767 0%, #344767 100%);
+        }
+
+        .form-check:not(.form-switch) .form-check-input[type=radio]:checked {
             padding: 5px;
         }
 

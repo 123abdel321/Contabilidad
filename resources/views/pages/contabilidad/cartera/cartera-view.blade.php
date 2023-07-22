@@ -184,15 +184,6 @@
                     }
                     return row.dias_cumplidos;
                 }},
-                {"data": function (row, type, set){
-                    if(row.detalle == 'si' || row.detalle == 'total'){
-                    }
-                    var datos = '<b style="color: #374b69;">Telefono: </b> '+row.telefono_1+'<br/>';
-                    datos+= '<b style="color: #374b69;">Dirección: </b> '+row.direccion+'<br/>';
-                    datos+= '<b style="color: #374b69;">Correo: </b>'+row.email+'<br/>';
-                    return datos;
-                    return '';
-                }},
                 {data: 'concepto'},
                 {"data": function (row, type, set){  
                     var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';

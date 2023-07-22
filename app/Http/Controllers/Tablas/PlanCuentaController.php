@@ -38,26 +38,21 @@ class PlanCuentaController extends Controller
         $columnName = $columnName_arr[$columnIndex]['data']; // Column name
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
-        $totalRecordswithFilter = PlanCuentas::select('count(*) as allcount')
-            ->where('nombre', 'like', '%' .$searchValue . '%')
-            ->orWhere('cuenta', 'like', '%' .$searchValue . '%')
-            ->count();
 
         $cuentas = PlanCuentas::orderBy($columnName,$columnSortOrder)
             ->with('tipo_cuenta', 'padre')
             ->where('nombre', 'like', '%' .$searchValue . '%')
             ->orWhere('cuenta', 'like', '%' .$searchValue . '%')
             ->skip($start)
-            ->take($rowperpage)
-            ->get();
+            ->take($rowperpage);
 
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
-            'data' => $cuentas,
+            'iTotalRecords' => $cuentas->count(),
+            'iTotalDisplayRecords' => $cuentas->count(),
+            'data' => $cuentas->get(),
             'perPage' => $rowperpage,
-            'iTotalRecords' => $totalRecordswithFilter,
-            'iTotalDisplayRecords' => $totalRecordswithFilter,
             'message'=> 'Comprobante generado con exito!'
         ]);
     }

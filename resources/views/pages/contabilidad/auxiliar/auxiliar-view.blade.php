@@ -235,6 +235,10 @@
             }
         });
 
+        $('input[type=radio][name=tipo_documento]').change(function() {
+            document.getElementById("generarAuxiliar").click();
+        });
+
         $(document).on('click', '#descargarExcelAuxiliar', function () {
             var fecha_desde = $('#fecha_desde').val();
             var fecha_hasta = $('#fecha_hasta').val();

@@ -56,12 +56,12 @@
                     </span>
                     <span id="crearCapturaDocumentosDisabled" href="javascript:void(0)" class="badge bg-success" style="min-width: 40px; display:none; float: right; background-color: #2dce899c !important; cursor: no-drop;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">GRABAR DOCUMENTOS</b>
+                        <b style="vertical-align: text-top;">GRABAR DOCUMENTO</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                     <span id="crearCapturaDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-success" style="min-width: 40px; display:none; float: right;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">GRABAR DOCUMENTOS</b>
+                        <b style="vertical-align: text-top;">GRABAR DOCUMENTO</b>
                     </span>
                 </div>
             </div>
