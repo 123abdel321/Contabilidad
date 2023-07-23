@@ -108,6 +108,16 @@
             padding: 5px;
         }
 
+        .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--highlighted {
+            color: #fff;
+            background-color: #596cff;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--disabled, .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option[aria-disabled=true] {
+            color: #6c757d;
+            background-color: #e9ecef;
+        }
+
         @-webkit-keyframes color_change {
             from { color: skyblue; }
             to { color: darkcyan ; }

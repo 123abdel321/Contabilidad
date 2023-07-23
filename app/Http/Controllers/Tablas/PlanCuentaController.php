@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tablas;
 
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 //MODELS
@@ -161,32 +162,9 @@ class PlanCuentaController extends Controller
 
     public function comboCuenta(Request $request)
     {
-        $naturaleza = "naturaleza_cuenta AS naturaleza_cuenta";
-        if($request->has("id_comprobante")) {
-            $comprobante = Comprobantes::where('id', $request->get("id_comprobante"))->first();
-            if($comprobante){
-                $tipoComprobante = $comprobante->tipo_comprobante;
-                switch ($tipoComprobante) {
-                    case 0:
-                        $naturaleza = "naturaleza_ingresos AS naturaleza_cuenta";
-                        break;
-                    case 1:
-                        $naturaleza = "naturaleza_egresos AS naturaleza_cuenta";
-                        break;
-                    case 2:
-                        $naturaleza = "naturaleza_compras AS naturaleza_cuenta";
-                        break;
-                    case 3:
-                        $naturaleza = "naturaleza_ventas AS naturaleza_cuenta";
-                        break;
-                    default:
-                        $naturaleza = "naturaleza_cuenta AS naturaleza_cuenta";
-                        break;
-                }
-            }
-        }
-
-        $planCuenta = PlanCuentas::where('cuenta', '<', '999999')->select(
+        $comprobante = NULL;
+        $naturaleza = "naturaleza_cuenta";
+        $select = [
             'id',
             'cuenta',
             'exige_nit',
@@ -194,13 +172,53 @@ class PlanCuentaController extends Controller
             'exige_concepto',
             'exige_centro_costos',
             'nombre',
-            \DB::raw($naturaleza),
-            \DB::raw("CONCAT(cuenta, ' - ', nombre) as text")
-        );
+            DB::raw($naturaleza. ' AS naturaleza_cuenta'),
+            DB::raw("CONCAT(cuenta, ' - ', nombre) as text")
+        ];
+
+        if($request->has("id_comprobante")) {
+            $comprobante = Comprobantes::where('id', $request->get("id_comprobante"))->first();
+            if($comprobante){
+                $tipoComprobante = $comprobante->tipo_comprobante;
+                switch ($tipoComprobante) {
+                    case 0:
+                        $naturaleza = "naturaleza_ingresos";
+                        break;
+                    case 1:
+                        $naturaleza = "naturaleza_egresos";
+                        break;
+                    case 2:
+                        $naturaleza = "naturaleza_compras";
+                        break;
+                    case 3:
+                        $naturaleza = "naturaleza_ventas";
+                        break;
+                };
+                $select = [
+                    'id',
+                    'cuenta',
+                    'exige_nit',
+                    'exige_documento_referencia',
+                    'exige_concepto',
+                    'exige_centro_costos',
+                    'nombre',
+                    'auxiliar',
+                    DB::raw($naturaleza. ' AS naturaleza_cuenta'),
+                    DB::raw('naturaleza_cuenta AS naturaleza_origen'),
+                    DB::raw("CONCAT(cuenta, ' - ', nombre) AS text")
+                ];
+            }
+        }
+
+        $planCuenta = PlanCuentas::where('cuenta', '<', '999999')->select($select);
 
         if ($request->get("q")) {
             $planCuenta->where('cuenta', 'LIKE', '%' . $request->get("q") . '%')
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        if ($request->has("id_comprobante") && $comprobante) {
+            $planCuenta->whereNotNull($naturaleza);
         }
 
         return $planCuenta->orderBy('cuenta')->paginate(30);

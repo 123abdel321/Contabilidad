@@ -22,7 +22,7 @@
         <div class="row">
             <div class="row" style="z-index: 9;">
                 <div class="col-4 col-md-4 col-sm-4">
-                    <button type="button" class="btn btn-success btn-sm" id="createNits">Agregar nit</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="createNits">Agregar nit</button>
                 </div>
                 <div class="col-8 col-md-8 col-sm-8">
                     <input type="text" id="searchInput" class="form-control form-control-sm search-table" placeholder="Buscar">
@@ -118,7 +118,7 @@
                 {
                     "data": function (row, type, set){
                         var html = '';
-                        html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info edit-nits" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
+                        html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-nits" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
                         html+= '<span id="deleteplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-nits" style="margin-bottom: 0rem !important">Eliminar</span>';
                         return html;
                     }

@@ -20,8 +20,13 @@
     
     <div class="container-fluid py-2">
         <div class="row">
-            <div style="z-index: 9;">
-                <button type="button" class="btn btn-success btn-sm" id="createPlanCuenta">Agregar cuenta</button>
+            <div class="row" style="z-index: 9;">
+                <div class="col-4 col-md-4 col-sm-4">
+                    <button type="button" class="btn btn-primary btn-sm" id="createPlanCuenta">Agregar cuenta</button>
+                </div>
+                <div class="col-8 col-md-8 col-sm-8">
+                    <input type="text" id="searchInput" class="form-control form-control-sm search-table" placeholder="Buscar">
+                </div>
             </div>
 
             <div class="card mb-4" style="content-visibility: auto; overflow: auto;">
@@ -73,7 +78,7 @@
 
         var plan_cuentas_table = $('#planCuentaTable').DataTable({
             pageLength: 15,
-            dom: 'ftip',
+            dom: 'tip',
             paging: true,
             responsive: true,
             processing: true,
@@ -98,34 +103,42 @@
                 },
                 {
                     "data": function (row, type, set){
-                        if(row.naturaleza_ingresos){
+                        if(row.naturaleza_ingresos == 1){
                             return 'Credito';
+                        } else if (row.naturaleza_ingresos == 0) {
+                            return 'Dedito';
                         }
-                        return 'Dedito';
+                        return '';
                     }
                 },
                 {
                     "data": function (row, type, set){
-                        if(row.naturaleza_egresos){
+                        if(row.naturaleza_egresos == 1){
                             return 'Credito';
+                        } else if (row.naturaleza_egresos == 0) {
+                            return 'Dedito';
                         }
-                        return 'Dedito';
+                        return '';
                     }
                 },
                 {
                     "data": function (row, type, set){
-                        if(row.naturaleza_compras){
+                        if(row.naturaleza_compras == 1){
                             return 'Credito';
+                        } else if (row.naturaleza_compras == 0) {
+                            return 'Dedito';
                         }
-                        return 'Dedito';
+                        return '';
                     }
                 },
                 {
                     "data": function (row, type, set){
-                        if(row.naturaleza_ventas){
+                        if(row.naturaleza_ventas == 1){
                             return 'Credito';
+                        } else if (row.naturaleza_ventas == 0) {
+                            return 'Dedito';
                         }
-                        return 'Dedito';
+                        return '';
                     }
                 },
                 {
@@ -173,10 +186,14 @@
         
         $(document).on('click', '#createPlanCuenta', function () {
             clearFormPlanCuenta();
-
             $("#updatePlanCuenta").hide();
             $("#savePlanCuenta").show();
             $("#planCuentaFormModal").modal('show');
+        });
+
+        $("#searchInput").on("input", function (e) {
+            plan_cuentas_table.context[0].jqXHR.abort();
+            $('#planCuentaTable').DataTable().search($("#searchInput").val()).draw();
         });
 
         $(document).on('click', '#savePlanCuenta', function () {
