@@ -31,7 +31,7 @@
                 <div class="collapse {{ Route::currentRouteName() == 'comprobante' || Route::currentRouteName() == 'plan-cuenta' || Route::currentRouteName() == 'nit' ? 'show' : '' }}" id="dashboardsExamples" >
                     <ul class="navbar-nav" style="margin-left: 15px;">
                         <li class="nav-item">
-                            <a class="nav-link {{ Route::currentRouteName() == 'nit' ? 'active' : '' }}" href="{{ route('nit') }}">
+                            <a class="nav-link button-side-nav" id="sidenav_nit">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
@@ -40,7 +40,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ Route::currentRouteName() == 'comprobante' ? 'active' : '' }}" href="{{ route('comprobante') }}">
+                            <a class="nav-link button-side-nav" id="sidenav_comprobante">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>

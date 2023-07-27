@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth']], function () {
 	//SISTEMA
 	Route::group(['middleware' => ['clientconnectionweb']], function () {
 		// >> INFORMES <<
-		Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+		Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 		Route::get('/home', [HomeController::class, 'index'])->name('home');
 		//AUXILIARES
 		Route::get('/auxiliar', [AuxiliarController::class, 'index'])->name('auxiliar');

@@ -138,7 +138,59 @@
             from { color: skyblue; }
             to { color: darkcyan ; }
         }
-        
+
+        .dtfh-floatingparent {
+            top: 0px !important;
+            left: 29px !important;
+        }
+        thead tr:first-child th {
+            background-color: #6f7ff9;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 12;
+            top: -52;
+        }
+
+        .footer-navigation {
+            position: fixed;
+            left: 0;
+            bottom: -1px;
+            width: 100%;
+            z-index: 999;
+        }
+
+        .footer-navigation .nav {
+            justify-content: center;
+        }
+
+        .close_item_navigation {
+            color: red;
+            cursor: pointer;
+        }
+
+        .footer-navigation .nav-item .nav-link {
+            margin-bottom: -1px;
+            background: none;
+            border: 1px solid #c1c1c1;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            margin-left: 1px;
+            color: white;
+            background-color: #2a3548;
+            cursor: pointer;
+        }
+
+        .footer-navigation .nav-item .nav-link.active {
+            background-color: #FFF !important;
+            color: black;
+            cursor: context-menu;
+        }
+
+        .button-side-nav {
+            cursor: pointer;
+        }
+
     </style>
 </head>
 
@@ -162,9 +214,12 @@
                 </div>
             @endif
             @include('layouts.navbars.auth.sidenav')
-            <main class="main-content border-radius-lg" style="margin-left: 5px;">
-                @yield('content')
-            </main>
+            <div id="contenerdores-views" class="tab-content clearfix">
+                <main class="tab-pane main-content border-radius-lg change-view active" style="margin-left: 5px;" id="containner-dashboard">
+                    
+                </main>
+            </div>
+            <br/>
             @include('components.fixed-plugin')
         @endif
     @endauth
@@ -175,7 +230,7 @@
             <div class="modal-header">
                 <h6 class="modal-title" id="modal-title-usuario-accion">Creado por</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
+                <span aria-hidden="true">x</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -208,63 +263,63 @@
     <div class="modal fade" id="modal-nit-informacion" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
         <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
             <div class="modal-content">
-            <div class="modal-header">
-                <h6 class="modal-title" id="modal-title-usuario-accion">Cedula Nit</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                <span >×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">  
-
-                    
-                    <div class="form-group col-12 col-md-6 col-sm-6">
-                        <label for="example-text-input" class="form-control-label">Nombre completo</label>
-                        <input id="nombre_completo" class="form-control form-control-sm" type="text" disabled>
-                    </div>
-                    <div class="form-group col-12 col-md-6 col-sm-6">
-                        <label for="example-text-input" class="form-control-label">Documento</label>
-                        <input id="numero_documento" class="form-control form-control-sm" type="text" disabled>
-                    </div>
-
-                    <div class="form-group col-12 col-md-6 col-sm-6">
-                        <label for="example-text-input" class="form-control-label">Direccion</label>
-                        <input id="direccion" class="form-control form-control-sm" type="text" disabled>
-                    </div>
-
-                    <div class="form-group col-12 col-md-6 col-sm-6">
-                        <label for="example-text-input" class="form-control-label">Telefono</label>
-                        <input id="telefono_1" class="form-control form-control-sm" type="text" disabled>
-                    </div>
-
-                    <div class="form-group col-12 col-md-6 col-sm-6">
-                        <label for="example-text-input" class="form-control-label">Correo</label>
-                        <input id="email" class="form-control form-control-sm" type="text" disabled>
-                    </div>
-
-                    <div class="form-group col-12 col-md-6 col-sm-6">
-                        <label for="example-text-input" class="form-control-label">Ciudad</label>
-                        <input id="ciudad" class="form-control form-control-sm" type="text" disabled>
-                    </div>
-
-                    <div class="form-group col-12 col-md-12 col-sm-12">
-                        <label for="example-text-input" class="form-control-label">Observaciones</label>
-                        <input id="observaciones" class="form-control form-control-sm" type="text" disabled>
-                    </div>
-
+                <div class="modal-header">
+                    <h6 class="modal-title" id="modal-title-usuario-accion">Cedula Nit</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span >x</span>
+                    </button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-danger ml-auto" data-bs-dismiss="modal">Cerrar</button>
-            </div>
+                <div class="modal-body">
+                    <div class="row">  
+                        <div class="form-group col-12 col-md-6 col-sm-6">
+                            <label for="example-text-input" class="form-control-label">Nombre completo</label>
+                            <input id="nombre_completo" class="form-control form-control-sm" type="text" disabled>
+                        </div>
+                        <div class="form-group col-12 col-md-6 col-sm-6">
+                            <label for="example-text-input" class="form-control-label">Documento</label>
+                            <input id="numero_documento" class="form-control form-control-sm" type="text" disabled>
+                        </div>
+
+                        <div class="form-group col-12 col-md-6 col-sm-6">
+                            <label for="example-text-input" class="form-control-label">Direccion</label>
+                            <input id="direccion" class="form-control form-control-sm" type="text" disabled>
+                        </div>
+
+                        <div class="form-group col-12 col-md-6 col-sm-6">
+                            <label for="example-text-input" class="form-control-label">Telefono</label>
+                            <input id="telefono_1" class="form-control form-control-sm" type="text" disabled>
+                        </div>
+
+                        <div class="form-group col-12 col-md-6 col-sm-6">
+                            <label for="example-text-input" class="form-control-label">Correo</label>
+                            <input id="email" class="form-control form-control-sm" type="text" disabled>
+                        </div>
+
+                        <div class="form-group col-12 col-md-6 col-sm-6">
+                            <label for="example-text-input" class="form-control-label">Ciudad</label>
+                            <input id="ciudad" class="form-control form-control-sm" type="text" disabled>
+                        </div>
+
+                        <div class="form-group col-12 col-md-12 col-sm-12">
+                            <label for="example-text-input" class="form-control-label">Observaciones</label>
+                            <input id="observaciones" class="form-control form-control-sm" type="text" disabled>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger ml-auto" data-bs-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
+    <!-- FOOTER -->
+    @include('layouts.footers.footer')
 
     <!--   Core JS Files   -->
     <script src="assets/js/core/popper.min.js"></script>
     <script src="assets/js/core/bootstrap.min.js"></script>
-    <script src="assets/js/plugins/perfect-scrollbar.min.js"></script>
+    <!-- <script src="assets/js/plugins/perfect-scrollbar.min.js"></script> -->
     <script src="assets/js/plugins/smooth-scrollbar.min.js"></script>
     <script>
        
@@ -280,6 +335,8 @@
     <script src="assets/js/sistema/dataTables.bootstrap5.min.js"></script>
     <script src="assets/js/sistema/dataTables.responsive.min.js"></script>
     <script src="assets/js/sistema/responsive.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
+    
     <!-- SELECT 2  -->
     <script src="assets/js/sistema/select2.full.min.js"></script>
     <!-- VALIDATE -->
@@ -289,11 +346,15 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.2.6/jquery.inputmask.bundle.min.js"></script>
     <script>
+
+        $(document).ready(function() {
+            $('#containner-dashboard').load('/dashboard');
+        });
         
-        // const base_url = 'http://localhost:8000/api/';
-        // const base_web = 'http://localhost:8000/';
-        const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
-        const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
+        const base_url = 'http://localhost:8000/api/';
+        const base_web = 'http://localhost:8000/';
+        // const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
+        // const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
         const dateNow = new Date();
         const auth_token = localStorage.getItem("auth_token");
         const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
@@ -308,13 +369,6 @@
         let buttonMostrarLateral = document.getElementById('button-mostrar-lateral');
         let buttonocultarLateral = document.getElementById('button-ocultar-lateral');
         let iconSidenav = document.getElementById('iconSidenav');
-
-        // $(".input_decimal").inputmask({
-        //     alias: 'decimal',
-        //     rightAlign: false,
-        //     groupSeparator: '.',
-        //     autoGroup: true
-        // });
 
         $('.form-control-sm').keyup(function() {
             $(this).val($(this).val().toUpperCase());
@@ -333,6 +387,62 @@
 
         if (sidenav2) {
             sidenav2.addEventListener("click", toggleSidenavMaximo);
+        }
+
+        $(document).on('click', '.button-side-nav', function () {
+            var id = this.id.split('_')[1];
+            if($('#containner-'+id).length == 0) {
+                generatView(id);
+            }
+            seleccionarView(id);
+        });
+
+        $(document).on('click', '.seleccionar-view', function () {
+            var id = this.id.split('-')[1];
+            if(id) {
+                seleccionarView(id);
+            }
+        });
+
+        function generatView(id){
+            $('#contenerdores-views').append('<main class="tab-pane main-content border-radius-lg change-view" style="margin-left: 5px;" id="containner-'+id+'"></main>');
+            $('#footer-navigation').append(generateNewTabButton(id));
+            $('#containner-'+id).load('/'+id);
+        }
+
+        function seleccionarView(id){
+            $('.change-view').removeClass("active");
+            $('.seleccionar-view').removeClass("active");
+
+            $('#containner-'+id).addClass("active");
+            $('#tab-'+id).addClass("active");
+        }
+
+        function generateNewTabView(id){
+            var html = '<main class="tab-pane main-content border-radius-lg change-view" style="margin-left: 5px;" id="containner-'+id+'"></main>';
+        }
+
+        function generateNewTabButton(id){
+            var icon = '';
+            var nombre = '';
+
+            if(id == 'nit') {
+                icon = 'fas fa-book';
+                nombre = 'Cedulas nits';
+            } else if (id == 'comprobante') {
+                icon = 'fas fa-book';
+                nombre = 'Comprobantes';
+            }
+
+            var html = '';
+            html+=  '<li class="nav-item">';
+            html+=      '<div class="nav-link col seleccionar-view" id="tab-'+id+'">';
+            html+=          '<i class="'+icon+'"></i>&nbsp;';
+            html+=          nombre+'&nbsp;';
+            html+=          '<i class="fas fa-times-circle close_item_navigation"></i>&nbsp;';
+            html+=      '</div>';
+            html+=  '</li>';
+            return html;
         }
 
         function toggleSidenavMaximo() {
@@ -357,7 +467,6 @@
                 sidenav.classList.remove('side-nav-maximo-close');
                 buttonMostrarLateral.classList.add('ocultar');
                 buttonocultarLateral.classList.remove('ocultar');
-                
             }
         }
 

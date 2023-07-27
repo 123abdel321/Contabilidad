@@ -34,16 +34,11 @@
         <div class="row">
 
             <div class="card mb-4">
-                <div class="card-body" style="padding: 0 !important;">
-                    @include('pages.contabilidad.auxiliar.auxiliar-filter')
-                </div>
+                @include('pages.contabilidad.auxiliar.auxiliar-filter')
             </div>
 
             <div class="card mb-4" style="content-visibility: auto; overflow: auto;">
-                <div class="card-body">
-                    @include('pages.contabilidad.auxiliar.auxiliar-table')
-                </div>
-
+                @include('pages.contabilidad.auxiliar.auxiliar-table')
             </div>
         </div>
         
@@ -61,13 +56,21 @@
 
         var auxiliar_table = $('#auxiliarInformeTable').DataTable({
             dom: '',
-            responsive: true,
+            responsive: false,
             processing: true,
             serverSide: true,
+            fixedHeader: true,
             deferLoading: 0,
             initialLoad: false,
             language: lenguajeDatatable,
             ordering: false,
+            sScrollX: "100%",
+            scrollX: true,
+            fixedHeader : {
+                header : true,
+                footer : true,
+                headerOffset: 45
+            },  
             'rowCallback': function(row, data, index){
                 if(data.detalle_group == 'nits-totales'){
                     $('td', row).css('background-color', 'rgb(128 207 120 / 40%)');

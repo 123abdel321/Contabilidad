@@ -95,6 +95,7 @@
         var idDocumento = 1;
         var editandoCaptura = 0;
         var rowExtracto = '';
+        var tipo_comprobante = '';
         $('#fecha_manual').val(fecha);
 
         var documento_table = $('#documentoReferenciaTable').DataTable({
@@ -137,7 +138,7 @@
                     "data": function (row, type, set, col){
                         var html = '<div class="input-group" style="width: 180px; height: 30px;">';
                         html+= '<input type="text" class="form-control form-control-sm" id="documento_referencia_'+col.row+'" onkeypress="changeDctoRow('+col.row+', event)" style="height: 33px;" disabled readonly> ';
-                        html+= '<div class="input-group-append button-group" id="conten_button_'+col.row+'"><span href="javascript:void(0)" class="btn badge bg-gradient-secondary btn-group btn-documento-extracto" style="min-width: 40px; margin-right: 3px; border-radius: 0px 7px 7px 0px; height: 33px;"><i class="fas fa-search" style="font-size: 17px; margin-top: 3px;"></i><b style="vertical-align: text-top;"></b></span></div></div>'
+                        html+= '<div class="input-group-append button-group" id="conten_button_'+col.row+'"><span href="javascript:void(0)" class="btn badge bg-gradient-secondary btn-group btn-documento-extracto" style="min-width: 40px; margin-right: 3px; border-radius: 0px 7px 7px 0px; height: 33px;"><i class="fas fa-search" style="font-size: 17px; margin-top: 3px;"></i><b style="vertical-align: text-top;"></b></span></div></div>';
                         return html;
                     }
                 },
@@ -271,6 +272,8 @@
             initialLoad: false,
             language: lenguajeDatatable,
             ordering: false,
+            sScrollX: "100%",
+            scrollX: true,
             ajax:  {
                 type: "GET",
                 headers: headers,
@@ -281,6 +284,11 @@
                 }
             },
             columns: [
+                
+                {"data":'documento_referencia'},
+                {"data":'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                {"data":'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
                 {
                     "data": function (row, type, set){
                         var html = '';
@@ -288,10 +296,8 @@
                         return html;
                     }
                 },
-                {"data":'documento_referencia'},
-                {"data":'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-                {"data":'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-                {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'}
+                {"data":'fecha_manual'},
+                {"data":'dias_cumplidos'}
             ]
         });
 
@@ -325,15 +331,23 @@
 
         function changeCuentaRow(idRow) {
             let data = $('#combo_cuenta_'+idRow).select2('data')[0];
+            console.log('changeCuentaRow: ',data);
             setDisabledRows(data, idRow);
             clearRows(data, idRow);
             mostrarValores();
-            if(data.cuenta.slice(0, 1) == '2' || data.cuenta.slice(0, 2) == '13') {
-                if(data.naturaleza_cuenta != data.naturaleza_origen) {
-                    rowExtracto = idRow;
-                    $("#conten_button_"+idRow).show();
-                    $("#documento_referencia_"+idRow).removeClass("normal_input");
-                    $("#documento_referencia_"+idRow).prop("readonly", true)
+            // console.log(data.cuenta);
+            if(data.cuenta) {
+                if(data.cuenta.slice(0, 1) == '2' || data.cuenta.slice(0, 2) == '13') {
+                    if(data.naturaleza_cuenta != data.naturaleza_origen) {
+                        rowExtracto = idRow;
+                        $("#conten_button_"+idRow).show();
+                        $("#documento_referencia_"+idRow).removeClass("normal_input");
+                        $("#documento_referencia_"+idRow).prop("readonly", true)
+                    } else {
+                        $("#conten_button_"+idRow).hide();
+                        $("#documento_referencia_"+idRow).addClass("normal_input");
+                        $("#documento_referencia_"+idRow).prop("readonly", false);
+                    }
                 } else {
                     $("#conten_button_"+idRow).hide();
                     $("#documento_referencia_"+idRow).addClass("normal_input");
@@ -367,6 +381,11 @@
 
         function changeDctoRow(idRow, event) {
             if(event.keyCode == 13){
+                var dataCuenta = $('#combo_cuenta_'+idRow).select2('data');
+                console.log('dataCuenta: ',dataCuenta);
+                // if() {
+                    
+                // }
                 focusNextRow(3, idRow);
             }
         }
@@ -508,6 +527,9 @@
                             },10);
                         }
                     } else {
+                        // data.naturaleza_cuenta != data.naturaleza_origen
+                        // var dataCuenta = $('#combo_cuenta_'+idRow).select2('data');
+                        // console.log('dataCuenta: ',dataCuenta);
                         if(inputsId[idNextColumn] == '#documento_referencia' && idRow === rowExtracto){
                             buscarExtracto();
                         }
@@ -587,6 +609,7 @@
                         $("#iniciarCapturaDocumentosLoading").hide();
                         $("#crearCapturaDocumentos").show();
                         if(data.length > 0){
+                            editandoCaptura = true;
                             idDocumento = 1;
                             for (let index = 0; index < data.length; index++) {
                                 addRow(false);
@@ -603,7 +626,7 @@
                                     var nombre = documento.nit.tipo_contribuyente == 1 ? documento.nit.razon_social : documento.nit.primer_nombre+' '+documento.nit.primer_apellido;
                                     var dataNit = {
                                         id: documento.nit.id,
-                                        text: documento.nit.documento+ ' - ' +nombre
+                                        text: documento.nit.numero_documento+ ' - ' +nombre
                                     };
                                     var newOptionNit = new Option(dataNit.text, dataNit.id, false, false);
                                     $('#combo_nits_'+index).append(newOptionNit).trigger('change');
@@ -630,14 +653,36 @@
                                     $('#credito_'+index).val(parseInt(documento.credito));
                                 }
 
+                                var comprobante = $("#id_comprobante").select2('data')[0];
+                                
+                                documento.cuenta.naturaleza_origen = documento.cuenta.naturaleza_cuenta;
+
+                                if(tipo_comprobante == 0) {
+                                    documento.cuenta.naturaleza_cuenta = documento.cuenta.naturaleza_ingresos;
+                                }
+
+                                if(tipo_comprobante == 1) {
+                                    documento.cuenta.naturaleza_cuenta = documento.cuenta.naturaleza_egresos;
+                                }
+
+                                if(tipo_comprobante == 2) {
+                                    documento.cuenta.naturaleza_cuenta = documento.cuenta.naturaleza_compras;
+                                }
+
+                                if(tipo_comprobante == 3) {
+                                    documento.cuenta.naturaleza_cuenta = documento.cuenta.naturaleza_ventas;
+                                }
+
                                 $('#concepto_'+index).val(documento.concepto);
 
+                                
                                 setDisabledRows(documento.cuenta, index);
                             }
                             $("#editing_documento").val("1");
                             swalFire('Documentos encontrados', 'Documentos cargados con exito!');
                             mostrarValores();
                         } else {
+                            editandoCaptura = false;
                             $("#crearCapturaDocumentos").hide();
                             $("#crearCapturaDocumentosDisabled").show();
                             $("#editing_documento").val("0");
@@ -800,6 +845,7 @@
         $("#id_comprobante").on('change', function(e) {
             var data = $(this).select2('data');
             if(data.length){
+                tipo_comprobante = data[0].tipo_comprobante;
                 consecutivoSiguiente();
             }
         });
@@ -1238,6 +1284,9 @@
             return data;
         }
 
+        
+
     </script>
+    
 
 @endpush

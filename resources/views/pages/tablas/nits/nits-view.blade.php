@@ -1,6 +1,4 @@
-@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
-@section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Cedulas Nits'])
 
     <style>
@@ -41,16 +39,14 @@
         @include('pages.tablas.nits.nits-form')
         
     </div>
-@endsection
 
-@push('js')
     <script>
 
         var nits_table = $('#nitTable').DataTable({
             pageLength: 15,
             dom: 'tip',
             paging: true,
-            responsive: true,
+            responsive: false,
             processing: true,
             serverSide: true,
             initialLoad: true,
@@ -250,7 +246,7 @@
                 $("#saveNitLoading").show();
                 $("#updateNit").hide();
                 $("#saveNit").hide();
-    
+
                 let data = {
                     id_tipo_documento: $("#id_tipo_documento").val(),
                     numero_documento: $("#numero_documento").val(),
@@ -266,7 +262,7 @@
                     id_ciudad: $("#id_ciudad").val(),
                     observaciones: $("#observaciones").val(),
                 }
-    
+
                 $.ajax({
                     url: base_url + 'nit',
                     method: 'POST',
@@ -423,5 +419,4 @@
             }
         });
 
-    </script>
-@endpush
+</script>

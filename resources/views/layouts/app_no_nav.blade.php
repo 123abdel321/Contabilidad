@@ -80,7 +80,7 @@
     <!--   Core JS Files   -->
     <script src="assets/js/core/popper.min.js"></script>
     <script src="assets/js/core/bootstrap.min.js"></script>
-    <script src="assets/js/plugins/perfect-scrollbar.min.js"></script>
+    <!-- <script src="assets/js/plugins/perfect-scrollbar.min.js"></script> -->
     <script src="assets/js/plugins/smooth-scrollbar.min.js"></script>
     
     <!-- Github buttons -->
@@ -103,10 +103,10 @@
 
     <script>
 
-        // const base_url = 'http://localhost:8000/api/';
-        // const base_web = 'http://localhost:8000/';
-        const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
-        const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
+        const base_url = 'http://localhost:8000/api/';
+        const base_web = 'http://localhost:8000/';
+        // const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
+        // const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
         const dateNow = new Date();
         const auth_token = localStorage.getItem("auth_token");
         const headers = {
@@ -277,7 +277,7 @@
                 }).done((res) => {
                     swalFire('Selección exitosa', 'Empresa seleccionada con exito');
                     localStorage.setItem("empresa_nombre", res.empresa.nombre);
-                    window.location.href = '/dashboard';
+                    window.location.href = '/home';
                 }).fail((err) => {
                     $("#saveEmpresa").show();
                     $("#saveEmpresaLoading").hide();

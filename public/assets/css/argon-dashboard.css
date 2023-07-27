@@ -29,7 +29,7 @@
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
   --bs-primary: #596CFF;
-  --bs-primary-second: #4358f5;
+  --bs-primary-second: #384ef3;
   --bs-secondary: #8392ab;
   --bs-success: #2dce89;
   --bs-info: #11cdef;
@@ -4429,9 +4429,10 @@ textarea.form-control-lg {
 }
 
 .nav-link {
+
   display: block;
   padding: 0.5rem 1rem;
-  color: #fb6340;
+  color: var(--bs-primary);
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -4440,7 +4441,7 @@ textarea.form-control-lg {
   }
 }
 .nav-link:hover, .nav-link:focus {
-  color: #ea3005;
+  color: var(--bs-primary-second);
 }
 .nav-link.disabled {
   color: #6c757d;

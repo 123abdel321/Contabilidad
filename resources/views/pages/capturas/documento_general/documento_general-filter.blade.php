@@ -20,7 +20,7 @@
                             <select name="id_comprobante" id="id_comprobante" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                             </select>
                             <div class="invalid-feedback">
-                                Porfavor seleecionar comprobante
+                                El comprobante es requerido
                             </div>
                         </div>
 

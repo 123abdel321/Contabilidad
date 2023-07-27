@@ -81,6 +81,7 @@ class DocumentoGeneralController extends Controller
 			
 			$debito = 0;
 			$credito = 0;
+
 			foreach ($documento as $doc) {
 				$debito+= $doc['debito'];
 				$credito+= $doc['credito'];
@@ -88,16 +89,24 @@ class DocumentoGeneralController extends Controller
 
 			$consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
 
-			$facDocumento = FacDocumentos::create([
-				'id_comprobante' => $request->get('id_comprobante'),
-				'fecha_manual' => $request->get('fecha_manual'),
-				'consecutivo' => $consecutivo,
-				'debito' => $debito,
-				'credito' => $credito,
-				'saldo_final' => $debito - $credito,
-				'created_by' => request()->user()->id,
-				'updated_by' => request()->user()->id,
-			]);
+			$facDocumento = null;
+
+			if(!$request->get('editing_documento')) {
+				$facDocumento = FacDocumentos::create([
+					'id_comprobante' => $request->get('id_comprobante'),
+					'fecha_manual' => $request->get('fecha_manual'),
+					'consecutivo' => $consecutivo,
+					'debito' => $debito,
+					'credito' => $credito,
+					'saldo_final' => $debito - $credito,
+					'created_by' => request()->user()->id,
+					'updated_by' => request()->user()->id,
+				]);
+			} else {
+				$facDocumento = FacDocumentos::where('id_comprobante', $request->get('id_comprobante'))
+					->where('consecutivo', $request->get('consecutivo'))
+					->first();
+			}
 
 			$documentoGeneral = new Documento($request->get('id_comprobante'), $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
 
