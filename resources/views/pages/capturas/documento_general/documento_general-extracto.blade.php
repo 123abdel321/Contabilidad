@@ -12,13 +12,13 @@
             <table id="documentoExtractoTable" class="table nowrap table-bordered display responsive" width="100%">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Dcto</th>
                         <th>Factura</th>
                         <th>Abono</th>
                         <th>Saldo</th>
                         <th>Fecha</th>
                         <th>Dias</th>
-                        <th></th>
                     </tr>
                 </thead>
             </table>

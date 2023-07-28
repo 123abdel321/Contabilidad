@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Sistema\PlanCuentas;
+use App\Models\Sistema\DocumentosGeneral;
 
 class ExtractoController extends Controller
 {
@@ -80,6 +81,17 @@ class ExtractoController extends Controller
             'success'=>	true,
             'data' => array_values($this->carteraCollection),
             'message'=> 'Extracto generado con exito!'
+        ]);
+    }
+
+    public function existeFactura(Request $request)
+    {
+        $documento = DocumentosGeneral::where('documento_referencia', $request->get('documento_referencia'));
+
+        return response()->json([
+            'success'=>	true,
+            'data' => $documento->count(),
+            'message'=> 'Factura consultada con exito!'
         ]);
     }
 

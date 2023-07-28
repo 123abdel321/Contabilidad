@@ -43,6 +43,20 @@
         border-radius: 9px !important;
     }
 
+    .documento-load {
+        position: absolute;
+        margin-left: 160px !important;
+        margin-top: 9px;
+        z-index: 99;
+        font-size: 12px;
+    }
+
+    .info-factura {
+        margin-top: -16px;
+        z-index: 999;
+        margin-left: 80px !important;
+    }
+
 </style>
 
 <div class="container-fluid py-2">
@@ -89,6 +103,7 @@
     var editandoCaptura = 0;
     var rowExtracto = '';
     var tipo_comprobante = '';
+    var validarFactura = null;
     $('#fecha_manual').val(fecha);
 
     var documento_table = $('#documentoReferenciaTable').DataTable({
@@ -129,9 +144,17 @@
             },
             {//DCTO REFE
                 "data": function (row, type, set, col){
-                    var html = '<div class="input-group" style="width: 180px; height: 30px;">';
-                    html+= '<input type="text" class="form-control form-control-sm" id="documento_referencia_'+col.row+'" onkeypress="changeDctoRow('+col.row+', event)" style="height: 33px;" disabled readonly> ';
-                    html+= '<div class="input-group-append button-group" id="conten_button_'+col.row+'"><span href="javascript:void(0)" class="btn badge bg-gradient-secondary btn-group btn-documento-extracto" style="min-width: 40px; margin-right: 3px; border-radius: 0px 7px 7px 0px; height: 33px;"><i class="fas fa-search" style="font-size: 17px; margin-top: 3px;"></i><b style="vertical-align: text-top;"></b></span></div></div>';
+                    var html = '';
+                    html+= '';
+                    html+= '    <div class="input-group" style="width: 180px; height: 30px;">';
+                    html+= '        <input type="text" class="form-control form-control-sm" id="documento_referencia_'+col.row+'"onkeypress="changeDctoRow('+col.row+', event)" keyup style="height: 33px;" disabled readonly>';
+                    html+= '        <i class="fa fa-spinner fa-spin fa-fw documento-load" id="documento_load_'+col.row+'" style="display: none;"></i>';
+                    html+= '        <div class="valid-feedback info-factura">Nueva factura</div>';
+                    html+= '        <div class="invalid-feedback info-factura">Factura existente</div>';
+                    html+= '        <div class="input-group-append button-group" id="conten_button_'+col.row+'"><span href="javascript:void(0)" class="btn badge bg-gradient-secondary btn-group btn-documento-extracto" style="min-width: 40px; margin-right: 3px; border-radius: 0px 7px 7px 0px; height: 33px;"><i class="fas fa-search" style="font-size: 17px; margin-top: 3px;"></i><b style="vertical-align: text-top;"></b></span></div></div>';
+                    html+= '    </div>';
+                    html+= '';
+
                     return html;
                 }
             },
@@ -211,9 +234,6 @@
                             return query;
                         },
                         processResults: function (data) {
-                            
-
-                            // var searchTerm = $("#product_id").data("select2").$dropdown.find("input").val();
                             if (data.total.length == 1) {
                                 $("#product_id").append($("<option />")
                                     .attr("value", data.results[0].id)
@@ -250,7 +270,6 @@
                         }
                     }
                 });
-                
             });
         }
     });
@@ -277,11 +296,6 @@
             }
         },
         columns: [
-            
-            {"data":'documento_referencia'},
-            {"data":'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data":'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {
                 "data": function (row, type, set){
                     var html = '';
@@ -289,8 +303,13 @@
                     return html;
                 }
             },
+            {"data":'documento_referencia'},
+            {"data":'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            
             {"data":'fecha_manual'},
-            {"data":'dias_cumplidos'}
+            {"data":'dias_cumplidos'},
         ]
     });
 
@@ -309,6 +328,10 @@
         $('#card-documento-general').focus();
         document.getElementById("card-documento-general").scrollLeft = 0;
         rows = rows-1;
+        var concepto = $('#concepto_'+rows-1).val();
+        if(rows > 0 && concepto) {
+            $('#concepto_'+idRow).val(concepto);
+        }
         if(openCuenta){
             $('#combo_cuenta_'+rows).select2('open');
         }
@@ -324,11 +347,10 @@
 
     function changeCuentaRow(idRow) {
         let data = $('#combo_cuenta_'+idRow).select2('data')[0];
-        console.log('changeCuentaRow: ',data);
         setDisabledRows(data, idRow);
         clearRows(data, idRow);
         mostrarValores();
-        // console.log(data.cuenta);
+
         if(data.cuenta) {
             if(data.cuenta.slice(0, 1) == '2' || data.cuenta.slice(0, 2) == '13') {
                 if(data.naturaleza_cuenta != data.naturaleza_origen) {
@@ -345,6 +367,19 @@
                 $("#conten_button_"+idRow).hide();
                 $("#documento_referencia_"+idRow).addClass("normal_input");
                 $("#documento_referencia_"+idRow).prop("readonly", false);
+                if(data.cuenta.slice(0, 2) == '11' && idRow > 0 && data.naturaleza_cuenta == data.naturaleza_origen) {
+                    var dataDocumento = documento_table.rows().data();
+                    var credito = 0;
+                    if(dataDocumento.length > 0) {
+                        for (let index = 0; index < dataDocumento.length; index++) {
+                            var cre = $('#credito_'+index).val();
+                            credito+= parseInt(cre ? cre : 0);
+                        }
+                        var rowBack = idRow-1;
+                        $("#debito_"+idRow).val(credito);
+                        $("#concepto_"+idRow).val($("#concepto_"+rowBack).val());
+                    }
+                }
             }
         } else {
             $("#conten_button_"+idRow).hide();
@@ -374,12 +409,47 @@
 
     function changeDctoRow(idRow, event) {
         if(event.keyCode == 13){
-            var dataCuenta = $('#combo_cuenta_'+idRow).select2('data');
-            console.log('dataCuenta: ',dataCuenta);
-            // if() {
-                
-            // }
+            if(!$('#concepto_'+idRow).val()){
+                var nit = $('#combo_nits_'+idRow).select2('data');
+                if(nit.length > 0) {
+                    var factura = $('#documento_referencia_'+idRow).val();
+                    var fac = factura ? ' - FACTURA: ' + factura : '';
+                    $('#concepto_'+idRow).val(nit[0].text + fac);
+                }
+            }
             focusNextRow(3, idRow);
+        } else {
+            var dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
+            if(dataCuenta.cuenta.slice(0, 1) == '2' || dataCuenta.cuenta.slice(0, 2) == '13') {
+                if(dataCuenta.naturaleza_cuenta == dataCuenta.naturaleza_origen) {
+                    $('#documento_load_'+idRow).show();
+                    if (validarFactura) {
+                        validarFactura.abort();
+                    }
+                    validarFactura = $.ajax({
+                        url: base_url + 'existe-factura',
+                        method: 'GET',
+                        data: {documento_referencia: $('#documento_referencia_'+idRow).val()},
+                        headers: headers,
+                        dataType: 'json',
+                    }).done((res) => {
+                        validarFactura = null;
+                        $('#documento_load_'+idRow).hide();
+                        if(res.data == 0){
+                            $('#documento_referencia_'+idRow).removeClass("is-invalid");
+                            $('#documento_referencia_'+idRow).addClass("is-valid");
+                        }else {
+                            $('#documento_referencia_'+idRow).removeClass("is-valid");
+                            $('#documento_referencia_'+idRow).addClass("is-invalid");
+                        }
+                    }).fail((err) => {
+                        validarFactura = null;
+                        if(err.statusText != "abort") {
+                            $('#documento_load_'+idRow).hide();
+                        }
+                    });
+                }
+            }
         }
     }
 
@@ -397,14 +467,33 @@
 
     function changeConceptoRow(idRow, event) {
         if(event.keyCode == 13){
+            let dataComprobante = $('#id_comprobante').select2('data')[0];
+            let dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
+
+            if(dataCuenta.text.slice(0, 2) == '11' || dataCuenta.text.slice(0, 2) == '12') {
+                var dataDocumento = documento_table.rows().data();
+
+                if(dataDocumento.length > 0) {
+                    var debito = 0;
+                    var credito = 0;
+                    $("#crearCapturaDocumentos").show();
+                    $("#crearCapturaDocumentosDisabled").hide();
+                    
+                    for (let index = 0; index < dataDocumento.length; index++) {
+                        var deb = $('#debito_'+index).val();
+                        var cre = $('#credito_'+index).val();
+                        debito+= parseInt(deb ? deb : 0);
+                        credito+= parseInt(cre ? cre : 0);
+                    }
+
+                    if(debito > 0 && credito > 0 && debito - credito == 0) {
+                        document.getElementById('crearCapturaDocumentos').click();
+                        return;
+                    }
+                }
+
+            }
             document.getElementById('agregarDocumentos').click();
-            // addRow();
-            // console.log('add concepto')
-            // var idRow = idRow+1;
-            // setTimeout(function(){
-            //     $('#combo_cuenta_'+idRow).select2('open');
-                // $('#documentoReferenciaTable tr').find('#select2-search__field').focus();
-            // },10);
         }
     }
 
@@ -481,10 +570,6 @@
             "#concepto",
         ];
         
-        // if(idRow >= 6) {
-        //     console.log('agregar nueva columna');
-        //     return;
-        // }
         var idNextColumn = Idcolumn;
 
         while (buscar) {
@@ -500,6 +585,7 @@
                     if(inputsId[idNextColumn] == '#combo_nits' && !$(idInput).val() && idRow > 0 ) {
                         var rowAnterior = idRow-1;
                         var dataNit = $('#combo_nits_'+rowAnterior).select2('data');
+                        
                         //SI LA COLUMNA ANTERIOR TIENE DATOS
                         if(dataNit.length > 0) {
                             var optionNit = {
@@ -509,6 +595,7 @@
                             var newOptionNit = new Option(optionNit.text, optionNit.id, false, false);
                             $('#combo_nits_'+idRow).append(newOptionNit).trigger('change');
                             $('#concepto_'+idRow).val($('#concepto_'+rowAnterior).val());
+                            document.getElementById("card-documento-general").scrollLeft = 250;
                         } else {
                             setTimeout(function(){
                                 $(idInput).select2('open');
@@ -520,11 +607,13 @@
                         },10);
                     }
                 } else {
-                    // data.naturaleza_cuenta != data.naturaleza_origen
-                    // var dataCuenta = $('#combo_cuenta_'+idRow).select2('data');
-                    // console.log('dataCuenta: ',dataCuenta);
+
                     if(inputsId[idNextColumn] == '#documento_referencia' && idRow === rowExtracto){
-                        buscarExtracto();
+                        var dataCuentaRow = $('#combo_cuenta_'+idRow).select2('data')[0];
+                        
+                        if (dataCuentaRow.naturaleza_cuenta != dataCuentaRow.naturaleza_origen) {
+                            buscarExtracto();
+                        };
                     }
                     setTimeout(function(){
                         $('#documentoReferenciaTable tr').find(idInput).focus();
@@ -555,7 +644,7 @@
         }
         $('#documento_referencia_'+rowExtracto).val(documentoReferencia);
         $("#modalDocumentoExtracto").modal('hide');  
-        $('#concepto_'+rowExtracto).val(dataNit.text + ' - ' + documentoReferencia);
+        $('#concepto_'+rowExtracto).val(dataNit.text + ' - FACTURA: ' + documentoReferencia);
 
         focusNextRow(3, rowExtracto);
     });
@@ -1153,11 +1242,11 @@
 
         diferencia = debito - credito;
 
-        var texto = 'Desea guardar documentos en la tabla';
+        var texto = 'Desea guardar documento en la tabla?';
         var type = 'question';
 
         if (diferencia != 0) {
-            texto = "Documentos descuadrados, desea guardarlos en la tabla?";
+            texto = "Documento descuadrado, desea guardarlo en la tabla?";
             type = "warning";
         } else if (debito == 0 && credito == 0) {
             swalFire('Creación herrada', 'Sin datos para guardar en la tabla', false);
@@ -1165,7 +1254,7 @@
         }
 
         Swal.fire({
-            title: 'Guardar documentos?',
+            title: 'Guardar documento?',
             text: texto,
             icon: type,
             showCancelButton: true,
