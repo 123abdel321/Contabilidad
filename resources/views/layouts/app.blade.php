@@ -172,7 +172,6 @@
         .footer-navigation .nav-item .nav-link {
             margin-bottom: -1px;
             background: none;
-            border: 1px solid #c1c1c1;
             border-top-left-radius: 0.5rem;
             border-top-right-radius: 0.5rem;
             margin-left: 1px;
@@ -189,6 +188,27 @@
 
         .button-side-nav {
             cursor: pointer;
+        }
+
+        #navbar {
+            display: flex;
+            flex-direction: row;
+            padding-left: 0;
+            margin-bottom: 0;
+            list-style: none;
+        }
+
+        .navbar > .container, .navbar > .container-fluid, .navbar > .container-sm, .navbar > .container-md, .navbar > .container-lg, .navbar > .container-xl, .navbar > .container-xxl {
+            display: flex;
+            flex-wrap: none !important;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-collapse {
+            flex-basis: 0%;
+            flex-grow: 1;
+            align-items: center;
         }
 
     </style>
@@ -214,6 +234,7 @@
                 </div>
             @endif
             @include('layouts.navbars.auth.sidenav')
+            @include('layouts.navbars.auth.topnav')
             <div id="contenerdores-views" class="tab-content clearfix">
                 <main class="tab-pane main-content border-radius-lg change-view active" style="margin-left: 5px;" id="containner-dashboard">
                     
@@ -348,7 +369,8 @@
     <script>
 
         $(document).ready(function() {
-            $('#containner-dashboard').load('/dashboard');
+            $('#containner-dashboard').load('/documentogeneral');
+            $("#titulo-view").text('Inicio');
         });
         
         const base_url = 'http://localhost:8000/api/';
@@ -402,7 +424,7 @@
             if(id) {
                 seleccionarView(id);
             }
-        });
+        });      
 
         function generatView(id){
             $('#contenerdores-views').append('<main class="tab-pane main-content border-radius-lg change-view" style="margin-left: 5px;" id="containner-'+id+'"></main>');
@@ -411,11 +433,24 @@
         }
 
         function seleccionarView(id){
+
+            var nombre = 'Inicio';
+            
             $('.change-view').removeClass("active");
             $('.seleccionar-view').removeClass("active");
 
             $('#containner-'+id).addClass("active");
             $('#tab-'+id).addClass("active");
+
+            if(id == 'nit') {
+                nombre = 'Cedulas nit'
+            } else if(id == 'comprobante') {
+                nombre = 'Comprobantes';
+            } else if(id == 'plancuenta') {
+                nombre = 'Cuentas contables';
+            }
+
+            $("#titulo-view").text(nombre);
         }
 
         function generateNewTabView(id){
@@ -432,17 +467,34 @@
             } else if (id == 'comprobante') {
                 icon = 'fas fa-book';
                 nombre = 'Comprobantes';
+            } else if (id == 'plancuenta') {
+                icon = 'fas fa-book';
+                nombre = 'Cuentas contables';
+            } else if (id == 'documentogeneral') {
+                icon = 'fas fa-book';
+                nombre = 'Captura documentos';
             }
 
             var html = '';
-            html+=  '<li class="nav-item">';
+            html+=  '<li class="nav-item" id="lista_view_'+id+'">';
             html+=      '<div class="nav-link col seleccionar-view" id="tab-'+id+'">';
             html+=          '<i class="'+icon+'"></i>&nbsp;';
-            html+=          nombre+'&nbsp;';
-            html+=          '<i class="fas fa-times-circle close_item_navigation"></i>&nbsp;';
+            html+=          nombre+'&nbsp;&nbsp;';
+            html+=          '<i class="fas fa-times-circle close_item_navigation" id="closetab_'+id+'" onclick="closeView(this)"></i>&nbsp;';
             html+=      '</div>';
             html+=  '</li>';
             return html;
+        }
+
+        function closeView(nameView) {
+            var id = nameView.id.split('_')[1];
+            console.log(id);
+            // document.getElementById("tab-dashboard").click();
+            $("#lista_view_"+id).remove();
+            $("#containner-"+id).remove();
+            setTimeout(() => {
+                seleccionarView('dashboard');
+            }, 10)
         }
 
         function toggleSidenavMaximo() {
@@ -471,7 +523,6 @@
         }
 
         function toggleSidenavMaximoOpen() {
-            console.log('click');
             body.classList.add(className);
             sidenav.classList.add('bg-white');
             sidenav.classList.remove('bg-transparent');

@@ -1,6 +1,4 @@
 
-    @include('layouts.navbars.auth.topnav', ['title' => 'Dashboard'])
-    
     <div class="container-fluid py-2">
         <div class="row">
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">

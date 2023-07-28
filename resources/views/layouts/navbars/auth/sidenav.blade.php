@@ -49,7 +49,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ Route::currentRouteName() == 'plan-cuenta' ? 'active' : '' }}" href="{{ route('plan-cuenta') }}">
+                            <a class="nav-link  button-side-nav" id="sidenav_plancuenta">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
@@ -68,10 +68,10 @@
                     </div>
                     <span class="nav-link-text ms-1">Capturas</span>
                 </a>
-                <div class="collapse {{ Route::currentRouteName() == 'documento-general' ? 'show' : '' }}" id="collapseCapturas" >
+                <div class="collapse" id="collapseCapturas" >
                     <ul class="navbar-nav" style="margin-left: 15px;">
                         <li class="nav-item">
-                            <a class="nav-link {{ Route::currentRouteName() == 'documento-general' ? 'active' : '' }}" href="{{ route('documento-general') }}">
+                            <a class="nav-link button-side-nav" id="sidenav_documentogeneral">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="ni ni-calendar-grid-58 text-dark text-sm opacity-10"></i>

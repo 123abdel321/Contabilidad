@@ -1,5 +1,3 @@
-@include('layouts.navbars.auth.topnav', ['title' => 'Comprobantes'])
-
 <style>
     .error {
         color: red;

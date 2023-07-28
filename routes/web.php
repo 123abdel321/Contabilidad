@@ -69,11 +69,11 @@ Route::group(['middleware' => ['auth']], function () {
 		//CUENTAS POR COBRAR
 		Route::get('/cartera', [CarteraController::class, 'index'])->name('cartera');
 		//DOCUMENTO GENERAL
-		Route::get('/documento-general', [DocumentoGeneralController::class, 'index'])->name('documento-general');
+		Route::get('/documentogeneral', [DocumentoGeneralController::class, 'index'])->name('documento-general');
 		//NITS
 		Route::get('/nit', [NitController::class, 'index'])->name('nit');
 		//PLAN CUENTAS
-		Route::get('/plan-cuenta', [PlanCuentaController::class, 'index'])->name('plan-cuenta');
+		Route::get('/plancuenta', [PlanCuentaController::class, 'index'])->name('plan-cuenta');
 		//COMPROBANTES
 		Route::get('/comprobante', [ComprobantesController::class, 'index'])->name('comprobante');
 		//DOCUMENTOS
