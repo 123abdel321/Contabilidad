@@ -146,7 +146,7 @@
                     var html = '';
                     html+= '';
                     html+= '    <div class="input-group" style="width: 180px; height: 30px;">';
-                    html+= '        <input type="text" class="form-control form-control-sm" id="documento_referencia_'+col.row+'"onkeypress="changeDctoRow('+col.row+', event)" keyup style="height: 33px;" disabled readonly>';
+                    html+= '        <input type="text" class="form-control form-control-sm documento_referencia_row" id="documento_referencia_'+col.row+'" onkeydown="buscarFactura('+col.row+', event)" onkeypress="changeDctoRow('+col.row+', event)" keyup style="height: 33px;" value="" disabled readonly>';
                     html+= '        <i class="fa fa-spinner fa-spin fa-fw documento-load" id="documento_load_'+col.row+'" style="display: none;"></i>';
                     html+= '        <div class="valid-feedback info-factura">Nueva factura</div>';
                     html+= '        <div class="invalid-feedback info-factura">Factura existente</div>';
@@ -406,7 +406,8 @@
         }
     }
 
-    function changeDctoRow(idRow, event) {
+    function changeDctoRow(idRow, event, eso) {
+
         if(event.keyCode == 13){
             if(!$('#concepto_'+idRow).val()){
                 var nit = $('#combo_nits_'+idRow).select2('data');
@@ -417,18 +418,26 @@
                 }
             }
             focusNextRow(3, idRow);
-        } else {
-            var dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
-            if(dataCuenta.cuenta.slice(0, 1) == '2' || dataCuenta.cuenta.slice(0, 2) == '13') {
-                if(dataCuenta.naturaleza_cuenta == dataCuenta.naturaleza_origen) {
-                    $('#documento_load_'+idRow).show();
-                    if (validarFactura) {
-                        validarFactura.abort();
-                    }
+        }
+    }
+
+    function buscarFactura(idRow, event) {
+
+        var dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
+        if(dataCuenta.cuenta.slice(0, 1) == '2' || dataCuenta.cuenta.slice(0, 2) == '13') {
+            if(dataCuenta.naturaleza_cuenta == dataCuenta.naturaleza_origen) {
+                $('#documento_load_'+idRow).show();
+                if (validarFactura) {
+                    validarFactura.abort();
+                }
+                var botonPrecionado = event.key.length == 1 ? event.key : '';
+                var documento_referencia = $('#documento_referencia_'+idRow).val()+''+botonPrecionado;
+                if(event.key == 'Backspace') documento_referencia = documento_referencia.slice(0, -1);
+                setTimeout(function(){
                     validarFactura = $.ajax({
                         url: base_url + 'existe-factura',
                         method: 'GET',
-                        data: {documento_referencia: $('#documento_referencia_'+idRow).val()},
+                        data: {documento_referencia: documento_referencia},
                         headers: headers,
                         dataType: 'json',
                     }).done((res) => {
@@ -447,7 +456,7 @@
                             $('#documento_load_'+idRow).hide();
                         }
                     });
-                }
+                },100);
             }
         }
     }
