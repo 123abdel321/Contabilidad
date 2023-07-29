@@ -17,19 +17,19 @@
 
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label>Comprobante</label>
-                            <select name="id_comprobante" id="id_comprobante" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
+                            <select name="id_comprobante_documento" id="id_comprobante_documento" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                                 <option value="">Ninguno</option>
                             </select>
                         </div>
 
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="example-text-input" class="form-control-label">Fecha</label>
-                            <input name="fecha_manual" id="fecha_manual" class="form-control form-control-sm" type="date">
+                            <input name="fecha_manual_documento" id="fecha_manual_documento" class="form-control form-control-sm" type="date">
                         </div>
 
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="example-text-input" class="form-control-label">Consecutivo</label>
-                            <input type="text" class="form-control form-control-sm" name="consecutivo" id="consecutivo">
+                            <input type="text" class="form-control form-control-sm" name="consecutivo_documento" id="consecutivo_documento">
                         </div>
                         
                         <div class="form-group col-12 col-sm-4 col-md-3 row">

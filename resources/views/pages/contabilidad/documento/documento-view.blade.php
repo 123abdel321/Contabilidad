@@ -29,7 +29,7 @@
     var documento_table = $('#DocumentosInformeTable').DataTable({
         dom: 'tip',
         autoWidth: true,
-        responsive: true,
+        responsive: false,
         processing: true,
         serverSide: true,
         initialLoad: true,
@@ -40,9 +40,9 @@
             url: base_url + 'documento',
             headers: headers,
             data: function ( d ) {
-                d.id_comprobante = $('#id_comprobante').val();
-                d.fecha_manual = $('#fecha_manual').val();
-                d.consecutivo = $('#consecutivo').val();
+                d.id_comprobante = $('#id_comprobante_documento').val();
+                d.fecha_manual = $('#fecha_manual_documento').val();
+                d.consecutivo = $('#consecutivo_documento').val();
                 d.tipo_factura = $("input[type='radio']#tipo_factura1").is(':checked') ? 'todas' : 'anuladas';
             }
         },
@@ -178,7 +178,7 @@
 
     
 
-    var $comboComprobante = $('#id_comprobante').select2({
+    var $comboComprobante = $('#id_comprobante_documento').select2({
         theme: 'bootstrap-5',
         delay: 250,
         ajax: {

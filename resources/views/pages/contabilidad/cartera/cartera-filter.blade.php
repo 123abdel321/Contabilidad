@@ -12,31 +12,16 @@
             
                 <form id="carteraInformeForm" style="margin-top: 10px;">
                     <div class="row">
-                        <!-- <div class="form-group col-md">
-                            <label for="exampleFormControlSelect1">Tipo cuenta</label>
-                            <select name="id_tipo_cuenta" id="id_tipo_cuenta" class="form-control form-control-sm">
-                                <option value="">Seleccionar</option>
-                                <option value="3">Cuentas por cobrar</option>
-                                <option value="4">Cuentas por pagar</option>
-                            </select>
-                        </div> -->
                         <div class="form-group col-12 col-md-4 col-sm-4">
                             <label for="exampleFormControlSelect1">Nit</label>
-                            <select class="form-control form-control-sm" name="id_nit" id="id_nit">
+                            <select class="form-control form-control-sm" name="id_nit_cartera" id="id_nit_cartera">
                                 <option value="">Seleccionar</option>
                             </select>
                         </div>
                         <div class="form-group col-12 col-md-4 col-sm-4">
                             <label for="example-text-input" class="form-control-label">Fecha</label>
-                            <input name="fecha" id="fecha" class="form-control form-control-sm" type="date">
+                            <input name="fecha_cartera" id="fecha_cartera" class="form-control form-control-sm" type="date">
                         </div>
-                        <!-- <div class="form-group col-4 col-md-4 col-sm-4">
-                            <label for="exampleFormControlSelect1">Detallar cartera</label>
-                            <select name="detallar_cartera" id="detallar_cartera" class="form-control form-control-sm">
-                                <option value="">No</option>
-                                <option value="1">Si</option>
-                            </select>
-                        </div> -->
                         <div class="form-group col-12 col-sm-4 col-md-4 row">
                             <div class="form-check col-12 col-md-12 col-sm-12">
                                 <input class="form-check-input" type="radio" name="detallar_cartera" id="detallar_cartera1" style="margin-left: 5px;">

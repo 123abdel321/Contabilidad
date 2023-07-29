@@ -11,9 +11,9 @@
             <div class="modal-body">
                 <form id="comprobanteForm" style="margin-top: 10px;">
                     <div class="row">
-                        <input type="text" class="form-control" name="id_comprobante" id="id_comprobante" style="display: none;">
+                        <input type="text" class="form-control" name="id_comprobante_up" id="id_comprobante_up" style="display: none;">
                         <div class="form-group col-md-6">
-                            <label for="example-text-input" class="form-control-label">Codigo</label>
+                            <label for="example-text-input" c|lass="form-control-label">Codigo</label>
                             <input type="text" class="form-control form-control-sm" name="codigo" id="codigo" placeholder="123" required>
                         </div>
                         <div class="form-group col-md-6">

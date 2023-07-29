@@ -26,12 +26,11 @@
         margin-left: -3px;
         margin-top: 1px;
     }
-
-    .odd {
+    #documentoReferenciaTable>tbody>tr.odd {
         text-align: -webkit-center !important;
     }
 
-    .even {
+    #documentoReferenciaTable tbody>tr.even {
         text-align: -webkit-center !important;
     }
 

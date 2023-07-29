@@ -28,7 +28,7 @@
                     </div>
                     <span class="nav-link-text ms-1">Tablas</span>
                 </div>
-                <div class="collapse {{ Route::currentRouteName() == 'comprobante' || Route::currentRouteName() == 'plan-cuenta' || Route::currentRouteName() == 'nit' ? 'show' : '' }}" id="dashboardsExamples" >
+                <div class="collapse" id="dashboardsExamples" >
                     <ul class="navbar-nav" style="margin-left: 15px;">
                         <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_nit">
@@ -49,7 +49,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link  button-side-nav" id="sidenav_plancuenta">
+                            <a class="nav-link button-side-nav" id="sidenav_plancuenta">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                     <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
@@ -90,11 +90,11 @@
                     </div>
                     <span class="nav-link-text ms-1">Informes</span>
                 </a>
-                <div class="collapse {{ Route::currentRouteName() == 'auxiliar' || Route::currentRouteName() == 'balance' || Route::currentRouteName() == 'cartera' ? 'show' : '' }}" id="collapseInformes" >
+                <div class="collapse" id="collapseInformes" >
                     <ul class="navbar-nav" style="margin-left: 15px;">
                     
                         <li class="nav-item">
-                            <a class="nav-link {{ Route::currentRouteName() == 'auxiliar' ? 'active' : '' }}" href="{{ route('auxiliar') }}">
+                            <a class="nav-link button-side-nav" id="sidenav_auxiliar">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                     
@@ -104,7 +104,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ Route::currentRouteName() == 'balance' ? 'active' : '' }}" href="{{ route('balance') }}">
+                            <a class="nav-link button-side-nav" id="sidenav_balance">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                    
@@ -114,7 +114,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ Route::currentRouteName() == 'cartera' ? 'active' : '' }}" href="{{ route('cartera') }}">
+                            <a class="nav-link button-side-nav" id="sidenav_cartera">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                     
@@ -124,7 +124,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ Route::currentRouteName() == 'documentos' ? 'active' : '' }}" href="{{ route('documentos') }}">
+                            <a class="nav-link button-side-nav" id="sidenav_documentos">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                     
@@ -137,7 +137,7 @@
                     </ul>
                 </div>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'seleccionar-empresa' ? 'active' : '' }}" href="{{ route('seleccionar-empresa') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -154,7 +154,7 @@
                     </div>
                     <span class="nav-link-text ms-1">Profile</span>
                 </a>
-            </li>
+            </li> -->
         </ul>
     </div>
 </aside>

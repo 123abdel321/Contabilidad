@@ -38,7 +38,7 @@
 
     var comprobante_table = $('#comprobantesTable').DataTable({
         dom: '',
-        responsive: true,
+        responsive: false,
         processing: true,
         serverSide: true,
         initialLoad: true,
@@ -172,7 +172,7 @@
         $("#textComprobanteUpdate").hide();
         $("#saveComprobanteLoading").hide();
 
-        $("#id_comprobante").val('');
+        $("#id_comprobante_up").val('');
         $("#codigo").val('');
         $("#nombre").val('');
         $("#tipo_comprobante").val(0).change();
@@ -191,7 +191,7 @@
         var id = this.id.split('_')[1];
         var data = getDataById(id, comprobante_table);
         console.log(data);
-        $("#id_comprobante").val(id);
+        $("#id_comprobante_up").val(id);
         $("#codigo").val(data.codigo);
         $("#nombre").val(data.nombre);
         $("#tipo_comprobante").val(data.tipo_comprobante).change();
@@ -215,7 +215,7 @@
         $("#saveComprobante").hide();
 
         let data = {
-            id: $("#id_comprobante").val(),
+            id: $("#id_comprobante_up").val(),
             codigo: $("#codigo").val(),
             nombre: $("#nombre").val(),
             tipo_comprobante: $("#tipo_comprobante").val(),

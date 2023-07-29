@@ -158,6 +158,7 @@
             bottom: -1px;
             width: 100%;
             z-index: 999;
+            text-align: center;
         }
 
         .footer-navigation .nav {
@@ -369,14 +370,14 @@
     <script>
 
         $(document).ready(function() {
-            $('#containner-dashboard').load('/documentogeneral');
+            $('#containner-dashboard').load('/dashboard');
             $("#titulo-view").text('Inicio');
         });
         
-        const base_url = 'http://localhost:8000/api/';
-        const base_web = 'http://localhost:8000/';
-        // const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
-        // const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
+        // const base_url = 'http://localhost:8000/api/';
+        // const base_web = 'http://localhost:8000/';
+        const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
+        const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
         const dateNow = new Date();
         const auth_token = localStorage.getItem("auth_token");
         const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
@@ -414,6 +415,7 @@
         $(document).on('click', '.button-side-nav', function () {
             var id = this.id.split('_')[1];
             if($('#containner-'+id).length == 0) {
+
                 generatView(id);
             }
             seleccionarView(id);
@@ -435,7 +437,8 @@
         function seleccionarView(id){
 
             var nombre = 'Inicio';
-            
+
+            $(".dtfh-floatingparent").remove();
             $('.change-view').removeClass("active");
             $('.seleccionar-view').removeClass("active");
 
@@ -448,6 +451,16 @@
                 nombre = 'Comprobantes';
             } else if(id == 'plancuenta') {
                 nombre = 'Cuentas contables';
+            } else if(id == 'auxiliar') {
+                nombre = 'Auxiliar';
+            } else if(id == 'documentogeneral') {
+                nombre = 'Captua documentos';
+            } else if(id == 'balance') {
+                nombre = 'Balance';
+            } else if(id == 'cartera') {
+                nombre = 'Cartera';
+            } else if(id == 'documentos') {
+                nombre = 'Documentos';
             }
 
             $("#titulo-view").text(nombre);
@@ -473,6 +486,18 @@
             } else if (id == 'documentogeneral') {
                 icon = 'fas fa-book';
                 nombre = 'Captura documentos';
+            } else if (id == 'auxiliar') {
+                icon = 'fas fa-book';
+                nombre = 'Auxiliar';
+            } else if (id == 'balance') {
+                icon = 'fas fa-book';
+                nombre = 'Balance';
+            } else if (id == 'cartera') {
+                icon = 'fas fa-book';
+                nombre = 'Cartera';
+            } else if (id == 'documentos') {
+                icon = 'fas fa-book';
+                nombre = 'Documentos';
             }
 
             var html = '';
@@ -488,8 +513,7 @@
 
         function closeView(nameView) {
             var id = nameView.id.split('_')[1];
-            console.log(id);
-            // document.getElementById("tab-dashboard").click();
+
             $("#lista_view_"+id).remove();
             $("#containner-"+id).remove();
             setTimeout(() => {
@@ -499,7 +523,7 @@
 
         function toggleSidenavMaximo() {
             if (body.classList.contains(className)) {
-                console.log('if');
+
                 body.classList.remove(className);
                 sidenav.classList.remove('bg-transparent');
                 sidenav.classList.add('side-nav-maximo-close');
@@ -511,7 +535,7 @@
                 }, 100);
             } else {
                 body.classList.add(className);
-                console.log('else');
+
                 sidenav.classList.add('bg-white');
                 sidenav.classList.remove('bg-transparent');
                 iconSidenav.classList.remove('d-none');
@@ -646,7 +670,7 @@
                 dataType: 'json',
             }).done((res) => {
                 if(res.success){
-                    console.log(res);
+
                     var data = res.data;
                     $('#usuario_accion').val(data.username);
                     $('#correo_accion').val(data.email);
@@ -687,7 +711,7 @@
                 dataType: 'json',
             }).done((res) => {
                 if(res.success){
-                    console.log(res);
+
                     var data = res.data;
                     $('#numero_documento').val(data.numero_documento);
                     $('#nombre_completo').val(data.nombre_nit);

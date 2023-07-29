@@ -73,7 +73,7 @@
         pageLength: 15,
         dom: 'tip',
         paging: true,
-        responsive: true,
+        responsive: false,
         processing: true,
         serverSide: true,
         initialLoad: true,

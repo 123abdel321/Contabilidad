@@ -14,15 +14,15 @@
                     <div class="row">
                         <div class="form-group col-md">
                             <label for="example-text-input" class="form-control-label">Fecha desde</label>
-                            <input name="fecha_desde" id="fecha_desde" class="form-control form-control-sm" type="date" require>
+                            <input name="fecha_desde_balance" id="fecha_desde_balance" class="form-control form-control-sm" type="date" require>
                         </div>
                         <div class="form-group col-md">
                             <label for="example-text-input" class="form-control-label">Fecha hasta</label>
-                            <input name="fecha_hasta" id="fecha_hasta" class="form-control form-control-sm" type="date" require>
+                            <input name="fecha_hasta_balance" id="fecha_hasta_balance" class="form-control form-control-sm" type="date" require>
                         </div>
                         <div class="form-group col-md">
                             <label for="exampleFormControlSelect1">Cuenta</label>
-                            <select name="id_cuenta" id="id_cuenta" class="form-control form-control-sm">
+                            <select name="id_cuenta_balance" id="id_cuenta_balance" class="form-control form-control-sm">
                             </select>
                         </div>
                     </div> 
