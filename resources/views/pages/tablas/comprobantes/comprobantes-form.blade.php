@@ -11,9 +11,9 @@
             <div class="modal-body">
                 <form id="comprobanteForm" style="margin-top: 10px;">
                     <div class="row">
-                        <input type="text" class="form-control" name="id_comprobante" id="id_comprobante" style="display: none;">
+                        <input type="text" class="form-control" name="id_comprobante_up" id="id_comprobante_up" style="display: none;">
                         <div class="form-group col-md-6">
-                            <label for="example-text-input" class="form-control-label">Codigo</label>
+                            <label for="example-text-input" c|lass="form-control-label">Codigo</label>
                             <input type="text" class="form-control form-control-sm" name="codigo" id="codigo" placeholder="123" required>
                         </div>
                         <div class="form-group col-md-6">
@@ -47,9 +47,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn bg-gradient-danger btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                <button id="saveComprobante"type="button" class="btn bg-gradient-info btn-sm">Guardar</button>
-                <button id="updateComprobante"type="button" class="btn bg-gradient-info btn-sm">Guardar</button>
-                <button id="saveComprobanteLoading" class="btn btn-info btn-sm ms-auto" style="display:none; float: left;" disabled>
+                <button id="saveComprobante"type="button" class="btn bg-gradient-primary btn-sm">Guardar</button>
+                <button id="updateComprobante"type="button" class="btn bg-gradient-primary btn-sm">Guardar</button>
+                <button id="saveComprobanteLoading" class="btn btn-primary btn-sm ms-auto" style="display:none; float: left;" disabled>
                     Cargando
                     <i class="fas fa-spinner fa-spin"></i>
                 </button>

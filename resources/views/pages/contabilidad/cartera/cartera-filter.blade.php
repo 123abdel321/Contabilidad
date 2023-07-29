@@ -12,43 +12,27 @@
             
                 <form id="carteraInformeForm" style="margin-top: 10px;">
                     <div class="row">
-                        <!-- <div class="form-group col-md">
-                            <label for="exampleFormControlSelect1">Tipo cuenta</label>
-                            <select name="id_tipo_cuenta" id="id_tipo_cuenta" class="form-control form-control-sm">
-                                <option value="">Seleccionar</option>
-                                <option value="3">Cuentas por cobrar</option>
-                                <option value="4">Cuentas por pagar</option>
-                            </select>
-                        </div> -->
-                        <div class="form-group col-4 col-md-4 col-sm-4">
+                        <div class="form-group col-12 col-md-4 col-sm-4">
                             <label for="exampleFormControlSelect1">Nit</label>
-                            <select class="form-control form-control-sm" name="id_nit" id="id_nit">
+                            <select class="form-control form-control-sm" name="id_nit_cartera" id="id_nit_cartera">
                                 <option value="">Seleccionar</option>
                             </select>
                         </div>
-                        <div class="form-group col-4 col-md-4 col-sm-4">
+                        <div class="form-group col-12 col-md-4 col-sm-4">
                             <label for="example-text-input" class="form-control-label">Fecha</label>
-                            <input name="fecha" id="fecha" class="form-control form-control-sm" type="date">
+                            <input name="fecha_cartera" id="fecha_cartera" class="form-control form-control-sm" type="date">
                         </div>
-                        <!-- <div class="form-group col-4 col-md-4 col-sm-4">
-                            <label for="exampleFormControlSelect1">Detallar cartera</label>
-                            <select name="detallar_cartera" id="detallar_cartera" class="form-control form-control-sm">
-                                <option value="">No</option>
-                                <option value="1">Si</option>
-                            </select>
-                        </div> -->
-                        <div class="form-group col-3 col-md-3 col-sm-3 row">
-                            <label for="example-text-input" class="form-control-label">Detallar cartera</label>
-                            <div class="form-check col-6 col-md-6 col-sm-6">
-                                <input class="form-check-input" type="radio" name="detallar_cartera" id="detallar_cartera1" >
+                        <div class="form-group col-12 col-sm-4 col-md-4 row">
+                            <div class="form-check col-12 col-md-12 col-sm-12">
+                                <input class="form-check-input" type="radio" name="detallar_cartera" id="detallar_cartera1" style="margin-left: 5px;">
                                 <label class="form-check-label" for="detallar_cartera1">
-                                    Si
+                                    Detallar
                                 </label>
                             </div>
-                            <div class="form-check col-6 col-md-6 col-sm-6">
-                                <input class="form-check-input" type="radio" name="detallar_cartera" id="detallar_cartera2" checked> 
+                            <div class="form-check col-12 col-md-12 col-sm-12">
+                                <input class="form-check-input" type="radio" name="detallar_cartera" id="detallar_cartera2" style="margin-left: 5px;" checked>
                                 <label class="form-check-label" for="detallar_cartera2">
-                                    No
+                                    Sin detallar
                                 </label>
                             </div>
                         </div>
@@ -64,24 +48,24 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="generarCartera" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
+                    <span id="generarCartera" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; margin-right: 5px;">
                         <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">BUSCAR</b>
                     </span>
-                    <span id="generarCarteraLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                    <span id="generarCarteraLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-right: 5px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">BUSCANDO</b>
                     </span>
-                    <span id="descargarExcelCartera" class="btn badge bg-gradient-success" style="min-width: 40px; display:none;">
+                    <span id="descargarExcelCartera" class="btn badge bg-gradient-success" style="min-width: 40px; margin-right: 5px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXPORTAR</b>
                     </span>
-                    <span id="descargarExcelCarteraDisabled" class="badge bg-dark" style="min-width: 40px; color: #adadad;">
+                    <span id="descargarExcelCarteraDisabled" class="badge bg-dark" style="min-width: 40px; margin-right: 5px; color: #adadad;">
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXPORTAR</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
-                    <span id="descargarPdfCarteraDisabled" class="badge bg-dark" style="min-width: 40px; color: #adadad;" >
+                    <span id="descargarPdfCarteraDisabled" class="badge bg-dark" style="min-width: 40px; margin-right: 5px; color: #adadad;" >
                         <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXPORTAR</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>

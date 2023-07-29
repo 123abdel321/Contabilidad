@@ -1,7 +1,7 @@
-<table id="auxiliarInformeTable" class="table table-bordered display responsive" width="100%">
+<table id="auxiliarInformeTable" class="table nowrap table-bordered display responsive" width="100%">
     <thead>
         <tr>
-            <th>Cuenta</th>
+            <th style="border-radius: 15px 0px 0px 0px;">Cuenta</th>
             <th>Nit</th>
             <th>Centro costos</th>
             <th>Dcto refe</th>

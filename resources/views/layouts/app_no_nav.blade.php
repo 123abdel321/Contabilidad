@@ -80,7 +80,7 @@
     <!--   Core JS Files   -->
     <script src="assets/js/core/popper.min.js"></script>
     <script src="assets/js/core/bootstrap.min.js"></script>
-    <script src="assets/js/plugins/perfect-scrollbar.min.js"></script>
+    <!-- <script src="assets/js/plugins/perfect-scrollbar.min.js"></script> -->
     <script src="assets/js/plugins/smooth-scrollbar.min.js"></script>
     
     <!-- Github buttons -->
@@ -277,7 +277,7 @@
                 }).done((res) => {
                     swalFire('Selección exitosa', 'Empresa seleccionada con exito');
                     localStorage.setItem("empresa_nombre", res.empresa.nombre);
-                    window.location.href = '/dashboard';
+                    window.location.href = '/home';
                 }).fail((err) => {
                     $("#saveEmpresa").show();
                     $("#saveEmpresaLoading").hide();

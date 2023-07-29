@@ -41,7 +41,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post("empresa","App\Http\Controllers\InstaladorController@createEmpresa");
     Route::post("seleccionar-empresa","App\Http\Controllers\ApiController@setEmpresa");
     
-    
     //EMPRESA SELECCIONADA
     Route::group(['middleware' => ['clientconnection']], function() {
         //INFORMES
@@ -50,6 +49,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
         Route::get('documento', 'App\Http\Controllers\Informes\DocumentoController@generate');
         Route::get('auxiliares', 'App\Http\Controllers\Informes\AuxiliarController@generate');
+        Route::get('existe-factura', 'App\Http\Controllers\Informes\ExtractoController@existeFactura');
+
         //PLAN DE CUENTAS
         Route::controller(PlanCuentaController::class)->group(function () {
             Route::get('plan-cuenta', 'generate');

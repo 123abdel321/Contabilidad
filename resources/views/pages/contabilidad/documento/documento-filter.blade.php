@@ -15,33 +15,32 @@
 
                         <input name="editing_documento" id="editing_documento" class="form-control form-control-sm" type="text" style="display: none;">
 
-                        <div class="form-group col-3 col-md-3 col-sm-3">
+                        <div class="form-group col-12 col-sm-4 col-md-3">
                             <label>Comprobante</label>
-                            <select name="id_comprobante" id="id_comprobante" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
+                            <select name="id_comprobante_documento" id="id_comprobante_documento" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                                 <option value="">Ninguno</option>
                             </select>
                         </div>
 
-                        <div class="form-group col-3 col-md-3 col-sm-3">
+                        <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="example-text-input" class="form-control-label">Fecha</label>
-                            <input name="fecha_manual" id="fecha_manual" class="form-control form-control-sm" type="date">
+                            <input name="fecha_manual_documento" id="fecha_manual_documento" class="form-control form-control-sm" type="date">
                         </div>
 
-                        <div class="form-group col-3 col-md-3 col-sm-3">
+                        <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="example-text-input" class="form-control-label">Consecutivo</label>
-                            <input type="text" class="form-control form-control-sm" name="consecutivo" id="consecutivo">
+                            <input type="text" class="form-control form-control-sm" name="consecutivo_documento" id="consecutivo_documento">
                         </div>
                         
-                        <div class="form-group col-3 col-md-3 col-sm-3 row">
-                            <label for="example-text-input" class="form-control-label">Tipo documento</label>
-                            <div class="form-check col-6 col-md-6 col-sm-6">
-                                <input class="form-check-input" type="radio" name="tipo_factura" id="tipo_factura1" checked>
+                        <div class="form-group col-12 col-sm-4 col-md-3 row">
+                            <div class="form-check col-12 col-md-12 col-sm-12">
+                                <input class="form-check-input" type="radio" name="tipo_factura" id="tipo_factura1" style="margin-left: 5px;" checked>
                                 <label class="form-check-label" for="tipo_factura1">
                                     Todas
                                 </label>
                             </div>
-                            <div class="form-check col-6 col-md-6 col-sm-6">
-                                <input class="form-check-input" type="radio" name="tipo_factura" id="tipo_factura2">
+                            <div class="form-check col-12 col-md-12 col-sm-12">
+                                <input class="form-check-input" type="radio" name="tipo_factura" id="tipo_factura2" style="margin-left: 5px;">
                                 <label class="form-check-label" for="tipo_factura2">
                                     Anuladas
                                 </label>

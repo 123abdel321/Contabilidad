@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth']], function () {
 	//SISTEMA
 	Route::group(['middleware' => ['clientconnectionweb']], function () {
 		// >> INFORMES <<
-		Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+		Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 		Route::get('/home', [HomeController::class, 'index'])->name('home');
 		//AUXILIARES
 		Route::get('/auxiliar', [AuxiliarController::class, 'index'])->name('auxiliar');
@@ -69,11 +69,11 @@ Route::group(['middleware' => ['auth']], function () {
 		//CUENTAS POR COBRAR
 		Route::get('/cartera', [CarteraController::class, 'index'])->name('cartera');
 		//DOCUMENTO GENERAL
-		Route::get('/documento-general', [DocumentoGeneralController::class, 'index'])->name('documento-general');
+		Route::get('/documentogeneral', [DocumentoGeneralController::class, 'index'])->name('documento-general');
 		//NITS
 		Route::get('/nit', [NitController::class, 'index'])->name('nit');
 		//PLAN CUENTAS
-		Route::get('/plan-cuenta', [PlanCuentaController::class, 'index'])->name('plan-cuenta');
+		Route::get('/plancuenta', [PlanCuentaController::class, 'index'])->name('plan-cuenta');
 		//COMPROBANTES
 		Route::get('/comprobante', [ComprobantesController::class, 'index'])->name('comprobante');
 		//DOCUMENTOS

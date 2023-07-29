@@ -31,11 +31,35 @@ class ComprobantesController extends Controller
         return view('pages.tablas.comprobantes.comprobantes-view');
     }
 
-    public function generate ()
+    public function generate (Request $request)
     {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = 15; // Rows display per page
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+        $comprobante = Comprobantes::orderBy($columnName,$columnSortOrder)
+            ->where('nombre', 'like', '%' .$searchValue . '%')
+            ->orWhere('codigo', 'like', '%' .$searchValue . '%')
+            ->skip($start)
+            ->take($rowperpage);
+
         return response()->json([
             'success'=>	true,
-            'data' => Comprobantes::orderBy('codigo')->get(),
+            'draw' => $draw,
+            'iTotalRecords' => $comprobante->count(),
+            'iTotalDisplayRecords' => $comprobante->count(),
+            'data' => $comprobante->get(),
+            'perPage' => $rowperpage,
             'message'=> 'Comprobante generado con exito!'
         ]);
     }
@@ -169,6 +193,7 @@ class ComprobantesController extends Controller
             'codigo',
             'nombre',
             'consecutivo_siguiente',
+            'tipo_comprobante',
             \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
         )->orderBy('codigo');
 
