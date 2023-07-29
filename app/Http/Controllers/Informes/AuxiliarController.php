@@ -223,10 +223,6 @@ class AuxiliarController extends Controller
             $wheres.= ' AND DG.documento_referencia = '.$auxiliares->documento_referencia;
         }
 
-        if($auxiliares->id_comprobante){
-            $wheres.= ' AND DG.id_comprobante = '.$auxiliares->id_comprobante;
-        }
-
         return "SELECT
             id_nit,
             numero_documento,
