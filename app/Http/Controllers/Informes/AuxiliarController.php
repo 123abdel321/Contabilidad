@@ -29,7 +29,6 @@ class AuxiliarController extends Controller
 		}
 
         $auxiliares = DB::connection('sam')->select($this->queryAuxiliares($request));
-        $auxiliaresDetalle = DB::connection('sam')->select($this->queryAuxiliaresDetalle($request));
         
         foreach ($auxiliares as $auxiliar) {
             $cuentasAsociadas = $this->getCuentas($auxiliar->cuenta); //return ARRAY PADRES CUENTA
@@ -42,9 +41,9 @@ class AuxiliarController extends Controller
                 }
             }
         }
-
+        // dd($auxiliares);
         $this->addTotalsData($auxiliares);
-        $this->addDetilsData($auxiliaresDetalle);
+        $this->addDetilsData($request, $auxiliares);
         $this->addTotalNits($auxiliares);
         $this->addTotalNitsData($auxiliares);
 
@@ -104,7 +103,8 @@ class AuxiliarController extends Controller
                 SUM(saldo_anterior) AS saldo_anterior,
                 SUM(debito) AS debito,
                 SUM(credito) AS credito,
-                SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final
+                SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final,
+                SUM(total_columnas) AS total_columnas
             FROM ((
                 SELECT
                     N.id AS id_nit,
@@ -137,7 +137,8 @@ class AuxiliarController extends Controller
                     SUM(debito) - SUM(credito) AS saldo_anterior,
                     0 AS debito,
                     0 AS credito,
-                    0 AS saldo_final
+                    0 AS saldo_final,
+                    1 AS total_columnas
                 FROM
                     documentos_generals DG
                     
@@ -184,7 +185,8 @@ class AuxiliarController extends Controller
                         0 AS saldo_anterior,
                         SUM(DG.debito) AS debito,
                         SUM(DG.credito) AS credito,
-                        SUM(DG.debito) - SUM(DG.credito) AS saldo_final
+                        SUM(DG.debito) - SUM(DG.credito) AS saldo_final,
+                        COUNT(DG.id) AS total_columnas
                     FROM
                         documentos_generals DG
                         
@@ -206,24 +208,23 @@ class AuxiliarController extends Controller
         return $query;
     }
 
-    private function queryAuxiliaresDetalle($request)
+    private function queryAuxiliaresDetalle($request, $auxiliares)
     {
         $fechaDesde = $request->get('fecha_desde');
         $fechaHasta = $request->get('fecha_hasta');
 
-        $wheres = '';
+        $wheres = ' AND DG.id_cuenta = '.$auxiliares->id_cuenta;
 
-        if($request->has('id_cuenta') && $request->get('id_cuenta')){
-            $planCuentas = PlanCuentas::find($request->get('id_cuenta'));
-            $wheres.= ' AND PC.cuenta LIKE "'.$planCuentas->cuenta.'%"';
+        if($auxiliares->id_nit){
+            $wheres.= ' AND DG.id_nit = '.$auxiliares->id_nit;
         }
 
-        if($request->has('id_nit') && $request->get('id_nit')){
-            $wheres.= ' AND N.id = '.$request->get('id_nit');
+        if($auxiliares->documento_referencia){
+            $wheres.= ' AND DG.documento_referencia = '.$auxiliares->documento_referencia;
         }
 
-        if($request->has('tipo_documento') && $request->get('tipo_documento') == 'anuladas') {
-            $wheres.= ' AND DG.anulado = 1';
+        if($auxiliares->id_comprobante){
+            $wheres.= ' AND DG.id_comprobante = '.$auxiliares->id_comprobante;
         }
 
         return "SELECT
@@ -498,51 +499,57 @@ class AuxiliarController extends Controller
         ];
     }
 
-    private function addDetilsData($auxiliaresDetalle)
+    private function addDetilsData($request, $auxiliares)
     {
-        foreach ($auxiliaresDetalle as $auxiliarDetalle) {
-            $cuentaNumero = 1;
-            $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                $auxiliarDetalle->id_nit.'B'.
-                $auxiliarDetalle->documento_referencia.'B'.
-                $cuentaNumero.'B';
-            while ($this->hasCuentaData($cuentaNueva)) {
-                $cuentaNumero++;
-                $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                    $auxiliarDetalle->id_nit.'B'.
-                    $auxiliarDetalle->documento_referencia.'B'.
-                    $cuentaNumero.'B';
+        foreach ($auxiliares as $auxiliar) {
+            if($auxiliar->total_columnas > 1) {
+                $auxiliaresDetalle = DB::connection('sam')->select($this->queryAuxiliaresDetalle($request, $auxiliar));
+        
+                foreach ($auxiliaresDetalle as $auxiliarDetalle) {
+                    $cuentaNumero = 1;
+                    $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
+                        $auxiliarDetalle->id_nit.'B'.
+                        $auxiliarDetalle->documento_referencia.'B'.
+                        $cuentaNumero.'B';
+                    while ($this->hasCuentaData($cuentaNueva)) {
+                        $cuentaNumero++;
+                        $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
+                            $auxiliarDetalle->id_nit.'B'.
+                            $auxiliarDetalle->documento_referencia.'B'.
+                            $cuentaNumero.'B';
+                    }
+                    $this->auxiliarCollection[$cuentaNueva] = [
+                        'id_nit' => $auxiliarDetalle->id_nit,
+                        'numero_documento' => $auxiliarDetalle->numero_documento,
+                        'nombre_nit' => $auxiliarDetalle->nombre_nit,
+                        'razon_social' => $auxiliarDetalle->razon_social,
+                        'id_cuenta' => $auxiliarDetalle->id_cuenta,
+                        'cuenta' => $auxiliarDetalle->cuenta,
+                        'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
+                        'documento_referencia' => $auxiliarDetalle->documento_referencia,
+                        'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
+                        'id_centro_costos' => $auxiliarDetalle->id_centro_costos,
+                        'id_comprobante' => $auxiliarDetalle->id_comprobante,
+                        'codigo_comprobante' => $auxiliarDetalle->codigo_comprobante,
+                        'nombre_comprobante' => $auxiliarDetalle->nombre_comprobante,
+                        'codigo_cecos' => $auxiliarDetalle->codigo_cecos,
+                        'nombre_cecos' =>  $auxiliarDetalle->nombre_cecos,
+                        'consecutivo' => $auxiliarDetalle->consecutivo,
+                        'concepto' => $auxiliarDetalle->concepto,
+                        'fecha_manual' => $auxiliarDetalle->fecha_manual,
+                        'fecha_creacion' => $auxiliarDetalle->fecha_creacion,
+                        'fecha_edicion' => $auxiliarDetalle->fecha_edicion,
+                        'created_by' => $auxiliarDetalle->created_by,
+                        'updated_by' => $auxiliarDetalle->updated_by,
+                        'anulado' => $auxiliarDetalle->anulado,
+                        'debito' => $auxiliarDetalle->debito,
+                        'credito' => $auxiliarDetalle->credito,
+                        'saldo_final' => '0',
+                        'detalle' => false,
+                        'detalle_group' => false,
+                    ];
+                }
             }
-            $this->auxiliarCollection[$cuentaNueva] = [
-                'id_nit' => $auxiliarDetalle->id_nit,
-                'numero_documento' => $auxiliarDetalle->numero_documento,
-                'nombre_nit' => $auxiliarDetalle->nombre_nit,
-                'razon_social' => $auxiliarDetalle->razon_social,
-                'id_cuenta' => $auxiliarDetalle->id_cuenta,
-                'cuenta' => $auxiliarDetalle->cuenta,
-                'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
-                'documento_referencia' => $auxiliarDetalle->documento_referencia,
-                'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
-                'id_centro_costos' => $auxiliarDetalle->id_centro_costos,
-                'id_comprobante' => $auxiliarDetalle->id_comprobante,
-                'codigo_comprobante' => $auxiliarDetalle->codigo_comprobante,
-                'nombre_comprobante' => $auxiliarDetalle->nombre_comprobante,
-                'codigo_cecos' => $auxiliarDetalle->codigo_cecos,
-                'nombre_cecos' =>  $auxiliarDetalle->nombre_cecos,
-                'consecutivo' => $auxiliarDetalle->consecutivo,
-                'concepto' => $auxiliarDetalle->concepto,
-                'fecha_manual' => $auxiliarDetalle->fecha_manual,
-                'fecha_creacion' => $auxiliarDetalle->fecha_creacion,
-                'fecha_edicion' => $auxiliarDetalle->fecha_edicion,
-                'created_by' => $auxiliarDetalle->created_by,
-                'updated_by' => $auxiliarDetalle->updated_by,
-                'anulado' => $auxiliarDetalle->anulado,
-                'debito' => $auxiliarDetalle->debito,
-                'credito' => $auxiliarDetalle->credito,
-                'saldo_final' => '0',
-                'detalle' => false,
-                'detalle_group' => false,
-            ];
         }
     }
 
@@ -571,20 +578,20 @@ class AuxiliarController extends Controller
                 'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
                 'documento_referencia' => $auxiliarDetalle->documento_referencia,
                 'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
-                'id_centro_costos' => '',
-                'id_comprobante' => '',
-                'codigo_comprobante' => '',
-                'nombre_comprobante' => '',
-                'codigo_cecos' => '',
-                'nombre_cecos' =>  '',
-                'consecutivo' => '',
-                'concepto' => '',
-                'fecha_manual' => '',
-                'fecha_creacion' => '',
-                'fecha_edicion' => '',
-                'created_by' => '',
-                'updated_by' => '',
-                'anulado' => '',
+                'id_centro_costos' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->id_centro_costos : '',
+                'id_comprobante' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->id_comprobante : '',
+                'codigo_comprobante' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->codigo_comprobante : '',
+                'nombre_comprobante' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->nombre_comprobante : '',
+                'codigo_cecos' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->codigo_cecos : '',
+                'nombre_cecos' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->nombre_cecos : '',
+                'consecutivo' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->consecutivo : '',
+                'concepto' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->concepto : '',
+                'fecha_manual' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->fecha_manual : '',
+                'fecha_creacion' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->fecha_creacion : '',
+                'fecha_edicion' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->fecha_edicion : '',
+                'created_by' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->created_by : '',
+                'updated_by' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->updated_by : '',
+                'anulado' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->anulado : '',
                 'debito' => $auxiliarDetalle->debito,
                 'credito' => $auxiliarDetalle->credito,
                 'saldo_final' => $auxiliarDetalle->saldo_final,
