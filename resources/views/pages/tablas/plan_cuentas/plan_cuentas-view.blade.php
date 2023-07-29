@@ -78,6 +78,13 @@
         serverSide: true,
         initialLoad: true,
         language: lenguajeDatatable,
+        sScrollX: "100%",
+        scrollX: true,
+        fixedHeader : {
+            header : true,
+            footer : true,
+            headerOffset: 45
+        },
         ajax:  {
             type: "GET",
             headers: headers,

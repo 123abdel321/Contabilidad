@@ -63,7 +63,7 @@
             header : true,
             footer : true,
             headerOffset: 45
-        },  
+        },
         'rowCallback': function(row, data, index){
             if(data.detalle_group == 'nits-totales'){
                 $('td', row).css('background-color', 'rgb(128 207 120 / 40%)');
