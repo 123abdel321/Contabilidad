@@ -610,7 +610,7 @@
                 $("#button-login").show();
                 if(res.success){
                     localStorage.setItem("auth_token", res.token_type+' '+res.access_token);
-                    window.location.href = '/seleccionar-empresa';
+                    window.location.href = '/home';
                 }
             }).fail((err) => {
                 $("#button-login-loading").hide();
