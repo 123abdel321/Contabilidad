@@ -13,6 +13,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
+use App\Models\Empresas\UsuarioEmpresa;
 
 class ApiController extends Controller
 {
@@ -56,7 +57,7 @@ class ApiController extends Controller
                 "message"=>$validator->messages()
             ], 422);
         }
-        
+
         $data = json_decode($request->getContent());
         $user = User::where('email', $data->email)->first();
 
@@ -67,11 +68,16 @@ class ApiController extends Controller
                     if($user->tokens()->where('tokenable_id', $user->id)
                         ->where('name', 'api_token')
                         ->exists()) {
-                        $user->tokens()->delete();
+                        // $user->tokens()->delete();
                     }
-                    $user->has_empresa = "";
-                    $user->save();
+                    
                     $token = $user->createToken("api_token");
+
+                    $empresa = UsuarioEmpresa::where('id_usuario', $user->id)->first();
+                    $empresaSelect = Empresa::where('hash', $empresa->id_empresa)->first();
+                    
+                    $user->has_empresa = $empresaSelect->token_db;
+                    $user->save();
 
                     return response()->json([
                         'success'=>	true,
