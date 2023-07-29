@@ -11,10 +11,10 @@
     <div class="row">
         <div class="row" style="z-index: 9;">
             <div class="row" style="z-index: 9;">
-                <div class="col-4 col-md-4 col-sm-4">
+                <div class="col-12 col-md-4 col-sm-4">
                     <button type="button" class="btn btn-primary btn-sm" id="createComprobante">Agregar comprobante</button>
                 </div>
-                <div class="col-8 col-md-8 col-sm-8">
+                <div class="col-12 col-md-8 col-sm-8">
                     <input type="text" id="searchInput" class="form-control form-control-sm search-table" placeholder="Buscar">
                 </div>
             </div>
@@ -190,7 +190,7 @@
         var trComprobante = $(this).closest('tr');
         var id = this.id.split('_')[1];
         var data = getDataById(id, comprobante_table);
-        console.log(data);
+        
         $("#id_comprobante_up").val(id);
         $("#codigo").val(data.codigo);
         $("#nombre").val(data.nombre);

@@ -143,6 +143,8 @@ class NitController extends Controller
                 'telefono_1' => $request->get('telefono_1'),
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
+                'created_by' => request()->user()->id,
+                'updated_by' => request()->user()->id,
             ]);
 
 			DB::connection('sam')->commit();
@@ -192,6 +194,7 @@ class NitController extends Controller
                 'telefono_1' => $request->get('telefono_1'),
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
+                'updated_by' => request()->user()->id,
             ]);
 
         $nits = Nits::where('id', $request->get('id'))->with('tipo_documento')->first();

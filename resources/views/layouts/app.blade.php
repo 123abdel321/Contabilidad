@@ -50,7 +50,10 @@
         }
 
         .search-table {
-            max-width: 300px !important;
+            margin-bottom: 0.8rem !important;
+            width: 100% !important;
+            max-width: 400px;
+            padding-right: 0px;
             float: right !important;
         }
 
@@ -210,6 +213,18 @@
             flex-basis: 0%;
             flex-grow: 1;
             align-items: center;
+        }
+
+        .collapse {
+            display: none;
+        }
+
+        .collapse.show {
+            display: block !important;
+        }
+
+        .collapse .navbar-collapse {
+            display: block !important;
         }
 
     </style>
@@ -441,9 +456,10 @@
             $(".dtfh-floatingparent").remove();
             $('.change-view').removeClass("active");
             $('.seleccionar-view').removeClass("active");
-
+            $('.button-side-nav').removeClass("active");
             $('#containner-'+id).addClass("active");
             $('#tab-'+id).addClass("active");
+            $('#sidenav_'+id).addClass("active");
 
             if(id == 'nit') {
                 nombre = 'Cedulas nit'
@@ -461,6 +477,8 @@
                 nombre = 'Cartera';
             } else if(id == 'documentos') {
                 nombre = 'Documentos';
+            } else if(id == 'cecos') {
+                nombre = 'Centro costos';
             }
 
             $("#titulo-view").text(nombre);
@@ -498,6 +516,9 @@
             } else if (id == 'documentos') {
                 icon = 'fas fa-book';
                 nombre = 'Documentos';
+            } else if (id == 'cecos') {
+                icon = 'fas fa-book';
+                nombre = 'Centro de costos';
             }
 
             var html = '';

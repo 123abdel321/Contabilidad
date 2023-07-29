@@ -17,6 +17,7 @@ use App\Http\Controllers\Informes\DocumentoController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
+use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
@@ -76,6 +77,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/plancuenta', [PlanCuentaController::class, 'index'])->name('plan-cuenta');
 		//COMPROBANTES
 		Route::get('/comprobante', [ComprobantesController::class, 'index'])->name('comprobante');
+		//COMPROBANTES
+		Route::get('/cecos', [CentroCostoController::class, 'index'])->name('cecos');
 		//DOCUMENTOS
 		Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos');
 

@@ -61,6 +61,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         });
         //CENTRO COSTOS
         Route::controller(CentroCostoController::class)->group(function () {
+            Route::get('cecos', 'generate');
+            Route::post('cecos', 'create');
+            Route::put('cecos', 'update');
+            Route::delete('cecos', 'delete');
             Route::get('centro-costos/combo-centro-costo', 'comboCentroCostos');
         });
         //COMPROBANTES
