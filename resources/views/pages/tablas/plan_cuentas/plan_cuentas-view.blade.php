@@ -38,6 +38,10 @@
 </div>
 
 <script>
+
+    $('.form-control').keyup(function() {
+        $(this).val($(this).val().toUpperCase());
+    });
     
     var $validator = $('#planCuentaForm').validate({
         rules: {
@@ -176,7 +180,7 @@
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info edit-plan-cuentas" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
+                    html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-plan-cuentas" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
                     html+= '<span id="deleteplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-plan-cuentas" style="margin-bottom: 0rem !important">Eliminar</span>';
                     return html;
                 }

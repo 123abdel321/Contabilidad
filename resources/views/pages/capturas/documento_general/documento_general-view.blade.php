@@ -105,6 +105,10 @@
     var validarFactura = null;
     $('#fecha_manual').val(fecha);
 
+    $('.form-control').keyup(function() {
+        $(this).val($(this).val().toUpperCase());
+    });
+
     var documento_table = $('#documentoReferenciaTable').DataTable({
         dom: '',
         responsive: false,

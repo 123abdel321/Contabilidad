@@ -147,7 +147,7 @@
             left: 29px !important;
         }
         thead tr:first-child th {
-            background-color: #6f7ff9;
+            background-color: #1c4587;
             color: white;
             font-weight: bold;
             font-size: 14px;
@@ -225,6 +225,22 @@
 
         .collapse .navbar-collapse {
             display: block !important;
+        }
+
+        tr.odd:hover {
+            background-color: #1c45872b;
+        }
+
+        tr.even:hover {
+            background-color: #1c45872b;
+        }
+
+        tr.odd:focus {
+            background-color: #1c45872b;
+        }
+
+        tr.even:focus {
+            background-color: #1c45872b;
         }
 
     </style>
@@ -408,10 +424,6 @@
         let buttonocultarLateral = document.getElementById('button-ocultar-lateral');
         let iconSidenav = document.getElementById('iconSidenav');
 
-        $('.form-control-sm').keyup(function() {
-            $(this).val($(this).val().toUpperCase());
-        });
-
         $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
         $("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
 
@@ -430,10 +442,10 @@
         $(document).on('click', '.button-side-nav', function () {
             var id = this.id.split('_')[1];
             if($('#containner-'+id).length == 0) {
-
                 generatView(id);
             }
             seleccionarView(id);
+            document.getElementById('sidenav-main-2').click();
         });
 
         $(document).on('click', '.seleccionar-view', function () {

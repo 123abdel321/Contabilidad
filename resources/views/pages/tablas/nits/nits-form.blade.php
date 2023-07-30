@@ -126,9 +126,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn bg-gradient-danger btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                <button id="saveNit"type="button" class="btn bg-gradient-primary btn-sm">Guardar</button>
-                <button id="updateNit"type="button" class="btn bg-gradient-primary btn-sm">Guardar</button>
-                <button id="saveNitLoading" class="btn btn-primary btn-sm ms-auto" style="display:none; float: left;" disabled>
+                <button id="saveNit"type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button id="updateNit"type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button id="saveNitLoading" class="btn btn-success btn-sm ms-auto" style="display:none; float: left;" disabled>
                     Cargando
                     <i class="fas fa-spinner fa-spin"></i>
                 </button>

@@ -26,6 +26,11 @@
 </div>
 
 <script>
+
+    $('.form-control').keyup(function() {
+        $(this).val($(this).val().toUpperCase());
+    });
+
     var cecos_table = $('#cecosTable').DataTable({
         dom: '',
         responsive: false,
