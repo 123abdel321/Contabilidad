@@ -45,6 +45,7 @@ class UbicacionController extends Controller
     {
 		$query = $request->get("q");
 		$queryModel = Ciudades::whereNotNull("id")->select(
+			'id',
 			'id_pais',
 			'id_departamento',
 			'codigo',

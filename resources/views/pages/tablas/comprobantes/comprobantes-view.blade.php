@@ -36,6 +36,10 @@
 
 <script>
 
+    $('.form-control').keyup(function() {
+        $(this).val($(this).val().toUpperCase());
+    });
+
     var comprobante_table = $('#comprobantesTable').DataTable({
         dom: '',
         responsive: false,

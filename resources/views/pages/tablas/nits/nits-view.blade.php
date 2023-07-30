@@ -39,6 +39,10 @@
 
 <script>
 
+    $('.form-control').keyup(function() {
+        $(this).val($(this).val().toUpperCase());
+    });
+
     var nits_table = $('#nitTable').DataTable({
         pageLength: 15,
         dom: 'tip',
@@ -55,17 +59,22 @@
             url: base_url + 'nit',
         },
         columns: [
-            {"data":'numero_documento'},
+            {"data":'numero_documento', visible: false},
             {
                 "data": function (row, type, set){
+                    var texto = row.numero_documento + ' - ';
+                    if (row.razon_social) {
+                        return texto + row.razon_social
+                    }
                     var primer_nombre = row.primer_nombre ? row.primer_nombre+' ' : '';
                     var otros_nombres = row.otros_nombres ? row.otros_nombres+' ' : '';
                     var primer_apellido = row.primer_apellido ? row.primer_apellido+' ' : '';
                     var segundo_apellido = row.segundo_apellido ? row.segundo_apellido+' ' : '';
-                    return primer_nombre+otros_nombres+primer_apellido+segundo_apellido;
+                    
+                    return texto + primer_nombre+otros_nombres+primer_apellido+segundo_apellido;
                 }
             },
-            {"data":'razon_social'},
+            {"data":'razon_social', visible: false},
             {"data":'direccion'},
             {"data":'email'},
             {"data":'telefono_1'},
@@ -217,22 +226,6 @@
             });
         } else {
             form.classList.add('was-validated');
-        }
-    });
-
-    var $comboCiudad = $('#id_ciudad').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        dropdownParent: $('#nitFormModal'),
-        ajax: {
-            url: 'api/ciudades',
-            dataType: 'json',
-            headers: headers,
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
         }
     });
 
@@ -400,6 +393,22 @@
         $("#email").val('');
     }
 
+    var $comboCiudad = $('#id_ciudad').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#nitFormModal'),
+        delay: 250,
+        ajax: {
+            url: 'api/ciudades',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     var $comboTipoDocumento = $('#id_tipo_documento').select2({
         theme: 'bootstrap-5',
         dropdownParent: $('#nitFormModal'),
@@ -416,4 +425,5 @@
         }
     });
 
+    
 </script>
