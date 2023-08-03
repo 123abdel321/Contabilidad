@@ -13,11 +13,11 @@
                 <form id="auxiliarInformeForm" style="margin-top: 10px;">
                     <div class="row">
                     
-                        <div class="form-group col-12 col-sm-3 col-md-2">
+                        <div class="form-group col-12 col-sm-3 col-md-3">
                             <label for="example-text-input" class="form-control-label">Fecha desde</label>
                             <input name="fecha_desde_auxiliar" id="fecha_desde_auxiliar" class="form-control form-control-sm" type="date" require>
                         </div>
-                        <div class="form-group col-12 col-sm-3 col-md-2">
+                        <div class="form-group col-12 col-sm-3 col-md-3">
                             <label for="example-text-input" class="form-control-label">Fecha hasta</label>
                             <input name="fecha_hasta_auxiliar" id="fecha_hasta_auxiliar" class="form-control form-control-sm" type="date" require>
                         </div>
@@ -29,28 +29,28 @@
                         </div>
                         <div class="form-group col-12 col-sm-3 col-md-3">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Nit</label>
-                            <select class="form-control form-control-sm" name="id_nit" id="id_nit">
+                            <select class="form-control form-control-sm" name="id_nit_auxiliar" id="id_nit_auxiliar">
                                 <option value="">Ninguno</option>
                             </select>
                         </div>
                         
-                        <div class="form-group col-12 col-sm-3 col-md-1" style="margin-left: 5px;">
-                            <div class="row">
-                                <div class="form-check col-12 col-sm-12 col-md-12" style="margin-left: 5px;">
-                                    <input class="form-check-input" type="radio" name="tipo_documento" id="tipo_documento1" checked>
-                                    <label class="form-check-label" for="tipo_documento1">
-                                        Todas
-                                    </label>
-                                </div>
-                                <div class="form-check col-12 col-sm-12 col-md-12" style="margin-left: 5px;">
-                                    <input class="form-check-input" type="radio" name="tipo_documento" id="tipo_documento2">
-                                    <label class="form-check-label" for="tipo_documento2">
-                                        Anuladas
-                                    </label>
-                                </div>
+                    </div>  
+                    <div class="form-group col-12 col-sm-3 col-md-1" style="margin-left: 5px; display: none;">
+                        <div class="row">
+                            <div class="form-check col-12 col-sm-12 col-md-12" style="margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="tipo_documento" id="tipo_documento1" checked>
+                                <label class="form-check-label" for="tipo_documento1">
+                                    Todas
+                                </label>
+                            </div>
+                            <div class="form-check col-12 col-sm-12 col-md-12" style="margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="tipo_documento" id="tipo_documento2">
+                                <label class="form-check-label" for="tipo_documento2">
+                                    Anuladas
+                                </label>
                             </div>
                         </div>
-                    </div>  
+                    </div>
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
