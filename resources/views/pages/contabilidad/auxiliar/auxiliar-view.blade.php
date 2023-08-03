@@ -85,22 +85,22 @@
                 return;
             }
             if(data.cuenta.length == 1){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 80%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 90%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.cuenta.length == 2){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 65%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 75%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.cuenta.length == 4){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.detalle_group && !data.detalle){//
-                $('td', row).css('background-color', 'black');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
