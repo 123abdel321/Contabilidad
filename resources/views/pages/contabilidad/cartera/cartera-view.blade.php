@@ -77,15 +77,25 @@
     });
 
     var cartera_table = $('#CarteraInformeTable').DataTable({
-        dom: '',
-        autoWidth: true,
+        dom: 'ti',
         responsive: false,
         processing: true,
         serverSide: true,
         deferLoading: 0,
         initialLoad: false,
-        headers: headers,
         language: lenguajeDatatable,
+        sScrollX: "100%",
+        scroller: {
+            displayBuffer: 20,
+            rowHeight: 50,
+            loadingIndicator: true
+        },
+        deferRender: true,
+        fixedHeader : {
+            header : true,
+            footer : true,
+            headerOffset: 45
+        },
         ordering: false,
         'rowCallback': function(row, data, index){
             if(data.detalle_group == 'nits'){

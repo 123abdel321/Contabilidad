@@ -28,8 +28,8 @@
   --bs-gray-700: #495057;
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
-  --bs-primary: #596CFF;
-  --bs-primary-second: #384ef3;
+  --bs-primary: #1c4587 ;
+  --bs-primary-second: rgb(16, 38, 204) ;
   --bs-secondary: #8392ab;
   --bs-success: #2dce89;
   --bs-info: #11cdef;

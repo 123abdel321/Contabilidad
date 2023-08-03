@@ -38,6 +38,10 @@
         serverSide: true,
         initialLoad: true,
         language: lenguajeDatatable,
+        fixedColumns : {
+            left: 0,
+            right : 1,
+        },
         ajax:  {
             type: "GET",
             headers: headers,

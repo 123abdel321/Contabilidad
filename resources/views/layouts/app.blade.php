@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="/img/logo192.png">
+    <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
     <title id="titulo-empresa">
     </title>
     <!--     Fonts and icons     -->
@@ -122,29 +122,28 @@
         }
 
         @-webkit-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
+            from { color: cornflowerblue; }
+            to { color: aqua; }
         }
         @-moz-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
+            from { color: cornflowerblue; }
+            to { color: aqua; }
         }
         @-ms-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
+            from { color: cornflowerblue; }
+            to { color: aqua; }
         }
         @-o-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
+            from { color: cornflowerblue; }
+            to { color: aqua; }
         }
         @keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
+            from { color: cornflowerblue; }
+            to { color: aqua; }
         }
-
         .dtfh-floatingparent {
             top: 0px !important;
-            left: 29px !important;
+            /* left: 29px !important; */
         }
         thead tr:first-child th {
             background-color: #1c4587;
@@ -192,6 +191,7 @@
 
         .button-side-nav {
             cursor: pointer;
+            color: #FFF !important;
         }
 
         #navbar {
@@ -241,6 +241,28 @@
 
         tr.even:focus {
             background-color: #1c45872b;
+        }
+
+        td.dtfc-fixed-right {
+            background-color: white;
+            border-left: solid 1px #e9ecef !important;
+        }
+
+        th.dtfc-fixed-right {
+            right: 0px !important;
+            border-left: solid 1px #e9ecef !important;
+        }
+
+        .dark-version td.dtfc-fixed-right {
+            background-color: #111c44 !important;
+        }
+
+        .btn {
+            box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 2px 2px 2px rgb(0 0 0 / 57%);
+        }
+
+        .btn:hover {
+            box-shadow: 0px 7px 14px rgba(50, 50, 93, 0.1), 4px 3px 6px rgb(0 0 0 / 80%) !important;
         }
 
     </style>
@@ -388,7 +410,8 @@
     <script src="assets/js/sistema/dataTables.bootstrap5.min.js"></script>
     <script src="assets/js/sistema/dataTables.responsive.min.js"></script>
     <script src="assets/js/sistema/responsive.bootstrap5.min.js"></script>
-    <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
+    <script src="assets/js/sistema/dataTables.fixedHeader.min.js"></script>
+    <script src="assets/js/sistema/dataTables.fixedColumns.min.js"></script>
     
     <!-- SELECT 2  -->
     <script src="assets/js/sistema/select2.full.min.js"></script>
@@ -643,6 +666,7 @@
                 $("#button-login").show();
                 if(res.success){
                     localStorage.setItem("auth_token", res.token_type+' '+res.access_token);
+                    localStorage.setItem("empresa_nombre", res.empresa);
                     window.location.href = '/home';
                 }
             }).fail((err) => {

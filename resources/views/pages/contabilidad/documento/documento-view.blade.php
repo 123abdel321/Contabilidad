@@ -27,14 +27,29 @@
 
 <script>
     var documento_table = $('#DocumentosInformeTable').DataTable({
-        dom: 'tip',
-        autoWidth: true,
+        dom: 'ti',
+        paging: true,
         responsive: false,
         processing: true,
         serverSide: true,
         initialLoad: true,
-        bFilter: true,
         language: lenguajeDatatable,
+        sScrollX: "100%",
+        scroller: {
+            displayBuffer: 20,
+            rowHeight: 50,
+            loadingIndicator: true
+        },
+        deferRender: true,
+        fixedHeader : {
+            header : true,
+            footer : true,
+            headerOffset: 45
+        },
+        fixedColumns : {
+            left: 0,
+            right : 1,
+        },
         ajax:  {
             type: "GET",
             url: base_url + 'documento',

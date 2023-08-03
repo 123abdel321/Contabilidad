@@ -74,8 +74,8 @@
     });
 
     var plan_cuentas_table = $('#planCuentaTable').DataTable({
-        pageLength: 15,
-        dom: 'tip',
+        pageLength: 30,
+        dom: 'ti',
         paging: true,
         responsive: false,
         processing: true,
@@ -83,12 +83,25 @@
         initialLoad: true,
         language: lenguajeDatatable,
         sScrollX: "100%",
-        scrollX: true,
+        scroller: {
+            displayBuffer: 20,
+            rowHeight: 50,
+            loadingIndicator: true
+        },
+        deferRender: true,
         fixedHeader : {
             header : true,
             footer : true,
             headerOffset: 45
         },
+        fixedColumns : {
+            left: 0,
+            right : 1,
+        },
+        // "bScrollInfinite": true,
+        // "bScrollCollapse": true,
+        // "sScrollY": "90%",
+        // "sScrollY": true,
         ajax:  {
             type: "GET",
             headers: headers,

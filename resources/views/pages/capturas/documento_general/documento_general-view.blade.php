@@ -289,6 +289,10 @@
         ordering: false,
         sScrollX: "100%",
         scrollX: true,
+        fixedColumns : {
+            left: 0,
+            right : 1,
+        },
         ajax:  {
             type: "GET",
             headers: headers,
@@ -299,20 +303,19 @@
             }
         },
         columns: [
+            {"data":'documento_referencia'},
+            {"data":'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'fecha_manual'},
+            {"data":'dias_cumplidos'},
             {
                 "data": function (row, type, set){
                     var html = '';
                     html+= '<span href="javascript:void(0)" id="documentoextracto_'+row.documento_referencia+'_'+row.saldo+'" class="btn badge bg-gradient-primary select-documento" style="margin-bottom: 0rem !important">Seleccionar</span>&nbsp;';
                     return html;
                 }
-            },
-            {"data":'documento_referencia'},
-            {"data":'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data":'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            
-            {"data":'fecha_manual'},
-            {"data":'dias_cumplidos'},
+            }
         ]
     });
 

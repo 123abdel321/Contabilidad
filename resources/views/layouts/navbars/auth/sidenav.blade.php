@@ -8,13 +8,46 @@
     .ocultar {
         display: none;
     }
+    #sidenav-main {
+        background-color: #172b4d !important;
+    }
+
+    .text-blue {
+        -webkit-animation: color_change 2s infinite alternate;
+        -moz-animation: color_change 2s infinite alternate;
+        -ms-animation: color_change 2s infinite alternate;
+        -o-animation: color_change 2s infinite alternate;
+        animation: color_change 2s infinite alternate;
+    }
+
+    @-webkit-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @-moz-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @-ms-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @-o-keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+        @keyframes color_change {
+            from { color: skyblue; }
+            to { color: darkcyan ; }
+        }
+
 </style>
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 side-nav-maximo-close" id="sidenav-main" style="z-index: 99 !important; border-radius: 0px 10px 10px 0px;">
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand m-0" href="{{ route('home') }}" target="_blank" style="text-align: -webkit-center;">
-            <img src="./img/logo192.png" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold" id="nombre-empresa"></span>
+            <img src="./img/logo_contabilidad.png" class="navbar-brand-img h-100" alt="main_logo">
+            <span class="ms-1 font-weight-bold" id="nombre-empresa" style="color: antiquewhite"></span>
         </a>
     </div>
     <hr class="horizontal dark mt-0">
@@ -22,7 +55,7 @@
         <ul class="navbar-nav">
 
             <li class="nav-item">
-                <div data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link collapsed" aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                <div data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link collapsed" aria-controls="dashboardsExamples" role="button" aria-expanded="false" style="color: white;">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-tv-2 text-success text-sm opacity-10"></i>
                     </div>
@@ -34,7 +67,7 @@
                             <a class="nav-link button-side-nav" id="sidenav_nit">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
+                                    <i class="ni ni-single-copy-04 text-blue text-sm opacity-10"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">Nits</span>
                             </a>
@@ -43,7 +76,7 @@
                             <a class="nav-link button-side-nav" id="sidenav_comprobante">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
+                                    <i class="ni ni-single-copy-04 text-blue text-sm opacity-10"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">Comprobantes</span>
                             </a>
@@ -52,7 +85,7 @@
                             <a class="nav-link button-side-nav" id="sidenav_plancuenta">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
+                                    <i class="ni ni-single-copy-04 text-blue text-sm opacity-10"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">Plan de cuentas</span>
                             </a>
@@ -61,7 +94,7 @@
                             <a class="nav-link button-side-nav" id="sidenav_cecos">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
+                                    <i class="ni ni-single-copy-04 text-blue text-sm opacity-10"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">Centro de costos</span>
                             </a>
@@ -71,7 +104,7 @@
             </li>
 
             <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#collapseCapturas" class="nav-link collapsed" aria-controls="collapseCapturas" role="button" aria-expanded="false">
+                <a data-bs-toggle="collapse" href="#collapseCapturas" class="nav-link collapsed" aria-controls="collapseCapturas" role="button" aria-expanded="false" style="color: white;">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-tv-2 text-success text-sm opacity-10"></i>
                     </div>
@@ -83,7 +116,7 @@
                             <a class="nav-link button-side-nav" id="sidenav_documentogeneral">
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-calendar-grid-58 text-dark text-sm opacity-10"></i>
+                                    <i class="ni ni-calendar-grid-58 text-blue text-sm opacity-10"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">Documento General</span>
                             </a>
@@ -93,7 +126,7 @@
             </li>
 
             <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#collapseInformes" class="nav-link collapsed" aria-controls="collapseInformes" role="button" aria-expanded="false">
+                <a data-bs-toggle="collapse" href="#collapseInformes" class="nav-link collapsed" aria-controls="collapseInformes" role="button" aria-expanded="false" style="color: white;">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-ungroup text-success text-sm opacity-10"></i>
                     </div>
@@ -107,7 +140,7 @@
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                     
-                                    <i class="ni ni-collection text-dark text-sm opacity-10"></i>
+                                    <i class="ni ni-collection text-blue text-sm opacity-10"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">Auxiliar</span>
                             </a>
@@ -117,7 +150,7 @@
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                    
-                                    <i class="ni ni-collection text-dark text-sm opacity-10"></i>
+                                    <i class="ni ni-collection text-blue text-sm opacity-10"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">Balance</span>
                             </a>
@@ -127,7 +160,7 @@
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                     
-                                    <i class="ni ni-collection text-dark text-sm opacity-10"></i>
+                                    <i class="ni ni-collection text-blue text-sm opacity-10"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">Cartera</span>
                             </a>
@@ -137,7 +170,7 @@
                                 <div
                                     class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                     
-                                    <i class="ni ni-collection text-dark text-sm opacity-10"></i>
+                                    <i class="ni ni-collection text-blue text-sm opacity-10"></i>
                                 </div>
                                 <span class="nav-link-text ms-1">Documentos</span>
                             </a>
@@ -150,7 +183,7 @@
                 <a class="nav-link {{ Route::currentRouteName() == 'seleccionar-empresa' ? 'active' : '' }}" href="{{ route('seleccionar-empresa') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-building text-dark text-sm opacity-10"></i>
+                        <i class="fas fa-building text-blue text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Empresas</span>
                 </a>
@@ -159,7 +192,7 @@
                 <a class="nav-link {{ Route::currentRouteName() == 'profile' ? 'active' : '' }}" href="{{ route('profile') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                        <i class="ni ni-single-02 text-blue text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Profile</span>
                 </a>
@@ -168,7 +201,7 @@
     </div>
 </aside>
 
-<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl" id="sidenav-main-2" style="z-index: 99 !important; width: 11px; cursor: pointer; background-color: #596CFF !important; border-radius: 0px 7px 7px 0px;">
+<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl" id="sidenav-main-2" style="z-index: 99 !important; width: 11px; cursor: pointer; background-color: #1c4587 !important; border-radius: 0px 7px 7px 0px;">
     <span id="button-mostrar-lateral" class="nav-link-text ms-1" style="margin: 0; position: fixed; top: 50%; transform: translateY(-50%);">
         <i class="fas fa-caret-right" style="color: #FFF;"></i>
     </span>
