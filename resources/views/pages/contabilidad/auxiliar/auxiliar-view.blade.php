@@ -70,43 +70,44 @@
         },
         'rowCallback': function(row, data, index){
             if(data.detalle_group == 'nits-totales'){
-                $('td', row).css('background-color', 'rgb(128 207 120 / 40%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 25%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.detalle_group == 'nits'){
-                $('td', row).css('background-color', 'rgb(161 182 193 / 40%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
                 // $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.cuenta == "TOTALES"){
-                $('td', row).css('background-color', 'rgb(0 215 64 / 60%)');
+                $('td', row).css('background-color', 'rgb(0 195 255)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
-            if(data.cuenta.length == 1){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
+            if(data.cuenta.length == 1){//
+                $('td', row).css('background-color', 'rgb(64 164 209 / 80%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
-            if(data.cuenta.length == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
+            if(data.cuenta.length == 2){//
+                $('td', row).css('background-color', 'rgb(64 164 209 / 65%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
-            if(data.cuenta.length == 4){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
+            if(data.cuenta.length == 4){//
+                $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
-            if(data.detalle_group && !data.detalle){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
+            if(data.detalle_group && !data.detalle){//
+                $('td', row).css('background-color', 'black');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.detalle){
-                $('td', row).css('background-color', 'rgb(197 228 241 / 56%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 35%)');
                 $('td', row).css('font-weight', 'bold');
+                return;
             }
         },
         ajax:  {
