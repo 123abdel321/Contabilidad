@@ -74,7 +74,7 @@ class ApiController extends Controller
                     $token = $user->createToken("api_token");
 
                     $empresa = UsuarioEmpresa::where('id_usuario', $user->id)->first();
-                    $empresaSelect = Empresa::where('hash', $empresa->id_empresa)->first();
+                    $empresaSelect = Empresa::where('id', $empresa->id_empresa)->first();
                     
                     $user->has_empresa = $empresaSelect->token_db;
                     $user->save();
@@ -82,6 +82,7 @@ class ApiController extends Controller
                     return response()->json([
                         'success'=>	true,
                         'access_token' => $token->plainTextToken,
+                        'empresa' => $empresa->razon_social,
                         'token_type' => 'Bearer',
                         'message'=> 'Usuario logeado con exito!'
                     ], 200);

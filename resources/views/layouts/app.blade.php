@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="/img/logo192.png">
+    <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
     <title id="titulo-empresa">
     </title>
     <!--     Fonts and icons     -->
@@ -122,24 +122,24 @@
         }
 
         @-webkit-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
+            from { color: cornflowerblue; }
+            to { color: aqua; }
         }
         @-moz-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
+            from { color: cornflowerblue; }
+            to { color: aqua; }
         }
         @-ms-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
+            from { color: cornflowerblue; }
+            to { color: aqua; }
         }
         @-o-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
+            from { color: cornflowerblue; }
+            to { color: aqua; }
         }
         @keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
+            from { color: cornflowerblue; }
+            to { color: aqua; }
         }
         .dtfh-floatingparent {
             top: 0px !important;
@@ -191,6 +191,7 @@
 
         .button-side-nav {
             cursor: pointer;
+            color: #FFF !important;
         }
 
         #navbar {
@@ -665,6 +666,7 @@
                 $("#button-login").show();
                 if(res.success){
                     localStorage.setItem("auth_token", res.token_type+' '+res.access_token);
+                    localStorage.setItem("empresa_nombre", res.empresa);
                     window.location.href = '/home';
                 }
             }).fail((err) => {
