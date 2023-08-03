@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Informes;
 
 use DB;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Exports\AuxiliarExport;
 use App\Http\Controllers\Controller;
@@ -41,7 +42,7 @@ class AuxiliarController extends Controller
                 }
             }
         }
-        // dd($auxiliares);
+
         $this->addTotalsData($auxiliares);
         $this->addDetilsData($request, $auxiliares);
         $this->addTotalNits($auxiliares);
@@ -251,7 +252,7 @@ class AuxiliarController extends Controller
             debito,
             credito,
             saldo_final
-        FROM ((SELECT
+        FROM (SELECT
                 N.id AS id_nit,
                 N.numero_documento,
                 CASE
@@ -296,53 +297,7 @@ class AuxiliarController extends Controller
                 $wheres
             
             ORDER BY cuenta, id_nit, documento_referencia, created_at
-            )
-            UNION
-            (
-                SELECT
-                N.id AS id_nit,
-                N.numero_documento,
-                CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
-                    ELSE NULL
-                END AS nombre_nit,
-                N.razon_social,
-                PC.id AS id_cuenta,
-                PC.cuenta,
-                PC.nombre AS nombre_cuenta,
-                DG.documento_referencia,
-                DG.id_centro_costos,
-                CC.codigo AS codigo_cecos,
-                CC.nombre AS nombre_cecos,
-                DG.id_comprobante,
-                CO.codigo AS codigo_comprobante,
-                CO.nombre AS nombre_comprobante,
-                DG.consecutivo,
-                DG.concepto,
-                DG.fecha_manual,
-                DG.created_at,
-                DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion,
-                DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion,
-                DG.created_by,
-                DG.updated_by,
-                DG.anulado,
-                SUM(DG.debito) - SUM(DG.credito) AS saldo_anterior,
-                0 AS debito,
-                0 AS credito,
-                0 AS saldo_final
-            FROM
-                documentos_generals DG
-                
-            LEFT JOIN nits N ON DG.id_nit = N.id
-            LEFT JOIN plan_cuentas PC ON DG.id_cuenta = PC.id
-            LEFT JOIN centro_costos CC ON DG.id_centro_costos = CC.id
-            LEFT JOIN comprobantes CO ON DG.id_comprobante = CO.id
-                
-            WHERE DG.fecha_manual < '$fechaDesde'
-                $wheres
-            GROUP BY DG.id_cuenta, DG.id_nit, DG.documento_referencia
-            )) AS auxiliar
+            ) AS auxiliar
             -- ORDER BY cuenta DESC
             ORDER BY cuenta, id_nit, documento_referencia, created_at
         ";
@@ -498,7 +453,8 @@ class AuxiliarController extends Controller
     private function addDetilsData($request, $auxiliares)
     {
         foreach ($auxiliares as $auxiliar) {
-            if($auxiliar->total_columnas > 1) {
+
+            if($auxiliar->total_columnas > 0 ) {
                 $auxiliaresDetalle = DB::connection('sam')->select($this->queryAuxiliaresDetalle($request, $auxiliar));
         
                 foreach ($auxiliaresDetalle as $auxiliarDetalle) {
@@ -574,26 +530,27 @@ class AuxiliarController extends Controller
                 'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
                 'documento_referencia' => $auxiliarDetalle->documento_referencia,
                 'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
-                'id_centro_costos' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->id_centro_costos : '',
-                'id_comprobante' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->id_comprobante : '',
-                'codigo_comprobante' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->codigo_comprobante : '',
-                'nombre_comprobante' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->nombre_comprobante : '',
-                'codigo_cecos' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->codigo_cecos : '',
-                'nombre_cecos' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->nombre_cecos : '',
-                'consecutivo' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->consecutivo : '',
-                'concepto' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->concepto : '',
-                'fecha_manual' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->fecha_manual : '',
-                'fecha_creacion' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->fecha_creacion : '',
-                'fecha_edicion' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->fecha_edicion : '',
-                'created_by' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->created_by : '',
-                'updated_by' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->updated_by : '',
-                'anulado' => $auxiliarDetalle->total_columnas == 1 ? $auxiliarDetalle->anulado : '',
+                'id_centro_costos' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->id_centro_costos : '',
+                'id_comprobante' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->id_comprobante : '',
+                'codigo_comprobante' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->codigo_comprobante : '',
+                'nombre_comprobante' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->nombre_comprobante : '',
+                'codigo_cecos' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->codigo_cecos : '',
+                'nombre_cecos' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->nombre_cecos : '',
+                'consecutivo' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->consecutivo : '',
+                'concepto' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->concepto : '',
+                'fecha_manual' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->fecha_manual : '',
+                'fecha_creacion' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->fecha_creacion : '',
+                'fecha_edicion' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->fecha_edicion : '',
+                'created_by' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->created_by : '',
+                'updated_by' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->updated_by : '',
+                'anulado' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->anulado : '',
                 'debito' => $auxiliarDetalle->debito,
                 'credito' => $auxiliarDetalle->credito,
                 'saldo_final' => $auxiliarDetalle->saldo_final,
                 'detalle' => false,
                 'detalle_group' => 'nits',
             ];
+            // dd($this->auxiliarCollection);
         }
     }
 

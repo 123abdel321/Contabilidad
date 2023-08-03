@@ -77,14 +77,25 @@
     });
 
     var balance_table = $('#balanceInformeTable').DataTable({
-        dom: '',
-        autoWidth: true,
+        dom: 'ti',
         responsive: false,
         processing: true,
         serverSide: true,
         deferLoading: 0,
         initialLoad: false,
         language: lenguajeDatatable,
+        sScrollX: "100%",
+        scroller: {
+            displayBuffer: 20,
+            rowHeight: 50,
+            loadingIndicator: true
+        },
+        deferRender: true,
+        fixedHeader : {
+            header : true,
+            footer : true,
+            headerOffset: 45
+        },
         'rowCallback': function(row, data, index){
             if(data.cuenta == "TOTALES"){
                 $('td', row).css('background-color', 'rgb(0 255 76 / 56%)');

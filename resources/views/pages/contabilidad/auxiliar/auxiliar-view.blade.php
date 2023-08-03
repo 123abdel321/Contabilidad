@@ -45,10 +45,8 @@
     $('#fecha_desde_auxiliar').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
     $('#fecha_hasta_auxiliar').val(fechaDesde);
 
-    
-
     var auxiliar_table = $('#auxiliarInformeTable').DataTable({
-        dom: '',
+        dom: 't',
         responsive: false,
         processing: true,
         serverSide: true,
@@ -59,6 +57,12 @@
         ordering: false,
         sScrollX: "100%",
         scrollX: true,
+        scroller: {
+            displayBuffer: 20,
+            rowHeight: 50,
+            loadingIndicator: true
+        },
+        deferRender: true,
         fixedHeader : {
             header : true,
             footer : true,
