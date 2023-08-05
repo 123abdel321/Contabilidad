@@ -16,7 +16,9 @@ class CentroCostos extends Model
     protected $fillable = [
         'id',
         'codigo',
-        'nombre'
+        'nombre',
+        'created_by',
+        'updated_by'
     ];
 
 }

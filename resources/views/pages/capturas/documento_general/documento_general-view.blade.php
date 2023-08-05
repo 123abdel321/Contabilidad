@@ -776,7 +776,7 @@
                             setDisabledRows(documento.cuenta, index);
                         }
                         $("#editing_documento").val("1");
-                        swalFire('Documentos encontrados', 'Documentos cargados con exito!');
+                        agregarToast('exito', 'Documentos encontrados', 'Documentos cargados con exito!', true );
                         mostrarValores();
                     } else {
                         editandoCaptura = false;
@@ -1170,7 +1170,7 @@
                     $("#crearCapturaDocumentos").prop('disabled', true);
                 }
                 mostrarValores();
-                swalFire('Eliminación exitosa', 'Documento eliminado con exito!');
+                agregarToast('error', 'Eliminación exitosa', 'Documento eliminado con exito!', true );
             }
         })
     });
@@ -1264,7 +1264,7 @@
             texto = "Documento descuadrado, desea guardarlo en la tabla?";
             type = "warning";
         } else if (debito == 0 && credito == 0) {
-            swalFire('Creación herrada', 'Sin datos para guardar en la tabla', false);
+            agregarToast('warning', 'Creación herrada', 'Sin datos para guardar en la tabla', true);
             return;
         }
 
@@ -1302,8 +1302,8 @@
                         cancelarFacturas();
                         mostrarValores();
                         $('#crearCapturaDocumentosDisabled').hide();
-                        swalFire('Creación exitosa', 'Documentos creados con exito!');
                         $(".cardTotal").css("background-color", "white");
+                        agregarToast('exito', 'Creación exitosa', 'Documentos creados con exito!', true);
                     } else {
 
                         $("#agregarDocumentos").show();
@@ -1322,7 +1322,7 @@
                             }
                             
                         };
-                        swalFire('Creación herrada', errorsMsg, false);
+                        agregarToast('error', 'Creación herrada', errorsMsg);
                     }
                 }).fail((err) => {
 
@@ -1342,7 +1342,7 @@
                         }
                         
                     };
-                    swalFire('Creación herrada', errorsMsg, false);
+                    agregarToast('error', 'Creación herrada', errorsMsg);
                 });
             }
         })

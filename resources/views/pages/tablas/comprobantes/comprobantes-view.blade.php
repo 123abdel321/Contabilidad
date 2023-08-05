@@ -41,12 +41,29 @@
     });
 
     var comprobante_table = $('#comprobantesTable').DataTable({
-        dom: '',
+        pageLength: 30,
+        dom: 'ti',
         responsive: false,
         processing: true,
         serverSide: true,
         initialLoad: true,
         language: lenguajeDatatable,
+        sScrollX: "100%",
+        scroller: {
+            displayBuffer: 20,
+            rowHeight: 50,
+            loadingIndicator: true
+        },
+        deferRender: true,
+        fixedHeader : {
+            header : true,
+            footer : true,
+            headerOffset: 45
+        },
+        fixedColumns : {
+            left: 0,
+            right : 1,
+        },
         ajax:  {
             type: "GET",
             headers: headers,
@@ -150,7 +167,7 @@
                 $("#saveComprobanteLoading").hide();
                 $("#comprobanteFormModal").modal('hide');
                 comprobante_table.row.add(res.data).draw();
-                swalFire('Creación exitosa', 'Comprobante creado con exito!');
+                agregarToast('exito', 'Creación exitosa', 'Comprobante creado con exito!', true);
             }
         }).fail((err) => {
             $('#saveComprobante').show();
@@ -167,7 +184,7 @@
             } else {
                 errorsMsg = mensaje
             }
-            swalFire('Creación herrada', errorsMsg, false);
+            agregarToast('error', 'Creación herrada', errorsMsg);
         });
     });
 
@@ -241,7 +258,7 @@
             $("#saveComprobanteLoading").hide();
             $("#comprobanteFormModal").modal('hide');
             comprobante_table.ajax.reload();
-            swalFire('Actualización exitosa', 'Comprobante creado con exito!');
+            agregarToast('exito', 'Actualización exitosa', 'Comprobante actualizado con exito!', true );
         }
         }).fail((err) => {
             $('#updateComprobante').show();
@@ -258,7 +275,7 @@
             } else {
                 errorsMsg = mensaje
             }
-            swalFire('Actualización herrada', errorsMsg, false);
+            agregarToast('error', 'Error al actualizar Comprobante!', errorsMsg);
         });
     });
 
@@ -287,12 +304,12 @@
                 }).done((res) => {
                     if(res.success){
                         comprobante_table.ajax.reload();
-                        swalFire('Eliminación exitosa', 'Comprobante eliminado con exito!');
+                        agregarToast('exito', 'Eliminación exitosa', 'Comprobante eliminado con exito!', true );
                     } else {
-                        swalFire('Eliminación herrada', res.message, false);
+                        agregarToast('error', 'Eliminación herrada', res.message);
                     }
                 }).fail((res) => {
-                    swalFire('Eliminación herrada', res.message, false);
+                    agregarToast('error', 'Eliminación herrada', res.message);
                 });
             }
         })

@@ -16,10 +16,10 @@
 <div class="container-fluid py-2">
     <div class="row">
         <div class="row" style="z-index: 9;">
-            <div class="col-4 col-md-4 col-sm-4">
+            <div class="col-12 col-md-4 col-sm-4">
                 <button type="button" class="btn btn-primary btn-sm" id="createNits">Agregar cedula-nit</button>
             </div>
-            <div class="col-8 col-md-8 col-sm-8">
+            <div class="col-12 col-md-8 col-sm-8">
                 <input type="text" id="searchInput" class="form-control form-control-sm search-table" placeholder="Buscar">
             </div>
         </div>
@@ -210,7 +210,7 @@
                     $("#saveNitLoading").hide();
                     $("#nitFormModal").modal('hide');
                     nits_table.row.add(res.data).draw();
-                    swalFire('Edición exitosa', 'Nit actualizado con exito!');
+                    agregarToast('exito', 'Edición exitosa', 'Cedula nit actualizada con exito!', true );
                 }
             }).fail((res) => {
                 $('#saveNit').hide();
@@ -228,7 +228,7 @@
                 } else {
                     errorsMsg = mensaje
                 }
-                swalFire('Edición herrada', errorsMsg, false);
+                agregarToast('error', 'Edición herrada', errorsMsg);
             });
         } else {
             form.classList.add('was-validated');
@@ -273,7 +273,7 @@
                     $("#saveNitLoading").hide();
                     $("#nitFormModal").modal('hide');
                     nits_table.row.add(res.data).draw();
-                    swalFire('Creación exitosa', 'Nit creado con exito!');
+                    agregarToast('exito', 'Creación exitosa', 'Cedula nit creada con exito!', true);
                 }
             }).fail((err) => {
                 $('#saveNit').show();
@@ -290,7 +290,7 @@
                 } else {
                     errorsMsg = mensaje
                 }
-                swalFire('Creación herrada', errorsMsg, false);
+                agregarToast('error', 'Creación herrada', errorsMsg);
             });
         } else {
             form.classList.add('was-validated');
@@ -371,12 +371,12 @@
                 }).done((res) => {
                     if(res.success){
                         nits_table.row(trNit).remove().draw();
-                        swalFire('Eliminación exitosa', 'Nit eliminado con exito!');
+                        agregarToast('exito', 'Eliminación exitosa', 'Cedula nit eliminado con exito!', true );
                     } else {
-                        swalFire('Eliminación herrada', res.message, false);
+                        agregarToast('error', 'Eliminación herrada', res.message);
                     }
                 }).fail((res) => {
-                    swalFire('Eliminación herrada', res.message, false);
+                    agregarToast('error', 'Eliminación herrada', res.message);
                 });
             }
         })
@@ -388,6 +388,8 @@
         $("#saveNitLoading").hide();
 
         $("#id_tipo_documento").val('').change();
+        $("#id_ciudad").val('').change();
+        $("#observaciones").val('');
         $("#numero_documento").val('');
         $("#tipo_contribuyente").val('').change();
         $("#primer_apellido").val('');
@@ -395,6 +397,7 @@
         $("#primer_nombre").val('');
         $("#otros_nombres").val('');
         $("#razon_social").val('');
+        $("#telefono_1").val('');
         $("#direccion").val('');
         $("#email").val('');
     }
