@@ -91,7 +91,7 @@ class NitController extends Controller
 
         $rules = [
 			'id_tipo_documento' => 'required|exists:sam.tipos_documentos,id',
-			'id_ciudad' => 'nullable|exists:sam.ciudades,id',
+			'id_ciudad' => 'nullable|exists:clientes.ciudades,id',
             'observaciones' => 'nullable|string',
 			'id_actividad_econo' => 'nullable|exists:sam.actividades_economicas,id',
 			'numero_documento' => 'required|unique:sam.nits,numero_documento|max:30',

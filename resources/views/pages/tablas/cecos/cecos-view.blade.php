@@ -127,7 +127,7 @@
                 $("#saveCecosLoading").hide();
                 $("#cecosFormModal").modal('hide');
                 cecos_table.row.add(res.data).draw();
-                swalFire('Creación exitosa', 'Centro de costos creado con exito!');
+                agregarToast('exito', 'Creación exitosa', 'Centro de costos creado con exito!', true);
             }
         }).fail((err) => {
             $('#saveCecos').show();
@@ -144,7 +144,7 @@
             } else {
                 errorsMsg = mensaje
             }
-            swalFire('Creación herrada', errorsMsg, false);
+            agregarToast('error', 'Creación herrada', errorsMsg);
         });
     });
 
@@ -191,12 +191,12 @@
                 }).done((res) => {
                     if(res.success){
                         cecos_table.ajax.reload();
-                        swalFire('Eliminación exitosa', 'Centro de costos eliminado con exito!');
+                        agregarToast('exito', 'Eliminación exitosa', 'Centro de costos eliminado con exito!', true );
                     } else {
-                        swalFire('Eliminación herrada', res.message, false);
+                        agregarToast('error', 'Eliminación herrada', res.message);
                     }
                 }).fail((res) => {
-                    swalFire('Eliminación herrada', res.message, false);
+                    agregarToast('error', 'Eliminación herrada', res.message);
                 });
             }
         })
@@ -235,7 +235,7 @@
             $("#saveCecosLoading").hide();
             $("#cecosFormModal").modal('hide');
             cecos_table.ajax.reload();
-            swalFire('Actualización exitosa', 'Centro de costos actualizado con exito!');
+            agregarToast('exito', 'Actualización exitosa', 'Centro de costos actualizado con exito!', true );
         }
         }).fail((err) => {
             $('#updateCecos').show();
@@ -252,7 +252,7 @@
             } else {
                 errorsMsg = mensaje
             }
-            swalFire('Actualización herrada', errorsMsg, false);
+            agregarToast('error', 'Error al actualizar Centro de costos!', errorsMsg);
         });
     });
 

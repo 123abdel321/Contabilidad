@@ -1,7 +1,7 @@
 <table id="planCuentaTable" class="table table-bordered display responsive" width="100%">
     <thead>
         <tr>
-            <th style="border-radius: 15px 0px 0px 0px;">Cuenta</th>
+            <th>Cuenta</th>
             <th>Nombre</th>
             <th>Naturaleza cuenta</th>
             <th>Ingresos</th>
@@ -11,8 +11,10 @@
             <th>Nit</th>
             <th>Dcto refe</th>
             <th>Concepto</th>
-            <th>Centro costros</th> 
-            <th style="border-radius: 0px 15px 0px 0px;">Acciones</th>
+            <th>Centro costros</th>
+            <th>Creación registro</th>
+            <th>Ultima actualización</th>
+            <th>Acciones</th>
         </tr>
     </thead>
 </table>

@@ -90,7 +90,7 @@ class CentroCostoController extends Controller
 
         try {
             DB::connection('sam')->beginTransaction();
-
+            
             $cecos = CentroCostos::create([
                 'codigo' => $request->get('codigo'),
                 'nombre' => $request->get('nombre'),

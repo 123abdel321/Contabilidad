@@ -40,10 +40,18 @@ class PlanCuentaController extends Controller
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
+
         $cuentas = PlanCuentas::orderBy($columnName,$columnSortOrder)
             ->with('tipo_cuenta', 'padre')
             ->where('nombre', 'like', '%' .$searchValue . '%')
             ->orWhere('cuenta', 'like', '%' .$searchValue . '%')
+            ->select(
+                '*',
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                'created_by',
+                'updated_by'
+            )
             ->skip($start)
             ->take($rowperpage);
 

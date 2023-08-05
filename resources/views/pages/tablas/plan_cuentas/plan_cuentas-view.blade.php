@@ -98,10 +98,23 @@
             left: 0,
             right : 1,
         },
-        // "bScrollInfinite": true,
-        // "bScrollCollapse": true,
-        // "sScrollY": "90%",
-        // "sScrollY": true,
+        'rowCallback': function(row, data, index){
+            if(data.cuenta.auxiliar){
+                return;
+            }
+            if(data.cuenta.length == 1){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 80%)');
+                return;
+            }
+            if(data.cuenta.length == 2){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
+                return;
+            }
+            if(data.cuenta.length == 4){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
+                return;
+            }
+        },
         ajax:  {
             type: "GET",
             headers: headers,
@@ -190,6 +203,18 @@
                     return 'No';
                 }
             },
+            {"data": function (row, type, set){  
+                var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                if(!row.created_by && !row.fecha_creacion) return '';
+                if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
+                return html;
+            }},
+            {"data": function (row, type, set){
+                var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                if(!row.updated_by && !row.fecha_edicion) return '';
+                if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
+                return html;
+            }},
             {
                 "data": function (row, type, set){
                     var html = '';
@@ -255,12 +280,24 @@
                 $("#savePlanCuentaLoading").hide();
                 $("#planCuentaFormModal").modal('hide');
                 plan_cuentas_table.row.add(res.data).draw();
-                swalFire('Creación exitosa', 'Cuenta creado con exito!');
+                agregarToast('exito', 'Creación exitosa', 'Cuenta creado con exito!', true);
             }
         }).fail((err) => {
             $('#savePlanCuenta').show();
             $('#savePlanCuentaLoading').hide();
-            swalFire('Creación herrada', 'Error al crear Cuenta!', false);
+            var errorsMsg = "";
+            var mensaje = err.responseJSON.message;
+            if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                for (field in mensaje) {
+                    var errores = mensaje[field];
+                    for (campo in errores) {
+                        errorsMsg += "- "+errores[campo]+" <br>";
+                    }
+                };
+            } else {
+                errorsMsg = mensaje
+            }
+            agregarToast('error', 'Creación herrada', errorsMsg);
         });
     });
 
@@ -274,12 +311,17 @@
         $("#id_padre").val(0).change();
         $("#cuenta").val('');
         $("#nombre").val('');
-        $("#naturaleza_cuenta").val(0).change();
+        $("#naturaleza_cuenta").val('').change();
+        $("#naturaleza_ingresos").val('').change();
+        $("#naturaleza_egresos").val('').change();
+        $("#naturaleza_compras").val('').change();
+        $("#naturaleza_ventas").val('').change();
         $("#id_tipo_cuenta").val('').change();
         $("#exige_nit").prop( "checked", false );
         $("#exige_documento_referencia").prop( "checked", false );
         $("#exige_concepto").prop( "checked", false );
         $("#exige_centro_costos").prop( "checked", false );
+
     }
 
     plan_cuentas_table.on('click', '.edit-plan-cuentas', function() {
@@ -368,12 +410,12 @@
                 $("#savePlanCuentaLoading").hide();
                 $("#planCuentaFormModal").modal('hide');
                 plan_cuentas_table.row.add(res.data).draw();
-                swalFire('Edición exitosa', 'Cuenta actualizada con exito!');
+                agregarToast('exito', 'Actualización exitosa', 'Cuenta actualizada con exito!', true );
             }
         }).fail((err) => {
             $('#savePlanCuenta').show();
             $('#savePlanCuentaLoading').hide();
-            swalFire('Edición herrada', 'Error al actualizat Cuenta!', false);
+            agregarToast('error', 'Error al actualizar Cuenta!', errorsMsg);
         });
     });
 
@@ -402,12 +444,12 @@
                 }).done((res) => {
                     if(res.success){
                         plan_cuentas_table.row(trPlanCuenta).remove().draw();
-                        swalFire('Eliminación exitosa', 'Plan cuenta eliminado con exito!');
+                        agregarToast('exito', 'Eliminación exitosa', 'Plan cuenta eliminado con exito!', true );
                     } else {
-                        swalFire('Eliminación herrada', res.message, false);
+                        agregarToast('error', 'Eliminación herrada', res.message);
                     }
                 }).fail((res) => {
-                    swalFire('Eliminación herrada', res.message, false);
+                    agregarToast('error', 'Eliminación herrada', res.message);
                 });
             }
         })

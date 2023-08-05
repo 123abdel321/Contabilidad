@@ -44,6 +44,7 @@
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlSelect1">Naturaleza ingresos<span style="color: red">*</span></label>
                             <select class="form-control form-control-sm" id="naturaleza_ingresos">
+                                <option value="">Ninguna</option>
                                 <option value="0">Debito</option>
                                 <option value="1">Credito</option>
                             </select>
@@ -52,6 +53,7 @@
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlSelect1">Naturaleza egresos<span style="color: red">*</span></label>
                             <select class="form-control form-control-sm" id="naturaleza_egresos">
+                                <option value="">Ninguna</option>
                                 <option value="0">Debito</option>
                                 <option value="1">Credito</option>
                             </select>
@@ -60,6 +62,7 @@
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlSelect1">Naturaleza compras<span style="color: red">*</span></label>
                             <select class="form-control form-control-sm" id="naturaleza_compras">
+                                <option value="">Ninguna</option>
                                 <option value="0">Debito</option>
                                 <option value="1">Credito</option>
                             </select>
@@ -68,6 +71,7 @@
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlSelect1">Naturaleza ventas<span style="color: red">*</span></label>
                             <select class="form-control form-control-sm" id="naturaleza_ventas">
+                                <option value="">Ninguna</option>
                                 <option value="0">Debito</option>
                                 <option value="1">Credito</option>
                             </select>
