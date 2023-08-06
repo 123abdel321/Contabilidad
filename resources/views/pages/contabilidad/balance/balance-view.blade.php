@@ -97,21 +97,34 @@
             headerOffset: 45
         },
         'rowCallback': function(row, data, index){
+            console.log(data);
             if(data.cuenta == "TOTALES"){
-                $('td', row).css('background-color', 'rgb(0 255 76 / 56%)');
+                $('td', row).css('background-color', 'rgb(28 69 135)');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
+                return;
             }
-            if(data.cuenta.length == 1){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
+            if(data.auxiliar){//
+                return;
+            }
+            if(data.cuenta.length == 1){//
+                $('td', row).css('background-color', 'rgb(64 164 209 / 90%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
-            if(data.cuenta.length == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
+            if(data.cuenta.length == 2){//
+                $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
-            if(data.cuenta.length == 4){
+            if(data.cuenta.length == 4){//
+                $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
+                $('td', row).css('font-weight', 'bold');
+                return;
+            }
+            if(data.cuenta.length == 6){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
             

@@ -62,7 +62,7 @@
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">BUSCANDO</b>
                     </span>
-                    <span id="descargarExcelAuxiliar" class="btn badge bg-gradient-success" style="min-width: 40px; margin-right: 3px; display:none;">
+                    <span id="descargarExcelAuxiliar" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">EXCEL</b>
                     </span>

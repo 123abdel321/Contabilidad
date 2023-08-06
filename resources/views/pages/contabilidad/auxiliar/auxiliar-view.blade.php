@@ -20,7 +20,7 @@
         cursor: pointer;
         float: right;
     }
-    .bg-gradient-success{
+    .btn-bg-excel {
         background-image: linear-gradient(310deg, #02974d 0%, #006d37 100%);
     }
 </style>
@@ -76,12 +76,12 @@
             }
             if(data.detalle_group == 'nits'){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
-                // $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.cuenta == "TOTALES"){
-                $('td', row).css('background-color', 'rgb(0 195 255)');
+                $('td', row).css('background-color', 'rgb(28 69 135)');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 1){//
@@ -211,13 +211,15 @@
         $('#descargarExcelAuxiliar').prop('disabled', true);
         $("#descargarExcelAuxiliar").hide();
         $("#descargarExcelAuxiliarDisabled").show();
-        auxiliar_table.ajax.reload(function() {
+        auxiliar_table.ajax.reload(function(res) {
+
             $("#generarAuxiliar").show();
             $("#generarAuxiliarLoading").hide();
             $('#descargarExcelAuxiliar').prop('disabled', false);
             $("#descargarExcelAuxiliar").show();
             $("#descargarExcelAuxiliarDisabled").hide();
             $('.error').hide();
+
         },false);
     });
 

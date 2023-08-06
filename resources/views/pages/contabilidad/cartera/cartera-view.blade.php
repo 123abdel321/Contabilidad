@@ -107,8 +107,9 @@
                 return;
             }
             if(data.cuenta == "TOTALES"){
-                $('td', row).css('background-color', 'rgb(0 215 64 / 60%)');
+                $('td', row).css('background-color', 'rgb(28 69 135)');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 1){
