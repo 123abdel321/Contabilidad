@@ -570,6 +570,7 @@
     <!-- sweetalert2 -->
     <script src="assets/js/sistema/sweetalert2.all.min.js"></script>
     
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.2.6/jquery.inputmask.bundle.min.js"></script>
     <script>
 
@@ -938,28 +939,28 @@
         }
 
 
-        const contenedorBotones = document.getElementById('contenedor-botones');
+        // const contenedorBotones = document.getElementById('contenedor-botones');
         const contenedorToast = document.getElementById('contenedor-toast');
 
         // Event listener para detectar click en los botones
-        contenedorBotones.addEventListener('click', (e) => {
-            e.preventDefault();
+        // contenedorBotones.addEventListener('click', (e) => {
+        //     e.preventDefault();
 
-            const tipo = e.target.dataset.tipo;
+        //     const tipo = e.target.dataset.tipo;
 
-            if (tipo === 'exito') {
-                agregarToast({ tipo: 'exito', titulo: 'Exito!', descripcion: 'La operación fue exitosa.', autoCierre: true });
-            }
-            if (tipo === 'error') {
-                agregarToast({ tipo: 'error', titulo: 'Error', descripcion: 'Hubo un error', autoCierre: true });
-            }
-            if (tipo === 'info') {
-                agregarToast({ tipo: 'info', titulo: 'Info', descripcion: 'Esta es una notificación de información.' });
-            }
-            if (tipo === 'warning') {
-                agregarToast({ tipo: 'warning', titulo: 'Warning', descripcion: 'Ten cuidado' });
-            }
-        });
+        //     if (tipo === 'exito') {
+        //         agregarToast({ tipo: 'exito', titulo: 'Exito!', descripcion: 'La operación fue exitosa.', autoCierre: true });
+        //     }
+        //     if (tipo === 'error') {
+        //         agregarToast({ tipo: 'error', titulo: 'Error', descripcion: 'Hubo un error', autoCierre: true });
+        //     }
+        //     if (tipo === 'info') {
+        //         agregarToast({ tipo: 'info', titulo: 'Info', descripcion: 'Esta es una notificación de información.' });
+        //     }
+        //     if (tipo === 'warning') {
+        //         agregarToast({ tipo: 'warning', titulo: 'Warning', descripcion: 'Ten cuidado' });
+        //     }
+        // });
 
         // Event listener para detectar click en los toasts
         contenedorToast.addEventListener('click', (e) => {
@@ -982,6 +983,7 @@
 
             // Agregar clases correspondientes
             nuevoToast.classList.add('toast');
+            console.log('tipo: ',tipo);
             nuevoToast.classList.add(tipo);
             if (autoCierre) nuevoToast.classList.add('autoCierre');
 
@@ -1059,6 +1061,17 @@
             nuevoToast.addEventListener('animationend', handleAnimacionCierre);
             console.log('agregado con exito!');
         };
+
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('9ea234cc370d308638af', {
+            cluster: 'us2'
+        });
+
+        var channel = pusher.subscribe('my-channel');
+        channel.bind('notificaciones', function(data) {
+            agregarToast(data.message.tipo, data.message.titulo, data.message.mensaje, data.message.autoclose);
+        });
 
     </script>
     @stack('js')

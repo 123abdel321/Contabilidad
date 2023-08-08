@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Events\PrivateMessageEvent;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstaladorController;
 //TABLAS
@@ -26,6 +27,12 @@ use App\Http\Controllers\Sistema\UbicacionController;
 
 Route::post('login', 'App\Http\Controllers\ApiController@login');
 Route::post('register', 'App\Http\Controllers\ApiController@register');
+Route::post('public-event', function (Request $request) {
+    event(new PrivateMessageEvent('informe-auxiliar', 'probando ando por abdel'));
+    // event(new PrivateMessageEvent('my-channel', 'probando ando por abdel'));
+    // return $request->all();
+    return 'enviado';
+});
 //UBICACION
 Route::controller(UbicacionController::class)->group(function () {
     Route::get('paises', 'getPais');
@@ -49,6 +56,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
         Route::get('documento', 'App\Http\Controllers\Informes\DocumentoController@generate');
         Route::get('auxiliares', 'App\Http\Controllers\Informes\AuxiliarController@generate');
+        Route::get('auxiliares-show', 'App\Http\Controllers\Informes\AuxiliarController@show');
         Route::get('existe-factura', 'App\Http\Controllers\Informes\ExtractoController@existeFactura');
 
         //PLAN DE CUENTAS
