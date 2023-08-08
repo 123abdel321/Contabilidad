@@ -140,7 +140,7 @@
                     nombre = row.numero_documento +' - '+ row.razon_social;
                 }
                 
-                var html = '<div class="button-user" onclick="showNit('+row.numero_documento+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
+                var html = '<div class="button-user" onclick="showNit('+row.id_nit+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
                 return html;
 
 

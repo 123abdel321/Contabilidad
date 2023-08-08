@@ -411,6 +411,186 @@
             }
         }
 
+        svg.tea {
+            --secondary: #33406f;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+        svg.tea #teabag {
+            transform-origin: top center;
+            transform: rotate(3deg);
+            animation: swing 2s infinite;
+        }
+        svg.tea #steamL {
+            stroke-dasharray: 13;
+            stroke-dashoffset: 13;
+            animation: steamLarge 2s infinite;
+        }
+        svg.tea #steamR {
+            stroke-dasharray: 9;
+            stroke-dashoffset: 9;
+            animation: steamSmall 2s infinite;
+        }
+        @-moz-keyframes swing {
+        50% {
+            transform: rotate(-3deg);
+        }
+        }
+        @-webkit-keyframes swing {
+        50% {
+            transform: rotate(-3deg);
+        }
+        }
+        @-o-keyframes swing {
+        50% {
+            transform: rotate(-3deg);
+        }
+        }
+        @keyframes swing {
+        50% {
+            transform: rotate(-3deg);
+        }
+        }
+        @-moz-keyframes steamLarge {
+        0% {
+            stroke-dashoffset: 13;
+            opacity: 0.6;
+        }
+        100% {
+            stroke-dashoffset: 39;
+            opacity: 0;
+        }
+        }
+        @-webkit-keyframes steamLarge {
+        0% {
+            stroke-dashoffset: 13;
+            opacity: 0.6;
+        }
+        100% {
+            stroke-dashoffset: 39;
+            opacity: 0;
+        }
+        }
+        @-o-keyframes steamLarge {
+        0% {
+            stroke-dashoffset: 13;
+            opacity: 0.6;
+        }
+        100% {
+            stroke-dashoffset: 39;
+            opacity: 0;
+        }
+        }
+        @keyframes steamLarge {
+        0% {
+            stroke-dashoffset: 13;
+            opacity: 0.6;
+        }
+        100% {
+            stroke-dashoffset: 39;
+            opacity: 0;
+        }
+        }
+        @-moz-keyframes steamSmall {
+        10% {
+            stroke-dashoffset: 9;
+            opacity: 0.6;
+        }
+        80% {
+            stroke-dashoffset: 27;
+            opacity: 0;
+        }
+        100% {
+            stroke-dashoffset: 27;
+            opacity: 0;
+        }
+        }
+        @-webkit-keyframes steamSmall {
+        10% {
+            stroke-dashoffset: 9;
+            opacity: 0.6;
+        }
+        80% {
+            stroke-dashoffset: 27;
+            opacity: 0;
+        }
+        100% {
+            stroke-dashoffset: 27;
+            opacity: 0;
+        }
+        }
+        @-o-keyframes steamSmall {
+        10% {
+            stroke-dashoffset: 9;
+            opacity: 0.6;
+        }
+        80% {
+            stroke-dashoffset: 27;
+            opacity: 0;
+        }
+        100% {
+            stroke-dashoffset: 27;
+            opacity: 0;
+        }
+        }
+        @keyframes steamSmall {
+        10% {
+            stroke-dashoffset: 9;
+            opacity: 0.6;
+        }
+        80% {
+            stroke-dashoffset: 27;
+            opacity: 0;
+        }
+        100% {
+            stroke-dashoffset: 27;
+            opacity: 0;
+        }
+        }
+
+        .water{
+            width:100px;
+            height: 100px;
+            background-color: skyblue;
+            border-radius: 50%;
+            position: fixed;
+            z-index: 99999;
+            box-shadow: inset 0 0 30px 0 rgba(0,0,0,.5), 0 4px 10px 0 rgba(0,0,0,.5);
+            overflow: hidden;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .water:before, .water:after{
+            content:'';
+            position: absolute;
+            width:100px;
+            height: 100px;
+            top: -30px;
+            background-color: #fff;
+        }
+        .water:before{
+            border-radius: 45%;
+            background:rgba(255,255,255,.7);
+            animation:wave 5s linear infinite;
+        }
+        .water:after{
+            border-radius: 35%;
+            background:rgba(255,255,255,.3);
+            animation:wave 5s linear infinite;
+        }
+        @keyframes wave{
+            0%{
+                transform: rotate(0);
+            }
+            100%{
+                transform: rotate(360deg);
+            }
+        }
+
     </style>
 </head>
 
@@ -482,7 +662,7 @@
         </div>
     </div>
     <!-- MODAL NIT INFORMACIÓN-->
-    <div class="modal fade" id="modal-nit-informacion" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+    <div class="modal fade loader" id="modal-nit-informacion" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
         <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -537,6 +717,16 @@
     </div>
     <!-- NOTIFICAIONES TOAST -->
     <div class="contenedor-toast" id="contenedor-toast"></div>
+    <!-- LOADING GLOBAL WATER + TE -->
+    <div class="water" style="display: none">
+        <svg class="tea" width="37" height="48" viewbox="0 0 37 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M27.0819 17H3.02508C1.91076 17 1.01376 17.9059 1.0485 19.0197C1.15761 22.5177 1.49703 29.7374 2.5 34C4.07125 40.6778 7.18553 44.8868 8.44856 46.3845C8.79051 46.79 9.29799 47 9.82843 47H20.0218C20.639 47 21.2193 46.7159 21.5659 46.2052C22.6765 44.5687 25.2312 40.4282 27.5 34C28.9757 29.8188 29.084 22.4043 29.0441 18.9156C29.0319 17.8436 28.1539 17 27.0819 17Z" stroke="var(--secondary)" stroke-width="2"></path>
+            <path d="M29 23.5C29 23.5 34.5 20.5 35.5 25.4999C36.0986 28.4926 34.2033 31.5383 32 32.8713C29.4555 34.4108 28 34 28 34" stroke="var(--secondary)" stroke-width="2"></path>
+            <path id="teabag" fill="var(--secondary)" fill-rule="evenodd" clip-rule="evenodd" d="M16 25V17H14V25H12C10.3431 25 9 26.3431 9 28V34C9 35.6569 10.3431 37 12 37H18C19.6569 37 21 35.6569 21 34V28C21 26.3431 19.6569 25 18 25H16ZM11 28C11 27.4477 11.4477 27 12 27H18C18.5523 27 19 27.4477 19 28V34C19 34.5523 18.5523 35 18 35H12C11.4477 35 11 34.5523 11 34V28Z"></path>
+            <path id="steamL" d="M17 1C17 1 17 4.5 14 6.5C11 8.5 11 12 11 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="var(--secondary)"></path>
+            <path id="steamR" d="M21 6C21 6 21 8.22727 19 9.5C17 10.7727 17 13 17 13" stroke="var(--secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    </div>
 
     <!-- FOOTER -->
     @include('layouts.footers.footer')
@@ -575,7 +765,10 @@
     <script>
 
         $(document).ready(function() {
-            $('#containner-dashboard').load('/dashboard');
+            $('.water').show();
+            $('#containner-dashboard').load('/dashboard', function() {
+                $('.water').hide();
+            });
             $("#titulo-view").text('Inicio');
         });
         
@@ -630,9 +823,12 @@
         });      
 
         function generatView(id){
+            $('.water').show();
             $('#contenerdores-views').append('<main class="tab-pane main-content border-radius-lg change-view" style="margin-left: 5px;" id="containner-'+id+'"></main>');
             $('#footer-navigation').append(generateNewTabButton(id));
-            $('#containner-'+id).load('/'+id);
+            $('#containner-'+id).load('/'+id, function() {
+                $('.water').hide();
+            });
         }
 
         function seleccionarView(id){
@@ -873,7 +1069,7 @@
             $("#modal-title-usuario-accion").html("Buscando usuario ...");
 
             $('#modal-usuario-accion').modal('show');
-
+            $('.water').show();
             $.ajax({
                 url: base_url + 'usuario-accion',
                 method: 'GET',
@@ -894,14 +1090,16 @@
                         $("#modal-title-usuario-accion").html("Actualizado por: "+ data.username);
                     }
                 }
+                $('.water').hide();
             }).fail((err) => {
                 swalFire('Error al cargar usuario', '', false);
+                $('.water').hide();
             });
         }
 
-        function showNit (numero_documento) {
+        function showNit (id_nit) {
 
-            if(!numero_documento) {
+            if(!id_nit) {
                 return;
             }
 
@@ -914,11 +1112,12 @@
             $('#ciudad').val('');
 
             $('#modal-nit-informacion').modal('show');
+            $('.water').show();
 
             $.ajax({
                 url: base_url + 'nit/informacion',
                 method: 'GET',
-                data: {numero_documento: numero_documento},
+                data: {id_nit: id_nit},
                 headers: headers,
                 dataType: 'json',
             }).done((res) => {
@@ -933,8 +1132,10 @@
                     $('#observaciones').val(data.observaciones);
                     $('#ciudad').val(data.ciudad.nombre_completo);
                 }
+                $('.water').hide();
             }).fail((err) => {
                 swalFire('Error al cargar nit', '', false);
+                $('.water').hide();
             });
         }
 
