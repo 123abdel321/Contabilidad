@@ -267,8 +267,8 @@
     });
 
     function loadExcel(data) {
-        window.open('https://'+data.message.url_file, "_blank");
-        agregarToast(data.message.tipo, data.message.titulo, data.message.mensaje, data.message.autoclose);
+        window.open('https://'+data.url_file, "_blank");
+        agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
     }
 
     function loadAuxiliarById(id_auxiliar) {
@@ -331,7 +331,7 @@
         }).done((res) => {
             if(res.success){
                 if(res.url_file){
-                    window.open('http://'+res.url_file, "_blank");
+                    window.open('https://'+res.url_file, "_blank");
                     return;
                 }
                 agregarToast('info', 'Generando excel', res.message, true);
