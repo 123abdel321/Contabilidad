@@ -626,10 +626,10 @@
 
     <script>
 
-        const base_url = 'http://localhost:8000/api/';
-        const base_web = 'http://localhost:8000/';
-        // const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
-        // const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
+        // const base_url = 'http://localhost:8000/api/';
+        // const base_web = 'http://localhost:8000/';
+        const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
+        const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
 
         $("#button-login").click(function(event){
             $("#button-login-loading").show();
