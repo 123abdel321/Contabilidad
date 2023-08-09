@@ -254,9 +254,22 @@
     });
 
     var channel = pusher.subscribe('informe-auxiliar');
+
     channel.bind('notificaciones', function(data) {
-        loadAuxiliarById(data.message.id_auxiliar);
+        if(data.url_file){
+            loadExcel(data);
+            return;
+        }
+        if(data.message.id_auxiliar){
+            loadAuxiliarById(data.message.id_auxiliar);
+            return;
+        }
     });
+
+    function loadExcel(data) {
+        window.open('https://'+data.message.url_file, "_blank");
+        agregarToast(data.message.tipo, data.message.titulo, data.message.mensaje, data.message.autoclose);
+    }
 
     function loadAuxiliarById(id_auxiliar) {
         auxiliar_table.ajax.url(base_url + 'auxiliares-show?id='+id_auxiliar).load(function(res) {
@@ -309,11 +322,35 @@
     });
 
     $(document).on('click', '#descargarExcelAuxiliar', function () {
-        var fecha_desde = $('#fecha_desde_auxiliar').val();
-        var fecha_hasta = $('#fecha_hasta_auxiliar').val();
-        var numero_documento = $('#numero_documento').val();
-        var documento_referencia = $('#documento_referencia').val();
-        window.open("/auxiliar-excel?fecha_desde="+fecha_desde+"&fecha_hasta="+fecha_hasta+"&id_nit="+$('#id_nit').val()+"&id_cuenta="+id_cuenta, "_blank");
+        $.ajax({
+            url: base_url + 'auxiliares-excel',
+            method: 'POST',
+            data: JSON.stringify({id: 1}),
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            if(res.success){
+                if(res.url_file){
+                    window.open('http://'+res.url_file, "_blank");
+                    return;
+                }
+                agregarToast('info', 'Generando excel', res.message, true);
+            }
+        }).fail((err) => {
+            var errorsMsg = "";
+            var mensaje = err.responseJSON.message;
+            if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                for (field in mensaje) {
+                    var errores = mensaje[field];
+                    for (campo in errores) {
+                        errorsMsg += "- "+errores[campo]+" <br>";
+                    }
+                };
+            } else {
+                errorsMsg = mensaje
+            }
+            agregarToast('error', 'Error al generar excel', errorsMsg);
+        });
     });
 
     $("#fecha_desde_auxiliar").on('change', function(){

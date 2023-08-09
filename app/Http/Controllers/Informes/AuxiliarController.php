@@ -6,9 +6,13 @@ use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Exports\AuxiliarExport;
+use App\Jobs\NotifyUserOfCompletedExport;
+use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeAuxiliar;
+use Illuminate\Support\Facades\Storage;
 //MODELS
+use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Informes\InfAuxiliar;
 use App\Models\Informes\InfAuxiliarDetalle;
@@ -78,7 +82,58 @@ class AuxiliarController extends Controller
 
     public function exportExcel(Request $request)
     {
-        return (new AuxiliarExport($request))->download('auxiliar.xlsx');
+        try {
+            $informeAuxiliar = InfAuxiliar::find($request->get('id'));
+
+            if($informeAuxiliar->exporta_excel == 1) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => '',
+                    'message'=> 'Actualmente se esta generando el excel del auxiliar 12'
+                ]);
+            }
+
+            if($informeAuxiliar->exporta_excel == 2) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => $informeAuxiliar->archivo_excel,
+                    'message'=> ''
+                ]);
+            }
+
+            $fileName = 'auxiliar_'.uniqid().'.xlsx';
+            $url = $fileName;
+
+            $informeAuxiliar->exporta_excel = 1;
+            $informeAuxiliar->archivo_excel = 's3contabilidad.nyc3.digitaloceanspaces.com/'.$url;
+            $informeAuxiliar->save();
+
+            (new AuxiliarExport($request->get('id')))->store($fileName, 'do_spaces', null, [
+                'visibility' => 'public'
+            ])->chain([
+                event(new PrivateMessageEvent('informe-auxiliar', [
+                    'tipo' => 'exito',
+                    'mensaje' => 'Excel de Auxiliar generado con exito!',
+                    'titulo' => 'Excel generado',
+                    'url_file' => 's3contabilidad.nyc3.digitaloceanspaces.com/'.$url,
+                    'autoclose' => false
+                ])),
+                $informeAuxiliar->exporta_excel = 2,
+                $informeAuxiliar->save(),
+            ]);
+
+            return response()->json([
+                'success'=>	true,
+                'url_file' => '',
+                'message'=> 'Se le notificará cuando el informe haya finalizado'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
     }
 
 }

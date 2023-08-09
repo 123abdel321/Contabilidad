@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PrivateMessageEvent implements ShouldBroadcast
+class ExcelMessageEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -32,6 +32,11 @@ class PrivateMessageEvent implements ShouldBroadcast
         // ];
     }
 
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return array<int, \Illuminate\Broadcasting\Channel>
+     */
     public function broadcastOn()
     {
         return [
@@ -39,13 +44,9 @@ class PrivateMessageEvent implements ShouldBroadcast
         ];
     }
 
+    
     public function broadcastAs()
 	{
-		return 'notificaciones';
-	}
-
-    public function broadcastWith()
-	{
-		return $this->message;
+		return 'excel';
 	}
 }

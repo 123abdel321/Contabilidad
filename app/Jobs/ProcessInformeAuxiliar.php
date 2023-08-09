@@ -55,8 +55,9 @@ class ProcessInformeAuxiliar implements ShouldQueue
 			]);
 
             $this->id_auxiliar = $auxiliar->id;
+            
             $auxiliares = $this->documentosAuxiliar();
-            // dd($auxiliares[0]);
+
             foreach ($auxiliares as $auxiliar) {
                 $cuentasAsociadas = $this->getCuentas($auxiliar->cuenta); //return ARRAY PADRES CUENTA
                 foreach ($cuentasAsociadas as $cuenta) {
