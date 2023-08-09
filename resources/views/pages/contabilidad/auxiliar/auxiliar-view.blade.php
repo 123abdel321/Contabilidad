@@ -260,8 +260,8 @@
             loadExcel(data);
             return;
         }
-        if(data.message.id_auxiliar){
-            loadAuxiliarById(data.message.id_auxiliar);
+        if(data.id_auxiliar){
+            loadAuxiliarById(data.id_auxiliar);
             return;
         }
     });
