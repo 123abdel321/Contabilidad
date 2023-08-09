@@ -17,7 +17,7 @@
     <div class="row">
         <div class="row" style="z-index: 9;">
             <div class="col-12 col-md-4 col-sm-4">
-                <button type="button" class="btn btn-primary btn-sm" id="createNits">Agregar cedula-nit</button>
+                <button type="button" class="btn btn-primary btn-sm" id="createNits">Agregar cedula nit</button>
             </div>
             <div class="col-12 col-md-8 col-sm-8">
                 <input type="text" id="searchInput" class="form-control form-control-sm search-table" placeholder="Buscar">

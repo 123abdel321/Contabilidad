@@ -276,7 +276,7 @@ class NitController extends Controller
 
     public function getNitInfo (Request $request)
     {
-        $nit = Nits::where('numero_documento', $request->get('numero_documento'))
+        $nit = Nits::where('id', $request->get('id_nit'))
             ->select(
                 '*',
                 DB::raw("CASE

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Events\PrivateMessage;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstaladorController;
 //TABLAS
@@ -26,6 +27,13 @@ use App\Http\Controllers\Sistema\UbicacionController;
 
 Route::post('login', 'App\Http\Controllers\ApiController@login');
 Route::post('register', 'App\Http\Controllers\ApiController@register');
+Route::post('public-event', function (Request $request) {
+    // event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
+    // event(new PrivateMessageEvent('my-channel', 'probando ando por abdel'));
+    // return $request->all();
+    event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
+    return event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
+});
 //UBICACION
 Route::controller(UbicacionController::class)->group(function () {
     Route::get('paises', 'getPais');
@@ -48,8 +56,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('balances', 'App\Http\Controllers\Informes\BalanceController@generate');
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
         Route::get('documento', 'App\Http\Controllers\Informes\DocumentoController@generate');
-        Route::get('auxiliares', 'App\Http\Controllers\Informes\AuxiliarController@generate');
         Route::get('existe-factura', 'App\Http\Controllers\Informes\ExtractoController@existeFactura');
+        //AUXILIAR
+        Route::get('auxiliares', 'App\Http\Controllers\Informes\AuxiliarController@generate');
+        Route::get('auxiliares-show', 'App\Http\Controllers\Informes\AuxiliarController@show');
+        Route::post('auxiliares-excel', 'App\Http\Controllers\Informes\AuxiliarController@exportExcel');
 
         //PLAN DE CUENTAS
         Route::controller(PlanCuentaController::class)->group(function () {

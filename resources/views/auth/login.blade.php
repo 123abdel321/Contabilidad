@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_no_nav')
 
 @section('content')
     <div class="container position-sticky z-index-sticky top-0">
@@ -62,10 +62,8 @@
                                 style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signin-ill.jpg');
               background-size: cover;">
                                 <span class="mask bg-gradient-primary opacity-6"></span>
-                                <h4 class="mt-5 text-white font-weight-bolder position-relative">"Attention is the new
-                                    currency"</h4>
-                                <p class="text-white position-relative">The more effortless the writing looks, the more
-                                    effort the writer actually put into the process.</p>
+                                <h4 class="mt-5 text-white font-weight-bolder position-relative">"Nueva ERP en progreso"</h4>
+                                <p class="text-white position-relative">En asociación ...</p>
                             </div>
                         </div>
                     </div>

@@ -60,9 +60,9 @@
                     </span>
                     <span id="generarAuxiliarLoading" class="badge bg-gradient-primary" style="display:none; min-width: 40px; margin-right: 3px; margin-bottom: 13px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">BUSCANDO</b>
+                        <b style="vertical-align: text-top;">GENERANDO</b>
                     </span>
-                    <span id="descargarExcelAuxiliar" class="btn badge bg-gradient-success" style="min-width: 40px; margin-right: 3px; display:none;">
+                    <span id="descargarExcelAuxiliar" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">EXCEL</b>
                     </span>
@@ -71,11 +71,11 @@
                         <b style="vertical-align: text-top;">EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
-                    <span id="" class="badge bg-dark" style="min-width: 40px; color: #adadad;" >
+                    <!-- <span id="" class="badge bg-dark" style="min-width: 40px; color: #adadad;" >
                         <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>
                         <b style="vertical-align: text-top;">PDF</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
-                    </span>
+                    </span> -->
                 </div>
             </div>
         </div>

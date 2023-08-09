@@ -20,7 +20,7 @@
         cursor: pointer;
         float: right;
     }
-    .bg-gradient-success{
+    .btn-bg-excel {
         background-image: linear-gradient(310deg, #02974d 0%, #006d37 100%);
     }
 </style>
@@ -41,6 +41,7 @@
 
 <script>
     var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    var generarAuxiliar = false;
     
     $('#fecha_desde_auxiliar').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
     $('#fecha_hasta_auxiliar').val(fechaDesde);
@@ -76,12 +77,12 @@
             }
             if(data.detalle_group == 'nits'){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
-                // $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.cuenta == "TOTALES"){
-                $('td', row).css('background-color', 'rgb(0 195 255)');
+                $('td', row).css('background-color', 'rgb(28 69 135)');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 1){//
@@ -97,6 +98,9 @@
             if(data.cuenta.length == 4){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
                 $('td', row).css('font-weight', 'bold');
+                return;
+            }
+            if(data.detalle == 0 && data.detalle_group == 0){
                 return;
             }
             if(data.detalle_group && !data.detalle){//
@@ -119,6 +123,7 @@
                 d.fecha_hasta = $('#fecha_hasta_auxiliar').val();
                 d.id_cuenta = $('#id_cuenta_auxiliar').val();
                 d.id_nit = $('#id_nit_auxiliar').val();
+                d.generar = generarAuxiliar;
                 d.tipo_documento = $("input[type='radio']#tipo_documento1").is(':checked') ? 'todas' : 'anuladas';
             }
         },
@@ -135,7 +140,7 @@
                     nombre = row.numero_documento +' - '+ row.razon_social;
                 }
                 
-                var html = '<div class="button-user" onclick="showNit('+row.numero_documento+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
+                var html = '<div class="button-user" onclick="showNit('+row.id_nit+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
                 return html;
 
 
@@ -177,14 +182,14 @@
             }},
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
-                if(!row.created_by && !row.fecha_creacion) return '';
-                if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
+                if(row.created_by == 0 && row.fecha_creacion == '0000-00-00') return '';
+                if(row.created_by == 0) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
                 return html;
             }},
             {"data": function (row, type, set){
                 var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
-                if(!row.updated_by && !row.fecha_edicion) return '';
-                if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
+                if(row.updated_by == 0 && row.fecha_edicion == '0000-00-00') return '';
+                if(row.updated_by == 0) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
                 return html;
             }},
         ]
@@ -206,20 +211,96 @@
     });
     
     $(document).on('click', '#generarAuxiliar', function () {
+        generarAuxiliar = false;
         $("#generarAuxiliar").hide();
         $("#generarAuxiliarLoading").show();
         $('#descargarExcelAuxiliar').prop('disabled', true);
         $("#descargarExcelAuxiliar").hide();
         $("#descargarExcelAuxiliarDisabled").show();
-        auxiliar_table.ajax.reload(function() {
-            $("#generarAuxiliar").show();
-            $("#generarAuxiliarLoading").hide();
-            $('#descargarExcelAuxiliar').prop('disabled', false);
-            $("#descargarExcelAuxiliar").show();
-            $("#descargarExcelAuxiliarDisabled").hide();
-            $('.error').hide();
-        },false);
+
+        var url = base_url + 'auxiliares';
+        url+= '?fecha_desde='+$('#fecha_desde_auxiliar').val();
+        url+= '&fecha_hasta='+$('#fecha_hasta_auxiliar').val();
+        url+= '&id_cuenta='+$('#id_cuenta').val();
+        url+= '&generar='+generarAuxiliar;
+        
+        auxiliar_table.ajax.url(url).load(function(res) {
+            if(res.success) {
+                if(res.data){
+                    Swal.fire({
+                        title: '¿Cargar auxiliar?',
+                        text: "Auxiliar generado anteriormente, ¿Desea cargarlo?",
+                        type: 'info',
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Cargar',
+                        cancelButtonText: 'Generar nuevo',
+                        reverseButtons: true,
+                    }).then((result) => {
+                        if (result.value){
+                            loadAuxiliarById(res.data);
+                        } else {
+                            generarAuxiliar = true;
+                            GenerateAuxiliar();
+                        }
+                    })
+                } else {
+                    agregarToast('info', 'Generando auxiliar', 'En un momento se le notificará cuando el informe esté generado...', true );
+                }
+            }
+        });
     });
+
+    var channel = pusher.subscribe('informe-auxiliar');
+
+    channel.bind('notificaciones', function(data) {
+        if(data.url_file){
+            loadExcel(data);
+            return;
+        }
+        if(data.message.id_auxiliar){
+            loadAuxiliarById(data.message.id_auxiliar);
+            return;
+        }
+    });
+
+    function loadExcel(data) {
+        window.open('https://'+data.message.url_file, "_blank");
+        agregarToast(data.message.tipo, data.message.titulo, data.message.mensaje, data.message.autoclose);
+    }
+
+    function loadAuxiliarById(id_auxiliar) {
+        auxiliar_table.ajax.url(base_url + 'auxiliares-show?id='+id_auxiliar).load(function(res) {
+            if(res.success){
+                $("#generarAuxiliar").show();
+                $("#generarAuxiliarLoading").hide();
+                $('#descargarExcelAuxiliar').prop('disabled', false);
+                $("#descargarExcelAuxiliar").show();
+                $("#descargarExcelAuxiliarDisabled").hide();
+                agregarToast('exito', 'Auxiliar cargado', 'Informe cargado con exito!', true);
+            }
+        });
+    }
+
+    function GenerateAuxiliar() {
+        var url = base_url + 'auxiliares';
+        url+= '?fecha_desde='+$('#fecha_desde_auxiliar').val();
+        url+= '&fecha_hasta='+$('#fecha_hasta_auxiliar').val();
+        url+= '&id_cuenta='+$('#id_cuenta').val();
+        url+= '&generar='+generarAuxiliar;
+        auxiliar_table.ajax.url(url).load(function(res) {
+            if(res.success) {
+                // $("#generarAuxiliar").show();
+                // $("#generarAuxiliarLoading").hide();
+                // $('#descargarExcelAuxiliar').prop('disabled', false);
+                // $("#descargarExcelAuxiliar").show();
+                // $("#descargarExcelAuxiliarDisabled").hide();
+                agregarToast('info', 'Generando auxiliar', 'En un momento se le notificará cuando el informe esté generado...', true );
+            }
+        });
+    }
 
     var $comboNit = $('#id_nit_auxiliar').select2({
         theme: 'bootstrap-5',
@@ -241,11 +322,35 @@
     });
 
     $(document).on('click', '#descargarExcelAuxiliar', function () {
-        var fecha_desde = $('#fecha_desde_auxiliar').val();
-        var fecha_hasta = $('#fecha_hasta_auxiliar').val();
-        var numero_documento = $('#numero_documento').val();
-        var documento_referencia = $('#documento_referencia').val();
-        window.open("/auxiliar-excel?fecha_desde="+fecha_desde+"&fecha_hasta="+fecha_hasta+"&id_nit="+$('#id_nit').val()+"&id_cuenta="+id_cuenta, "_blank");
+        $.ajax({
+            url: base_url + 'auxiliares-excel',
+            method: 'POST',
+            data: JSON.stringify({id: 1}),
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            if(res.success){
+                if(res.url_file){
+                    window.open('http://'+res.url_file, "_blank");
+                    return;
+                }
+                agregarToast('info', 'Generando excel', res.message, true);
+            }
+        }).fail((err) => {
+            var errorsMsg = "";
+            var mensaje = err.responseJSON.message;
+            if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                for (field in mensaje) {
+                    var errores = mensaje[field];
+                    for (campo in errores) {
+                        errorsMsg += "- "+errores[campo]+" <br>";
+                    }
+                };
+            } else {
+                errorsMsg = mensaje
+            }
+            agregarToast('error', 'Error al generar excel', errorsMsg);
+        });
     });
 
     $("#fecha_desde_auxiliar").on('change', function(){
@@ -268,10 +373,6 @@
     {
         $("#descargarExcelAuxiliar").hide();
         $("#descargarExcelAuxiliarDisabled").show();
-        // if(auxiliar_table.rows().data().length){
-        //     auxiliar_table.clear([]).draw(false);
-        //     // auxiliar_table.rows().destroy();
-        // }
     }
 
 </script>
