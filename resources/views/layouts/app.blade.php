@@ -792,7 +792,8 @@
             });
             $("#titulo-view").text('Inicio');
         });
-        
+        Pusher.logToConsole = true;
+        const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
         // const base_url = 'http://localhost:8000/api/';
         // const base_web = 'http://localhost:8000/';
         const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
@@ -1281,19 +1282,12 @@
 
             // Agregamos event listener para detectar cuando termine la animación
             nuevoToast.addEventListener('animationend', handleAnimacionCierre);
-            console.log('agregado con exito!');
         };
 
-        Pusher.logToConsole = true;
-
-        var pusher = new Pusher('9ea234cc370d308638af', {
-            cluster: 'us2'
-        });
-
-        var channel = pusher.subscribe('my-channel');
-        channel.bind('notificaciones', function(data) {
-            agregarToast(data.message.tipo, data.message.titulo, data.message.mensaje, data.message.autoclose);
-        });
+        // var channel = pusher.subscribe('my-channel');
+        // channel.bind('notificaciones', function(data) {
+        //     agregarToast(data.message.tipo, data.message.titulo, data.message.mensaje, data.message.autoclose);
+        // });
 
     </script>
     @stack('js')

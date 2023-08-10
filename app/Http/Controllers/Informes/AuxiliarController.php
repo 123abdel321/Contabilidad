@@ -91,7 +91,7 @@ class AuxiliarController extends Controller
         try {
             $informeAuxiliar = InfAuxiliar::find($request->get('id'));
 
-            if($informeAuxiliar->exporta_excel == 1) {
+            if($informeAuxiliar && $informeAuxiliar->exporta_excel == 1) {
                 return response()->json([
                     'success'=>	true,
                     'url_file' => '',
@@ -99,7 +99,7 @@ class AuxiliarController extends Controller
                 ]);
             }
 
-            if($informeAuxiliar->exporta_excel == 2) {
+            if($informeAuxiliar && $informeAuxiliar->exporta_excel == 2) {
                 return response()->json([
                     'success'=>	true,
                     'url_file' => $informeAuxiliar->archivo_excel,
@@ -117,7 +117,7 @@ class AuxiliarController extends Controller
             (new AuxiliarExport($request->get('id')))->store($fileName, 'do_spaces', null, [
                 'visibility' => 'public'
             ])->chain([
-                event(new PrivateMessageEvent('informe-auxiliar', [
+                event(new PrivateMessageEvent('informe-auxiliar-'.$request->user()['has_empresa'].'_'.$request->user()->id, [
                     'tipo' => 'exito',
                     'mensaje' => 'Excel de Auxiliar generado con exito!',
                     'titulo' => 'Excel generado',

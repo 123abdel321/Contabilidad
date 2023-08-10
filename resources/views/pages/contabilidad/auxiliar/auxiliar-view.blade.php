@@ -225,7 +225,6 @@
         url+= '&generar='+generarAuxiliar;
         
         auxiliar_table.ajax.url(url).load(function(res) {
-            console.log('res: ',res);
             if(res.success) {
                 if(res.data){
                     Swal.fire({
@@ -254,7 +253,7 @@
         });
     });
 
-    var channel = pusher.subscribe('informe-auxiliar');
+    var channel = pusher.subscribe('informe-auxiliar-'+localStorage.getItem("notificacion_code"));
 
     channel.bind('notificaciones', function(data) {
         if(data.url_file){
@@ -262,6 +261,7 @@
             return;
         }
         if(data.id_auxiliar){
+            $('#id_auxiliar_cargado').val(data.id_auxiliar);
             loadAuxiliarById(data.id_auxiliar);
             return;
         }
@@ -326,7 +326,7 @@
         $.ajax({
             url: base_url + 'auxiliares-excel',
             method: 'POST',
-            data: JSON.stringify({id: 1}),
+            data: JSON.stringify({id: $('#id_auxiliar_cargado').val()}),
             headers: headers,
             dataType: 'json',
         }).done((res) => {
