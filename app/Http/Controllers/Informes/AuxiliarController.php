@@ -45,13 +45,13 @@ class AuxiliarController extends Controller
             ->where('id_nit', $request->get('id_nit', null))
 			->first();
         
-        if ($auxiliar && $request->get('generar') == 'false') {
-            return response()->json([
-                'success'=>	true,
-                'data' => $auxiliar->id,
-                'message'=> 'Auxiliar existente'
-            ]);
-        }
+        // if ($auxiliar && $request->get('generar') == 'false') {
+        //     return response()->json([
+        //         'success'=>	true,
+        //         'data' => $auxiliar->id,
+        //         'message'=> 'Auxiliar existente'
+        //     ]);
+        // }
         
         if($auxiliar) {
             InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->delete();

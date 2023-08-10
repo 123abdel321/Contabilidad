@@ -62,9 +62,10 @@
         }
 
         .fondo-sistema {
-            background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg');
+            background-image: url('https://i.blogs.es/d5130c/wallpaper-2.png/1366_2000.webp');
             min-height: 350px !important;
-            background-position: center center;
+            background-position: bottom center;
+            background-size: cover;
         }
 
         .btn {
@@ -591,6 +592,26 @@
             }
         }
 
+        .fondo-sistema-color {
+            animation-duration: 4s;
+            -webkit-animation: changecolor 100s infinite alternate;
+            -moz-animation: changecolor 100s infinite alternate;
+            -ms-animation: changecolor 100s infinite alternate;
+            -o-animation: changecolor 100s infinite alternate;
+            animation: changecolor 100s infinite alternate;
+        }
+
+        @keyframes changecolor {
+            0%   {background-color: #ff00007a;}
+            15%  {background-color: #ffe4007a;}
+            25%  {background-color: #24ff007a;}
+            40%  {background-color: #00ffd27a;}
+            55%  {background-color: #0076ff7a;}
+            70%  {background-color: #8000ff7a;}
+            85%  {background-color: #f600ff7a;}
+            100% {background-color: #ff00887a;}
+        }
+
     </style>
 </head>
 
@@ -605,8 +626,8 @@
             @yield('content')
         @else
             @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
-                <div class="min-height-300 bg-dark position-absolute w-100 fondo-sistema">
-                    <span class="mask bg-dark opacity-6"></span>
+                <div class="min-height-100 bg-dark position-absolute w-100 fondo-sistema">
+                    <span class="mask opacity-6 fondo-sistema-color"></span>
                 </div>
             @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
                 <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">

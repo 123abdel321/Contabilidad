@@ -182,14 +182,14 @@
             }},
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
-                if(row.created_by == 0 && row.fecha_creacion == '0000-00-00') return '';
-                if(row.created_by == 0) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
+                if(!row.created_by && !row.fecha_creacion) return '';
+                if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
                 return html;
             }},
             {"data": function (row, type, set){
                 var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
-                if(row.updated_by == 0 && row.fecha_edicion == '0000-00-00') return '';
-                if(row.updated_by == 0) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
+                if(!row.updated_by && !row.fecha_edicion) return '';
+                if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
                 return html;
             }},
         ]
@@ -225,6 +225,7 @@
         url+= '&generar='+generarAuxiliar;
         
         auxiliar_table.ajax.url(url).load(function(res) {
+            console.log('res: ',res);
             if(res.success) {
                 if(res.data){
                     Swal.fire({
@@ -332,7 +333,7 @@
             if(res.success){
                 if(res.url_file){
                     window.open('https://'+res.url_file, "_blank");
-                    return;
+                    return; 
                 }
                 agregarToast('info', 'Generando excel', res.message, true);
             }
