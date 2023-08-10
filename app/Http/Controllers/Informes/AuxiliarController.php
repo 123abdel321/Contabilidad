@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 //MODELS
 use App\Models\User;
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfAuxiliar;
 use App\Models\Informes\InfAuxiliarDetalle;
 
@@ -56,6 +57,11 @@ class AuxiliarController extends Controller
         if($auxiliar) {
             InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->delete();
             $auxiliar->delete();
+        }
+
+        if($request->get('id_cuenta')) {
+            $cuenta = PlanCuentas::find($request->get('id_cuenta'));
+            $request->request->add(['cuenta' => $cuenta->cuenta]);
         }
         
         ProcessInformeAuxiliar::dispatch($request->all(), $request->user()->id, $empresa->id);
