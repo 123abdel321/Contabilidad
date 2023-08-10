@@ -220,7 +220,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
             ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
-				$query->where('DG.id_cuenta', $this->request['id_cuenta']);
+				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
 			})
             ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
 				$query->where('DG.id_nit', $this->request['id_nit']);
@@ -274,7 +274,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '<=', $this->request['fecha_desde'])
             ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
-				$query->where('DG.id_cuenta', $this->request['id_cuenta']);
+				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
 			})
             ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
 				$query->where('DG.id_nit', $this->request['id_nit']);
@@ -589,7 +589,6 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 'detalle' => false,
                 'detalle_group' => 'nits',
             ];
-            // dd($this->auxiliarCollection);
         }
     }
 
@@ -640,7 +639,6 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 $saldo_final = 0;
                 $saldo_anterior = 0;
                 foreach ($collecion as $data) {
-                    // dd('$data: ',$data);
                     $debito+= $data['debito'];
                     $credito+= $data['credito'];
                     $saldo_final+= $data['saldo_final'];
