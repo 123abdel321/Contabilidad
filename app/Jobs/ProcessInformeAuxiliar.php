@@ -215,15 +215,15 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
-            ->leftJoin('comprobantes AS CO', 'DG.id_centro_costos', 'CO.id')
+            ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
             ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
-				$query->where('PC.id_cuenta', $this->request['id_cuenta']);
+				$query->where('DG.id_cuenta', $this->request['id_cuenta']);
 			})
             ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('N.id_nit', $this->request['id_nit']);
+				$query->where('DG.id_nit', $this->request['id_nit']);
 			})
             ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
 
@@ -270,14 +270,14 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
-            ->leftJoin('comprobantes AS CO', 'DG.id_centro_costos', 'CO.id')
+            ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '<=', $this->request['fecha_desde'])
             ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
-				$query->where('PC.id_cuenta', $this->request['id_cuenta']);
+				$query->where('DG.id_cuenta', $this->request['id_cuenta']);
 			})
             ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('N.id_nit', $this->request['id_nit']);
+				$query->where('DG.id_nit', $this->request['id_nit']);
 			})
             ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
             // ->groupBy('DG.id_cuenta', 'DG.id_nit', 'DG.documento_referencia');
@@ -525,7 +525,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
-            ->leftJoin('comprobantes AS CO', 'DG.id_centro_costos', 'CO.id')
+            ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
