@@ -12,7 +12,7 @@
             
                 <form id="auxiliarInformeForm" style="margin-top: 10px;">
                     <div class="row">
-                    
+                        <input name="id_auxiliar_cargado" id="id_auxiliar_cargado" class="form-control form-control-sm" type="text" style="display: none;">
                         <div class="form-group col-12 col-sm-3 col-md-3">
                             <label for="example-text-input" class="form-control-label">Fecha desde</label>
                             <input name="fecha_desde_auxiliar" id="fecha_desde_auxiliar" class="form-control form-control-sm" type="date" require>

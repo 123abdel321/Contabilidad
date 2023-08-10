@@ -82,7 +82,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
 
             DB::connection('informes')->commit();
 
-            event(new PrivateMessageEvent('informe-auxiliar', [
+            event(new PrivateMessageEvent('informe-auxiliar-'.$empresa->token_db.'_'.$this->id_usuario, [
                 'tipo' => 'exito',
                 'mensaje' => 'Informe generado con exito!',
                 'titulo' => 'Auxiliar generado',
