@@ -53,10 +53,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::group(['middleware' => ['clientconnection']], function() {
         //INFORMES
         Route::get('cartera', 'App\Http\Controllers\Informes\CarteraController@generate');
-        Route::get('balances', 'App\Http\Controllers\Informes\BalanceController@generate');
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
         Route::get('documento', 'App\Http\Controllers\Informes\DocumentoController@generate');
         Route::get('existe-factura', 'App\Http\Controllers\Informes\ExtractoController@existeFactura');
+        //BALANCE
+        Route::get('balances', 'App\Http\Controllers\Informes\BalanceController@generate');
+        Route::get('balances-show', 'App\Http\Controllers\Informes\BalanceController@show');
+        Route::post('balances-excel', 'App\Http\Controllers\Informes\BalanceController@exportExcel');
         //AUXILIAR
         Route::get('auxiliares', 'App\Http\Controllers\Informes\AuxiliarController@generate');
         Route::get('auxiliares-show', 'App\Http\Controllers\Informes\AuxiliarController@show');
