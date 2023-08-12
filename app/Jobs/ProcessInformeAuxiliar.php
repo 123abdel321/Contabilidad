@@ -76,9 +76,11 @@ class ProcessInformeAuxiliar implements ShouldQueue
             
             ksort($this->auxiliarCollection, SORT_STRING | SORT_FLAG_CASE);
 
-            DB::connection('informes')
-				->table('inf_auxiliar_detalles')
-				->insert(array_values($this->auxiliarCollection));
+            foreach (array_chunk($this->auxiliarCollection,233) as $auxiliarCollection){
+                DB::connection('informes')
+                    ->table('inf_auxiliar_detalles')
+                    ->insert(array_values($auxiliarCollection));
+			}
 
             DB::connection('informes')->commit();
 

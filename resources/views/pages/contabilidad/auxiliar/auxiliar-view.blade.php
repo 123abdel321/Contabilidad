@@ -20,9 +20,7 @@
         cursor: pointer;
         float: right;
     }
-    .btn-bg-excel {
-        background-image: linear-gradient(310deg, #02974d 0%, #006d37 100%);
-    }
+    
 </style>
 
 <div class="container-fluid py-2">
@@ -240,6 +238,7 @@
                         reverseButtons: true,
                     }).then((result) => {
                         if (result.value){
+                            $('#id_auxiliar_cargado').val(res.data);
                             loadAuxiliarById(res.data);
                         } else {
                             generarAuxiliar = true;
@@ -293,11 +292,7 @@
         url+= '&generar='+generarAuxiliar;
         auxiliar_table.ajax.url(url).load(function(res) {
             if(res.success) {
-                // $("#generarAuxiliar").show();
-                // $("#generarAuxiliarLoading").hide();
-                // $('#descargarExcelAuxiliar').prop('disabled', false);
-                // $("#descargarExcelAuxiliar").show();
-                // $("#descargarExcelAuxiliarDisabled").hide();
+                
                 agregarToast('info', 'Generando auxiliar', 'En un momento se le notificará cuando el informe esté generado...', true );
             }
         });
@@ -370,8 +365,7 @@
         clearAuxiliar();
     });
 
-    function clearAuxiliar()
-    {
+    function clearAuxiliar() {
         $("#descargarExcelAuxiliar").hide();
         $("#descargarExcelAuxiliarDisabled").show();
     }
