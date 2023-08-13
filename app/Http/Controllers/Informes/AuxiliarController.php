@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers\Informes;
 
-use DB;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Exports\AuxiliarExport;
-use App\Jobs\NotifyUserOfCompletedExport;
 use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeAuxiliar;
-use Illuminate\Support\Facades\Storage;
 //MODELS
-use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfAuxiliar;
@@ -46,13 +41,13 @@ class AuxiliarController extends Controller
             ->where('id_nit', $request->get('id_nit', null))
 			->first();
         
-        // if ($auxiliar && $request->get('generar') == 'false') {
-        //     return response()->json([
-        //         'success'=>	true,
-        //         'data' => $auxiliar->id,
-        //         'message'=> 'Auxiliar existente'
-        //     ]);
-        // }
+        if ($auxiliar && $request->get('generar') == 'false') {
+            return response()->json([
+                'success'=>	true,
+                'data' => $auxiliar->id,
+                'message'=> 'Auxiliar existente'
+            ]);
+        }
         
         if($auxiliar) {
             InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->delete();
@@ -76,12 +71,18 @@ class AuxiliarController extends Controller
     public function show(Request $request)
     {
         $auxiliar = InfAuxiliar::where('id', $request->get('id'))->first();
-
-		$informe = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id);
+        $informe = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id);
+        $descuadre = false;
+        
+        if(!$auxiliar->id_cuenta && !$auxiliar->id_nit) {
+            $total = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->orderBy('id', 'desc')->first();
+            $descuadre = $total->saldo_final > 0 ? true : false;
+        }
 
         return response()->json([
             'success'=>	true,
             'data' => $informe->get(),
+            'descuadre' => $descuadre,
             'message'=> 'Auxiliar generado con exito!'
         ]);
     }

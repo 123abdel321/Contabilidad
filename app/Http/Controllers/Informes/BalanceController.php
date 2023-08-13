@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Informes;
 
-use DB;
 use Illuminate\Http\Request;
 use App\Exports\BalanceExport;
+use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessInformeBalance;
 //MODELS
+use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
+use App\Models\Informes\InfBalance;
+use App\Models\Informes\InfBalanceDetalle;
 
 class BalanceController extends Controller
 {
@@ -24,218 +28,113 @@ class BalanceController extends Controller
 			return response()->json([
                 'success'=>	false,
                 'data' => [],
-                'message'=> 'Por favor ingresa un rango de fechas válido para iniciar la busqueda.'
+                'message'=> 'Por favor ingresar un rango de fechas válido.'
             ]);
 		}
-        
-        $fechaDesde = $request->get('fecha_desde');
-        $fechaHasta = $request->get('fecha_hasta');
 
-        $wheres = '';
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
 
-        if($request->has('id_cuenta') && $request->get('id_cuenta')){
-            $planCuentas = PlanCuentas::find($request->get('id_cuenta'));
-            $wheres.= ' AND PC.cuenta LIKE "'.$planCuentas->cuenta.'%"';
-        }
-
-        $query = "SELECT
-                id_nit,
-                numero_documento,
-                nombre_nit,
-                razon_social,
-                id_cuenta,
-                cuenta,
-                nombre_cuenta,
-                auxiliar,
-                documento_referencia,
-                SUM(saldo_anterior) AS saldo_anterior,
-                SUM(debito) AS debito,
-                SUM(credito) AS credito,
-                SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final
-            FROM ((
-                SELECT
-                    N.id AS id_nit,
-                    N.numero_documento,
-                    CONCAT(N.otros_nombres, ' ', N.primer_apellido) AS nombre_nit,
-                    N.razon_social,
-                    PC.id AS id_cuenta,
-                    PC.cuenta,
-                    PC.nombre AS nombre_cuenta,
-                    PC.auxiliar,
-                    DG.documento_referencia,
-                    SUM(debito) - SUM(credito) AS saldo_anterior,
-                    0 AS debito,
-                    0 AS credito,
-                    0 AS saldo_final
-                FROM
-                    documentos_generals DG
-                    
-                LEFT JOIN nits N ON DG.id_nit = N.id
-                LEFT JOIN plan_cuentas PC ON DG.id_cuenta = PC.id
-                    
-                WHERE DG.fecha_manual < '$fechaDesde'
-                    $wheres
-                    
-                GROUP BY PC.cuenta
-                )
-                    UNION
-                (
-                    SELECT
-                        N.id AS id_nit,
-                        N.numero_documento,
-                        CONCAT(N.otros_nombres, ' ', N.primer_apellido) AS nombre_nit,
-                        N.razon_social,
-                        PC.id AS id_cuenta,
-                        PC.cuenta,
-                        PC.nombre AS nombre_cuenta,
-                        PC.auxiliar,
-                        DG.documento_referencia,
-                        0 AS saldo_anterior,
-                        SUM(DG.debito) AS debito,
-                        SUM(DG.credito) AS credito,
-                        SUM(DG.debito) - SUM(DG.credito) AS saldo_final
-                    FROM
-                        documentos_generals DG
-                        
-                    LEFT JOIN nits N ON DG.id_nit = N.id
-                    LEFT JOIN plan_cuentas PC ON DG.id_cuenta = PC.id
-                        
-                    WHERE DG.fecha_manual >= '$fechaDesde'
-                        AND DG.fecha_manual <= '$fechaHasta'
-                        $wheres
-                        
-                    GROUP BY PC.cuenta
-                )) AS auxiliar
-                GROUP BY cuenta
-                ORDER BY cuenta";
-                    
-        $balances = DB::connection('sam')->select($query);
-
-        $detalleCuentas = true;
-
-        if($detalleCuentas){
-            foreach ($balances as $balance) {
-                $cuentasAsociadas = $this->getCuentas($balance->cuenta); //return ARRAY PADRES CUENTA
-                foreach ($cuentasAsociadas as $cuenta) {
-                    if ($this->hasCuentaData($cuenta)) {
-                        $this->sumCuentaData($cuenta, $balance);
-                    } else {
-				        $this->newCuentaData($cuenta, $balance);
-                    }
-                }
-            }
-            $this->addTotalsData($balances);
+        $balance = InfBalance::where('id_empresa', $empresa->id)
+            ->where('fecha_hasta', $request->get('fecha_hasta'))
+            ->where('fecha_desde', $request->get('fecha_desde'))
+            ->where('id_cuenta', $request->get('id_cuenta', null))
+            ->where('nivel', $request->get('nivel', null))
+			->first();
+        // dd($request->all(),  $request->get('nivel', null));
+        if ($balance && $request->get('generar') == 'false') {
             return response()->json([
                 'success'=>	true,
-                'data' => array_values($this->balanceCollection),
-                'total' => [],
-                'message'=> 'Balance generado con exito!'
+                'data' => $balance->id,
+                'message'=> 'Balance existente'
             ]);
         }
+
+        if($balance) {
+            InfBalanceDetalle::where('id_balance', $balance->id)->delete();
+            $balance->delete();
+        }
+
+        if($request->get('id_cuenta')) {
+            $cuenta = PlanCuentas::find($request->get('id_cuenta'));
+            $request->request->add(['cuenta' => $cuenta->cuenta]);
+        }
+
+        ProcessInformeBalance::dispatch($request->all(), $request->user()->id, $empresa->id);
 
         return response()->json([
     		'success'=>	true,
-    		'data' => $balances,
-    		'message'=> 'Balance generado con exito!'
+    		'data' => '',
+    		'message'=> 'Generando informe de balance'
     	]);
+    }
+
+    public function show(Request $request)
+    {
+        $balance = InfBalance::where('id', $request->get('id'))->first();
+
+		$informe = InfBalanceDetalle::where('id_balance', $balance->id);
+
+        return response()->json([
+            'success'=>	true,
+            'data' => $informe->get(),
+            'message'=> 'Balance generado con exito!'
+        ]);
     }
 
     public function exportExcel(Request $request)
     {
-        return (new BalanceExport($request))->download('balance.xlsx');
-    }
+        try {
+            $informeBalance = InfBalance::find($request->get('id'));
 
-    private function getCuentas($cuenta)
-    {
-        $dataCuentas = NULL;
+            if($informeBalance && $informeBalance->exporta_excel == 1) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => '',
+                    'message'=> 'Actualmente se esta generando el excel del auxiliar 12'
+                ]);
+            }
 
-        if(strlen($cuenta) > 6){
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                mb_substr($cuenta, 0, 4),
-                mb_substr($cuenta, 0, 6),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 4) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                mb_substr($cuenta, 0, 4),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 2) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 1) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                $cuenta,
-            ];
-        } else {
-            $dataCuentas =[
-                $cuenta,
-            ];
+            if($informeBalance && $informeBalance->exporta_excel == 2) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => $informeBalance->archivo_excel,
+                    'message'=> ''
+                ]);
+            }
+
+            $fileName = 'balance_'.uniqid().'.xlsx';
+            $url = $fileName;
+
+            $informeBalance->exporta_excel = 1;
+            $informeBalance->archivo_excel = 's3contabilidad.nyc3.digitaloceanspaces.com/'.$url;
+            $informeBalance->save();
+
+            (new BalanceExport($request->get('id')))->store($fileName, 'do_spaces', null, [
+                'visibility' => 'public'
+            ])->chain([
+                event(new PrivateMessageEvent('informe-balance-'.$request->user()['has_empresa'].'_'.$request->user()->id, [
+                    'tipo' => 'exito',
+                    'mensaje' => 'Excel de Balance generado con exito!',
+                    'titulo' => 'Excel generado',
+                    'url_file' => 's3contabilidad.nyc3.digitaloceanspaces.com/'.$url,
+                    'autoclose' => false
+                ])),
+                $informeBalance->exporta_excel = 2,
+                $informeBalance->save(),
+            ]);
+
+            return response()->json([
+                'success'=>	true,
+                'url_file' => '',
+                'message'=> 'Se le notificará cuando el informe haya finalizado'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
         }
-
-        return $dataCuentas;
     }
-
-    private function newCuentaData($cuenta, $balance)
-    {
-        $cuentaData = PlanCuentas::whereCuenta($cuenta)->first();
-        
-        $this->balanceCollection[$cuenta] = [
-            'id_cuenta' => $cuentaData->id,
-            'cuenta' => $cuentaData->cuenta,
-            'nombre_cuenta' => $cuentaData->nombre,
-            'auxiliar' => $cuentaData->auxiliar,
-            'saldo_anterior' => number_format((float)$balance->saldo_anterior, 2, '.', ''),
-            'debito' => number_format((float)$balance->debito, 2, '.', ''),
-            'credito' => number_format((float)$balance->credito, 2, '.', ''),
-            'saldo_final' => number_format((float)$balance->saldo_final, 2, '.', '')
-        ];
-    }
-
-    private function sumCuentaData($cuenta, $balance)
-    {
-        $this->balanceCollection[$cuenta]['saldo_anterior']+= number_format((float)$balance->saldo_anterior, 2, '.', '');
-        $this->balanceCollection[$cuenta]['debito']+= number_format((float)$balance->debito, 2, '.', '');
-        $this->balanceCollection[$cuenta]['credito']+= number_format((float)$balance->credito, 2, '.', '');
-        $this->balanceCollection[$cuenta]['saldo_final']+= number_format((float)$balance->saldo_final, 2, '.', '');
-    }
-
-    private function addTotalsData($balances)
-    {
-        $debito = 0;
-        $credito = 0;
-        $saldo_anterior = 0;
-        $saldo_final = 0;
-
-        foreach ($balances as $balance) {
-            $debito+= number_format((float)$balance->debito, 2, '.', '');
-            $credito+= number_format((float)$balance->credito, 2, '.', '');
-            $saldo_final+= number_format((float)$balance->saldo_final, 2, '.', '');
-            $saldo_anterior+= number_format((float)$balance->saldo_anterior, 2, '.', '');
-        }
-
-        $this->balanceCollection['9999'] = [
-            'id_cuenta' => '',
-            'cuenta' => 'TOTALES',
-            'nombre_cuenta' => '',
-            'saldo_anterior' => $saldo_anterior,
-            'debito' => $debito,
-            'credito' => $credito,
-            'saldo_final' => $saldo_final
-        ];
-    }
-
-	private function hasCuentaData($cuenta)
-	{
-		return isset($this->balanceCollection[$cuenta]);
-	}
 
 }

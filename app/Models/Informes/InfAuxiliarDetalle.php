@@ -22,6 +22,7 @@ class InfAuxiliarDetalle extends Model
         'nombre_nit',
         'razon_social',
         'cuenta',
+        'naturaleza_cuenta',
         'codigo_cecos',
         'nombre_cecos',
         'documento_referencia',

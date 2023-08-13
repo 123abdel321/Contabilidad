@@ -12,6 +12,7 @@ use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Models\Sistema\Nits;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\CentroCostos;
+use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacDocumentos;
 use App\Models\Sistema\DocumentosGeneral;
 
@@ -70,12 +71,6 @@ class DocumentoGeneralController extends Controller
 		try {
 
 			DB::connection('sam')->beginTransaction();
-			
-			DocumentosGeneral::whereDocumento(
-				$request->get('id_comprobante'),
-				$request->get('consecutivo'),
-				$request->get('fecha_manual')
-			)->delete();
 
 			$documento = $request->get('documento');
 			
@@ -87,28 +82,58 @@ class DocumentoGeneralController extends Controller
 				$credito+= $doc['credito'];
 			}
 
-			$consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
+			if(!$request->has('consecutivo')){
+				$comprobante = Comprobantes::whereId($request->get('id_comprobante'))->first();
+
+				$consecutivo = $this->getNextConsecutive($comprobante->id, $request->get('fecha_manual'));
+
+				$request->merge([
+					'consecutivo' => $consecutivo
+				]);
+			} 
+
+			if(!$request->get('editing_documento')) {
+				$consecutivoUsado = DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
+					->where('consecutivo', $request->get('consecutivo'))
+					->where('fecha_manual', $request->get('fecha_manual'))
+					->count();
+
+				if ($consecutivoUsado) {
+					return response()->json([
+						"success"=>false,
+						'data' => [],
+						"message"=> "El consecutivo {$request->get('consecutivo')} ya está en uso."
+					], 422);
+				}
+			}
+
+			DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
+				->where('consecutivo', $request->get('consecutivo'))
+				->where('fecha_manual', $request->get('fecha_manual'))
+				->delete();
 
 			$facDocumento = null;
 
-			if(!$request->get('editing_documento')) {
+			if($request->get('editing_documento')) {
+				$facDocumento = FacDocumentos::where('id_comprobante', $request->get('id_comprobante'))
+					->where('consecutivo', $request->get('consecutivo'))
+					->first();
+			} else {
 				$facDocumento = FacDocumentos::create([
 					'id_comprobante' => $request->get('id_comprobante'),
 					'fecha_manual' => $request->get('fecha_manual'),
-					'consecutivo' => $consecutivo,
+					'consecutivo' => $request->get('consecutivo'),
 					'debito' => $debito,
 					'credito' => $credito,
 					'saldo_final' => $debito - $credito,
 					'created_by' => request()->user()->id,
 					'updated_by' => request()->user()->id,
 				]);
-			} else {
-				$facDocumento = FacDocumentos::where('id_comprobante', $request->get('id_comprobante'))
-					->where('consecutivo', $request->get('consecutivo'))
-					->first();
 			}
 
 			$documentoGeneral = new Documento($request->get('id_comprobante'), $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
+
+			if ($request->get('editing_documento')) $documentoGeneral->setCreatedAt($facDocumento->created_at);
 
 			foreach ($documento as $doc) {
 				
@@ -157,12 +182,21 @@ class DocumentoGeneralController extends Controller
 
 			if(!$request->get('editing_documento')) {
 				$this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+			} else {
+				$facDocumento->fecha_manual = $request->get('fecha_manual');
+				$facDocumento->consecutivo = $request->get('consecutivo');
+				$facDocumento->debito = $debito;
+				$facDocumento->credito = $credito;
+				$facDocumento->saldo_final = $debito - $credito;
+				$facDocumento->updated_by = request()->user()->id;
+				$facDocumento->save();
 			}
 
 			DB::connection('sam')->commit();
+			
 			return response()->json([
 				'success'=>	true,
-				'data' => '',
+				'data' => $documentoGeneral->getRows(),
 				'message'=> 'Documentos creados con exito!'
 			], 200);
 
@@ -180,7 +214,9 @@ class DocumentoGeneralController extends Controller
     public function generate(Request $request)
     {
 		$documento = DocumentosGeneral::with(['centro_costos', 'cuenta', 'nit'])
-			->whereDocumento($request->get('id_comprobante'), $request->get('consecutivo'), $request->get('fecha_manual'))
+			->where('id_comprobante', $request->get('id_comprobante'))
+			->where('consecutivo', $request->get('consecutivo'))
+			->where('fecha_manual', $request->get('fecha_manual'))
             ->get();
 
 		return response()->json([

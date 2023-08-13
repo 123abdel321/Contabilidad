@@ -20,9 +20,7 @@
         cursor: pointer;
         float: right;
     }
-    .btn-bg-excel {
-        background-image: linear-gradient(310deg, #02974d 0%, #006d37 100%);
-    }
+    
 </style>
 
 <div class="container-fluid py-2">
@@ -151,11 +149,23 @@
                 }
                 return row.codigo_cecos + ' - ' +row.nombre_cecos;
             }},
-            {data: 'documento_referencia'},
+            { data: 'documento_referencia'},
             { data: "saldo_anterior",render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: "debito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: "credito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            { data: "saldo_final", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){
+                // if(row.auxiliar) {
+                    
+                // }
+                if(row.naturaleza_cuenta == 0 && row.saldo_final < 0) {
+                    return "("+row.saldo_final*-1+")";
+                } else if(row.naturaleza_cuenta == 1 && row.saldo_final > 0) {
+                    return "("+row.saldo_final+")";
+                } else if(row.naturaleza_cuenta == 1 && row.saldo_final < 0) {
+                    return row.saldo_final*-1;
+                }
+                return row.saldo_final;
+            },render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
                 if(!row.codigo_comprobante){
                     return '';
@@ -181,7 +191,7 @@
                 return row.concepto;
             }},
             {"data": function (row, type, set){  
-                var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
                 if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
                 return html;
@@ -240,6 +250,7 @@
                         reverseButtons: true,
                     }).then((result) => {
                         if (result.value){
+                            $('#id_auxiliar_cargado').val(res.data);
                             loadAuxiliarById(res.data);
                         } else {
                             generarAuxiliar = true;
@@ -280,7 +291,15 @@
                 $('#descargarExcelAuxiliar').prop('disabled', false);
                 $("#descargarExcelAuxiliar").show();
                 $("#descargarExcelAuxiliarDisabled").hide();
-                agregarToast('exito', 'Auxiliar cargado', 'Informe cargado con exito!', true);
+                if(res.descuadre) {
+                    Swal.fire(
+                        'Auxiliar descuadrado',
+                        '',
+                        'warning'
+                    );
+                } else {
+                    agregarToast('exito', 'Auxiliar cargado', 'Informe cargado con exito!', true);
+                }
             }
         });
     }
@@ -293,11 +312,7 @@
         url+= '&generar='+generarAuxiliar;
         auxiliar_table.ajax.url(url).load(function(res) {
             if(res.success) {
-                // $("#generarAuxiliar").show();
-                // $("#generarAuxiliarLoading").hide();
-                // $('#descargarExcelAuxiliar').prop('disabled', false);
-                // $("#descargarExcelAuxiliar").show();
-                // $("#descargarExcelAuxiliarDisabled").hide();
+                
                 agregarToast('info', 'Generando auxiliar', 'En un momento se le notificará cuando el informe esté generado...', true );
             }
         });
@@ -370,8 +385,7 @@
         clearAuxiliar();
     });
 
-    function clearAuxiliar()
-    {
+    function clearAuxiliar() {
         $("#descargarExcelAuxiliar").hide();
         $("#descargarExcelAuxiliarDisabled").show();
     }

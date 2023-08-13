@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('id_cuenta')->nullable();
             $table->integer('id_centro_costos')->nullable();
             $table->integer('id_comprobante')->nullable();
+            $table->boolean('naturaleza_cuenta')->nullable();
+            $table->boolean('auxiliar')->nullable();
             $table->string('numero_documento', 50)->nullable();
             $table->string('nombre_nit', 100)->nullable();
             $table->string('nombre_cuenta', 100)->nullable();
@@ -37,8 +39,8 @@ return new class extends Migration
             $table->decimal('saldo_final', 15)->nullable();
             $table->string('detalle', 200)->nullable();
             $table->string('detalle_group', 200)->nullable();
-            $table->date('fecha_creacion')->nullable();
-            $table->date('fecha_edicion')->nullable();
+            $table->dateTime('fecha_creacion')->nullable();
+            $table->dateTime('fecha_edicion')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->date('created_at')->nullable();

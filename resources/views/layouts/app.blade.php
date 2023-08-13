@@ -109,7 +109,7 @@
         }
 
         .form-check:not(.form-switch) .form-check-input[type=radio]:checked {
-            padding: 5px;
+            padding: 3.2px;
         }
 
         .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--highlighted {
@@ -182,6 +182,10 @@
             color: white;
             background-color: #2a3548;
             cursor: pointer;
+        }
+
+        .btn-bg-excel {
+            background-image: linear-gradient(310deg, #02974d 0%, #006d37 100%);
         }
 
         .footer-navigation .nav-item .nav-link.active {
@@ -612,6 +616,10 @@
             100% {background-color: #ff00887a;}
         }
 
+        .table > td > :not(caption) > * > * {
+            padding: 0.35rem 0.35rem !important;
+        }
+
     </style>
 </head>
 
@@ -874,7 +882,7 @@
             } else if(id == 'auxiliar') {
                 nombre = 'Auxiliar';
             } else if(id == 'documentogeneral') {
-                nombre = 'Captua documentos';
+                nombre = 'Captura documentos';
             } else if(id == 'balance') {
                 nombre = 'Balance';
             } else if(id == 'cartera') {
