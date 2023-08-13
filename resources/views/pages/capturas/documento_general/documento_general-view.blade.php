@@ -68,15 +68,18 @@
             </div>
         </div>
         <div class="card cardTotal" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
-            <div class="row">
-                <div class="col-12 col-md-4 col-sm-4" style="margin-top: 5px;">
-                    <h6 style="float: left;">DEBITO:&nbsp; </h6><h6 id="general_debito">$0</h6>
+            <div class="row" style="text-align: -webkit-center;">
+                <div class="col-12 col-md-4 col-sm-4" style="border-right: solid 1px #dadada;">
+                    <p style="font-size: 13px; margin-top: 5px;">DEBITO</p>
+                    <h6 id="general_debito" style="margin-top: -15px;">$0</h6>
                 </div>
-                <div class="col-12 col-md-4 col-sm-4" style="margin-top: 5px;">
-                    <h6 style="float: left;">CREDITO:&nbsp; </h6><h6 id="general_credito">$0</h6>
+                <div class="col-12 col-md-4 col-sm-4" style="border-right: solid 1px #dadada;">
+                    <p style="font-size: 13px; margin-top: 5px;">CREDITO</p>
+                    <h6 id="general_credito" style="margin-top: -15px;">$0</h6>
                 </div>
-                <div class="col-12 col-md-4 col-sm-4" style="margin-top: 5px;">
-                    <h6 style="float: left;">DIFERENCIA:&nbsp; </h6><h6 id="general_diferencia">$0</h6>
+                <div class="col-12 col-md-4 col-sm-4" style="border-right: solid 1px #dadada;">
+                    <p style="font-size: 13px; margin-top: 5px;">DIFERENCIA</p>
+                    <h6 id="general_diferencia" style="margin-top: -15px;">$0</h6>
                 </div>
             </div>
         </div>
@@ -109,7 +112,7 @@
         $(this).val($(this).val().toUpperCase());
     });
 
-    var documento_table = $('#documentoReferenciaTable').DataTable({
+    var documento_general_table = $('#documentoReferenciaTable').DataTable({
         dom: '',
         responsive: false,
         processing: true,
@@ -163,12 +166,12 @@
             },
             {//DEBITO
                 "data": function (row, type, set, col){
-                    return '<input type="text" class="form-control form-control-sm input_number debito_input" id="debito_'+col.row+'" onkeypress="changeDebitoRow('+col.row+', event)" onfocusout="mostrarValores()" style="width: 130px !important;" disabled>';
+                    return '<input type="number" class="form-control form-control-sm input_number debito_input" id="debito_'+col.row+'" onkeypress="changeDebitoRow('+col.row+', event)" onfocusout="mostrarValores()" style="width: 130px !important;" disabled>';
                 }
             },
             {//CREDITO
                 "data": function (row, type, set, col){
-                    return '<input type="text" class="form-control form-control-sm input_number credito_input" id="credito_'+col.row+'" onkeypress="changeCreditoRow('+col.row+', event)" onfocusout="mostrarValores()" style="width: 130px !important;" disabled>';
+                    return '<input type="number" class="form-control form-control-sm input_number credito_input" id="credito_'+col.row+'" onkeypress="changeCreditoRow('+col.row+', event)" onfocusout="mostrarValores()" style="width: 130px !important;" disabled>';
                 }
             },
             {//CONCEPTO
@@ -320,7 +323,8 @@
     });
 
     function addRow(openCuenta = true) {
-        documento_table.row.add({
+
+        documento_general_table.row.add({
             "id": '',
             "cuenta": '',
             "nit": '',
@@ -330,7 +334,7 @@
             "credito": '',
             "concepto": '',
         }).draw(false);
-        var rows = documento_table.rows().data().length;
+        var rows = documento_general_table.rows().data().length;
         $('#card-documento-general').focus();
         document.getElementById("card-documento-general").scrollLeft = 0;
         rows = rows-1;
@@ -344,8 +348,8 @@
     }
 
     function deleteRow(idRow) {
-        documento_table.row(idRow).remove().draw();
-        if(!documento_table.rows().data().length){
+        documento_general_table.row(idRow).remove().draw();
+        if(!documento_general_table.rows().data().length){
             $("#crearCapturaDocumentos").prop('disabled', true);
         }
         mostrarValores();
@@ -374,7 +378,7 @@
                 $("#documento_referencia_"+idRow).addClass("normal_input");
                 $("#documento_referencia_"+idRow).prop("readonly", false);
                 if(data.cuenta.slice(0, 2) == '11' && idRow > 0 && data.naturaleza_cuenta == data.naturaleza_origen) {
-                    var dataDocumento = documento_table.rows().data();
+                    var dataDocumento = documento_general_table.rows().data();
                     var credito = 0;
                     if(dataDocumento.length > 0) {
                         for (let index = 0; index < dataDocumento.length; index++) {
@@ -486,7 +490,7 @@
             let dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
 
             if(dataCuenta.text.slice(0, 2) == '11' || dataCuenta.text.slice(0, 2) == '12') {
-                var dataDocumento = documento_table.rows().data();
+                var dataDocumento = documento_general_table.rows().data();
 
                 if(dataDocumento.length > 0) {
                     var debito = 0;
@@ -799,12 +803,12 @@
     });
 
     function cancelarFacturas(){
-        var totalRows = documento_table.rows().data().length;
+        var totalRows = documento_general_table.rows().data().length;
         idDocumento = 1;
-        if(documento_table.rows().data().length){
-            documento_table.clear([]).draw();
+        if(documento_general_table.rows().data().length){
+            documento_general_table.clear([]).draw();
             for (let index = 0; index < totalRows; index++) {
-                documento_table.row(0).remove().draw();
+                documento_general_table.row(0).remove().draw();
             }
             mostrarValores();
         }
@@ -976,6 +980,7 @@
                 $("#iniciarCapturaDocumentosLoading").hide();
                 setTimeout(function(){
                     $('#consecutivo').focus();
+                    $('#consecutivo').select();
                 },100);
                 if(res.success){
                     $("#consecutivo").val(res.data);
@@ -1054,7 +1059,7 @@
             "concepto": $("#concepto").val()
         };
 
-        documento_table.row.add(dataTable).draw(false);
+        documento_general_table.row.add(dataTable).draw(false);
         idDocumento++;
         $("#documentoGeneralFormModal").modal('hide');
 
@@ -1063,11 +1068,11 @@
         mostrarValores();
     });
     
-    documento_table.on('click', '.edit-documento-general', function() {
+    documento_general_table.on('click', '.edit-documento-general', function() {
 
         var trPlanCuenta = $(this).closest('tr');
         var id = this.id.split('_')[1];
-        var data = getDataById(id, documento_table);
+        var data = getDataById(id, documento_general_table);
 
         $("#id_nit").val('').change();
         $("#id_cuenta").val('').change();
@@ -1149,10 +1154,10 @@
         $("#documentoGeneralFormModal").modal('show');
     });
 
-    documento_table.on('click', '.drop-documento-general    ', function() {
+    documento_general_table.on('click', '.drop-documento-general    ', function() {
         var trPlanCuenta = $(this).closest('tr');
         var id = this.id.split('_')[1];
-        var index = getRowById(id, documento_table);
+        var index = getRowById(id, documento_general_table);
         Swal.fire({
             title: 'Eliminar documento?',
             text: "Desea eliminar documento de la tabla",
@@ -1165,8 +1170,8 @@
             reverseButtons: true,
         }).then((result) => {
             if (result.value){
-                documento_table.row(index).remove().draw();
-                if(!documento_table.rows().data().length){
+                documento_general_table.row(index).remove().draw();
+                if(!documento_general_table.rows().data().length){
                     $("#crearCapturaDocumentos").prop('disabled', true);
                 }
                 mostrarValores();
@@ -1177,8 +1182,8 @@
 
     $(document).on('click', '#updateDocumentoGeneral', function () {
         var id = $('#id_documento').val();
-        var data = getDataById(id, documento_table);
-        var row = getRowById(id, documento_table);
+        var data = getDataById(id, documento_general_table);
+        var row = getRowById(id, documento_general_table);
 
         var nit = $('#id_nit').select2('data');
         var cuenta = $('#id_cuenta').select2('data');
@@ -1194,7 +1199,7 @@
             "credito": $("#credito").val(),
             "concepto": $("#concepto").val()
         };
-        documento_table.row(row).data(dataTable).draw(false);
+        documento_general_table.row(row).data(dataTable).draw(false);
         
         $("#documentoGeneralFormModal").modal('hide');
 
@@ -1205,7 +1210,7 @@
         var debito = 0;
         var credito = 0;
 
-        var dataDocumento = documento_table.rows().data();
+        var dataDocumento = documento_general_table.rows().data();
         
         if(dataDocumento.length > 0) {
             $("#crearCapturaDocumentos").show();
@@ -1244,7 +1249,7 @@
         var credito = 0;
         var diferencia = 0;
 
-        var dataDocumento = documento_table.rows().data();
+        var dataDocumento = documento_general_table.rows().data();
         
         if(dataDocumento.length > 0) {
             for (let index = 0; index < dataDocumento.length; index++) {
@@ -1300,7 +1305,6 @@
                 }).done((res) => {
                     if(res.success){
                         cancelarFacturas();
-                        mostrarValores();
                         $('#crearCapturaDocumentosDisabled').hide();
                         $(".cardTotal").css("background-color", "white");
                         agregarToast('exito', 'Creación exitosa', 'Documentos creados con exito!', true);
@@ -1320,7 +1324,6 @@
                             for (campo in errores) {
                                 errorsMsg += "- "+errores[campo]+" <br>";
                             }
-                            
                         };
                         agregarToast('error', 'Creación herrada', errorsMsg);
                     }
@@ -1351,7 +1354,7 @@
     function getDocumentos(){
         var data = [];
 
-        var dataDocumento = documento_table.rows().data();
+        var dataDocumento = documento_general_table.rows().data();
         if(dataDocumento.length > 0){
             for (let index = 0; index < dataDocumento.length; index++) {
                 

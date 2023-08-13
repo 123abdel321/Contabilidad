@@ -616,6 +616,10 @@
             100% {background-color: #ff00887a;}
         }
 
+        .table > td > :not(caption) > * > * {
+            padding: 0.35rem 0.35rem !important;
+        }
+
     </style>
 </head>
 
@@ -878,7 +882,7 @@
             } else if(id == 'auxiliar') {
                 nombre = 'Auxiliar';
             } else if(id == 'documentogeneral') {
-                nombre = 'Captua documentos';
+                nombre = 'Captura documentos';
             } else if(id == 'balance') {
                 nombre = 'Balance';
             } else if(id == 'cartera') {

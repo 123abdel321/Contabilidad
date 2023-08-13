@@ -13,8 +13,6 @@
                 <form id="documentoFilterForm" class="needs-validation" style="margin-top: 10px;" novalidate>
                     <div class="row">
 
-                        <input name="editing_documento" id="editing_documento" class="form-control form-control-sm" type="text" style="display: none;">
-
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label>Comprobante</label>
                             <select name="id_comprobante_documento" id="id_comprobante_documento" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">

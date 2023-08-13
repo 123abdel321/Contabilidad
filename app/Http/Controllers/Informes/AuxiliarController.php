@@ -71,12 +71,14 @@ class AuxiliarController extends Controller
     public function show(Request $request)
     {
         $auxiliar = InfAuxiliar::where('id', $request->get('id'))->first();
-
-		$informe = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id);
+        $informe = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id);
+        $total = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->orderBy('id', 'desc')->first();
+        $descuadre = $total->saldo_final > 0 ? true : false;
 
         return response()->json([
             'success'=>	true,
             'data' => $informe->get(),
+            'descuadre' => $descuadre,
             'message'=> 'Auxiliar generado con exito!'
         ]);
     }
