@@ -1328,7 +1328,6 @@
                         agregarToast('error', 'Creación herrada', errorsMsg);
                     }
                 }).fail((err) => {
-
                     $("#agregarDocumentos").show();
                     $("#crearCapturaDocumentos").show();
                     $("#iniciarCapturaDocumentos").hide();
@@ -1336,12 +1335,12 @@
                     $("#crearCapturaDocumentosDisabled").hide();
                     $("#iniciarCapturaDocumentosLoading").hide();
 
-                    var mensaje = err.mensages;
+                    var mensaje = err.responseJSON.message;
                     var errorsMsg = "";
                     for (field in mensaje) {
                         var errores = mensaje[field];
                         for (campo in errores) {
-                            errorsMsg += "- "+errores[campo]+" <br>";
+                            errorsMsg += field+": "+errores[campo]+" <br>";
                         }
                         
                     };
