@@ -72,8 +72,12 @@ class AuxiliarController extends Controller
     {
         $auxiliar = InfAuxiliar::where('id', $request->get('id'))->first();
         $informe = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id);
-        $total = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->orderBy('id', 'desc')->first();
-        $descuadre = $total->saldo_final > 0 ? true : false;
+        $descuadre = false;
+        
+        if(!$auxiliar->id_cuenta && !$auxiliar->id_nit) {
+            $total = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->orderBy('id', 'desc')->first();
+            $descuadre = $total->saldo_final > 0 ? true : false;
+        }
 
         return response()->json([
             'success'=>	true,
