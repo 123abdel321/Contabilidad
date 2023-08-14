@@ -69,15 +69,15 @@
         </div>
         <div class="card cardTotal" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
             <div class="row" style="text-align: -webkit-center;">
-                <div class="col-12 col-md-4 col-sm-4" style="border-right: solid 1px #dadada;">
+                <div class="col-4 col-md-4 col-sm-4" style="border-right: solid 1px #787878;">
                     <p style="font-size: 13px; margin-top: 5px;">DEBITO</p>
                     <h6 id="general_debito" style="margin-top: -15px;">$0</h6>
                 </div>
-                <div class="col-12 col-md-4 col-sm-4" style="border-right: solid 1px #dadada;">
+                <div class="col-4 col-md-4 col-sm-4" style="border-right: solid 1px #787878;">
                     <p style="font-size: 13px; margin-top: 5px;">CREDITO</p>
                     <h6 id="general_credito" style="margin-top: -15px;">$0</h6>
                 </div>
-                <div class="col-12 col-md-4 col-sm-4" style="border-right: solid 1px #dadada;">
+                <div class="col-4 col-md-4 col-sm-4">
                     <p style="font-size: 13px; margin-top: 5px;">DIFERENCIA</p>
                     <h6 id="general_diferencia" style="margin-top: -15px;">$0</h6>
                 </div>
@@ -85,7 +85,7 @@
         </div>
 
         <div id="card-documento-general" class="card mb-4" style="content-visibility: auto; overflow: auto; border-radius: 0px 0px 20px 20px;">
-            <div class="card-body" >
+            <div class="card-body" style="padding: 0;">
 
                 @include('pages.capturas.documento_general.documento_general-table')
                 
@@ -101,12 +101,19 @@
 
 <script>
     var fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    var idDocumento = 1;
+    var idDocumento = 0;
     var editandoCaptura = 0;
     var rowExtracto = '';
     var tipo_comprobante = '';
     var validarFactura = null;
+    var calcularCabeza = true;
+    var askSaveDocumentos = true;
+
     $('#fecha_manual').val(fecha);
+
+    $('.form-control').keyup(function() {
+        $(this).val($(this).val().toUpperCase());
+    });
 
     $('.form-control').keyup(function() {
         $(this).val($(this).val().toUpperCase());
@@ -130,7 +137,7 @@
         columns: [
             {//BORRAR
                 "data": function (row, type, set, col){
-                    return '<span class="btn badge bg-gradient-danger drop-row-grid" onclick="deleteRow('+col.row+')"><i class="fas fa-trash-alt"></i></span>';
+                    return '<span class="btn badge bg-gradient-danger drop-row-grid" onclick="deleteRow('+col.row+')" id="droprow_'+col.row+'"><i class="fas fa-trash-alt"></i></span>';
                 }
             },
             {//CUENTA
@@ -276,6 +283,9 @@
                         }
                     }
                 });
+                $('.form-control').keyup(function() {
+                    $(this).val($(this).val().toUpperCase());
+                });
             });
         }
     });
@@ -324,8 +334,10 @@
 
     function addRow(openCuenta = true) {
 
+        var concepto = $('#concepto_'+idDocumento-1).val();
+
         documento_general_table.row.add({
-            "id": '',
+            "id": idDocumento,
             "cuenta": '',
             "nit": '',
             "centro_costos": '',
@@ -334,27 +346,31 @@
             "credito": '',
             "concepto": '',
         }).draw(false);
-        var rows = documento_general_table.rows().data().length;
+
         $('#card-documento-general').focus();
         document.getElementById("card-documento-general").scrollLeft = 0;
-        rows = rows-1;
-        var concepto = $('#concepto_'+rows-1).val();
-        if(rows > 0 && concepto) {
-            $('#concepto_'+idRow).val(concepto);
-        }
-        if(openCuenta){
-            $('#combo_cuenta_'+rows).select2('open');
-        }
+
+        if(concepto) $('#concepto_'+idDocumento).val(concepto);
+        if(openCuenta) $('#combo_cuenta_'+idDocumento).select2('open');
+
+        idDocumento++;
     }
 
     function deleteRow(idRow) {
-        documento_general_table.row(idRow).remove().draw();
-        if(!documento_general_table.rows().data().length){
-            $("#crearCapturaDocumentos").prop('disabled', true);
+        let dataDocumento = documento_general_table.rows().data();
+
+        for (let row = 0; row < dataDocumento.length; row++) {
+            let element = dataDocumento[row];
+            if(element.id == idRow) {
+                documento_general_table.row(row).remove().draw();
+                if(!documento_general_table.rows().data().lengt){
+                    $("#crearCapturaDocumentos").prop('disabled', true);
+                }
+            }
         }
         mostrarValores();
     }
-
+    
     function changeCuentaRow(idRow) {
         let data = $('#combo_cuenta_'+idRow).select2('data')[0];
         setDisabledRows(data, idRow);
@@ -486,10 +502,11 @@
 
     function changeConceptoRow(idRow, event) {
         if(event.keyCode == 13){
+
             let dataComprobante = $('#id_comprobante').select2('data')[0];
             let dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
 
-            if(dataCuenta.text.slice(0, 2) == '11' || dataCuenta.text.slice(0, 2) == '12') {
+            if(dataComprobante != 4) {
                 var dataDocumento = documento_general_table.rows().data();
 
                 if(dataDocumento.length > 0) {
@@ -506,6 +523,7 @@
                     }
 
                     if(debito > 0 && credito > 0 && debito - credito == 0) {
+                        askSaveDocumentos = false;
                         document.getElementById('crearCapturaDocumentos').click();
                         return;
                     }
@@ -606,7 +624,7 @@
                         var dataNit = $('#combo_nits_'+rowAnterior).select2('data');
                         
                         //SI LA COLUMNA ANTERIOR TIENE DATOS
-                        if(dataNit.length > 0) {
+                        if(dataNit && dataNit.length > 0) {
                             var optionNit = {
                                 id: dataNit[0].id,
                                 text: dataNit[0].text
@@ -626,7 +644,7 @@
                         },10);
                     }
                 } else {
-
+                    //BUSCAR EXTRACTO
                     if(inputsId[idNextColumn] == '#documento_referencia' && idRow === rowExtracto){
                         var dataCuentaRow = $('#combo_cuenta_'+idRow).select2('data')[0];
                         
@@ -634,9 +652,30 @@
                             buscarExtracto();
                         };
                     }
+                    
                     setTimeout(function(){
                         $('#documentoReferenciaTable tr').find(idInput).focus();
                     },10);
+
+                    //COMPLETAR VALORES
+                    if(inputsId[idNextColumn] == '#debito') {
+                        var [debito, credito] = totalValores();
+                        var total = credito - debito;
+                        if(total > 0) {
+                            calcularCabeza = false;
+                            $(idInput).val(total);
+                            $(idInput).select();
+                        }
+                    }
+                    if(inputsId[idNextColumn] == '#credito') {
+                        var [debito, credito] = totalValores();
+                        var total = debito - credito;
+                        if(total > 0) {
+                            calcularCabeza = false;
+                            $(idInput).val(total);
+                            $(idInput).select();
+                        }
+                    }
                 }
                 buscar = false;
             }
@@ -711,7 +750,7 @@
                     $("#crearCapturaDocumentos").show();
                     if(data.length > 0){
                         editandoCaptura = true;
-                        idDocumento = 1;
+                        idDocumento = 0;
                         for (let index = 0; index < data.length; index++) {
                             addRow(false);
                             let documento = data[index];
@@ -802,9 +841,9 @@
         cancelarFacturas();
     });
 
-    function cancelarFacturas(){
+    function cancelarFacturas() {
         var totalRows = documento_general_table.rows().data().length;
-        idDocumento = 1;
+        idDocumento = 0;
         if(documento_general_table.rows().data().length){
             documento_general_table.clear([]).draw();
             for (let index = 0; index < totalRows; index++) {
@@ -827,6 +866,29 @@
         $('#consecutivo').val('');
         $("#id_comprobante").val('').change();
         $(".cardTotal").css("background-color", "white");
+    }
+
+    function cargarNuevoConsecutivo() {
+        var totalRows = documento_general_table.rows().data().length;
+        idDocumento = 0;
+        if(documento_general_table.rows().data().length){
+            documento_general_table.clear([]).draw();
+            for (let index = 0; index < totalRows; index++) {
+                documento_general_table.row(0).remove().draw();
+            }
+            mostrarValores();
+        }
+
+        $("#iniciarCapturaDocumentos").show();
+        $("#agregarDocumentos").hide();
+        $("#cancelarCapturaDocumentos").hide();
+        $("#crearCapturaDocumentos").hide();
+        $("#crearCapturaDocumentosDisabled").hide();
+        $("#iniciarCapturaDocumentosLoading").hide();
+
+        $('#consecutivo').val('');
+        $(".cardTotal").css("background-color", "white");
+        consecutivoSiguiente();
     }
 
     $(document).on('click', '#agregarDocumentos', function () {
@@ -951,12 +1013,12 @@
         }
     });
 
-    $("#fecha_manual").on('change', function(e) {
-        var data = $('#fecha_manual').val();
-        if(data){
-            consecutivoSiguiente();
-        }
-    });
+    // $("#fecha_manual").on('change', function(e) {
+    //     var data = $('#fecha_manual').val();
+    //     if(data){
+    //         consecutivoSiguiente();
+    //     }
+    // });
 
     function consecutivoSiguiente() {
         var id_comprobante = $('#id_comprobante').val();
@@ -1207,9 +1269,31 @@
     });
 
     function mostrarValores(){
-        var debito = 0;
-        var credito = 0;
 
+        if(calcularCabeza) {
+            var [debito, credito] = totalValores();
+    
+            if(debito-credito > 0){
+                $(".cardTotal").css("background-color", "lightpink");
+            } else if (debito-credito < 0){
+                $(".cardTotal").css("background-color", "lightpink");
+            } else if (debito-credito == 0 && debito > 0 || credito > 0){
+                $(".cardTotal").css("background-color", "lightgreen");
+            } else {
+                $(".cardTotal").css("background-color", "white");
+            }
+    
+            $("#general_debito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(debito));
+            $("#general_credito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(credito));
+            $("#general_diferencia").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(debito-credito));
+        } else {
+            calcularCabeza = true;
+        }
+    }
+
+    function totalValores() {
+
+        var debito = credito = 0;
         var dataDocumento = documento_general_table.rows().data();
         
         if(dataDocumento.length > 0) {
@@ -1217,9 +1301,10 @@
             $("#crearCapturaDocumentosDisabled").hide();
             
             for (let index = 0; index < dataDocumento.length; index++) {
-                // $('#debito_'+index).val();
+
                 var deb = $('#debito_'+index).val();
                 var cre = $('#credito_'+index).val();
+
                 debito+= parseInt(deb ? deb : 0);
                 credito+= parseInt(cre ? cre : 0);
             }
@@ -1227,20 +1312,8 @@
             $("#crearCapturaDocumentos").hide();
             $("#crearCapturaDocumentosDisabled").show();
         }
-
-        if(debito-credito > 0){
-            $(".cardTotal").css("background-color", "lightpink");
-        } else if (debito-credito < 0){
-            $(".cardTotal").css("background-color", "lightpink");
-        } else if (debito-credito == 0 && debito > 0 || credito > 0){
-            $(".cardTotal").css("background-color", "lightgreen");
-        } else {
-            $(".cardTotal").css("background-color", "white");
-        }
-
-        $("#general_debito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(debito));
-        $("#general_credito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(credito));
-        $("#general_diferencia").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(debito-credito));
+        
+        return [debito, credito];
     }
 
     $(document).on('click', '#crearCapturaDocumentos', function () {
@@ -1273,82 +1346,89 @@
             return;
         }
 
-        Swal.fire({
-            title: 'Guardar documento?',
-            text: texto,
-            icon: type,
-            showCancelButton: true,
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Guardar!',
-            reverseButtons: true,
-        }).then((result) => {
-            if (result.value){
-                $("#agregarDocumentos").hide();
-                $("#crearCapturaDocumentos").hide();
-                $("#iniciarCapturaDocumentos").hide();
-                $("#cancelarCapturaDocumentos").hide();
-                $("#crearCapturaDocumentosDisabled").hide();
-                $("#iniciarCapturaDocumentosLoading").show();
-                let data = {
-                    documento: getDocumentos(),
-                    id_comprobante: $("#id_comprobante").val(),
-                    consecutivo: $("#consecutivo").val(),
-                    fecha_manual: $("#fecha_manual").val(),
-                    editing_documento: $("#editing_documento").val(),
+        if(askSaveDocumentos) {
+            Swal.fire({
+                title: 'Guardar documento?',
+                text: texto,
+                icon: type,
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Guardar!',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.value){
+                    saveDocumentos();
                 }
-                $.ajax({
-                    url: base_url + 'documentos',
-                    method: 'POST',
-                    data: JSON.stringify(data),
-                    headers: headers,
-                    dataType: 'json',
-                }).done((res) => {
-                    if(res.success){
-                        cancelarFacturas();
-                        $('#crearCapturaDocumentosDisabled').hide();
-                        $(".cardTotal").css("background-color", "white");
-                        agregarToast('exito', 'Creación exitosa', 'Documentos creados con exito!', true);
-                    } else {
+            })
+        } else {
+            askSaveDocumentos = true;
+            saveDocumentos();
+        }
 
-                        $("#agregarDocumentos").show();
-                        $("#crearCapturaDocumentos").show();
-                        $("#iniciarCapturaDocumentos").hide();
-                        $("#cancelarCapturaDocumentos").show();
-                        $("#crearCapturaDocumentosDisabled").hide();
-                        $("#iniciarCapturaDocumentosLoading").hide();
-
-                        var mensaje = res.mensages;
-                        var errorsMsg = "";
-                        for (field in mensaje) {
-                            var errores = mensaje[field];
-                            for (campo in errores) {
-                                errorsMsg += "- "+errores[campo]+" <br>";
-                            }
-                        };
-                        agregarToast('error', 'Creación herrada', errorsMsg);
-                    }
-                }).fail((err) => {
-                    $("#agregarDocumentos").show();
-                    $("#crearCapturaDocumentos").show();
-                    $("#iniciarCapturaDocumentos").hide();
-                    $("#cancelarCapturaDocumentos").show();
-                    $("#crearCapturaDocumentosDisabled").hide();
-                    $("#iniciarCapturaDocumentosLoading").hide();
-
-                    var mensaje = err.responseJSON.message;
-                    var errorsMsg = "";
-                    for (field in mensaje) {
-                        var errores = mensaje[field];
-                        for (campo in errores) {
-                            errorsMsg += field+": "+errores[campo]+" <br>";
-                        }
-                        
-                    };
-                    agregarToast('error', 'Creación herrada', errorsMsg);
-                });
-            }
-        })
     });
+
+    function saveDocumentos() {
+        $("#agregarDocumentos").hide();
+        $("#crearCapturaDocumentos").hide();
+        $("#iniciarCapturaDocumentos").hide();
+        $("#cancelarCapturaDocumentos").hide();
+        $("#crearCapturaDocumentosDisabled").hide();
+        $("#iniciarCapturaDocumentosLoading").show();
+        let data = {
+            documento: getDocumentos(),
+            id_comprobante: $("#id_comprobante").val(),
+            consecutivo: $("#consecutivo").val(),
+            fecha_manual: $("#fecha_manual").val(),
+            editing_documento: $("#editing_documento").val(),
+        }
+        $.ajax({
+            url: base_url + 'documentos',
+            method: 'POST',
+            data: JSON.stringify(data),
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            if(res.success){
+                cargarNuevoConsecutivo();
+                agregarToast('exito', 'Creación exitosa', 'Documentos creados con exito!', true);
+            } else {
+                $("#agregarDocumentos").show();
+                $("#crearCapturaDocumentos").show();
+                $("#iniciarCapturaDocumentos").hide();
+                $("#cancelarCapturaDocumentos").show();
+                $("#crearCapturaDocumentosDisabled").hide();
+                $("#iniciarCapturaDocumentosLoading").hide();
+
+                var mensaje = res.mensages;
+                var errorsMsg = "";
+                for (field in mensaje) {
+                    var errores = mensaje[field];
+                    for (campo in errores) {
+                        errorsMsg += "- "+errores[campo]+" <br>";
+                    }
+                };
+                agregarToast('error', 'Creación herrada', errorsMsg);
+            }
+        }).fail((err) => {
+            $("#agregarDocumentos").show();
+            $("#crearCapturaDocumentos").show();
+            $("#iniciarCapturaDocumentos").hide();
+            $("#cancelarCapturaDocumentos").show();
+            $("#crearCapturaDocumentosDisabled").hide();
+            $("#iniciarCapturaDocumentosLoading").hide();
+
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = "";
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += field+": "+errores[campo]+" <br>";
+                }
+                
+            };
+            agregarToast('error', 'Creación herrada', errorsMsg);
+        });
+    }
 
     function getDocumentos(){
         var data = [];

@@ -15,7 +15,7 @@
 
                         <input name="editing_documento" id="editing_documento" class="form-control form-control-sm" type="text" style="display: none;">
 
-                        <div class="form-group col-6 col-md-4 col-sm-4">
+                        <div class="form-group col-12 col-md-4 col-sm-4">
                             <label>Comprobante <span style="color: red">*</span></label>
                             <select name="id_comprobante" id="id_comprobante" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                             </select>
