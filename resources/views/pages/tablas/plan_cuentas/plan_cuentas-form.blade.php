@@ -11,7 +11,7 @@
             <div class="modal-body">
                 <form id="planCuentaForm" style="margin-top: 10px;">
                     <div class="row">
-                        <input type="text" class="form-control" name="id_cuenta" id="id_cuenta" style="display: none;">
+                        <input type="text" class="form-control" name="id_plan_cuenta" id="id_plan_cuenta" style="display: none;">
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlSelect1">Padre</label>
                             <select name="id_padre" id="id_padre" class="form-control form-control-sm">

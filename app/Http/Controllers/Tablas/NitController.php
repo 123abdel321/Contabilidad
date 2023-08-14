@@ -127,8 +127,9 @@ class NitController extends Controller
             ], 422);
         }
 
+        DB::connection('sam')->beginTransaction();
+        
         try {
-            DB::connection('sam')->beginTransaction();
             $nit = Nits::create([
                 'id_tipo_documento' => $request->get('id_tipo_documento'),
                 'numero_documento' => $request->get('numero_documento'),

@@ -697,7 +697,7 @@
             };
 
             if (autoCierre) {
-                setTimeout(() => cerrarToast(toastId), 5000);
+                setTimeout(() => cerrarToast(toastId), 3500);
             }
 
             // Agregamos event listener para detectar cuando termine la animación

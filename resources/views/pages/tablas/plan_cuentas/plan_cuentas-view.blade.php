@@ -307,7 +307,7 @@
         $("#savePlanCuentaLoading").hide();
 
         $("#text_cuenta_padre").val('');
-        $("#id_cuenta").val('');
+        $("#id_plan_cuenta").val('');
         $("#id_padre").val(0).change();
         $("#cuenta").val('');
         $("#nombre").val('');
@@ -349,7 +349,7 @@
             $comboPadre.val('').trigger('change');
             $("#cuenta").val(data.cuenta);
         }
-        $("#id_cuenta").val(data.id);
+        $("#id_plan_cuenta").val(data.id);
         $("#nombre").val(data.nombre);
         $("#naturaleza_cuenta").val(data.naturaleza_cuenta).change();
         $("#naturaleza_ingresos").val(data.naturaleza_ingresos).change();
@@ -379,7 +379,7 @@
         $("#savePlanCuenta").hide();
 
         let data = {
-            id_cuenta: $("#id_cuenta").val(),
+            id: $("#id_plan_cuenta").val(),
             id_padre: $("#id_padre").val(),
             cuenta: $("#cuenta").val(),
             nombre: $("#nombre").val(),

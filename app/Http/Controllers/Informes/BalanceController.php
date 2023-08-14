@@ -71,12 +71,22 @@ class BalanceController extends Controller
     public function show(Request $request)
     {
         $balance = InfBalance::where('id', $request->get('id'))->first();
-
 		$informe = InfBalanceDetalle::where('id_balance', $balance->id);
+		$total = InfBalanceDetalle::where('id_balance', $balance->id)->orderBy('id', 'desc')->first();
+        $descuadre = false;
+        $filtros = true;
+
+        if(!$balance->id_cuenta) {
+            $filtros = false;
+            $descuadre = $total->saldo_final > 0 ? true : false;
+        }
 
         return response()->json([
             'success'=>	true,
             'data' => $informe->get(),
+            'totales' => $total,
+            'filtros' => $filtros,
+            'descuadre' => $descuadre,
             'message'=> 'Balance generado con exito!'
         ]);
     }
