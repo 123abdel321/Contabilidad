@@ -18,10 +18,28 @@
             </div>
         </div>
         
-        <div class="card mb-4">
-            <div class="card-body" style="content-visibility: auto; overflow: auto;">
-                @include('pages.contabilidad.balance.balance-table')
+        <div class="card cardTotalBalance" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
+            <div class="row" style="text-align: -webkit-center;">
+                <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
+                    <p style="font-size: 13px; margin-top: 5px;">SALDO ANTERIOR</p>
+                    <h6 id="balance_anterior" style="margin-top: -15px;">$0</h6>
+                </div>
+                <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
+                    <p style="font-size: 13px; margin-top: 5px;">DEBITO</p>
+                    <h6 id="balance_debito" style="margin-top: -15px;">$0</h6>
+                </div>
+                <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
+                    <p style="font-size: 13px; margin-top: 5px;">CREDITO</p>
+                    <h6 id="balance_credito" style="margin-top: -15px;">$0</h6>
+                </div>
+                <div class="col-6 col-md-3 col-sm-3">
+                    <p style="font-size: 13px; margin-top: 5px;">SALDO FINAL</p>
+                    <h6 id="balance_diferencia" style="margin-top: -15px;">$0</h6>
+                </div>
             </div>
+        </div>
+        <div class="card mb-4" style="content-visibility: auto; overflow: auto; border-radius: 0px 0px 20px 20px; margin-top: -1px;">
+            @include('pages.contabilidad.balance.balance-table')
         </div>
     </div>
 </div>
@@ -147,6 +165,13 @@
         $('#descargarExcelBalance').prop('disabled', true);
         $("#descargarExcelBalance").hide();
 
+        $(".cardTotalBalance").css("background-color", "white");
+
+        $("#balance_anterior").text('$0');
+        $("#balance_debito").text('$0');
+        $("#balance_credito").text('$0');
+        $("#balance_diferencia").text('$0');
+
         var url = base_url + 'balances';
         url+= '?fecha_desde='+$('#fecha_desde_balance').val();
         url+= '&fecha_hasta='+$('#fecha_hasta_balance').val();
@@ -213,9 +238,41 @@
                 $("#descargarExcelBalance").show();
                 $("#descargarExcelBalanceDisabled").hide();
 
-                agregarToast('exito', 'Balance cargado', 'Informe cargado con exito!', true);
+                if(res.descuadre) {
+                    Swal.fire(
+                        'Balance descuadrado',
+                        '',
+                        'warning'
+                    );
+                } else {
+                    agregarToast('exito', 'Balance cargado', 'Informe cargado con exito!', true);
+                }
+                console.log(res);
+                mostrarTotalesBalance(res.totales, res.filtros);
             }
         });
+    }
+
+    function mostrarTotalesBalance(data, filtros = false) {
+        if (!data) {
+            return;
+        }
+        if(!filtros && parseInt(data.saldo_anterior)){
+            $(".cardTotalBalance").css("background-color", "lightpink");
+        } else if (!filtros && !parseInt(data.saldo_anterior)){
+            $(".cardTotalBalance").css("background-color", "lightgreen");
+        } else if (!filtros && parseInt(data.saldo_final)){
+            $(".cardTotalBalance").css("background-color", "lightpink");
+        } else if (!filtros && !parseInt(data.saldo_final)) {
+            $(".cardTotalBalance").css("background-color", "lightgreen");
+        } else {
+            $(".cardTotalBalance").css("background-color", "white");
+        }
+
+        $("#balance_anterior").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_anterior));
+        $("#balance_debito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.debito));
+        $("#balance_credito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.credito));
+        $("#balance_diferencia").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_final));
     }
 
     function getNivel() {

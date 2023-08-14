@@ -67,6 +67,7 @@
 
             </div>
         </div>
+
         <div class="card cardTotal" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
             <div class="row" style="text-align: -webkit-center;">
                 <div class="col-4 col-md-4 col-sm-4" style="border-right: solid 1px #787878;">
@@ -83,13 +84,8 @@
                 </div>
             </div>
         </div>
-
         <div id="card-documento-general" class="card mb-4" style="content-visibility: auto; overflow: auto; border-radius: 0px 0px 20px 20px;">
-            <div class="card-body" style="padding: 0;">
-
-                @include('pages.capturas.documento_general.documento_general-table')
-                
-            </div>
+            @include('pages.capturas.documento_general.documento_general-table')
         </div>
         
         @include('pages.capturas.documento_general.documento_general-form')
