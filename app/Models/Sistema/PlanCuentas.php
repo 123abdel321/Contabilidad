@@ -33,7 +33,9 @@ class PlanCuentas extends Model
 		'naturaleza_egresos',
 		'naturaleza_compras',
 		'naturaleza_ventas',
-		'cuenta_corriente'
+		'cuenta_corriente',
+        'created_by',
+        'updated_by'
     ];
 
     public function impuesto()
