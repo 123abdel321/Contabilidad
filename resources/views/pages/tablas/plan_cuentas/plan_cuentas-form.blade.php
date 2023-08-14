@@ -24,7 +24,7 @@
                                 <div class="input-group-prepend" style="width: 75px;">
                                     <input id="text_cuenta_padre" class="form-control form-control-sm" type="text" style="border-radius: 10px 0px 0px 10px;" disabled>
                                 </div>
-                                <input name="cuenta" id="cuenta" class="form-control form-control-sm" type="text" require>
+                                <input name="cuenta" id="cuenta" class="form-control form-control-sm" type="text" style="padding-left: 8px;" require>
                             </div>
                         </div>
 
