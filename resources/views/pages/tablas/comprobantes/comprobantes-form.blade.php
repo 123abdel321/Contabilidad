@@ -34,7 +34,7 @@
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlSelect1">Tipo consecutivo</label>
                             <select class="form-control form-control-sm" id="tipo_consecutivo">
-                                <option value="0">ACUMULADO</option>
+                                <option value="0">GENERAL</option>
                                 <option value="1">MENSUAL</option>
                             </select>
                         </div>

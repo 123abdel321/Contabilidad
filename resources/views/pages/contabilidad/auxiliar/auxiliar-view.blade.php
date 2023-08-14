@@ -27,10 +27,32 @@
     <div class="row">
 
         <div class="card mb-4">
-            @include('pages.contabilidad.auxiliar.auxiliar-filter')
+            <div class="card-body" style="padding: 0 !important;">
+                @include('pages.contabilidad.auxiliar.auxiliar-filter')
+            </div>
         </div>
 
-        <div class="card mb-4" style="content-visibility: auto; overflow: auto;">
+        <div class="card cardTotalAuxiliar" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
+            <div class="row" style="text-align: -webkit-center;">
+                <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
+                    <p style="font-size: 13px; margin-top: 5px;">SALDO ANTERIOR</p>
+                    <h6 id="auxiliar_anterior" style="margin-top: -15px;">$0</h6>
+                </div>
+                <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
+                    <p style="font-size: 13px; margin-top: 5px;">DEBITO</p>
+                    <h6 id="auxiliar_debito" style="margin-top: -15px;">$0</h6>
+                </div>
+                <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
+                    <p style="font-size: 13px; margin-top: 5px;">CREDITO</p>
+                    <h6 id="auxiliar_credito" style="margin-top: -15px;">$0</h6>
+                </div>
+                <div class="col-6 col-md-3 col-sm-3">
+                    <p style="font-size: 13px; margin-top: 5px;">SALDO FINAL</p>
+                    <h6 id="auxiliar_diferencia" style="margin-top: -15px;">$0</h6>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-4" style="content-visibility: auto; overflow: auto; border-radius: 0px 0px 20px 20px;">
             @include('pages.contabilidad.auxiliar.auxiliar-table')
         </div>
     </div>
@@ -228,6 +250,13 @@
         $("#descargarExcelAuxiliar").hide();
         $("#descargarExcelAuxiliarDisabled").show();
 
+        $(".cardTotalAuxiliar").css("background-color", "white");
+
+        $("#auxiliar_anterior").text('$0');
+        $("#auxiliar_debito").text('$0');
+        $("#auxiliar_credito").text('$0');
+        $("#auxiliar_diferencia").text('$0');
+
         var url = base_url + 'auxiliares';
         url+= '?fecha_desde='+$('#fecha_desde_auxiliar').val();
         url+= '&fecha_hasta='+$('#fecha_hasta_auxiliar').val();
@@ -291,6 +320,7 @@
                 $('#descargarExcelAuxiliar').prop('disabled', false);
                 $("#descargarExcelAuxiliar").show();
                 $("#descargarExcelAuxiliarDisabled").hide();
+
                 if(res.descuadre) {
                     Swal.fire(
                         'Auxiliar descuadrado',
@@ -300,8 +330,31 @@
                 } else {
                     agregarToast('exito', 'Auxiliar cargado', 'Informe cargado con exito!', true);
                 }
+                mostrarTotalesAuxiliar(res.totales, res.filtros);
             }
         });
+    }
+
+    function mostrarTotalesAuxiliar(data, filtros = false) {
+        if(!data) {
+            return;
+        }
+        if(!filtros && parseInt(data.saldo_anterior)){
+            $(".cardTotalAuxiliar").css("background-color", "lightpink");
+        } else if (!filtros && !parseInt(data.saldo_anterior)){
+            $(".cardTotalAuxiliar").css("background-color", "lightgreen");
+        } else if (!filtros && parseInt(data.saldo_final)){
+            $(".cardTotalAuxiliar").css("background-color", "lightpink");
+        } else if (!filtros && !parseInt(data.saldo_final)) {
+            $(".cardTotalAuxiliar").css("background-color", "lightgreen");
+        } else {
+            $(".cardTotalAuxiliar").css("background-color", "white");
+        }
+
+        $("#auxiliar_anterior").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_anterior));
+        $("#auxiliar_debito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.debito));
+        $("#auxiliar_credito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.credito));
+        $("#auxiliar_diferencia").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_final));
     }
 
     function GenerateAuxiliar() {
