@@ -41,14 +41,6 @@ class AuxiliarController extends Controller
             ->where('id_nit', $request->get('id_nit', null))
 			->first();
         
-        if ($auxiliar && $request->get('generar') == 'false') {
-            return response()->json([
-                'success'=>	true,
-                'data' => $auxiliar->id,
-                'message'=> 'Auxiliar existente'
-            ]);
-        }
-        
         if($auxiliar) {
             InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->delete();
             $auxiliar->delete();
@@ -88,6 +80,32 @@ class AuxiliarController extends Controller
             'filtros' => $filtros,
             'descuadre' => $descuadre,
             'message'=> 'Auxiliar generado con exito!'
+        ]);
+    }
+
+    public function find(Request $request)
+    {
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        
+        $auxiliar = InfAuxiliar::where('id_empresa', $empresa->id)
+            ->where('fecha_hasta', $request->get('fecha_hasta'))
+            ->where('fecha_desde', $request->get('fecha_desde'))
+            ->where('id_cuenta', $request->get('id_cuenta', null))
+            ->where('id_nit', $request->get('id_nit', null))
+			->first();
+        
+        if ($auxiliar) {
+            return response()->json([
+                'success'=>	true,
+                'data' => $auxiliar->id,
+                'message'=> 'Auxiliar existente'
+            ]);
+        }
+
+        return response()->json([
+            'success'=>	true,
+            'data' => '',
+            'message'=> 'Auxiliar no existente'
         ]);
     }
 

@@ -35,19 +35,19 @@
         <div class="card cardTotalAuxiliar" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
             <div class="row" style="text-align: -webkit-center;">
                 <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px;">SALDO ANTERIOR</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black;">SALDO ANTERIOR</p>
                     <h6 id="auxiliar_anterior" style="margin-top: -15px;">$0</h6>
                 </div>
                 <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px;">DEBITO</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black;">DEBITO</p>
                     <h6 id="auxiliar_debito" style="margin-top: -15px;">$0</h6>
                 </div>
                 <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px;">CREDITO</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black;">CREDITO</p>
                     <h6 id="auxiliar_credito" style="margin-top: -15px;">$0</h6>
                 </div>
                 <div class="col-6 col-md-3 col-sm-3">
-                    <p style="font-size: 13px; margin-top: 5px;">SALDO FINAL</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black;">SALDO FINAL</p>
                     <h6 id="auxiliar_diferencia" style="margin-top: -15px;">$0</h6>
                 </div>
             </div>
@@ -62,9 +62,12 @@
 <script>
     var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
     var generarAuxiliar = false;
+    var auxiliarExistente = false;
     
     $('#fecha_desde_auxiliar').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
     $('#fecha_hasta_auxiliar').val(fechaDesde);
+    
+    findAuxiliar();
 
     var auxiliar_table = $('#auxiliarInformeTable').DataTable({
         dom: 't',
@@ -260,7 +263,7 @@
         var url = base_url + 'auxiliares';
         url+= '?fecha_desde='+$('#fecha_desde_auxiliar').val();
         url+= '&fecha_hasta='+$('#fecha_hasta_auxiliar').val();
-        url+= '&id_cuenta='+$('#id_cuenta').val();
+        url+= '&id_cuenta='+$('#id_cuenta_auxiliar').val();
         url+= '&generar='+generarAuxiliar;
         
         auxiliar_table.ajax.url(url).load(function(res) {
@@ -320,7 +323,8 @@
                 $('#descargarExcelAuxiliar').prop('disabled', false);
                 $("#descargarExcelAuxiliar").show();
                 $("#descargarExcelAuxiliarDisabled").hide();
-
+                $('#generarAuxiliarUltimo').hide();
+                $('#generarAuxiliarUltimoLoading').hide();
                 if(res.descuadre) {
                     Swal.fire(
                         'Auxiliar descuadrado',
@@ -361,7 +365,7 @@
         var url = base_url + 'auxiliares';
         url+= '?fecha_desde='+$('#fecha_desde_auxiliar').val();
         url+= '&fecha_hasta='+$('#fecha_hasta_auxiliar').val();
-        url+= '&id_cuenta='+$('#id_cuenta').val();
+        url+= '&id_cuenta='+$('#id_cuenta_auxiliar').val();
         url+= '&generar='+generarAuxiliar;
         auxiliar_table.ajax.url(url).load(function(res) {
             if(res.success) {
@@ -422,20 +426,69 @@
         });
     });
 
+    $(document).on('click', '#generarAuxiliarUltimo', function () {
+        $('#generarAuxiliarUltimo').hide();
+        $('#generarAuxiliarUltimoLoading').show();
+        loadAuxiliarById(auxiliarExistente);
+    });
+
+    function findAuxiliar() {
+        auxiliarExistente = false;
+        $('#generarAuxiliarUltimo').hide();
+        $('#generarAuxiliarUltimoLoading').show();
+
+        var url = 'auxiliares-find';
+        url+= '?fecha_desde='+$('#fecha_desde_auxiliar').val();
+        url+= '&fecha_hasta='+$('#fecha_hasta_auxiliar').val();
+        url+= '&id_cuenta='+$('#id_cuenta_auxiliar').val();
+
+        $.ajax({
+            url: base_url + url,
+            method: 'GET',
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            $('#generarAuxiliarUltimoLoading').hide();
+            if(res.data){
+                auxiliarExistente = res.data;
+                $('#generarAuxiliarUltimo').show();
+            }
+        }).fail((err) => {
+            $('#generarAuxiliarUltimoLoading').hide();
+            var errorsMsg = "";
+            var mensaje = err.responseJSON.message;
+            if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                for (field in mensaje) {
+                    var errores = mensaje[field];
+                    for (campo in errores) {
+                        errorsMsg += "- "+errores[campo]+" <br>";
+                    }
+                };
+            } else {
+                errorsMsg = mensaje
+            }
+            agregarToast('error', 'Error consultar auxiliares', errorsMsg, true);
+        });
+    }
+
     $("#fecha_desde_auxiliar").on('change', function(){
         clearAuxiliar();
+        findAuxiliar();
     });
 
     $("#fecha_hasta_auxiliar").on('change', function(){
         clearAuxiliar();
+        findAuxiliar();
     });
 
     $("#id_cuenta_auxiliar").on('change', function(){
         clearAuxiliar();
+        findAuxiliar();
     });
 
     $("#id_nit_auxiliar").on('change', function(){
         clearAuxiliar();
+        findAuxiliar();
     });
 
     function clearAuxiliar() {
