@@ -59,10 +59,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //BALANCE
         Route::get('balances', 'App\Http\Controllers\Informes\BalanceController@generate');
         Route::get('balances-show', 'App\Http\Controllers\Informes\BalanceController@show');
+        Route::get('balances-find', 'App\Http\Controllers\Informes\BalanceController@find');
         Route::post('balances-excel', 'App\Http\Controllers\Informes\BalanceController@exportExcel');
         //AUXILIAR
         Route::get('auxiliares', 'App\Http\Controllers\Informes\AuxiliarController@generate');
         Route::get('auxiliares-show', 'App\Http\Controllers\Informes\AuxiliarController@show');
+        Route::get('auxiliares-find', 'App\Http\Controllers\Informes\AuxiliarController@find');
         Route::post('auxiliares-excel', 'App\Http\Controllers\Informes\AuxiliarController@exportExcel');
 
         //PLAN DE CUENTAS

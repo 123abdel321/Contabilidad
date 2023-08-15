@@ -21,19 +21,19 @@
         <div class="card cardTotalBalance" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
             <div class="row" style="text-align: -webkit-center;">
                 <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px;">SALDO ANTERIOR</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black;">SALDO ANTERIOR</p>
                     <h6 id="balance_anterior" style="margin-top: -15px;">$0</h6>
                 </div>
                 <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px;">DEBITO</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black;">DEBITO</p>
                     <h6 id="balance_debito" style="margin-top: -15px;">$0</h6>
                 </div>
                 <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px;">CREDITO</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black;">CREDITO</p>
                     <h6 id="balance_credito" style="margin-top: -15px;">$0</h6>
                 </div>
                 <div class="col-6 col-md-3 col-sm-3">
-                    <p style="font-size: 13px; margin-top: 5px;">SALDO FINAL</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black;">SALDO FINAL</p>
                     <h6 id="balance_diferencia" style="margin-top: -15px;">$0</h6>
                 </div>
             </div>
@@ -47,24 +47,12 @@
 <script>
     var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
     var generarBalance = false;
+    var balanceExistente = false;
 
-    var $comboPadre = $('#id_cuenta_balance').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        ajax: {
-            url: 'api/plan-cuenta/combo-cuenta',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-    
     $('#fecha_desde_balance').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
     $('#fecha_hasta_balance').val(fechaDesde);
+
+    findBalance();
 
     var balance_table = $('#balanceInformeTable').DataTable({
         dom: 'ti',
@@ -93,7 +81,7 @@
                 $('td', row).css('color', 'white');
                 return;
             }
-            if(data.auxiliar){//
+            if(data.balance){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 10%)');
                 return;
             }
@@ -156,6 +144,21 @@
                 className: "column-number", className: 'dt-body-right'
             },
         ]
+    });
+
+    var $comboPadre = $('#id_cuenta_balance').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
     });
     
     $(document).on('click', '#generarBalance', function () {
@@ -329,6 +332,72 @@
             }
             agregarToast('error', 'Error al generar excel', errorsMsg);
         });
+    });
+
+    $(document).on('click', '#generarBalanceUltimo', function () {
+        $('#generarBalanceUltimo').hide();
+        $('#generarBalanceUltimoLoading').show();
+        loadBalanceById(auxiliarExistente);
+    });
+
+    function findBalance() {
+        balanceExistente = false;
+        $('#generarBalanceUltimo').hide();
+        $('#generarBalanceUltimoLoading').show();
+
+        var url = 'balances-find';
+        url+= '?fecha_desde='+$('#fecha_desde_balance').val();
+        url+= '&fecha_hasta='+$('#fecha_hasta_balance').val();
+        url+= '&id_cuenta='+$('#id_cuenta_balance').val();
+        url+= '&nivel='+getNivel();
+        console.log('url: ',url)
+        $.ajax({
+            url: base_url + url,
+            method: 'GET',
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            $('#generarBalanceUltimoLoading').hide();
+            if(res.data){
+                balanceExistente = res.data;
+                $('#generarBalanceUltimo').show();
+            }
+        }).fail((err) => {
+            $('#generarBalanceUltimoLoading').hide();
+            var errorsMsg = "";
+            var mensaje = err.responseJSON.message;
+            if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                for (field in mensaje) {
+                    var errores = mensaje[field];
+                    for (campo in errores) {
+                        errorsMsg += "- "+errores[campo]+" <br>";
+                    }
+                };
+            } else {
+                errorsMsg = mensaje
+            }
+            agregarToast('error', 'Error consultar balancees', errorsMsg, true);
+        });
+    }
+
+    $("#fecha_desde_balance").on('change', function(){
+        clearBalance();
+        findBalance();
+    });
+
+    $("#fecha_hasta_balance").on('change', function(){
+        clearBalance();
+        findBalance();
+    });
+
+    $("#id_cuenta_balance").on('change', function(){
+        clearBalance();
+        findBalance();
+    });
+
+    $(".nivel_balance").on('change', function(){
+        clearBalance();
+        findBalance();
     });
 
     function clearBalance() {

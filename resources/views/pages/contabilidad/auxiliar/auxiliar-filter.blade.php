@@ -62,6 +62,7 @@
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">GENERANDO</b>
                     </span>
+                    <!-- BOTON EXCEL -->
                     <span id="descargarExcelAuxiliar" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">EXCEL</b>
@@ -71,11 +72,14 @@
                         <b style="vertical-align: text-top;">EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
-                    <!-- <span id="" class="badge bg-dark" style="min-width: 40px; color: #adadad;" >
-                        <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>
-                        <b style="vertical-align: text-top;">PDF</b>
-                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
-                    </span> -->
+                    <!-- BOTON ULTIMO INFORME -->
+                    <span id="generarAuxiliarUltimo" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; margin-right: 3px; float: right; display:none;">
+                        <i class="fas fa-history" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">CARGAR ULTIMO INFORME</b>
+                    </span>
+                    <div id="generarAuxiliarUltimoLoading" class="spinner-border spinner-erp" style="display:none;" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>

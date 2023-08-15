@@ -40,14 +40,6 @@ class BalanceController extends Controller
             ->where('id_cuenta', $request->get('id_cuenta', null))
             ->where('nivel', $request->get('nivel', null))
 			->first();
-        // dd($request->all(),  $request->get('nivel', null));
-        if ($balance && $request->get('generar') == 'false') {
-            return response()->json([
-                'success'=>	true,
-                'data' => $balance->id,
-                'message'=> 'Balance existente'
-            ]);
-        }
 
         if($balance) {
             InfBalanceDetalle::where('id_balance', $balance->id)->delete();
@@ -88,6 +80,33 @@ class BalanceController extends Controller
             'filtros' => $filtros,
             'descuadre' => $descuadre,
             'message'=> 'Balance generado con exito!'
+        ]);
+    }
+
+    public function find(Request $request)
+    {
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        $id_cuenta = $request->get('id_cuenta') != 'null' ? $request->get('id_cuenta') : NULL;
+        
+        $balance = InfBalance::where('id_empresa', $empresa->id)
+            ->where('fecha_hasta', $request->get('fecha_hasta'))
+            ->where('fecha_desde', $request->get('fecha_desde'))
+            ->where('id_cuenta', $id_cuenta)
+            ->where('nivel', $request->get('nivel', null))
+			->first();
+            
+        if ($balance) {
+            return response()->json([
+                'success'=>	true,
+                'data' => $balance->id,
+                'message'=> 'Balance existente'
+            ]);
+        }
+
+        return response()->json([
+            'success'=>	true,
+            'data' => '',
+            'message'=> 'Balance no existente'
         ]);
     }
 
