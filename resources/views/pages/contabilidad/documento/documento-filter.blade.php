@@ -29,21 +29,23 @@
                             <label for="example-text-input" class="form-control-label">Consecutivo</label>
                             <input type="text" class="form-control form-control-sm" name="consecutivo_documento" id="consecutivo_documento">
                         </div>
-                        
-                        <div class="form-group col-12 col-sm-4 col-md-3 row">
-                            <div class="form-check col-12 col-md-12 col-sm-12">
-                                <input class="form-check-input" type="radio" name="tipo_factura" id="tipo_factura1" style="margin-left: 5px;" checked>
-                                <label class="form-check-label" for="tipo_factura1">
-                                    Todas
+
+                        <div class="form-group col-12 col-sm-3 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                            <label for="example-text-input" class="form-control-label">Documentos</label>
+                            <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="nivel_documento" id="nivel_documento1" style="font-size: 11px;" checked>
+                                <label class="form-check-label" for="nivel_documento1" style="font-size: 11px;">
+                                    Todos
                                 </label>
                             </div>
-                            <div class="form-check col-12 col-md-12 col-sm-12">
-                                <input class="form-check-input" type="radio" name="tipo_factura" id="tipo_factura2" style="margin-left: 5px;">
-                                <label class="form-check-label" for="tipo_factura2">
-                                    Anuladas
+                            <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="nivel_documento" id="nivel_documento2" style="font-size: 11px;">
+                                <label class="form-check-label" for="nivel_documento2" style="font-size: 11px;">
+                                    Anulados
                                 </label>
                             </div>
                         </div>
+
                     </div>  
                 </form>
                 <div class="col-md normal-rem">

@@ -34,6 +34,16 @@ use App\Http\Controllers\Capturas\DocumentoGeneralController;
 |
 */
 
+// Route::get('/pdf', function () {
+
+// 	// return view('pdf.facturacion.documentos');
+// 	$pdf = app('dompdf.wrapper');
+//     $pdf->loadView('pdf.facturacion.documentos');
+// 	// $pdf->setPaper('Letter', 'landscape');
+// 	$pdf->setPaper('A4', '');
+//     return $pdf->stream('mi-archivo.pdf');
+// });
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -81,6 +91,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/cecos', [CentroCostoController::class, 'index'])->name('cecos');
 		//DOCUMENTOS
 		Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos');
+		Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('show-pdf');
 
 	});
 

@@ -31,8 +31,8 @@
         paging: true,
         responsive: false,
         processing: true,
-        serverSide: true,
-        initialLoad: true,
+        serverSide: false,
+        initialLoad: false,
         language: lenguajeDatatable,
         sScrollX: "100%",
         scroller: {
@@ -58,7 +58,7 @@
                 d.id_comprobante = $('#id_comprobante_documento').val();
                 d.fecha_manual = $('#fecha_manual_documento').val();
                 d.consecutivo = $('#consecutivo_documento').val();
-                d.tipo_factura = $("input[type='radio']#tipo_factura1").is(':checked') ? 'todas' : 'anuladas';
+                d.tipo_factura = getEstadoDocumentos();
             }
         },
         "columns": [
@@ -119,8 +119,10 @@
                         return ''
                     }
                     var html = '';
-                    html+= '<span id="anulardocumento_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger anular-documento" style="margin-bottom: 0rem !important">Anular</span>';
+                    html+= '<span id="anulardocumento_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary anular-documento" style="margin-bottom: 0rem !important">Anular</span>&nbsp;';
+                    html+= '<span id="imprimirdocumento_'+row.id+'" href="javascript:void(0)" class="btn badge btn-bg-pdf bg-gradient-danger imprimir-documento" style="margin-bottom: 0rem !important">PDF</span>';
                     return html;
+
                 }
             }
         ]
@@ -131,8 +133,10 @@
     });
 
     $(document).on('click', '#generarDocumento', function () {
+
         $("#generarDocumento").hide();
         $("#generarDocumentoLoading").show();
+
         documento_table.ajax.reload(function() {
             $("#generarDocumento").show();
             $("#generarDocumentoLoading").hide();
@@ -140,11 +144,10 @@
     });
 
     $(document).on('click', '.anular-documento', function () {
-        var trNit = $(this).closest('tr');
+        var trDocumento = $(this).closest('tr');
         var id = this.id.split('_')[1];
-        console.log('id: ',id);
+
         var data = getDataById(id, documento_table);
-        console.log('data: ',data);
 
         Swal.fire({
             title: 'Anular documento ?',
@@ -178,7 +181,7 @@
                     dataType: 'json',
                 }).done((res) => {
                     if(res.success){
-                        documento_table.row(trPlanCuenta).remove().draw();
+                        documento_table.row(trDocumento).remove().draw();
                         swalFire('Anulación exitosa', 'Documentos anulados con exito!');
                     } else {
                         swalFire('Anulación herrada', res.message, false);
@@ -190,8 +193,32 @@
         })
 
     });
-
     
+    $(document).on('click', '.imprimir-documento', function () {
+        var id = this.id.split('_')[1];
+        window.open("/documentos-print/"+id, "_blank");
+        // $.ajax({
+        //     url: base_url + 'documento-print',
+        //     method: 'PUT',
+        //     data: JSON.stringify({
+        //         id_comprobante: data.id_comprobante,
+        //         consecutivo: data.consecutivo,
+        //         fecha_manual: data.fecha_manual,
+        //         motivo_anulacion: result.value
+        //     }),
+        //     headers: headers,
+        //     dataType: 'json',
+        // }).done((res) => {
+        //     if(res.success){
+        //         documento_table.row(trDocumento).remove().draw();
+        //         swalFire('Anulación exitosa', 'Documentos anulados con exito!');
+        //     } else {
+        //         swalFire('Anulación herrada', res.message, false);
+        //     }
+        // }).fail((res) => {
+        //     swalFire('Anulación herrada', res.message, false);
+        // });
+    });
 
     var $comboComprobante = $('#id_comprobante_documento').select2({
         theme: 'bootstrap-5',
@@ -207,4 +234,12 @@
             }
         }
     });
+
+    function getEstadoDocumentos() {
+        if($("input[type='radio']#nivel_documento1").is(':checked')) return '';
+        if($("input[type='radio']#nivel_documento2").is(':checked')) return 1;
+
+        return '';
+    }
+
 </script>
