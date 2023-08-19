@@ -26,7 +26,7 @@
 
                         <div class="form-group col-6 col-md-4 col-sm-4">
                             <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
-                            <input name="fecha_manual" id="fecha_manual" class="form-control form-control-sm" type="date" required>
+                            <input name="fecha_manual" id="fecha_manual" class="form-control form-control-sm" onkeypress="changeFecha(event)" type="date" required>
                         </div>
 
                         <div class="form-group col-6 col-md-4 col-sm-4">

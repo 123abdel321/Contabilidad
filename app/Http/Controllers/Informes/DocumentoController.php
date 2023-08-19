@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Informes;
 
 use DB;
 use Illuminate\Http\Request;
+use App\Helpers\Printers\DocumentosPdf;
 use App\Http\Controllers\Controller;
 //MODELS
+use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacDocumentos;
 
 class DocumentoController extends Controller
@@ -17,37 +19,12 @@ class DocumentoController extends Controller
 
     public function generate (Request $request)
     {
-        // $id_comprobante = $request->get('id_comprobante');
-        // $fecha_hasta = $request->get('fecha_hasta');
-        // $consecutivo = $request->get('consecutivo');
-
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = 15; // Rows display per page
-
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
         $FacDocumentos = FacDocumentos::select(
                 '*',
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') fecha_creacion"),
                 DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') fecha_edicion")
             )
-            ->skip($start)
-            ->with('comprobante')
-            ->take($rowperpage);
-
-        
-        if($columnName){
-            // $FacDocumentos->orderBy($columnName,$columnSortOrder);
-        }
+            ->with('comprobante');
 
         if($request->has('id_comprobante') && $request->get('id_comprobante')) {
             $FacDocumentos->where('id_comprobante', $request->get('id_comprobante'));
@@ -64,28 +41,31 @@ class DocumentoController extends Controller
         if($request->has('tipo_factura') && $request->get('tipo_factura') == 'anuladas') {
             $FacDocumentos->where('anulado', 1);
         }
-
-        if($searchValue) {
-            // $FacDocumentos->whereHas('comprobante', function ($query) use ($searchValue) {
-            //         $query->where('codigo', 'like', '%' .$searchValue . '%')
-            //         ->orWhere('nombre', 'like', '%' .$searchValue . '%');
-            //     })
-            //     ->orWhere('fecha_manual', 'like', '%' .$searchValue . '%')
-            //     ->orWhere('consecutivo', 'like', '%' .$searchValue . '%')
-            //     ->orWhere('debito', 'like', '%' .$searchValue . '%')
-            //     ->orWhere('credito', 'like', '%' .$searchValue . '%');
-        }
-        // dd(FacDocumentos::all());
-        return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $FacDocumentos->count(),
-            'iTotalDisplayRecords' => $FacDocumentos->count(),
-            'data' => $FacDocumentos->get(),
-            'perPage' => $rowperpage,
-            'message'=> 'Documento generado con exito!'
-        ]);
+        
+        return response()->json($FacDocumentos->paginate());
 
     }
+
+    public function showPdf(Request $request, $id)
+    {
+        // return $request->user();
+
+        $factura = FacDocumentos::whereId($id)->first();
+
+        if(!$factura) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'La factura no existe'
+            ]);
+        }
+
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+ 
+        return (new DocumentosPdf($empresa, $factura))
+            ->buildPdf()
+            ->showPdf();
+    }
+
 }
 

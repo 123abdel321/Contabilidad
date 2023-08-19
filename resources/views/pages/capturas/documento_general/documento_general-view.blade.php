@@ -72,15 +72,15 @@
             <div class="row" style="text-align: -webkit-center;">
                 <div class="col-4 col-md-4 col-sm-4" style="border-right: solid 1px #787878;">
                     <p style="font-size: 13px; margin-top: 5px;">DEBITO</p>
-                    <h6 id="general_debito" style="margin-top: -15px;">$0</h6>
+                    <h6 id="general_debito" style="margin-top: -15px;">0.00</h6>
                 </div>
                 <div class="col-4 col-md-4 col-sm-4" style="border-right: solid 1px #787878;">
                     <p style="font-size: 13px; margin-top: 5px;">CREDITO</p>
-                    <h6 id="general_credito" style="margin-top: -15px;">$0</h6>
+                    <h6 id="general_credito" style="margin-top: -15px;">0.00</h6>
                 </div>
                 <div class="col-4 col-md-4 col-sm-4">
                     <p style="font-size: 13px; margin-top: 5px;">DIFERENCIA</p>
-                    <h6 id="general_diferencia" style="margin-top: -15px;">$0</h6>
+                    <h6 id="general_diferencia" style="margin-top: -15px;">0.00</h6>
                 </div>
             </div>
         </div>
@@ -191,6 +191,7 @@
                 $('.combo_cuenta').select2({
                     theme: 'bootstrap-5',
                     delay: 250,
+                    minimumInputLength: 1,
                     ajax: {
                         url: 'api/plan-cuenta/combo-cuenta',
                         headers: headers,
@@ -217,6 +218,7 @@
                 $('.combo_nits').select2({
                     theme: 'bootstrap-5',
                     delay: 250,
+                    minimumInputLength: 1,
                     ajax: {
                         url: 'api/nit/combo-nit',
                         headers: headers,
@@ -231,6 +233,7 @@
                 $('.combo_cecos').select2({
                     theme: 'bootstrap-5',
                     delay: 250,
+                    minimumInputLength: 1,
                     ajax: {
                         url: 'api/centro-costos/combo-centro-costo',
                         headers: headers,
@@ -400,6 +403,12 @@
                         var rowBack = idRow-1;
                         $("#debito_"+idRow).val(credito);
                         $("#concepto_"+idRow).val($("#concepto_"+rowBack).val());
+                        // console.log('here');
+                        setTimeout(function(){
+                            $('#documentoReferenciaTable tr').find("#debito_"+idRow).focus();
+                            $('#documentoReferenciaTable tr').find("#debito_"+idRow).select();
+                        },100);
+                        return;
                     }
                 }
             }
@@ -502,7 +511,7 @@
             let dataComprobante = $('#id_comprobante').select2('data')[0];
             let dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
 
-            if(dataComprobante != 4) {
+            if(dataComprobante.tipo_comprobante != 4) {
                 var dataDocumento = documento_general_table.rows().data();
 
                 if(dataDocumento.length > 0) {
@@ -533,6 +542,15 @@
     function changeConcecutivo(event) {
         if(event.keyCode == 13){
             searchCaptura();
+        }
+    }
+
+    function changeFecha(event) {
+        if(event.keyCode == 13){
+            setTimeout(function(){
+                $('#consecutivo').focus();
+                $('#consecutivo').select();
+            },10);
         }
     }
 
@@ -660,7 +678,10 @@
                         if(total > 0) {
                             calcularCabeza = false;
                             $(idInput).val(total);
-                            $(idInput).select();
+                            setTimeout(function(){
+                                console.log('seleccionando debito');
+                                $('#documentoReferenciaTable tr').find(idInput).select();
+                            },10);
                         }
                     }
                     if(inputsId[idNextColumn] == '#credito') {
@@ -669,7 +690,10 @@
                         if(total > 0) {
                             calcularCabeza = false;
                             $(idInput).val(total);
-                            $(idInput).select();
+                            setTimeout(function(){
+                                console.log('seleccionando credito');
+                                $('#documentoReferenciaTable tr').find(idInput).select();
+                            },10);
                         }
                     }
                 }
@@ -691,16 +715,23 @@
         var saldo = parseInt(this.id.split('_')[2]);
         var documentoReferencia = this.id.split('_')[1];
         let dataNit = $('#combo_nits_'+rowExtracto).select2('data')[0];
-        if($('#debito_'+rowExtracto).is(":disabled")){
-            $('#credito_'+rowExtracto).val(saldo);
-        } else {
-            $('#debito_'+rowExtracto).val(saldo);
-        }
+          
         $('#documento_referencia_'+rowExtracto).val(documentoReferencia);
         $("#modalDocumentoExtracto").modal('hide');  
         $('#concepto_'+rowExtracto).val(dataNit.text + ' - FACTURA: ' + documentoReferencia);
 
-        focusNextRow(3, rowExtracto);
+        if($('#debito_'+rowExtracto).is(":disabled")){
+            $('#credito_'+rowExtracto).val(saldo);
+            setTimeout(function(){
+                $('#documentoReferenciaTable tr').find('#credito_'+rowExtracto).select();
+            },10);
+        } else {
+            $('#debito_'+rowExtracto).val(saldo);
+            setTimeout(function(){
+                $('#documentoReferenciaTable tr').find('#debito_'+rowExtracto).select();
+            },10);
+        }
+        // focusNextRow(3, rowExtracto);
     });
 
     function buscarExtracto() {
@@ -717,7 +748,7 @@
         if(form.checkValidity()){
 
             $("#id_comprobante").prop('disabled', true);
-            $("#fecha_manual").prop('disabled', true);
+            // $("#fecha_manual").prop('disabled', true);
             $("#consecutivo").prop('disabled', true);
             
             $("#iniciarCapturaDocumentos").hide();
@@ -849,7 +880,7 @@
         }
 
         $("#id_comprobante").prop('disabled', false);
-        $("#fecha_manual").prop('disabled', false);
+        // $("#fecha_manual").prop('disabled', false);
         $("#consecutivo").prop('disabled', false);
 
         $("#iniciarCapturaDocumentos").show();
@@ -936,85 +967,28 @@
             }
         }
     });
-
-    var $comboCuenta = $('#id_cuenta').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#documentoGeneralFormModal'),
-        delay: 250,
-        ajax: {
-            url: 'api/plan-cuenta/combo-cuenta',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    var $comboNit = $('#id_nit').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#documentoGeneralFormModal'),
-        delay: 250,
-        ajax: {
-            url: 'api/nit/combo-nit',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    var $comboCentroCostos = $('.combo_cecos').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#documentoGeneralFormModal'),
-        delay: 250,
-        ajax: {
-            url: 'api/centro-costos/combo-centro-costo',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    var $comboCentroCostos = $('#id_centro_costos').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#documentoGeneralFormModal'),
-        delay: 250,
-        ajax: {
-            url: 'api/centro-costos/combo-centro-costo',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
     
     $("#id_comprobante").on('change', function(e) {
         var data = $(this).select2('data');
         if(data.length){
+            setTimeout(function(){
+                $('#fecha_manual').focus();
+                $('#fecha_manual').select();
+            },10);
             tipo_comprobante = data[0].tipo_comprobante;
             consecutivoSiguiente();
         }
     });
 
-    // $("#fecha_manual").on('change', function(e) {
-    //     var data = $('#fecha_manual').val();
-    //     if(data){
-    //         consecutivoSiguiente();
-    //     }
-    // });
+    $("#fecha_manual").on('change', function(e) {
+        var data = $('#fecha_manual').val();
+        if(event.keyCode == 13){
+            setTimeout(function(){
+                $('#consecutivo').focus();
+                $('#consecutivo').select();
+            },10);
+        }
+    });
 
     function consecutivoSiguiente() {
         var id_comprobante = $('#id_comprobante').val();
@@ -1036,10 +1010,10 @@
             }).done((res) => {
                 $("#iniciarCapturaDocumentos").show();
                 $("#iniciarCapturaDocumentosLoading").hide();
-                setTimeout(function(){
-                    $('#consecutivo').focus();
-                    $('#consecutivo').select();
-                },100);
+                // setTimeout(function(){
+                //     $('#consecutivo').focus();
+                //     $('#consecutivo').select();
+                // },100);
                 if(res.success){
                     $("#consecutivo").val(res.data);
                     $("#consecutivo").prop('disabled', false);
@@ -1125,92 +1099,6 @@
 
         mostrarValores();
     });
-    
-    documento_general_table.on('click', '.edit-documento-general', function() {
-
-        var trPlanCuenta = $(this).closest('tr');
-        var id = this.id.split('_')[1];
-        var data = getDataById(id, documento_general_table);
-
-        $("#id_nit").val('').change();
-        $("#id_cuenta").val('').change();
-        $("#id_centro_costos").val('').change();
-        $("#documento_referencia").val('').change();
-        $("#debito").val('');
-        $("#credito").val('');
-        $("#concepto").val('');
-
-        if(data.cuenta){
-            var newOption = new Option(data.cuenta.text, data.cuenta.id, false, false);
-            $comboCuenta.append(newOption).trigger('change');
-            $comboCuenta.val(data.cuenta.id).trigger('change');
-            
-        }
-
-        if(data.nit){
-            var newOption = new Option(data.nit.text, data.nit.id, false, false);
-            $comboNit.append(newOption).trigger('change');
-            $comboNit.val(data.nit.id).trigger('change');
-        }
-
-        if(data.centro_costos){
-            var newOption = new Option(data.centro_costos.text, data.centro_costos.id, false, false);
-            $comboCentroCostos.append(newOption).trigger('change');
-            $comboCentroCostos.val(data.centro_costos.id).trigger('change');
-        }
-
-        if(data.cuenta.exige_nit){
-            $("#id_nit").prop('disabled', false);
-        } else {
-            $("#id_nit").prop('disabled', true);
-            $("#id_nit").val('').change();
-        }
-
-        if(data.cuenta.exige_centro_costos){
-            $("#id_centro_costos").prop('disabled', false);
-        } else {
-            $("#id_centro_costos").prop('disabled', true);
-            $("#id_centro_costos").val('').change();
-        }
-
-        if(data.cuenta.exige_concepto){
-            $("#concepto").prop('disabled', false);
-        } else {
-            $("#concepto").prop('disabled', true);
-            $("#concepto").val('');
-        }
-
-        if(data.cuenta.exige_documento_referencia){
-            $("#documento_referencia").prop('disabled', false);
-        } else {
-            $("#documento_referencia").prop('disabled', true);
-            $("#documento_referencia").val('');
-        }
-
-        if(data.cuenta.naturaleza_cuenta){
-            $("#credito").prop('disabled', false);
-            $("#debito").prop('disabled', false);
-            $("#debito").val('');
-        }else{
-            $("#debito").prop('disabled', false);
-            $("#credito").prop('disabled', false);
-            $("#credito").val('');
-        };
-
-        $("#documento_referencia").val(data.documento_referencia);
-        $("#debito").val(data.debito);
-        $("#credito").val(data.credito);
-        $("#concepto").val(data.concepto);
-        $("#id_documento").val(data.id);
-
-        $("#textDocumentoFormCreate").hide();
-        $("#textDocumentoFormUpdate").show();
-        $("#saveDocumentoGeneral").hide();
-        $("#updateDocumentoGeneral").show();
-        $("#saveDocumentoGeneralLoading").hide();
-
-        $("#documentoGeneralFormModal").modal('show');
-    });
 
     documento_general_table.on('click', '.drop-documento-general    ', function() {
         var trPlanCuenta = $(this).closest('tr');
@@ -1268,9 +1156,12 @@
 
         if(calcularCabeza) {
             var [debito, credito] = totalValores();
-    
+            general_debito
+            general_credito
+            general_diferencia
             if(debito-credito > 0){
                 $(".cardTotal").css("background-color", "lightpink");
+                $(".general_diferencia").css("background-color", "lightpink");
             } else if (debito-credito < 0){
                 $(".cardTotal").css("background-color", "lightpink");
             } else if (debito-credito == 0 && debito > 0 || credito > 0){

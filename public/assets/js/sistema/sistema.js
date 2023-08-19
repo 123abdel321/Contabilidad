@@ -164,7 +164,8 @@ function closeView(nameView) {
     var id = nameView.id.split('_')[1];
     
     $("#lista_view_"+id).remove();
-    // $("#containner-"+id).remove();
+    $("#containner-"+id).empty();
+    $("#containner-"+id).remove();
 
     setTimeout(() => {
         seleccionarView('dashboard');
