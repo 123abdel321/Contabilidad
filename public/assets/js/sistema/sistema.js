@@ -372,7 +372,11 @@ function showNit (id_nit) {
         if(res.success){
 
             var data = res.data;
-            $('#avatar_nit').attr('src', data.logo_nit);
+            if(data.logo_nit) {
+                $('#avatar_nit').attr('src', data.logo_nit);
+            } else {
+                $('#avatar_nit').attr('src', '/img/theme/tim.png');
+            }
             $('#numero_documento_nit').val(data.numero_documento);
             $('#nombre_completo_nit').val(data.nombre_nit);
             $('#direccion_nit').val(data.direccion);
