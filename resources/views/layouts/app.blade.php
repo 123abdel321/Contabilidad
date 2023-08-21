@@ -109,7 +109,7 @@
                     <div class="row">  
                         <div class="justify-content-center col-12 col-md-6 col-sm-6">
                             <div style="text-align: -webkit-center; height: 80px;">
-                                <img id="avatar_nit" src="" class="img-fluid border border-2 border-white" style="width: 80px; height: 100%; cursor: pointer; border-radius: 50%;">
+                                <img id="avatar_nit" src="/img/theme/tim.png" class="img-fluid border border-2 border-white" style="width: 80px; height: 100%; cursor: pointer; border-radius: 50%;">
                             </div>
                         </div>
                         <div class="form-group col-12 col-md-6 col-sm-6">
