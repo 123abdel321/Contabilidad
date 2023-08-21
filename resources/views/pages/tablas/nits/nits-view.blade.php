@@ -39,10 +39,28 @@
 
 <script>
 
+    var newImgProfile = '';
+
     $('.form-control').keyup(function() {
         $(this).val($(this).val().toUpperCase());
     });
 
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                newImgProfile = e.target.result;
+                $('#new_avatar').attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+
+            $('#default_avatar').hide();
+            $('#new_avatar').show();
+        }
+    }
+    
     var nits_table = $('#nitTable').DataTable({
         pageLength: 15,
         dom: 'tip',
@@ -239,6 +257,7 @@
         var form = document.querySelector('#nitsForm');
 
         if(form.checkValidity()){
+
             $("#saveNitLoading").show();
             $("#updateNit").hide();
             $("#saveNit").hide();
@@ -257,6 +276,7 @@
                 telefono_1: $("#telefono_1").val(),
                 id_ciudad: $("#id_ciudad").val(),
                 observaciones: $("#observaciones").val(),
+                avatar: newImgProfile
             }
 
             $.ajax({
@@ -342,6 +362,12 @@
         $("#email").val(data.email);
         $("#telefono_1").val(data.telefono_1);
         $("#observaciones").val(data.observaciones);
+        
+        if(data.logo_nit) {
+            $('#new_avatar').attr('src', data.logo_nit);
+            $('#default_avatar').hide();
+            $('#new_avatar').show();
+        }
 
         $("#nitFormModal").modal('show');
     });
@@ -400,6 +426,8 @@
         $("#telefono_1").val('');
         $("#direccion").val('');
         $("#email").val('');
+        $('#default_avatar').show();
+        $('#new_avatar').hide();
     }
 
     var $comboCiudad = $('#id_ciudad').select2({

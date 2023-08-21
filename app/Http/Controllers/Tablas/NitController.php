@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tablas;
 use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\Nits;
@@ -148,6 +149,17 @@ class NitController extends Controller
                 'updated_by' => request()->user()->id,
             ]);
 
+            if($request->avatar) {
+                $image = $request->avatar;
+                $ext = explode(";", explode("/",explode(",", $image)[0])[1])[0];
+                $image = str_replace('data:image/'.$ext.';base64,', '', $image);
+                $image = str_replace(' ', '+', $image);
+                $imageName = 'profile_'.$nit->id.'_'.uniqid().'.'. $ext;
+                Storage::disk('do_spaces')->put('imagen/profile/'.$imageName, base64_decode($image), 'public');
+                $nit->logo_nit = 'imagen/profile/'.$imageName;
+                $nit->save();
+            }
+
 			DB::connection('sam')->commit();
     
             return response()->json([
@@ -180,7 +192,7 @@ class NitController extends Controller
             }
         }
 
-        Nits::where('id', $request->get('id'))
+        $nit = Nits::where('id', $request->get('id'))
             ->update([
                 'id_tipo_documento' => $request->get('id_tipo_documento'),
                 'numero_documento' => $request->get('numero_documento'),
@@ -197,6 +209,17 @@ class NitController extends Controller
                 'observaciones' => $request->get('observaciones'),
                 'updated_by' => request()->user()->id,
             ]);
+
+        if($request->avatar) {
+            $image = $request->avatar;
+            $ext = explode(";", explode("/",explode(",", $image)[0])[1])[0];
+            $image = str_replace('data:image/'.$ext.';base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = 'profile_'.$nit->id.'_'.uniqid().'.'. $ext;
+            Storage::disk('do_spaces')->put('imagen/profile/'.$imageName, base64_decode($image), 'public');
+            $nit->logo_nit = 'imagen/profile/'.$imageName;
+            $nit->save();
+        }
 
         $nits = Nits::where('id', $request->get('id'))->with('tipo_documento')->first();
 

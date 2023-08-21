@@ -372,13 +372,14 @@ function showNit (id_nit) {
         if(res.success){
 
             var data = res.data;
-            $('#numero_documento').val(data.numero_documento);
-            $('#nombre_completo').val(data.nombre_nit);
-            $('#direccion').val(data.direccion);
-            $('#telefono_1').val(data.telefono_1);
-            $('#email').val(data.email);
-            $('#observaciones').val(data.observaciones);
-            $('#ciudad').val(data.ciudad.nombre_completo);
+            $('#avatar_nit').attr('src', data.logo_nit);
+            $('#numero_documento_nit').val(data.numero_documento);
+            $('#nombre_completo_nit').val(data.nombre_nit);
+            $('#direccion_nit').val(data.direccion);
+            $('#telefono_1_nit').val(data.telefono_1);
+            $('#email_nit').val(data.email);
+            $('#observaciones_nit').val(data.observaciones);
+            $('#ciudad_nit').val(data.ciudad.nombre_completo);
         }
         $('.water').hide();
     }).fail((err) => {

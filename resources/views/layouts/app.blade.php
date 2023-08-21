@@ -107,38 +107,43 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">  
+                        <div class="justify-content-center col-12 col-md-6 col-sm-6">
+                            <div style="text-align: -webkit-center; height: 80px;">
+                                <img id="avatar_nit" src="" class="img-fluid border border-2 border-white" style="width: 80px; height: 100%; cursor: pointer; border-radius: 50%;">
+                            </div>
+                        </div>
                         <div class="form-group col-12 col-md-6 col-sm-6">
                             <label for="example-text-input" class="form-control-label">Nombre completo</label>
-                            <input id="nombre_completo" class="form-control form-control-sm" type="text" disabled>
+                            <input id="nombre_completo_nit" class="form-control form-control-sm" type="text" disabled>
                         </div>
                         <div class="form-group col-12 col-md-6 col-sm-6">
                             <label for="example-text-input" class="form-control-label">Documento</label>
-                            <input id="numero_documento" class="form-control form-control-sm" type="text" disabled>
+                            <input id="numero_documento_nit" class="form-control form-control-sm" type="text" disabled>
                         </div>
 
                         <div class="form-group col-12 col-md-6 col-sm-6">
                             <label for="example-text-input" class="form-control-label">Direccion</label>
-                            <input id="direccion" class="form-control form-control-sm" type="text" disabled>
+                            <input id="direccion_nit" class="form-control form-control-sm" type="text" disabled>
                         </div>
 
                         <div class="form-group col-12 col-md-6 col-sm-6">
                             <label for="example-text-input" class="form-control-label">Telefono</label>
-                            <input id="telefono_1" class="form-control form-control-sm" type="text" disabled>
+                            <input id="telefono_1_nit" class="form-control form-control-sm" type="text" disabled>
                         </div>
 
                         <div class="form-group col-12 col-md-6 col-sm-6">
                             <label for="example-text-input" class="form-control-label">Correo</label>
-                            <input id="email" class="form-control form-control-sm" type="text" disabled>
+                            <input id="email_nit" class="form-control form-control-sm" type="text" disabled>
                         </div>
 
                         <div class="form-group col-12 col-md-6 col-sm-6">
                             <label for="example-text-input" class="form-control-label">Ciudad</label>
-                            <input id="ciudad" class="form-control form-control-sm" type="text" disabled>
+                            <input id="ciudad_nit" class="form-control form-control-sm" type="text" disabled>
                         </div>
 
-                        <div class="form-group col-12 col-md-12 col-sm-12">
+                        <div class="form-group col-12 col-md-6 col-sm-6">
                             <label for="example-text-input" class="form-control-label">Observaciones</label>
-                            <input id="observaciones" class="form-control form-control-sm" type="text" disabled>
+                            <input id="observaciones_nit" class="form-control form-control-sm" type="text" disabled>
                         </div>
 
                     </div>
