@@ -109,6 +109,31 @@
                 return '';
             }},
             {"data":'consecutivo_siguiente'},
+            {"data": function (row, type, set){
+                switch (row.imprimir_en_capturas) {
+                    case 0:
+                        return 'NO'
+                        break;
+                    case 1:
+                        return 'SI'
+                        break;
+                }
+                return '';
+            }},
+            {"data": function (row, type, set){
+                switch (row.tipo_impresion) {
+                    case 0:
+                        return 'POS'
+                        break;
+                    case 1:
+                        return 'MEDIA CARTA'
+                        break;
+                    case 2:
+                        return 'CARTA'
+                        break;
+                }
+                return '';
+            }},
             {
                 "data": function (row, type, set){
                     var html = '';
@@ -151,6 +176,8 @@
             nombre: $("#nombre").val(),
             tipo_comprobante: $("#tipo_comprobante").val(),
             tipo_consecutivo: $("#tipo_consecutivo").val(),
+            imprimir_en_capturas: $("#imprimir_en_capturas").val(),
+            tipo_impresion: $("#tipo_impresion").val(),
             consecutivo_siguiente: $("#consecutivo_siguiente").val(),
         }
 
@@ -198,6 +225,8 @@
         $("#nombre").val('');
         $("#tipo_comprobante").val(0).change();
         $("#tipo_consecutivo").val(0).change();
+        $("#imprimir_en_capturas").val(0).change();
+        $("#tipo_impresion").val('').change();
         $("#consecutivo_siguiente").val(1);
     }
 
@@ -217,6 +246,8 @@
         $("#nombre").val(data.nombre);
         $("#tipo_comprobante").val(data.tipo_comprobante).change();
         $("#tipo_consecutivo").val(data.tipo_consecutivo).change();
+        $("#imprimir_en_capturas").val(data.imprimir_en_capturas).change();
+        $("#tipo_impresion").val(data.tipo_impresion).change();
         $("#consecutivo_siguiente").val(data.consecutivo_siguiente);
 
         $("#comprobanteFormModal").modal('show');
@@ -241,6 +272,8 @@
             nombre: $("#nombre").val(),
             tipo_comprobante: $("#tipo_comprobante").val(),
             tipo_consecutivo: $("#tipo_consecutivo").val(),
+            imprimir_en_capturas: $("#imprimir_en_capturas").val(),
+            tipo_impresion: $("#tipo_impresion").val(),
             consecutivo_siguiente: $("#consecutivo_siguiente").val(),
         }
 

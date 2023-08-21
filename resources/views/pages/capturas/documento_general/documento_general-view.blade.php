@@ -1278,6 +1278,9 @@
             if(res.success){
                 cargarNuevoConsecutivo();
                 agregarToast('exito', 'Creación exitosa', 'Documentos creados con exito!', true);
+                if(res.impresion) {
+                    window.open("/documentos-print/"+res.impresion, "", "_blank");
+                }
             } else {
                 $("#agregarDocumentos").show();
                 $("#crearCapturaDocumentos").show();

@@ -275,11 +275,15 @@
 
 		<table class="footer">
 			<tr>
-				<td class="padding5 empresa-footer">
-					<p>
-						LISTAR DATOS<br>
-						{{ $fecha_pdf }}
-					</p>
+				<td class="padding5 ">
+					<table>
+						<tr >
+							<td class="empresa-footer padding5">
+								LISTAR DATOS<br>
+								{{ $fecha_pdf }}
+							</td>
+						</tr>
+					</table>
 				</td>
 				<td class="padding5"></td>
 				<td class="padding5 generado">

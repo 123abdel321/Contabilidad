@@ -114,15 +114,15 @@ class DocumentosPdf extends AbstractPrinterPdf
 			}
 			//CALCULAR TOTAL INGRESO/EGRESO
 			if($calcularTotal && mb_substr($documento->cuenta->cuenta, 0, 2) == '11'){
-				$totalFactura+= $documento->debito + $documento->credito;
-			}
-			//CALCULAR TOTAL COMPRAS
-			if($calcularTotal && mb_substr($documento->cuenta->cuenta, 0, 2) == '22'){
-				$totalFactura+= $documento->debito + $documento->credito;
+				$totalFactura+= $documento->cuenta->naturaleza_cuenta == 1 ? $documento->debito : $documento->credito;
 			}
 			//CALCULAR TOTAL VENTAS
 			if($calcularTotal && mb_substr($documento->cuenta->cuenta, 0, 2) == '13'){
-				$totalFactura+= $documento->debito + $documento->credito;
+				$totalFactura+= $documento->cuenta->naturaleza_cuenta == 1 ? $documento->debito : $documento->credito;
+			}
+			//CALCULAR TOTAL COMPRAS
+			if($calcularTotal && mb_substr($documento->cuenta->cuenta, 0, 2) == '22'){
+				$totalFactura+= $documento->cuenta->naturaleza_cuenta == 1 ? $documento->debito : $documento->credito;
 			}
 
 			$documentos[] = $documento;

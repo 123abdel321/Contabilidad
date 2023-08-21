@@ -39,6 +39,22 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
+                            <label for="exampleFormControlSelect1">Imprimir en capturas</label>
+                            <select class="form-control form-control-sm" id="imprimir_en_capturas">
+                                <option value="0">NO</option>
+                                <option value="1">SI</option>
+                            </select>
+                        </div>  
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlSelect1">Tipo de impresión</label>
+                            <select class="form-control form-control-sm" id="tipo_impresion">
+                                <option value=""></option>
+                                <option value="0">POS</option>
+                                <option value="1">MEDIA CARTA</option>
+                                <option value="2">CARTA</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
                             <label for="example-text-input" class="form-control-label">Consecutivo</label>
                             <input type="number" class="form-control form-control-sm" name="consecutivo_siguiente" id="consecutivo_siguiente" value="1" required>
                         </div>
