@@ -49,6 +49,11 @@ abstract class AbstractPrinterPdf
         return $this->pdf->stream($this->name);
     }
 
+    public function getData()
+    {
+        return $this->data;
+    }
+
     public function saveStorage()
     {
         $pdfBuilder = $this->pdf->output();

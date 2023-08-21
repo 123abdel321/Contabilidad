@@ -54,6 +54,8 @@ class Nits extends Model
 		'updated_at',
 	];
 
+	protected $appends = ['nombre_completo'];
+
 	public function tipo_documento()
     {
         return $this->belongsTo("App\Models\Sistema\TipoDocumentos", "id_tipo_documento");
@@ -68,6 +70,13 @@ class Nits extends Model
 	}
 	public function pais() {
 		return $this->belongsTo('App\Models\Empresas\Paises', 'id_pais', 'id');
+	}
+
+	public function getNombreCompletoAttribute()
+	{
+		if($this->razon_social) return $this->razon_social;
+
+		return "$this->primer_nombre $this->otros_nombres $this->primer_apellido $this->segundo_apellido";
 	}
 
 }

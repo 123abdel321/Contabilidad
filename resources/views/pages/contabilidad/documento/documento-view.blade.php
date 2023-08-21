@@ -119,8 +119,8 @@
                         return ''
                     }
                     var html = '';
-                    html+= '<span id="anulardocumento_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary anular-documento" style="margin-bottom: 0rem !important">Anular</span>&nbsp;';
-                    html+= '<span id="imprimirdocumento_'+row.id+'" href="javascript:void(0)" class="btn badge btn-bg-pdf bg-gradient-danger imprimir-documento" style="margin-bottom: 0rem !important">PDF</span>';
+                    html+= '<span id="anulardocumento_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger anular-documento" style="margin-bottom: 0rem !important">Anular</span>&nbsp;';
+                    html+= '<span id="imprimirdocumento_'+row.id+'" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-documento" style="margin-bottom: 0rem !important; color: black;">PDF</span>';
                     return html;
 
                 }

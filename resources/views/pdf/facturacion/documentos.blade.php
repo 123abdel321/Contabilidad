@@ -61,8 +61,12 @@
 				page-break-inside: avoid
 			}
 
-			th, td {
+			.padding5 {
 				padding: 5px;
+			}
+
+			.padding3 {
+				padding: 2px;
 			}
 
 			.logo {
@@ -73,7 +77,7 @@
 			}
 
 			.logo img {
-				height: 100px;
+				height: 90px;
 			}
 
 			.empresa {
@@ -94,12 +98,12 @@
 				width: 25%;
 				text-align: center;
 				border: 1px solid #f2f2f2;
-				line-height: 2em;
+				line-height: 3em;
 			}
 
 			.numero-consecutivo {
-				color: red;
-				font-size: 2em;
+				color: #8d00ff;
+				font-size: 2.8em;
 			}
 			
 			.generado {
@@ -120,6 +124,11 @@
 
 			.table-total-factura {
 				vertical-align: top;
+				width: 40%;
+			}
+
+			.aling-top {
+				vertical-align: top;
 			}
 
 		</style>
@@ -131,25 +140,25 @@
 		<table >
 			<thead>
 				<tr>
-					<td class="spacer"></td>
+					<td class="spacer padding5"></td>
 				</tr>
 				<tr>
-					<td colspan="7">
+					<td colspan="7 padding5">
 						<table>
 							<tr>
-								<td class="consecutivo">
+								<td class="consecutivo padding5">
 									<p> {{ $factura->comprobante->nombre }} <br>
 										<span span class="numero-consecutivo">N° {{ $factura->consecutivo }}</span>
 									</p>
 								</td>
-								<td class="empresa">
+								<td class="empresa padding5">
 									<h1>{{ $empresa->razon_social }}</h1>
 									<span>NIT: {{ $empresa->nit }}-{{ $empresa->dv }}</span><br>
 									<span>{{ $empresa->direccion }}</span><br>
 									<span>TEL: {{ $empresa->telefono }}</span><br>
 								</td>
 								
-								<td class="logo">
+								<td class="logo padding5">
 									<img src="{{ $empresa->logo }}">
 								</td>
 							</tr>
@@ -159,68 +168,58 @@
 			</thead>
 		</table>
 
-		<table class="tabla-detalle-factura">
-			<thead class="">
-				<tr>
-					<td class="spacer"></td>
-				</tr>
-				<tr class="header-factura">
-					<th>CUENTA</th>
-					<th>NOMBRE</th>
-					<th>FACTURA</th>
-					<th>C. COSTOS</th>
-					<th>DEBITO</th>
-					<th>CREDITO</th>
-					<th>SALDO</th>
-				</tr>
-			</thead>
-			<tbody class="detalle-factura">
-				@foreach ($documentos as $documento)
-					<tr>
-						<td class="detalle-factura-descripcion">{{ $documento->cuenta->cuenta }}</td>
-						<td class="detalle-factura-descripcion">{{ $documento->cuenta->nombre }}</td>
-						<td class="detalle-factura-descripcion">{{ $documento->documento_referencia }}</td>
-						<td class="detalle-factura-descripcion">{{ $documento->centro_costos ? $documento->centro_costos->codigo : '' }} {{ $documento->centro_costos ? '-' : '' }} {{ $documento->centro_costos ? $documento->centro_costos->nombre : '' }}</td>
-						<td class="valor">{{ number_format($documento->debito) }}</td>
-						<td class="valor">{{ number_format($documento->credito) }}</td>
-						<td class="valor">{{ number_format($documento->saldo) }}</td>
-					</tr>
-				@endforeach
-			</tbody>
-		</table>
-
+		@if($nit)
 		<table>
 			<thead class="">
 				<tr>
-					<td class="spacer"></td>
+					<td class="spacer padding5"></td>
 				</tr>
 				<tr>
-					<td colspan="7">
+					<td colspan="8 padding5">
 						<table>
 							<tr>
-								<td class="">
-									<p>
-										<b>Fecha factura:</b> <br>
-										{{ $documento->fecha_manual }}
-									</p>
-									<p>
-										<b>Observación:</b> <br>
-										{{ $observacion }}
-									</p>
-								</td>
-								
-								<td class="table-total-factura">
+								<td class="aling-top padding5">
 									<table>
 										<thead>
 											<tr>
-												<th colspan="2" class="header-total">Total</th>
+												<th colspan="2" class="header-total padding5">CLIENTE</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td>Valor factura</td>
-												<td class="valor">{{ $factura->saldo_final }}</td>
+												<td class="padding3">{{ $nit->nombre_nit }}</td>
 											</tr>
+											<tr>
+												<td class="padding3">{{ $nit->tipo_documento }} N° {{ $nit->numero_documento }}</td>
+											</tr>
+											<tr>
+												<td class="padding3">{{ $nit->direccion }} {{ $nit->ciudad }}</td>
+											</tr>
+											<tr>
+												<td class="padding3"> TEL: {{ $nit->telefono }}</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+								
+								<td class="table-total-factura padding5">
+									<table>
+										<thead>
+											<tr>
+												<th colspan="2" class="header-total padding5">FACTURA</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr >
+												<td class="padding5">Fecha</td>
+												<td class="valor padding5">{{ $factura->fecha_manual }}</td>
+											</tr>
+											@if($total_factura)
+												<tr>
+													<td class="padding5" style="font-weight: bold;">Total</td>
+													<td class="valor padding5">{{ $total_factura }}</td>
+												</tr>
+											@endif
 										</tbody>
 									</table>
 								</td>
@@ -229,7 +228,41 @@
 					</td>
 				</tr>
 			</thead>
+		</table> 
+		@endif
+		
+
+		<table class="tabla-detalle-factura">
+			<thead class="">
+				<tr>
+					<td class="spacer"></td>
+				</tr>
+				<tr class="header-factura padding5">
+					<th class="padding5">CUENTA</th>
+					<th class="padding5">NOMBRE</th>
+					<th class="padding5">FACTURA</th>
+					<th class="padding5">C. COSTOS</th>
+					<th class="padding5">DEBITO</th>
+					<th class="padding5">CREDITO</th>
+					<th class="padding5">SALDO</th>
+				</tr>
+			</thead>
+			<tbody class="detalle-factura">
+				@foreach ($documentos as $documento)
+					<tr>
+						<td class="padding5 detalle-factura-descripcion">{{ $documento->cuenta->cuenta }}</td>
+						<td class="padding5 detalle-factura-descripcion">{{ $documento->cuenta->nombre }}</td>
+						<td class="padding5 detalle-factura-descripcion">{{ $documento->documento_referencia }}</td>
+						<td class="padding5 detalle-factura-descripcion">{{ $documento->centro_costos ? $documento->centro_costos->codigo : '' }} {{ $documento->centro_costos ? '-' : '' }} {{ $documento->centro_costos ? $documento->centro_costos->nombre : '' }}</td>
+						<td class="padding5 valor">{{ number_format($documento->debito) }}</td>
+						<td class="padding5 valor">{{ number_format($documento->credito) }}</td>
+						<td class="padding5 valor">{{ number_format($documento->saldo) }}</td>
+					</tr>
+				@endforeach
+			</tbody>
 		</table>
+
+		
 				
 		<script type="text/php">
 			if ( isset($pdf) ) {
@@ -242,17 +275,17 @@
 
 		<table class="footer">
 			<tr>
-				<td class="empresa-footer">
+				<td class="padding5 empresa-footer">
 					<p>
 						LISTAR DATOS<br>
 						{{ $fecha_pdf }}
 					</p>
 				</td>
-				<td class=""></td>
-				<td class="generado">
+				<td class="padding5"></td>
+				<td class="padding5 generado">
 					<table>
 						<tr>
-							<td class="empresa-footer-left">
+							<td class="empresa-footer-left padding5">
 								ESTE INFORME FU&Eacute; GENERADO POR LISTARDATOS <br>
 								www.listardatos.com
 							</td>
