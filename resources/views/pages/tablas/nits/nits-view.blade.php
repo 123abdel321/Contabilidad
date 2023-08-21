@@ -365,8 +365,12 @@
         
         if(data.logo_nit) {
             $('#new_avatar').attr('src', data.logo_nit);
-            $('#default_avatar').hide();
             $('#new_avatar').show();
+            $('#default_avatar').hide();
+        } else {
+            $('#new_avatar').attr('src', '');
+            $('#new_avatar').hide();
+            $('#default_avatar').show();
         }
 
         $("#nitFormModal").modal('show');
