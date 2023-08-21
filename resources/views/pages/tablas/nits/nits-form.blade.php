@@ -13,6 +13,16 @@
                 <form id="nitsForm" style="margin-top: 10px;" class="row needs-invalidation" noinvalidate>
 
                     <input type="text" class="form-control" name="id_nit" id="id_nit" style="display: none;">
+
+                    <div class="justify-content-center col-12 col-sm-6 col-md-6">
+                        <div style="text-align: -webkit-center; height: 80px;">
+                            <img id="default_avatar" onclick="document.getElementById('newAvatar').click();" src="/img/add_profile_img.png" class="img-fluid border border-2 border-white" style="width: 80px; height: 100%; cursor: pointer; border-radius: 50%;">
+                            <img id="new_avatar" onclick="document.getElementById('newAvatar').click();" src="" class="img-fluid border border-2 border-white" style="width: 80px; height: 100%; cursor: pointer; border-radius: 50%;">
+                        </div>
+                    </div>
+
+                    <input type="file" name="newAvatar" id="newAvatar" onchange="readURL(this);" style="display: none" />
+
                     <div class="form-group col-12 col-sm-6 col-md-6">
                         <label for="exampleFormid_tipo_documento">Tipo documento </label>
                         <select name="id_tipo_documento" id="id_tipo_documento" class="form-control form-control-sm">

@@ -48,6 +48,7 @@ class Nits extends Model
 		'no_calcular_iva',
 		'inactivar',
 		'observaciones',
+		'logo_nit',
 		'created_by',
 		'updated_by',
 		'created_at',
