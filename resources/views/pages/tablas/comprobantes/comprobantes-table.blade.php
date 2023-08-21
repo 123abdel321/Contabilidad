@@ -6,6 +6,8 @@
             <th>Tipo comprobante</th>
             <th>Tipo consecutivo</th>
             <th>Consecutivo siguiente</th>
+            <th>Imprimir en captura</th>
+            <th>Tipo impresión</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Acciones</th>
         </tr>
     </thead>

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->integer('tipo_comprobante')->comment('0:ingresos, 1:egresos, 2:compras, 3:ventas, 4:otros, 5:cierre')->default('0');
             $table->integer('tipo_consecutivo')->comment('0:normal, 1:mensual')->default('0');
             $table->string('consecutivo_siguiente', 11)->default('1');
-            $table->boolean('bloquear_en_capturas')->nullable();
-            $table->boolean('mostrar_nit_impresion')->nullable();
+            $table->boolean('imprimir_en_capturas')->nullable();
+            $table->boolean('tipo_impresion')->nullable()->comment('0: POS, 1: Media Carta, 2: Carta');
             $table->boolean('tesoreria')->nullable();
             $table->integer('maestra_padre')->nullable();
             $table->integer('created_by')->nullable();

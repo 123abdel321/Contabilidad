@@ -38,9 +38,9 @@ class DocumentoController extends Controller
             $FacDocumentos->where('consecutivo', $request->get('consecutivo'));
         }
         
-        if($request->has('tipo_factura') && $request->get('tipo_factura') == 'anuladas') {
-            $FacDocumentos->where('anulado', 1);
-        }
+        // if($request->has('tipo_factura') && $request->get('tipo_factura') == 'anuladas') {
+        //     $FacDocumentos->where('anulado', 1);
+        // }
         
         return response()->json($FacDocumentos->paginate());
 
@@ -61,6 +61,8 @@ class DocumentoController extends Controller
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        // $data = (new DocumentosPdf($empresa, $factura))->buildPdf()->getData();
+        // return view('pdf.facturacion.documentos', $data);
  
         return (new DocumentosPdf($empresa, $factura))
             ->buildPdf()

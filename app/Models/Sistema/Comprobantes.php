@@ -39,7 +39,7 @@ class Comprobantes extends Model
         'tipo_comprobante',
         'tipo_consecutivo',
         'consecutivo_siguiente',
-        'mostrar_nit_impresion',
+        'imprimir_en_capturas',
 		'tesoreria',
 		'maestra_padre'
     ];

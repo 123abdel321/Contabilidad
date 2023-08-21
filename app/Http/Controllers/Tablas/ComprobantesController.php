@@ -92,6 +92,8 @@ class ComprobantesController extends Controller
                 'nombre' => $request->get('nombre'),
                 'tipo_comprobante' => $request->get('tipo_comprobante'),
                 'tipo_consecutivo' => $request->get('tipo_consecutivo'),
+                'imprimir_en_capturas' => $request->get('imprimir_en_capturas'),
+                'tipo_impresion' => $request->get('tipo_impresion'),
                 'consecutivo_siguiente' => $request->get('consecutivo_siguiente'),
             ]);
 
@@ -140,6 +142,8 @@ class ComprobantesController extends Controller
                 'nombre' => $request->get('nombre'),
                 'tipo_comprobante' => $request->get('tipo_comprobante'),
                 'tipo_consecutivo' => $request->get('tipo_consecutivo'),
+                'imprimir_en_capturas' => $request->get('imprimir_en_capturas'),
+                'tipo_impresion' => $request->get('tipo_impresion'),
                 'consecutivo_siguiente' => $request->get('consecutivo_siguiente'),
             ]);
 
@@ -148,7 +152,7 @@ class ComprobantesController extends Controller
             return response()->json([
                 'success'=>	true,
                 'data' => $comprobante,
-                'message'=> 'Comprobante creado con exito!'
+                'message'=> 'Comprobante actualizado con exito!'
             ]);
 
         } catch (Exception $e) {

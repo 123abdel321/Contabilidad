@@ -82,9 +82,9 @@ class DocumentoGeneralController extends Controller
 				$credito+= $doc['credito'];
 			}
 
-			if(!$request->has('consecutivo')){
-				$comprobante = Comprobantes::whereId($request->get('id_comprobante'))->first();
+			$comprobante = Comprobantes::whereId($request->get('id_comprobante'))->first();
 
+			if(!$request->has('consecutivo')){
 				$consecutivo = $this->getNextConsecutive($comprobante->id, $request->get('fecha_manual'));
 
 				$request->merge([
@@ -197,6 +197,7 @@ class DocumentoGeneralController extends Controller
 			return response()->json([
 				'success'=>	true,
 				'data' => $documentoGeneral->getRows(),
+				'impresion' => $comprobante->imprimir_en_capturas ? $facDocumento->id : '',
 				'message'=> 'Documentos creados con exito!'
 			], 200);
 
