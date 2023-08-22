@@ -56,7 +56,7 @@
 
     var balance_table = $('#balanceInformeTable').DataTable({
         dom: 'ti',
-        responsive: false,
+        responsive: true,
         processing: true,
         serverSide: true,
         deferLoading: 0,
