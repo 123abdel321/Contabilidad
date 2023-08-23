@@ -192,7 +192,7 @@ class NitController extends Controller
             }
         }
 
-        $nit = Nits::where('id', $request->get('id'))
+        Nits::where('id', $request->get('id'))
             ->update([
                 'id_tipo_documento' => $request->get('id_tipo_documento'),
                 'numero_documento' => $request->get('numero_documento'),
@@ -210,6 +210,8 @@ class NitController extends Controller
                 'updated_by' => request()->user()->id,
             ]);
 
+        $nit = Nits::where('id', $request->get('id'))->with('tipo_documento')->first();
+
         if($request->avatar) {
             $image = $request->avatar;
             $ext = explode(";", explode("/",explode(",", $image)[0])[1])[0];
@@ -221,11 +223,11 @@ class NitController extends Controller
             $nit->save();
         }
 
-        $nits = Nits::where('id', $request->get('id'))->with('tipo_documento')->first();
+        
 
         return response()->json([
             'success'=>	true,
-            'data' => $nits,
+            'data' => $nit,
             'message'=> 'Nit actualizado con exito!'
         ]);
     }

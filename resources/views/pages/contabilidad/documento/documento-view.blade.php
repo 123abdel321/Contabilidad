@@ -29,7 +29,7 @@
     var documento_table = $('#DocumentosInformeTable').DataTable({
         dom: 'ti',
         paging: true,
-        responsive: false,
+        responsive: true,
         processing: true,
         serverSide: false,
         initialLoad: false,

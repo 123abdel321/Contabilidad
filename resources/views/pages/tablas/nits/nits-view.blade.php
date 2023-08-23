@@ -212,6 +212,7 @@
                 telefono_1: $("#telefono_1").val(),
                 id_ciudad: $("#id_ciudad").val(),
                 observaciones: $("#observaciones").val(),
+                avatar: newImgProfile
             }
 
             $.ajax({
@@ -318,7 +319,7 @@
     });
 
     nits_table.on('click', '.edit-nits', function() {
-        
+        newImgProfile = '';
         $("#textNitCreate").hide();
         $("#textNitUpdate").show();
         $("#saveNitLoading").hide();
@@ -364,7 +365,7 @@
         $("#observaciones").val(data.observaciones);
         
         if(data.logo_nit) {
-            $('#new_avatar').attr('src', data.logo_nit);
+            $('#new_avatar').attr('src', 'https://s3contabilidad.nyc3.digitaloceanspaces.com/'+data.logo_nit);
             $('#new_avatar').show();
             $('#default_avatar').hide();
         } else {
@@ -432,6 +433,7 @@
         $("#email").val('');
         $('#default_avatar').show();
         $('#new_avatar').hide();
+        newImgProfile = '';
     }
 
     var $comboCiudad = $('#id_ciudad').select2({
