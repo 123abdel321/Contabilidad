@@ -373,7 +373,7 @@ function showNit (id_nit) {
 
             var data = res.data;
             if(data.logo_nit) {
-                $('#avatar_nit').attr('src', data.logo_nit);
+                $('#avatar_nit').attr('src', 'https://s3contabilidad.nyc3.digitaloceanspaces.com/'+data.logo_nit);
             } else {
                 $('#avatar_nit').attr('src', '/img/theme/tim.png');
             }
