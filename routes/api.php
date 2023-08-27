@@ -52,7 +52,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     //EMPRESA SELECCIONADA
     Route::group(['middleware' => ['clientconnection']], function() {
         //INFORMES
-        Route::get('cartera', 'App\Http\Controllers\Informes\CarteraController@generate');
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
         Route::get('existe-factura', 'App\Http\Controllers\Informes\ExtractoController@existeFactura');
         //DOCUMENTOS
@@ -68,6 +67,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('auxiliares-show', 'App\Http\Controllers\Informes\AuxiliarController@show');
         Route::get('auxiliares-find', 'App\Http\Controllers\Informes\AuxiliarController@find');
         Route::post('auxiliares-excel', 'App\Http\Controllers\Informes\AuxiliarController@exportExcel');
+        //CARTERA
+        Route::get('cartera', 'App\Http\Controllers\Informes\CarteraController@generate');
+        Route::get('cartera-show', 'App\Http\Controllers\Informes\CarteraController@show');
+        Route::get('cartera-find', 'App\Http\Controllers\Informes\CarteraController@find');
+        Route::post('cartera-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
+
 
         //PLAN DE CUENTAS
         Route::controller(PlanCuentaController::class)->group(function () {
@@ -76,6 +81,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('plan-cuenta', 'update');
             Route::delete('plan-cuenta', 'delete');
             Route::get('plan-cuenta/combo-cuenta', 'comboCuenta');
+            Route::get('plan-cuenta/combo-cuenta-cartera', 'comboCuentaCartera');
         });
         //CENTRO COSTOS
         Route::controller(CentroCostoController::class)->group(function () {
