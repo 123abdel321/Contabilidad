@@ -83,16 +83,20 @@ class PlanCuentaController extends Controller
 
     public function create (Request $request)
     {
+        $padre = $request->get('id_padre');
+
         $rules = [
 			'id_padre' => 'nullable|exists:sam.plan_cuentas,id',
             'id_tipo_cuenta' => 'nullable|exists:sam.tipo_cuentas,id',
             'id_impuesto' => 'nullable|exists:sam.impuestos,id',
             'cuenta' => [
 				"required",
-				function ($attribute, $value, $fail) {
-					$search = PlanCuentas::whereCuenta($value)->first();
+				function ($attribute, $value, $fail) use ($request) {
+                    $cuentaPadre = PlanCuentas::find($request->get('id_padre')); 
+                    $cuentaNueva = $cuentaPadre->cuenta.''.$value;
+					$search = PlanCuentas::whereCuenta($cuentaNueva)->first();
 					if ($search) {
-						$fail("La cuenta ".$value." ya existe.");
+						$fail("La cuenta ".$cuentaNueva." ya existe.");
 					}
                 },
 			],
@@ -106,10 +110,10 @@ class PlanCuentaController extends Controller
             'naturaleza_compras'=>'nullable|boolean',
             'naturaleza_ventas'=>'nullable|boolean'
 		];
-
         $validator = Validator::make($request->all(), $rules, $this->messages);
-
+        
         if ($validator->fails()){
+            
             return response()->json([
                 "success"=>false,
                 'data' => [],
@@ -171,7 +175,6 @@ class PlanCuentaController extends Controller
 
     public function update (Request $request)
     {
-
         $rules = [
             'id' => 'required|exists:sam.plan_cuentas,id',
 			'id_padre' => 'nullable|exists:sam.plan_cuentas,id',
@@ -360,6 +363,11 @@ class PlanCuentaController extends Controller
 
         if ($request->has("id_comprobante") && $comprobante) {
             $planCuenta->whereNotNull($naturaleza);
+        }
+
+        if ($request->has("cartera")) {
+            $planCuenta->whereIn('id_tipo_cuenta', [3, 4])
+                ->where('auxiliar', 1);
         }
 
         return $planCuenta->orderBy('cuenta')->paginate(30);

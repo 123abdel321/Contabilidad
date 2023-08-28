@@ -20,6 +20,30 @@ let buttonMostrarLateral = document.getElementById('button-mostrar-lateral');
 let buttonocultarLateral = document.getElementById('button-ocultar-lateral');
 let iconSidenav = document.getElementById('iconSidenav');
 
+var moduloCreado = {
+    'nit': false,
+    'comprobante': false,
+    'plancuenta': false,
+    'cecos': false,
+    'documentogeneral': false,
+    'auxiliar': false,
+    'balance': false,
+    'cartera': false,
+    'documentos': false,
+};
+
+var moduloRoute = {
+    'nit': 'tablas',
+    'comprobante': 'tablas',
+    'plancuenta': 'tablas',
+    'cecos': 'tablas',
+    'documentogeneral': 'capturas',
+    'auxiliar': 'informes',
+    'balance': 'informes',
+    'cartera': 'informes',
+    'documentos': 'informes',
+}
+
 $('.water').show();
 $('#containner-dashboard').load('/dashboard', function() {
     $('.water').hide();
@@ -52,10 +76,8 @@ $(document).on('click', '.button-side-nav', function () {
     var id = this.id.split('_')[1];
     if($('#containner-'+id).length == 0) {
         generatView(id);
-    } else {
-        $('#containner-'+id).show();
-        $('#footer-navigation').append(generateNewTabButton(id));
     }
+
     seleccionarView(id);
     
     document.getElementById('sidenav-main-2').click();
@@ -73,8 +95,29 @@ function generatView(id){
     $('#contenerdores-views').append('<main class="tab-pane main-content border-radius-lg change-view" style="margin-left: 5px;" id="containner-'+id+'"></main>');
     $('#footer-navigation').append(generateNewTabButton(id));
     $('#containner-'+id).load('/'+id, function() {
+
+        if(!moduloCreado[id]) includeJs(id);
+        else callInitFuntion(id);
+
         $('.water').hide();
     });
+}
+
+function callInitFuntion(id) {
+    var functionInit = id+'Init';
+    window[functionInit]();
+}
+
+function includeJs(id){
+    let scriptEle = document.createElement("script");
+
+    let urlFile = base_web + "assets/js/sistema/"+moduloRoute[id]+"/"+id+"-controller.js";
+    scriptEle.setAttribute("src", urlFile);
+    scriptEle.onload = function () {
+        callInitFuntion(id);
+    };
+    document.body.appendChild(scriptEle);
+    moduloCreado[id] = true;
 }
 
 function seleccionarView(id){
@@ -515,7 +558,17 @@ function agregarToast (tipo, titulo, descripcion, autoCierre = false) {
     nuevoToast.addEventListener('animationend', handleAnimacionCierre);
 };
 
-// var channel = pusher.subscribe('my-channel');
-// channel.bind('notificaciones', function(data) {
-//     agregarToast(data.message.tipo, data.message.titulo, data.message.mensaje, data.message.autoclose);
-// });
+function removejscssfile(filename, filetype){
+    var targetelement=(filetype=="js")? "script" : (filetype=="css")? "link" : "none" //determine element type to create nodelist from
+    var targetattr=(filetype=="js")? "src" : (filetype=="css")? "href" : "none" //determine corresponding attribute to test for
+    var allsuspects=document.getElementsByTagName(targetelement)
+    for (var i=allsuspects.length; i>=0; i--){ //search backwards within nodelist for matching elements to remove
+        if (allsuspects[i] && allsuspects[i].getAttribute(targetattr)!=null && allsuspects[i].getAttribute(targetattr).indexOf(filename)!=-1)
+            allsuspects[i].parentNode.removeChild(allsuspects[i]) //remove element by calling parentNode.removeChild()
+    }
+}
+
+function loadExcel(data) {
+    window.open('https://'+data.url_file, "_blank");
+    agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
+}
