@@ -6,7 +6,7 @@
             <th>Fecha</th>
             <th>Debito</th>
             <th>Credito</th>
-            <th>Saldo final</th>
+            <th>Diferencia</th>
             <th>Anulado</th>
             <th>Creación registro</th>
             <th>Ultima actualización</th>

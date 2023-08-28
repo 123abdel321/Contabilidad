@@ -19,6 +19,7 @@
                             <label>Comprobante <span style="color: red">*</span></label>
                             <select name="id_comprobante" id="id_comprobante" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                             </select>
+                            
                             <div class="invalid-feedback">
                                 El comprobante es requerido
                             </div>
