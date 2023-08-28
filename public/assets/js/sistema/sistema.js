@@ -1,9 +1,9 @@
 // Pusher.logToConsole = true;
 const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
-const base_url = 'http://localhost:8000/api/';
-const base_web = 'http://localhost:8000/';
-// const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
-// const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
+// const base_url = 'http://localhost:8000/api/';
+// const base_web = 'http://localhost:8000/';
+const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
+const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
 const dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
@@ -30,8 +30,19 @@ var moduloCreado = {
     'balance': false,
     'cartera': false,
     'documentos': false,
-
 };
+
+var moduloRoute = {
+    'nit': 'tablas',
+    'comprobante': 'tablas',
+    'plancuenta': 'tablas',
+    'cecos': 'tablas',
+    'documentogeneral': 'capturas',
+    'auxiliar': 'informes',
+    'balance': 'informes',
+    'cartera': 'informes',
+    'documentos': 'informes',
+}
 
 $('.water').show();
 $('#containner-dashboard').load('/dashboard', function() {
@@ -99,7 +110,8 @@ function callInitFuntion(id) {
 
 function includeJs(id){
     let scriptEle = document.createElement("script");
-    let urlFile = base_web + "assets/js/sistema/informes/"+id+"-controller.js";
+
+    let urlFile = base_web + "assets/js/sistema/"+moduloRoute[id]+"/"+id+"-controller.js";
     scriptEle.setAttribute("src", urlFile);
     scriptEle.onload = function () {
         callInitFuntion(id);
