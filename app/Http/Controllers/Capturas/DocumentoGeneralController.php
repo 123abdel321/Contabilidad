@@ -249,18 +249,14 @@ class DocumentoGeneralController extends Controller
 		try {
 
 			DB::connection('sam')->beginTransaction();
-
-			$documento = DocumentosGeneral::whereDocumento(
-				$request->get('id_comprobante'),
-				$request->get('consecutivo'),
-				$request->get('fecha_manual')
-			)->with('relation')->get();
-
-			// dd();
+			
+			$documento = DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
+				->where('consecutivo', $request->get('consecutivo'))
+				->where('fecha_manual', $request->get('fecha_manual'))
+				->with('relation')->get();
+				
 			$documento[0]->relation->anulado = 1;
 			$documento[0]->relation->save();
-
-			// relation
 
 			foreach ($documento as $doc) {
 				$doc->anulado = 1;
