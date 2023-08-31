@@ -25,6 +25,7 @@ var moduloCreado = {
     'comprobante': false,
     'plancuenta': false,
     'cecos': false,
+    'familias': false,
     'documentogeneral': false,
     'auxiliar': false,
     'balance': false,
@@ -37,6 +38,7 @@ var moduloRoute = {
     'comprobante': 'tablas',
     'plancuenta': 'tablas',
     'cecos': 'tablas',
+    'familias': 'tablas',
     'documentogeneral': 'capturas',
     'auxiliar': 'informes',
     'balance': 'informes',
@@ -150,6 +152,8 @@ function seleccionarView(id){
         nombre = 'Documentos';
     } else if(id == 'cecos') {
         nombre = 'Centro costos';
+    } else if(id == 'familias') {
+        nombre = 'Familias';
     }
 
     $("#titulo-view").text(nombre);
@@ -190,6 +194,9 @@ function generateNewTabButton(id){
     } else if (id == 'cecos') {
         icon = 'fas fa-book';
         nombre = 'Centro de costos';
+    } else if (id == 'familias') {
+        icon = 'fas fa-book';
+        nombre = 'Familias';
     }
 
     var html = '';

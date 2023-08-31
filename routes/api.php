@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstaladorController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
+use App\Http\Controllers\Tablas\FamiliasController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
@@ -109,6 +110,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('nit/combo-tipo-documento', 'comboTipoDocumento');
             Route::get('nit/informacion', 'getNitInfo');
         });
+        //FAMILIAS
+        Route::controller(FamiliasController::class)->group(function () {
+            Route::get('familia', 'generate');
+            Route::post('familia', 'create');
+            Route::put('familia', 'update');
+            Route::delete('familia', 'delete');
+        });
+        
         //CAPTURA GENERAL
         Route::controller(DocumentoGeneralController::class)->group(function () {
             Route::get('consecutivo', 'getConsecutivo');

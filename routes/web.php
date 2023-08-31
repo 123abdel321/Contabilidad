@@ -16,6 +16,7 @@ use App\Http\Controllers\Informes\AuxiliarController;
 use App\Http\Controllers\Informes\DocumentoController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
+use App\Http\Controllers\Tablas\FamiliasController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
@@ -89,6 +90,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/comprobante', [ComprobantesController::class, 'index'])->name('comprobante');
 		//COMPROBANTES
 		Route::get('/cecos', [CentroCostoController::class, 'index'])->name('cecos');
+		//FAMILIAS
+		Route::get('/familias', [FamiliasController::class, 'index'])->name('familias');
 		//DOCUMENTOS
 		Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos');
 		Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('show-pdf');
