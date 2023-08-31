@@ -372,6 +372,11 @@ class PlanCuentaController extends Controller
                 ->where('auxiliar', 1);
         }
 
+        if ($request->has("id_tipo_cuenta")) {
+            $planCuenta->where('auxiliar', 1);
+            // $planCuenta->whereIn('id_tipo_cuenta',  $request->get('id_tipo_cuenta'));
+        }
+
         return $planCuenta->orderBy('cuenta')->paginate(30);
     }
 }
