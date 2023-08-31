@@ -13,7 +13,9 @@ function carteraInit() {
     $('#fecha_cartera').val(fechaDesde);
 
     cartera_table = $('#CarteraInformeTable').DataTable({
-        dom: 't',
+        pageLength: 100,
+        dom: 'Brtip',
+        paging: true,
         responsive: false,
         processing: true,
         serverSide: true,

@@ -13,10 +13,13 @@ function balanceInit() {
     $('#fecha_hasta_balance').val(fechaDesde);
 
     balance_table = $('#balanceInformeTable').DataTable({
-        dom: 'ti',
+        pageLength: 100,
+        dom: 'Brtip',
+        paging: true,
         responsive: false,
         processing: true,
         serverSide: true,
+        fixedHeader: true,
         deferLoading: 0,
         initialLoad: false,
         language: lenguajeDatatable,
@@ -218,21 +221,28 @@ function mostrarTotalesBalance(data, filtros = false) {
         return;
     }
     if(!filtros && parseInt(data.saldo_anterior)){
-        $(".cardTotalBalance").css("background-color", "lightpink");
+        cambiarColorTotales('#ff0000');
     } else if (!filtros && !parseInt(data.saldo_anterior)){
-        $(".cardTotalBalance").css("background-color", "lightgreen");
+        cambiarColorTotales('#0002ff');
     } else if (!filtros && parseInt(data.saldo_final)){
-        $(".cardTotalBalance").css("background-color", "lightpink");
+        cambiarColorTotales('#ff0000');
     } else if (!filtros && !parseInt(data.saldo_final)) {
-        $(".cardTotalBalance").css("background-color", "lightgreen");
+        cambiarColorTotales('#0002ff');
     } else {
-        $(".cardTotalBalance").css("background-color", "white");
+        cambiarColorTotales('#0002ff');
     }
 
     $("#balance_anterior").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_anterior));
     $("#balance_debito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.debito));
     $("#balance_credito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.credito));
     $("#balance_diferencia").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_final));
+}
+
+function cambiarColorTotales(color) {
+    $('#balance_anterior').css("color", color);
+    $('#balance_debito').css("color", color);
+    $('#balance_credito').css("color", color);
+    $('#balance_diferencia').css("color", color);
 }
 
 function getNivel() {

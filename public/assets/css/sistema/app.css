@@ -610,3 +610,10 @@ svg.tea #steamR {
     float: right !important;
     margin-top: 3px;
 }
+
+.error-triangle {
+    color: red;
+    float: left;
+    margin-top: 4px;
+    margin-left: 5px;
+}

@@ -65,13 +65,26 @@ class CarteraController extends Controller
 
     public function show(Request $request)
     {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length");
+
         $cartera = InfCartera::where('id', $request->get('id'))->first();
 		$informe = InfCarteraDetalle::where('id_cartera', $cartera->id);
 		$total = InfCarteraDetalle::where('id_cartera', $cartera->id)->orderBy('id', 'desc')->first();
 
+        $informeTotals = $informe->get();
+
+        $informePaginate = $informe->skip($start)
+            ->take($rowperpage);
+
         return response()->json([
             'success'=>	true,
-            'data' => $informe->get(),
+            'draw' => $draw,
+            'iTotalRecords' => $informeTotals->count(),
+            'iTotalDisplayRecords' => $informeTotals->count(),
+            'data' => $informePaginate->get(),
+            'perPage' => $rowperpage,
             'totales' => $total,
             'message'=> 'Balance generado con exito!'
         ]);

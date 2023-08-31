@@ -35,7 +35,7 @@ class ComprobantesController extends Controller
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
-        $rowperpage = 15; // Rows display per page
+        $rowperpage = $request->get("length");
 
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
@@ -50,15 +50,25 @@ class ComprobantesController extends Controller
         $comprobante = Comprobantes::orderBy($columnName,$columnSortOrder)
             ->where('nombre', 'like', '%' .$searchValue . '%')
             ->orWhere('codigo', 'like', '%' .$searchValue . '%')
-            ->skip($start)
+            ->select(
+                '*',
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                'created_by',
+                'updated_by'
+            );
+            
+        $comprobanteTotals = $comprobante->get();
+
+        $comprobantePaginate = $comprobante->skip($start)
             ->take($rowperpage);
 
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
-            'iTotalRecords' => $comprobante->count(),
-            'iTotalDisplayRecords' => $comprobante->count(),
-            'data' => $comprobante->get(),
+            'iTotalRecords' => $comprobanteTotals->count(),
+            'iTotalDisplayRecords' => $comprobanteTotals->count(),
+            'data' => $comprobantePaginate->get(),
             'perPage' => $rowperpage,
             'message'=> 'Comprobante generado con exito!'
         ]);

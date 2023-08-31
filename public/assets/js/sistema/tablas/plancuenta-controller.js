@@ -4,14 +4,15 @@ var plan_cuentas_table = null;
 
 function plancuentaInit() {
     plan_cuentas_table = $('#planCuentaTable').DataTable({
-        pageLength: 30,
-        dom: 'ti',
+        pageLength: 15,
+        dom: 'Brtip',
         paging: true,
         responsive: false,
         processing: true,
         serverSide: true,
+        fixedHeader: true,
         deferLoading: 0,
-        initialLoad: true,
+        initialLoad: false,
         language: lenguajeDatatable,
         sScrollX: "100%",
         scroller: {

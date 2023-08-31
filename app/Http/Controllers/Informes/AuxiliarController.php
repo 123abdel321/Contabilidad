@@ -62,11 +62,20 @@ class AuxiliarController extends Controller
 
     public function show(Request $request)
     {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length");
+
         $auxiliar = InfAuxiliar::where('id', $request->get('id'))->first();
         $informe = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id);
         $total = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->orderBy('id', 'desc')->first();
         $descuadre = false;
         $filtros = true;
+
+        $informeTotals = $informe->get();
+
+        $informePaginate = $informe->skip($start)
+            ->take($rowperpage);
         
         if(!$auxiliar->id_cuenta && !$auxiliar->id_nit) {
             $filtros = false;
@@ -75,7 +84,11 @@ class AuxiliarController extends Controller
 
         return response()->json([
             'success'=>	true,
-            'data' => $informe->get(),
+            'draw' => $draw,
+            'iTotalRecords' => $informeTotals->count(),
+            'iTotalDisplayRecords' => $informeTotals->count(),
+            'data' => $informePaginate->get(),
+            'perPage' => $rowperpage,
             'totales' => $total,
             'filtros' => $filtros,
             'descuadre' => $descuadre,

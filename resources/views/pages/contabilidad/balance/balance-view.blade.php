@@ -21,19 +21,19 @@
         <div class="card cardTotalBalance" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
             <div class="row" style="text-align: -webkit-center;">
                 <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; color: black;">SALDO ANTERIOR</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">SALDO ANTERIOR</p>
                     <h6 id="balance_anterior" style="margin-top: -15px;">$0</h6>
                 </div>
                 <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; color: black;">DEBITO</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">DEBITO</p>
                     <h6 id="balance_debito" style="margin-top: -15px;">$0</h6>
                 </div>
                 <div class="col-6 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; color: black;">CREDITO</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">CREDITO</p>
                     <h6 id="balance_credito" style="margin-top: -15px;">$0</h6>
                 </div>
                 <div class="col-6 col-md-3 col-sm-3">
-                    <p style="font-size: 13px; margin-top: 5px; color: black;">SALDO FINAL</p>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">SALDO FINAL</p>
                     <h6 id="balance_diferencia" style="margin-top: -15px;">$0</h6>
                 </div>
             </div>

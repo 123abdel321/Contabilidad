@@ -325,10 +325,10 @@ class ProcessInformeAuxiliar implements ShouldQueue
         $saldo_final = 0;
 
         foreach ($auxiliares as $auxiliar) {
-            $debito+= number_format((float)$auxiliar->debito, 2, '.', '');
-            $credito+= number_format((float)$auxiliar->credito, 2, '.', '');
-            $saldo_final+= number_format((float)$auxiliar->saldo_final, 2, '.', '');
-            $saldo_anterior+= number_format((float)$auxiliar->saldo_anterior, 2, '.', '');
+            $debito+= $auxiliar->debito;
+            $credito+= $auxiliar->credito;
+            $saldo_final+= $auxiliar->saldo_final;
+            $saldo_anterior+= $auxiliar->saldo_anterior;
         }
 
         $this->auxiliarCollection['9999'] = [
@@ -357,10 +357,10 @@ class ProcessInformeAuxiliar implements ShouldQueue
             'created_by' => NULL,
             'updated_by' => NULL,
             // 'anulado' => '',
-            'saldo_anterior' => $saldo_anterior,
-            'debito' => $debito,
-            'credito' => $credito,
-            'saldo_final' => $saldo_final,
+            'saldo_anterior' => number_format((float)$saldo_anterior, 2, '.', ''),
+            'debito' => number_format((float)$debito, 2, '.', ''),
+            'credito' => number_format((float)$credito, 2, '.', ''),
+            'saldo_final' => number_format((float)$saldo_final, 2, '.', ''),
             'detalle' => false,
             'detalle_group' => false,
         ];

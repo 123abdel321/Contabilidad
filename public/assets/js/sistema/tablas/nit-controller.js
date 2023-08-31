@@ -6,13 +6,14 @@ var $comboTipoDocumento = null;
 function nitInit() {
     nits_table = $('#nitTable').DataTable({
         pageLength: 15,
-        dom: 'tip',
+        dom: 'Brtip',
         paging: true,
         responsive: false,
         processing: true,
         serverSide: true,
+        fixedHeader: true,
         deferLoading: 0,
-        initialLoad: true,
+        initialLoad: false,
         bFilter: true,
         language: lenguajeDatatable,
         sScrollX: "100%",

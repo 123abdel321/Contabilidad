@@ -3,7 +3,7 @@
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
             <th>Nit</th>
-            <th>Dcto refe</th>
+            <th>Factura</th>
             <th>Total factura</th>
             <th>Total abono</th>
             <th>Saldo final</th>

@@ -272,7 +272,6 @@ const lenguajeDatatable = {
     "sSearch":         "Buscar:",
     "sUrl":            "",
     "sInfoThousands":  ",",
-    "sLoadingRecords": "<span><i style='font-size: 20px' class='fa fa-spinner fa-spin'></i></span>",
     "oPaginate": {
         "sFirst":    "Primero",
         "sLast":     "Último",

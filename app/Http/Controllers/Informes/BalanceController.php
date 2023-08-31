@@ -62,11 +62,20 @@ class BalanceController extends Controller
 
     public function show(Request $request)
     {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length");
+
         $balance = InfBalance::where('id', $request->get('id'))->first();
 		$informe = InfBalanceDetalle::where('id_balance', $balance->id);
 		$total = InfBalanceDetalle::where('id_balance', $balance->id)->orderBy('id', 'desc')->first();
         $descuadre = false;
         $filtros = true;
+
+        $informeTotals = $informe->get();
+
+        $informePaginate = $informe->skip($start)
+            ->take($rowperpage);
 
         if(!$balance->id_cuenta) {
             $filtros = false;
@@ -75,7 +84,11 @@ class BalanceController extends Controller
 
         return response()->json([
             'success'=>	true,
-            'data' => $informe->get(),
+            'draw' => $draw,
+            'iTotalRecords' => $informeTotals->count(),
+            'iTotalDisplayRecords' => $informeTotals->count(),
+            'data' => $informePaginate->get(),
+            'perPage' => $rowperpage,
             'totales' => $total,
             'filtros' => $filtros,
             'descuadre' => $descuadre,

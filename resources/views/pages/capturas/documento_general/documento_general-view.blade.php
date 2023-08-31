@@ -71,15 +71,15 @@
         <div class="card cardTotal" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
             <div class="row" style="text-align: -webkit-center;">
                 <div class="col-4 col-md-4 col-sm-4" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px;">DEBITO</p>
+                    <p style="font-size: 13px; margin-top: 5px; font-weight: bold;">DEBITO</p>
                     <h6 id="general_debito" style="margin-top: -15px;">0.00</h6>
                 </div>
                 <div class="col-4 col-md-4 col-sm-4" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px;">CREDITO</p>
+                    <p style="font-size: 13px; margin-top: 5px; font-weight: bold;">CREDITO</p>
                     <h6 id="general_credito" style="margin-top: -15px;">0.00</h6>
                 </div>
                 <div class="col-4 col-md-4 col-sm-4">
-                    <p style="font-size: 13px; margin-top: 5px;">DIFERENCIA</p>
+                    <p style="font-size: 13px; margin-top: 5px; font-weight: bold;">DIFERENCIA</p>
                     <h6 id="general_diferencia" style="margin-top: -15px;">0.00</h6>
                 </div>
             </div>

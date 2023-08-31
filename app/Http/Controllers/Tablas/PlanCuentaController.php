@@ -43,7 +43,7 @@ class PlanCuentaController extends Controller
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
-        $rowperpage = 15; // Rows display per page
+        $rowperpage = $request->get("length");
 
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
@@ -55,7 +55,6 @@ class PlanCuentaController extends Controller
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
-
         $cuentas = PlanCuentas::orderBy($columnName,$columnSortOrder)
             ->with('tipo_cuenta', 'padre')
             ->where('nombre', 'like', '%' .$searchValue . '%')
@@ -66,16 +65,19 @@ class PlanCuentaController extends Controller
                 DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
                 'created_by',
                 'updated_by'
-            )
-            ->skip($start)
+            );
+
+        $cuentasTotals = $cuentas->get();
+        
+        $cuentasPaginate = $cuentas->skip($start)
             ->take($rowperpage);
 
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
-            'iTotalRecords' => $cuentas->count(),
-            'iTotalDisplayRecords' => $cuentas->count(),
-            'data' => $cuentas->get(),
+            'iTotalRecords' => $cuentasTotals->count(),
+            'iTotalDisplayRecords' => $cuentasTotals->count(),
+            'data' => $cuentasPaginate->get(),
             'perPage' => $rowperpage,
             'message'=> 'Comprobante generado con exito!'
         ]);
