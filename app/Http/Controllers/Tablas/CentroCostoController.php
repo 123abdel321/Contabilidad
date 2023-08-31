@@ -35,7 +35,7 @@ class CentroCostoController extends Controller
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
-        $rowperpage = 15; // Rows display per page
+        $rowperpage = $request->get("length");
 
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
@@ -56,16 +56,19 @@ class CentroCostoController extends Controller
                 DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
                 'created_by',
                 'updated_by'
-            )
-            ->skip($start)
+            );
+
+        $cecosTotals = $cecos->get();
+
+        $cuentasPaginate = $cecos->skip($start)
             ->take($rowperpage);
 
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
-            'iTotalRecords' => $cecos->count(),
-            'iTotalDisplayRecords' => $cecos->count(),
-            'data' => $cecos->get(),
+            'iTotalRecords' => $cecosTotals->count(),
+            'iTotalDisplayRecords' => $cecosTotals->count(),
+            'data' => $cuentasPaginate->get(),
             'perPage' => $rowperpage,
             'message'=> 'Comprobante generado con exito!'
         ]);

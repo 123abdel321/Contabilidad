@@ -13,7 +13,9 @@ function auxiliarInit() {
     $('#fecha_hasta_auxiliar').val(fechaDesde);
 
     auxiliar_table = $('#auxiliarInformeTable').DataTable({
-        dom: 't',
+        pageLength: 100,
+        dom: 'Brtip',
+        paging: true,
         responsive: false,
         processing: true,
         serverSide: true,
@@ -36,6 +38,14 @@ function auxiliarInit() {
             headerOffset: 45
         },
         'rowCallback': function(row, data, index){
+            if(data.naturaleza_cuenta == 0 && parseInt(data.saldo_final) < 0 && data.detalle_group == 'nits') {
+                $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
+                return;
+            }
+            if(data.naturaleza_cuenta == 1 && parseInt(data.saldo_final) > 0 && data.detalle_group == 'nits') {
+                $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
+                return;
+            }
             if(data.detalle_group == 'nits-totales'){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 25%)');
                 $('td', row).css('font-weight', 'bold');
@@ -122,18 +132,16 @@ function auxiliarInit() {
             { data: "debito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: "credito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
-                // if(row.auxiliar) {
-                    
-                // }
-                if(row.naturaleza_cuenta == 0 && row.saldo_final < 0) {
-                    return "("+row.saldo_final*-1+")";
-                } else if(row.naturaleza_cuenta == 1 && row.saldo_final > 0) {
-                    return "("+row.saldo_final+")";
+                var saldo_final = parseFloat(row.saldo_final);
+                if(row.naturaleza_cuenta == 0 && row.saldo_final < 0 && row.detalle_group == 'nits') {
+                    return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(row.saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                } else if(row.naturaleza_cuenta == 1 && row.saldo_final > 0 && row.detalle_group == 'nits') {
+                    return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(row.saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
                 } else if(row.naturaleza_cuenta == 1 && row.saldo_final < 0) {
-                    return row.saldo_final*-1;
+                    return (row.saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
                 }
-                return row.saldo_final;
-            },render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                return saldo_final.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            }, className: 'dt-body-right'},
             {"data": function (row, type, set){
                 if(!row.codigo_comprobante){
                     return '';
@@ -302,21 +310,28 @@ function mostrarTotalesAuxiliar(data, filtros = false) {
         return;
     }
     if(!filtros && parseInt(data.saldo_anterior)){
-        $(".cardTotalAuxiliar").css("background-color", "lightpink");
+        cambiarColorTotales('#ff0000');
     } else if (!filtros && !parseInt(data.saldo_anterior)){
-        $(".cardTotalAuxiliar").css("background-color", "lightgreen");
+        cambiarColorTotales('#0002ff');
     } else if (!filtros && parseInt(data.saldo_final)){
-        $(".cardTotalAuxiliar").css("background-color", "lightpink");
+        cambiarColorTotales('#ff0000');
     } else if (!filtros && !parseInt(data.saldo_final)) {
-        $(".cardTotalAuxiliar").css("background-color", "lightgreen");
+        cambiarColorTotales('#0002ff');
     } else {
-        $(".cardTotalAuxiliar").css("background-color", "white");
+        cambiarColorTotales('#0002ff');
     }
 
     $("#auxiliar_anterior").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_anterior));
     $("#auxiliar_debito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.debito));
     $("#auxiliar_credito").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.credito));
     $("#auxiliar_diferencia").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_final));
+}
+
+function cambiarColorTotales(color) {
+    $('#auxiliar_anterior').css("color", color);
+    $('#auxiliar_debito').css("color", color);
+    $('#auxiliar_credito').css("color", color);
+    $('#auxiliar_diferencia').css("color", color);
 }
 
 function GenerateAuxiliar() {

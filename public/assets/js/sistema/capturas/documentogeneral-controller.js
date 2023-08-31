@@ -1095,12 +1095,8 @@ function mostrarValores(){
 
     if(calcularCabeza) {
         var [debito, credito] = totalValores();
-        general_debito
-        general_credito
-        general_diferencia
         if(debito-credito > 0){
             $(".cardTotal").css("background-color", "lightpink");
-            $(".general_diferencia").css("background-color", "lightpink");
         } else if (debito-credito < 0){
             $(".cardTotal").css("background-color", "lightpink");
         } else if (debito-credito == 0 && debito > 0 || credito > 0){

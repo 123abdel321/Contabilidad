@@ -2,12 +2,17 @@ var cecos_table = null;
 
 function cecosInit() {
     cecos_table = $('#cecosTable').DataTable({
-        dom: '',
+        pageLength: 15,
+        dom: 'Brtip',
+        paging: true,
         responsive: false,
         processing: true,
         serverSide: true,
-        initialLoad: true,
+        fixedHeader: true,
+        deferLoading: 0,
+        initialLoad: false,
         language: lenguajeDatatable,
+        sScrollX: "100%",
         fixedColumns : {
             left: 0,
             right : 1,
@@ -99,6 +104,9 @@ function cecosInit() {
             })
         });
     }
+
+    $('.water').hide();
+    cecos_table.ajax.reload();
 }
 
 $('.form-control').keyup(function() {
