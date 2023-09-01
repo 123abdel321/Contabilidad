@@ -30,7 +30,12 @@
                         </div>
                     </div>
 
-                    <div class="accordion" id="accordionExample">
+                    <div class="form-check form-switch col-12 col-sm-6 col-md-6" style="margin-left: 12px;">
+                        <input class="form-check-input" type="checkbox" name="inventario_familia" id="inventario_familia" style="height: 20px;">
+                        <label class="form-check-label" for="inventario_familia">Maneja Inventario</label>
+                    </div>
+
+                    <div class="accordion accordion-familia" id="accordionExample" style="margin-top: 10px;">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -52,7 +57,7 @@
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        <label for="exampleFormControlSelect1">Devolución</label>
+                                        <label for="exampleFormControlSelect1">Devolución venta</label>
                                         <select name="id_cuenta_venta_devolucion" id="id_cuenta_venta_devolucion" class="form-control form-control-sm">
                                         </select>
                                     </div>
@@ -74,10 +79,22 @@
                                         <select name="id_cuenta_venta_descuento" id="id_cuenta_venta_descuento" class="form-control form-control-sm">
                                         </select>
                                     </div>
+
+                                    <div class="form-group col-md-6" id="input-familia-inventario">
+                                        <label for="exampleFormControlSelect1">Inventario</label>
+                                        <select name="id_cuenta_inventario" id="id_cuenta_inventario" class="form-control form-control-sm">
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-md-6" id="input-familia-costos">
+                                        <label for="exampleFormControlSelect1">Costos</label>
+                                        <select name="id_cuenta_costos" id="id_cuenta_costos" class="form-control form-control-sm">
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="accordion-item">
+                        <div class="accordion-item" id="inputs-familias-compras">
                             <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                 Cuentas compras
@@ -98,7 +115,7 @@
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        <label for="exampleFormControlSelect1">Devolución</label>
+                                        <label for="exampleFormControlSelect1">Devolución compra</label>
                                         <select name="id_cuenta_compra_devolucion" id="id_cuenta_compra_devolucion" class="form-control form-control-sm">
                                         </select>
                                     </div>

@@ -617,19 +617,3 @@ svg.tea #steamR {
     margin-top: 4px;
     margin-left: 5px;
 }
-
-.accordion-button:not(.collapsed) {
-    background-color: #f4f4f4 !important;
-}
-
-button:focus:not(:focus-visible) {
-    background-color: #f4f4f4 !important;
-}
-
-.accordion-item:first-of-type .accordion-button {
-    background-color: #f4f4f4 !important;
-}
-
-.accordion-item:last-of-type .accordion-button.collapsed {
-    background-color: #f4f4f4 !important;
-}
