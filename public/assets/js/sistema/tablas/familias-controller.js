@@ -632,6 +632,15 @@ function familiasInit() {
     familias_table.ajax.reload();
 }
 
+$('.form-control').keyup(function() {
+    $(this).val($(this).val().toUpperCase());
+});
+
+$("#searchInput").on("input", function (e) {
+    familias_table.context[0].jqXHR.abort();
+    $('#cecosTable').DataTable().search($("#searchInput").val()).draw();
+});
+
 $(document).on('click', '#createFamilia', function () {
     clearFormFamilias();
     $("#updateFamilia").hide();

@@ -141,6 +141,7 @@ class FamiliasController extends Controller
             ]);
 
             $familia->save();
+            
             $familia->load([
                 'cuenta_venta',
                 'cuenta_venta_retencion',
