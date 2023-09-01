@@ -59,7 +59,9 @@ class FamiliasController extends Controller
                 'cuenta_compra_devolucion',
                 'cuenta_compra_iva',
                 'cuenta_compra_descuento',
-                'cuenta_compra_devolucion_iva'
+                'cuenta_compra_devolucion_iva',
+                'cuenta_inventario',
+                'cuenta_costos'
             )
             ->where('nombre', 'like', '%' .$searchValue . '%')
             ->orWhere('codigo', 'like', '%' .$searchValue . '%')
@@ -124,12 +126,15 @@ class FamiliasController extends Controller
             $familia = FacFamilias::create([
                 'codigo' => $request->get('codigo'),
                 'nombre' => $request->get('nombre'),
+                'inventario' => $request->get('inventario'),
                 'id_cuenta_venta' => $request->get('id_cuenta_venta'),
                 'id_cuenta_venta_retencion' => $request->get('id_cuenta_venta_retencion'),
                 'id_cuenta_venta_devolucion' => $request->get('id_cuenta_venta_devolucion'),
                 'id_cuenta_venta_iva' => $request->get('id_cuenta_venta_iva'),
                 'id_cuenta_venta_descuento' => $request->get('id_cuenta_venta_descuento'),
                 'id_cuenta_venta_devolucion_iva' => $request->get('id_cuenta_venta_devolucion_iva'),
+                'id_cuenta_inventario' => $request->get('id_cuenta_inventario'),
+                'id_cuenta_costos' => $request->get('id_cuenta_costos'),
                 'id_cuenta_compra' => $request->get('id_cuenta_compra'),
                 'id_cuenta_compra_retencion' => $request->get('id_cuenta_compra_retencion'),
                 'id_cuenta_compra_devolucion' => $request->get('id_cuenta_compra_devolucion'),
@@ -141,6 +146,7 @@ class FamiliasController extends Controller
             ]);
 
             $familia->save();
+            
             $familia->load([
                 'cuenta_venta',
                 'cuenta_venta_retencion',
@@ -153,7 +159,9 @@ class FamiliasController extends Controller
                 'cuenta_compra_devolucion',
                 'cuenta_compra_iva',
                 'cuenta_compra_descuento',
-                'cuenta_compra_devolucion_iva'
+                'cuenta_compra_devolucion_iva',
+                'cuenta_inventario',
+                'cuenta_costos'
             ]);
 
             DB::connection('sam')->commit();
@@ -213,12 +221,15 @@ class FamiliasController extends Controller
                 ->update([
                     'codigo' => $request->get('codigo'),
                     'nombre' => $request->get('nombre'),
+                    'inventario' => $request->get('inventario'),
                     'id_cuenta_venta' => $request->get('id_cuenta_venta'),
                     'id_cuenta_venta_retencion' => $request->get('id_cuenta_venta_retencion'),
                     'id_cuenta_venta_devolucion' => $request->get('id_cuenta_venta_devolucion'),
                     'id_cuenta_venta_iva' => $request->get('id_cuenta_venta_iva'),
                     'id_cuenta_venta_descuento' => $request->get('id_cuenta_venta_descuento'),
                     'id_cuenta_venta_devolucion_iva' => $request->get('id_cuenta_venta_devolucion_iva'),
+                    'id_cuenta_inventario' => $request->get('id_cuenta_inventario'),
+                    'id_cuenta_costos' => $request->get('id_cuenta_costos'),
                     'id_cuenta_compra' => $request->get('id_cuenta_compra'),
                     'id_cuenta_compra_retencion' => $request->get('id_cuenta_compra_retencion'),
                     'id_cuenta_compra_devolucion' => $request->get('id_cuenta_compra_devolucion'),

@@ -26,6 +26,7 @@ var moduloCreado = {
     'plancuenta': false,
     'cecos': false,
     'familias': false,
+    'bodegas': false,
     'documentogeneral': false,
     'auxiliar': false,
     'balance': false,
@@ -39,6 +40,7 @@ var moduloRoute = {
     'plancuenta': 'tablas',
     'cecos': 'tablas',
     'familias': 'tablas',
+    'bodegas': 'tablas',
     'documentogeneral': 'capturas',
     'auxiliar': 'informes',
     'balance': 'informes',
@@ -154,6 +156,8 @@ function seleccionarView(id){
         nombre = 'Centro costos';
     } else if(id == 'familias') {
         nombre = 'Familias';
+    } else if(id == 'bodegas') {
+        nombre = 'Bodegas';
     }
 
     $("#titulo-view").text(nombre);
@@ -197,6 +201,9 @@ function generateNewTabButton(id){
     } else if (id == 'familias') {
         icon = 'fas fa-book';
         nombre = 'Familias';
+    } else if (id == 'bodegas') {
+        icon = 'fas fa-book';
+        nombre = 'Bodegas';
     }
 
     var html = '';

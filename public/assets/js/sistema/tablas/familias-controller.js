@@ -14,6 +14,9 @@ var $comboCuentaCompraIva = null;
 var $comboCuentaCompraDescuento = null;
 var $comboCuentaCompraDevolucionIva = null;
 
+var $comboCuentaInventario = null;
+var $comboCuentaCostos = null;
+
 function familiasInit() {
 
     familias_table = $('#famimliaTable').DataTable({
@@ -95,6 +98,22 @@ function familiasInit() {
                 "data": function (row, type, set){
                     if(row.id_cuenta_venta_devolucion_iva){
                         return row.cuenta_venta_devolucion_iva.cuenta + ' - ' + row.cuenta_venta_devolucion_iva.nombre;
+                    }
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
+                    if(row.id_cuenta_inventario){
+                        return row.cuenta_inventario.cuenta + ' - ' + row.cuenta_inventario.nombre;
+                    }
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
+                    if(row.id_cuenta_costos){
+                        return row.cuenta_costos.cuenta + ' - ' + row.cuenta_costos.nombre;
                     }
                     return '';
                 }
@@ -304,6 +323,34 @@ function familiasInit() {
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
                 $comboCuentaCompraDevolucionIva.append(newOption).trigger('change');
                 $comboCuentaCompraDevolucionIva.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_inventario){
+                var dataCuenta = {
+                    id: data.cuenta_inventario.id,
+                    text: data.cuenta_inventario.cuenta + ' - ' + data.cuenta_inventario.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaInventario.append(newOption).trigger('change');
+                $comboCuentaInventario.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_costos){
+                var dataCuenta = {
+                    id: data.cuenta_costos.id,
+                    text: data.cuenta_costos.cuenta + ' - ' + data.cuenta_costos.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaCostos.append(newOption).trigger('change');
+                $comboCuentaCostos.val(dataCuenta.id).trigger('change');
+            }
+
+            if (data.inventario) {
+                $('#inventario_familia').prop('checked', true);
+                showInventario(true);
+            } else {
+                $('#inventario_familia').prop('checked', false);
+                showInventario(false);
             }
 
             $("#codigo_familia").val(data.codigo);
@@ -628,14 +675,73 @@ function familiasInit() {
         }
     });
 
+    $comboCuentaInventario = $('#id_cuenta_inventario').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#familiaFormModal'),
+        delay: 250,
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    id_tipo_cuenta: [10]
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboCuentaCostos = $('#id_cuenta_costos').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#familiaFormModal'),
+        delay: 250,
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    id_tipo_cuenta: [10]
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    showInventario(false);
+
     $('.water').hide();
     familias_table.ajax.reload();
 }
 
+$('.form-control').keyup(function() {
+    $(this).val($(this).val().toUpperCase());
+});
+
+$("#searchInput").on("input", function (e) {
+    familias_table.context[0].jqXHR.abort();
+    $('#cecosTable').DataTable().search($("#searchInput").val()).draw();
+});
+
 $(document).on('click', '#createFamilia', function () {
     clearFormFamilias();
+    showInventario(false);
     $("#updateFamilia").hide();
     $("#saveFamilia").show();
+    $('#inventario_familia').prop('checked', false);
     $("#familiaFormModal").modal('show');
 });
 
@@ -654,6 +760,9 @@ function clearFormFamilias(){
     $comboCuentaVentaIva.val('').trigger('change');
     $comboCuentaVentaDescuento.val('').trigger('change');
     $comboCuentaVentaDevolucionIva.val('').trigger('change');
+
+    $comboCuentaInventario.val('').trigger('change');
+    $comboCuentaCostos.val('').trigger('change');
 
     $comboCuentaCompra.val('').trigger('change');
     $comboCuentaCompraRetencion.val('').trigger('change');
@@ -678,12 +787,15 @@ $(document).on('click', '#saveFamilia', function () {
     let data = {
         codigo: $('#codigo_familia').val(),
         nombre: $('#nombre_familia').val(),
+        inventario: $("input[type='checkbox']#inventario_familia").is(':checked') ? '1' : '',
         id_cuenta_venta: $('#id_cuenta_venta').val(),
         id_cuenta_venta_retencion: $('#id_cuenta_venta_retencion').val(),
         id_cuenta_venta_devolucion: $('#id_cuenta_venta_devolucion').val(),
         id_cuenta_venta_iva: $('#id_cuenta_venta_iva').val(),
         id_cuenta_venta_descuento: $('#id_cuenta_venta_descuento').val(),
         id_cuenta_venta_devolucion_iva: $('#id_cuenta_venta_devolucion_iva').val(),
+        id_cuenta_inventario: $('#id_cuenta_inventario').val(),
+        id_cuenta_costos: $('#id_cuenta_costos').val(),
         id_cuenta_compra: $('#id_cuenta_compra').val(),
         id_cuenta_compra_retencion: $('#id_cuenta_compra_retencion').val(),
         id_cuenta_compra_devolucion: $('#id_cuenta_compra_devolucion').val(),
@@ -739,12 +851,15 @@ $(document).on('click', '#updateFamilia', function () {
         id: $("#id_familia").val(),
         codigo: $('#codigo_familia').val(),
         nombre: $('#nombre_familia').val(),
+        inventario: $("input[type='checkbox']#inventario_familia").is(':checked') ? '1' : '',
         id_cuenta_venta: $('#id_cuenta_venta').val(),
         id_cuenta_venta_retencion: $('#id_cuenta_venta_retencion').val(),
         id_cuenta_venta_devolucion: $('#id_cuenta_venta_devolucion').val(),
         id_cuenta_venta_iva: $('#id_cuenta_venta_iva').val(),
         id_cuenta_venta_descuento: $('#id_cuenta_venta_descuento').val(),
         id_cuenta_venta_devolucion_iva: $('#id_cuenta_venta_devolucion_iva').val(),
+        id_cuenta_inventario: $('#id_cuenta_inventario').val(),
+        id_cuenta_costos: $('#id_cuenta_costos').val(),
         id_cuenta_compra: $('#id_cuenta_compra').val(),
         id_cuenta_compra_retencion: $('#id_cuenta_compra_retencion').val(),
         id_cuenta_compra_devolucion: $('#id_cuenta_compra_devolucion').val(),
@@ -787,3 +902,25 @@ $(document).on('click', '#updateFamilia', function () {
         agregarToast('error', 'Error al actualizar familia', errorsMsg);
     });
 });
+
+
+
+$('input[type=checkbox][name=inventario_familia]').change(function () {
+    if(!$("input[type='checkbox']#inventario_familia").is(':checked')){
+        showInventario(false);
+    } else {
+        showInventario(true);
+    }
+});
+
+function showInventario(show = false) {
+    if (show) {
+        $('#input-familia-inventario').show();
+        $('#input-familia-costos').show();
+        $('#inputs-familias-compras').show();
+    } else {
+        $('#input-familia-inventario').hide();
+        $('#input-familia-costos').hide();
+        $('#inputs-familias-compras').hide();
+    }
+}

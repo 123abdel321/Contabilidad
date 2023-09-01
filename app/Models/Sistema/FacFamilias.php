@@ -16,9 +16,7 @@ class FacFamilias extends Model
     protected $fillable = [
         'codigo',
         'nombre',
-        'id_cuenta',
-        'created_by',
-        'updated_by',
+        'inventario',
         'id_cuenta_venta',
         'id_cuenta_venta_retencion',
         'id_cuenta_venta_devolucion',
@@ -30,7 +28,11 @@ class FacFamilias extends Model
         'id_cuenta_compra_devolucion',
         'id_cuenta_compra_iva',
         'id_cuenta_compra_descuento',
-        'id_cuenta_compra_devolucion_iva'
+        'id_cuenta_compra_devolucion_iva',
+        'id_cuenta_inventario',
+        'id_cuenta_costos',
+        'created_by',
+        'updated_by'
     ];
 
     public function cuenta_venta()
@@ -91,6 +93,16 @@ class FacFamilias extends Model
     public function cuenta_compra_devolucion_iva()
     {
         return $this->belongsTo("App\Models\Sistema\PlanCuentas", "id_cuenta_compra_devolucion_iva");
+    }
+
+    public function cuenta_inventario()
+    {
+        return $this->belongsTo("App\Models\Sistema\PlanCuentas", "id_cuenta_inventario");
+    }
+    
+    public function cuenta_costos()
+    {
+        return $this->belongsTo("App\Models\Sistema\PlanCuentas", "id_cuenta_costos");
     }
 
 }

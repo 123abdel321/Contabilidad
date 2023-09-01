@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstaladorController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
+use App\Http\Controllers\Tablas\BodegasController;
 use App\Http\Controllers\Tablas\FamiliasController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\CentroCostoController;
@@ -116,6 +117,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('familia', 'create');
             Route::put('familia', 'update');
             Route::delete('familia', 'delete');
+        });
+        //BODEGAS
+        Route::controller(BodegasController::class)->group(function () {
+            Route::get('bodega', 'generate');
+            Route::post('bodega', 'create');
+            Route::put('bodega', 'update');
+            Route::delete('bodega', 'delete');
         });
         
         //CAPTURA GENERAL

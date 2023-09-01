@@ -9,6 +9,8 @@
             <th>Cta. venta iva</th>
             <th>Cta. venta descuento</th>
             <th>Cta. venta devolución iva</th>
+            <th>Cta. inventario</th>
+            <th>Cta. costos</th>
             <th>Cta. compra</th>
             <th>Cta. compra retención</th>
             <th>Cta. compra devolución venta</th>
