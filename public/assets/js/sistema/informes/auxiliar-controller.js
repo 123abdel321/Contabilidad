@@ -133,12 +133,12 @@ function auxiliarInit() {
             { data: "credito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
                 var saldo_final = parseFloat(row.saldo_final);
-                if(row.naturaleza_cuenta == 0 && row.saldo_final < 0 && row.detalle_group == 'nits') {
-                    return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(row.saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
-                } else if(row.naturaleza_cuenta == 1 && row.saldo_final > 0 && row.detalle_group == 'nits') {
-                    return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(row.saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
-                } else if(row.naturaleza_cuenta == 1 && row.saldo_final < 0) {
-                    return (row.saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                if(row.naturaleza_cuenta == 0 && saldo_final < 0 && row.detalle_group == 'nits') {
+                    return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                } else if(row.naturaleza_cuenta == 1 && saldo_final > 0 && row.detalle_group == 'nits') {
+                    return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                } else if(row.naturaleza_cuenta == 1 && saldo_final < 0) {
+                    return (saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
                 }
                 return saldo_final.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
             }, className: 'dt-body-right'},
