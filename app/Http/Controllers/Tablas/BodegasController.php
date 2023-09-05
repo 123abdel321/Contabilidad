@@ -20,7 +20,7 @@ class BodegasController extends Controller
 			'required' => 'El campo :attribute es requerido.',
 			'numeric' => 'El campo :attribute debe ser un numero',
 			'string' => 'El campo :attribute debe ser texto',
-			'unique' => 'El :attribute :input ya existe en la tabla de familias',
+			'unique' => 'El :attribute :input ya existe en la tabla de bodegas',
 			'max' => 'El :attribute no debe tener más de :max caracteres'
         ];
 	}
@@ -209,6 +209,21 @@ class BodegasController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
+    }
+
+    public function comboBodega(Request $request)
+    {
+        $bodega = FacBodegas::select(
+            \DB::raw('*'),
+            \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+        );
+
+        if ($request->get("q")) {
+            $bodega->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        return $bodega->paginate(40);
     }
 
 

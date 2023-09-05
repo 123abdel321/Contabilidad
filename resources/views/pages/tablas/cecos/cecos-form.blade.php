@@ -13,7 +13,7 @@
                     <div class="row">
                         <input type="text" class="form-control" name="id_cecos_up" id="id_cecos_up" style="display: none;">
                         <div class="form-group col-md-6">
-                            <label for="example-text-input" c|lass="form-control-label">Codigo</label>
+                            <label for="example-text-input" class="form-control-label">Codigo</label>
                             <input type="text" class="form-control form-control-sm" name="codigo" id="codigo" placeholder="123" required>
                         </div>
                         <div class="form-group col-md-6">

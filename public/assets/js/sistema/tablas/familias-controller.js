@@ -23,7 +23,7 @@ function familiasInit() {
         pageLength: 15,
         dom: 'Brtip',
         paging: true,
-        responsive: false,
+        responsive: true,
         processing: true,
         serverSide: true,
         fixedHeader: true,

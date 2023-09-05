@@ -617,3 +617,11 @@ svg.tea #steamR {
     margin-top: 4px;
     margin-left: 5px;
 }
+
+.btn-check:checked + .btn-outline-primary {
+    color: white;
+}
+
+.btn-check:checked + .btn-outline-primary:hover {
+    color: #596CFF;
+}
