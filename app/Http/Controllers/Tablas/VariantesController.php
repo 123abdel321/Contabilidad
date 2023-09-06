@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\FacVariantes;
+use App\Models\Sistema\FacVariantesOpciones;
 
 class VariantesController extends Controller
 {
@@ -30,7 +31,8 @@ class VariantesController extends Controller
         $variantes = FacVariantes::select(
             \DB::raw('*'),
             \DB::raw("CONCAT(nombre) as text")
-        )->with('opciones');
+        )
+        ->with('opciones');
 
         if ($request->get("q")) {
             $variantes->where('nombre', 'LIKE', '%' . $request->get("q") . '%');
@@ -91,11 +93,63 @@ class VariantesController extends Controller
                 'data' => [],
                 "message"=>$e->getMessage()
             ], 422);
-        } 
+        }
     }
 
-    public function createSubVariante ()
+    public function createOpcion (Request $request)
     {
+        $rules = [
+            'nombre' => 'required|min:1|max:200|string'
+        ];
 
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->messages()
+            ], 422);
+        }
+
+        try {
+            DB::connection('sam')->beginTransaction();
+
+            $opcion = FacVariantesOpciones::where('nombre', $request->get('nombre'))
+                ->where('id_variante', $request->get('id_variante'))
+                ->with('variante')
+                ->first();
+
+            if($opcion) {
+                return response()->json([
+                    'success'=>	true,
+                    'data' => $opcion,
+                    'message'=> 'Opción existente!'
+                ]);
+            }
+            
+            $opcion = FacVariantesOpciones::create([
+                'id_variante' => $request->get('id_variante'),
+                'nombre' => $request->get('nombre')
+            ]);
+
+            $opcion->load('variante');
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => $opcion,
+                'message'=> 'Opción creada con exito!'
+            ]);
+
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
     }
 }

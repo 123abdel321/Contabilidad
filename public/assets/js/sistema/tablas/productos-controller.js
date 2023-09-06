@@ -1,6 +1,7 @@
 var productos_table = null;
 var tipo_producto = 0;
 var bodegasProductos = [];
+var idVarianteSelected = false;
 var $comboFamilia = null;
 var $comboBodega = null;
 var nuevoProducto = {
@@ -280,6 +281,61 @@ function agregarVarianteProducto () {
     $('#variantesProductoFormModal').modal('show');
 }
 
+function keyPressNombreOpcion (event) {
+
+    var nombreOpcion = $('#nombre-opcion').val();
+
+    if(event.keyCode == 13) {
+
+        $('#nombre-opcion-loaging').show();
+
+        var data = {
+            id_variante: idVarianteSelected,
+            nombre: nombreOpcion
+        };
+
+        $.ajax({
+            url: base_url + 'variante/opcion',
+            method: 'POST',
+            data: JSON.stringify(data),
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            if(res.success){
+                if(res.message != 'Opción existente!') {
+                    crearItemOpcion(res.data);
+                }
+                $('#nombre-opcion-loaging').hide();
+                $('#nombre-opcion').val('');
+                $('#form-new-opcion').hide();
+                $('#button-new-opcion').show();
+            }
+        }).fail((err) => {
+            $('#nombre-opcion-loaging').hide();
+            var errorsMsg = "";
+            var mensaje = err.responseJSON.message;
+            if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                for (field in mensaje) {
+                    var errores = mensaje[field];
+                    for (campo in errores) {
+                        errorsMsg += "- "+errores[campo]+" <br>";
+                    }
+                };
+            } else {
+                errorsMsg = mensaje
+            }
+            agregarToast('error', 'Error al actualizar familia', errorsMsg);
+        });
+
+    }
+    
+    if(event.keyCode == 8 && !nombreOpcion) {
+        $('#form-new-opcion').hide();
+        $('#text-new-opcion').hide();
+        $('#button-new-opcion').show();
+    }
+}
+
 function keyPressNombreInventario (event) {
     var nombreInventario = $('#nombre-variante').val();
     if(event.keyCode == 13) {
@@ -337,11 +393,29 @@ function agregarVarianteNombre () {
     },10);
 }
 
+function agregarOpcionNombre () {
+    $('#form-new-opcion').show();
+    $('#text-new-opcion').show();
+    $('#button-new-opcion').hide();
+    setTimeout(function(){
+        $('#nombre-opcion').select();
+    },10);
+}
+
 function removeVariante () {
-    var nombreVariante = $('#nombre-variante').val();
+    var nombreVariante = $('#nombre-opcion').val();
     if(!nombreVariante) {
         $('#form-new-variante').addClass("hide-new-variante");
         $('#button-new-variable').show();
+    }
+}
+
+function removeOpcion () {
+    var nombreOpcion = $('#nombre-opcion').val();
+    if(!nombreOpcion) {
+        $('#form-new-opcion').hide();
+        $('#text-new-opcion').hide();
+        $('#button-new-opcion').show();
     }
 }
 
@@ -354,7 +428,30 @@ $("#id_variante_producto").on('change', function(e) {
     }
     
     crearItemVariable(data[0]);
+
 });
+
+function crearItemOpcion (opcion) {
+    console.log(opcion);
+    
+    var html = `
+    <label>${opcion.nombre}</label>
+    <i class="fas fa-check" style="float: right; margin-top: 5px; margin-right: 5px;"></i>`;
+
+    var item = document.createElement('div');
+    item.setAttribute("id", "item-variante-opcion_"+opcion.id);
+    item.setAttribute("class", "item-variante-opcion");
+    item.setAttribute("style", "margin-top: 10px;");
+    item.onclick = function(){
+        setStatusCheckOpcion(opcion, opcion.variante.id);
+    };
+    // 
+    item.innerHTML = [
+        html
+    ].join('');
+    document.getElementById('contenedor-opciones_'+opcion.variante.id).insertBefore(item, null);
+
+}
 
 function crearItemVariable (variante) {
     var idActiveVariante = false;
@@ -369,6 +466,7 @@ function crearItemVariable (variante) {
         idActiveVariante = existeVariante.id;
     }
 
+    $("#button-new-opcion").show();
     $("#id_variante_producto").val('');
     
     activeVarianteContenedor(idActiveVariante);
@@ -460,10 +558,14 @@ function getVarianteById (idVariante) {
 
 function activeVarianteContenedor (idActiveVariante) {
     $('#nombre-variante').select();
+    idVarianteSelected = idActiveVariante;
+
     Object.values(nuevoProducto.variantes).forEach(variante => {
         $('#lista-variante-producto_'+variante.id).removeClass("active");
+        $('#contenedor-opciones_'+variante.id).hide();
     });
 
+    $('#contenedor-opciones_'+idActiveVariante).show();
     $('#lista-variante-producto_'+idActiveVariante).addClass("active");
 }
 
@@ -489,11 +591,9 @@ function setStatusCheckVariante (idVariante) {
 }
 
 function setStatusCheckOpcion (opcion, idVariante) {
-    console.log('setStatusCheckOpcion', opcion, idVariante);
     var variante = nuevoProducto.variantes;
     for (let index = 0; index < variante.length; index++) {
         let dataVariante = variante[index];
-        console.log('dataVariante: ',dataVariante);
         if(dataVariante.id == idVariante) {
             if(dataVariante.opciones.length > 0) {
                 var opciones = dataVariante.opciones;

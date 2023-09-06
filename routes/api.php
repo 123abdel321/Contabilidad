@@ -127,6 +127,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //VARIANTES
         Route::controller(VariantesController::class)->group(function () {
             Route::post('variante', 'create');
+            Route::post('variante/opcion', 'createOpcion');
             Route::get('variante/combo-variante', 'comboVariante');
         });
         

@@ -19,4 +19,9 @@ class FacVariantesOpciones extends Model
         'nombre',
         'estado'
     ];
+
+    public function variante()
+    {
+        return $this->hasOne('App\Models\Sistema\FacVariantes', 'id', 'id_variante');
+	}
 }
