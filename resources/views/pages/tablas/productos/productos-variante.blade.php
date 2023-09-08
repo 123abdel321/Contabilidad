@@ -18,7 +18,6 @@
 
                 <div class="row">
                     <div class="col-12 col-sm-6 col-md-6">
-                        
 
                         <ul class="list-group variantes-listas" id="variante_producto_contenedor">
                         </ul>
@@ -31,7 +30,7 @@
                             </div>
                         </li>
                         <button id="button-new-variable" type="button" class="btn btn-sm btn-outline-primary" onclick="agregarVarianteNombre()" style="width: 100%; margin-top: 5px; box-shadow: none; ">
-                            Nueva variante
+                            Crear variante
                         </button>
 
                     </div>
@@ -61,7 +60,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn bg-gradient-danger btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                <button id="saveBodegaProducto"type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button id="saveVariantesProducto"type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
             </div>
         </div>
     </div>

@@ -4,6 +4,51 @@ var bodegasProductos = [];
 var idVarianteSelected = false;
 var $comboFamilia = null;
 var $comboBodega = null;
+var cacheProducto = null;
+// var nuevoProducto = {
+//     nombre: null,
+//     codigo: null,
+//     id_familia: null,
+//     precio: 5000,
+//     precio_maximo: 0,
+//     precio_inicial: 0,
+//     inventario: false,
+//     inventarios: [],
+//     variante: true,
+//     variantes: [
+//         {
+//             id: 1,
+//             estado: true,
+//             nombre: "COLOR",
+//             opciones: [
+//                 {id: 1, nombre: 'ROJO', estado: true},
+//                 {id: 2, nombre: 'AZUL', estado: true},
+//                 {id: 3, nombre: 'VERDE', estado: false}
+//             ]
+//         },
+//         {
+//             id: 2,
+//             estado: true,
+//             nombre: "TALLA",
+//             opciones: [
+//                 {id: 23, nombre: 'XS', estado: true},
+//                 {id: 24, nombre: 'XLL', estado: true},
+//                 {id: 25, nombre: 'XXL', estado: true},
+//             ]
+//         },
+//         {
+//             id: 3,
+//             estado: false,
+//             nombre: "RAM",
+//             opciones: [
+//                 {id: 10, nombre: '4GB', estado: false},
+//                 {id: 11, nombre: '6GB', estado: false},
+//                 {id: 12, nombre: '8GB', estado: false},
+//             ]
+//         },
+//     ],
+//     productos_variantes: []
+// }
 var nuevoProducto = {
     nombre: null,
     codigo: null,
@@ -263,6 +308,109 @@ $(document).on('click', '#saveBodegaProducto', function () {
     $('#bodegasProductoFormModal').modal('hide');
 });
 
+$(document).on('click', '#saveVariantesProducto', function () {
+    nuevoProducto.productos_variantes = [];
+    generarVariantesProductos ();
+});
+
+function generarVariantesProductos () {
+    
+    var variantes = getVariantesActivas();
+
+    var cacheNuevosProductos = [];
+
+    for (let indexVariante = 0; indexVariante < variantes.length; indexVariante++) {
+
+        let variante = variantes[indexVariante];
+
+        if (!variante.estado) continue;
+
+        if (indexVariante > 1) {
+            cacheNuevosProductos = [];
+            nuevoProducto.productos_variantes.forEach(productosActuales => {
+                cacheNuevosProductos = cacheNuevosProductos.concat({
+                    precio: productosActuales.precio,
+                    precio_maximo: productosActuales.precio_maximo,
+                    precio_inicial: productosActuales.precio_inicial,
+                    inventario: productosActuales.inventario,
+                    variantesc: productosActuales.variantes
+                });
+            });
+        }
+
+        for (let indexOpcion = 0; indexOpcion < variante.opciones.length; indexOpcion++) {
+            const opcion = variante.opciones[indexOpcion];
+
+            if (!opcion.estado) continue;
+
+            if (indexVariante == 0) {
+
+                cacheNuevosProductos = cacheNuevosProductos.concat({
+                    precio: nuevoProducto.precio,
+                    precio_maximo: nuevoProducto.precio_maximo,
+                    precio_inicial: nuevoProducto.precio_inicial,
+                    inventario: false,
+                    variantesc: [opcion]
+                });
+
+                nuevoProducto.productos_variantes = nuevoProducto.productos_variantes.concat({
+                    precio: nuevoProducto.precio,
+                    precio_maximo: nuevoProducto.precio_maximo,
+                    precio_inicial: nuevoProducto.precio_inicial,
+                    inventario: false,
+                    variantes: [opcion]
+                });
+            }
+
+            if (indexVariante != 0 && indexOpcion == 0) {
+                Object.values(nuevoProducto.productos_variantes).forEach(productoVariantes => {
+                    productoVariantes.variantes = productoVariantes.variantes.concat(opcion);
+                });
+            }
+
+            if (indexVariante != 0 && indexOpcion != 0) {
+                Object.values(cacheNuevosProductos).forEach(productoCache => {
+                    var varianteCache = productoCache.variantesc;
+                    var newData = {
+                        precio: nuevoProducto.precio,
+                        precio_maximo: nuevoProducto.precio_maximo,
+                        precio_inicial: nuevoProducto.precio_inicial,
+                        inventario: false,
+                        variantes: varianteCache
+                    };
+                    newData.variantes = newData.variantes.concat(opcion);
+                    nuevoProducto.productos_variantes = nuevoProducto.productos_variantes.concat(newData);
+                });
+            }
+        }
+    }
+}
+
+function getVariantesActivas() {
+    var variantes = [];
+
+    Object.values(nuevoProducto.variantes).forEach(variante => {
+        if (variante.estado) {
+            var opciones = [];
+            Object.values(variante.opciones).forEach(opcion => {
+                if (opcion.estado) {
+                    opciones.push(opcion);
+                }
+            });
+            if(opciones.length > 0) {
+                variantes.push({
+                    id: variante.id,
+                    estado: variante.estado,
+                    nombre: variante.nombre,
+                    opciones: opciones
+                });
+            }
+        }
+    });
+
+    return variantes;
+}
+
 $(document).on('click', '#updateBodegaProducto', function () {
     var idBodega = $('#id_bodega_producto_up').val();
     var totalBodega = $('#cantidad_bodega_producto').val();
@@ -328,7 +476,7 @@ function keyPressNombreOpcion (event) {
         });
 
     }
-    
+
     if(event.keyCode == 8 && !nombreOpcion) {
         $('#form-new-opcion').hide();
         $('#text-new-opcion').hide();
@@ -420,20 +568,18 @@ function removeOpcion () {
 }
 
 $("#id_variante_producto").on('change', function(e) {
-    var data = $(this).select2('data');   
+    var data = $(this).select2('data');
 
     if (!data.length) {
         agregarToast('error', 'Error al seleccionar variante, por favor vuelta a intentarlo', errorsMsg, true);
         return;
     }
-    
+
     crearItemVariable(data[0]);
 
 });
 
 function crearItemOpcion (opcion) {
-    console.log(opcion);
-    
     var html = `
     <label>${opcion.nombre}</label>
     <i class="fas fa-check" style="float: right; margin-top: 5px; margin-right: 5px;"></i>`;
@@ -445,7 +591,7 @@ function crearItemOpcion (opcion) {
     item.onclick = function(){
         setStatusCheckOpcion(opcion, opcion.variante.id);
     };
-    // 
+    //
     item.innerHTML = [
         html
     ].join('');
@@ -468,7 +614,7 @@ function crearItemVariable (variante) {
 
     $("#button-new-opcion").show();
     $("#id_variante_producto").val('');
-    
+
     activeVarianteContenedor(idActiveVariante);
 }
 
@@ -510,7 +656,7 @@ function newItemVariante (variante) {
         checkbox.innerHTML = [
             html
         ].join('');
-    
+
         document.getElementById('lista-variante-producto-content_'+variante.id).insertBefore(checkbox, null);
     },100);
 }
@@ -523,7 +669,6 @@ function newItemVarianteOpciones (variante) {
     document.getElementById('variante_opcion_contenedor').insertBefore(item, null);
 
     if(variante.opciones.length > 0) {
-        console.log(variante.opciones);
         variante.opciones.forEach(opcion => {
 
             var html = `
@@ -537,7 +682,7 @@ function newItemVarianteOpciones (variante) {
             item.onclick = function(){
                 setStatusCheckOpcion(opcion, variante.id);
             };
-            // 
+            //
             item.innerHTML = [
                 html
             ].join('');
@@ -605,7 +750,7 @@ function setStatusCheckOpcion (opcion, idVariante) {
                         create = false;
                         if(dataOpcion.estado) {
                             $('#item-variante-opcion_'+opcion.id).addClass('item-variante-opcion-active');
-                        } else {                            
+                        } else {
                             $('#item-variante-opcion_'+opcion.id).removeClass('item-variante-opcion-active');
                         }
                     }
@@ -638,7 +783,7 @@ function setStatusCheckOpcion (opcion, idVariante) {
     //         }
     //         for (let ind = 0; ind < opciones.length; ind++) {
     //             let dataOpcion = opciones[ind];
-                
+
     //         }
     //     } else {
     //         nuevoProducto.variantes[index].opciones.push({
