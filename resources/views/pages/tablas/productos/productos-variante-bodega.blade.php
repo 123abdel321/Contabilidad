@@ -22,7 +22,7 @@
 
                         <div id="productos_bodegas_contenedor">
 
-                            <div id="contenedor-variante-bodegas_" class="col-12 col-sm-12 col-md-12 row">
+                            <!-- <div id="contenedor-variante-bodegas_" class="col-12 col-sm-12 col-md-12 row">
     
                                 <div style="padding: 5px; padding: 5px; border-top: solid 1px #dfdfdf; margin-left: 10px;"></div>
                                 
@@ -42,7 +42,7 @@
                                     </button>
                                 </div>
 
-                            </div>
+                            </div> -->
 
                         </div>
                         
@@ -50,8 +50,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn bg-gradient-danger btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                <button id="saveBodegaProductoVariante"type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button type="button" class="btn bg-gradient-danger btn-sm" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

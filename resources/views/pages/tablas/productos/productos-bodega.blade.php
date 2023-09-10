@@ -14,7 +14,7 @@
                         <input type="text" class="form-control" name="id_bodega_producto_up" id="id_bodega_producto_up" style="display: none;">
                         <div class="form-group col-12 col-sm-12 col-md-12">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Bodega</label>
-                            <select class="form-control form-control-sm" name="id_bodega_producto" id="id_bodega_producto">
+                            <select class="form-control form-control-sm" name="id_bodega_producto" id="id_bodega_producto" required>
                                 <option value="">Ninguno</option>
                             </select>
                             <div class="invalid-feedback">
@@ -23,7 +23,7 @@
                         </div>
                         <div class="form-group col-12 col-sm-12 col-md-12" >
                             <label for="example-text-input" class="form-control-label">Cantidad</label>
-                            <input type="number" class="form-control form-control-sm" name="cantidad_bodega_producto" id="cantidad_bodega_producto">
+                            <input type="number" class="form-control form-control-sm" name="cantidad_bodega_producto" id="cantidad_bodega_producto" value="0" required>
                             <div class="invalid-feedback">
                                 El campo es requerido
                             </div>

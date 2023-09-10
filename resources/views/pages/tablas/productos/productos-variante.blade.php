@@ -59,8 +59,8 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn bg-gradient-danger btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                <button id="saveVariantesProducto"type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button type="button" class="btn bg-gradient-danger btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button id="saveVariantesProducto"type="button" class="btn bg-gradient-success btn-sm">Generar variantes</button>
             </div>
         </div>
     </div>

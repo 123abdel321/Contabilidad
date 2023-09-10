@@ -88,11 +88,12 @@
     <div class="container-fluid py-2">
         <div class="row">
             <div class="row" style="z-index: 9;">
-                <div class="col-12 col-md-4 col-sm-4">
+                <div class="col-12 col-md-9 col-sm-9">
                     <button type="button" class="btn btn-primary btn-sm" id="createProducto">Agregar producto</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="saveNewProducto"  style="display: none;">Guardar producto</button>
                     <button type="button" class="btn btn-danger btn-sm" id="cancelProducto" style="display: none;">Cancelar producto</button>
                 </div>
-                <div class="col-12 col-md-8 col-sm-8">
+                <div class="col-12 col-md-3 col-sm-3">
                     <input type="text" id="searchInputProductos" class="form-control form-control-sm search-table" style="display: none;" placeholder="Buscar">
                 </div>
             </div>
