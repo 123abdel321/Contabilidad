@@ -1,6 +1,6 @@
 <div class="card card-producto">
     <div class="card-header" style="border-bottom: solid 1px #e4e4e4; padding: 0rem; background-color: #1c4587;">
-        <h6 class="card-title" style="margin-top: 5px; color: #FFF; margin-left: 15px;">Información general</h6>
+        <h5 class="card-title" style="margin-top: 5px; color: #FFF; margin-left: 15px;">Información general</h5>
     </div>
     <div class="card-body">
 
@@ -86,7 +86,6 @@
                 </div>
             </div>
 
-
         </div>
 
     </div>
@@ -96,10 +95,10 @@
 
 <div class="card card-producto" id="producto-inventario">
     <div class="card-header" style="border-bottom: solid 1px #e4e4e4; padding: 0rem; background-color: #1c4587;">
-        <h6 class="card-title" style="margin-top: 5px; color: #FFF; margin-left: 15px;">Inventario</h6>
+        <h5 class="card-title" style="margin-top: 5px; color: #FFF; margin-left: 15px;">Inventario</h5>
     </div>
-    <div class="card-body">
-        <label style="color: #667793; font-size: 14px; text-align: -webkit-center;">
+    <div class="card-body" style="text-align: -webkit-center;">
+        <label style="color: #667793; font-size: 14px;">
             Distribuye y controla las cantidades de tus productos
         </label>
 
@@ -141,6 +140,79 @@
 
 <div class="card card-producto" id="producto-variantes" style="display: none;">
     <div class="card-header" style="border-bottom: solid 1px #e4e4e4; padding: 0rem; background-color: #1c4587;">
+        <h5 class="card-title" style="margin-top: 5px; color: #FFF; margin-left: 15px;">Variantes</h5>
+    </div>
+    <div class="card-body">
+        <div style="text-align: -webkit-center;">
+            <label style="color: #667793; font-size: 14px;">
+                Agrega atributos para categorizar tus productos, como talla y color.
+            </label>
+        </div>
+
+        <div id="spacing-producto-type" style="padding: 5px;"></div>
+
+        <div class="card">
+            <div class="card-body" style="margin-top: 10px;">
+                <div class="row item-variante" id="variantes-contenedor">
+                    <!-- <div class="col" id="varianteid_">
+                        <button type="button" class="btn btn btn-outline-dark">
+                            COLOR <span class="badge bg-info">4</span>
+                        </button>
+                    </div> -->
+                    <!-- <span class="badge bg-gradient-light" style="padding: 12px; cursor: pointer;">
+                        Color
+                    </span> -->
+                </div>
+            </div>
+            <div class="card-footer text-muted btn" onclick="agregarVarianteProducto()" style="background-color: #596cff; color: white !important; text-align: -webkit-center; padding: 0.8rem;">
+                <i class="fas fa-plus-circle"></i> <label style="color: white;">Agregar variante</label>
+            </div>
+        </div>
+
+        <div id="spacing-producto-type" style="padding: 10px;"></div>
+
+        <div id="">
+
+            <div style="text-align: -webkit-center;">
+                <label style="color: #667793; font-size: 14px;">
+                    Productos con variantes
+                </label>
+            </div>
+
+            <div id="spacing-producto-type" style="padding: 5px;"></div>
+
+            <div class="card" style="overflow-y: auto;">
+
+                <div class="card-body" style="padding: 0.2rem;">
+                    <table id="productosVariantesTable" class="table table-bordered display responsive" width="100%">
+                        <thead style="background-color: #7ea1ff2b;">
+                            <tr>
+                                <th style="border-radius: 15px 0px 0px 0px !important;">Variantes</th>
+                                <th>Precio unidad</th>
+                                <th>Precio Maximo</th>
+                                <th>Precio Inicial</th>
+                                <th>Código</th>
+                                <th>Bodegas</th>
+                                <th style="border-radius: 0px 15px 0px 0px !important;">Acciones</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- <div style="text-align: -webkit-center;">
+            <button type="button" class="btn btn-outline-success" >
+                <i class="fas fa-plus-circle"></i>
+                Agregar variante
+            </button>
+        </div> -->
+    </div>
+</div>
+
+<div class="card card-producto" id="producto-variantes" style="display: none;">
+    <div class="card-header" style="border-bottom: solid 1px #e4e4e4; padding: 0rem; background-color: #1c4587;">
         <h6 class="card-title" style="margin-top: 5px; color: #FFF; margin-left: 15px;">Variantes</h6>
     </div>
     <div class="card-body">
@@ -152,21 +224,7 @@
 
         <div id="spacing-producto-type" style="padding: 5px;"></div>
 
-        <div class="variantes-contenedor" id="variantes-contenedor">
-            <!-- <div class="item-variante">
-                <span class="badge bg-gradient-info" style="padding: 12px; cursor: pointer;">
-                    Color
-                </span>
-            </div> -->
-        </div>
-
-        <br/>
-
-        <div style="text-align: -webkit-center;">
-            <button type="button" class="btn btn-outline-success" onclick="agregarVarianteProducto()">
-                <i class="fas fa-plus-circle"></i>
-                Agregar variante
-            </button>
+        <div class="variantes-productos-contenedor" id="variantes-productos-contenedor">
         </div>
     </div>
 </div>

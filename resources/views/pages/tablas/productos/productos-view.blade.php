@@ -30,6 +30,16 @@
         /* border-style: dashed; */
     }
 
+    .item-img-producto {
+        padding: 15px;
+        border: solid 1px #596cff;
+        border-radius: 10px;
+        border-style: dashed;
+        margin-left: 10px;
+        width: 60px;
+        text-align: -webkit-center;
+    }
+
     .variantes-contenedor {
         padding: 1rem;
         border: solid 1px #d8d8d8;
@@ -104,6 +114,7 @@
 
     @include('pages.tablas.productos.productos-bodega')
     @include('pages.tablas.productos.productos-variante')
+    @include('pages.tablas.productos.productos-variante-bodega')
     
 </div>
 

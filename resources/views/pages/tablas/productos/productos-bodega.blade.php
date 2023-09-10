@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="cecosForm" style="margin-top: 10px;">
+                <form id="productoBodegaForm" style="margin-top: 10px;">
                     <div class="row">
                         <input type="text" class="form-control" name="id_bodega_producto_up" id="id_bodega_producto_up" style="display: none;">
                         <div class="form-group col-12 col-sm-12 col-md-12">
