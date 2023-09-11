@@ -90,7 +90,8 @@
             <div class="row" style="z-index: 9;">
                 <div class="col-12 col-md-9 col-sm-9">
                     <button type="button" class="btn btn-primary btn-sm" id="createProducto">Agregar producto</button>
-                    <button type="button" class="btn btn-primary btn-sm" id="saveNewProducto"  style="display: none;">Guardar producto</button>
+                    <button type="button" class="btn btn-info btn-sm" id="saveNewProducto"  style="display: none; margin-right: 10px;">Guardar producto</button>
+                    <button type="button" class="btn btn-info btn-sm" id="saveNewProducto"  style="display: none; margin-right: 10px;">Guardar producto</button>
                     <button type="button" class="btn btn-danger btn-sm" id="cancelProducto" style="display: none;">Cancelar producto</button>
                 </div>
                 <div class="col-12 col-md-3 col-sm-3">
