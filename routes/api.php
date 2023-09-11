@@ -9,6 +9,7 @@ use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\BodegasController;
 use App\Http\Controllers\Tablas\FamiliasController;
 use App\Http\Controllers\Tablas\VariantesController;
+use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
@@ -129,6 +130,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('variante', 'create');
             Route::post('variante/opcion', 'createOpcion');
             Route::get('variante/combo-variante', 'comboVariante');
+        });
+        //PRODUCTOS
+        Route::controller(ProductosController::class)->group(function () {
+            Route::get('producto', 'generate');
+            Route::post('producto', 'create');
         });
         
         //CAPTURA GENERAL

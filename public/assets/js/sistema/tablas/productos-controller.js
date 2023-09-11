@@ -15,6 +15,7 @@ var nuevoProducto = {
     codigo: '',
     id_familia: null,
     precio: 0,
+    tipo_producto: 0,
     precio_maximo: 0,
     precio_inicial: 0,
     inventarios: [],
@@ -24,6 +25,79 @@ var nuevoProducto = {
 }
 
 function productosInit() {
+
+    productos_table = $('#productoTable').DataTable({
+        pageLength: 30,
+        dom: 'Brtip',
+        paging: true,
+        responsive: false,
+        processing: true,
+        serverSide: true,
+        fixedHeader: true,
+        deferLoading: 0,
+        initialLoad: false,
+        language: lenguajeDatatable,
+        sScrollX: "100%",
+        fixedColumns : {
+            left: 0,
+            right : 1,
+        },
+        ajax:  {
+            type: "GET",
+            headers: headers,
+            url: base_url + 'producto',
+        },
+        columns: [
+            {"data":'codigo'},
+            {"data":'nombre'},
+            {"data": function (row, type, set){  
+                if (row.tipo_producto == 0) {
+                    return 'PRODUCTO';
+                }
+                if (row.tipo_producto == 1) {
+                    return 'SERVICIO';
+                }
+                if (row.tipo_producto == 2) {
+                    return 'COMBO';
+                }
+                return '';
+            }},
+            {"data": "precio", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){
+                var inventarios = row.inventarios
+                if (inventarios.length > 0) {
+                    var html = ``;
+                    inventarios.forEach(inventario => {
+                        html+= `<span class="badge bg-light text-dark">${inventario.bodega.nombre}</span>`;
+                    });
+                    return html;
+                }
+
+                return '';
+            }},
+            {"data": function (row, type, set){  
+                var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
+                if(!row.created_by && !row.fecha_creacion) return '';
+                if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
+                return html;
+            }},
+            {"data": function (row, type, set){
+                var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                if(!row.updated_by && !row.fecha_edicion) return '';
+                if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
+                return html;
+            }},
+            {
+                "data": function (row, type, set){
+                    var html = '';
+                    html+= '<span id="editcecos_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-bodegas" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    html+= '<span id="deletececos_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-bodegas" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    return html;
+                }
+            },
+    
+        ]
+    });
 
     productos_varaibles_table = $('#productosVariantesTable').DataTable({
         dom: 'tip',
@@ -92,6 +166,7 @@ function productosInit() {
                 "data": function (row, type, set){
                     var html = '<span class="badge bg-light text-dark">Ninguna</span>';
                     var bodegas = row.inventarios;
+                    
                     if (bodegas.length == 1) {
                         html = `<span class="badge bg-light text-dark">${bodegas[0].nombre} / ${bodegas[0].cantidad} ud</span>`;
                     } else if (bodegas.length > 1) {
@@ -226,6 +301,9 @@ function productosInit() {
 
     $("#table-products-view").show();
     $("#add-products-view").hide();
+
+    $('.water').hide();
+    productos_table.ajax.reload();
 }
 
 function showBodebasVariantes (id) {
@@ -268,6 +346,38 @@ $(document).on('click', '#saveNewProducto', function () {
         form.classList.add('was-validated');
         return;
     }
+    
+    nuevoProducto.variantes = getVariantesActivas();
+
+    $.ajax({
+        url: base_url + 'producto',
+        method: 'POST',
+        data: JSON.stringify(nuevoProducto),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            document.getElementById('cancelProducto').click();
+            productos_table.row.add(res.data).draw();
+            agregarToast('exito', 'Creación exitosa', 'Producto creado con exito!', true);
+        }
+    }).fail((err) => {
+        var errorsMsg = "";
+        var mensaje = err.responseJSON.message;
+        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += "- "+errores[campo]+" <br>";
+                }
+            };
+        } else {
+            errorsMsg = mensaje
+        }
+        agregarToast('error', 'Creación herrada', errorsMsg);
+    });
+
+    
 });
 
 $(document).on('click', '#cancelProducto', function () {
@@ -282,13 +392,33 @@ $(document).on('click', '#cancelProducto', function () {
 });
 
 function clearFormProductos() {
+    
     $('#bodegas-contenedor').empty();
+    $('#variantes-contenedor').empty();
+    $('#productos_bodegas_contenedor').empty();
+    $('#productos_bodegas_contenedor').empty();
+
+    $("#text_tipo_producto").hide();
+    $("#text_tipo_servicio").hide();
+    $("#text_tipo_combo").hide();
+    $('#contenedor-variantes-generales').hide();
+
+    $('#nombre_producto').val('');
+    $('#codigo_producto').val('');
+    $('#id_familia_producto').val(0).change();
+    $('#precio_producto').val(0);
+    $('#precio_maximo').val(0);
+    $('#precio_inicial').val(0);
+
+    setCrearProducto();
+    
     nuevoProducto = {
         tipo_producto: 0,
         nombre: '',
         codigo: '',
         id_familia: null,
         precio: 0,
+        tipo_producto: 0,
         precio_maximo: 0,
         precio_inicial: 0,
         inventarios: [],
@@ -296,6 +426,8 @@ function clearFormProductos() {
         variantes: [],
         productos_variantes: []
     }
+    productos_varaibles_table.clear([]).draw();
+    
 }
 
 function changeProducType() {
@@ -896,6 +1028,8 @@ function actualizarCantidadBodega (idBodega) {
             inventario.cantidad = parseInt(cantidad);
         }
     });
+
+    actualizarRowBodega();
 }
 
 function deleteBodegaProductoVariente (idBodega) {
@@ -1126,9 +1260,12 @@ function addVarianteItems () {
 function addProductosVarianteItems () {
     generarVariantesProductos();
     var idProducto = 0;
+    var codigo = '';
     var productosVariantes = nuevoProducto.productos_variantes;
 
     productosVariantes.forEach(producto => {
+        codigo = idProducto < 10 ? '0'+(idProducto+1) : idProducto+1;
+        producto.codigo = producto.codigo +'-'+ codigo;
         productos_varaibles_table.row.add({
             id: idProducto,
             codigo: producto.codigo,
@@ -1175,8 +1312,12 @@ function addCodigoProducto () {
 }
 
 $("#id_familia_producto").on('change', function(e) {
-    var data = $(this).select2('data')[0];
-    nuevoProducto.id_familia = parseInt(data.id);
+
+    var data = $(this).select2('data');
+
+    if (data.length > 0) {
+        nuevoProducto.id_familia = parseInt(data[0].id);
+    }
 });
 
 function addPrecioProducto () {
