@@ -639,3 +639,7 @@ th.dtfc-fixed-left {
 .dark-version td.dtfc-fixed-left {
     background-color: #111c44 !important;
 }
+
+td{
+    vertical-align: middle;
+}

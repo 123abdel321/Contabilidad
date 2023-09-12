@@ -6,7 +6,7 @@
         <form id="newProductoForm" class="needs-invalidation" noinvalidate>
 
             <div class="row">
-
+                <input type="text" class="form-control form-control-sm" name="id_producto_edit" id="id_producto_edit" style="display: none;">
                 <div class="col-12 col-sm-12 col-md-12" style="text-align: -webkit-center;">
 
                     <label id="text_tipo_producto" style="color: #667793; font-size: 14px;">Crea los bienes y mercancías que vendes, tambien puedes tener el control de tu inventario.</label>
@@ -171,7 +171,7 @@
                     </span> -->
                 </div>
             </div>
-            <div class="card-footer text-muted btn" onclick="agregarVarianteProducto()" style="background-color: #596cff; color: white !important; text-align: -webkit-center; padding: 0.8rem;">
+            <div id="btn-modal-variantes" class="card-footer text-muted btn" onclick="agregarVarianteProducto()" style="background-color: #596cff; color: white !important; text-align: -webkit-center; padding: 0.8rem;">
                 <i class="fas fa-plus-circle"></i> <label style="color: white;">Agregar variante</label>
             </div>
         </div>

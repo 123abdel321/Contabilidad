@@ -84,41 +84,42 @@
 </style>
         
 <div class="container-fluid py-2">
-
-    <div class="container-fluid py-2">
-        <div class="row">
-            <div class="row" style="z-index: 9;">
-                <div class="col-12 col-md-9 col-sm-9">
-                    <button type="button" class="btn btn-primary btn-sm" id="createProducto">Agregar producto</button>
-                    <button type="button" class="btn btn-info btn-sm" id="saveNewProducto"  style="display: none; margin-right: 10px;">Guardar producto</button>
-                    <button type="button" class="btn btn-info btn-sm" id="saveNewProducto"  style="display: none; margin-right: 10px;">Guardar producto</button>
-                    <button type="button" class="btn btn-danger btn-sm" id="cancelProducto" style="display: none;">Cancelar producto</button>
-                </div>
-                <div class="col-12 col-md-3 col-sm-3">
-                    <input type="text" id="searchInputProductos" class="form-control form-control-sm search-table" style="display: none;" placeholder="Buscar">
-                </div>
+    <div class="row">
+        <div class="row" style="z-index: 9;">
+            <div class="col-12 col-md-9 col-sm-9">
+                <button type="button" class="btn btn-primary btn-sm" id="createProducto">Agregar producto</button>
+                <button type="button" class="btn btn-info btn-sm" id="saveNewProducto"  style="display: none; margin-right: 10px;">Guardar producto</button>
+                <button type="button" class="btn btn-info btn-sm" id="saveEditProducto"  style="display: none; margin-right: 10px;">Actualizar producto</button>
+                <button id="saveNewProductoLoading" class="btn btn-success btn-sm ms-auto" style="display:none; float: left; opacity: 1;" disabled>
+                    Creando producto
+                    <i class="fas fa-spinner fa-spin"></i>
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" id="cancelProducto" style="display: none;">Cancelar producto</button>
             </div>
-
-            <div id="table-products-view" class="card mb-4" style="content-visibility: auto; overflow: auto;">
-                <div class="card-body">
-
-                    @include('pages.tablas.productos.productos-table')
-
-                </div>
-            </div>
-
-            <div id="add-products-view" style="content-visibility: auto; overflow: auto; display: none;">
-                @include('pages.tablas.productos.productos-create')
-                <br/><br/>
+            <div class="col-12 col-md-3 col-sm-3">
+                <input type="text" id="searchInputProductos" class="form-control form-control-sm search-table" placeholder="Buscar">
             </div>
         </div>
-    </div>
 
-    @include('pages.tablas.productos.productos-bodega')
-    @include('pages.tablas.productos.productos-variante')
-    @include('pages.tablas.productos.productos-variante-bodega')
-    
+        <div id="table-products-view" class="card mb-4" style="content-visibility: auto; overflow: auto;">
+            <div class="card-body">
+
+                @include('pages.tablas.productos.productos-table')
+
+            </div>
+        </div>
+
+        <div id="add-products-view" style="content-visibility: auto; overflow: auto; display: none;">
+            @include('pages.tablas.productos.productos-create')
+            <br/><br/>
+        </div>
+    </div>
 </div>
+
+@include('pages.tablas.productos.productos-bodega')
+@include('pages.tablas.productos.productos-variante')
+@include('pages.tablas.productos.productos-variante-bodega')
+    
 
 <script>
     var primeraBodegas = JSON.parse('<?php echo $bodegas; ?>');

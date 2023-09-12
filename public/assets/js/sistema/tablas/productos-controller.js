@@ -48,17 +48,25 @@ function productosInit() {
             url: base_url + 'producto',
         },
         columns: [
+            {"data":'id'},
             {"data":'codigo'},
             {"data":'nombre'},
             {"data": function (row, type, set){  
                 if (row.tipo_producto == 0) {
-                    return 'PRODUCTO';
+                    if (row.id_padre) return '<span class="badge rounded-pill bg-light text-dark">VARIANTE</span>';
+                    return '<span class="badge rounded-pill bg-dark">PRODUCTO</span>';
                 }
                 if (row.tipo_producto == 1) {
-                    return 'SERVICIO';
+                    return '<span class="badge rounded-pill bg-success">SERVICIO</span>';
                 }
                 if (row.tipo_producto == 2) {
-                    return 'COMBO';
+                    return '<span class="badge rounded-pill bg-primary">COMBO</span>';
+                }
+                return '';
+            }},
+            {"data": function (row, type, set){  
+                if (row.familia) {
+                    return row.familia.nombre
                 }
                 return '';
             }},
@@ -68,11 +76,25 @@ function productosInit() {
                 if (inventarios.length > 0) {
                     var html = ``;
                     inventarios.forEach(inventario => {
-                        html+= `<span class="badge bg-light text-dark">${inventario.bodega.nombre}</span>`;
+                        html+= `<span class="badge bg-light text-dark">${inventario.bodega.nombre} / ${inventario.cantidad} Ud.</span>&nbsp;`;
                     });
                     return html;
                 }
 
+                return '';
+            }},
+            {"data": function (row, type, set){  
+                var inventarios = row.inventarios;
+                var totalUnidades = 0
+                if (inventarios.length > 0) {
+                    inventarios.forEach(inventario => {
+                        totalUnidades+= parseInt(inventario.cantidad);
+                    });
+                    if (totalUnidades > 0) {
+                        return '<span class="badge rounded-pill bg-success">'+totalUnidades+' UD.</span>';
+                    }
+                    return '<span class="badge rounded-pill bg-danger">'+totalUnidades+' UD.</span>';
+                }
                 return '';
             }},
             {"data": function (row, type, set){  
@@ -90,14 +112,102 @@ function productosInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editcecos_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-bodegas" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
-                    html+= '<span id="deletececos_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-bodegas" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    html+= '<span id="editproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    html+= '<span id="deleteproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }
             },
     
         ]
     });
+
+    if (productos_table) {
+        productos_table.on('click', '.edit-producto', function() {
+            var id = this.id.split('_')[1];
+            var dataProducto = getDataById(id, productos_table);
+            console.log('dataProducto: ',dataProducto);
+
+            nuevoProducto = {
+                nombre: dataProducto.nombre,
+                codigo: dataProducto.codigo,
+                id_familia: dataProducto.familia.id,
+                precio: parseFloat(dataProducto.precio),
+                tipo_producto: dataProducto.tipo_producto,
+                precio_maximo: parseFloat(dataProducto.precio_maximo),
+                precio_inicial: parseFloat(dataProducto.precio_inicial),
+                inventarios: asignarDatosInventario(dataProducto),
+                variante: isVariante(dataProducto),
+                variantes: asignarDatosVariantes(dataProducto),
+                productos_variantes: asingnarDatosProductosVariantes(dataProducto)
+            }
+
+            $("#searchInputProductos").hide();
+            $("#table-products-view").hide();
+            $('#btn-modal-variantes').show();
+            $("#add-products-view").show();
+            $("#saveEditProducto").show();
+            $("#saveNewProducto").hide();
+            $("#cancelProducto").show();
+            $("#createProducto").hide();
+
+            $('#id_producto_edit').val(dataProducto.id);
+            $("#nombre_producto").val(dataProducto.nombre);
+            $("#codigo_producto").val(dataProducto.codigo);
+            $("#precio_producto").val(dataProducto.precio);
+            $("#precio_maximo").val(dataProducto.precio_maximo);
+            $("#precio_inicial").val(dataProducto.precio_inicial);
+
+            document.getElementById("producto_variantes1").disabled = false;
+            document.getElementById("producto_variantes2").disabled = false;
+            document.getElementById("tipo_producto_producto").disabled = false;
+            document.getElementById("tipo_producto_servicio").disabled = false;
+
+            if (dataProducto.id_padre && tipo_producto == 0) {
+                document.getElementById('producto_variantes1').click();
+            }
+
+            if (dataProducto.hijos.length > 0) {
+                document.getElementById('producto_variantes2').click();
+                $('#contenedor-variantes-generales').show();
+                addProductosVarianteItems(false);
+            }
+
+            if (dataProducto.id_padre || dataProducto.hijos.length > 0) {
+                document.getElementById("producto_variantes2").disabled = true;
+                document.getElementById("producto_variantes1").disabled = true;
+            }
+
+            var dataFamilia = {
+                id: dataProducto.familia.id,
+                text: dataProducto.familia.codigo+' - '+dataProducto.familia.nombre
+            };
+            var newOption = new Option(dataFamilia.text, dataFamilia.id, false, false);
+            $comboFamilia.append(newOption).trigger('change');
+            $comboFamilia.val(dataFamilia.id).trigger('change');
+
+            if (dataProducto.tipo_producto == 0) {
+                document.getElementById('tipo_producto_producto').click();
+                generarBodegas();
+            }
+            else if (dataProducto.tipo_producto == 1) {
+                document.getElementById('tipo_producto_servicio').click();
+            }
+            else if (dataProducto.tipo_producto == 2) {
+                document.getElementById('tipo_producto_combo').click();
+            }
+
+            if (dataProducto.variantes.length > 0) {
+                $('#btn-modal-variantes').hide();
+                addVarianteItems();
+            }
+
+            if (dataProducto.id_padre || dataProducto.hijos.length > 0 || dataProducto.inventarios.length > 0) {
+                document.getElementById("tipo_producto_producto").disabled = true;
+                document.getElementById("tipo_producto_servicio").disabled = true;
+            }
+
+        });
+    }
 
     productos_varaibles_table = $('#productosVariantesTable').DataTable({
         dom: 'tip',
@@ -187,8 +297,11 @@ function productosInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
+                    var idProductoPadre = $('#id_producto_edit').val();
                     html+= '<span id="bodegaproducvari_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info bodega-productovariante" style="margin-bottom: 0rem !important; min-width: 50px;">Bodegas</span>&nbsp;';
-                    html+= '<span id="deleteproducvari_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-productovariante" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    if (!idProductoPadre || row.edit) {
+                        html+= '<span id="deleteproducvari_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-productovariante" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    }
                     return html;
                 }
             },
@@ -306,10 +419,116 @@ function productosInit() {
     productos_table.ajax.reload();
 }
 
-function showBodebasVariantes (id) {
+function asignarDatosInventario (dataProducto) {
+    var data = [];
 
+    if (dataProducto.inventarios.length > 0) {
+        dataProducto.inventarios.forEach(inventario => {
+            data.push({
+                id: inventario.bodega.id,
+                codigo: inventario.bodega.codigo,
+                nombre: inventario.bodega.nombre,
+                ubicacion: inventario.bodega.ubicacion,
+                cantidad: parseInt(inventario.cantidad)
+            });
+        });
+    }
+    return data;
+}
+
+function asignarDatosVariantes (dataProducto) {
+    var dataProductoVariante = [];
+    var variantes = dataProducto.variantes;
+    if (dataProducto.variante == 1 && !dataProducto.id_padre) {
+        variantes.forEach(variante => {
+            if (dataProductoVariante.length > 0) {
+                var crear = true;
+                for (let index = 0; index < dataProductoVariante.length; index++) {
+                    const dataVariante = dataProductoVariante[index];
+                    if (dataVariante.id == variante.variante.id) {
+                        crear = false;
+                        dataProductoVariante[index].opciones.push({
+                            id: variante.opcion.id,
+                            estado: true,
+                            nombre: variante.opcion.nombre
+                        });
+                    }
+                }
+                if (crear) {
+                    dataProductoVariante.push({
+                        id: variante.variante.id,
+                        estado: true,
+                        nombre: variante.variante.nombre,
+                        opciones: [{
+                            id: variante.opcion.id,
+                            estado: true,
+                            nombre: variante.opcion.nombre
+                        }]
+                    });
+                }
+            } else {
+                dataProductoVariante.push({
+                    id: variante.variante.id,
+                    estado: true,
+                    nombre: variante.variante.nombre,
+                    opciones: [{
+                        id: variante.opcion.id,
+                        estado: true,
+                        nombre: variante.opcion.nombre
+                    }]
+                });
+            }
+        });
+    }
+
+    return dataProductoVariante;
+}
+
+function asingnarDatosProductosVariantes (dataProducto) {
+    var data = [];
+
+    if (dataProducto.hijos.length > 0) {
+        dataProducto.hijos.forEach(productoHijo => {
+            data.push({
+                id: productoHijo.id,
+                codigo: productoHijo.codigo,
+                estado: true,
+                inventario: productoHijo.inventarios.length > 0 ? true : false,
+                inventarios: asignarDatosInventario(productoHijo),
+                precio: parseFloat(productoHijo.precio),
+                precio_inicial: parseFloat(productoHijo.precio_inicial),
+                precio_maximo: parseFloat(productoHijo.precio_maximo),
+                variantes: asignarOpciones(productoHijo),
+            });
+        });
+    }
+
+    return data;
+}
+
+function asignarOpciones (productoHijo) {
+    var data = [];
+    var variantes = productoHijo.variantes;
+    
+    variantes.forEach(variante => {
+        data.push({
+            id: variante.opcion.id,
+            estado: true,
+            nombre: variante.opcion.nombre
+        });
+    });
+
+    return data;
+}
+
+function isVariante (dataProducto) {
+    if (dataProducto.variante == 1 && !dataProducto.id_padre) return true;
+    return false;
+}
+
+function showBodebasVariantes (idProducto) {
     $('#productos_bodegas_contenedor').empty();
-    var producto = nuevoProducto.productos_variantes[id];
+    var producto = nuevoProducto.productos_variantes[idProducto];
 
     if (producto.inventarios.length > 0) {
         Object.values(producto.inventarios).forEach(inventario => {
@@ -326,18 +545,16 @@ $('.form-control').keyup(function() {
 
 $(document).on('click', '#createProducto', function () {
     clearFormProductos();
-    // addBodegaToProduct(primeraBodegas, false);
-    addVarianteItems();
-    addProductosVarianteItems();
+
     $("#table-products-view").hide();
     $("#add-products-view").show();
     $("#cancelProducto").show();
     $("#saveNewProducto").show();
     $("#createProducto").hide();
     $("#searchInputProductos").hide();
+
     $("#titulo-view").text('Agregar producto');
 });
-
 
 $(document).on('click', '#saveNewProducto', function () {
     var form = document.querySelector('#newProductoForm');
@@ -346,8 +563,13 @@ $(document).on('click', '#saveNewProducto', function () {
         form.classList.add('was-validated');
         return;
     }
+
+    $('#saveNewProducto').hide();
+    $('#cancelProducto').hide();
+    $('#saveNewProductoLoading').show();
     
     nuevoProducto.variantes = getVariantesActivas();
+    nuevoProducto.id_familia = parseInt($('#id_familia_producto').val());
 
     $.ajax({
         url: base_url + 'producto',
@@ -357,9 +579,12 @@ $(document).on('click', '#saveNewProducto', function () {
         dataType: 'json',
     }).done((res) => {
         if(res.success){
-            document.getElementById('cancelProducto').click();
+            $('#saveNewProducto').show();
+            $('#cancelProducto').show();
+            $('#saveNewProductoLoading').hide();
             productos_table.row.add(res.data).draw();
             agregarToast('exito', 'Creación exitosa', 'Producto creado con exito!', true);
+            document.getElementById('cancelProducto').click();
         }
     }).fail((err) => {
         var errorsMsg = "";
@@ -374,17 +599,73 @@ $(document).on('click', '#saveNewProducto', function () {
         } else {
             errorsMsg = mensaje
         }
+        $('#saveNewProducto').show();
+        $('#cancelProducto').show();
+        $('#saveNewProductoLoading').hide();
         agregarToast('error', 'Creación herrada', errorsMsg);
     });
 
     
 });
 
+$(document).on('click', '#saveEditProducto', function () {
+    var form = document.querySelector('#newProductoForm');
+
+    if(!form.checkValidity()){
+        form.classList.add('was-validated');
+        return;
+    }
+
+    $('#saveEditProducto').hide();
+    $('#cancelProducto').hide();
+    $('#saveNewProductoLoading').show();
+
+    nuevoProducto.id = parseInt($('#id_producto_edit').val());
+    nuevoProducto.id_familia = parseInt($('#id_familia_producto').val());
+    
+    $.ajax({
+        url: base_url + 'producto',
+        method: 'PUT',
+        data: JSON.stringify(nuevoProducto),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            $('#saveEditProducto').show();
+            $('#cancelProducto').show();
+            $('#saveNewProductoLoading').hide();
+            productos_table.ajax.reload();
+            agregarToast('exito', 'Actualización exitosa', 'Producto actualizado con exito!', true);
+            document.getElementById('cancelProducto').click();
+        }
+    }).fail((err) => {
+        var errorsMsg = "";
+        var mensaje = err.responseJSON.message;
+        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += "- "+errores[campo]+" <br>";
+                }
+            };
+        } else {
+            errorsMsg = mensaje
+        }
+        $('#saveEditProducto').show();
+        $('#cancelProducto').show();
+        $('#saveNewProductoLoading').hide();
+        agregarToast('error', 'Error al actualizar producto', errorsMsg);
+    });
+});
+
+
 $(document).on('click', '#cancelProducto', function () {
     clearFormProductos();
+
     $("#table-products-view").show();
     $("#add-products-view").hide();
     $("#cancelProducto").hide();
+    $("#saveEditProducto").hide();
     $("#saveNewProducto").hide();
     $("#createProducto").show();
     $("#searchInputProductos").show();
@@ -397,18 +678,27 @@ function clearFormProductos() {
     $('#variantes-contenedor').empty();
     $('#productos_bodegas_contenedor').empty();
     $('#productos_bodegas_contenedor').empty();
-
+    $('#variante_producto_contenedor').empty();
+    $('#variante_opcion_contenedor').empty();
+    $('#button-new-opcion').hide();
+    
     $("#text_tipo_producto").hide();
     $("#text_tipo_servicio").hide();
     $("#text_tipo_combo").hide();
     $('#contenedor-variantes-generales').hide();
 
+    $('#id_producto_edit').val('');
     $('#nombre_producto').val('');
     $('#codigo_producto').val('');
     $('#id_familia_producto').val(0).change();
     $('#precio_producto').val(0);
     $('#precio_maximo').val(0);
     $('#precio_inicial').val(0);
+
+    document.getElementById("producto_variantes1").disabled = false;
+    document.getElementById("producto_variantes2").disabled = false;
+    document.getElementById("tipo_producto_producto").disabled = false;
+    document.getElementById("tipo_producto_servicio").disabled = false;
 
     setCrearProducto();
     
@@ -483,6 +773,8 @@ $('input[type=radio][name=producto_variantes]').change(function() {
 
 function addBodegaToProduct (bodega, deleteButton = true) {
     var cantidad = parseInt($('#cantidad_bodega_producto').val());
+    var idProductoPadre = $('#id_producto_edit').val();
+
     cantidad = cantidad ? cantidad : 0;
     var html = '';
     html+=  '<div class="item-bodega" style="cursor: pointer;" onclick="editarBodega('+bodega.id+')">';
@@ -512,14 +804,52 @@ function addBodegaToProduct (bodega, deleteButton = true) {
         html
     ].join('');
     document.getElementById('bodegas-contenedor').insertBefore(item, null);
-
+    
     nuevoProducto.inventarios.push({
         id: parseInt(bodega.id),
         nombre: bodega.nombre,
         codigo: bodega.codigo,
         ubicacion: bodega.ubicacion,
         cantidad: cantidad ? cantidad : 0,
+        edit: idProductoPadre ? true : false
     });
+}
+
+function generarBodegas () {
+
+    var bodegas = nuevoProducto.inventarios;
+
+    if (bodegas.length > 0) {
+        bodegas.forEach(bodega => {
+            var html = `
+                <div class="item-bodega" style="cursor: pointer;">
+                    <i class="fas fa-box-open" style="font-size: 20px; color: #596cff;"></i>
+                </div>
+        
+                <div style="text-align: -webkit-center; cursor: pointer;">
+                    <h6>${bodega.codigo} - ${bodega.nombre}</h6>
+                    <label id="bodega-candidad_${bodega.id}">Cantidad: ${bodega.cantidad}</label>
+                </div>
+        
+                <div>
+                    <div style="padding: 10px; cursor: not-allowed" >
+                        <i class="fas fa-edit" style="font-size: 15px; color: #939393;"></i>
+                    </div>
+                    <div style="padding: 10px; cursor: not-allowed" >
+                        <i class="fas fa-trash-alt" style="font-size: 15px; color: #939393;"></i>
+                    </div>
+                </div>
+            `;
+        
+            var item = document.createElement('li');
+            item.setAttribute("id", "bodega-producto_"+bodega.id);
+            item.setAttribute("class", "list-group-item d-flex justify-content-between align-items-center animate__animated animate__fadeIn");
+            item.innerHTML = [
+                html
+            ].join('');
+            document.getElementById('bodegas-contenedor').insertBefore(item, null);
+        });
+    }
 }
 
 function agregarBodegaProducto () {
@@ -610,10 +940,12 @@ $(document).on('click', '#saveBodegaProducto', function () {
 $(document).on('click', '#saveVariantesProducto', function () {
     nuevoProducto.productos_variantes = [];
     productos_varaibles_table.clear([]).draw();
+
     $('#variantes-contenedor').empty();
     $('#variantesProductoFormModal').modal('hide');
     $('#contenedor-variantes-generales').show();
     addVarianteItems();
+    if ($('#id_producto_edit').val()) generarVariantesProductos();
     addProductosVarianteItems();
 });
 
@@ -626,6 +958,7 @@ function generarVariantesProductos () {
     for (let indexVariante = 0; indexVariante < variantes.length; indexVariante++) {
 
         let variante = variantes[indexVariante];
+        let idProductoPadre = $('#id_producto_edit').val();
 
         if (!variante.estado) continue;
 
@@ -640,7 +973,8 @@ function generarVariantesProductos () {
                     inventario: productosActuales.inventario,
                     estado: true,
                     inventarios: [],
-                    variantesc: productosActuales.variantes
+                    variantesc: productosActuales.variantes,
+                    edit: idProductoPadre ? true : false
                 });
             });
         }
@@ -660,7 +994,8 @@ function generarVariantesProductos () {
                     inventario: false,
                     estado: true,
                     inventarios: [],
-                    variantesc: [opcion]
+                    variantesc: [opcion],
+                    edit: idProductoPadre ? true : false
                 });
 
                 nuevoProducto.productos_variantes = nuevoProducto.productos_variantes.concat({
@@ -671,7 +1006,8 @@ function generarVariantesProductos () {
                     inventario: false,
                     estado: true,
                     inventarios: [],
-                    variantes: [opcion]
+                    variantes: [opcion],
+                    edit: idProductoPadre ? true : false
                 });
             }
 
@@ -692,7 +1028,8 @@ function generarVariantesProductos () {
                         inventario: false,
                         estado: true,
                         inventarios: nuevoProducto.inventarios,
-                        variantes: varianteCache
+                        variantes: varianteCache,
+                        edit: idProductoPadre ? true : false
                     };
                     newData.variantes = newData.variantes.concat(opcion);
                     nuevoProducto.productos_variantes = nuevoProducto.productos_variantes.concat(newData);
@@ -975,13 +1312,20 @@ function crearItemBodegaProducto (bodega) {
 }
 
 function newItemBodega (bodega, addProducto = true) {
+    var idProductoPadre = $('#id_producto_edit').val();
+    var disabled = idProductoPadre ? 'disabled' : '';
+
+    if (bodega.edit == true) disabled = '';
+
     if (addProducto) {
+        disabled = '';
         nuevoProducto.productos_variantes[idProductoBodegaSelected].inventarios.push({
             id: parseInt(bodega.id),
             nombre: bodega.nombre,
             codigo: bodega.codigo,
             ubicacion: bodega.ubicacion,
             cantidad: bodega.cantidad ? bodega.cantidad : 0,
+            edit: idProductoPadre ? true : false
         });
     }
 
@@ -995,15 +1339,22 @@ function newItemBodega (bodega, addProducto = true) {
 
         <div class="form-group col-12 col-sm-6 col-md-6" >
             <label for="example-text-input" class="form-control-label">Cantidad</label>
-            <input type="number" class="form-control form-control-sm" id="cantidad-producto-variante_${bodega.id}" value="${bodega.cantidad}" onfocusout="actualizarCantidadBodega(${bodega.id})">
+            <input type="number" class="form-control form-control-sm" id="cantidad-producto-variante_${bodega.id}" value="${bodega.cantidad}" onfocusout="actualizarCantidadBodega(${bodega.id})" ${disabled}>
         </div>
-
+    `;
+    var btnEliminar = `
         <div class="col-12 col-sm-12 col-md-12">
             <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteBodegaProductoVariente(${bodega.id})" style="width: 100%; margin-top: 5px; box-shadow: none; ">
                 Eliminar
             </button>
         </div>
     `;
+
+    if (bodega.edit == true) {
+        html+= btnEliminar;
+    } else if (!idProductoPadre){
+        html+= btnEliminar;
+    }
 
     var item = document.createElement('div');
     item.setAttribute("id", "contenedor-variante-bodegas_"+bodega.id);
@@ -1233,11 +1584,13 @@ function setStatusCheckOpcion (opcion, idVariante) {
 }
 
 function addVarianteItems () {
+    var idProductoPadre = $('#id_producto_edit').val();
+    var disabled = idProductoPadre ? 'disabled' : '';
     var variantes = getVariantesActivas();
 
     Object.values(variantes).forEach(variante => {
         var html = `
-        <button type="button" class="btn btn btn-outline-dark">
+        <button type="button" class="btn btn btn-outline-dark" ${disabled}>
             ${variante.nombre} <span class="badge bg-info">&nbsp;${variante.opciones.length}</span>
         </button>
         `;
@@ -1247,7 +1600,7 @@ function addVarianteItems () {
         item.setAttribute("class", "col");
         item.setAttribute("style", "text-align-last: center;");
         item.onclick = function(){
-            agregarVarianteProducto();
+            if (disabled == 'disabled') agregarVarianteProducto();
         };
         item.innerHTML = [
             html
@@ -1257,11 +1610,14 @@ function addVarianteItems () {
 
 }
 
-function addProductosVarianteItems () {
-    generarVariantesProductos();
+function addProductosVarianteItems (tomarPadre = true) {
+    if (!$('#id_producto_edit').val()) {
+        generarVariantesProductos();
+    } 
     var idProducto = 0;
     var codigo = '';
     var productosVariantes = nuevoProducto.productos_variantes;
+    var idProductoPadre = tomarPadre ? $('#id_producto_edit').val() : false;
 
     productosVariantes.forEach(producto => {
         codigo = idProducto < 10 ? '0'+(idProducto+1) : idProducto+1;
@@ -1275,11 +1631,17 @@ function addProductosVarianteItems () {
             precio_inicial: producto.precio_inicial,
             precio_maximo: producto.precio_maximo,
             variantes: producto.variantes,
+            edit: idProductoPadre ? true : false 
         }).draw(false);
         idProducto++;
     });
     
 }
+
+$("#searchInputProductos").on("input", function (e) {
+    productos_table.context[0].jqXHR.abort();
+    $('#productoTable').DataTable().search($("#searchInputProductos").val()).draw();
+});
 
 function actualizarPrecio (id) {
     var value = $('#prodvari-precio_'+id).val();

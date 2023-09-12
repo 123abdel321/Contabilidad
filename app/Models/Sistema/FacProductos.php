@@ -39,4 +39,14 @@ class FacProductos extends Model
         return $this->hasMany('App\Models\Sistema\FacProductosBodegas', 'id_producto');
 	}
 
+    public function familia()
+    {
+        return $this->belongsTo("App\Models\Sistema\FacFamilias", "id_familia");
+    }
+
+    public function hijos()
+    {
+        return $this->hasMany('App\Models\Sistema\FacProductos', 'id_padre');
+	}
+
 }

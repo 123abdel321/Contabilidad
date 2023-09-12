@@ -34,7 +34,7 @@
                         </button>
 
                     </div>
-                    <div class="col-12 col-sm-6 col-md-6" style="background-color: #1c45870d; min-height: 150px; padding: 10px; border-radius: 10px; padding-top: 3px;">
+                    <div class="col-12 col-sm-6 col-md-6" style="background-color: #1c45870d; min-height: 150px; padding: 10px; border-radius: 10px; padding-top: 3px; max-height: 250px; overflow-y: overlay;">
                         <div id="variante_opcion_contenedor" >
                             <!-- <div id="contenedor-opciones_">
                                 <div class="item-variante-opcion item-variante-opcion-active">

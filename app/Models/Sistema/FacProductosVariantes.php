@@ -38,6 +38,6 @@ class FacProductosVariantes extends Model
 
     public function opcion()
     {
-        return $this->belongsTo("App\Models\Sistema\FacVariantesOpciones", "id_variante");
+        return $this->belongsTo("App\Models\Sistema\FacVariantesOpciones", "id_variante_opcion");
     }
 }

@@ -135,6 +135,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(ProductosController::class)->group(function () {
             Route::get('producto', 'generate');
             Route::post('producto', 'create');
+            Route::put('producto', 'update');
         });
         
         //CAPTURA GENERAL
