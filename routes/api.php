@@ -136,6 +136,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('producto', 'generate');
             Route::post('producto', 'create');
             Route::put('producto', 'update');
+            Route::delete('producto', 'delete');
         });
         
         //CAPTURA GENERAL

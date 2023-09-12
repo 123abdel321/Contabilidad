@@ -125,7 +125,6 @@ function productosInit() {
         productos_table.on('click', '.edit-producto', function() {
             var id = this.id.split('_')[1];
             var dataProducto = getDataById(id, productos_table);
-            console.log('dataProducto: ',dataProducto);
 
             nuevoProducto = {
                 nombre: dataProducto.nombre,
@@ -206,6 +205,44 @@ function productosInit() {
                 document.getElementById("tipo_producto_servicio").disabled = true;
             }
 
+        });
+
+        productos_table.on('click', '.drop-producto', function() {
+            var id = this.id.split('_')[1];
+            var trProducto = $(this).closest('tr');
+            var dataProducto = getDataById(id, productos_table);
+            console.log('dataProducto: ',dataProducto);
+            
+            Swal.fire({
+                title: 'Eliminar Producto: '+dataProducto.nombre+'?',
+                text: "No se podrá revertir!",
+                type: 'warning',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Borrar!',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.value){
+                    $.ajax({
+                        url: base_url + 'producto',
+                        method: 'DELETE',
+                        data: JSON.stringify({id: id}),
+                        headers: headers,
+                        dataType: 'json',
+                    }).done((res) => {
+                        if(res.success){
+                            productos_table.row(trProducto).remove().draw();
+                            agregarToast('exito', 'Eliminación exitosa', 'Producto eliminado con exito!', true );
+                        } else {
+                            agregarToast('error', 'Eliminación herrada', res.message);
+                        }
+                    }).fail((res) => {
+                        agregarToast('error', 'Eliminación herrada', res.message);
+                    });
+                }
+            })
         });
     }
 

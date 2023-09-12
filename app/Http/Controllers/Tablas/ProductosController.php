@@ -352,6 +352,59 @@ class ProductosController extends Controller
         }
     }
 
+    public function delete (Request $request)
+    {
+        $rules = [
+            'id' => 'required|exists:sam.fac_productos,id',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->messages()
+            ], 422);
+        }
+
+        try {
+
+            DB::connection('sam')->beginTransaction();
+
+            $producto = FacProductos::where('id_padre', $request->get('id'));
+
+            if ($producto->count() > 0) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => '',
+                    'message'=> 'No se puede eliminar producto que posee variantes, eliminar primero las variantes!'
+                ]);
+            }
+
+            FacProductos::where('id', $request->get('id'))->delete();
+            FacProductosBodegas::where('id_producto', $request->get('id'))->delete();
+            FacProductosVariantes::where('id_producto', $request->get('id'))->delete();
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => '',
+                'message'=> 'Producto eliminado con exito!'
+            ]);
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
     private function agregarVariantes ($producto, $idOpcion) {
         $opcion = FacVariantesOpciones::find($idOpcion);
 
