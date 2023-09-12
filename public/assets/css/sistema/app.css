@@ -34,7 +34,7 @@ label, .form-label {
 }
 
 .fondo-sistema {
-    background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20230521/pngtree-best-of-beautiful-summer-sunset-landscape-clouds-hd-wallpapers-image_2670005.png');
+    background-image: url('https://i.blogs.es/d5130c/wallpaper-2.png/1366_2000.webp');
     min-height: 350px !important;
     background-position: bottom center;
     background-size: cover;
@@ -616,4 +616,30 @@ svg.tea #steamR {
     float: left;
     margin-top: 4px;
     margin-left: 5px;
+}
+
+.btn-check:checked + .btn-outline-primary {
+    color: white;
+}
+
+.btn-check:checked + .btn-outline-primary:hover {
+    color: #596CFF;
+}
+
+td.dtfc-fixed-left {
+    background-color: white;
+    border-left: solid 1px #e9ecef !important;
+}
+
+th.dtfc-fixed-left {
+    right: 0px !important;
+    border-left: solid 1px #e9ecef !important;
+}
+
+.dark-version td.dtfc-fixed-left {
+    background-color: #111c44 !important;
+}
+
+td{
+    vertical-align: middle;
 }

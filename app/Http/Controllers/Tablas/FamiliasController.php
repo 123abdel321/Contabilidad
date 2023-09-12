@@ -305,5 +305,20 @@ class FamiliasController extends Controller
         }
     }
 
+    public function comboFamilia(Request $request)
+    {
+        $familia = FacFamilias::select(
+            \DB::raw('*'),
+            \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+        );
+
+        if ($request->get("q")) {
+            $familia->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        return $familia->paginate(40);
+    }
+
 
 }

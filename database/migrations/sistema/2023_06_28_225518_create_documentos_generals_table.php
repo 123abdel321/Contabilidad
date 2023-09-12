@@ -21,7 +21,7 @@ class CreateDocumentosGeneralsTable extends Migration
             $table->integer('id_centro_costos')->nullable()->index();
             $table->integer('relation_id');
             $table->integer('relation_type');
-            $table->integer('auxiliar')->default(0)->comment('0:no, 1:si');;
+            $table->integer('auxiliar')->default(0)->comment('0:no, 1:si');
             $table->date('fecha_manual')->nullable();
             $table->string('consecutivo', 20);
             $table->string('documento_referencia', 20)->nullable();

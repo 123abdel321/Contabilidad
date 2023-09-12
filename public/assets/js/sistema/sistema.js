@@ -27,6 +27,7 @@ var moduloCreado = {
     'cecos': false,
     'familias': false,
     'bodegas': false,
+    'productos': false,
     'documentogeneral': false,
     'auxiliar': false,
     'balance': false,
@@ -41,6 +42,7 @@ var moduloRoute = {
     'cecos': 'tablas',
     'familias': 'tablas',
     'bodegas': 'tablas',
+    'productos': 'tablas',
     'documentogeneral': 'capturas',
     'auxiliar': 'informes',
     'balance': 'informes',
@@ -158,6 +160,8 @@ function seleccionarView(id){
         nombre = 'Familias';
     } else if(id == 'bodegas') {
         nombre = 'Bodegas';
+    } else if(id == 'productos') {
+        nombre = 'Productos'
     }
 
     $("#titulo-view").text(nombre);
@@ -204,6 +208,9 @@ function generateNewTabButton(id){
     } else if (id == 'bodegas') {
         icon = 'fas fa-book';
         nombre = 'Bodegas';
+    } else if (id == 'productos') {
+        icon = 'fas fa-book';
+        nombre = 'Productos';
     }
 
     var html = '';

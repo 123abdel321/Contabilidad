@@ -18,6 +18,7 @@ use App\Http\Controllers\Informes\DocumentoController;
 use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\BodegasController;
 use App\Http\Controllers\Tablas\FamiliasController;
+use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
@@ -95,6 +96,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/familias', [FamiliasController::class, 'index'])->name('familias');
 		//BODEGAS
 		Route::get('/bodegas', [BodegasController::class, 'index'])->name('bodegas');
+		//BODEGAS
+		Route::get('/productos', [ProductosController::class, 'index'])->name('productos');
 		//DOCUMENTOS
 		Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos');
 		Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('show-pdf');

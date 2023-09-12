@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('codigo', 60)->unique();
             $table->string('nombre', 200);
-            $table->boolean('inventario')->default(false);
+            $table->boolean('inventario')->default(0)->nullable();
             $table->integer('id_cuenta_venta')->nullable();
             $table->integer('id_cuenta_venta_retencion')->nullable();
             $table->integer('id_cuenta_venta_devolucion')->nullable();

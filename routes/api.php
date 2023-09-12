@@ -8,6 +8,8 @@ use App\Http\Controllers\InstaladorController;
 use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\BodegasController;
 use App\Http\Controllers\Tablas\FamiliasController;
+use App\Http\Controllers\Tablas\VariantesController;
+use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
@@ -30,9 +32,6 @@ use App\Http\Controllers\Sistema\UbicacionController;
 Route::post('login', 'App\Http\Controllers\ApiController@login');
 Route::post('register', 'App\Http\Controllers\ApiController@register');
 Route::post('public-event', function (Request $request) {
-    // event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
-    // event(new PrivateMessageEvent('my-channel', 'probando ando por abdel'));
-    // return $request->all();
     event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
     return event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
 });
@@ -75,7 +74,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('cartera-find', 'App\Http\Controllers\Informes\CarteraController@find');
         Route::post('cartera-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
 
-
         //PLAN DE CUENTAS
         Route::controller(PlanCuentaController::class)->group(function () {
             Route::get('plan-cuenta', 'generate');
@@ -117,6 +115,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('familia', 'create');
             Route::put('familia', 'update');
             Route::delete('familia', 'delete');
+            Route::get('familia/combo-familia', 'comboFamilia');
         });
         //BODEGAS
         Route::controller(BodegasController::class)->group(function () {
@@ -124,6 +123,20 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('bodega', 'create');
             Route::put('bodega', 'update');
             Route::delete('bodega', 'delete');
+            Route::get('bodega/combo-bodega', 'comboBodega');
+        });
+        //VARIANTES
+        Route::controller(VariantesController::class)->group(function () {
+            Route::post('variante', 'create');
+            Route::post('variante/opcion', 'createOpcion');
+            Route::get('variante/combo-variante', 'comboVariante');
+        });
+        //PRODUCTOS
+        Route::controller(ProductosController::class)->group(function () {
+            Route::get('producto', 'generate');
+            Route::post('producto', 'create');
+            Route::put('producto', 'update');
+            Route::delete('producto', 'delete');
         });
         
         //CAPTURA GENERAL

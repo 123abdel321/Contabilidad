@@ -1,5 +1,5 @@
 <div class="modal fade" id="familiaFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="textFamiliaCreate" style="display: none;">Agregar familia</h5>
