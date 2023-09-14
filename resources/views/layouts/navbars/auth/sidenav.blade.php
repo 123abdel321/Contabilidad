@@ -57,73 +57,58 @@
             <li class="nav-item">
                 <div data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link collapsed" aria-controls="dashboardsExamples" role="button" aria-expanded="false" style="color: white;">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-tv-2 text-success text-sm opacity-10"></i>
+                        <i class="fas fa-table text-success text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Tablas</span>
                 </div>
                 <div class="collapse" id="dashboardsExamples" >
-                    <ul class="navbar-nav" style="margin-left: 15px;">
+                    <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_nit">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-single-copy-04 text-blue text-sm opacity-10"></i>
-                                </div>
+                            <a class="nav-link button-side-nav" id="sidenav_nit" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Cédulas Nit</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_comprobante">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-single-copy-04 text-blue text-sm opacity-10"></i>
-                                </div>
+                            <a class="nav-link button-side-nav" id="sidenav_comprobante" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Comprobantes</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_plancuenta">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-single-copy-04 text-blue text-sm opacity-10"></i>
-                                </div>
+                            <a class="nav-link button-side-nav" id="sidenav_plancuenta" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Plan de cuentas</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_cecos">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-single-copy-04 text-blue text-sm opacity-10"></i>
-                                </div>
+                            <a class="nav-link button-side-nav" id="sidenav_cecos" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Centro de costos</span>
                             </a>
                         </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <div data-bs-toggle="collapse" href="#collapseInvetario" class="nav-link collapsed" aria-controls="collapseInvetario" role="button" aria-expanded="false" style="color: white;">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-box-open text-success text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Inventario</span>
+                </div>
+                <div class="collapse" id="collapseInvetario" >
+                    <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_familias">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-single-copy-04 text-blue text-sm opacity-10"></i>
-                                </div>
+                            <a class="nav-link button-side-nav" id="sidenav_productos" style="margin-left: 25px;">
+                                <span class="nav-link-text ms-1">Productos</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link button-side-nav" id="sidenav_familias" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Familias</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_bodegas">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-single-copy-04 text-blue text-sm opacity-10"></i>
-                                </div>
+                            <a class="nav-link button-side-nav" id="sidenav_bodegas" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Bodegas</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_productos">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-single-copy-04 text-blue text-sm opacity-10"></i>
-                                </div>
-                                <span class="nav-link-text ms-1">Productos</span>
                             </a>
                         </li>
                     </ul>
@@ -133,18 +118,14 @@
             <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#collapseCapturas" class="nav-link collapsed" aria-controls="collapseCapturas" role="button" aria-expanded="false" style="color: white;">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-tv-2 text-success text-sm opacity-10"></i>
+                        <i class="fas fa-folder-open text-success text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Capturas</span>
                 </a>
                 <div class="collapse" id="collapseCapturas" >
-                    <ul class="navbar-nav" style="margin-left: 15px;">
+                    <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
                         <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_documentogeneral">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    <i class="ni ni-calendar-grid-58 text-blue text-sm opacity-10"></i>
-                                </div>
                                 <span class="nav-link-text ms-1">Documento General</span>
                             </a>
                         </li>
@@ -155,50 +136,30 @@
             <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#collapseInformes" class="nav-link collapsed" aria-controls="collapseInformes" role="button" aria-expanded="false" style="color: white;">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-ungroup text-success text-sm opacity-10"></i>
+                        <i class="fas fa-file-contract text-success text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Informes</span>
                 </a>
                 <div class="collapse" id="collapseInformes" >
-                    <ul class="navbar-nav" style="margin-left: 15px;">
+                    <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
                     
                         <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_auxiliar">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    
-                                    <i class="ni ni-collection text-blue text-sm opacity-10"></i>
-                                </div>
                                 <span class="nav-link-text ms-1">Auxiliar</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_balance">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                   
-                                    <i class="ni ni-collection text-blue text-sm opacity-10"></i>
-                                </div>
                                 <span class="nav-link-text ms-1">Balance</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_cartera">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    
-                                    <i class="ni ni-collection text-blue text-sm opacity-10"></i>
-                                </div>
                                 <span class="nav-link-text ms-1">Cartera</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_documentos">
-                                <div
-                                    class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                    
-                                    <i class="ni ni-collection text-blue text-sm opacity-10"></i>
-                                </div>
                                 <span class="nav-link-text ms-1">Documentos</span>
                             </a>
                         </li>
