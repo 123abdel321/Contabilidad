@@ -144,22 +144,22 @@
                     <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
                     
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_auxiliar">
+                            <a class="nav-link button-side-nav" id="sidenav_auxiliar" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Auxiliar</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_balance">
+                            <a class="nav-link button-side-nav" id="sidenav_balance" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Balance</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_cartera">
+                            <a class="nav-link button-side-nav" id="sidenav_cartera" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Cartera</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_documentos">
+                            <a class="nav-link button-side-nav" id="sidenav_documentos" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Documentos</span>
                             </a>
                         </li>
