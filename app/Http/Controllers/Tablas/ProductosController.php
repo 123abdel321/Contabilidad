@@ -219,9 +219,9 @@ class ProductosController extends Controller
 				function ($attribute, $value, $fail) use ($request) {
                     $producto = FacProductos::find($request->get('id')); 
                     if ($producto->codigo != $request->get('codigo')) {
-                        $productoCodeExist =  FacProductos::where()->count();
+                        $productoCodeExist =  FacProductos::where('codigo', $request->get('codigo'))->count();
                         if ($productoCodeExist > 0) {
-                            $fail("El codigo ".$producto->codigo." ya existe.");
+                            $fail("El codigo ".$request->get('codigo')." ya existe.");
                         }
                     }
                 },
@@ -231,9 +231,9 @@ class ProductosController extends Controller
 				function ($attribute, $value, $fail) use ($request) {
                     $producto = FacProductos::find($request->get('id')); 
                     if ($producto->nombre != $request->get('nombre')) {
-                        $productoCodeExist =  FacProductos::where()->count();
+                        $productoCodeExist =  FacProductos::where('nombre', $request->get('nombre'))->count();
                         if ($productoCodeExist > 0) {
-                            $fail("El nombre ".$producto->nombre." ya existe.");
+                            $fail("El nombre ".$request->get('nombre')." ya existe.");
                         }
                     }
                 },
@@ -265,9 +265,8 @@ class ProductosController extends Controller
                 "message"=>$validator->messages()
             ], 422);
         }
-
+        
         try {
-
             DB::connection('sam')->beginTransaction();
 
             //ACTUALIZAR INFORMACION DEL PRODUCTO
@@ -298,6 +297,7 @@ class ProductosController extends Controller
 
             if (count($productosVariantes) > 0) {
                 foreach ($productosVariantes as $productoVar) {
+
                     $productoVariante = null;
                     if (array_key_exists('id', $productoVar)) {
                         $productoVariante = FacProductos::where('id', $productoVar['id'])->first();
@@ -325,7 +325,7 @@ class ProductosController extends Controller
                     }
 
                     //ASOCIAR BODEGAS NUEVAS AL PRODUCTO
-                    foreach ($producto['inventarios'] as $bodega) {
+                    foreach ($productoVar['inventarios'] as $bodega) {
                         if (array_key_exists('edit', $bodega) && $bodega['edit'] == true) {
                             $this->agregarBodega($productoVariante, $bodega);
                         }
