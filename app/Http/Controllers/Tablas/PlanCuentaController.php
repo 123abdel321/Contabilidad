@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Sistema\TipoCuenta;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\Comprobantes;
+use App\Models\Sistema\PlanCuentasTipo;
 use App\Models\Sistema\DocumentosGeneral;
 
 class PlanCuentaController extends Controller
@@ -56,7 +57,7 @@ class PlanCuentaController extends Controller
         $searchValue = $search_arr['value']; // Search value
 
         $cuentas = PlanCuentas::orderBy($columnName,$columnSortOrder)
-            ->with('tipo_cuenta', 'padre')
+            ->with('tipos_cuenta', 'padre')
             ->where('nombre', 'like', '%' .$searchValue . '%')
             ->orWhere('cuenta', 'like', '%' .$searchValue . '%')
             ->select(
@@ -89,7 +90,7 @@ class PlanCuentaController extends Controller
 
         $rules = [
 			'id_padre' => 'nullable|exists:sam.plan_cuentas,id',
-            'id_tipo_cuenta' => 'nullable|exists:sam.tipo_cuentas,id',
+            // 'id_tipo_cuenta' => 'nullable|exists:sam.tipo_cuentas,id',
             'id_impuesto' => 'nullable|exists:sam.impuestos,id',
             'cuenta' => [
 				"required",
@@ -127,21 +128,23 @@ class PlanCuentaController extends Controller
 
         try {
 
-            $cuentaPadre = NULL;
+            $cuentaPadre = '';
 
             if($request->get('id_padre')){
-                $padre = PlanCuentas::find($request->get('id_padre'));
+                $padre = PlanCuentas::where('id', $request->get('id_padre'))->first();
                 $padre->auxiliar = 0;
+                $padre->save();
                 $cuentaPadre = $padre->cuenta;
             }
 
             $cuenta = PlanCuentas::create([
                 'id_padre' => $request->get('id_padre'),
-                'id_tipo_cuenta' => $request->get('id_tipo_cuenta'),
-                'id_impuesto' => $request->get('id_impuesto'),
                 'cuenta' => $cuentaPadre.$request->get('cuenta'),
                 'nombre' => $request->get('nombre'),
                 'auxiliar' => 1,
+                'tope_retencion' => $request->get('tope_retencion'),
+                'porcentaje_retencion' => $request->get('porcentaje_retencion'),
+                'porcentaje_iva' => $request->get('porcentaje_iva'),
                 'exige_nit' => $request->get('exige_nit'),
                 'exige_documento_referencia' => $request->get('exige_documento_referencia'),
                 'exige_concepto' => $request->get('exige_concepto'),
@@ -155,7 +158,18 @@ class PlanCuentaController extends Controller
                 'updated_by' => request()->user()->id,
             ]);
 
-            $padre->save();
+            $tiposCuenta = $request->get('id_tipo_cuenta');
+
+            if (count($tiposCuenta) > 0) {
+                PlanCuentasTipo::where('id_cuenta', $request->get('id'))->delete();
+                
+                foreach ($tiposCuenta as $tipoCuenta) {
+                    PlanCuentasTipo::create([
+                        'id_cuenta' => $cuenta->id,
+                        'id_tipo_cuenta' => $tipoCuenta
+                    ]);
+                }
+            }
 
             DB::connection('sam')->commit();
 
@@ -180,15 +194,18 @@ class PlanCuentaController extends Controller
         $rules = [
             'id' => 'required|exists:sam.plan_cuentas,id',
 			'id_padre' => 'nullable|exists:sam.plan_cuentas,id',
-            'id_tipo_cuenta' => 'nullable|exists:sam.tipo_cuentas,id',
+            // 'id_tipo_cuenta' => 'nullable|exists:sam.tipo_cuentas,id',
             'id_impuesto' => 'nullable|exists:sam.impuestos,id',
             'cuenta' => [
 				"nullable",
-				function ($attribute, $value, $fail) {
-					$search = PlanCuentas::whereCuenta($value)->first();
-					if ($search) {
-						$fail("La cuenta ".$value." ya existe.");
-					}
+				function ($attribute, $value, $fail) use ($request) {
+                    $cuenta = PlanCuentas::find($request->get('id'));
+                    if ($cuenta->cuenta != $request->get('cuenta')) {
+                        $cuentaExist = PlanCuentas::where('cuenta', $request->get('cuenta'))->count();
+                        if ($cuentaExist > 0) {
+                            $fail("La cuenta ".$value." ya existe.");
+                        }
+                    }
                 },
 			],
             'nombre' => 'required',
@@ -223,16 +240,19 @@ class PlanCuentaController extends Controller
                 $cuentaPadre = $padre->cuenta;
             }
 
-            $auxiliar = PlanCuentas::where('id_padre', $request->get('id'));
+            $auxiliar = 0;
+            $auxiliarPadre = PlanCuentas::where('id_padre', $request->get('id'))->first();
+            if ($auxiliarPadre) $auxiliar = 1;
 
             PlanCuentas::where('id', $request->get('id'))
                 ->update([
                     'id_padre' => $request->get('id_padre'),
-                    'id_tipo_cuenta' => $request->get('id_tipo_cuenta'),
-                    'id_impuesto' => $request->get('id_impuesto'),
                     'cuenta' => $cuentaPadre.$request->get('cuenta'),
                     'nombre' => $request->get('nombre'),
-                    'auxiliar' => $auxiliar->count() > 0 ? 1 : 0,
+                    'auxiliar' => $auxiliar,
+                    'tope_retencion' => $request->get('tope_retencion'),
+                    'porcentaje_retencion' => $request->get('porcentaje_retencion'),
+                    'porcentaje_iva' => $request->get('porcentaje_iva'),
                     'exige_nit' => $request->get('exige_nit'),
                     'exige_documento_referencia' => $request->get('exige_documento_referencia'),
                     'exige_concepto' => $request->get('exige_concepto'),
@@ -244,10 +264,25 @@ class PlanCuentaController extends Controller
                     'naturaleza_ventas' => $request->get('naturaleza_ventas'),
                     'updated_by' => request()->user()->id,
                 ]);
+            
+            $tiposCuenta = $request->get('id_tipo_cuenta');
 
-            $planCuenta = PlanCuentas::where('id', $request->get('id'))->with('tipo_cuenta', 'padre')->first();
+            if (count($tiposCuenta) > 0) {
+                PlanCuentasTipo::where('id_cuenta', $request->get('id'))->delete();
+                
+                foreach ($tiposCuenta as $tipoCuenta) {
+                    PlanCuentasTipo::create([
+                        'id_cuenta' => $request->get('id_cuenta'),
+                        'id_tipo_cuenta' => $tipoCuenta
+                    ]);
+                }
+            }
 
             DB::connection('sam')->commit();
+
+            $planCuenta = PlanCuentas::where('id', $request->get('id'))
+                ->with('tipos_cuenta', 'padre')
+                ->first();
 
             return response()->json([
                 'success'=>	true,

@@ -19,7 +19,9 @@ class PlanCuentas extends Model
     protected $fillable = [
         'id_padre',
         'id_tipo_cuenta',
-        'id_impuesto',
+        'tope_retencion',
+        'porcentaje_retencion',
+        'porcentaje_iva',
         'cuenta',
         'nombre',
         'pasarela', // Check si es una cuenta usada para sacar el extracto de pasarela
@@ -43,23 +45,14 @@ class PlanCuentas extends Model
         return $this->belongsTo("App\Models\Sistema\TipoImpuestos", "id_impuesto");
     }
 
-    public function tipo_impuesto()
-    {
-        return $this->belongsTo("App\Models\Sistema\TipoImpuestos", "id_impuesto");
-    }
-
-    public function tipo_cuenta()
-    {
-        return $this->belongsTo("App\Models\Sistema\TipoCuenta", "id_tipo_cuenta");
-    }
-
     public function padre()
     {
         return $this->belongsTo("App\Models\Sistema\PlanCuentas", "id_padre");
     }
 
-	// public function documentos()
-    // {
-    //     return $this->hasMany(ConDocumentoGeneral::class, 'id_cuenta', 'id');
-    // }
+	public function tipos_cuenta()
+    {
+        return $this->hasMany("App\Models\Sistema\PlanCuentasTipo", "id_cuenta");
+        
+    }
 }

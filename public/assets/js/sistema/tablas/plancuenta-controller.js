@@ -4,7 +4,7 @@ var plan_cuentas_table = null;
 
 function plancuentaInit() {
     plan_cuentas_table = $('#planCuentaTable').DataTable({
-        pageLength: 15,
+        pageLength: 50,
         dom: 'Brtip',
         paging: true,
         responsive: false,
@@ -32,20 +32,23 @@ function plancuentaInit() {
         },
         'rowCallback': function(row, data, index){
             if(data.cuenta.auxiliar){
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.cuenta.length == 1){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 80%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
                 return;
             }
             if(data.cuenta.length == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
-                return;
-            }
-            if(data.cuenta.length == 4){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
                 return;
             }
+            if(data.cuenta.length == 4){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 5%)');
+                return;
+            }
+            $('td', row).css('font-weight', 'bold');
+            return;
         },
         ajax:  {
             type: "GET",
@@ -150,7 +153,7 @@ function plancuentaInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-plan-cuentas" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
+                    html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-plan-cuentas" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
                     html+= '<span id="deleteplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-plan-cuentas" style="margin-bottom: 0rem !important">Eliminar</span>';
                     return html;
                 }
@@ -184,14 +187,23 @@ function plancuentaInit() {
                 $comboPadreCuenta.val('').trigger('change');
                 $("#cuenta").val(data.cuenta);
             }
+
+            var tipoCuenta = [];
+            data.tipos_cuenta.forEach(tipo_cuenta => {
+                tipoCuenta.push(tipo_cuenta.id_tipo_cuenta);
+            });
+
             $("#id_plan_cuenta").val(data.id);
+            $("#id_tipo_cuenta").val(tipoCuenta).change();
             $("#nombre").val(data.nombre);
+            $("#tope_retencion").val(data.tope_retencion);
+            $("#porcentaje_retencion").val(data.porcentaje_retencion);
+            $("#porcentaje_iva").val(data.porcentaje_iva);
             $("#naturaleza_cuenta").val(data.naturaleza_cuenta).change();
             $("#naturaleza_ingresos").val(data.naturaleza_ingresos).change();
             $("#naturaleza_egresos").val(data.naturaleza_egresos).change();
             $("#naturaleza_compras").val(data.naturaleza_compras).change();
             $("#naturaleza_ventas").val(data.naturaleza_ventas).change();
-            $("#id_tipo_cuenta").val(data.id_tipo_cuenta).change();
             
             $("#exige_nit").prop( "checked", data.exige_nit == 1 ? true : false );
             $("#exige_documento_referencia").prop( "checked", data.exige_documento_referencia == 1 ? true : false );
@@ -254,6 +266,11 @@ function plancuentaInit() {
         }
     });
 
+    $('#id_tipo_cuenta').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#planCuentaFormModal'),
+    });
+
     $('.water').hide();
     plan_cuentas_table.ajax.reload();
 }
@@ -291,6 +308,9 @@ $(document).on('click', '#savePlanCuenta', function () {
         cuenta: $("#cuenta").val(),
         nombre: $("#nombre").val(),
         id_tipo_cuenta: $("#id_tipo_cuenta").val(),
+        tope_retencion: $("#tope_retencion").val(),
+        porcentaje_retencion: $("#porcentaje_retencion").val(),
+        porcentaje_iva: $("#porcentaje_iva").val(),
         naturaleza_cuenta: $("#naturaleza_cuenta").val(),
         naturaleza_ingresos: $("#naturaleza_ingresos").val(),
         naturaleza_egresos: $("#naturaleza_egresos").val(),
@@ -347,6 +367,9 @@ function clearFormPlanCuenta(){
     $("#id_padre").val(0).change();
     $("#cuenta").val('');
     $("#nombre").val('');
+    $("#tope_retencion").val(0);
+    $("#porcentaje_retencion").val(0);
+    $("#porcentaje_iva").val(0);
     $("#naturaleza_cuenta").val('').change();
     $("#naturaleza_ingresos").val('').change();
     $("#naturaleza_egresos").val('').change();
@@ -357,7 +380,6 @@ function clearFormPlanCuenta(){
     $("#exige_documento_referencia").prop( "checked", false );
     $("#exige_concepto").prop( "checked", false );
     $("#exige_centro_costos").prop( "checked", false );
-
 }
 
 $(document).on('click', '#updatePlanCuenta', function () {
@@ -377,8 +399,10 @@ $(document).on('click', '#updatePlanCuenta', function () {
         id_padre: $("#id_padre").val(),
         cuenta: $("#cuenta").val(),
         nombre: $("#nombre").val(),
-        naturaleza_cuenta: $("#naturaleza_cuenta").val(),
         id_tipo_cuenta: $("#id_tipo_cuenta").val(),
+        tope_retencion: $("#tope_retencion").val(),
+        porcentaje_retencion: $("#porcentaje_retencion").val(),
+        porcentaje_iva: $("#porcentaje_iva").val(),
         naturaleza_cuenta: $("#naturaleza_cuenta").val(),
         naturaleza_ingresos: $("#naturaleza_ingresos").val(),
         naturaleza_egresos: $("#naturaleza_egresos").val(),
@@ -407,7 +431,8 @@ $(document).on('click', '#updatePlanCuenta', function () {
             agregarToast('exito', 'Actualización exitosa', 'Cuenta actualizada con exito!', true );
         }
     }).fail((err) => {
-        $('#savePlanCuenta').show();
+        $('#savePlanCuenta').hide();
+        $('#updatePlanCuenta').show();
         $('#savePlanCuentaLoading').hide();
         agregarToast('error', 'Error al actualizar Cuenta!', errorsMsg);
     });
@@ -419,3 +444,30 @@ $("#id_padre").on('change', function(e) {
         $("#text_cuenta_padre").val(data[0].cuenta);
     }
 });
+
+$("#id_tipo_cuenta").on('change', function(e) {
+    var tiposCuentas = $(this).select2('data');
+
+    $("#campo_tope_retencion").hide();
+    $("#campo_porcentaje_iva").hide();
+    $("#campo_porcentaje_retencion").hide();
+    $("#campo_tope_retencion").val(0);
+    $("#campo_porcentaje_iva").val(0);
+    $("#campo_porcentaje_retencion").val(0);
+
+    if (tiposCuentas.length > 0) {
+        tiposCuentas.forEach(tipoCuenta => {
+            if (tipoCuenta.id == 12 || tipoCuenta.id == 13) {
+                $("#campo_tope_retencion").show();
+                $("#campo_porcentaje_retencion").show();
+            }
+            if (tipoCuenta.id == 9 || tipoCuenta.id == 16) {
+                $("#campo_porcentaje_iva").show();
+            }
+        });
+    }
+});
+
+function selectItem (idItem) {
+    $('#'+idItem).select();
+}

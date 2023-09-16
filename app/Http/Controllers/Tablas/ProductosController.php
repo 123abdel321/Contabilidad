@@ -217,7 +217,7 @@ class ProductosController extends Controller
             'codigo' => [
 				'required','min:1','max:200','string',
 				function ($attribute, $value, $fail) use ($request) {
-                    $producto = FacProductos::find($request->get('id')); 
+                    $producto = FacProductos::find($request->get('id'));
                     if ($producto->codigo != $request->get('codigo')) {
                         $productoCodeExist =  FacProductos::where('codigo', $request->get('codigo'))->count();
                         if ($productoCodeExist > 0) {
