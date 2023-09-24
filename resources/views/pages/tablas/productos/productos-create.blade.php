@@ -53,15 +53,15 @@
                 </div>
 
                 <div class="form-group col-6 col-sm-4 col-md-4" >
-                    <label for="example-text-input" class="form-control-label">Precio</label>
+                    <label for="example-text-input" class="form-control-label">Valor venta</label>
                     <input type="number" class="form-control form-control-sm" name="precio_producto" id="precio_producto" onfocusout="addPrecioProducto()" value="0" required>
                     <div class="invalid-feedback">
                         El campo Precio es requerido
                     </div>
                 </div>
 
-                <div class="form-group col-6 col-sm-4 col-md-4" >
-                    <label for="example-text-input" class="form-control-label">Precio maximo</label>
+                <div class="form-group col-6 col-sm-4 col-md-4" style="display: none;">
+                    <label for="example-text-input" class="form-control-label"></label>
                     <input type="number" class="form-control form-control-sm" name="precio_maximo" id="precio_maximo" onfocusout="addPrecioMaximoProducto()" value="0" required>
                     <div class="invalid-feedback">
                         El campo Precio maximo es requerido
@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="form-group col-6 col-sm-4 col-md-4" >
-                    <label for="example-text-input" class="form-control-label">Precio inicial</label>
+                    <label for="example-text-input" class="form-control-label">Costo compra</label>
                     <input type="number" class="form-control form-control-sm" name="precio_inicial" id="precio_inicial" onfocusout="addPrecioInicialProducto()" value="0" required>
                     <div class="invalid-feedback">
                         El campo Precio inicial es requerido

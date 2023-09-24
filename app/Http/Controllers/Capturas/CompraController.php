@@ -73,12 +73,6 @@ class CompraController extends Controller
 
     public function create (Request $request)
     {
-        return response()->json([
-            'success'=>	true,
-            'data' => [],
-            'impresion' => 6,
-            'message'=> 'Compra creada con exito!'
-        ], 200);
         $idCuentaAnticipos = VariablesEntorno::where('nombre', 'id_cuenta_anticipos')->first();
 
         if(!$idCuentaAnticipos || !$idCuentaAnticipos->valor) {
