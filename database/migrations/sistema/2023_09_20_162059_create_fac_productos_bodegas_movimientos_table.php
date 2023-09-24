@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fac_productos_bodegas', function (Blueprint $table) {
+        Schema::create('fac_productos_bodegas_movimientos', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_producto')->nullable();
-            $table->integer('id_bodega')->nullable();
+            $table->integer('relation_id');
+            $table->integer('relation_type');
+            $table->integer('id_producto');
+            $table->integer('id_bodega');
             $table->decimal('cantidad', 15)->default(0);
+            $table->integer('tipo_tranferencia')->default(0)->comment('0:Creacion, 1:Cargue, 2:Descargue, 3:traslado');
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fac_productos_bodegas');
+        Schema::dropIfExists('fac_productos_bodegas_movimientos');
     }
 };

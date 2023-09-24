@@ -57,7 +57,7 @@ class PlanCuentaController extends Controller
         $searchValue = $search_arr['value']; // Search value
 
         $cuentas = PlanCuentas::orderBy($columnName,$columnSortOrder)
-            ->with('tipos_cuenta', 'padre')
+            ->with('tipos_cuenta', 'padre', 'impuesto')
             ->where('nombre', 'like', '%' .$searchValue . '%')
             ->orWhere('cuenta', 'like', '%' .$searchValue . '%')
             ->select(
@@ -142,9 +142,7 @@ class PlanCuentaController extends Controller
                 'cuenta' => $cuentaPadre.$request->get('cuenta'),
                 'nombre' => $request->get('nombre'),
                 'auxiliar' => 1,
-                'tope_retencion' => $request->get('tope_retencion'),
-                'porcentaje_retencion' => $request->get('porcentaje_retencion'),
-                'porcentaje_iva' => $request->get('porcentaje_iva'),
+                'id_impuesto' => $request->get('id_impuesto'),
                 'exige_nit' => $request->get('exige_nit'),
                 'exige_documento_referencia' => $request->get('exige_documento_referencia'),
                 'exige_concepto' => $request->get('exige_concepto'),
@@ -250,9 +248,7 @@ class PlanCuentaController extends Controller
                     'cuenta' => $cuentaPadre.$request->get('cuenta'),
                     'nombre' => $request->get('nombre'),
                     'auxiliar' => $auxiliar,
-                    'tope_retencion' => $request->get('tope_retencion'),
-                    'porcentaje_retencion' => $request->get('porcentaje_retencion'),
-                    'porcentaje_iva' => $request->get('porcentaje_iva'),
+                    'id_impuesto' => $request->get('id_impuesto'),
                     'exige_nit' => $request->get('exige_nit'),
                     'exige_documento_referencia' => $request->get('exige_documento_referencia'),
                     'exige_concepto' => $request->get('exige_concepto'),
@@ -272,7 +268,7 @@ class PlanCuentaController extends Controller
                 
                 foreach ($tiposCuenta as $tipoCuenta) {
                     PlanCuentasTipo::create([
-                        'id_cuenta' => $request->get('id_cuenta'),
+                        'id_cuenta' => $request->get('id'),
                         'id_tipo_cuenta' => $tipoCuenta
                     ]);
                 }
@@ -393,11 +389,6 @@ class PlanCuentaController extends Controller
 
         $planCuenta = PlanCuentas::where('cuenta', '<', '999999')->select($select);
 
-        if ($request->get("q")) {
-            $planCuenta->where('cuenta', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
-        }
-
         if ($request->has("id_comprobante") && $comprobante) {
             $planCuenta->whereNotNull($naturaleza);
         }
@@ -410,6 +401,12 @@ class PlanCuentaController extends Controller
         if ($request->has("id_tipo_cuenta")) {
             $planCuenta->where('auxiliar', 1);
             // $planCuenta->whereIn('id_tipo_cuenta',  $request->get('id_tipo_cuenta'));
+        }
+
+        if ($request->get("search")) {
+            // dd('asd');
+            $planCuenta->where('cuenta', 'LIKE', '%' . $request->get("search") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("search") . '%');
         }
 
         return $planCuenta->orderBy('cuenta')->paginate(30);

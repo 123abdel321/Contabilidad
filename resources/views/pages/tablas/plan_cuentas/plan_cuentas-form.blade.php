@@ -77,7 +77,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group form-group col-12 col-sm-12 col-md-12">
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
                             <label for="exampleFormControlSelect1">Tipo cuenta</label>
                             <select class="form-control form-control-sm" id="id_tipo_cuenta" name="id_tipo_cuenta[]" multiple="multiple" requiere>
                                 @foreach ($tipoCuenta as $cuenta)
@@ -86,19 +86,10 @@
                             </select>
                         </div>
 
-                        <div id="campo_tope_retencion" class="form-group form-group col-12 col-sm-6 col-md-6" style="display: none;">
-                            <label for="example-text-input" class="form-control-label">Tope retención</label>
-                            <input type="number" class="form-control form-control-sm" name="tope_retencion" id="tope_retencion" value="0" onfocus="selectItem('tope_retencion')">
-                        </div>
-
-                        <div id="campo_porcentaje_retencion" class="form-group form-group col-12 col-sm-6 col-md-6" style="display: none;">
-                            <label for="example-text-input" class="form-control-label">% Retención</label>
-                            <input type="number" class="form-control form-control-sm" name="porcentaje_retencion" id="porcentaje_retencion" value="0" min="0" max="100" onfocus="selectItem('porcentaje_retencion')">
-                        </div>
-
-                        <div id="campo_porcentaje_iva" class="form-group form-group col-12 col-sm-6 col-md-6" style="display: none;">
-                            <label for="example-text-input" class="form-control-label">% IVA</label>
-                            <input type="number" class="form-control form-control-sm" name="porcentaje_iva" id="porcentaje_iva" value="0" onfocus="selectItem('porcentaje_iva')">
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
+                            <label for="exampleFormControlSelect1">Impuesto</label>
+                            <select name="id_impuesto_cuenta" id="id_impuesto_cuenta" class="form-control form-control-sm">
+                            </select>
                         </div>
 
                         <div class="form-check form-group col-12 col-sm-6 col-md-6">

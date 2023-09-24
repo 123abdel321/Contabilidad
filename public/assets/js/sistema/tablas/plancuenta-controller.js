@@ -1,5 +1,6 @@
 
 var $comboPadreCuenta = null;
+var $comboImpuesto = null;
 var plan_cuentas_table = null;
 
 function plancuentaInit() {
@@ -36,15 +37,15 @@ function plancuentaInit() {
                 return;
             }
             if(data.cuenta.length == 1){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 40%)');
                 return;
             }
             if(data.cuenta.length == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 25%)');
                 return;
             }
             if(data.cuenta.length == 4){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 5%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 10%)');
                 return;
             }
             $('td', row).css('font-weight', 'bold');
@@ -168,10 +169,10 @@ function plancuentaInit() {
             $("#savePlanCuentaLoading").hide();
             $("#updatePlanCuenta").show();
             $("#savePlanCuenta").hide();
-        
-            var trPlanCuenta = $(this).closest('tr');
+
             var id = this.id.split('_')[1];
             var data = getDataById(id, plan_cuentas_table);
+
             if(data.padre){
                 var dataCuenta = {
                     id: data.padre.id,
@@ -188,6 +189,18 @@ function plancuentaInit() {
                 $("#cuenta").val(data.cuenta);
             }
 
+            if (data.impuesto) {
+                var dataImpuesto = {
+                    id: data.impuesto.id,
+                    text: data.impuesto.nombre + ' %' + data.impuesto.porcentaje
+                };
+                var newOption = new Option(dataImpuesto.text, dataImpuesto.id, false, false);
+                $comboImpuesto.append(newOption).trigger('change');
+                $comboImpuesto.val(dataImpuesto.id).trigger('change');
+            } else {
+                $("#id_impuesto_cuenta").val('').change();
+            }
+
             var tipoCuenta = [];
             data.tipos_cuenta.forEach(tipo_cuenta => {
                 tipoCuenta.push(tipo_cuenta.id_tipo_cuenta);
@@ -196,9 +209,6 @@ function plancuentaInit() {
             $("#id_plan_cuenta").val(data.id);
             $("#id_tipo_cuenta").val(tipoCuenta).change();
             $("#nombre").val(data.nombre);
-            $("#tope_retencion").val(data.tope_retencion);
-            $("#porcentaje_retencion").val(data.porcentaje_retencion);
-            $("#porcentaje_iva").val(data.porcentaje_iva);
             $("#naturaleza_cuenta").val(data.naturaleza_cuenta).change();
             $("#naturaleza_ingresos").val(data.naturaleza_ingresos).change();
             $("#naturaleza_egresos").val(data.naturaleza_egresos).change();
@@ -266,6 +276,22 @@ function plancuentaInit() {
         }
     });
 
+    $comboImpuesto = $('#id_impuesto_cuenta').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#planCuentaFormModal'),
+        delay: 250,
+        ajax: {
+            url: 'api/impuesto/combo-impuesto',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     $('#id_tipo_cuenta').select2({
         theme: 'bootstrap-5',
         dropdownParent: $('#planCuentaFormModal'),
@@ -286,9 +312,9 @@ $(document).on('click', '#createPlanCuenta', function () {
     $("#planCuentaFormModal").modal('show');
 });
 
-$("#searchInput").on("input", function (e) {
+$("#searchInputCuenta").on("input", function (e) {
     plan_cuentas_table.context[0].jqXHR.abort();
-    $('#planCuentaTable').DataTable().search($("#searchInput").val()).draw();
+    $('#planCuentaTable').DataTable().search($("#searchInputCuenta").val()).draw();
 });
 
 $(document).on('click', '#savePlanCuenta', function () {
@@ -308,9 +334,7 @@ $(document).on('click', '#savePlanCuenta', function () {
         cuenta: $("#cuenta").val(),
         nombre: $("#nombre").val(),
         id_tipo_cuenta: $("#id_tipo_cuenta").val(),
-        tope_retencion: $("#tope_retencion").val(),
-        porcentaje_retencion: $("#porcentaje_retencion").val(),
-        porcentaje_iva: $("#porcentaje_iva").val(),
+        id_impuesto: $("#id_impuesto_cuenta").val(),
         naturaleza_cuenta: $("#naturaleza_cuenta").val(),
         naturaleza_ingresos: $("#naturaleza_ingresos").val(),
         naturaleza_egresos: $("#naturaleza_egresos").val(),
@@ -367,15 +391,15 @@ function clearFormPlanCuenta(){
     $("#id_padre").val(0).change();
     $("#cuenta").val('');
     $("#nombre").val('');
-    $("#tope_retencion").val(0);
-    $("#porcentaje_retencion").val(0);
-    $("#porcentaje_iva").val(0);
+
     $("#naturaleza_cuenta").val('').change();
     $("#naturaleza_ingresos").val('').change();
     $("#naturaleza_egresos").val('').change();
     $("#naturaleza_compras").val('').change();
     $("#naturaleza_ventas").val('').change();
     $("#id_tipo_cuenta").val('').change();
+    $("#id_impuesto_cuenta").val('').change();
+
     $("#exige_nit").prop( "checked", false );
     $("#exige_documento_referencia").prop( "checked", false );
     $("#exige_concepto").prop( "checked", false );
@@ -400,9 +424,7 @@ $(document).on('click', '#updatePlanCuenta', function () {
         cuenta: $("#cuenta").val(),
         nombre: $("#nombre").val(),
         id_tipo_cuenta: $("#id_tipo_cuenta").val(),
-        tope_retencion: $("#tope_retencion").val(),
-        porcentaje_retencion: $("#porcentaje_retencion").val(),
-        porcentaje_iva: $("#porcentaje_iva").val(),
+        id_impuesto: $("#id_impuesto_cuenta").val(),
         naturaleza_cuenta: $("#naturaleza_cuenta").val(),
         naturaleza_ingresos: $("#naturaleza_ingresos").val(),
         naturaleza_egresos: $("#naturaleza_egresos").val(),
@@ -442,29 +464,6 @@ $("#id_padre").on('change', function(e) {
     var data = $(this).select2('data');
     if(data.length){
         $("#text_cuenta_padre").val(data[0].cuenta);
-    }
-});
-
-$("#id_tipo_cuenta").on('change', function(e) {
-    var tiposCuentas = $(this).select2('data');
-
-    $("#campo_tope_retencion").hide();
-    $("#campo_porcentaje_iva").hide();
-    $("#campo_porcentaje_retencion").hide();
-    $("#campo_tope_retencion").val(0);
-    $("#campo_porcentaje_iva").val(0);
-    $("#campo_porcentaje_retencion").val(0);
-
-    if (tiposCuentas.length > 0) {
-        tiposCuentas.forEach(tipoCuenta => {
-            if (tipoCuenta.id == 12 || tipoCuenta.id == 13) {
-                $("#campo_tope_retencion").show();
-                $("#campo_porcentaje_retencion").show();
-            }
-            if (tipoCuenta.id == 9 || tipoCuenta.id == 16) {
-                $("#campo_porcentaje_iva").show();
-            }
-        });
     }
 });
 

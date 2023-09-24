@@ -23,6 +23,7 @@ use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 //CAPTURAS
+use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 
 
@@ -84,6 +85,9 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/cartera', [CarteraController::class, 'index'])->name('cartera');
 		//DOCUMENTO GENERAL
 		Route::get('/documentogeneral', [DocumentoGeneralController::class, 'index'])->name('documento-general');
+		//COMPRAS
+		Route::get('/compra', [CompraController::class, 'index'])->name('compra');
+		Route::get('/compras-print/{id}', [CompraController::class, 'showPdf'])->name('compra-pdf');
 		//NITS
 		Route::get('/nit', [NitController::class, 'index'])->name('nit');
 		//PLAN CUENTAS
@@ -100,7 +104,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/productos', [ProductosController::class, 'index'])->name('productos');
 		//DOCUMENTOS
 		Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos');
-		Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('show-pdf');
+		Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('documento-pdf');
 
 	});
 

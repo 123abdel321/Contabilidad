@@ -21,7 +21,7 @@ var $comboComprobante = $('#id_comprobante').select2({
             };
         }
     }
-});;
+});
 
 function documentogeneralInit() {
 
@@ -945,7 +945,7 @@ $("#id_comprobante").on('change', function(e) {
     }
 });
 
-$("#fecha_manual").on('change', function(e) {
+$("#fecha_manual").on('change', function(event) {
     var data = $('#fecha_manual').val();
     if(event.keyCode == 13){
         setTimeout(function(){

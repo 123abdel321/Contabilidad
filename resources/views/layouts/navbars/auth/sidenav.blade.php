@@ -125,6 +125,11 @@
                 <div class="collapse" id="collapseCapturas" >
                     <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
                         <li class="nav-item">
+                            <a class="nav-link button-side-nav" id="sidenav_compra" style="margin-left: 25px;">
+                                <span class="nav-link-text ms-1">Compras</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_documentogeneral" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Documento General</span>
                             </a>

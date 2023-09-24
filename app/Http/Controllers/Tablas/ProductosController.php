@@ -60,7 +60,16 @@ class ProductosController extends Controller
         $searchValue = $search_arr['value']; // Search value
 
         $productos = FacProductos::skip($start)
-            ->with('variantes.variante', 'variantes.opcion', 'inventarios.bodega', 'familia', 'hijos.familia', 'hijos.variantes.variante', 'hijos.variantes.opcion', 'hijos.inventarios.bodega')
+            ->with(
+                'variantes.variante',
+                'variantes.opcion',
+                'inventarios.bodega',
+                'familia',
+                'hijos.familia',
+                'hijos.variantes.variante',
+                'hijos.variantes.opcion',
+                'hijos.inventarios.bodega'
+            )
             ->select(
                 '*',
                 DB::raw("DATE_FORMAT(fac_productos.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
@@ -422,10 +431,8 @@ class ProductosController extends Controller
 
         $facProductosBodegas = FacProductosBodegas::create([
             'id_producto' => $producto->id,
-            'id_producto_padre' => $producto->id_padre,
             'id_bodega' => $bodega['id'],
             'cantidad' => $bodega['cantidad'],
-            'tipo_tranferencia' => 0,
             'created_by' => request()->user()->id,
             'updated_by' => request()->user()->id
         ]);
@@ -444,6 +451,30 @@ class ProductosController extends Controller
             }
         }
         return $nombreVariante;
+    }
+
+    public function comboProducto (Request $request) {
+        $producto = FacProductos::select(
+                \DB::raw('*'),
+                \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+            )
+            ->with(
+                'familia.cuenta_compra.impuesto',
+                'familia.cuenta_compra_retencion.impuesto',
+                'familia.cuenta_compra_devolucion.impuesto',
+                'familia.cuenta_compra_iva.impuesto',
+                'familia.cuenta_compra_descuento.impuesto',
+                'familia.cuenta_compra_devolucion_iva.impuesto',
+                'familia.cuenta_inventario.impuesto',
+                'familia.cuenta_costos.impuesto'
+            );
+
+        if ($request->get("q")) {
+            $producto->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        return $producto->paginate(40);
     }
 
 }

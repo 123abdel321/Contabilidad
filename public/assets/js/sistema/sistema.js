@@ -33,6 +33,7 @@ var moduloCreado = {
     'balance': false,
     'cartera': false,
     'documentos': false,
+    'compra': false,
 };
 
 var moduloRoute = {
@@ -48,6 +49,7 @@ var moduloRoute = {
     'balance': 'informes',
     'cartera': 'informes',
     'documentos': 'informes',
+    'compra': 'capturas',
 }
 
 $('.water').show();
@@ -162,6 +164,8 @@ function seleccionarView(id){
         nombre = 'Bodegas';
     } else if(id == 'productos') {
         nombre = 'Productos'
+    } else if(id == 'compra') {
+        nombre = 'Captura compras';
     }
 
     $("#titulo-view").text(nombre);
@@ -176,41 +180,44 @@ function generateNewTabButton(id){
     var nombre = '';
 
     if(id == 'nit') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-table';
         nombre = 'Cedulas nits';
     } else if (id == 'comprobante') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-table';
         nombre = 'Comprobantes';
     } else if (id == 'plancuenta') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-table';
         nombre = 'Cuentas contables';
     } else if (id == 'documentogeneral') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-folder-open';
         nombre = 'Captura documentos';
     } else if (id == 'auxiliar') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-chart-line';
         nombre = 'Auxiliar';
     } else if (id == 'balance') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-chart-line';
         nombre = 'Balance';
     } else if (id == 'cartera') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-chart-line';
         nombre = 'Cartera';
     } else if (id == 'documentos') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-chart-line';
         nombre = 'Documentos';
     } else if (id == 'cecos') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-table';
         nombre = 'Centro de costos';
     } else if (id == 'familias') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-box-open';
         nombre = 'Familias';
     } else if (id == 'bodegas') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-box-open';
         nombre = 'Bodegas';
     } else if (id == 'productos') {
-        icon = 'fas fa-book';
+        icon = 'fas fa-box-open';
         nombre = 'Productos';
+    } else if (id == 'compra') {
+        icon = 'fas fa-folder-open';
+        nombre = 'Compras';
     }
 
     var html = '';

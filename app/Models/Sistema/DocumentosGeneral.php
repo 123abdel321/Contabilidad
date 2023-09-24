@@ -35,11 +35,13 @@ class DocumentosGeneral extends Model
         return $this->morphTo();
     }
 
-    public function nit(){
+    public function nit()
+    {
         return $this->belongsTo('App\Models\Sistema\Nits', 'id_nit');
 	}
 
-    public function cuenta(){
+    public function cuenta()
+    {
         return $this->belongsTo('App\Models\Sistema\PlanCuentas', 'id_cuenta');
 	}
 
