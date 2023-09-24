@@ -34,6 +34,7 @@ var moduloCreado = {
     'cartera': false,
     'documentos': false,
     'compra': false,
+    'compras': false,
 };
 
 var moduloRoute = {
@@ -49,6 +50,7 @@ var moduloRoute = {
     'balance': 'informes',
     'cartera': 'informes',
     'documentos': 'informes',
+    'compras': 'informes',
     'compra': 'capturas',
 }
 
@@ -156,6 +158,8 @@ function seleccionarView(id){
         nombre = 'Cartera';
     } else if(id == 'documentos') {
         nombre = 'Documentos';
+    } else if(id == 'compras') {
+        nombre = 'Informe Compras';
     } else if(id == 'cecos') {
         nombre = 'Centro costos';
     } else if(id == 'familias') {
@@ -203,7 +207,10 @@ function generateNewTabButton(id){
     } else if (id == 'documentos') {
         icon = 'fas fa-chart-line';
         nombre = 'Documentos';
-    } else if (id == 'cecos') {
+    } else if (id == 'compras') {
+        icon = 'fas fa-chart-line';
+        nombre = 'Compras';
+    }  else if (id == 'cecos') {
         icon = 'fas fa-table';
         nombre = 'Centro de costos';
     } else if (id == 'familias') {

@@ -168,7 +168,11 @@
                                 <span class="nav-link-text ms-1">Documentos</span>
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a class="nav-link button-side-nav" id="sidenav_compras" style="margin-left: 25px;">
+                                <span class="nav-link-text ms-1">Compras</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

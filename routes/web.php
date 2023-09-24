@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/documentogeneral', [DocumentoGeneralController::class, 'index'])->name('documento-general');
 		//COMPRAS
 		Route::get('/compra', [CompraController::class, 'index'])->name('compra');
+		Route::get('/compras', [CompraController::class, 'indexInforme'])->name('compras');
 		Route::get('/compras-print/{id}', [CompraController::class, 'showPdf'])->name('compra-pdf');
 		//NITS
 		Route::get('/nit', [NitController::class, 'index'])->name('nit');

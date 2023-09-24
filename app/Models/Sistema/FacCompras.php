@@ -42,6 +42,11 @@ class FacCompras extends Model
         return $this->morphMany('App\Models\Sistema\FacProductosBodegasMovimiento', 'relation');
 	}
 
+    public function bodega()
+    {
+        return $this->belongsTo('App\Models\Sistema\FacBodegas', 'id_bodega');
+	}
+
     public function proveedor()
     {
         return $this->belongsTo('App\Models\Sistema\Nits', 'id_proveedor');

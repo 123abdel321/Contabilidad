@@ -64,6 +64,13 @@ class CompraController extends Controller
         return view('pages.capturas.compra.compra-view', $data);
     }
 
+    public function indexInforme ()
+    {
+        $data = [
+        ];
+        return view('pages.contabilidad.compras.compras-view', $data);
+    }
+
     public function create (Request $request)
     {
         return response()->json([
@@ -292,6 +299,64 @@ class CompraController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
+    }
+
+    public function generate(Request $request)
+    {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length");
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+		$compras = FacCompras::skip($start)
+            ->with(
+                'bodega',
+                'proveedor',
+                'comprobante'
+            )
+            ->select(
+                '*',
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                'created_by',
+                'updated_by'
+            )
+            ->take($rowperpage);
+
+        if($columnName){
+            $compras->orderBy($columnName,$columnSortOrder);
+        }
+        
+        if ($request->get('consecutivo')) {
+            $compras->where('consecutivo', $request->get('consecutivo'));
+        }
+
+        if ($request->get('fecha_manual')) {
+            $compras->where('fecha_manual', $request->get('fecha_manual'));
+        }
+
+        if ($request->get('id_proveedor')) {
+            $compras->where('id_proveedor', $request->get('id_proveedor'));
+        }
+
+        return response()->json([
+            'success'=>	true,
+            'draw' => $draw,
+            'iTotalRecords' => $compras->count(),
+            'iTotalDisplayRecords' => $compras->count(),
+            'data' => $compras->get(),
+            'perPage' => $rowperpage,
+            'message'=> 'Compras cargados con exito!'
+        ]);
     }
 
     public function showPdf(Request $request, $id)

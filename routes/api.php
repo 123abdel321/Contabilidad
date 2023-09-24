@@ -156,6 +156,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         });
         //CAPTURA COMPRA
         Route::controller(CompraController::class)->group(function () {
+            Route::get('compras', 'generate');
             Route::post('compras', 'create');
         });
     });

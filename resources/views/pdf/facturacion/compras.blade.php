@@ -246,7 +246,7 @@
 						<td class="padding5 valor">{{ number_format($producto->subtotal) }}</td>
 						<td class="padding5 valor">{{ number_format($producto->descuento_valor) }}</td>
 						<td class="padding5 valor">{{ number_format($producto->iva_valor) }}</td>
-						<td class="padding5 valor">{{ number_format($producto->iva_valor) }}</td>
+						<td class="padding5 valor">{{ number_format($producto->total) }}</td>
 					</tr>
 				@endforeach
 			</tbody>
@@ -274,19 +274,19 @@
 											</tr>
                                             <tr>
                                                 <td >SUBTOTAL</td>
-                                                <td class="valor padding5">{{ $factura->subtotal }}</td>
+                                                <td class="valor ">{{ number_format($factura->subtotal) }}</td>
                                             </tr>
 											<tr>
                                                 <td >IVA</td>
-                                                <td class="valor ">{{ $factura->total_iva }}</td>
+                                                <td class="valor ">{{ number_format($factura->total_iva) }}</td>
                                             </tr>
 											<tr>
                                                 <td >RETE FUENTE {{ $factura->porcentaje_rete_fuente }}%</td>
-                                                <td class="valor ">{{ $factura->total_rete_fuente }}</td>
+                                                <td class="valor ">{{ number_format($factura->total_rete_fuente) }}</td>
                                             </tr>
 											<tr>
                                                 <td style="font-weight: bold;">TOTAL</td>
-                                                <td class="valor ">{{ $factura->total_factura }}</td>
+                                                <td class="valor ">{{ number_format($factura->total_factura) }}</td>
                                             </tr>
 										</tbody>
 									</table>
