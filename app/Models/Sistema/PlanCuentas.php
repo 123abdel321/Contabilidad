@@ -40,17 +40,7 @@ class PlanCuentas extends Model
 
     public function impuesto()
     {
-        return $this->belongsTo("App\Models\Sistema\TipoImpuestos", "id_impuesto");
-    }
-
-    public function tipo_impuesto()
-    {
-        return $this->belongsTo("App\Models\Sistema\TipoImpuestos", "id_impuesto");
-    }
-
-    public function tipo_cuenta()
-    {
-        return $this->belongsTo("App\Models\Sistema\TipoCuenta", "id_tipo_cuenta");
+        return $this->belongsTo("App\Models\Sistema\Impuestos", "id_impuesto");
     }
 
     public function padre()
@@ -58,8 +48,8 @@ class PlanCuentas extends Model
         return $this->belongsTo("App\Models\Sistema\PlanCuentas", "id_padre");
     }
 
-	// public function documentos()
-    // {
-    //     return $this->hasMany(ConDocumentoGeneral::class, 'id_cuenta', 'id');
-    // }
+	public function tipos_cuenta()
+    {
+        return $this->hasMany("App\Models\Sistema\PlanCuentasTipo", "id_cuenta");
+    }
 }

@@ -1,10 +1,11 @@
 
 var $comboPadreCuenta = null;
+var $comboImpuesto = null;
 var plan_cuentas_table = null;
 
 function plancuentaInit() {
     plan_cuentas_table = $('#planCuentaTable').DataTable({
-        pageLength: 15,
+        pageLength: 50,
         dom: 'Brtip',
         paging: true,
         responsive: false,
@@ -32,20 +33,23 @@ function plancuentaInit() {
         },
         'rowCallback': function(row, data, index){
             if(data.cuenta.auxiliar){
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.cuenta.length == 1){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 80%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 40%)');
                 return;
             }
             if(data.cuenta.length == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 25%)');
                 return;
             }
             if(data.cuenta.length == 4){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 10%)');
                 return;
             }
+            $('td', row).css('font-weight', 'bold');
+            return;
         },
         ajax:  {
             type: "GET",
@@ -150,7 +154,7 @@ function plancuentaInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-plan-cuentas" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
+                    html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-plan-cuentas" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
                     html+= '<span id="deleteplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-plan-cuentas" style="margin-bottom: 0rem !important">Eliminar</span>';
                     return html;
                 }
@@ -165,10 +169,10 @@ function plancuentaInit() {
             $("#savePlanCuentaLoading").hide();
             $("#updatePlanCuenta").show();
             $("#savePlanCuenta").hide();
-        
-            var trPlanCuenta = $(this).closest('tr');
+
             var id = this.id.split('_')[1];
             var data = getDataById(id, plan_cuentas_table);
+
             if(data.padre){
                 var dataCuenta = {
                     id: data.padre.id,
@@ -184,14 +188,32 @@ function plancuentaInit() {
                 $comboPadreCuenta.val('').trigger('change');
                 $("#cuenta").val(data.cuenta);
             }
+
+            if (data.impuesto) {
+                var dataImpuesto = {
+                    id: data.impuesto.id,
+                    text: data.impuesto.nombre + ' %' + data.impuesto.porcentaje
+                };
+                var newOption = new Option(dataImpuesto.text, dataImpuesto.id, false, false);
+                $comboImpuesto.append(newOption).trigger('change');
+                $comboImpuesto.val(dataImpuesto.id).trigger('change');
+            } else {
+                $("#id_impuesto_cuenta").val('').change();
+            }
+
+            var tipoCuenta = [];
+            data.tipos_cuenta.forEach(tipo_cuenta => {
+                tipoCuenta.push(tipo_cuenta.id_tipo_cuenta);
+            });
+
             $("#id_plan_cuenta").val(data.id);
+            $("#id_tipo_cuenta").val(tipoCuenta).change();
             $("#nombre").val(data.nombre);
             $("#naturaleza_cuenta").val(data.naturaleza_cuenta).change();
             $("#naturaleza_ingresos").val(data.naturaleza_ingresos).change();
             $("#naturaleza_egresos").val(data.naturaleza_egresos).change();
             $("#naturaleza_compras").val(data.naturaleza_compras).change();
             $("#naturaleza_ventas").val(data.naturaleza_ventas).change();
-            $("#id_tipo_cuenta").val(data.id_tipo_cuenta).change();
             
             $("#exige_nit").prop( "checked", data.exige_nit == 1 ? true : false );
             $("#exige_documento_referencia").prop( "checked", data.exige_documento_referencia == 1 ? true : false );
@@ -254,6 +276,27 @@ function plancuentaInit() {
         }
     });
 
+    $comboImpuesto = $('#id_impuesto_cuenta').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#planCuentaFormModal'),
+        delay: 250,
+        ajax: {
+            url: 'api/impuesto/combo-impuesto',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $('#id_tipo_cuenta').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#planCuentaFormModal'),
+    });
+
     $('.water').hide();
     plan_cuentas_table.ajax.reload();
 }
@@ -269,9 +312,9 @@ $(document).on('click', '#createPlanCuenta', function () {
     $("#planCuentaFormModal").modal('show');
 });
 
-$("#searchInput").on("input", function (e) {
+$("#searchInputCuenta").on("input", function (e) {
     plan_cuentas_table.context[0].jqXHR.abort();
-    $('#planCuentaTable').DataTable().search($("#searchInput").val()).draw();
+    $('#planCuentaTable').DataTable().search($("#searchInputCuenta").val()).draw();
 });
 
 $(document).on('click', '#savePlanCuenta', function () {
@@ -291,6 +334,7 @@ $(document).on('click', '#savePlanCuenta', function () {
         cuenta: $("#cuenta").val(),
         nombre: $("#nombre").val(),
         id_tipo_cuenta: $("#id_tipo_cuenta").val(),
+        id_impuesto: $("#id_impuesto_cuenta").val(),
         naturaleza_cuenta: $("#naturaleza_cuenta").val(),
         naturaleza_ingresos: $("#naturaleza_ingresos").val(),
         naturaleza_egresos: $("#naturaleza_egresos").val(),
@@ -347,17 +391,19 @@ function clearFormPlanCuenta(){
     $("#id_padre").val(0).change();
     $("#cuenta").val('');
     $("#nombre").val('');
+
     $("#naturaleza_cuenta").val('').change();
     $("#naturaleza_ingresos").val('').change();
     $("#naturaleza_egresos").val('').change();
     $("#naturaleza_compras").val('').change();
     $("#naturaleza_ventas").val('').change();
     $("#id_tipo_cuenta").val('').change();
+    $("#id_impuesto_cuenta").val('').change();
+
     $("#exige_nit").prop( "checked", false );
     $("#exige_documento_referencia").prop( "checked", false );
     $("#exige_concepto").prop( "checked", false );
     $("#exige_centro_costos").prop( "checked", false );
-
 }
 
 $(document).on('click', '#updatePlanCuenta', function () {
@@ -377,8 +423,8 @@ $(document).on('click', '#updatePlanCuenta', function () {
         id_padre: $("#id_padre").val(),
         cuenta: $("#cuenta").val(),
         nombre: $("#nombre").val(),
-        naturaleza_cuenta: $("#naturaleza_cuenta").val(),
         id_tipo_cuenta: $("#id_tipo_cuenta").val(),
+        id_impuesto: $("#id_impuesto_cuenta").val(),
         naturaleza_cuenta: $("#naturaleza_cuenta").val(),
         naturaleza_ingresos: $("#naturaleza_ingresos").val(),
         naturaleza_egresos: $("#naturaleza_egresos").val(),
@@ -407,7 +453,8 @@ $(document).on('click', '#updatePlanCuenta', function () {
             agregarToast('exito', 'Actualización exitosa', 'Cuenta actualizada con exito!', true );
         }
     }).fail((err) => {
-        $('#savePlanCuenta').show();
+        $('#savePlanCuenta').hide();
+        $('#updatePlanCuenta').show();
         $('#savePlanCuentaLoading').hide();
         agregarToast('error', 'Error al actualizar Cuenta!', errorsMsg);
     });
@@ -419,3 +466,7 @@ $("#id_padre").on('change', function(e) {
         $("#text_cuenta_padre").val(data[0].cuenta);
     }
 });
+
+function selectItem (idItem) {
+    $('#'+idItem).select();
+}

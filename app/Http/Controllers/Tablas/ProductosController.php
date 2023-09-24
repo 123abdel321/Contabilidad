@@ -60,7 +60,16 @@ class ProductosController extends Controller
         $searchValue = $search_arr['value']; // Search value
 
         $productos = FacProductos::skip($start)
-            ->with('variantes.variante', 'variantes.opcion', 'inventarios.bodega', 'familia', 'hijos.familia', 'hijos.variantes.variante', 'hijos.variantes.opcion', 'hijos.inventarios.bodega')
+            ->with(
+                'variantes.variante',
+                'variantes.opcion',
+                'inventarios.bodega',
+                'familia',
+                'hijos.familia',
+                'hijos.variantes.variante',
+                'hijos.variantes.opcion',
+                'hijos.inventarios.bodega'
+            )
             ->select(
                 '*',
                 DB::raw("DATE_FORMAT(fac_productos.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
@@ -217,11 +226,11 @@ class ProductosController extends Controller
             'codigo' => [
 				'required','min:1','max:200','string',
 				function ($attribute, $value, $fail) use ($request) {
-                    $producto = FacProductos::find($request->get('id')); 
+                    $producto = FacProductos::find($request->get('id'));
                     if ($producto->codigo != $request->get('codigo')) {
-                        $productoCodeExist =  FacProductos::where()->count();
+                        $productoCodeExist =  FacProductos::where('codigo', $request->get('codigo'))->count();
                         if ($productoCodeExist > 0) {
-                            $fail("El codigo ".$producto->codigo." ya existe.");
+                            $fail("El codigo ".$request->get('codigo')." ya existe.");
                         }
                     }
                 },
@@ -231,9 +240,9 @@ class ProductosController extends Controller
 				function ($attribute, $value, $fail) use ($request) {
                     $producto = FacProductos::find($request->get('id')); 
                     if ($producto->nombre != $request->get('nombre')) {
-                        $productoCodeExist =  FacProductos::where()->count();
+                        $productoCodeExist =  FacProductos::where('nombre', $request->get('nombre'))->count();
                         if ($productoCodeExist > 0) {
-                            $fail("El nombre ".$producto->nombre." ya existe.");
+                            $fail("El nombre ".$request->get('nombre')." ya existe.");
                         }
                     }
                 },
@@ -265,9 +274,8 @@ class ProductosController extends Controller
                 "message"=>$validator->messages()
             ], 422);
         }
-
+        
         try {
-
             DB::connection('sam')->beginTransaction();
 
             //ACTUALIZAR INFORMACION DEL PRODUCTO
@@ -298,6 +306,7 @@ class ProductosController extends Controller
 
             if (count($productosVariantes) > 0) {
                 foreach ($productosVariantes as $productoVar) {
+
                     $productoVariante = null;
                     if (array_key_exists('id', $productoVar)) {
                         $productoVariante = FacProductos::where('id', $productoVar['id'])->first();
@@ -325,7 +334,7 @@ class ProductosController extends Controller
                     }
 
                     //ASOCIAR BODEGAS NUEVAS AL PRODUCTO
-                    foreach ($producto['inventarios'] as $bodega) {
+                    foreach ($productoVar['inventarios'] as $bodega) {
                         if (array_key_exists('edit', $bodega) && $bodega['edit'] == true) {
                             $this->agregarBodega($productoVariante, $bodega);
                         }
@@ -422,10 +431,8 @@ class ProductosController extends Controller
 
         $facProductosBodegas = FacProductosBodegas::create([
             'id_producto' => $producto->id,
-            'id_producto_padre' => $producto->id_padre,
             'id_bodega' => $bodega['id'],
             'cantidad' => $bodega['cantidad'],
-            'tipo_tranferencia' => 0,
             'created_by' => request()->user()->id,
             'updated_by' => request()->user()->id
         ]);
@@ -444,6 +451,30 @@ class ProductosController extends Controller
             }
         }
         return $nombreVariante;
+    }
+
+    public function comboProducto (Request $request) {
+        $producto = FacProductos::select(
+                \DB::raw('*'),
+                \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+            )
+            ->with(
+                'familia.cuenta_compra.impuesto',
+                'familia.cuenta_compra_retencion.impuesto',
+                'familia.cuenta_compra_devolucion.impuesto',
+                'familia.cuenta_compra_iva.impuesto',
+                'familia.cuenta_compra_descuento.impuesto',
+                'familia.cuenta_compra_devolucion_iva.impuesto',
+                'familia.cuenta_inventario.impuesto',
+                'familia.cuenta_costos.impuesto'
+            );
+
+        if ($request->get("q")) {
+            $producto->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        return $producto->paginate(40);
     }
 
 }

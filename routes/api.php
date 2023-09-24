@@ -10,10 +10,12 @@ use App\Http\Controllers\Tablas\BodegasController;
 use App\Http\Controllers\Tablas\FamiliasController;
 use App\Http\Controllers\Tablas\VariantesController;
 use App\Http\Controllers\Tablas\ProductosController;
+use App\Http\Controllers\Tablas\ImpuestosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 //CAPTURAS
+use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 //SISTEMA
 use App\Http\Controllers\Sistema\UbicacionController;
@@ -74,6 +76,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('cartera-find', 'App\Http\Controllers\Informes\CarteraController@find');
         Route::post('cartera-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
 
+        //IMPUESTOS
+        Route::controller(ImpuestosController::class)->group(function () {
+            Route::get('impuesto/combo-impuesto', 'comboImpuesto');
+        });
         //PLAN DE CUENTAS
         Route::controller(PlanCuentaController::class)->group(function () {
             Route::get('plan-cuenta', 'generate');
@@ -137,6 +143,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('producto', 'create');
             Route::put('producto', 'update');
             Route::delete('producto', 'delete');
+            Route::get('producto/combo-producto', 'comboProducto');
         });
         
         //CAPTURA GENERAL
@@ -146,6 +153,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('documentos', 'anular');
             Route::post('documentos', 'create');
             Route::get('documento-vacio', 'vacio');
+        });
+        //CAPTURA COMPRA
+        Route::controller(CompraController::class)->group(function () {
+            Route::get('compras', 'generate');
+            Route::post('compras', 'create');
         });
     });
     

@@ -16,8 +16,7 @@ class CreatePlanCuentasTable extends Migration
         Schema::create('plan_cuentas', function (Blueprint $table) {
             $table->integer('id', true);
             $table->integer('id_padre')->nullable()->index('id_padre');
-            $table->integer('id_tipo_cuenta')->nullable()->index('id_tipo_cuenta');
-            $table->integer('id_impuesto')->nullable()->index('id_impuesto');
+            $table->integer('id_impuesto')->nullable();
             $table->string('cuenta', 15);
             $table->string('nombre', 100);
             $table->boolean('auxiliar')->nullable();

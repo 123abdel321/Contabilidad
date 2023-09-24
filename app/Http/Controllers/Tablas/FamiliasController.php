@@ -48,20 +48,20 @@ class FamiliasController extends Controller
 
         $familias = FacFamilias::orderBy($columnName,$columnSortOrder)
             ->with(
-                'cuenta_venta',
-                'cuenta_venta_retencion',
-                'cuenta_venta_devolucion',
-                'cuenta_venta_iva',
-                'cuenta_venta_descuento',
-                'cuenta_venta_devolucion_iva',
-                'cuenta_compra',
-                'cuenta_compra_retencion',
-                'cuenta_compra_devolucion',
-                'cuenta_compra_iva',
-                'cuenta_compra_descuento',
-                'cuenta_compra_devolucion_iva',
-                'cuenta_inventario',
-                'cuenta_costos'
+                'cuenta_venta.impuesto',
+                'cuenta_venta_retencion.impuesto',
+                'cuenta_venta_devolucion.impuesto',
+                'cuenta_venta_iva.impuesto',
+                'cuenta_venta_descuento.impuesto',
+                'cuenta_venta_devolucion_iva.impuesto',
+                'cuenta_compra.impuesto',
+                'cuenta_compra_retencion.impuesto',
+                'cuenta_compra_devolucion.impuesto',
+                'cuenta_compra_iva.impuesto',
+                'cuenta_compra_descuento.impuesto',
+                'cuenta_compra_devolucion_iva.impuesto',
+                'cuenta_inventario.impuesto',
+                'cuenta_costos.impuesto'
             )
             ->where('nombre', 'like', '%' .$searchValue . '%')
             ->orWhere('codigo', 'like', '%' .$searchValue . '%')

@@ -76,7 +76,7 @@ function productosInit() {
                 if (inventarios.length > 0) {
                     var html = ``;
                     inventarios.forEach(inventario => {
-                        html+= `<span class="badge bg-light text-dark">${inventario.bodega.nombre} / ${inventario.cantidad} Ud.</span>&nbsp;`;
+                        html+= `<span class="badge bg-light text-dark">${inventario.bodega.nombre} / ${inventario.cantidad} </span>&nbsp;`;
                     });
                     return html;
                 }
@@ -91,12 +91,12 @@ function productosInit() {
                         totalUnidades+= parseInt(inventario.cantidad);
                     });
                     if (totalUnidades > 0) {
-                        return '<span class="badge rounded-pill bg-success">'+totalUnidades+' UD.</span>';
+                        return totalUnidades;
                     }
-                    return '<span class="badge rounded-pill bg-danger">'+totalUnidades+' UD.</span>';
+                    return '<span class="badge rounded-pill bg-danger">'+totalUnidades+' </span>';
                 }
                 return '';
-            }},
+            }, className: 'dt-body-right'},
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
@@ -112,7 +112,7 @@ function productosInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    html+= '<span id="editproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
                     html+= '<span id="deleteproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }
@@ -315,7 +315,7 @@ function productosInit() {
                     var bodegas = row.inventarios;
                     
                     if (bodegas.length == 1) {
-                        html = `<span class="badge bg-light text-dark">${bodegas[0].nombre} / ${bodegas[0].cantidad} ud</span>`;
+                        html = `<span class="badge bg-light text-dark">${bodegas[0].nombre} / ${bodegas[0].cantidad} </span>`;
                     } else if (bodegas.length > 1) {
                         var totalBodegas = 0;
                         var totalUnidades = 0;
@@ -1284,6 +1284,7 @@ $("#id_bodega_producto_variante").on('change', function(e) {
         return;
     }
     crearItemBodegaProducto(data[0]);
+
     actualizarRowBodega();
 
     setTimeout(function(){
@@ -1337,7 +1338,7 @@ function crearItemVariable (variante) {
 
 function crearItemBodegaProducto (bodega) {
     var existeBodegaProducto = getBodegaProductoVarianteById(bodega.id);
-
+    console.log('existeBodegaProducto: ',existeBodegaProducto);
     if (!existeBodegaProducto) {
         newItemBodega(bodega);
     } else {
@@ -1351,8 +1352,8 @@ function crearItemBodegaProducto (bodega) {
 function newItemBodega (bodega, addProducto = true) {
     var idProductoPadre = $('#id_producto_edit').val();
     var disabled = idProductoPadre ? 'disabled' : '';
-
     if (bodega.edit == true) disabled = '';
+    console.log('idProductoBodegaSelected: ',idProductoBodegaSelected);
 
     if (addProducto) {
         disabled = '';

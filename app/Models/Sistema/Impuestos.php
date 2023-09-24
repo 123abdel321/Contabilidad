@@ -17,6 +17,7 @@ class Impuestos extends Model
       'id',
       'id_tipo_impuesto',
       'nombre',
+      'base',
       'porcentaje',
     ];
 }

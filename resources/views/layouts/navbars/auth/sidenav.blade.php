@@ -125,6 +125,11 @@
                 <div class="collapse" id="collapseCapturas" >
                     <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
                         <li class="nav-item">
+                            <a class="nav-link button-side-nav" id="sidenav_compra" style="margin-left: 25px;">
+                                <span class="nav-link-text ms-1">Compras</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_documentogeneral" style="margin-left: 25px;">
                                 <span class="nav-link-text ms-1">Documento General</span>
                             </a>
@@ -136,7 +141,7 @@
             <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#collapseInformes" class="nav-link collapsed" aria-controls="collapseInformes" role="button" aria-expanded="false" style="color: white;">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-file-contract text-success text-sm opacity-10"></i>
+                        <i class="fas fa-chart-line text-success text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Informes</span>
                 </a>
@@ -163,7 +168,11 @@
                                 <span class="nav-link-text ms-1">Documentos</span>
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a class="nav-link button-side-nav" id="sidenav_compras" style="margin-left: 25px;">
+                                <span class="nav-link-text ms-1">Compras</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fac_productos_bodegas', function (Blueprint $table) {
+        Schema::create('plan_cuentas_tipos', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_producto')->nullable();
-            $table->integer('id_bodega')->nullable();
-            $table->decimal('cantidad', 15)->default(0);
-            $table->integer('created_by')->nullable();
-            $table->integer('updated_by')->nullable();
+            $table->integer('id_cuenta');
+            $table->integer('id_tipo_cuenta');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fac_productos_bodegas');
+        Schema::dropIfExists('plan_cuentas_tipos');
     }
 };

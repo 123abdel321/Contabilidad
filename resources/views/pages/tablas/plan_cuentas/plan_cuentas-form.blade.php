@@ -1,5 +1,5 @@
 <div class="modal fade" id="planCuentaFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="textPlanCuentaCreate" style="display: none;">Agregar cuenta</h5>
@@ -12,13 +12,13 @@
                 <form id="planCuentaForm" style="margin-top: 10px;">
                     <div class="row">
                         <input type="text" class="form-control" name="id_plan_cuenta" id="id_plan_cuenta" style="display: none;">
-                        <div class="form-group col-md-6">
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
                             <label for="exampleFormControlSelect1">Padre</label>
                             <select name="id_padre" id="id_padre" class="form-control form-control-sm">
                             </select>
                         </div>
                         
-                        <div class="form-group col-md-6">
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
                             <label for="">Cuenta</label>
                             <div class="input-group">
                                 <div class="input-group-prepend" style="width: 75px;">
@@ -28,12 +28,12 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
                             <label for="example-text-input" class="form-control-label">Nombre <span style="color: red">*</span></label>
                             <input type="text" class="form-control form-control-sm" name="nombre" id="nombre" requiere>
                         </div>
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
                             <label for="exampleFormControlSelect1">Naturaleza cuenta<span style="color: red">*</span></label>
                             <select class="form-control form-control-sm" id="naturaleza_cuenta">
                                 <option value="0">Debito</option>
@@ -41,7 +41,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
                             <label for="exampleFormControlSelect1">Naturaleza ingresos<span style="color: red">*</span></label>
                             <select class="form-control form-control-sm" id="naturaleza_ingresos">
                                 <option value="">Ninguna</option>
@@ -50,7 +50,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
                             <label for="exampleFormControlSelect1">Naturaleza egresos<span style="color: red">*</span></label>
                             <select class="form-control form-control-sm" id="naturaleza_egresos">
                                 <option value="">Ninguna</option>
@@ -59,7 +59,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
                             <label for="exampleFormControlSelect1">Naturaleza compras<span style="color: red">*</span></label>
                             <select class="form-control form-control-sm" id="naturaleza_compras">
                                 <option value="">Ninguna</option>
@@ -68,7 +68,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
                             <label for="exampleFormControlSelect1">Naturaleza ventas<span style="color: red">*</span></label>
                             <select class="form-control form-control-sm" id="naturaleza_ventas">
                                 <option value="">Ninguna</option>
@@ -77,32 +77,37 @@
                             </select>
                         </div>
 
-                        <!-- <div class="form-group col-md-6">
-                            <label for="exampleFormControlSelect1">Tipo cuenta <span style="color: red">*</span></label>
-                            <select class="form-control form-control-sm" id="id_tipo_cuenta" name="id_tipo_cuenta" requiere>
-                                <option value="">Seleccionar</option>
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
+                            <label for="exampleFormControlSelect1">Tipo cuenta</label>
+                            <select class="form-control form-control-sm" id="id_tipo_cuenta" name="id_tipo_cuenta[]" multiple="multiple" requiere>
                                 @foreach ($tipoCuenta as $cuenta)
                                     <option value="{{ $cuenta->id }}">{{ $cuenta->id.' - '.$cuenta->nombre }}</option>
                                 @endforeach
                             </select>
-                        </div> -->
+                        </div>
 
-                        <div class="form-check col-md-6">
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
+                            <label for="exampleFormControlSelect1">Impuesto</label>
+                            <select name="id_impuesto_cuenta" id="id_impuesto_cuenta" class="form-control form-control-sm">
+                            </select>
+                        </div>
+
+                        <div class="form-check form-group col-12 col-sm-6 col-md-6">
                             <input name="exige_nit" id="exige_nit" type="checkbox" class="form-check-input" style="margin-left: -13px;">
                             <label class="custom-control-label" for="exige_nit">Exige nit</label>
                         </div>
 
-                        <div class="form-check col-md-6">
+                        <div class="form-check form-group col-12 col-sm-6 col-md-6">
                             <input name="exige_documento_referencia" id="exige_documento_referencia" type="checkbox" class="form-check-input" style="margin-left: -13px;">
                             <label class="custom-control-label" for="exige_nit">Exige Dcto refe</label>
                         </div>
 
-                        <div class="form-check col-md-6">
+                        <div class="form-check form-group col-12 col-sm-6 col-md-6">
                             <input name="exige_concepto" id="exige_concepto" type="checkbox" class="form-check-input" style="margin-left: -13px;">
                             <label class="custom-control-label" for="exige_nit">Exige concepto</label>
                         </div>
 
-                        <div class="form-check col-md-6">
+                        <div class="form-check form-group col-12 col-sm-6 col-md-6">
                             <input name="exige_centro_costos" id="exige_centro_costos" type="checkbox" class="form-check-input" style="margin-left: -13px;">
                             <label class="custom-control-label" for="exige_nit">Exige centro costos</label>
                         </div>

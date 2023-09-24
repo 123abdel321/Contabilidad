@@ -1,7 +1,7 @@
 <table id="documentoReferenciaTable" class="table table-bordered display responsive" width="100%">
     <thead>
         <tr>
-            <th style="border-radius: 15px 0px 0px 0px !important;"></th>
+            <th style="border-radius: 15px 0px 0px 0px !important;"><i class="fas fa-sliders-h"></i></th>
             <th>Cuenta</th>
             <th>Nit</th>
             <th>Centro costos</th>
