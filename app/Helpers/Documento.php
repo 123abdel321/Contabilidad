@@ -520,9 +520,9 @@ class Documento
         if ($this->captura) {
             $isUnbalanced = $this->getTotals()->diferencia > 0;
 
-            if ($isUnbalanced) {
-                $this->errors['documento'][] = 'Documento descuadrado';
-            }
+            // if ($isUnbalanced) {
+            //     $this->errors['documento'][] = 'Documento descuadrado';
+            // }
         }
 
         if ($this->hasErrors()) {

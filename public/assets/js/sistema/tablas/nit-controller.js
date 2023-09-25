@@ -184,10 +184,10 @@ function nitInit() {
                             nits_table.row(trNit).remove().draw();
                             agregarToast('exito', 'Eliminación exitosa', 'Cedula nit eliminado con exito!', true );
                         } else {
-                            agregarToast('error', 'Eliminación herrada', res.message);
+                            agregarToast('error', 'Eliminación errada', res.message);
                         }
                     }).fail((res) => {
-                        agregarToast('error', 'Eliminación herrada', res.message);
+                        agregarToast('error', 'Eliminación errada', res.message);
                     });
                 }
             })
@@ -345,7 +345,7 @@ $(document).on('click', '#updateNit', function () {
             } else {
                 errorsMsg = mensaje
             }
-            agregarToast('error', 'Edición herrada', errorsMsg);
+            agregarToast('error', 'Edición errada', errorsMsg);
         });
     } else {
         form.classList.add('was-validated');
@@ -409,7 +409,7 @@ $(document).on('click', '#saveNit', function () {
             } else {
                 errorsMsg = mensaje
             }
-            agregarToast('error', 'Creación herrada', errorsMsg);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     } else {
         form.classList.add('was-validated');
