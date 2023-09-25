@@ -1164,7 +1164,7 @@ $(document).on('click', '#crearCapturaDocumentos', function () {
         texto = "Documento descuadrado, desea guardarlo en la tabla?";
         type = "warning";
     } else if (debito == 0 && credito == 0) {
-        agregarToast('warning', 'Creación herrada', 'Sin datos para guardar en la tabla', true);
+        agregarToast('warning', 'Creación errada', 'Sin datos para guardar en la tabla', true);
         return;
     }
 
@@ -1232,7 +1232,7 @@ function saveDocumentos() {
                     errorsMsg += "- "+errores[campo]+" <br>";
                 }
             };
-            agregarToast('error', 'Creación herrada', errorsMsg);
+            agregarToast('error', 'Creación errada', errorsMsg);
         }
     }).fail((err) => {
         $("#agregarDocumentos").show();
@@ -1251,7 +1251,7 @@ function saveDocumentos() {
             }
             
         };
-        agregarToast('error', 'Creación herrada', errorsMsg);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 }
 

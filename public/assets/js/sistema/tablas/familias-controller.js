@@ -389,10 +389,10 @@ function familiasInit() {
                             familias_table.row(trPlanCuenta).remove().draw();
                             agregarToast('exito', 'Eliminación exitosa', 'Familia eliminada con exito!', true );
                         } else {
-                            agregarToast('error', 'Eliminación herrada', res.message);
+                            agregarToast('error', 'Eliminación errada', res.message);
                         }
                     }).fail((res) => {
-                        agregarToast('error', 'Eliminación herrada', res.message);
+                        agregarToast('error', 'Eliminación errada', res.message);
                     });
                 }
             })
@@ -835,7 +835,7 @@ $(document).on('click', '#saveFamilia', function () {
         } else {
             errorsMsg = mensaje
         }
-        agregarToast('error', 'Creación herrada', errorsMsg);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 });
 

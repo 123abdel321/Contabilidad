@@ -412,7 +412,7 @@ function saveCompra() {
                     errorsMsg += "- "+errores[campo]+" <br>";
                 }
             };
-            agregarToast('error', 'Creación herrada', errorsMsg);
+            agregarToast('error', 'Creación errada', errorsMsg);
         }
     }).fail((err) => {
         $("#agregarDocumentos").show();
@@ -431,7 +431,7 @@ function saveCompra() {
             }
             
         };
-        agregarToast('error', 'Creación herrada', errorsMsg);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 }
 

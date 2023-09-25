@@ -178,10 +178,10 @@ $(document).on('click', '.anular-documento', function () {
                     documento_table.row(trDocumento).remove().draw();
                     swalFire('Anulación exitosa', 'Documentos anulados con exito!');
                 } else {
-                    swalFire('Anulación herrada', res.message, false);
+                    swalFire('Anulación errada', res.message, false);
                 }
             }).fail((res) => {
-                swalFire('Anulación herrada', res.message, false);
+                swalFire('Anulación errada', res.message, false);
             });
         }
     })

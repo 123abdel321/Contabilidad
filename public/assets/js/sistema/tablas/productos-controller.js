@@ -236,10 +236,10 @@ function productosInit() {
                             productos_table.row(trProducto).remove().draw();
                             agregarToast('exito', 'Eliminación exitosa', 'Producto eliminado con exito!', true );
                         } else {
-                            agregarToast('error', 'Eliminación herrada', res.message);
+                            agregarToast('error', 'Eliminación errada', res.message);
                         }
                     }).fail((res) => {
-                        agregarToast('error', 'Eliminación herrada', res.message);
+                        agregarToast('error', 'Eliminación errada', res.message);
                     });
                 }
             })
@@ -639,7 +639,7 @@ $(document).on('click', '#saveNewProducto', function () {
         $('#saveNewProducto').show();
         $('#cancelProducto').show();
         $('#saveNewProductoLoading').hide();
-        agregarToast('error', 'Creación herrada', errorsMsg);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 
     
