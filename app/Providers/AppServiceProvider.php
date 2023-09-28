@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 //MODELS
 use App\Models\Sistema\FacDocumentos;
+use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacCompras;
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,8 +17,9 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         Relation::morphMap([
-			'1' => FacDocumentos::class,
-			'2' => FacCompras::class,
+            '1' => FacProductos::class,
+			'2' => FacDocumentos::class,
+			'3' => FacCompras::class,
 		]);
     }
 

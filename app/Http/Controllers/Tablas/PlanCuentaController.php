@@ -387,7 +387,7 @@ class PlanCuentaController extends Controller
             }
         }
 
-        $planCuenta = PlanCuentas::where('cuenta', '<', '999999')->select($select);
+        $planCuenta = PlanCuentas::select($select);
 
         if ($request->has("id_comprobante") && $comprobante) {
             $planCuenta->whereNotNull($naturaleza);
@@ -404,9 +404,13 @@ class PlanCuentaController extends Controller
         }
 
         if ($request->get("search")) {
-            // dd('asd');
             $planCuenta->where('cuenta', 'LIKE', '%' . $request->get("search") . '%')
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("search") . '%');
+        }
+
+        if ($request->get("q")) {
+            $planCuenta->where('cuenta', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
 
         return $planCuenta->orderBy('cuenta')->paginate(30);

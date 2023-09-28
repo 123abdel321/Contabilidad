@@ -16,6 +16,7 @@ class FacProductosBodegasMovimiento extends Model
     protected $fillable = [
         'id_producto',
         'id_bodega',
+        'cantidad_anterior',
         'cantidad',
         'tipo_tranferencia',
         'created_by',

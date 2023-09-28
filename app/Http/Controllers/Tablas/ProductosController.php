@@ -13,6 +13,7 @@ use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacProductosBodegas;
 use App\Models\Sistema\FacVariantesOpciones;
 use App\Models\Sistema\FacProductosVariantes;
+use App\Models\Sistema\FacProductosBodegasMovimiento;
 
 class ProductosController extends Controller
 {
@@ -135,6 +136,7 @@ class ProductosController extends Controller
         try {
 
             DB::connection('sam')->beginTransaction();
+
             //CREAR PRODUCTO PRINCIPAL
             $productoPadre = FacProductos::create([
                 'id_familia' => $request->get('id_familia'),
@@ -144,11 +146,12 @@ class ProductosController extends Controller
                 'nombre' => $request->get('nombre'),
                 'precio' => $request->get('precio'),
                 'precio_inicial' => $request->get('precio_inicial'),
-                'precio_maximo' => $request->get('precio_maximo'),
+                'precio_minimo' => $request->get('precio_minimo'),
                 'variante' => $request->get('variante'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id
             ]);
+
             //ASOCIAR BODEGAS GENERALES AL PRODUCTO
             $bodegas = $request->get('inventarios');
 
@@ -157,6 +160,7 @@ class ProductosController extends Controller
                     $this->agregarBodega($productoPadre, $bodega);
                 }
             }
+
             //ASOCIAR VARIANTES GENERALES AL PRODUCTO
             if ($request->get('variante')) {
 
@@ -169,6 +173,7 @@ class ProductosController extends Controller
                         }
                     }
                 }
+
                 //CREAR PRODUCTOS VARIANTES
                 $productosVariantes = $request->get('productos_variantes');
     
@@ -187,10 +192,12 @@ class ProductosController extends Controller
                             'created_by' => request()->user()->id,
                             'updated_by' => request()->user()->id
                         ]);
+
                         //ASOCIAR VARIANTES AL PRODUCTO
                         foreach ($producto['variantes'] as $opcion) {
                             $this->agregarVariantes($productoVariante, $opcion['id']);
                         }
+
                         //ASOCIAR BODEGAS AL PRODUCTO
                         foreach ($producto['inventarios'] as $bodega) {
                             $this->agregarBodega($productoVariante, $bodega);
@@ -436,6 +443,19 @@ class ProductosController extends Controller
             'created_by' => request()->user()->id,
             'updated_by' => request()->user()->id
         ]);
+
+        $movimiento = new FacProductosBodegasMovimiento([
+            'id_producto' => $producto->id,
+            'id_bodega' => $bodega['id'],
+            'cantidad_anterior' => 0,
+            'cantidad' => $bodega['cantidad'],
+            'tipo_tranferencia' => 1,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        $movimiento->relation()->associate($producto);
+        $producto->bodegas()->save($movimiento);
 
         return $facProductosBodegas;
     }

@@ -307,6 +307,8 @@ $('.form-control').keyup(function() {
 
 $(document).on('click', '#createPlanCuenta', function () {
     clearFormPlanCuenta();
+    $("#exige_nit").prop( "checked", true );
+    $("#exige_concepto").prop( "checked", true );
     $("#updatePlanCuenta").hide();
     $("#savePlanCuenta").show();
     $("#planCuentaFormModal").modal('show');

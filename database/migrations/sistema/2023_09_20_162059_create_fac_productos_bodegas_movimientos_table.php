@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('relation_type');
             $table->integer('id_producto');
             $table->integer('id_bodega');
+            $table->decimal('cantidad_anterior', 15)->default(0);
             $table->decimal('cantidad', 15)->default(0);
             $table->integer('tipo_tranferencia')->default(0)->comment('0:Creacion, 1:Cargue, 2:Descargue, 3:traslado');
             $table->integer('created_by')->nullable();

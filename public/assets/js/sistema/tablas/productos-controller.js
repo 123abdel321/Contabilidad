@@ -16,7 +16,7 @@ var nuevoProducto = {
     id_familia: null,
     precio: 0,
     tipo_producto: 0,
-    precio_maximo: 0,
+    precio_minimo: 0,
     precio_inicial: 0,
     inventarios: [],
     variante: false,
@@ -1725,9 +1725,9 @@ function addPrecioProducto () {
     nuevoProducto.precio = value;
 }
 
-function addPrecioMaximoProducto () {
-    var value = $('#precio_maximo').val();
-    nuevoProducto.precio_maximo = value;
+function addPrecioMinimoProducto () {
+    var value = $('#precio_minimo').val();
+    nuevoProducto.precio_minimo = value;
 }
 
 function addPrecioInicialProducto () {
