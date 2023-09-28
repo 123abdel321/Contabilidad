@@ -73,7 +73,7 @@ class CompraController extends Controller
 
     public function create (Request $request)
     {
-        $idCuentaAnticipos = VariablesEntorno::where('nombre', 'id_cuenta_anticipos')->first();
+        $idCuentaAnticipos = VariablesEntorno::where('nombre', 'id_cuenta_cobrar')->first();
 
         if(!$idCuentaAnticipos || !$idCuentaAnticipos->valor) {
             return response()->json([
@@ -82,7 +82,7 @@ class CompraController extends Controller
                 "message"=>'La Cuenta anticipos en compras no se encuentra configurada!'
             ], 422);
         } else {
-            $request->request->add(['id_cuenta_anticipos' => $idCuentaAnticipos->valor]);
+            $request->request->add(['id_cuenta_cobrar' => $idCuentaAnticipos->valor]);
         }
 
         $comprobanteCompras = VariablesEntorno::where('nombre', 'id_comprobante_compra')->first();
@@ -105,7 +105,7 @@ class CompraController extends Controller
             'id_proveedor' => 'required|exists:sam.nits,id',
             'id_bodega' => 'required|exists:sam.fac_bodegas,id',
             'id_comprobante' => 'required|exists:sam.comprobantes,id',
-            'id_cuenta_anticipos' => 'required|exists:sam.plan_cuentas,id',
+            'id_cuenta_cobrar' => 'required|exists:sam.plan_cuentas,id',
             'fecha_manual' => 'required|date',
             'documento_referencia' => 'required |string',
             'productos' => 'array|required',
@@ -164,6 +164,7 @@ class CompraController extends Controller
     
                 $nit = $this->findProveedor($compra->id_proveedor);
                 $productoDb = $this->findProducto($producto->id_producto);
+
                 //CREAR COMPRA DETALLE
                 FacCompraDetalles::create([
                     'id_compra' => $compra->id,
@@ -183,6 +184,7 @@ class CompraController extends Controller
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
+
                 //AGREGAR MOVIMIENTO CONTABLE
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
                     $cuentaRecord = $productoDb->familia->{$cuentaKey};
@@ -202,6 +204,7 @@ class CompraController extends Controller
                     ]);
                     $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_cuenta);
                 }
+
                 //AGREGAR MOVIMIENTO BODEGA
                 $bodegaProducto = FacProductosBodegas::where('id_bodega', $this->bodega->id)
                     ->where('id_producto', $producto->id_producto)
@@ -220,6 +223,7 @@ class CompraController extends Controller
                 $movimiento = new FacProductosBodegasMovimiento([
                     'id_producto' => $producto->id_producto,
                     'id_bodega' => $compra->id_bodega,
+                    'cantidad_anterior' => $bodegaProducto->cantidad,
                     'cantidad' => $producto->cantidad,
                     'tipo_tranferencia' => 1,
                     'created_by' => request()->user()->id,
@@ -264,6 +268,8 @@ class CompraController extends Controller
                 "updated_by" => request()->user()->id
             ]);
             $documentoGeneral->addRow($doc, $cuentaAnticipos->naturaleza_compras);
+
+            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 
             if (!$documentoGeneral->save()) {
 

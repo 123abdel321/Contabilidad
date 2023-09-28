@@ -85,7 +85,7 @@ class DocumentosPdf extends AbstractPrinterPdf
 						'email' => $extracto->email,
 						'direccion' => $extracto->direccion,
 						'tipo_documento' => $extracto->tipo_documento,
-						'numero_documento' => number_format($extracto->numero_documento),
+						'numero_documento' => $extracto->numero_documento,
 						"ciudad" => $cuidad,
 					];
 				}
@@ -107,7 +107,7 @@ class DocumentosPdf extends AbstractPrinterPdf
 						'email' => $getNit->email,
 						'direccion' => $getNit->direccion,
 						'tipo_documento' => $getNit->tipo_documento->nombre,
-						'numero_documento' => number_format($getNit->numero_documento),
+						'numero_documento' => $getNit->numero_documento,
 						"ciudad" => $getNit->ciudad->nombre,
 					];
 				}

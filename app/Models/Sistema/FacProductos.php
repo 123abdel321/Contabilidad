@@ -22,12 +22,17 @@ class FacProductos extends Model
         'nombre',
         'precio',
         'precio_inicial',
-        'precio_maximo',
+        'precio_minimo',
         'variante',
         'estado',
         'created_by',
         'updated_by'
     ];
+
+    public function bodegas()
+    {
+        return $this->morphMany('App\Models\Sistema\FacProductosBodegasMovimiento', 'relation');
+	}
 
     public function variantes()
     {
