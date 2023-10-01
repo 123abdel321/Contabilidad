@@ -14,6 +14,7 @@ use App\Http\Controllers\Tablas\ImpuestosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
+use App\Http\Controllers\Tablas\ResolucionesController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
@@ -122,6 +123,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('familia', 'update');
             Route::delete('familia', 'delete');
             Route::get('familia/combo-familia', 'comboFamilia');
+        });
+        //RESOLUCIONES
+        Route::controller(ResolucionesController::class)->group(function () {
+            Route::get('resoluciones', 'generate');
+            Route::post('resoluciones', 'create');
+            Route::put('resoluciones', 'update');
+            Route::delete('resoluciones', 'delete');
         });
         //BODEGAS
         Route::controller(BodegasController::class)->group(function () {

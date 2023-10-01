@@ -22,6 +22,7 @@ use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
+use App\Http\Controllers\Tablas\ResolucionesController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
@@ -99,6 +100,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/cecos', [CentroCostoController::class, 'index'])->name('cecos');
 		//FAMILIAS
 		Route::get('/familias', [FamiliasController::class, 'index'])->name('familias');
+		//FAMILIAS
+		Route::get('/resolucion', [ResolucionesController::class, 'index'])->name('resolucion');
 		//BODEGAS
 		Route::get('/bodegas', [BodegasController::class, 'index'])->name('bodegas');
 		//BODEGAS

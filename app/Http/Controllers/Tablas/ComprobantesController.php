@@ -122,7 +122,7 @@ class ComprobantesController extends Controller
                 'data' => [],
                 "message"=>$e->getMessage()
             ], 422);
-        } 
+        }
     }
 
     public function update (Request $request)
