@@ -26,6 +26,7 @@ var moduloCreado = {
     'plancuenta': false,
     'cecos': false,
     'familias': false,
+    'resoluciones': false,
     'bodegas': false,
     'productos': false,
     'documentogeneral': false,
@@ -43,6 +44,7 @@ var moduloRoute = {
     'plancuenta': 'tablas',
     'cecos': 'tablas',
     'familias': 'tablas',
+    'resolucion': 'tablas',
     'bodegas': 'tablas',
     'productos': 'tablas',
     'documentogeneral': 'capturas',
@@ -133,7 +135,7 @@ function includeJs(id){
 function seleccionarView(id){
 
     var nombre = 'Inicio';
-
+    // console.log('seleccionarView:', id);
     $(".dtfh-floatingparent").remove();
     $('.change-view').removeClass("active");
     $('.seleccionar-view').removeClass("active");
@@ -164,6 +166,8 @@ function seleccionarView(id){
         nombre = 'Centro costos';
     } else if(id == 'familias') {
         nombre = 'Familias';
+    } else if(id == 'resolucion') {
+        nombre = 'Resoluciones';
     } else if(id == 'bodegas') {
         nombre = 'Bodegas';
     } else if(id == 'productos') {
@@ -182,7 +186,7 @@ function generateNewTabView(id){
 function generateNewTabButton(id){
     var icon = '';
     var nombre = '';
-
+    // console.log('generateNewTabButton:', id);
     if(id == 'nit') {
         icon = 'fas fa-table';
         nombre = 'Cedulas nits';
@@ -216,6 +220,9 @@ function generateNewTabButton(id){
     } else if (id == 'familias') {
         icon = 'fas fa-box-open';
         nombre = 'Familias';
+    } else if (id == 'resolucion') {
+        icon = 'fas fa-box-open';
+        nombre = 'Resoluciones';
     } else if (id == 'bodegas') {
         icon = 'fas fa-box-open';
         nombre = 'Bodegas';

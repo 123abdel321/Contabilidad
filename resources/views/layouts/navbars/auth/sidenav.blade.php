@@ -64,23 +64,28 @@
                 <div class="collapse" id="dashboardsExamples" >
                     <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_nit" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_nit" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Cédulas Nit</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_comprobante" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_comprobante" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Comprobantes</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_plancuenta" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_plancuenta" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Plan de cuentas</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_cecos" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_cecos" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Centro de costos</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link button-side-nav" id="sidenav_resolucion" style="margin-left: 20px;">
+                                <span class="nav-link-text ms-1">Resoluciones</span>
                             </a>
                         </li>
                     </ul>
@@ -97,17 +102,17 @@
                 <div class="collapse" id="collapseInvetario" >
                     <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_productos" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_productos" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Productos</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_familias" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_familias" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Familias</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_bodegas" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_bodegas" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Bodegas</span>
                             </a>
                         </li>
@@ -125,12 +130,12 @@
                 <div class="collapse" id="collapseCapturas" >
                     <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_compra" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_compra" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Compras</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_documentogeneral" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_documentogeneral" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Documento General</span>
                             </a>
                         </li>
@@ -149,27 +154,27 @@
                     <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
                     
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_auxiliar" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_auxiliar" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Auxiliar</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_balance" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_balance" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Balance</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_cartera" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_cartera" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Cartera</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_documentos" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_documentos" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Documentos</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_compras" style="margin-left: 25px;">
+                            <a class="nav-link button-side-nav" id="sidenav_compras" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Compras</span>
                             </a>
                         </li>

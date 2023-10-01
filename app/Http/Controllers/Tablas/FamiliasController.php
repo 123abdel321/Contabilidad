@@ -239,6 +239,8 @@ class FamiliasController extends Controller
                     'updated_by' => request()->user()->id,
                 ]);
 
+            DB::connection('sam')->commit();
+
             $familia = FacFamilias::where('id', $request->get('id'))
                 ->with(
                     'cuenta_venta',
@@ -254,8 +256,6 @@ class FamiliasController extends Controller
                     'cuenta_compra_descuento',
                     'cuenta_compra_devolucion_iva'
                 )->first();
-            
-            DB::connection('sam')->commit();
 
             return response()->json([
                 'success'=>	true,
