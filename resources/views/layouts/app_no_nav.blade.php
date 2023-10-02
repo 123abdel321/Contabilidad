@@ -628,8 +628,8 @@
 
         // const base_url = 'http://localhost:8000/api/';
         // const base_web = 'http://localhost:8000/';
-        const base_url = 'listardatos-app-8nt9e.ondigitalocean.app/api/';
-        const base_web = 'listardatos-app-8nt9e.ondigitalocean.app/';
+        const base_url = 'https://listardatos.com/api/';
+        const base_web = 'https://listardatos.com/';
 
         $("#button-login").click(function(event){
             $("#button-login-loading").show();
