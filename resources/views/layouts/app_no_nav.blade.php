@@ -8,7 +8,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png">
     <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
     <title>
-        NUEVA ERP
+        Listar Datos
     </title>
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -628,8 +628,8 @@
 
         // const base_url = 'http://localhost:8000/api/';
         // const base_web = 'http://localhost:8000/';
-        const base_url = 'https://listardatos.com/api/';
-        const base_web = 'https://listardatos.com/';
+        const base_url = 'listardatos-app-8nt9e.ondigitalocean.app/api/';
+        const base_web = 'listardatos-app-8nt9e.ondigitalocean.app/';
 
         $("#button-login").click(function(event){
             $("#button-login-loading").show();
