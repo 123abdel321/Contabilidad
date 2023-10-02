@@ -88,6 +88,11 @@
                                 <span class="nav-link-text ms-1">Resoluciones</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link button-side-nav" id="sidenav_formapago" style="margin-left: 20px;">
+                                <span class="nav-link-text ms-1">Formas de pago</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

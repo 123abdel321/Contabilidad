@@ -12,6 +12,7 @@ use App\Http\Controllers\Tablas\VariantesController;
 use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\ImpuestosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
+use App\Http\Controllers\Tablas\FormasPagoController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
@@ -130,6 +131,15 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('resoluciones', 'create');
             Route::put('resoluciones', 'update');
             Route::delete('resoluciones', 'delete');
+        });
+        //FORMAS PAGO
+        Route::controller(FormasPagoController::class)->group(function () {
+            Route::get('forma-pago', 'generate');
+            Route::post('forma-pago', 'create');
+            Route::put('forma-pago', 'update');
+            Route::delete('forma-pago', 'delete');
+            Route::get('forma-pago/combo-forma-pago', 'comboFormasPago');
+            Route::get('forma-pago/combo-tipo-formas-pago', 'comboTipoFormasPago');
         });
         //BODEGAS
         Route::controller(BodegasController::class)->group(function () {
