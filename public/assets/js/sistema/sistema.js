@@ -2,8 +2,8 @@
 const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
 // const base_url = 'http://localhost:8000/api/';
 // const base_web = 'http://localhost:8000/';
-const base_url = 'https://shark-app-stx3h.ondigitalocean.app/api/';
-const base_web = 'https://shark-app-stx3h.ondigitalocean.app/';
+const base_url = 'https://listardatos.com/api/';
+const base_web = 'https://listardatos.com/';
 const dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
