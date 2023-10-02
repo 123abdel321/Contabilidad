@@ -27,6 +27,7 @@ var moduloCreado = {
     'cecos': false,
     'familias': false,
     'resoluciones': false,
+    'formapago': false,
     'bodegas': false,
     'productos': false,
     'documentogeneral': false,
@@ -45,6 +46,7 @@ var moduloRoute = {
     'cecos': 'tablas',
     'familias': 'tablas',
     'resolucion': 'tablas',
+    'formapago': 'tablas',
     'bodegas': 'tablas',
     'productos': 'tablas',
     'documentogeneral': 'capturas',
@@ -168,6 +170,8 @@ function seleccionarView(id){
         nombre = 'Familias';
     } else if(id == 'resolucion') {
         nombre = 'Resoluciones';
+    } else if(id == 'formapago') {
+        nombre = 'Formas pago';
     } else if(id == 'bodegas') {
         nombre = 'Bodegas';
     } else if(id == 'productos') {
@@ -221,8 +225,11 @@ function generateNewTabButton(id){
         icon = 'fas fa-box-open';
         nombre = 'Familias';
     } else if (id == 'resolucion') {
-        icon = 'fas fa-box-open';
+        icon = 'fas fa-table';
         nombre = 'Resoluciones';
+    } else if (id == 'formapago') {
+        icon = 'fas fa-table';
+        nombre = 'Formas pago';
     } else if (id == 'bodegas') {
         icon = 'fas fa-box-open';
         nombre = 'Bodegas';
@@ -521,7 +528,6 @@ function agregarToast (tipo, titulo, descripcion, autoCierre = false) {
 
     // Agregar clases correspondientes
     nuevoToast.classList.add('toast');
-    console.log('tipo: ',tipo);
     nuevoToast.classList.add(tipo);
     if (autoCierre) nuevoToast.classList.add('autoCierre');
 

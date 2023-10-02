@@ -349,6 +349,7 @@ class PlanCuentaController extends Controller
             'exige_concepto',
             'exige_centro_costos',
             'nombre',
+            'auxiliar',
             DB::raw($naturaleza. ' AS naturaleza_cuenta'),
             DB::raw("CONCAT(cuenta, ' - ', nombre) as text")
         ];
