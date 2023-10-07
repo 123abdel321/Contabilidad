@@ -36,6 +36,7 @@ var moduloCreado = {
     'cartera': false,
     'documentos': false,
     'compra': false,
+    'venta': false,
     'compras': false,
 };
 
@@ -56,6 +57,7 @@ var moduloRoute = {
     'documentos': 'informes',
     'compras': 'informes',
     'compra': 'capturas',
+    'venta': 'capturas',
 }
 
 $('.water').show();
@@ -73,6 +75,7 @@ $(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownErr
 
 $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
 $("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
+$("#side_main_logo").attr('src', localStorage.getItem("empresa_logo"));
 
 if (iconNavbarSidenavMaximo) {
     iconNavbarSidenavMaximo.addEventListener("click", toggleSidenavMaximo);
@@ -178,6 +181,8 @@ function seleccionarView(id){
         nombre = 'Productos'
     } else if(id == 'compra') {
         nombre = 'Captura compras';
+    } else if(id == 'venta') {
+        nombre = 'Captura ventas';
     }
 
     $("#titulo-view").text(nombre);
@@ -239,6 +244,9 @@ function generateNewTabButton(id){
     } else if (id == 'compra') {
         icon = 'fas fa-folder-open';
         nombre = 'Compras';
+    } else if (id == 'venta') {
+        icon = 'fas fa-folder-open';
+        nombre = 'Ventas';
     }
 
     var html = '';
@@ -352,7 +360,8 @@ $("#button-login").click(function(event){
         $("#button-login").show();
         if(res.success){
             localStorage.setItem("auth_token", res.token_type+' '+res.access_token);
-            localStorage.setItem("empresa_nombre", res.empresa);
+            localStorage.setItem("empresa_nombre", res.empresa.razon_social);
+            localStorage.setItem("empresa_logo", res.empresa.logo);
             window.location.href = '/home';
         }
     }).fail((err) => {

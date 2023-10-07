@@ -47,7 +47,7 @@ class LoginController extends Controller
                 'success'=>	true,
                 'access_token' => $token->plainTextToken,
                 'token_type' => 'Bearer',
-                'empresa' => $empresaSelect->razon_social,
+                'empresa' => $empresaSelect,
                 'notificacion_code' => $empresaSelect->token_db.'_'.$user->id,
                 'message'=> 'Usuario logeado con exito!'
             ], 200);
