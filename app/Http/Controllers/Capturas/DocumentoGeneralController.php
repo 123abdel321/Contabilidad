@@ -36,7 +36,10 @@ class DocumentoGeneralController extends Controller
 
     public function index ()
     {
-        return view('pages.capturas.documento_general.documento_general-view');
+		$data = [
+            'cecos' => CentroCostos::first()
+        ];
+        return view('pages.capturas.documento_general.documento_general-view', $data);
     }
 
     public function create(Request $request)

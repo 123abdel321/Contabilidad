@@ -71,16 +71,16 @@
         <div class="card cardTotal" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
             <div class="row" style="text-align: -webkit-center;">
                 <div class="col-4 col-md-4 col-sm-4" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; font-weight: bold;">DEBITO</p>
-                    <h6 id="general_debito" style="margin-top: -15px;">0.00</h6>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">DEBITO</p>
+                    <h6 id="general_debito" style="color: #0002ff; margin-bottom: 0px;">0.00</h6>
                 </div>
                 <div class="col-4 col-md-4 col-sm-4" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; font-weight: bold;">CREDITO</p>
-                    <h6 id="general_credito" style="margin-top: -15px;">0.00</h6>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">CREDITO</p>
+                    <h6 id="general_credito" style="color: #0002ff; margin-bottom: 0px;">0.00</h6>
                 </div>
                 <div class="col-4 col-md-4 col-sm-4">
-                    <p style="font-size: 13px; margin-top: 5px; font-weight: bold;">DIFERENCIA</p>
-                    <h6 id="general_diferencia" style="margin-top: -15px;">0.00</h6>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">DIFERENCIA</p>
+                    <h6 id="general_diferencia" style="color: #0002ff; margin-bottom: 0px;">0.00</h6>
                 </div>
             </div>
         </div>
@@ -92,4 +92,9 @@
         @include('pages.capturas.documento_general.documento_general-extracto')
 
     </div>
+
+    <script>
+        var primerCecosGeneral = JSON.parse('<?php echo $cecos; ?>');
+    </script>
+
 </div>

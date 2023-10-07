@@ -36,9 +36,14 @@ function compraInit () {
                     return `<select class="form-control form-control-sm combo_producto combo-grid" id="combo_producto_${idCompraProducto}" onchange="changeProductoCompra(${idCompraProducto})" onfocusout="calcularProducto(${idCompraProducto})"></select>`;
                 },
             },
+            {//EXISTENCIAS
+                "data": function (row, type, set, col){
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_existencia_${idCompraProducto}" value="1" disabled>`;
+                }
+            },
             {//CANTIDAD
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_cantidad_${idCompraProducto}" value="1" onkeydown="CantidadkeyDown(${idCompraProducto}, event)" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_cantidad_${idCompraProducto}" min="1" value="1" onkeydown="CantidadkeyDown(${idCompraProducto}, event)" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
                 }
             },
             {//COSTO
@@ -90,9 +95,49 @@ function compraInit () {
                                 results: data.data
                             };
                         }
-                    }
+                    },
+                    // templateResult: formatProducto,
+                    // templateSelection: formatRepoSelection
                 });
             });
+
+            function formatProducto (repo) {
+                console.log(repo);
+                if (repo.loading) {
+                  return repo.text;
+                }
+
+                var $container = $(`<div>
+                </div>`);
+              
+                // var $container = $(
+                //   "<div class='select2-result-repository clearfix'>" +
+                //     "<div class='select2-result-repository__avatar'><img src='https://listardatos.com/img/logo_contabilidad.png' /></div>" +
+                //     "<div class='select2-result-repository__meta'>" +
+                //       "<div class='select2-result-repository__title'></div>" +
+                //       "<div class='select2-result-repository__description'></div>" +
+                //       "<div class='select2-result-repository__statistics'>" +
+                //         "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> </div>" +
+                //         "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> </div>" +
+                //         "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> </div>" +
+                //       "</div>" +
+                //     "</div>" +
+                //   "</div>"
+                // );
+              
+                // $container.find(".select2-result-repository__title").text(repo.full_name);
+                // $container.find(".select2-result-repository__description").text(repo.description);
+                // $container.find(".select2-result-repository__forks").append(repo.forks_count + " Forks");
+                // $container.find(".select2-result-repository__stargazers").append(repo.stargazers_count + " Stars");
+                // $container.find(".select2-result-repository__watchers").append(repo.watchers_count + " Watchers");
+              
+                return $container;
+                
+            }
+
+            function formatRepoSelection (repo) {
+                return repo.full_name || repo.text;
+            }
         }
     });
 

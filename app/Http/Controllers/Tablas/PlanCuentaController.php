@@ -339,6 +339,7 @@ class PlanCuentaController extends Controller
 
     public function comboCuenta(Request $request)
     {
+        $totalRows = $request->has("totalRows") ? $request->get("totalRows") : 40;
         $comprobante = NULL;
         $naturaleza = "naturaleza_cuenta";
         $select = [
@@ -414,6 +415,6 @@ class PlanCuentaController extends Controller
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
 
-        return $planCuenta->orderBy('cuenta')->paginate(30);
+        return $planCuenta->orderBy('cuenta')->paginate($totalRows);
     }
 }

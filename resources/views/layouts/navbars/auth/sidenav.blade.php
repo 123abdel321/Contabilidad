@@ -46,7 +46,7 @@
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" style="color: white !important;" aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand m-0" href="{{ route('home') }}" target="_blank" style="text-align: -webkit-center;">
-            <img src="./img/logo_contabilidad.png" class="navbar-brand-img h-100" alt="main_logo">
+            <img src="" id="side_main_logo" class="navbar-brand-img h-100" alt="main_logo"><br/>
             <span class="ms-1 font-weight-bold" id="nombre-empresa" style="color: antiquewhite"></span>
         </a>
     </div>
@@ -134,6 +134,11 @@
                 </a>
                 <div class="collapse" id="collapseCapturas" >
                     <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
+                        <!-- <li class="nav-item">
+                            <a class="nav-link button-side-nav" id="sidenav_venta" style="margin-left: 20px;">
+                                <span class="nav-link-text ms-1">Ventas</span>
+                            </a>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_compra" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Compras</span>

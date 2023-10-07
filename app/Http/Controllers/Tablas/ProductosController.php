@@ -6,6 +6,7 @@ use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Builder;
 //MODELS
 use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\FacFamilias;
@@ -486,12 +487,19 @@ class ProductosController extends Controller
                 'familia.cuenta_compra_descuento.impuesto',
                 'familia.cuenta_compra_devolucion_iva.impuesto',
                 'familia.cuenta_inventario.impuesto',
-                'familia.cuenta_costos.impuesto'
+                'familia.cuenta_costos.impuesto',
+                'inventarios'
             );
 
         if ($request->get("q")) {
             $producto->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        if ($request->has("id_bodega")) {
+            $producto->whereHas('inventarios', function (Builder $query) use ($request) {
+                $query->where('id_bodega', '=', $request->get("id_bodega"));
+            });
         }
 
         return $producto->paginate(40);

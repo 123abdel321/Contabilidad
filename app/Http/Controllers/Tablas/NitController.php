@@ -269,7 +269,7 @@ class NitController extends Controller
 
     public function comboNit(Request $request)
     {
-
+        $totalRows = $request->has("totalRows") ? $request->get("totalRows") : 20;
         $nits = Nits::select(
             'id',
             'id_tipo_documento',
@@ -297,7 +297,7 @@ class NitController extends Controller
                 ->orWhere('numero_documento', 'LIKE', '%' . $request->get("q") . '%');
         }
 
-        return $nits->paginate(40);
+        return $nits->paginate($totalRows);
     }
 
     public function getNitInfo (Request $request)
