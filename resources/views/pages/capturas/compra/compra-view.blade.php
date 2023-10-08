@@ -73,24 +73,24 @@
         <div class="card cardTotalCompra" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
             <div class="row" style="text-align: -webkit-center;">
                 <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">SUB TOTAL</p>
-                    <h6 id="compra_sub_total" style="margin-top: -15px; color: rgb(0, 2, 255);">$0</h6>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">SUB TOTAL</p>
+                    <h6 id="compra_sub_total" style="color: #0002ff; margin-bottom: 0px;">0</h6>
                 </div>
                 <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">IVA</p>
-                    <h6 id="compra_total_iva" style="margin-top: -15px; color: rgb(0, 2, 255);">$0</h6>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">IVA</p>
+                    <h6 id="compra_total_iva" style="color: #0002ff; margin-bottom: 0px;">0</h6>
                 </div>
                 <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">DESCUENTO</p>
-                    <h6 id="compra_total_descuento" style="margin-top: -15px; color: rgb(0, 2, 255);">$0</h6>
-                </div>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">DESCUENTO</p>
+                    <h6 id="compra_total_descuento" style="color: #0002ff; margin-bottom: 0px;">0</h6>
+                </div>  
                 <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
-                    <p id="compra_texto_retencion" style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">RETENCIÓN</p>
-                    <h6 id="compra_total_retencion" style="margin-top: -15px; color: rgb(0, 2, 255);">$0</h6>
+                    <p id="compra_texto_retencion" style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">RETENCIÓN</p>
+                    <h6 id="compra_total_retencion" style="color: #0002ff; margin-bottom: 0px;">0</h6>
                 </div>
                 <div class="col-12 col-md- col-sm">
-                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">TOTAL</p>
-                    <h6 id="compra_total_valor" style="margin-top: -15px; color: rgb(0, 2, 255);">$0</h6>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">TOTAL</p>
+                    <h6 id="compra_total_valor" style="color: #0002ff; margin-bottom: 0px;">0</h6>
                 </div>
             </div>
         </div>

@@ -134,11 +134,11 @@
                 </a>
                 <div class="collapse" id="collapseCapturas" >
                     <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
-                        <!-- <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_venta" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Ventas</span>
                             </a>
-                        </li> -->
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_compra" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Compras</span>

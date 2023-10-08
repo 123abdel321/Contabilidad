@@ -72,15 +72,15 @@
             <div class="row" style="text-align: -webkit-center;">
                 <div class="col-4 col-md-4 col-sm-4" style="border-right: solid 1px #787878;">
                     <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">DEBITO</p>
-                    <h6 id="general_debito" style="color: #0002ff; margin-bottom: 0px;">0.00</h6>
+                    <h6 id="general_debito" style="color: #0002ff; margin-bottom: 0px;">0</h6>
                 </div>
                 <div class="col-4 col-md-4 col-sm-4" style="border-right: solid 1px #787878;">
                     <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">CREDITO</p>
-                    <h6 id="general_credito" style="color: #0002ff; margin-bottom: 0px;">0.00</h6>
+                    <h6 id="general_credito" style="color: #0002ff; margin-bottom: 0px;">0</h6>
                 </div>
                 <div class="col-4 col-md-4 col-sm-4">
                     <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">DIFERENCIA</p>
-                    <h6 id="general_diferencia" style="color: #0002ff; margin-bottom: 0px;">0.00</h6>
+                    <h6 id="general_diferencia" style="color: #0002ff; margin-bottom: 0px;">0</h6>
                 </div>
             </div>
         </div>

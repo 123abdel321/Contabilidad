@@ -26,8 +26,6 @@ function compraInit () {
         columns: [
             {//BORRAR
                 "data": function (row, type, set, col){
-                    console.log('col: ',col);
-                    console.log('idCompraProducto: ',idCompraProducto);
                     return `<span class="btn badge bg-gradient-danger drop-row-grid" onclick="deleteProductoCompra(${idCompraProducto})" id="delete-producto-compra_${idCompraProducto}"><i class="fas fa-trash-alt"></i></span>`;
                 }
             },
@@ -38,7 +36,7 @@ function compraInit () {
             },
             {//EXISTENCIAS
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_existencia_${idCompraProducto}" value="1" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_existencia_${idCompraProducto}" disabled>`;
                 }
             },
             {//CANTIDAD
@@ -187,7 +185,6 @@ function compraInit () {
 }
 
 function addRowProducto () {
-    console.log('idCompraProducto: ',idCompraProducto);
     compra_table.row.add({
         "id": idCompraProducto,
         "cantidad": 1,
@@ -213,6 +210,12 @@ function changeProductoCompra (idRow) {
     if (data.length == 0) {
         return
     }
+    
+    if (data.inventarios) {
+        var totalInventario = parseInt(data.inventarios[0].cantidad);
+        $("#compra_existencia_"+idRow).val(totalInventario);
+        $("#compra_cantidad_"+idRow).attr({"max" : totalInventario});
+    }
 
     if (data.familia.cuenta_compra_iva && data.familia.cuenta_compra_iva.impuesto) {
         $('#compra_iva_porcentaje_'+idRow).prop('disabled', false);
@@ -229,7 +232,6 @@ function changeProductoCompra (idRow) {
     }
 
     $('#compra_costo_'+idRow).val(parseFloat(data.precio_inicial));
-
     $('#combo_producto_'+idRow).select2('open');
     $('#compra_cantidad_'+idRow).prop('disabled', false);
     $('#compra_costo_'+idRow).prop('disabled', false);
@@ -272,7 +274,6 @@ $("#fecha_manual_compra").on('keydown', function(event) {
 $("#documento_referencia_compra").on('keydown', function(event) {
     if(event.keyCode == 13){
         event.preventDefault();
-
         document.getElementById('iniciarCapturaCompra').click();
     }
 });
@@ -282,7 +283,6 @@ function buscarFacturaCompra(event) {
     if (validarFacturaCompra) {
         validarFacturaCompra.abort();
     }
-    
     
     $('#documento_referencia_compra_loading').show();
 
@@ -319,11 +319,23 @@ function buscarFacturaCompra(event) {
 
 function CantidadkeyDown (idRow, event) {
     if(event.keyCode == 13){
-        calcularProducto(idRow);
-        setTimeout(function(){
-            $('#compra_costo_'+idRow).focus();
-            $('#compra_costo_'+idRow).select();
-        },10);
+        // var existencias = $('#compra_existencia_'+idRow).val();
+        var cantidad = $('#compra_cantidad_'+idRow).val();
+
+        // if (cantidad > existencias) {
+        if (cantidad <= 0) {
+            $('#compra_cantidad_'+idRow).val(1);
+            setTimeout(function(){
+                $('#compra_cantidad_'+idRow).focus();
+                $('#compra_cantidad_'+idRow).select();
+            },10);
+        } else {
+            calcularProducto(idRow);
+            setTimeout(function(){
+                $('#compra_costo_'+idRow).focus();
+                $('#compra_costo_'+idRow).select();
+            },10);
+        }
     }
 }
 

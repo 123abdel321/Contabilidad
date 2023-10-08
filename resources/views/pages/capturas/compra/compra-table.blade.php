@@ -3,6 +3,7 @@
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;"><i class="fas fa-sliders-h"></i></th>
             <th>Producto</th>
+            <th>Existencias</th>
             <th>Cantidad</th>
             <th>Costo</th>
             <th>% Descuento</th>
