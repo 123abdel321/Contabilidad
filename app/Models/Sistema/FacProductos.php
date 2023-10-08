@@ -16,6 +16,7 @@ class FacProductos extends Model
     protected $fillable = [
         'id',
         'id_padre',
+        'imagen',
         'id_familia',
         'tipo_producto',
         'codigo',

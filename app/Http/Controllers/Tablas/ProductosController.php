@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tablas;
 use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Builder;
 //MODELS
@@ -110,13 +111,13 @@ class ProductosController extends Controller
             'id_familia' => 'required|exists:sam.fac_familias,id',
             'tipo_producto' => 'required|numeric',
             'precio_inicial' => 'required|numeric',
-            'precio_maximo' => 'required|numeric',
+            'precio_minimo' => 'required|numeric',
             'variante' => 'required|boolean',
             'productos_variantes' => 'array|sometimes|required_if:variante,=,true',
             'productos_variantes.*.codigo' => 'sometimes|required_if:variante,=,true|min:1|max:200|string|unique:sam.fac_productos,codigo',
             'productos_variantes.*.precio' => 'sometimes|required_if:variante,=,true|numeric',
             'productos_variantes.*.precio_inicial' => 'sometimes|required_if:variante,=,true|numeric',
-            'productos_variantes.*.precio_maximo' => 'sometimes|required_if:variante,=,true|numeric',
+            'productos_variantes.*.precio_minimo' => 'sometimes|required_if:variante,=,true|numeric',
             'productos_variantes.*.variantes' => 'nullable|nullable',
             'productos_variantes.*.variantes.*.id' => 'nullable|exists:sam.fac_variantes_opciones,id',
             'productos_variantes.*.inventarios' => 'array|nullable',
@@ -153,6 +154,18 @@ class ProductosController extends Controller
                 'updated_by' => request()->user()->id
             ]);
 
+            if($request->imagen) {
+                $image = $request->imagen;
+                $ext = explode(";", explode("/",explode(",", $image)[0])[1])[0];
+                $image = str_replace('data:image/'.$ext.';base64,', '', $image);
+                $image = str_replace(' ', '+', $image);
+                $imageName = 'producto_'.$request->get('codigo').'_'.uniqid().'.'. $ext;
+                
+                Storage::disk('do_spaces')->put('imagen/productos/'.$imageName, base64_decode($image), 'public');
+                $productoPadre->imagen = 'imagen/productos/'.$imageName;
+                $productoPadre->save();
+            }
+
             //ASOCIAR BODEGAS GENERALES AL PRODUCTO
             $bodegas = $request->get('inventarios');
 
@@ -188,7 +201,7 @@ class ProductosController extends Controller
                             'nombre' => $request->get('nombre') .' '. $this->nombreVariante($producto['variantes']),
                             'precio' => $request->get('precio'),
                             'precio_inicial' => $request->get('precio_inicial'),
-                            'precio_maximo' => $request->get('precio_maximo'),
+                            'precio_minimo' => $request->get('precio_minimo'),
                             'variante' => $request->get('variante'),
                             'created_by' => request()->user()->id,
                             'updated_by' => request()->user()->id
@@ -259,13 +272,13 @@ class ProductosController extends Controller
             'id_familia' => 'required|exists:sam.fac_familias,id',
             'tipo_producto' => 'required|numeric',
             'precio_inicial' => 'required|numeric',
-            'precio_maximo' => 'required|numeric',
+            'precio_minimo' => 'required|numeric',
             'variante' => 'required|boolean',
             'productos_variantes' => 'array|sometimes|required_if:variante,=,true',
             'productos_variantes.*.codigo' => 'sometimes|required_if:variante,=,true|min:1|max:200|string|unique:sam.fac_productos,codigo',
             'productos_variantes.*.precio' => 'sometimes|required_if:variante,=,true|numeric',
             'productos_variantes.*.precio_inicial' => 'sometimes|required_if:variante,=,true|numeric',
-            'productos_variantes.*.precio_maximo' => 'sometimes|required_if:variante,=,true|numeric',
+            'productos_variantes.*.precio_minimo' => 'sometimes|required_if:variante,=,true|numeric',
             'productos_variantes.*.variantes' => 'nullable|nullable',
             'productos_variantes.*.variantes.*.id' => 'nullable|exists:sam.fac_variantes_opciones,id',
             'productos_variantes.*.inventarios' => 'array|nullable',
@@ -294,8 +307,21 @@ class ProductosController extends Controller
             $producto->nombre = $request->get('nombre');
             $producto->precio = $request->get('precio');
             $producto->precio_inicial = $request->get('precio_inicial');
-            $producto->precio_maximo = $request->get('precio_maximo');
+            $producto->precio_minimo = $request->get('precio_minimo');
             $producto->updated_by = request()->user()->id;
+            
+
+            if($request->imagen) {
+                $image = $request->imagen;
+                $ext = explode(";", explode("/",explode(",", $image)[0])[1])[0];
+                $image = str_replace('data:image/'.$ext.';base64,', '', $image);
+                $image = str_replace(' ', '+', $image);
+                $imageName = 'producto_'.$request->get('codigo').'_'.uniqid().'.'. $ext;
+                
+                Storage::disk('do_spaces')->put('imagen/productos/'.$imageName, base64_decode($image), 'public');
+                $producto->imagen = 'imagen/productos/'.$imageName;
+            }
+
             $producto->save();
 
             //ASOCIAR BODEGAS GENERALES AL PRODUCTO
@@ -318,11 +344,12 @@ class ProductosController extends Controller
                     $productoVariante = null;
                     if (array_key_exists('id', $productoVar)) {
                         $productoVariante = FacProductos::where('id', $productoVar['id'])->first();
+                        $productoVariante->imagen = $producto->imagen;
                         $productoVariante->id_familia = $request->get('id_familia');
                         $productoVariante->codigo = $productoVar['codigo'];
                         $productoVariante->precio = $productoVar['precio'];
                         $productoVariante->precio_inicial = $productoVar['precio_inicial'];
-                        $productoVariante->precio_maximo = $productoVar['precio_maximo'];
+                        $productoVariante->precio_minimo = $productoVar['precio_minimo'];
                         $productoVariante->updated_by = request()->user()->id;
                         $productoVariante->save();
                     } else {
@@ -334,7 +361,7 @@ class ProductosController extends Controller
                             'nombre' => $producto->nombre .' '. $this->nombreVariante($productoVar['variantes']),
                             'precio' => $productoVar['precio'],
                             'precio_inicial' => $productoVar['precio_inicial'],
-                            'precio_maximo' => $productoVar['precio_maximo'],
+                            'precio_minimo' => $productoVar['precio_minimo'],
                             'variante' => true,
                             'created_by' => request()->user()->id,
                             'updated_by' => request()->user()->id
@@ -498,8 +525,9 @@ class ProductosController extends Controller
 
         if ($request->has("id_bodega")) {
             $producto->whereHas('inventarios', function (Builder $query) use ($request) {
-                $query->where('id_bodega', '=', $request->get("id_bodega"));
-            });
+                    $query->where('id_bodega', $request->get("id_bodega"));
+                })
+                ->orDoesntHave('inventarios');
         }
 
         return $producto->paginate(40);

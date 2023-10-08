@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('fac_productos', function (Blueprint $table) {
             $table->id();
+            $table->string('imagen', 300)->nullable();
             $table->integer('id_padre')->nullable();
             $table->integer('id_familia')->nullable();
             $table->integer('tipo_producto')->default(0)->comment('0:Producto, 1:Servicio, 2:Combo');
