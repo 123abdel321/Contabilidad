@@ -262,4 +262,19 @@ class ResolucionesController extends Controller
         }
     }
 
+    public function comboResolucion (Request $request)
+    {
+        $resolucion = FacResoluciones::select(
+            \DB::raw('*'),
+            \DB::raw("CONCAT(prefijo, ' - ', nombre) as text")
+        );
+
+        if ($request->get("q")) {
+            $resolucion->where('prefijo', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        return $resolucion->paginate(40);
+    }
+
 }
