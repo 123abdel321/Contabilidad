@@ -131,6 +131,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('resoluciones', 'create');
             Route::put('resoluciones', 'update');
             Route::delete('resoluciones', 'delete');
+            Route::get('resoluciones/combo-resoluciones', 'comboResolucion');
         });
         //FORMAS PAGO
         Route::controller(FormasPagoController::class)->group(function () {

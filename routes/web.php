@@ -25,6 +25,7 @@ use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
 //CAPTURAS
+use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 
@@ -91,6 +92,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/compra', [CompraController::class, 'index'])->name('compra');
 		Route::get('/compras', [CompraController::class, 'indexInforme'])->name('compras');
 		Route::get('/compras-print/{id}', [CompraController::class, 'showPdf'])->name('compra-pdf');
+		//VENTAS
+		Route::get('/venta', [VentaController::class, 'index'])->name('venta');
 		//NITS
 		Route::get('/nit', [NitController::class, 'index'])->name('nit');
 		//PLAN CUENTAS

@@ -2,6 +2,7 @@
 const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
 // const base_url = 'http://localhost:8000/api/';
 // const base_web = 'http://localhost:8000/';
+const bucketUrl = 'https://bucketlistardatos.nyc3.digitaloceanspaces.com/';
 const base_url = 'https://listardatos.com/api/';
 const base_web = 'https://listardatos.com/';
 const dateNow = new Date();
@@ -473,7 +474,7 @@ function showNit (id_nit) {
 
             var data = res.data;
             if(data.logo_nit) {
-                $('#avatar_nit').attr('src', 'https://s3contabilidad.nyc3.digitaloceanspaces.com/'+data.logo_nit);
+                $('#avatar_nit').attr('src', 'bucketlistardatos.nyc3.digitaloceanspaces.com/'+data.logo_nit);
             } else {
                 $('#avatar_nit').attr('src', '/img/theme/tim.png');
             }
