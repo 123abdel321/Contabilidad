@@ -57,6 +57,14 @@
         text-align: -webkit-center !important;
     }
 
+    .line-horizontal {
+        width: 100%;
+        height: 1px;
+        border: 1px solid #e3e3e3;
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+
 </style>
 
 <div class="container-fluid py-2">
@@ -98,6 +106,8 @@
             @include('pages.capturas.venta.venta-table')
         </div>
     </div>
+
+    @include('pages.capturas.venta.venta-pagos')
 
     <script>
         var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');
