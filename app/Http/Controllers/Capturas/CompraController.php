@@ -146,11 +146,7 @@ class CompraController extends Controller
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA COMPRAR
             $compra = $this->createFacturaCompra($request);
-            //CREAR MOVIMIENTO BODEGAS
-            foreach ($request->get('productos') as $producto) {
-                $producto = (object)$producto;
-                
-            }
+
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE COMPRAS
             $documentoGeneral = new Documento(
                 $request->get('id_comprobante'),

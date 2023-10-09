@@ -214,7 +214,7 @@ function changeProductoCompra (idRow) {
     if (data.inventarios) {
         var totalInventario = parseInt(data.inventarios[0].cantidad);
         $("#compra_existencia_"+idRow).val(totalInventario);
-        $("#compra_cantidad_"+idRow).attr({"max" : totalInventario});
+        // $("#compra_cantidad_"+idRow).attr({"max" : totalInventario});
     }
 
     if (data.familia.cuenta_compra_iva && data.familia.cuenta_compra_iva.impuesto) {

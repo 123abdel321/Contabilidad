@@ -1,5 +1,6 @@
 var fecha = null;
 var venta_table = null;
+var venta_table_pagos = null;
 var validarFacturaVenta = null;
 var idVentaProducto = 0;
 var $comboResolucion = null;
@@ -40,27 +41,27 @@ function ventaInit () {
             },
             {//CANTIDAD
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="CantidadkeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="CantidadVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
                 }
             },
             {//COSTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_costo_${idVentaProducto}" value="0" onkeydown="CostokeyDown(${idVentaProducto}, event)" style="min-width: 100px;" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_costo_${idVentaProducto}" value="0" onkeydown="CostoVentakeyDown(${idVentaProducto}, event)" style="min-width: 100px;" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
                 }
             },
             {//% DESCUENTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_descuento_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentokeyDown(${idVentaProducto}, event)" maxlength="2" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_descuento_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idVentaProducto}, event)" maxlength="2" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
                 }
             },
             {//VALOR DESCUENTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_descuento_valor_${idVentaProducto}" value="0" onkeydown="DescuentoTotalkeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_descuento_valor_${idVentaProducto}" value="0" onkeydown="DescuentoTotalVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
                 }
             },
             {//% IVA
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_iva_porcentaje_${idVentaProducto}" value="0" onkeydown="IvakeyDown(${idVentaProducto}, event)" maxlength="2" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_iva_porcentaje_${idVentaProducto}" value="0" onkeydown="IvaVentakeyDown(${idVentaProducto}, event)" maxlength="2" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
                 }
             },
             {//VALOR IVA
@@ -124,22 +125,24 @@ function ventaInit () {
                     '#838383';
 
                 var $container = $(`
-                <div class="row">
-                    <div class="col-3" style="display: flex; justify-content: center; align-items: center;">
-                        <img style="width: 50px;" src="${urlImagen}" />
-                    </div>
-                    <div class="col-9">
-                        <div class="row">
-                            <div class="col-12">
-                                <h6 style="font-size: 14px; margin-bottom: 0px; color: black;">${repo.text}</h6>
-                            </div>
-                            <div class="col-12">
-                                <i class="fas fa-box-open" style="font-size: 11px; color: ${color};"></i>
-                                ${inventario}
+                    <div class="row">
+                        <div class="col-3" style="display: flex; justify-content: center; align-items: center; padding-left: 0px;">
+                            <img
+                                style="width: 40px; border-radius: 10%;"
+                                src="${urlImagen}" />
+                        </div>
+                        <div class="col-9" style="padding-left: 0px !important">
+                            <div class="row">
+                                <div class="col-12" style="padding-left: 0px !important">
+                                    <h6 style="font-size: 14px; margin-bottom: 0px; color: black;">${repo.text}</h6>
+                                </div>
+                                <div class="col-12" style="padding-left: 0px !important">
+                                    <i class="fas fa-box-open" style="font-size: 11px; color: ${color};"></i>
+                                    ${inventario}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 `);
 
                 return $container;
@@ -149,6 +152,30 @@ function ventaInit () {
                 return repo.full_name || repo.text;
             }
         }
+    });
+
+    venta_table_pagos = $('#ventaFormaPago').DataTable({
+        dom: '',
+        paging: false,
+        responsive: false,
+        processing: true,
+        serverSide: true,
+        deferLoading: 0,
+        initialLoad: false,
+        language: lenguajeDatatable,
+        sScrollX: "100%",
+        scrollX: true,
+        ajax:  {
+            type: "GET",
+            headers: headers,
+            url: base_url + 'forma-pago/combo-forma-pago',
+        },
+        columns: [
+            {"data":'nombre'},
+            {"data": function (row, type, set){
+                return `<input type="number" class="form-control form-control-sm" style="min-width: 100px;" value="0" onfocus="focusFormaPago(${row.id})" onfocusout="calcularVentaPagos(${row.id})" id="venta_forma_pago_${row.id}">`;
+            }},
+        ],
     });
 
     $comboCliente = $('#id_cliente_venta').select2({
@@ -273,6 +300,7 @@ function buscarFacturaVenta(event) {
     $('#documento_referencia_venta').removeClass("is-valid");
 
     if(event.key == 'Backspace') documento_referencia = documento_referencia.slice(0, -1);
+    
     setTimeout(function(){
         validarFacturaVenta = $.ajax({
             url: base_url + 'existe-factura',
@@ -307,7 +335,7 @@ $(document).on('click', '#iniciarCapturaVenta', function () {
     }
     
     $("#iniciarCapturaVenta").hide();
-    $("#agregarVenta").show();
+    $("#crearCapturaVenta").hide();
     $("#cancelarCapturaVenta").show();
     $("#crearCapturaVentaDisabled").show();
 
@@ -315,6 +343,19 @@ $(document).on('click', '#iniciarCapturaVenta', function () {
 });
 
 function addRowProductoVenta () {
+
+    var rows = venta_table.rows().data();
+    var totalRows = rows.length;
+    var dataLast = rows[totalRows - 1];
+
+    if (dataLast) {
+        var cuentaLast = $('#venta_producto_'+dataLast.id).val();
+        if (!cuentaLast) {
+            $('#venta_producto_'+dataLast.id).select2('open');
+            document.getElementById("card-venta").scrollLeft = 0;
+            return;
+        }
+    }
     
     venta_table.row.add({
         "id": idVentaProducto,
@@ -334,6 +375,32 @@ function addRowProductoVenta () {
     $('#venta_producto_'+idVentaProducto).select2('open');
     idVentaProducto++;
 }
+
+function deleteProductoVenta (idRow) {
+    let dataVenta = venta_table.rows().data();
+
+    for (let row = 0; row < dataVenta.length; row++) {
+        let element = dataVenta[row];
+        if(element.id == idRow) {
+            venta_table.row(row).remove().draw();
+            if(!venta_table.rows().data().lengt){
+                $("#crearCapturaVentaDisabled").show();
+                $("#crearCapturaVenta").hide();
+            }
+        }
+    }
+    mostrarValoresVentas();
+}
+
+$(document).on('click', '#agregarVenta', function () {
+    $('#agregarVenta').hide();
+    $('#iniciarCapturaVentaLoading').show();
+    setTimeout(function(){
+        addRowProductoVenta();
+        $('#agregarVenta').show();
+        $('#iniciarCapturaVentaLoading').hide();
+    },100);
+});
 
 function calcularProductoVenta (idRow) {
     var costoProducto = $('#venta_costo_'+idRow).val();
@@ -380,7 +447,7 @@ function totalValoresVentas() {
     var dataVenta = venta_table.rows().data();
 
     if(dataVenta.length > 0) {
-        $("#crearCapturaVenta").show();
+        
         $("#crearCapturaVentaDisabled").hide();
         
         for (let index = 0; index < dataVenta.length; index++) {
@@ -393,9 +460,9 @@ function totalValoresVentas() {
                 var totaSum = $('#venta_total_'+dataVenta[index].id).val();
                 var descSum = $('#venta_descuento_valor_'+dataVenta[index].id).val();
     
-                iva+= parseInt(ivaSum ? ivaSum : 0);
-                descuento+= parseInt(descSum ? descSum : 0);
-                total+= parseInt(totaSum ? totaSum : 0);
+                iva+= parseFloat(ivaSum ? ivaSum : 0);
+                descuento+= parseFloat(descSum ? descSum : 0);
+                total+= parseFloat(totaSum ? totaSum : 0);
                 valorBruto+= (cantidad*costo) - descSum;
             }
         }
@@ -408,19 +475,24 @@ function totalValoresVentas() {
         $("#crearCapturaVentaDisabled").show();
     }
 
+    if (total > 0) {
+        $("#crearCapturaVenta").show();
+        $("#crearCapturaVentaDisabled").hide();
+    } else {
+        $("#crearCapturaVenta").hide();
+        $("#crearCapturaVentaDisabled").show();
+    }
+
     return [iva, retencion, descuento, total];
 }
 
 function changeProductoVenta (idRow) {
     var data = $('#venta_producto_'+idRow).select2('data')[0];
-    console.log('data: ',data);
-    return;
-    if (data.length == 0) {
-        return
-    }
+
+    if (data.length == 0) return
     
-    if (data.inventarios) {
-        var totalInventario = parseInt(data.inventarios[0].cantidad);
+    if (data.inventarios.length > 0) {
+        var totalInventario = parseFloat(data.inventarios[0].cantidad);
         $("#venta_existencia_"+idRow).val(totalInventario);
         $("#venta_cantidad_"+idRow).attr({"max" : totalInventario});
     }
@@ -433,13 +505,13 @@ function changeProductoVenta (idRow) {
     if (data.familia.cuenta_venta_retencion && data.familia.cuenta_venta_retencion.impuesto) {
         var impuestoPorcentaje = parseFloat(data.familia.cuenta_venta_retencion.impuesto.porcentaje);
         var topeValor = parseFloat(data.familia.cuenta_venta_retencion.impuesto.base);
-        if (impuestoPorcentaje > porcentajeRetencion) {
-            porcentajeRetencion = impuestoPorcentaje;
-            topeRetencion = topeValor;
+        if (impuestoPorcentaje > porcentajeRetencionVenta) {
+            porcentajeRetencionVenta = impuestoPorcentaje;
+            topeRetencionVenta = topeValor;
         }
     }
 
-    $('#venta_costo_'+idRow).val(parseFloat(data.precio_inicial));
+    $('#venta_costo_'+idRow).val(parseFloat(data.precio));
     $('#venta_producto_'+idRow).select2('open');
     $('#venta_cantidad_'+idRow).prop('disabled', false);
     $('#venta_costo_'+idRow).prop('disabled', false);
@@ -447,12 +519,296 @@ function changeProductoVenta (idRow) {
     $('#venta_descuento_valor_'+idRow).prop('disabled', false);
     $('#venta_iva_porcentaje_'+idRow).prop('disabled', false);
     
-    document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencion+'%';
+    document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%';
         
-    calcularProducto(idRow);
+    calcularProductoVenta(idRow);
     
     setTimeout(function(){
         $('#venta_cantidad_'+idRow).focus();
         $('#venta_cantidad_'+idRow).select();
     },10);
+}
+
+function CantidadVentakeyDown (idRow, event) {
+    if(event.keyCode == 13){
+
+        var dataProductos = $('#venta_producto_'+idRow).select2("data");
+        var existencias = $('#venta_existencia_'+idRow).val();
+        var cantidad = $('#venta_cantidad_'+idRow).val();
+
+        if (dataProductos[0].inventarios.length > 0 && cantidad > existencias) {
+            $('#venta_cantidad_'+idRow).val(existencias);
+            setTimeout(function(){
+                $('#venta_cantidad_'+idRow).focus();
+                $('#venta_cantidad_'+idRow).select();
+            },10);
+
+        } else {
+            calcularProductoVenta(idRow);
+            setTimeout(function(){
+                $('#venta_costo_'+idRow).focus();
+                $('#venta_costo_'+idRow).select();
+            },10);
+        }
+    }
+}
+
+function CostoVentakeyDown (idRow, event) {
+    if(event.keyCode == 13){
+        calcularProductoVenta (idRow);
+        setTimeout(function(){
+            $('#venta_descuento_porcentaje_'+idRow).focus();
+            $('#venta_descuento_porcentaje_'+idRow).select();
+        },10);
+    }
+}
+
+function DescuentoVentakeyDown (idRow, event) {
+    if(event.keyCode == 13){
+        calcularProductoVenta(idRow);
+        setTimeout(function(){
+            $('#venta_descuento_valor_'+idRow).focus();
+            $('#venta_descuento_valor_'+idRow).select();
+        },10);
+    }
+}
+
+function DescuentoTotalVentakeyDown (idRow, event) {
+    if(event.keyCode == 13){
+        var descuentoProductoValor = $('#venta_descuento_valor_'+idRow).val();
+        var costoProducto = $('#venta_costo_'+idRow).val();
+        var cantidadProducto = $('#venta_cantidad_'+idRow).val();
+        var porcentajeDescuento = descuentoProductoValor * 100 / (costoProducto * cantidadProducto);
+
+        $('#venta_descuento_porcentaje_'+idRow).val(porcentajeDescuento);
+        calcularProductoVenta(idRow);
+        setTimeout(function(){
+            $('#venta_iva_porcentaje_'+idRow).focus();
+            $('#venta_iva_porcentaje_'+idRow).select();
+        },10);
+    }
+}
+
+function IvaVentakeyDown (idRow, event) {
+    if(event.keyCode == 13){
+        calcularProductoVenta(idRow);
+        addRowProductoVenta();
+    }
+}
+
+$(document).on('click', '#cancelarCapturaVenta', function () {
+    cancelarVenta();
+});
+
+function cancelarVenta() {
+    var totalRows = venta_table.rows().data().length;
+    idVentaProducto = 0;
+    if(venta_table.rows().data().length){
+        venta_table.clear([]).draw();
+        for (let index = 0; index < totalRows; index++) {
+            documento_general_table.row(0).remove().draw();
+        }
+        mostrarValoresVentas();
+    }
+}
+
+function loadFormasPago() {
+    var totalRows = venta_table_pagos.rows().data().length;
+    idVentaProducto = 0;
+    if(venta_table_pagos.rows().data().length){
+        venta_table_pagos.clear([]).draw();
+        for (let index = 0; index < totalRows; index++) {
+            venta_table_pagos.row(0).remove().draw();
+        }
+    }
+    venta_table_pagos.ajax.reload();
+}
+
+$(document).on('click', '#crearCapturaVenta', function () {
+    loadFormasPago();
+    var [iva, retencion, descuento, total] = totalValoresVentas();
+    $('#total_pagado_venta').val(0);
+    $('#total_faltante_venta').val(total);
+    $("#ventaFormModal").modal('show');
+});
+
+function focusFormaPago(idFormaPago) {
+    var totalFaltante = parseFloat($('#total_faltante_venta').val());
+    var pagoActual = parseInt($('#venta_forma_pago_'+idFormaPago).val());
+    $('#venta_forma_pago_'+idFormaPago).val(totalFaltante + pagoActual);
+    $('#venta_forma_pago_'+idFormaPago).select();
+}
+
+function calcularVentaPagos(idFormaPago) {
+    $('#total_faltante_venta').removeClass("is-invalid");
+
+    var [iva, retencion, descuento, total] = totalValoresVentas();
+    var totalVentaPagos = totalFormasPagoVentas();
+    
+    if (totalVentaPagos > total) {
+        var totalFaltanteActual = $('#total_faltante_venta').val();
+        $('#venta_forma_pago_'+idFormaPago).val(totalFaltanteActual);
+        $('#venta_forma_pago_'+idFormaPago).select();
+    } else {
+        $('#total_pagado_venta').val(totalVentaPagos);
+        $('#total_faltante_venta').val(total - totalVentaPagos);
+    }
+}
+
+function totalFormasPagoVentas() {
+    var totalPago = 0;
+    var dataPagoVenta = venta_table_pagos.rows().data();
+
+    if(dataPagoVenta.length > 0) {
+        for (let index = 0; index < dataPagoVenta.length; index++) {
+            var ventaPago = parseFloat($('#venta_forma_pago_'+dataPagoVenta[index].id).val());
+            totalPago+= ventaPago;
+        }
+    }
+
+    return totalPago;
+}
+
+$(document).on('click', '#saveVenta', function () {
+    var totalFaltante = $('#total_faltante_venta').val();
+    $('#total_faltante_venta').removeClass("is-invalid");
+
+    if(totalFaltante > 0){
+        $('#total_faltante_venta').addClass("is-invalid");
+        $('#total_faltante_venta').removeClass("is-valid");
+        return;
+    }
+
+    saveVenta();
+});
+
+function saveVenta() {
+
+    $("#saveVenta").hide();
+    $("#saveVentaLoading").show();
+
+    let data = {
+        pagos: getVentasPagos(),
+        productos: getProductosVenta(),
+        id_bodega: $("#id_bodega_venta").val(),
+        id_cliente: $("#id_cliente_venta").val(),
+        fecha_manual: $("#fecha_manual_venta").val(),
+        id_resolucion: $("#id_resolucion_venta").val(),
+        documento_referencia: $("#documento_referencia_venta").val(),
+        observacion: $("#observacion_venta").val(),
+    }
+
+    $.ajax({
+        url: base_url + 'ventas',
+        method: 'POST',
+        data: JSON.stringify(data),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            // if(res.impresion) {
+            //     window.open("/ventas-print/"+res.impresion, "", "_blank");
+            // }
+            idVentaProducto = 0;
+            $("#ventaFormModal").modal('hide');
+            $('#iniciarCapturaVenta').hide();
+            $('#iniciarCapturaVentaLoading').hide();
+            $('#documento_referencia_venta').val('');
+
+            var totalRows = venta_table.rows().data().length;
+            for (let index = 0; index < totalRows; index++) {
+                venta_table.row(0).remove().draw();
+            }
+
+            mostrarValoresVentas();
+            agregarToast('exito', 'Creación exitosa', 'Venta creada con exito!', true);
+            setTimeout(function(){
+                $comboProveedor.select2("open");
+            },10);
+        } else {
+            var mensaje = res.mensages;
+            var errorsMsg = "";
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += "- "+errores[campo]+" <br>";
+                }
+            };
+            agregarToast('error', 'Creación errada', errorsMsg);
+        }
+    }).fail((err) => {
+        $("#saveVenta").show();
+        $("#saveVentaLoading").hide();
+
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = "";
+        for (field in mensaje) {
+            var errores = mensaje[field];
+            for (campo in errores) {
+                errorsMsg += field+": "+errores[campo]+" <br>";
+            }
+            
+        };
+        agregarToast('error', 'Creación errada', errorsMsg);
+    });
+
+}
+
+function getVentasPagos() {
+    var data = [];
+
+    var dataVentaPagos = venta_table_pagos.rows().data();
+
+    if(!dataVentaPagos.length > 0) return data;
+
+    for (let index = 0; index < dataVentaPagos.length; index++) {
+        const dataPagoVenta = dataVentaPagos[index];
+        var pagoVenta = $('#venta_forma_pago_'+dataPagoVenta.id).val();
+        if (pagoVenta > 0) {
+            data.push({
+                id: dataPagoVenta.id,
+                valor: pagoVenta
+            });
+        }
+    }
+
+    return data;
+}
+
+function getProductosVenta() {
+    var data = [];
+
+    var dataVentaProductos = venta_table.rows().data();
+
+    if(!dataVentaProductos.length > 0) return data;
+
+    for (let index = 0; index < dataVentaProductos.length; index++) {
+
+        const id_row = dataVentaProductos[index].id;
+        var id_producto = $('#venta_producto_'+id_row).val();
+        var cantidad = $('#venta_cantidad_'+id_row).val();
+        
+        if (id_producto && cantidad) {
+            var costo = $('#venta_costo_'+id_row).val();
+            var descuento_porcentaje = $('#venta_descuento_porcentaje_'+id_row).val();
+            var descuento_valor = $('#venta_descuento_valor_'+id_row).val();
+            var iva_porcentaje = $('#venta_iva_porcentaje_'+id_row).val();
+            var iva_valor = $('#venta_iva_valor_'+id_row).val();
+            var total = $('#venta_total_'+id_row).val();
+
+            data.push({
+                id_producto: parseInt(id_producto),
+                cantidad: parseInt(cantidad),
+                costo: costo ? parseFloat(costo) : 0,
+                subtotal: parseInt(cantidad) * parseFloat(costo),
+                descuento_porcentaje: descuento_porcentaje ? parseFloat(descuento_porcentaje) : 0,
+                descuento_valor: descuento_valor ? parseFloat(descuento_valor) : 0,
+                iva_porcentaje: iva_porcentaje ? parseFloat(iva_porcentaje) : 0,
+                iva_valor: iva_valor ? parseFloat(iva_valor) : 0,
+                total: total ? parseFloat(total) : 0,
+            });
+        }
+    }
+
+    return data;
 }

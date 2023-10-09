@@ -513,6 +513,12 @@ class ProductosController extends Controller
                 'familia.cuenta_compra_iva.impuesto',
                 'familia.cuenta_compra_descuento.impuesto',
                 'familia.cuenta_compra_devolucion_iva.impuesto',
+                'familia.cuenta_venta.impuesto',
+                'familia.cuenta_venta_retencion.impuesto',
+                'familia.cuenta_venta_devolucion.impuesto',
+                'familia.cuenta_venta_iva.impuesto',
+                'familia.cuenta_venta_descuento.impuesto',
+                'familia.cuenta_venta_devolucion_iva.impuesto',
                 'familia.cuenta_inventario.impuesto',
                 'familia.cuenta_costos.impuesto',
                 'inventarios'

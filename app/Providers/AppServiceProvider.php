@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\Sistema\FacDocumentos;
 use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacCompras;
+use App\Models\Sistema\FacVentas;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -20,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
             '1' => FacProductos::class,
 			'2' => FacDocumentos::class,
 			'3' => FacCompras::class,
+			'4' => FacVentas::class,
 		]);
     }
 
