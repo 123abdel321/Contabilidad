@@ -70,10 +70,6 @@
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>
-                    <span id="agregarVenta" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; display:none;">
-                        <i class="fas fa-plus-circle" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">AGREGAR PRODUCTO</b>
-                    </span>
                     <span id="cancelarCapturaVenta" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="min-width: 40px; display:none;">
                         <i class="fas fa-times-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">CANCELAR VENTA</b>
@@ -82,6 +78,10 @@
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR VENTA</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
+                    </span>
+                    <span id="agregarVentaProducto" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; display:none;">
+                        <i class="fas fa-plus-circle" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">AGREGAR PRODUCTO</b>
                     </span>
                     <span id="crearCapturaVenta" href="javascript:void(0)" class="btn badge bg-gradient-success" style="min-width: 40px; display:none; float: right;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;

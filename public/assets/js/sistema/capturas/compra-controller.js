@@ -382,6 +382,36 @@ function IvakeyDown (idRow, event) {
     }
 }
 
+$(document).on('click', '#cancelarCapturaCompra', function () {
+    cancelarCompra();
+});
+
+function cancelarCompra() {
+    idCompraProducto = 0;
+    var totalRows = compra_table.rows().data().length;
+
+    if(compra_table.rows().data().length){
+        compra_table.clear([]).draw();
+        for (let index = 0; index < totalRows; index++) {
+            compra_table.row(0).remove().draw();
+        }
+        mostrarValoresCompras();
+    }
+
+    $("#id_bodega_compra").prop('disabled', false);
+
+    $('#agregarCompra').hide();
+    $("#iniciarCapturaCompra").show();
+    $('#agregarCompraProducto').hide();
+    $("#crearCapturaCompra").hide();
+    $("#cancelarCapturaCompra").hide();
+    $("#crearCapturaCompraDisabled").hide();
+
+    setTimeout(function(){
+        $comboProveedor.select2("open");
+    },10);
+}
+
 $(document).on('click', '#iniciarCapturaCompra', function () {
     var form = document.querySelector('#compraFilterForm');
 
@@ -390,6 +420,8 @@ $(document).on('click', '#iniciarCapturaCompra', function () {
         $("#error_documento_referencia_compra").text('El No. factura requerido');
         return;
     }
+
+    $("#id_bodega_compra").prop('disabled', true);
     
     $("#iniciarCapturaCompra").hide();
     $("#agregarCompra").show();
@@ -572,12 +604,13 @@ function calcularProducto (idRow) {
 }
 
 function mostrarValoresCompras () {
-    var [iva, retencion, descuento, total] = totalValoresCompras();
+    var [iva, retencion, descuento, total, valorBruto] = totalValoresCompras();
 
     $("#compra_total_iva").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(iva));
     $("#compra_total_descuento").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(descuento));
     $("#compra_total_retencion").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(retencion));
     $("#compra_total_valor").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total));
+    $("#compra_sub_total").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valorBruto));
 }
 
 function totalValoresCompras() {
@@ -614,7 +647,7 @@ function totalValoresCompras() {
         $("#crearCapturaCompraDisabled").show();
     }
 
-    return [iva, retencion, descuento, total];
+    return [iva, retencion, descuento, total, valorBruto];
 }
 
 function deleteProductoCompra (idRow) {
