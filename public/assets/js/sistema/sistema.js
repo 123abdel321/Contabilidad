@@ -78,7 +78,7 @@ $(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownErr
 
 $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
 $("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
-$("#side_main_logo").attr('src', localStorage.getItem("empresa_logo"));
+$("#side_main_logo").attr('src', bucketUrl+localStorage.getItem("empresa_logo"));
 
 if (iconNavbarSidenavMaximo) {
     iconNavbarSidenavMaximo.addEventListener("click", toggleSidenavMaximo);

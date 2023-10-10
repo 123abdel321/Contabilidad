@@ -333,8 +333,12 @@ $(document).on('click', '#iniciarCapturaVenta', function () {
         $("#error_documento_referencia_venta").text('El No. factura requerido');
         return;
     }
+
+    $("#id_bodega_venta").prop('disabled', true);
+    $("#id_resolucion_venta").prop('disabled', true);
     
     $("#iniciarCapturaVenta").hide();
+    $('#agregarVentaProducto').show();
     $("#crearCapturaVenta").hide();
     $("#cancelarCapturaVenta").show();
     $("#crearCapturaVentaDisabled").show();
@@ -392,12 +396,12 @@ function deleteProductoVenta (idRow) {
     mostrarValoresVentas();
 }
 
-$(document).on('click', '#agregarVenta', function () {
-    $('#agregarVenta').hide();
+$(document).on('click', '#agregarVentaProducto', function () {
+    $('#agregarVentaProducto').hide();
     $('#iniciarCapturaVentaLoading').show();
     setTimeout(function(){
         addRowProductoVenta();
-        $('#agregarVenta').show();
+        $('#agregarVentaProducto').show();
         $('#iniciarCapturaVentaLoading').hide();
     },100);
 });
@@ -433,12 +437,13 @@ function calcularProductoVenta (idRow) {
 }
 
 function mostrarValoresVentas () {
-    var [iva, retencion, descuento, total] = totalValoresVentas();
+    var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
 
     $("#venta_total_iva").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(iva));
     $("#venta_total_descuento").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(descuento));
     $("#venta_total_retencion").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(retencion));
     $("#venta_total_valor").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total));
+    $("#venta_sub_total").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valorBruto));
 }
 
 function totalValoresVentas() {
@@ -483,7 +488,7 @@ function totalValoresVentas() {
         $("#crearCapturaVentaDisabled").show();
     }
 
-    return [iva, retencion, descuento, total];
+    return [iva, retencion, descuento, total, valorBruto];
 }
 
 function changeProductoVenta (idRow) {
@@ -601,15 +606,29 @@ $(document).on('click', '#cancelarCapturaVenta', function () {
 });
 
 function cancelarVenta() {
-    var totalRows = venta_table.rows().data().length;
     idVentaProducto = 0;
+    var totalRows = venta_table.rows().data().length;
+
     if(venta_table.rows().data().length){
         venta_table.clear([]).draw();
         for (let index = 0; index < totalRows; index++) {
-            documento_general_table.row(0).remove().draw();
+            venta_table.row(0).remove().draw();
         }
         mostrarValoresVentas();
     }
+
+    $("#id_bodega_venta").prop('disabled', false);
+    $("#id_resolucion_venta").prop('disabled', false);
+
+    $("#iniciarCapturaVenta").show();
+    $('#agregarVentaProducto').hide();
+    $("#crearCapturaVenta").hide();
+    $("#cancelarCapturaVenta").hide();
+    $("#crearCapturaVentaDisabled").hide();
+
+    setTimeout(function(){
+        $comboCliente.select2("open");
+    },10);
 }
 
 function loadFormasPago() {
@@ -626,7 +645,7 @@ function loadFormasPago() {
 
 $(document).on('click', '#crearCapturaVenta', function () {
     loadFormasPago();
-    var [iva, retencion, descuento, total] = totalValoresVentas();
+    var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
     $('#total_pagado_venta').val(0);
     $('#total_faltante_venta').val(total);
     $("#ventaFormModal").modal('show');
