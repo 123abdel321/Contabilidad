@@ -147,7 +147,7 @@ class AuxiliarController extends Controller
             $url = $fileName;
 
             $informeAuxiliar->exporta_excel = 1;
-            $informeAuxiliar->archivo_excel = 's3contabilidad.nyc3.digitaloceanspaces.com/'.$url;
+            $informeAuxiliar->archivo_excel = 'bucketlistardatos.nyc3.digitaloceanspaces.com/'.$url;
             $informeAuxiliar->save();
 
             (new AuxiliarExport($request->get('id')))->store($fileName, 'do_spaces', null, [
@@ -157,7 +157,7 @@ class AuxiliarController extends Controller
                     'tipo' => 'exito',
                     'mensaje' => 'Excel de Auxiliar generado con exito!',
                     'titulo' => 'Excel generado',
-                    'url_file' => 's3contabilidad.nyc3.digitaloceanspaces.com/'.$url,
+                    'url_file' => 'bucketlistardatos.nyc3.digitaloceanspaces.com/'.$url,
                     'autoclose' => false
                 ])),
                 $informeAuxiliar->exporta_excel = 2,

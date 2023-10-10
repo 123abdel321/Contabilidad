@@ -26,6 +26,15 @@
                     
                 </div>
                 <br/>
+
+                <div class="justify-content-center col-6 col-sm-4 col-md-4">
+                    <div style="text-align: -webkit-center; height: 80px;">
+                        <img id="default_produc_img" onclick="document.getElementById('newImagenProducto').click();" src="/img/add_product_img.png" class="img-fluid rounded mx-auto d-bloc" style="width: auto; height: 80px; cursor: pointer; border-radius: 10%;">
+                        <img id="new_produc_img" onclick="document.getElementById('newImagenProducto').click();" src="" class="img-fluid rounded mx-auto d-bloc" style="width: auto; height: 80px; cursor: pointer; border-radius: 10%;">
+                    </div>
+                </div>
+
+                <input type="file" name="newImagenProducto" id="newImagenProducto" onchange="readURL(this);" style="display: none" />
                 
                 <div class="form-group col-6 col-sm-4 col-md-4" >
                     <label for="example-text-input" class="form-control-label">Nombre</label>

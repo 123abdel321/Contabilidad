@@ -2,7 +2,6 @@
 
 namespace App\Helpers\Printers;
 
-use App\Helpers\Extracto;
 use Illuminate\Support\Carbon;
 //MODELS
 use App\Models\Empresas\Empresa;

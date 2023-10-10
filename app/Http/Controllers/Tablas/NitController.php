@@ -181,6 +181,7 @@ class NitController extends Controller
     public function update (Request $request)
     {
         $nitActual = Nits::find($request->get('id'));
+
         if($nitActual->numero_documento != $request->get('numero_documento')){
             $nitsExist = Nits::where('numero_documento', $request->get('numero_documento'));
             if($nitsExist->count() > 0){
@@ -218,12 +219,11 @@ class NitController extends Controller
             $image = str_replace('data:image/'.$ext.';base64,', '', $image);
             $image = str_replace(' ', '+', $image);
             $imageName = 'profile_'.$nit->id.'_'.uniqid().'.'. $ext;
+            
             Storage::disk('do_spaces')->put('imagen/profile/'.$imageName, base64_decode($image), 'public');
             $nit->logo_nit = 'imagen/profile/'.$imageName;
             $nit->save();
         }
-
-        
 
         return response()->json([
             'success'=>	true,

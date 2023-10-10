@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Capturas;
 use DB;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Helpers\Printers\ComprasPdf;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 //MODELS
@@ -79,7 +79,7 @@ class CompraController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>'La Cuenta anticipos en compras no se encuentra configurada!'
+                "message"=> ["Cuenta anticipos" => ['La cuenta por cobrar en compras no se encuentra configurada!']]
             ], 422);
         } else {
             $request->request->add(['id_cuenta_cobrar' => $idCuentaAnticipos->valor]);
@@ -91,7 +91,7 @@ class CompraController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>'El Comprobante de compras no se encuentra configurado!'
+                "message"=> ['Comprobante compras' => ['El Comprobante de compras no se encuentra configurado!']]
             ], 422);
         } else {
             $consecutivo = $this->getNextConsecutive($comprobanteCompras->id, $request->get('fecha_manual'));
@@ -146,11 +146,7 @@ class CompraController extends Controller
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA COMPRAR
             $compra = $this->createFacturaCompra($request);
-            //CREAR MOVIMIENTO BODEGAS
-            foreach ($request->get('productos') as $producto) {
-                $producto = (object)$producto;
-                
-            }
+
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE COMPRAS
             $documentoGeneral = new Documento(
                 $request->get('id_comprobante'),

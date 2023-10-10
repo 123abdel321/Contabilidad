@@ -17,6 +17,7 @@ use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
 //CAPTURAS
+use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 //SISTEMA
@@ -131,6 +132,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('resoluciones', 'create');
             Route::put('resoluciones', 'update');
             Route::delete('resoluciones', 'delete');
+            Route::get('resoluciones/combo-resoluciones', 'comboResolucion');
         });
         //FORMAS PAGO
         Route::controller(FormasPagoController::class)->group(function () {
@@ -176,6 +178,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(CompraController::class)->group(function () {
             Route::get('compras', 'generate');
             Route::post('compras', 'create');
+        });
+        //CAPTURA VENTA
+        Route::controller(VentaController::class)->group(function () {
+            Route::get('ventas', 'generate');
+            Route::post('ventas', 'create');
         });
     });
     

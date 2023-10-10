@@ -11,6 +11,7 @@ var $comboBodegaVariante = null;
 var cacheProducto = null;
 
 var nuevoProducto = {
+    imagen: '',
     nombre: '',
     codigo: '',
     id_familia: null,
@@ -48,9 +49,17 @@ function productosInit() {
             url: base_url + 'producto',
         },
         columns: [
-            {"data":'id'},
+            // {"data":'id'},
             {"data":'codigo'},
-            {"data":'nombre'},
+            {"data": function (row, type, set){
+                if (row.imagen) {
+                    return `<img
+                    style="height: 35px; border-radius: 10%;"
+                    src="${bucketUrl}${row.imagen}"
+                    alt="${row.nombre}" />  ${row.nombre}`;
+                }
+                return row.nombre;
+            }},
             {"data": function (row, type, set){  
                 if (row.tipo_producto == 0) {
                     if (row.id_padre) return '<span class="badge rounded-pill bg-light text-dark">VARIANTE</span>';
@@ -123,21 +132,33 @@ function productosInit() {
 
     if (productos_table) {
         productos_table.on('click', '.edit-producto', function() {
+
             var id = this.id.split('_')[1];
             var dataProducto = getDataById(id, productos_table);
-
+            
             nuevoProducto = {
+                imagen: '',
                 nombre: dataProducto.nombre,
                 codigo: dataProducto.codigo,
                 id_familia: dataProducto.familia.id,
                 precio: parseFloat(dataProducto.precio),
                 tipo_producto: dataProducto.tipo_producto,
-                precio_maximo: parseFloat(dataProducto.precio_maximo),
+                precio_minimo: parseFloat(dataProducto.precio_minimo),
                 precio_inicial: parseFloat(dataProducto.precio_inicial),
                 inventarios: asignarDatosInventario(dataProducto),
                 variante: isVariante(dataProducto),
                 variantes: asignarDatosVariantes(dataProducto),
                 productos_variantes: asingnarDatosProductosVariantes(dataProducto)
+            }
+
+            if(dataProducto.imagen) {
+                $('#new_produc_img').attr('src', 'https://bucketlistardatos.nyc3.digitaloceanspaces.com/'+dataProducto.imagen);
+                $('#new_produc_img').show();
+                $('#default_produc_img').hide();
+            } else {
+                $('#new_produc_img').attr('src', '');
+                $('#new_produc_img').hide();
+                $('#default_produc_img').show();
             }
 
             $("#searchInputProductos").hide();
@@ -153,7 +174,7 @@ function productosInit() {
             $("#nombre_producto").val(dataProducto.nombre);
             $("#codigo_producto").val(dataProducto.codigo);
             $("#precio_producto").val(dataProducto.precio);
-            $("#precio_maximo").val(dataProducto.precio_maximo);
+            $("#precio_minimo").val(dataProducto.precio_minimo);
             $("#precio_inicial").val(dataProducto.precio_inicial);
 
             document.getElementById("producto_variantes1").disabled = false;
@@ -740,6 +761,7 @@ function clearFormProductos() {
     setCrearProducto();
     
     nuevoProducto = {
+        imagen: '',
         tipo_producto: 0,
         nombre: '',
         codigo: '',
@@ -754,7 +776,6 @@ function clearFormProductos() {
         productos_variantes: []
     }
     productos_varaibles_table.clear([]).draw();
-    
 }
 
 function changeProducType() {
@@ -1674,6 +1695,22 @@ function addProductosVarianteItems (tomarPadre = true) {
         idProducto++;
     });
     
+}
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            nuevoProducto.imagen = e.target.result;
+            $('#new_produc_img').attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+
+        $('#default_produc_img').hide();
+        $('#new_produc_img').show();
+    }
 }
 
 $("#searchInputProductos").on("input", function (e) {

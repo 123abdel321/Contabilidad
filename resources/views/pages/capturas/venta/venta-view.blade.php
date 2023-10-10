@@ -42,19 +42,27 @@
         border-radius: 9px !important;
     }
 
-    .compra-load {
+    .venta-load {
         margin-top: -23px;
         float: right;
         position: initial;
         margin-right: 15px;
     }
 
-    #compraTable>tbody>tr.odd {
+    #ventaTable>tbody>tr.odd {
         text-align: -webkit-center !important;
     }
 
-    #compraTable tbody>tr.even {
+    #ventaTable tbody>tr.even {
         text-align: -webkit-center !important;
+    }
+
+    .line-horizontal {
+        width: 100%;
+        height: 1px;
+        border: 1px solid #e3e3e3;
+        margin-top: 5px;
+        margin-bottom: 10px;
     }
 
 </style>
@@ -65,44 +73,45 @@
         <div class="card mb-4">
             <div class="card-body" style="padding: 0 !important;">
 
-                @include('pages.capturas.compra.compra-filter')
+            @include('pages.capturas.venta.venta-filter')
 
             </div>
         </div>
 
-        <div class="card cardTotalCompra" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
+        <div class="card cardTotalVenta" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
             <div class="row" style="text-align: -webkit-center;">
                 <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
                     <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">SUB TOTAL</p>
-                    <h6 id="compra_sub_total" style="color: #0002ff; margin-bottom: 0px;">0</h6>
+                    <h6 id="venta_sub_total" style="color: #0002ff; margin-bottom: 0px;">0</h6>
                 </div>
                 <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
                     <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">IVA</p>
-                    <h6 id="compra_total_iva" style="color: #0002ff; margin-bottom: 0px;">0</h6>
+                    <h6 id="venta_total_iva" style="color: #0002ff; margin-bottom: 0px;">0</h6>
                 </div>
                 <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
                     <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">DESCUENTO</p>
-                    <h6 id="compra_total_descuento" style="color: #0002ff; margin-bottom: 0px;">0</h6>
-                </div>  
+                    <h6 id="venta_total_descuento" style="color: #0002ff; margin-bottom: 0px;">0</h6>
+                </div>
                 <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
-                    <p id="compra_texto_retencion" style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">RETENCIÓN</p>
-                    <h6 id="compra_total_retencion" style="color: #0002ff; margin-bottom: 0px;">0</h6>
+                    <p id="venta_texto_retencion" style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">RETENCIÓN</p>
+                    <h6 id="venta_total_retencion" style="color: #0002ff; margin-bottom: 0px;">0</h6>
                 </div>
                 <div class="col-12 col-md- col-sm">
                     <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">TOTAL</p>
-                    <h6 id="compra_total_valor" style="color: #0002ff; margin-bottom: 0px;">0</h6>
+                    <h6 id="venta_total_valor" style="color: #0002ff; margin-bottom: 0px;">0</h6>
                 </div>
             </div>
         </div>
-        <div class="card mb-4" style="border-radius: 0px 0px 20px 20px;">
-            <div class="card-body" id="card-compra" style="content-visibility: auto; overflow: auto;">
-                @include('pages.capturas.compra.compra-table')
-            </div>
+        <div id="card-venta" class="card mb-4" style="content-visibility: auto; overflow: auto; border-radius: 0px 0px 20px 20px;">
+            @include('pages.capturas.venta.venta-table')
         </div>
     </div>
 
+    @include('pages.capturas.venta.venta-pagos')
+
     <script>
-        var primeraBodegaCompra = JSON.parse('<?php echo $bodegas; ?>');
+        var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');
+        var primeraResolucionVenta = JSON.parse('<?php echo $resolucion; ?>');
     </script>
     
 </div>

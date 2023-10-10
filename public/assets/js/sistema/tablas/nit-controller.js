@@ -131,7 +131,7 @@ function nitInit() {
                 $comboCiudad.val(dataCiudad.id).trigger('change');
             }
         
-            $("#id_nit").val(data.id);
+            $("#id_nit_up").val(data.id);
             $("#numero_documento").val(data.numero_documento);
             $("#tipo_contribuyente").val(data.tipo_contribuyente).change();
             $("#primer_apellido").val(data.primer_apellido);
@@ -145,7 +145,7 @@ function nitInit() {
             $("#observaciones").val(data.observaciones);
             
             if(data.logo_nit) {
-                $('#new_avatar').attr('src', 'https://s3contabilidad.nyc3.digitaloceanspaces.com/'+data.logo_nit);
+                $('#new_avatar').attr('src', 'https://bucketlistardatos.nyc3.digitaloceanspaces.com/'+data.logo_nit);
                 $('#new_avatar').show();
                 $('#default_avatar').hide();
             } else {
@@ -296,7 +296,7 @@ $(document).on('click', '#updateNit', function () {
         $("#saveNit").hide();
         
         let data = {
-            id: $("#id_nit").val(),
+            id: $("#id_nit_up").val(),
             id_tipo_documento: $("#id_tipo_documento").val(),
             numero_documento: $("#numero_documento").val(),
             tipo_contribuyente: $("#tipo_contribuyente").val(),
