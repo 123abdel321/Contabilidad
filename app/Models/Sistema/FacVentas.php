@@ -66,6 +66,11 @@ class FacVentas extends Model
 
     public function detalles()
 	{
-		return $this->hasMany('App\Models\Sistema\FacCompraDetalles', 'id_compra');
+		return $this->hasMany('App\Models\Sistema\FacVentaDetalles', 'id_venta');
+	}
+
+    public function pagos()
+	{
+		return $this->hasMany('App\Models\Sistema\FacVentaPagos', 'id_venta');
 	}
 }

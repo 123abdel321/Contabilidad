@@ -130,7 +130,7 @@
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="fas fa-folder-open text-success text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Capturas</span>
+                    <span class="nav-link-text ms-1">Operaciones</span>
                 </a>
                 <div class="collapse" id="collapseCapturas" >
                     <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
@@ -181,6 +181,11 @@
                         <li class="nav-item">
                             <a class="nav-link button-side-nav" id="sidenav_documentos" style="margin-left: 20px;">
                                 <span class="nav-link-text ms-1">Documentos</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link button-side-nav" id="sidenav_ventas" style="margin-left: 20px;">
+                                <span class="nav-link-text ms-1">Ventas</span>
                             </a>
                         </li>
                         <li class="nav-item">

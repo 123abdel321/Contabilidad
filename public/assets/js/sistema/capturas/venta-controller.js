@@ -706,9 +706,9 @@ function saveVenta() {
         dataType: 'json',
     }).done((res) => {
         if(res.success){
-            // if(res.impresion) {
-            //     window.open("/ventas-print/"+res.impresion, "", "_blank");
-            // }
+            if(res.impresion) {
+                window.open("/ventas-print/"+res.impresion, "", "_blank");
+            }
             idVentaProducto = 0;
             $("#ventaFormModal").modal('hide');
             $('#iniciarCapturaVenta').hide();
@@ -723,7 +723,7 @@ function saveVenta() {
             mostrarValoresVentas();
             agregarToast('exito', 'Creación exitosa', 'Venta creada con exito!', true);
             setTimeout(function(){
-                $comboProveedor.select2("open");
+                $comboCliente.select2("open");
             },10);
         } else {
             var mensaje = res.mensages;
@@ -742,14 +742,18 @@ function saveVenta() {
 
         var mensaje = err.responseJSON.message;
         var errorsMsg = "";
-        for (field in mensaje) {
-            var errores = mensaje[field];
-            for (campo in errores) {
-                errorsMsg += field+": "+errores[campo]+" <br>";
-            }
-            
-        };
-        agregarToast('error', 'Creación errada', errorsMsg);
+        if (typeof mensaje === 'object') {
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += field+": "+errores[campo]+" <br>";
+                }
+                agregarToast('error', 'Creación errada', errorsMsg);
+            };
+        } else {
+
+            agregarToast('error', 'Creación errada', mensaje);
+        }
     });
 
 }

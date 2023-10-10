@@ -21,4 +21,9 @@ class FacVentaPagos extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function forma_pago()
+	{
+		return $this->belongsTo('App\Models\Sistema\FacFormasPago', 'id_forma_pago');
+	}
 }

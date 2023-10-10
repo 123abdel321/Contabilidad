@@ -461,6 +461,10 @@ function saveCompra() {
                 $comboProveedor.select2("open");
             },10);
         } else {
+            $('#crearCapturaCompra').show();
+            $('#iniciarCapturaCompra').show();
+            $('#iniciarCapturaCompraLoading').hide();
+            
             var mensaje = res.mensages;
             var errorsMsg = "";
             for (field in mensaje) {

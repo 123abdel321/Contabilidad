@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Capturas;
 use DB;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
+use App\Helpers\Printers\VentasPdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
@@ -65,6 +66,11 @@ class VentaController extends Controller
             'resolucion' => FacResoluciones::first(),
         ];
         return view('pages.capturas.venta.venta-view', $data);
+    }
+
+    public function indexInforme ()
+    {
+        return view('pages.contabilidad.ventas.ventas-view');
     }
 
     public function create (Request $request)
@@ -150,7 +156,7 @@ class VentaController extends Controller
                     return response()->json([
                         "success"=>false,
                         'data' => [],
-                        "message"=> 'La cantidad del producto'.$productoDb->codigo. ' - ' .$productoDb->nombre. ' supera la cantidad en bodega'
+                        "message"=> ['Cantidad bodega' => ['La cantidad del producto'.$productoDb->codigo. ' - ' .$productoDb->nombre. ' supera la cantidad en bodega']]
                     ], 422);
                 }
 
@@ -176,22 +182,35 @@ class VentaController extends Controller
 
                 //AGREGAR MOVIMIENTO CONTABLE
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
+
                     $cuentaRecord = $productoDb->familia->{$cuentaKey};
-    
                     $keyTotalItem = $cuenta["valor"];
+
+                    if ($producto->{$keyTotalItem} > 0) {
+                        if(!$cuentaRecord) {
+                            
+                            DB::connection('sam')->rollback();
+                            return response()->json([
+                                "success"=>false,
+                                'data' => [],
+                                "message"=> [$productoDb->codigo.' - '.$productoDb->nombre => ['La cuenta '.str_replace('cuenta_venta_', '', $cuentaKey). ' no se encuentra configurada en la familia: '. $productoDb->familia->codigo. ' - '. $productoDb->familia->nombre]]
+                            ], 422);
+                        }
+        
+                        $doc = new DocumentosGeneral([
+                            "id_cuenta" => $cuentaRecord->id,
+                            "id_nit" => $cuentaRecord->exige_nit ? $venta->id_cliente : null,
+                            "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $venta->id_centro_costos : null,
+                            "concepto" => 'COMPRA: '.$cuentaRecord->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
+                            "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $venta->documento_referencia : null,
+                            "debito" => $cuentaRecord->naturaleza_cuenta == PlanCuentas::DEBITO ? $producto->{$keyTotalItem} : 0,
+                            "credito" => $cuentaRecord->naturaleza_cuenta == PlanCuentas::CREDITO ? $producto->{$keyTotalItem} : 0,
+                            "created_by" => request()->user()->id,
+                            "updated_by" => request()->user()->id
+                        ]);
     
-                    $doc = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaRecord->id,
-                        "id_nit" => $cuentaRecord->exige_nit ? $venta->id_cliente : null,
-                        "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $venta->id_centro_costos : null,
-                        "concepto" => 'COMPRA: '.$cuentaRecord->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
-                        "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $venta->documento_referencia : null,
-                        "debito" => $cuentaRecord->naturaleza_cuenta == PlanCuentas::DEBITO ? $producto->{$keyTotalItem} : 0,
-                        "credito" => $cuentaRecord->naturaleza_cuenta == PlanCuentas::CREDITO ? $producto->{$keyTotalItem} : 0,
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_cuenta);
+                        $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_cuenta);
+                    }
                 }
 
                 //AGREGAR MOVIMIENTO BODEGA
@@ -287,7 +306,7 @@ class VentaController extends Controller
             return response()->json([
 				'success'=>	true,
 				'data' => $documentoGeneral->getRows(),
-				'impresion' => '',
+				'impresion' => $this->resolucion->comprobante->imprimir_en_capturas ? $venta->id : '',
 				'message'=> 'Venta creada con exito!'
 			], 200);
 
@@ -300,6 +319,64 @@ class VentaController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
+    }
+
+    public function generate(Request $request)
+    {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length");
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+		$ventas = FacVentas::skip($start)
+            ->with(
+                'bodega',
+                'cliente',
+                'comprobante'
+            )
+            ->select(
+                '*',
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                'created_by',
+                'updated_by'
+            )
+            ->take($rowperpage);
+
+        if($columnName){
+            $ventas->orderBy($columnName,$columnSortOrder);
+        }
+        
+        if ($request->get('consecutivo')) {
+            $ventas->where('consecutivo', $request->get('consecutivo'));
+        }
+
+        if ($request->get('fecha_manual')) {
+            $ventas->where('fecha_manual', $request->get('fecha_manual'));
+        }
+
+        if ($request->get('id_cliente')) {
+            $ventas->where('id_cliente', $request->get('id_cliente'));
+        }
+
+        return response()->json([
+            'success'=>	true,
+            'draw' => $draw,
+            'iTotalRecords' => $ventas->count(),
+            'iTotalDisplayRecords' => $ventas->count(),
+            'data' => $ventas->get(),
+            'perPage' => $rowperpage,
+            'message'=> 'Ventas cargados con exito!'
+        ]);
     }
 
     private function createFacturaVenta ($request)
@@ -329,6 +406,30 @@ class VentaController extends Controller
         ]);
 
         return $venta;
+    }
+
+    public function showPdf(Request $request, $id)
+    {
+        // return $request->user();
+
+        $factura = FacVentas::whereId($id)->first();
+
+        if(!$factura) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'La factura no existe'
+            ]);
+        }
+
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        $data = (new VentasPdf($empresa, $factura))->buildPdf()->getData();
+        // dd($data);
+        return view('pdf.facturacion.ventas-pos', $data);
+ 
+        return (new VentasPdf($empresa, $factura))
+            ->buildPdf()
+            ->showPdf();
     }
 
     private function calcularTotales ($productos)

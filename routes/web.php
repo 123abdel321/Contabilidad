@@ -94,6 +94,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/compras-print/{id}', [CompraController::class, 'showPdf'])->name('compra-pdf');
 		//VENTAS
 		Route::get('/venta', [VentaController::class, 'index'])->name('venta');
+		Route::get('/ventas', [VentaController::class, 'indexInforme'])->name('ventas');
+		Route::get('/ventas-print/{id}', [VentaController::class, 'showPdf'])->name('venta-pdf');
 		//NITS
 		Route::get('/nit', [NitController::class, 'index'])->name('nit');
 		//PLAN CUENTAS
