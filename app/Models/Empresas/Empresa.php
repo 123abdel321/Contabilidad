@@ -37,4 +37,13 @@ class Empresa extends Model
         'id_empresa_referido',
         'id_usuario_owner'
 	];
+
+    public function suscripciones (){
+		return $this->hasMany("App\Models\Empresas\EmpresaSuscripcion", "id_empresa");
+	}
+
+    public function componentes (){
+      	return $this->hasMany("App\Models\Empresas\EmpresaComponentesSuscripcion", "id_empresa");
+    }
+
 }

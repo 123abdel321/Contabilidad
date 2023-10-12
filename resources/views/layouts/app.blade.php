@@ -48,7 +48,7 @@
                     <span class="mask bg-primary opacity-6"></span>
                 </div>
             @endif
-            @include('layouts.navbars.auth.sidenav')
+            @include('layouts.navbars.auth.sidenav', ['menus', $menus])
             @include('layouts.navbars.auth.topnav')
             <div id="contenerdores-views" class="tab-content clearfix">
                 <main class="tab-pane main-content border-radius-lg change-view active" style="margin-left: 5px;" id="containner-dashboard">
