@@ -64,25 +64,29 @@ class ApiController extends Controller
         try {
             if($user){
                 if(Hash::check($data->password, $user->password)){
+                    
+                    $tokenExist = $user->remember_token;
 
-                    if($user->tokens()->where('tokenable_id', $user->id)
-                        ->where('name', 'api_token')
-                        ->exists()) {
-                        // $user->tokens()->delete();
+                    if($tokenExist) {
+                        $token = $user->remember_token;
+                    } else {
+                        $token = $user->createToken("api_token")->plainTextToken;
+                        $user->remember_token = $token;
+                        $user->save();
                     }
                     
-                    $token = $user->createToken("api_token");
-
                     $empresa = UsuarioEmpresa::where('id_usuario', $user->id)->first();
-                    $empresaSelect = Empresa::where('id', $empresa->id_empresa)->first();
                     
-                    $user->has_empresa = $empresaSelect->token_db;
-                    $user->save();
+                    if ($empresa) {
+                        $empresaSelect = Empresa::where('id', $empresa->id_empresa)->first();
+                        $user->has_empresa = $empresaSelect->token_db;
+                        $user->save();
+                    }
 
                     return response()->json([
                         'success'=>	true,
-                        'access_token' => $token->plainTextToken,
-                        'empresa' => $empresa->razon_social,
+                        'access_token' => $token,
+                        'empresa' => $empresa ? $empresa->razon_social : '',
                         'token_type' => 'Bearer',
                         'message'=> 'Usuario logeado con exito!'
                     ], 200);
