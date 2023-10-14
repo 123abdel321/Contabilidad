@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 //MODELS
 use App\Models\User;
 use App\Models\Empresas\Empresa;
@@ -33,10 +35,11 @@ class UsuariosController extends Controller
     public function index ()
     {
         $data = [
+            'roles' => Role::where('id', '!=', 1)->get(),
             'bodegas' => FacBodegas::all(),
             'resoluciones' => FacResoluciones::all(),
         ];
-
+        
         return view('pages.configuracion.usuarios.usuarios-view', $data);
     }
 
@@ -57,6 +60,7 @@ class UsuariosController extends Controller
         $searchValue = $search_arr['value']; // Search value
 
         $usuarios = User::orderBy($columnName,$columnSortOrder)
+            ->with('roles')
             ->where('id_empresa', $request->user()['id_empresa'])
             ->select(
                 '*',
@@ -90,7 +94,7 @@ class UsuariosController extends Controller
     }
 
     public function create (Request $request)
-    {
+    {        
         $rules = [
             'usuario' => 'required|string|min:1|unique:App\Models\User,username',
             'email' => 'required|email|string|max:255|unique:App\Models\User,email',
@@ -114,6 +118,8 @@ class UsuariosController extends Controller
 
             DB::connection('sam')->beginTransaction();
 
+            $rol = Role::where('id', $request->get('rol_usuario'))->first();
+
             $usuario = User::create([
                 'username' => $request->get('usuario'),
                 'id_empresa' => $request->user()['id_empresa'],
@@ -130,6 +136,8 @@ class UsuariosController extends Controller
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
+
+            $usuario->assignRole($rol);
 
             DB::connection('sam')->commit();
 
@@ -192,6 +200,8 @@ class UsuariosController extends Controller
 
             DB::connection('sam')->beginTransaction();
 
+            $rol = Role::where('id', $request->get('rol_usuario'))->first();
+
             $usuario = User::where('id', $request->get('id'))->first();
             $usuario->username = $request->get('usuario');
             $usuario->id_empresa = $request->user()['id_empresa'];
@@ -210,12 +220,14 @@ class UsuariosController extends Controller
                 $usuario->password = Hash::make($request->get('password'));
             }
 
+            $usuario->syncRoles($rol);
+
             $usuario->save();
 
             DB::connection('sam')->commit();
 
             return response()->json([
-                'success'=>	true,
+                'success'=>	true,   
                 'data' => $usuario,
                 'message'=> 'Usuario actualizado con exito!'
             ]);

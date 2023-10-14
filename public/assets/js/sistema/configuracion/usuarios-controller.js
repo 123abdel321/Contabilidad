@@ -27,6 +27,12 @@ function usuariosInit() {
         },
         columns: [
             {"data":'username'},
+            {"data": function (row, type, set){
+                if (row.roles.length > 0) {
+                    return row.roles[0].name;
+                }
+                return '';
+            }},
             {"data":'firstname'},
             {"data":'email'},
             {"data":'telefono'},
@@ -118,10 +124,11 @@ function clearFormUsuarios(){
     $("#firstname").val('');
     $("#lastname").val('');
     $("#address").val('');
-    $("#password").val('');
+    $("#password_usuario").val('');
     $("#id_bodega_usuario").val('').change();
     $("#id_resolucion_usuario").val('').change();
     $("#password_confirm").val('');
+    $("#telefono").val('');
 }
 
 $(document).on('click', '#saveUsuarios', function () {
@@ -142,10 +149,12 @@ $(document).on('click', '#saveUsuarios', function () {
         firstname: $("#firstname").val(),
         lastname: $("#lastname").val(),
         address: $("#address").val(),
-        password: $("#password").val(),
+        password: $("#password_usuario").val(),
+        telefono: $("#telefono").val(),
         id_bodega: $("#id_bodega_usuario").val(),
         id_resolucion: $("#id_resolucion_usuario").val(),
-        facturacion_rapida: $("input[type='checkbox']#facturacion_rapida").is(':checked') ? '1' : ''
+        facturacion_rapida: $("input[type='checkbox']#facturacion_rapida").is(':checked') ? '1' : '',
+        rol_usuario: $("#rol_usuario").val(),
     }
 
     $.ajax({
@@ -203,10 +212,12 @@ $(document).on('click', '#updateUsuarios', function () {
         firstname: $("#firstname").val(),
         lastname: $("#lastname").val(),
         address: $("#address").val(),
-        password: $("#password").val(),
+        password: $("#password_usuario").val(),
         id_bodega: $("#id_bodega_usuario").val(),
         id_resolucion: $("#id_resolucion_usuario").val(),
-        facturacion_rapida: $("input[type='checkbox']#facturacion_rapida").is(':checked') ? '1' : ''
+        facturacion_rapida: $("input[type='checkbox']#facturacion_rapida").is(':checked') ? '1' : '',
+        telefono: $("#telefono").val(),
+        rol_usuario: $("#rol_usuario").val(),
     }
 
     $.ajax({

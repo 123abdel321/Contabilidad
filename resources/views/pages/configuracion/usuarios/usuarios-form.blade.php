@@ -44,7 +44,7 @@
                         </div>
                         <div class="form-group form-group col-12 col-sm-6 col-md-6">
                             <label for="example-text-input" class="form-control-label">Contraseña</label>
-                            <input type="password" class="form-control form-control-sm" name="password" id="password">
+                            <input type="password" class="form-control form-control-sm" name="password_usuario" id="password_usuario">
                             <!-- <div class="invalid-feedback">
                                 El contraseña es requerida
                             </div> -->
@@ -75,11 +75,20 @@
                             </select>
                         </div>
 
-                        <div class="form-check form-switch col-12 col-sm-6 col-md-6" style="margin-left: 12px;">
-                            <input class="form-check-input" type="checkbox" name="facturacion_rapida" id="facturacion_rapida" style="height: 20px;">
-                            <label class="form-check-label" for="facturacion_rapida">Facturación rapida</label>
+                        <div class="form-group col-12 col-sm-6 col-md-6">
+                            <label>Rol usuario</label>
+                            <select name="rol_usuario" id="rol_usuario" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
+                                @foreach ($roles as $rol)
+                                    <option value="{{ $rol->id }}">{{ $rol->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        
+
+                        <div class="form-check form-switch col-12 col-sm-6 col-md-6">
+                            <input class="form-check-input" type="checkbox" name="facturacion_rapida" id="facturacion_rapida" style="height: 20px;">
+                            <label class="form-check-label" for="facturacion_rapida">Facturación pos rapida</label>
+                        </div>
+
                     </div>
                 </form>
             </div>
