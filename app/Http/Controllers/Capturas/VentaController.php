@@ -65,6 +65,7 @@ class VentaController extends Controller
             'bodegas' => FacBodegas::first(),
             'resolucion' => FacResoluciones::first(),
         ];
+
         return view('pages.capturas.venta.venta-view', $data);
     }
 
@@ -410,8 +411,6 @@ class VentaController extends Controller
 
     public function showPdf(Request $request, $id)
     {
-        // return $request->user();
-
         $factura = FacVentas::whereId($id)->first();
 
         if(!$factura) {
@@ -424,7 +423,7 @@ class VentaController extends Controller
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         $data = (new VentasPdf($empresa, $factura))->buildPdf()->getData();
-        // dd($data);
+
         return view('pdf.facturacion.ventas-pos', $data);
  
         return (new VentasPdf($empresa, $factura))

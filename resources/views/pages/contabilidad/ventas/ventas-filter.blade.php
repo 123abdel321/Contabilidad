@@ -23,10 +23,11 @@
                             <label for="example-text-input" class="form-control-label">Fecha</label>
                             <input name="fecha_manual_ventas" id="fecha_manual_ventas" class="form-control form-control-sm" type="date">
                         </div>
+                        
 
                         <div class="form-group col-6 col-sm-4 col-md-4">
                             <label for="example-text-input" class="form-control-label">Consecutivo</label>
-                            <input type="text" class="form-control form-control-sm" name="consecutivo_ventas" id="consecutivo_ventas">
+                            <input type="text" class="form-control form-control-sm" name="consecutivo_ventas" id="consecutivo_ventas" disabled>
                         </div>
 
                     </div>  

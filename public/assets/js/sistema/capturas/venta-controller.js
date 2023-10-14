@@ -248,23 +248,46 @@ function ventaInit () {
     },10);
 }
 
+function consecutivoSiguienteVenta() {
+    var id_resolucion = $('#id_resolucion_venta').val();
+    var fecha_manual = $('#fecha_manual_venta').val();
+    if(id_resolucion && fecha_manual) {
+
+        let data = {
+            id_resolucion: id_resolucion,
+            fecha_manual: fecha_manual
+        }
+
+        $.ajax({
+            url: base_url + 'consecutivo',
+            method: 'GET',
+            data: data,
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            if(res.success){
+                $("#documento_referencia_venta").val(res.data);
+            }
+        }).fail((err) => {
+        });
+    }
+}
+
+$("#id_resolucion_venta").on('change', function(event) {
+    consecutivoSiguienteVenta();
+});
+
 $('#id_cliente_venta').on('select2:close', function(event) {
     var data = $(this).select2('data');
     if(data.length){
-        setTimeout(function(){
-            $('#id_resolucion_venta').focus();
-            $comboResolucion.select2("open");
-        },10);
+        document.getElementById('iniciarCapturaVenta').click();
     }
 });
 
 $('#id_resolucion_venta').on('select2:close', function(event) {
     var data = $(this).select2('data');
     if(data.length){
-        setTimeout(function(){
-            $('#fecha_manual_venta').focus();
-            $('#fecha_manual_venta').select();
-        },10);
+        document.getElementById('iniciarCapturaVenta').click();
     }
 });
 
@@ -333,9 +356,6 @@ $(document).on('click', '#iniciarCapturaVenta', function () {
         $("#error_documento_referencia_venta").text('El No. factura requerido');
         return;
     }
-
-    $("#id_bodega_venta").prop('disabled', true);
-    $("#id_resolucion_venta").prop('disabled', true);
     
     $("#iniciarCapturaVenta").hide();
     $('#agregarVentaProducto').show();
@@ -502,11 +522,6 @@ function changeProductoVenta (idRow) {
         $("#venta_cantidad_"+idRow).attr({"max" : totalInventario});
     }
 
-    if (data.familia.cuenta_venta_iva && data.familia.cuenta_venta_iva.impuesto) {
-        $('#venta_iva_porcentaje_'+idRow).prop('disabled', false);
-        $('#venta_iva_porcentaje_'+idRow).val(data.familia.cuenta_venta_iva.impuesto.porcentaje);
-    }
-
     if (data.familia.cuenta_venta_retencion && data.familia.cuenta_venta_retencion.impuesto) {
         var impuestoPorcentaje = parseFloat(data.familia.cuenta_venta_retencion.impuesto.porcentaje);
         var topeValor = parseFloat(data.familia.cuenta_venta_retencion.impuesto.base);
@@ -516,13 +531,19 @@ function changeProductoVenta (idRow) {
         }
     }
 
+    if (data.familia.id_cuenta_venta_descuento) {
+        $('#venta_descuento_valor_'+idRow).prop('disabled', false);
+        $('#venta_descuento_porcentaje_'+idRow).prop('disabled', false);
+    } else {
+        $('#venta_descuento_valor_'+idRow).prop('disabled', true);
+        $('#venta_descuento_porcentaje_'+idRow).prop('disabled', true);
+    }
+
     $('#venta_costo_'+idRow).val(parseFloat(data.precio));
     $('#venta_producto_'+idRow).select2('open');
     $('#venta_cantidad_'+idRow).prop('disabled', false);
     $('#venta_costo_'+idRow).prop('disabled', false);
-    $('#venta_descuento_porcentaje_'+idRow).prop('disabled', false);
-    $('#venta_descuento_valor_'+idRow).prop('disabled', false);
-    $('#venta_iva_porcentaje_'+idRow).prop('disabled', false);
+    
     
     document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%';
         
@@ -561,10 +582,7 @@ function CantidadVentakeyDown (idRow, event) {
 function CostoVentakeyDown (idRow, event) {
     if(event.keyCode == 13){
         calcularProductoVenta (idRow);
-        setTimeout(function(){
-            $('#venta_descuento_porcentaje_'+idRow).focus();
-            $('#venta_descuento_porcentaje_'+idRow).select();
-        },10);
+        addRowProductoVenta();
     }
 }
 
@@ -741,6 +759,7 @@ function saveVenta() {
 
             mostrarValoresVentas();
             agregarToast('exito', 'Creación exitosa', 'Venta creada con exito!', true);
+            consecutivoSiguienteVenta();
             setTimeout(function(){
                 $comboCliente.select2("open");
             },10);

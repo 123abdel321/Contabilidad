@@ -22,6 +22,8 @@ use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 //SISTEMA
 use App\Http\Controllers\Sistema\UbicacionController;
+//CONFIGURACION
+use App\Http\Controllers\Configuracion\UsuariosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +81,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('cartera-find', 'App\Http\Controllers\Informes\CarteraController@find');
         Route::post('cartera-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
 
+        //USUARIOS
+        Route::controller(UsuariosController::class)->group(function () {
+            Route::get('usuarios', 'generate');
+            Route::post('usuarios', 'create');
+            Route::put('usuarios', 'update');
+        });
         //IMPUESTOS
         Route::controller(ImpuestosController::class)->group(function () {
             Route::get('impuesto/combo-impuesto', 'comboImpuesto');

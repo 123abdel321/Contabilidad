@@ -30,7 +30,15 @@ class User extends Authenticatable
         'country',
         'postal',
         'has_empresa',
-        'about'
+        'about',
+        'id_empresa',
+        'avatar',
+        'telefono',
+        'ids_bodegas_responsable',
+        'ids_resolucion_responsable',
+        'facturacion_rapida',
+        'created_by',
+        'updated_by'
     ];
 
     /**

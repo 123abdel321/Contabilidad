@@ -32,30 +32,30 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-4 col-md-3">
-                        <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
-                        <input name="fecha_manual_venta" id="fecha_manual_venta" class="form-control form-control-sm" type="date" required>
-                        <div class="invalid-feedback">
-                            La fecha es requerido
-                        </div>
-                    </div>
-
-                    <div class="form-group col-6 col-sm-4 col-md-3">
-                        <label for="example-text-input" class="form-control-label">No. factura <span style="color: red">*</span></label>
-                        <input type="text" class="form-control form-control-sm" name="documento_referencia_venta" id="documento_referencia_venta" onkeydown="buscarFacturaVenta(event)" required>
-                        <i class="fa fa-spinner fa-spin fa-fw venta-load" id="documento_referencia_venta_loading" style="display: none;"></i>
-                        <div class="invalid-feedback" id="error_documento_referencia_venta">
-                            El No. factura requerido
-                        </div>
-                    </div>
-
-                    <div class="form-group col-6 col-sm-4 col-md-3">
+                    <div class="form-group col-6 col-sm-4 col-md-2">
                         <label>Bodega<span style="color: red">*</span></label>
                         <select name="id_bodega_venta" id="id_bodega_venta" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
                         
                         <div class="invalid-feedback">
                             La bodega es requerido
+                        </div>
+                    </div>
+
+                    <div class="form-group col-6 col-sm-4 col-md-2">
+                        <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
+                        <input name="fecha_manual_venta" id="fecha_manual_venta" class="form-control form-control-sm" type="date" required disabled>
+                        <div class="invalid-feedback">
+                            La fecha es requerido
+                        </div>
+                    </div>
+
+                    <div class="form-group col-6 col-sm-4 col-md-2">
+                        <label for="example-text-input" class="form-control-label">No. factura <span style="color: red">*</span></label>
+                        <input type="text" class="form-control form-control-sm" name="documento_referencia_venta" id="documento_referencia_venta" required disabled>
+                        <i class="fa fa-spinner fa-spin fa-fw venta-load" id="documento_referencia_venta_loading" style="display: none;"></i>
+                        <div class="invalid-feedback" id="error_documento_referencia_venta">
+                            El No. factura requerido
                         </div>
                     </div>
                     

@@ -183,7 +183,7 @@ function familiasInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editfamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-familias" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
+                    html+= '<span id="editfamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-familias" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
                     html+= '<span id="deletefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-familias" style="margin-bottom: 0rem !important">Eliminar</span>';
                     return html;
                 }
