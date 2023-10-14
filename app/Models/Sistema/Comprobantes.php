@@ -43,4 +43,9 @@ class Comprobantes extends Model
 		'tesoreria',
 		'maestra_padre'
     ];
+
+	public function resolucion()
+    {
+        return $this->hasOne("App\Models\Begranda\Tablas\Facturacion\FacResoluciones", "id_comprobante");
+    }
 }

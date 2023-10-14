@@ -101,7 +101,7 @@ function comprobanteInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editcomprobante_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-comprobante" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    html+= '<span id="editcomprobante_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-comprobante" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
                     html+= '<span id="deletecomprobante_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-comprobante" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }

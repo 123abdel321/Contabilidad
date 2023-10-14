@@ -54,166 +54,34 @@
     <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main" style="height: 100%;">
         <ul class="navbar-nav">
 
+        @foreach ($menus as $menu)
+
             <li class="nav-item">
-                <div data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link collapsed" aria-controls="dashboardsExamples" role="button" aria-expanded="false" style="color: white;">
+                <div data-bs-toggle="collapse" href="#collapse{{ $menu[0]->padre->nombre }}" class="nav-link collapsed" aria-controls="dashboardsExamples" role="button" aria-expanded="false" style="color: white;">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-table text-success text-sm opacity-10"></i>
+                        
+                        <i class="{{ $menu[0]->padre->icon }} text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Tablas</span>
+                    <span class="nav-link-text ms-1">{{ $menu[0]->padre->nombre }}</span>
                 </div>
-                <div class="collapse" id="dashboardsExamples" >
+
+                <div class="collapse" id="collapse{{ $menu[0]->padre->nombre }}" >
                     <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_nit" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Cédulas Nit</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_comprobante" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Comprobantes</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_plancuenta" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Plan de cuentas</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_cecos" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Centro de costos</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_resolucion" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Resoluciones</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_formapago" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Formas de pago</span>
-                            </a>
-                        </li>
+
+                        @foreach ($menu as $item)
+                            <li class="nav-item">
+                                <a class="nav-link button-side-nav" id="sidenav_{{ $item->url }}" style="margin-left: 20px;">
+                                    <span class="nav-link-text ms-1">{{ $item->nombre }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+
                     </ul>
                 </div>
             </li>
 
-            <li class="nav-item">
-                <div data-bs-toggle="collapse" href="#collapseInvetario" class="nav-link collapsed" aria-controls="collapseInvetario" role="button" aria-expanded="false" style="color: white;">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-box-open text-success text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Inventario</span>
-                </div>
-                <div class="collapse" id="collapseInvetario" >
-                    <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_productos" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Productos</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_familias" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Familias</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_bodegas" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Bodegas</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
+        @endforeach
 
-            <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#collapseCapturas" class="nav-link collapsed" aria-controls="collapseCapturas" role="button" aria-expanded="false" style="color: white;">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-folder-open text-success text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Operaciones</span>
-                </a>
-                <div class="collapse" id="collapseCapturas" >
-                    <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_venta" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Ventas</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_compra" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Compras</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_documentogeneral" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Documento General</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#collapseInformes" class="nav-link collapsed" aria-controls="collapseInformes" role="button" aria-expanded="false" style="color: white;">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-chart-line text-success text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Informes</span>
-                </a>
-                <div class="collapse" id="collapseInformes" >
-                    <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
-                    
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_auxiliar" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Auxiliar</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_balance" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Balance</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_cartera" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Cartera</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_documentos" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Documentos</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_ventas" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Ventas</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link button-side-nav" id="sidenav_compras" style="margin-left: 20px;">
-                                <span class="nav-link-text ms-1">Compras</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <!-- <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'seleccionar-empresa' ? 'active' : '' }}" href="{{ route('seleccionar-empresa') }}">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-building text-blue text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Empresas</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'profile' ? 'active' : '' }}" href="{{ route('profile') }}">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-02 text-blue text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Profile</span>
-                </a>
-            </li> -->
         </ul>
     </div>
 </aside>

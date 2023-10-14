@@ -89,7 +89,7 @@ function nitInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-secondary edit-nits" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
+                    html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-nits" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
                     html+= '<span id="deleteplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-nits" style="margin-bottom: 0rem !important">Eliminar</span>';
                     return html;
                 }
@@ -250,9 +250,9 @@ function readURL(input) {
     }
 }
 
-$("#searchInput").on("input", function (e) {
+$("#searchInputNits").on("input", function (e) {
     nits_table.context[0].jqXHR.abort();
-    $('#nitTable').DataTable().search($("#searchInput").val()).draw();
+    $('#nitTable').DataTable().search($("#searchInputNits").val()).draw();
 });
 
 $(document).on('click', '#createNits', function () {

@@ -14,6 +14,7 @@ use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\CentroCostos;
 use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacDocumentos;
+use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\DocumentosGeneral;
 
 class DocumentoGeneralController extends Controller
@@ -300,7 +301,19 @@ class DocumentoGeneralController extends Controller
 
     public function getConsecutivo(Request $request)
     {
-        $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
+		$consecutivo = null;
+
+		if ($request->get('id_comprobante')) {
+			$consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
+		}
+
+		if ($request->get('id_resolucion')) {
+			$resolucion = FacResoluciones::where('id', $request->get('id_resolucion'))
+				->with('comprobante')
+				->first();
+
+			$consecutivo = $this->getNextConsecutive($resolucion->comprobante->id, $request->get('fecha_manual'));
+		}
 
         return response()->json([
     		'success'=>	true,

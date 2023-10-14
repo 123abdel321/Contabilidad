@@ -40,6 +40,7 @@ var moduloCreado = {
     'venta': false,
     'compras': false,
     'ventas': false,
+    'usuarios': false,
 };
 
 var moduloRoute = {
@@ -61,6 +62,7 @@ var moduloRoute = {
     'compra': 'capturas',
     'ventas': 'informes',
     'venta': 'capturas',
+    'usuarios': 'configuracion'
 }
 
 $('.water').show();
@@ -188,6 +190,8 @@ function seleccionarView(id){
         nombre = 'Captura compras';
     } else if(id == 'venta') {
         nombre = 'Captura ventas';
+    } else if(id == 'usuarios') {
+        nombre = 'Usuarios';
     }
 
     $("#titulo-view").text(nombre);
@@ -255,6 +259,9 @@ function generateNewTabButton(id){
     } else if (id == 'venta') {
         icon = 'fas fa-folder-open';
         nombre = 'Ventas';
+    } else if (id == 'usuarios') {
+        icon = 'fas fa-cog';
+        nombre = 'Usuarios';
     }
 
     var html = '';

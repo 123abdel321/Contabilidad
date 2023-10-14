@@ -169,7 +169,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-        BaoPham\DynamoDb\DynamoDbServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
+        // BaoPham\DynamoDb\DynamoDbServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
     ])->toArray(),
 

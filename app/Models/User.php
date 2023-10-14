@@ -6,12 +6,16 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
 use DB;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use HasRoles;
 
     protected $connection = 'clientes';
     
@@ -26,7 +30,15 @@ class User extends Authenticatable
         'country',
         'postal',
         'has_empresa',
-        'about'
+        'about',
+        'id_empresa',
+        'avatar',
+        'telefono',
+        'ids_bodegas_responsable',
+        'ids_resolucion_responsable',
+        'facturacion_rapida',
+        'created_by',
+        'updated_by'
     ];
 
     /**

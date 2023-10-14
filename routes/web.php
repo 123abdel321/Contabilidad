@@ -28,6 +28,9 @@ use App\Http\Controllers\Tablas\ResolucionesController;
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
+//CONFIGURACION
+use App\Http\Controllers\Configuracion\UsuariosController;
+
 
 
 /*
@@ -117,7 +120,8 @@ Route::group(['middleware' => ['auth']], function () {
 		//DOCUMENTOS
 		Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos');
 		Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('documento-pdf');
-
+		//USUARIOS
+		Route::get('/usuarios', [UsuariosController::class, 'index'])->name('usuarios');
 	});
 
 	//ARGON
