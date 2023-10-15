@@ -18,6 +18,8 @@ class User extends Authenticatable
     use HasRoles;
 
     protected $connection = 'clientes';
+
+    protected $guard_name = 'sanctum';
     
     protected $fillable = [
         'username',

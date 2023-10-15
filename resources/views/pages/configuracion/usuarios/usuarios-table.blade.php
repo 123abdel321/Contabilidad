@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Usuario</th>
+            <th>Rol</th>
             <th>Nombre</th>
             <th>Correo</th>
             <th>Telefono</th>
