@@ -184,7 +184,8 @@ function familiasInit() {
                 "data": function (row, type, set){
                     var html = '';
                     html+= '<span id="editfamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-familias" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
-                    html+= '<span id="deletefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-familias" style="margin-bottom: 0rem !important">Eliminar</span>';
+                    html+= '<span id="deletefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-familias" style="margin-bottom: 0rem !important">Eliminar</span>&nbsp';
+                    html+= '<span id="duplicatefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info duplicar-familias" style="margin-bottom: 0rem !important">Duplicar</span>';
                     return html;
                 }
             }
@@ -198,6 +199,7 @@ function familiasInit() {
             clearFormFamilias();
             $("#textFamiliaCreate").hide();
             $("#textFamiliaUpdate").show();
+            $("#textFamiliaDuplicate").hide();
             $("#saveFamiliaLoading").hide();
             $("#updateFamilia").show();
             $("#saveFamilia").hide();
@@ -355,9 +357,14 @@ function familiasInit() {
 
             $("#codigo_familia").val(data.codigo);
             $("#nombre_familia").val(data.nombre);
-            $("#id_familia").val(data.id);
+            $("#id_familia_up").val(data.id);
 
             $("#familiaFormModal").modal('show');
+
+            setTimeout(function(){
+                $('#codigo_familia').focus();
+                $('#codigo_familia').select();
+            },50);
         });
         //ELIMIAR FAMILIAS
         familias_table.on('click', '.drop-familias', function() {
@@ -397,7 +404,192 @@ function familiasInit() {
                 }
             })
         });
+        //DUPLICAR FAMILIAS
+        familias_table.on('click', '.duplicar-familias', function() {
+
+            clearFormFamilias();
+            $("#textFamiliaCreate").hide();
+            $("#textFamiliaUpdate").hide();
+            $("#textFamiliaDuplicate").show();
+            $("#saveFamiliaLoading").hide();
+            $("#updateFamilia").hide();
+            $("#saveFamilia").show();
+
+            var id = this.id.split('_')[1];
+            var data = getDataById(id, familias_table);
+    
+            if(data.cuenta_venta){
+                var dataCuenta = {
+                    id: data.cuenta_venta.id,
+                    text: data.cuenta_venta.cuenta + ' - ' + data.cuenta_venta.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaVenta.append(newOption).trigger('change');
+                $comboCuentaVenta.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_venta_retencion){
+                var dataCuenta = {
+                    id: data.cuenta_venta_retencion.id,
+                    text: data.cuenta_venta_retencion.cuenta + ' - ' + data.cuenta_venta_retencion.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaVentaRetencion.append(newOption).trigger('change');
+                $comboCuentaVentaRetencion.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_venta_devolucion){
+                var dataCuenta = {
+                    id: data.cuenta_venta_devolucion.id,
+                    text: data.cuenta_venta_devolucion.cuenta + ' - ' + data.cuenta_venta_devolucion.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaVentaDevolucion.append(newOption).trigger('change');
+                $comboCuentaVentaDevolucion.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_venta_iva){
+                var dataCuenta = {
+                    id: data.cuenta_venta_iva.id,
+                    text: data.cuenta_venta_iva.cuenta + ' - ' + data.cuenta_venta_iva.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaVentaIva.append(newOption).trigger('change');
+                $comboCuentaVentaIva.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_venta_descuento){
+                var dataCuenta = {
+                    id: data.cuenta_venta_descuento.id,
+                    text: data.cuenta_venta_descuento.cuenta + ' - ' + data.cuenta_venta_descuento.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaVentaDescuento.append(newOption).trigger('change');
+                $comboCuentaVentaDescuento.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_venta_devolucion_iva){
+                var dataCuenta = {
+                    id: data.cuenta_venta_devolucion_iva.id,
+                    text: data.cuenta_venta_devolucion_iva.cuenta + ' - ' + data.cuenta_venta_devolucion_iva.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaVentaDevolucionIva.append(newOption).trigger('change');
+                $comboCuentaVentaDevolucionIva.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_compra){
+                var dataCuenta = {
+                    id: data.cuenta_compra.id,
+                    text: data.cuenta_compra.cuenta + ' - ' + data.cuenta_compra.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaCompra.append(newOption).trigger('change');
+                $comboCuentaCompra.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_compra_retencion){
+                var dataCuenta = {
+                    id: data.cuenta_compra_retencion.id,
+                    text: data.cuenta_compra_retencion.cuenta + ' - ' + data.cuenta_compra_retencion.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaCompraRetencion.append(newOption).trigger('change');
+                $comboCuentaCompraRetencion.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_compra_devolucion){
+                var dataCuenta = {
+                    id: data.cuenta_compra_devolucion.id,
+                    text: data.cuenta_compra_devolucion.cuenta + ' - ' + data.cuenta_compra_devolucion.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaCompraDevolucion.append(newOption).trigger('change');
+                $comboCuentaCompraDevolucion.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_compra_iva){
+                var dataCuenta = {
+                    id: data.cuenta_compra_iva.id,
+                    text: data.cuenta_compra_iva.cuenta + ' - ' + data.cuenta_compra_iva.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaCompraIva.append(newOption).trigger('change');
+                $comboCuentaCompraIva.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_compra_descuento){
+                var dataCuenta = {
+                    id: data.cuenta_compra_descuento.id,
+                    text: data.cuenta_compra_descuento.cuenta + ' - ' + data.cuenta_compra_descuento.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaCompraDescuento.append(newOption).trigger('change');
+                $comboCuentaCompraDescuento.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_compra_devolucion_iva){
+                var dataCuenta = {
+                    id: data.cuenta_compra_devolucion_iva.id,
+                    text: data.cuenta_compra_devolucion_iva.cuenta + ' - ' + data.cuenta_compra_devolucion_iva.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaCompraDevolucionIva.append(newOption).trigger('change');
+                $comboCuentaCompraDevolucionIva.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_inventario){
+                var dataCuenta = {
+                    id: data.cuenta_inventario.id,
+                    text: data.cuenta_inventario.cuenta + ' - ' + data.cuenta_inventario.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaInventario.append(newOption).trigger('change');
+                $comboCuentaInventario.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_costos){
+                var dataCuenta = {
+                    id: data.cuenta_costos.id,
+                    text: data.cuenta_costos.cuenta + ' - ' + data.cuenta_costos.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaCostos.append(newOption).trigger('change');
+                $comboCuentaCostos.val(dataCuenta.id).trigger('change');
+            }
+
+            if (data.inventario) {
+                $('#inventario_familia').prop('checked', true);
+                showInventario(true);
+            } else {
+                $('#inventario_familia').prop('checked', false);
+                showInventario(false);
+            }
+
+            $("#codigo_familia").val(data.codigo);
+            $("#nombre_familia").val(data.nombre);
+            $("#id_familia_up").val('');
+
+            $("#familiaFormModal").modal('show');
+
+            document.getElementById('familiaFormModal').click();
+            
+            setTimeout(function(){
+                $('#codigo_familia').focus();
+                $('#codigo_familia').select();
+            },20);
+        });
     }
+
+    $("#codigo_familia").on('keydown', function(event) {
+        if(event.keyCode == 13){
+            event.preventDefault();
+            setTimeout(function(){
+                $('#nombre_familia').focus();
+                $('#nombre_familia').select();
+            },10);
+        }
+    });
 
     $comboCuentaVenta = $('#id_cuenta_venta').select2({
         theme: 'bootstrap-5',
@@ -743,14 +935,20 @@ $(document).on('click', '#createFamilia', function () {
     $("#saveFamilia").show();
     $('#inventario_familia').prop('checked', false);
     $("#familiaFormModal").modal('show');
+
+    setTimeout(function(){
+        $('#codigo_familia').focus();
+        $('#codigo_familia').select();
+    },10);
 });
 
 function clearFormFamilias(){
     $("#textFamiliaCreate").show();
     $("#textFamiliaUpdate").hide();
-    $("#saveFamiliaLoading").hide();
+    $("#textFamiliaDuplicate").hide();
 
-    $("#id_familia").val('');
+    $("#saveFamiliaLoading").hide();
+    $("#id_familia_up").val('');
     $("#codigo_familia").val('');
     $("#nombre_familia").val('');
 
@@ -848,7 +1046,7 @@ $(document).on('click', '#updateFamilia', function () {
     }
 
     let data = {
-        id: $("#id_familia").val(),
+        id: $("#id_familia_up").val(),
         codigo: $('#codigo_familia').val(),
         nombre: $('#nombre_familia').val(),
         inventario: $("input[type='checkbox']#inventario_familia").is(':checked') ? '1' : '',

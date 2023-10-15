@@ -11,26 +11,32 @@
     .fa-comprobante {
         margin-left: -5px;
     }
-    
-    .accordion-familia > .accordion-button:not(.collapsed) {
-        background-color: #1c4587 !important;
-        color: white;
-    }
 
-    .accordion-familia > button:focus:not(:focus-visible) {
+    /* .accordion-familia > .accordion-button {
         background-color: #1c4587 !important;
         color: white;
-    }
+    } */
 
     .accordion-familia > .accordion-item:first-of-type .accordion-button {
         background-color: #1c4587 !important;
         color: white;
     }
 
-    .accordion-familia > .accordion-item:last-of-type .accordion-button.collapsed {
+    .accordion-familia > .accordion-item:first-of-type .accordion-button.collapsed {
+        background-color: #FFF !important;
+        color: black;
+    }
+
+    .accordion-familia > .accordion-item:last-of-type .accordion-button {
         background-color: #1c4587 !important;
         color: white;
     }
+
+    .accordion-familia > .accordion-item:last-of-type .accordion-button.collapsed {
+        background-color: #FFF !important;
+        color: black;
+    }
+
 </style>
 
 <div class="container-fluid py-2">

@@ -254,7 +254,9 @@ class FamiliasController extends Controller
                     'cuenta_compra_devolucion',
                     'cuenta_compra_iva',
                     'cuenta_compra_descuento',
-                    'cuenta_compra_devolucion_iva'
+                    'cuenta_compra_devolucion_iva',
+                    'cuenta_inventario',
+                    'cuenta_costos',
                 )->first();
 
             return response()->json([
