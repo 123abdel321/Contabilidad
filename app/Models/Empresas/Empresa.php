@@ -38,12 +38,17 @@ class Empresa extends Model
         'id_usuario_owner'
 	];
 
-    public function suscripciones (){
+    public function suscripciones () {
 		return $this->hasMany("App\Models\Empresas\EmpresaSuscripcion", "id_empresa");
 	}
 
-    public function componentes (){
+    public function componentes () {
       	return $this->hasMany("App\Models\Empresas\EmpresaComponentesSuscripcion", "id_empresa");
+    }
+
+    public function suscripcionActiva () {
+        return $this->hasOne('App\Models\Empresas\EmpresaSuscripcion', 'id_empresa')
+			->where('estado', 1);
     }
 
 }

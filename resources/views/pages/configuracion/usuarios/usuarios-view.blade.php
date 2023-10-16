@@ -1,3 +1,25 @@
+<style>
+    .accordion-usuarios > .accordion-item:first-of-type .accordion-button {
+        background-color: #1c4587 !important;
+        color: white;
+    }
+
+    .accordion-usuarios > .accordion-item:first-of-type .accordion-button.collapsed {
+        background-color: #FFF !important;
+        color: black;
+    }
+
+    .accordion-usuarios > .accordion-item:last-of-type .accordion-button {
+        background-color: #1c4587 !important;
+        color: white;
+    }
+
+    .accordion-usuarios > .accordion-item:last-of-type .accordion-button.collapsed {
+        background-color: #FFF !important;
+        color: black;
+    }
+</style>
+
 <div class="container-fluid py-2">
     <div class="row">
         <div class="row" style="z-index: 9;">
@@ -21,6 +43,10 @@
         </div>
     </div>
 
-    @include('pages.configuracion.usuarios.usuarios-form')
+    @include('pages.configuracion.usuarios.usuarios-form', ['componentes' => $componentes])
     
 </div>
+
+<script>
+    var componentesMenu = JSON.parse('<?php echo $componentes; ?>');
+</script>

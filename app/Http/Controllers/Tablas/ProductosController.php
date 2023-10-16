@@ -39,9 +39,10 @@ class ProductosController extends Controller
 
     public function index ()
     {
+        $totalBodegas = FacBodegas::count();
         $data = [
             'familias' => FacFamilias::all(),
-            'bodegas' => FacBodegas::first()
+            'bodegas' => FacBodegas::get()
         ];
         return view('pages.tablas.productos.productos-view', $data);
     }
@@ -449,7 +450,8 @@ class ProductosController extends Controller
         }
     }
 
-    private function agregarVariantes ($producto, $idOpcion) {
+    private function agregarVariantes ($producto, $idOpcion)
+    {
         $opcion = FacVariantesOpciones::find($idOpcion);
 
         $facProductosVariantes = FacProductosVariantes::create([
@@ -462,7 +464,8 @@ class ProductosController extends Controller
         return $facProductosVariantes;
     }
 
-    private function agregarBodega ($producto, $bodega) {
+    private function agregarBodega ($producto, $bodega)
+    {
 
         $facProductosBodegas = FacProductosBodegas::create([
             'id_producto' => $producto->id,
@@ -488,7 +491,8 @@ class ProductosController extends Controller
         return $facProductosBodegas;
     }
 
-    private function nombreVariante ($variantes) {
+    private function nombreVariante ($variantes)
+    {
         $nombreVariante = '';
         $totalVariantes = 0;
         if (count($variantes) > 0) {
@@ -501,7 +505,8 @@ class ProductosController extends Controller
         return $nombreVariante;
     }
 
-    public function comboProducto (Request $request) {
+    public function comboProducto (Request $request)
+    {
         $producto = FacProductos::select(
                 \DB::raw('*'),
                 \DB::raw("CONCAT(codigo, ' - ', nombre) as text")

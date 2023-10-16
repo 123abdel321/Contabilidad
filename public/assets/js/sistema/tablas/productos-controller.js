@@ -152,7 +152,8 @@ function productosInit() {
             }
 
             if(dataProducto.imagen) {
-                $('#new_produc_img').attr('src', 'https://bucketlistardatos.nyc3.digitaloceanspaces.com/'+dataProducto.imagen);
+
+                $('#new_produc_img').attr('src', bucketUrl+dataProducto.imagen);
                 $('#new_produc_img').show();
                 $('#default_produc_img').hide();
             } else {
@@ -603,7 +604,10 @@ $('.form-control').keyup(function() {
 
 $(document).on('click', '#createProducto', function () {
     clearFormProductos();
-
+    
+    if (primeraBodegas.length == 1) addBodegaToProduct(primeraBodegas[0], false);
+    else addBodegaToProduct(primeraBodegas[0]);
+    
     $("#table-products-view").hide();
     $("#add-products-view").show();
     $("#cancelProducto").show();

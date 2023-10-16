@@ -1,4 +1,5 @@
 var usuarios_table = null;
+var permisosUsuarios = [];
 var $comboBodegaUsuario = null;
 var $comboResolucionUsuario = null;
 
@@ -70,9 +71,6 @@ function usuariosInit() {
 
             var id = this.id.split('_')[1];
             var data = getDataById(id, usuarios_table);
-
-            console.log(data.ids_bodegas_responsable);
-            console.log(data.ids_bodegas_responsable.split(','));
     
             $("#id_usuarios_up").val(data.id);
             $("#usuario").val(data.username);
@@ -82,6 +80,14 @@ function usuariosInit() {
             $("#address").val(data.address);
             $("#id_bodega_usuario").val(data.ids_bodegas_responsable.split(',')).change();
             $("#id_resolucion_usuario").val(data.ids_resolucion_responsable.split(',')).change();
+
+            clearPermisos();
+
+            data.permissions.forEach(permiso => {
+                var nombrePermisoSplit = permiso.name.split(' ');
+                var nombrePermiso = nombrePermisoSplit[0]+'_'+nombrePermisoSplit[1];
+                $('#'+nombrePermiso).prop('checked', true);
+            });
     
             $("#usuariosFormModal").modal('show');
         });
@@ -96,6 +102,26 @@ function usuariosInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#usuariosFormModal'),
     });
+
+    if (componentesMenu.length > 0) {
+        for (let i = 0; i < componentesMenu.length; i++) {
+            const componente = componentesMenu[i];
+            for (let j = 0; j < componente.menus.length; j++) {
+                const menu = componente.menus[j];
+                if (menu.permisos.length > 0) {
+                    for (let k = 0; k < menu.permisos.length; k++) {
+                        const permiso = menu.permisos[k];
+                        var permisoNombre = permiso.name.split(' ');
+                        permisosUsuarios.push({
+                            name: permisoNombre[0]+'_'+permisoNombre[1],
+                            id_permiso: permiso.id,
+                            value: false
+                        });
+                    }
+                }
+            }
+        }
+    }
 
     $('.water').hide();
     usuarios_table.ajax.reload();
@@ -155,6 +181,7 @@ $(document).on('click', '#saveUsuarios', function () {
         id_resolucion: $("#id_resolucion_usuario").val(),
         facturacion_rapida: $("input[type='checkbox']#facturacion_rapida").is(':checked') ? '1' : '',
         rol_usuario: $("#rol_usuario").val(),
+        permisos: getPermisos(permisosUsuarios)
     }
 
     $.ajax({
@@ -255,3 +282,19 @@ $(document).on('click', '#updateUsuarios', function () {
     });
 
 });
+
+function getPermisos() {
+    for (let index = 0; index < permisosUsuarios.length; index++) {
+        const permiso = permisosUsuarios[index];
+        permiso.value = $("input[type='checkbox']#"+permiso.name).is(':checked') ? '1' : '';
+    }
+
+    return permisosUsuarios;
+}
+
+function clearPermisos() {
+    for (let index = 0; index < permisosUsuarios.length; index++) {
+        const permiso = permisosUsuarios[index];
+        permiso.value = ''
+    }
+}
