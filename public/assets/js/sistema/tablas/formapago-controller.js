@@ -57,8 +57,8 @@ function formapagoInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editformaspago_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-formaspago" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
-                    html+= '<span id="deleteformaspago_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-formaspago" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    if (editarFormaPago) html+= '<span id="editformaspago_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-formaspago" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    if (eliminarFormaPago) html+= '<span id="deleteformaspago_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-formaspago" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }
             },
@@ -188,6 +188,11 @@ function formapagoInit() {
             }
         }
     });
+
+    let column = formaspago_table.column(7);
+
+    if (!editarFormaPago && !eliminarFormaPago) column.visible(false);
+    else column.visible(true);
 
     $('.water').hide();
     formaspago_table.ajax.reload();

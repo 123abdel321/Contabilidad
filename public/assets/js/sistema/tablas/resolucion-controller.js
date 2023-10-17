@@ -73,8 +73,8 @@ function resolucionInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editresolucion_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-resolucion" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
-                    html+= '<span id="deleteresolucion_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-resolucion" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    if (editarResoluciones) html+= '<span id="editresolucion_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-resolucion" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    if (eliminarResoluciones) html+= '<span id="deleteresolucion_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-resolucion" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }
             },
@@ -171,6 +171,11 @@ function resolucionInit() {
             }
         });
     }
+
+    let column = resoluciones_table.column(12);
+
+    if (!editarResoluciones && !eliminarResoluciones) column.visible(false);
+    else column.visible(true);
 
     $('.water').hide();
     resoluciones_table.ajax.reload();

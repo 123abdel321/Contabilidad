@@ -3,7 +3,9 @@
         <div class="row" style="z-index: 9;">
             <div class="row" style="z-index: 9;">
                 <div class="col-12 col-md-6 col-sm-6">
-                    <button type="button" class="btn btn-primary btn-sm" id="createFormaPago">Agregar forma de pago</button>
+                    @can('formas_pago create')
+                        <button type="button" class="btn btn-primary btn-sm" id="createFormaPago">Agregar forma de pago</button>
+                    @endcan
                 </div>
                 <div class="col-12 col-md-6 col-sm-6">
                     <input type="text" id="searchInputFormaPago" class="form-control form-control-sm search-table" placeholder="Buscar">
@@ -24,3 +26,8 @@
     @include('pages.tablas.formas_pago.formas_pago-form')
     
 </div>
+
+<script>
+    var editarFormaPago = '<?php echo auth()->user()->can('formas_pago update'); ?>';
+    var eliminarFormaPago = '<?php echo auth()->user()->can('formas_pago delete'); ?>';
+</script>

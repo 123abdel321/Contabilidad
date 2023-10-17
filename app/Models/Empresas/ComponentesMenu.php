@@ -20,6 +20,10 @@ class ComponentesMenu extends Model
         'id_componente',
         'nombre',
         'tipo',
+        'nombre',
+        'url',
+        'icon',
+        'code_name',
         'estado',
         'created_by',
         'updated_by'

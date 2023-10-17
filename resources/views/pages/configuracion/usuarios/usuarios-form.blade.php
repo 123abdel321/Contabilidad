@@ -31,26 +31,26 @@
                                     </div>
                                     <div class="form-group form-group col-12 col-sm-6 col-md-6">
                                         <label for="example-text-input" class="form-control-label">Correo</label>
-                                        <input type="email" class="form-control form-control-sm" name="email" id="email" required>
+                                        <input type="email" class="form-control form-control-sm" name="email_usuario" id="email_usuario" required>
                                         <div class="invalid-feedback">
                                             El correo es requerido
                                         </div>
                                     </div>
                                     <div class="form-group form-group col-12 col-sm-6 col-md-6">
                                         <label for="example-text-input" class="form-control-label">Nombres</label>
-                                        <input type="text" class="form-control form-control-sm" name="firstname" id="firstname">
+                                        <input type="text" class="form-control form-control-sm" name="firstname_usuario" id="firstname_usuario">
                                     </div>
                                     <div class="form-group form-group col-12 col-sm-6 col-md-6">
                                         <label for="example-text-input" class="form-control-label">Apellidos</label>
-                                        <input type="text" class="form-control form-control-sm" name="lastname" id="lastname">
+                                        <input type="text" class="form-control form-control-sm" name="lastname_usuario" id="lastname_usuario">
                                     </div>
                                     <div class="form-group form-group col-12 col-sm-6 col-md-6">
                                         <label for="example-text-input" class="form-control-label">Telefono</label>
-                                        <input type="text" class="form-control form-control-sm" name="telefono" id="telefono">
+                                        <input type="text" class="form-control form-control-sm" name="telefono_usuario" id="telefono_usuario">
                                     </div>
                                     <div class="form-group form-group col-12 col-sm-6 col-md-6">
                                         <label for="example-text-input" class="form-control-label">Dirección</label>
-                                        <input type="text" class="form-control form-control-sm" name="address" id="address">
+                                        <input type="text" class="form-control form-control-sm" name="address_usuario" id="address_usuario">
                                     </div>
                                     <div class="form-group form-group col-12 col-sm-6 col-md-6">
                                         <label for="example-text-input" class="form-control-label">Contraseña</label>
@@ -123,7 +123,7 @@
                                                         <label class="form-check-label" for="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}">{{explode(' ', $permisos->name)[1]}}</label>
                                                     </div>
                                                 @endforeach
-                                                <div style="padding: 10px;"></div>
+                                                <div style="padding: 5px; border-top: solid 1px #dbdbdb; margin-top: 5px;"></div>
                                             @endif
                                         @endforeach
                                     @endforeach

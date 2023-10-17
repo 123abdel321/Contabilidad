@@ -183,14 +183,19 @@ function familiasInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editfamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-familias" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
-                    html+= '<span id="deletefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-familias" style="margin-bottom: 0rem !important">Eliminar</span>&nbsp';
-                    html+= '<span id="duplicatefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info duplicar-familias" style="margin-bottom: 0rem !important">Duplicar</span>';
+                    if (editarFamilias) html+= '<span id="editfamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-familias" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
+                    if (eliminarFamilias) html+= '<span id="deletefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-familias" style="margin-bottom: 0rem !important">Eliminar</span>&nbsp';
+                    if (crearFamilias) tml+= '<span id="duplicatefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info duplicar-familias" style="margin-bottom: 0rem !important">Duplicar</span>';
                     return html;
                 }
             }
         ]
     });
+
+    let column = familias_table.column(18);
+    
+    if (!editarFamilias && !eliminarFamilias) column.visible(false);
+    else column.visible(true);
 
     if(familias_table) {
         //EDITAR FAMILIAS

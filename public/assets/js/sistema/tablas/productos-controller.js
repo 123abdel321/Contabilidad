@@ -121,14 +121,19 @@ function productosInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
-                    html+= '<span id="deleteproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    if (editarProductos) html+= '<span id="editproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    if (eliminarProductos) html+= '<span id="deleteproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }
             },
     
         ]
     });
+
+    let column = productos_table.column(9);
+    
+    if (!editarProductos && !eliminarProductos) column.visible(false);
+    else column.visible(true);
 
     if (productos_table) {
         productos_table.on('click', '.edit-producto', function() {

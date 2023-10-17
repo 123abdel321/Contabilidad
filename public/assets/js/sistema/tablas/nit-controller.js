@@ -89,8 +89,8 @@ function nitInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-nits" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
-                    html+= '<span id="deleteplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-nits" style="margin-bottom: 0rem !important">Eliminar</span>';
+                    if (editarUsuario) html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-nits" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
+                    if (eliminarUsuario) html+= '<span id="deleteplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-nits" style="margin-bottom: 0rem !important">Eliminar</span>';
                     return html;
                 }
             }
@@ -225,6 +225,11 @@ function nitInit() {
             }
         }
     });
+
+    let column = nits_table.column(12);
+    
+    if (!editarUsuario && !eliminarUsuario) column.visible(false);
+    else column.visible(true);
 
     $('.water').hide();
     nits_table.ajax.reload();

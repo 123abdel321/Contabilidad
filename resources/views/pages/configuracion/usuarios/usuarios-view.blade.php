@@ -25,7 +25,9 @@
         <div class="row" style="z-index: 9;">
             <div class="row" style="z-index: 9;">
                 <div class="col-12 col-md-6 col-sm-6">
-                    <button type="button" class="btn btn-primary btn-sm" id="createUsuarios">Agregar usuario</button>
+                    @can('usuarios create')
+                        <button type="button" class="btn btn-primary btn-sm" id="createUsuarios">Agregar usuario</button>
+                    @endcan
                 </div>
                 <div class="col-12 col-md-6 col-sm-6">
                     <input type="text" id="searchInputUsuarios" class="form-control form-control-sm search-table" placeholder="Buscar">
@@ -49,4 +51,6 @@
 
 <script>
     var componentesMenu = JSON.parse('<?php echo $componentes; ?>');
+    var editarUsuarios = '<?php echo auth()->user()->can('usuarios update'); ?>';
+    var eliminarUsuarios = '<?php echo auth()->user()->can('usuarios delete'); ?>';
 </script>
