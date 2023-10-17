@@ -115,10 +115,10 @@
                                         @foreach ($componente->menus as $menu)
                                             @if (count($menu->permisos) > 0)
                                                 
-                                                <h6>{{$menu->nombre}}</h6>
+                                                <h6>{{$menu->padre->nombre}} > {{$menu->nombre}}</h6>
 
                                                 @foreach ($menu->permisos as $permisos)
-                                                    <div class="form-check form-switch col-6 col-sm-3 col-md-2">
+                                                    <div class="form-check form-switch col-6 col-sm-3 col-md-3">
                                                         <input class="form-check-input" type="checkbox" name="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" id="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" style="height: 20px;">
                                                         <label class="form-check-label" for="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}">{{explode(' ', $permisos->name)[1]}}</label>
                                                     </div>

@@ -35,7 +35,7 @@ class UsuariosController extends Controller
     public function index (Request $request)
     {
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])
-            ->with('suscripcionActiva.componentes.menus.permisos')
+            ->with('suscripcionActiva.componentes.menus.permisos', 'suscripcionActiva.componentes.menus.padre')
             ->first();
 
         $data = [
