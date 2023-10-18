@@ -29,6 +29,7 @@ use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 //CONFIGURACION
+use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
 
 
@@ -55,7 +56,109 @@ use App\Http\Controllers\Configuracion\UsuariosController;
 // });
 
 Route::get('/', function () {
-    return view('welcome');
+	// $n = 7;
+
+	// if($n == 0) echo "ERROR";
+
+	// for ($i = 0; $i < $n; $i++) {
+	// 	$x = '';
+
+	// 	for ($j = 0; $j < $n; $j++) {
+
+	// 		if ($j === $i || $j === $n - $i - 1) $x.= 'X';
+	// 		else $x.= '_';
+
+	// 	}
+	// 	echo $x.'<br/>';
+	// }
+
+	// $arr = array(1,2,9,2,5,3,5,1,5);
+
+	// $array = [
+	// 	0 => [],
+	// 	1 => [],
+	// 	2 => [],
+	// ];
+	// $count = 0;
+	// $position = 0;
+	
+	// for ($i = 0; $i < count($arr); $i++) {
+	// 	$count++;
+	// 	$array[$position][] = $arr[$i];
+
+	// 	if (!($count % 3)) $position++;
+	// }
+	// dd($array)
+	// $valorActual = 0;
+	// $columnaActual = 0;
+	// $movimientos = [];
+	// $validarPosicion = false;
+	// do {
+	// 	for ($i=0; $i < count($array); $i++) {
+	// 		$valor = $array[$i][$columnaActual];
+	// 		if ($validarPosicion) {
+	// 			if () {
+
+	// 			}
+	// 		}
+	// 		if (!$valorActual) {
+	// 			$valorActual = $valor;
+	// 			$movimientos[$columnaActual] = $i;
+	// 		}else if ($valorActual > $valor) {
+	// 			$valorActual = $valor;
+	// 			$movimientos[$columnaActual] = $i;
+	// 		}
+	// 	}
+	// 	$columnaActual++;
+	// 	$valorActual = 0;
+	// 	$validarPosicion = true;
+	// } while ($columnaActual != 3);
+	// dd($movimientos);
+
+
+
+	// $arr = array(1,2,9,2,5,3,5,1,5);
+	$myArray = array(1,2,9,2,5,3,5,1,5);
+
+	$count = 0;
+	$arrayOrder = [0 => [], 1 => [], 2 => []];
+	for ($i = 0; $i < count($myArray); $i++) {
+
+		$arrayOrder[$count][] = $myArray[$i];
+		$count++;
+		
+		if ($count && !($count % 3)) $count = 0;
+	}
+
+	$pasos = [];
+
+	for ($i = 0; $i < count($arrayOrder); $i++) {
+		$valorActual = $arrayOrder[$i][0];
+		$pasos[$i] = 0;
+		for($j = 0; $j < count($arrayOrder[$i]); $j++){
+			$valor = $arrayOrder[$i][$j];
+			if ($i == 0) {
+				if ($valorActual > $valor) {
+					$valorActual = $valor;
+					$pasos[$i] = $j;
+				}
+			} else {
+				$pasoAnterior = $pasos[$i - 1];
+				$diferenciaPasos = ($pasoAnterior - $j) < 0 ? ($pasoAnterior - $j) *-1 : $pasoAnterior - $j;
+				if ($diferenciaPasos == 0 || $diferenciaPasos == 1) {
+					if ($valorActual > $valor) {
+						$valorActual = $valor;
+						$pasos[$i] = $j;
+					}
+				}
+			}
+		}
+		if ( $i+1 < count($arrayOrder)) {
+			echo $arrayOrder[$i][$pasos[$i]].' ';
+		} else {
+			echo $arrayOrder[$i][$pasos[$i]];
+		}
+	}
 });
 
 Auth::routes();
@@ -122,6 +225,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('documento-pdf');
 		//USUARIOS
 		Route::get('/usuarios', [UsuariosController::class, 'index'])->name('usuarios');
+		//EMPRESA
+		Route::get('/empresa', [EmpresaController::class, 'index'])->name('empresa');
 	});
 
 	//ARGON

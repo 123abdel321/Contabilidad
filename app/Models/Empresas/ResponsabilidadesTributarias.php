@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Empresas;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ConResponsabilidadesTributarias extends Model
+class ResponsabilidadesTributarias extends Model
 {
     use HasFactory;
 
-    protected $connection = 'sam';
+    protected $connection = 'clientes';
 
     protected $table = "responsabilidades_tributarias";
 
