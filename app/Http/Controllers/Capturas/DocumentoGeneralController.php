@@ -15,6 +15,7 @@ use App\Models\Sistema\CentroCostos;
 use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacDocumentos;
 use App\Models\Sistema\FacResoluciones;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
 
 class DocumentoGeneralController extends Controller
@@ -37,9 +38,16 @@ class DocumentoGeneralController extends Controller
 
     public function index ()
     {
+		$capturarDocumentosDescuadrados = VariablesEntorno::where('nombre', 'capturar_documento_descuadrado')->first();
+
+		if (!$capturarDocumentosDescuadrados) $capturarDocumentosDescuadrados = false;
+		else $capturarDocumentosDescuadrados = $capturarDocumentosDescuadrados->valor;
+
 		$data = [
-            'cecos' => CentroCostos::first()
+            'cecos' => CentroCostos::first(),
+			'capturarDocumentosDescuadrados' => $capturarDocumentosDescuadrados
         ];
+
         return view('pages.capturas.documento_general.documento_general-view', $data);
     }
 

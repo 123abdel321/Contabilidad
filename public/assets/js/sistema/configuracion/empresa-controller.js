@@ -1,13 +1,13 @@
 
 function empresaInit() {
+    $('#id_responsabilidades').select2({
+        theme: 'bootstrap-5',
+    });
+    
     $("#id_responsabilidades").val(
         datosEmpresa.codigos_responsabilidades.split(',')
     ).change();
 }
-
-$('#id_responsabilidades').select2({
-    theme: 'bootstrap-5',
-});
 
 $("#tipo_contribuyente_empresa").on('change', function(e) {
     var tipoContribuyente = $("#tipo_contribuyente_empresa").val();
@@ -57,6 +57,7 @@ $(document).on('click', '#updateEmpresa', function () {
         'primer_apellido': $('#primer_apellido_empresa').val(),
         'segundo_apellido': $('#segundo_apellido_empresa').val(),
         'id_responsabilidades': $('#id_responsabilidades').val(),
+        'capturar_documento_descuadrado': $("input[type='checkbox']#capturar_documento_descuadrado_empresa").is(':checked') ? '1' : '',
     }
 
     $.ajax({

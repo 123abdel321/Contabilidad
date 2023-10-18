@@ -170,6 +170,18 @@ $(document).on('click', '#saveUsuarios', function () {
         return;
     }
 
+    var contrasena = $("#password_usuario").val();
+    var confirmarContrasena = $("#password_confirm").val();
+
+    if (contrasena != confirmarContrasena) {
+        $('#password_confirm').removeClass("is-valid");
+        $('#password_confirm').addClass("is-invalid");
+        return;
+    } else {
+        $('#password_confirm').addClass("is-valid");
+        $('#password_confirm').removeClass("is-invalid");
+    }
+
     $("#saveUsuariosLoading").show();
     $("#updateUsuarios").hide();
     $("#saveUsuarios").hide();
@@ -232,6 +244,19 @@ $(document).on('click', '#updateUsuarios', function () {
         form.classList.add('was-validated');
         return;
     }
+
+    var contrasena = $("#password_usuario").val();
+    var confirmarContrasena = $("#password_confirm").val();
+
+    if (contrasena != confirmarContrasena) {
+        $('#password_confirm').removeClass("is-valid");
+        $('#password_confirm').addClass("is-invalid");
+        return;
+    } else {
+        $('#password_confirm').addClass("is-valid");
+        $('#password_confirm').removeClass("is-invalid");
+    }
+
 
     $("#saveUsuariosLoading").show();
     $("#updateUsuarios").hide();

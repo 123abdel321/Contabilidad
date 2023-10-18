@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Empresas\ResponsabilidadesTributarias;
 
 class EmpresaController extends Controller
@@ -31,10 +32,20 @@ class EmpresaController extends Controller
     public function index(Request $request)
     {
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        $capturarDocumentosDescuadrados = VariablesEntorno::where('nombre', 'capturar_documento_descuadrado')->first();
+        $responsabilidades = ResponsabilidadesTributarias::get();
+
+        if (!$capturarDocumentosDescuadrados) {
+            $capturarDocumentosDescuadrados = new VariablesEntorno;
+            $capturarDocumentosDescuadrados->nombre = 'capturar_documento_descuadrado';
+            $capturarDocumentosDescuadrados->valor = false;
+            $capturarDocumentosDescuadrados->save();
+        }
 
         $data = [
             'empresa' => $empresa,
-            'responsabilidades' => ResponsabilidadesTributarias::get()
+            'responsabilidades' => $responsabilidades,
+            'capturarDocumentosDescuadrados' => $capturarDocumentosDescuadrados,
         ];
         
         return view('pages.configuracion.empresa.empresa-view', $data);
@@ -60,8 +71,6 @@ class EmpresaController extends Controller
 			'direccion' => 'nullable|min:3|max:100',
 			'telefono' => 'nullable|numeric|digits_between:1,30',
 		];
-
-        
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
@@ -89,6 +98,16 @@ class EmpresaController extends Controller
                     'nit' => $request->get('nit'),
                     'dv' => $request->get('dv'),
                     'telefono' => $request->get('telefono'),
+                ]);
+            
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+            copyDBConnection($empresa->servidor ?: 'sam', 'sam');
+            setDBInConnection('sam', $empresa->token_db);
+
+            VariablesEntorno::where('nombre', 'capturar_documento_descuadrado')
+                ->update([
+                    'valor' => $request->get('capturar_documento_descuadrado') ? $request->get('capturar_documento_descuadrado') : 0,
                 ]);
 
             DB::connection('sam')->commit();

@@ -112,7 +112,10 @@
                     <label for="example-text-input" class="form-control-label" style="display: unset;">Segundo apellido</label>
                     <input type="text" class="form-control form-control-sm" name="segundo_apellido_empresa" id="segundo_apellido_empresa" value="{{ $empresa->segundo_apellido }}" {{ auth()->user()->can('empresa update') ? '' : 'readonly' }}>
                 </div>
-
+                <div class="form-check form-switch col-12 col-sm-4 col-md-3">
+                    <input class="form-check-input" type="checkbox" name="capturar_documento_descuadrado_empresa" id="capturar_documento_descuadrado_empresa" style="height: 20px;" {{ $capturarDocumentosDescuadrados->valor ? 'checked' : '' }} {{ auth()->user()->can('empresa update') ? '' : 'readonly' }}>
+                    <label class="form-check-label" for="capturar_documento_descuadrado_empresa">Capturar documentos descuadrados</label>
+                </div>
                 <div class="form-group col-12 col-sm-8 col-md-6">
                     <label for="exampleFormControlSelect1">Responsabilidades tributarias</label>
                     <select class="form-control form-control-sm" id="id_responsabilidades" name="id_responsabilidades[]" multiple="multiple" requiere {{ auth()->user()->can('empresa update') ? '' : 'disabled' }}>
@@ -137,4 +140,5 @@
 <script>
     var datosEmpresa = JSON.parse('<?php echo $empresa; ?>');
     var editarEmpresa = '<?php echo auth()->user()->can('empresa update'); ?>';
+    var capturarDocumentosDescuadrados = JSON.parse('<?php echo $capturarDocumentosDescuadrados; ?>');
 </script>

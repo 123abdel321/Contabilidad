@@ -749,18 +749,20 @@ $(document).on('click', '.select-documento', function () {
     var saldo = parseInt(this.id.split('_')[2]);
     var documentoReferencia = this.id.split('_')[1];
     let dataNit = $('#combo_nits_'+rowExtracto).select2('data')[0];
-        
+    
     $('#documento_referencia_'+rowExtracto).val(documentoReferencia);
     $("#modalDocumentoExtracto").modal('hide');  
     $('#concepto_'+rowExtracto).val(dataNit.text + ' - FACTURA: ' + documentoReferencia);
 
     if($('#debito_'+rowExtracto).is(":disabled")){
         $('#credito_'+rowExtracto).val(saldo);
+        document.getElementById("credito_"+rowExtracto).max = saldo;
         setTimeout(function(){
             $('#documentoReferenciaTable tr').find('#credito_'+rowExtracto).select();
         },10);
     } else {
         $('#debito_'+rowExtracto).val(saldo);
+        document.getElementById("debito_"+rowExtracto).max = saldo;
         setTimeout(function(){
             $('#documentoReferenciaTable tr').find('#debito_'+rowExtracto).select();
         },10);
@@ -1198,9 +1200,9 @@ function totalValores() {
         $("#crearCapturaDocumentosDisabled").hide();
         
         for (let index = 0; index < dataDocumento.length; index++) {
-
-            var deb = $('#debito_'+index).val();
-            var cre = $('#credito_'+index).val();
+            var id = dataDocumento[index].id;
+            var deb = $('#debito_'+id).val();
+            var cre = $('#credito_'+id).val();
 
             debito+= parseInt(deb ? deb : 0);
             credito+= parseInt(cre ? cre : 0);
@@ -1235,6 +1237,11 @@ $(document).on('click', '#crearCapturaDocumentos', function () {
     var texto = 'Desea guardar documento en la tabla?';
     var type = 'question';
 
+    if (!capturarDocumentosDescuadrados && diferencia != 0) {
+        agregarToast('warning', 'Creación errada', 'Documentos descuadrados', true);
+        return;
+    }
+
     if (diferencia != 0) {
         texto = "Documento descuadrado, desea guardarlo en la tabla?";
         type = "warning";
@@ -1242,7 +1249,7 @@ $(document).on('click', '#crearCapturaDocumentos', function () {
         agregarToast('warning', 'Creación errada', 'Sin datos para guardar en la tabla', true);
         return;
     }
-
+    
     if(askSaveDocumentos) {
         Swal.fire({
             title: 'Guardar documento?',

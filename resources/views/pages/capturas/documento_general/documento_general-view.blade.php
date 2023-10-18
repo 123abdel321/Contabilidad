@@ -95,6 +95,7 @@
 
     <script>
         var primerCecosGeneral = JSON.parse('<?php echo $cecos; ?>');
+        var capturarDocumentosDescuadrados = JSON.parse('<?php echo $capturarDocumentosDescuadrados; ?>');
     </script>
 
 </div>
