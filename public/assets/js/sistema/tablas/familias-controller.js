@@ -185,7 +185,7 @@ function familiasInit() {
                     var html = '';
                     if (editarFamilias) html+= '<span id="editfamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-familias" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
                     if (eliminarFamilias) html+= '<span id="deletefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-familias" style="margin-bottom: 0rem !important">Eliminar</span>&nbsp';
-                    if (crearFamilias) tml+= '<span id="duplicatefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info duplicar-familias" style="margin-bottom: 0rem !important">Duplicar</span>';
+                    if (crearFamilias) html+= '<span id="duplicatefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info duplicar-familias" style="margin-bottom: 0rem !important">Duplicar</span>';
                     return html;
                 }
             }

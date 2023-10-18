@@ -262,47 +262,7 @@ function documentogeneralInit() {
         });
     }
 
-    documento_extracto = $('#documentoExtractoTable').DataTable({
-        dom: '',
-        autoWidth: true,
-        responsive: false,
-        processing: true,
-        serverSide: true,
-        deferLoading: 0,
-        initialLoad: false,
-        language: lenguajeDatatable,
-        ordering: false,
-        sScrollX: "100%",
-        scrollX: true,
-        fixedColumns : {
-            left: 0,
-            right : 1,
-        },
-        ajax:  {
-            type: "GET",
-            headers: headers,
-            url: base_url + 'extracto',
-            data: function ( d ) {
-                d.id_cuenta = $("#combo_cuenta_"+rowExtracto).val();
-                d.id_nit = $("#combo_nits_"+rowExtracto).val();
-            }
-        },
-        columns: [
-            {"data":'documento_referencia'},
-            {"data":'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data":'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data":'fecha_manual'},
-            {"data":'dias_cumplidos'},
-            {
-                "data": function (row, type, set){
-                    var html = '';
-                    html+= '<span href="javascript:void(0)" id="documentoextracto_'+row.documento_referencia+'_'+row.saldo+'" class="btn badge bg-gradient-primary select-documento" style="margin-bottom: 0rem !important">Seleccionar</span>&nbsp;';
-                    return html;
-                }
-            }
-        ]
-    });
+    initDatatableExtracto();
 
     if(!$comboComprobante) {
         $comboComprobante = $('#id_comprobante').select2({
@@ -324,6 +284,37 @@ function documentogeneralInit() {
     setTimeout(function(){
         $comboComprobante.select2("open");
     },10);
+}
+
+function initDatatableExtracto() {
+    documento_extracto = $('#documentoExtractoTable').DataTable({
+        dom: '',
+        autoWidth: true,
+        language: lenguajeDatatable,
+        ordering: false,
+        sScrollX: "100%",
+        scrollX: true,
+        fixedColumns : {
+            left: 0,
+            right : 1,
+        },
+        columns: [
+            {"data":'documento_referencia'},
+            {"data":'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'fecha_manual'},
+            {"data":'dias_cumplidos'},
+            {
+                "data": function (row, type, set){
+                    var html = '';
+                    if (!row.capturando) html+= '<span href="javascript:void(0)" id="documentoextracto_'+row.documento_referencia+'_'+row.saldo+'" class="btn badge bg-gradient-primary select-documento" style="margin-bottom: 0rem !important">Seleccionar</span>&nbsp;';
+                    else html+= '<span href="javascript:void(0)" class="btn badge bg-gradient-secondary disabled" style="margin-bottom: 0rem !important">Capturando</span>&nbsp;'
+                    return html;
+                }
+            }
+        ]
+    });
 }
 
 function addRow(openCuenta = true) {
@@ -771,12 +762,67 @@ $(document).on('click', '.select-documento', function () {
 });
 
 function buscarExtracto() {
+    if (!documento_extracto) initDatatableExtracto();
     if ($('#combo_nits_'+rowExtracto).val()) {
         let dataNit = $('#combo_nits_'+rowExtracto).select2('data')[0];
         $('#modal-title-documento-extracto').html(dataNit.text);
         $("#modalDocumentoExtracto").modal('show');
-        documento_extracto.ajax.reload(function() {},false);
+
+        documento_extracto.rows().remove().draw();
+
+        $.ajax({
+            url: base_url + 'extracto',
+            method: 'GET',
+            data: {
+                id_cuenta: $('#combo_cuenta_'+rowExtracto).val(),
+                id_nit: $('#combo_nits_'+rowExtracto).val(),
+            },
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            console.log('respuesta: ',res);
+            var documentos = res.data;
+            var dataRowDocumentos = documento_general_table.rows().data();
+
+            for (let index = 0; index < documentos.length; index++) {
+                let documento = documentos[index];
+                if (dataRowDocumentos.length > 1 ) documento = calcularPagosEnCaptura(documento);
+                documento_extracto.row.add(documento).draw();
+            }
+
+
+        }).fail((err) => {
+        });
     }
+}
+
+function calcularPagosEnCaptura (documento) {
+    var dataRowDocumentos = documento_general_table.rows().data();
+    console.log('documento: ',documento);
+    for (let index = 0; index < dataRowDocumentos.length; index++) {
+        const dataRow = dataRowDocumentos[index];
+        
+        if (rowExtracto != dataRow.id) {
+    
+            var id_nit = $('#combo_nits_'+dataRow.id).val();
+            var id_cuenta = $('#combo_cuenta_'+dataRow.id).val();
+            var documento_referencia = $('#documento_referencia_'+dataRow.id).val();
+
+            if (id_nit == documento.id_nit && id_cuenta == $('#combo_cuenta_'+rowExtracto).val() && documento_referencia == documento.documento_referencia ) {
+                console.log('igual: ',dataRow);
+                var totalDebito = $('#debito_'+dataRow.id).val();
+                var totalCredito = $('#credito_'+dataRow.id).val();
+                totalDebito = totalDebito ? parseFloat(totalDebito) : 0;
+                totalCredito = totalCredito ? parseFloat(totalCredito) : 0;
+                documento.capturando = true;
+
+                documento.total_abono = parseFloat(documento.total_abono) + totalDebito + totalCredito;
+                documento.saldo = parseFloat(documento.saldo) - totalDebito - totalCredito;
+            }
+        }
+    }
+
+    return documento;
 }
 
 function setValueConcepto(Idcolumn) {

@@ -60,6 +60,7 @@
 
 <div class="container-fluid py-2">
     <div class="row">
+
         <div class="card mb-4">
             <div class="card-body" style="padding: 0 !important;">
 
@@ -86,6 +87,7 @@
         </div>
         <div id="card-documento-general" class="card mb-4" style="content-visibility: auto; overflow: auto; border-radius: 0px 0px 20px 20px;">
             @include('pages.capturas.documento_general.documento_general-table')
+            <div class="space_documento_general" style="padding: 2px;"></div>
         </div>
         
         @include('pages.capturas.documento_general.documento_general-form')

@@ -154,8 +154,8 @@ function plancuentaInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    if (editarComprobante) html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-plan-cuentas" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
-                    if (eliminarComprobante) html+= '<span id="deleteplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-plan-cuentas" style="margin-bottom: 0rem !important">Eliminar</span>';
+                    if (editarPlanCuenta) html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-plan-cuentas" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
+                    if (eliminarPlanCuenta) html+= '<span id="deleteplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-plan-cuentas" style="margin-bottom: 0rem !important">Eliminar</span>';
                     return html;
                 }
             }

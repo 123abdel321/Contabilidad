@@ -73,7 +73,7 @@
         <div class="card mb-4">
             <div class="card-body" style="padding: 0 !important;">
 
-            @include('pages.capturas.venta.venta-filter')
+                @include('pages.capturas.venta.venta-filter')
 
             </div>
         </div>

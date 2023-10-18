@@ -43,7 +43,7 @@
     <div class="row">
         <div class="row" style="z-index: 9;">
             <div class="col-12 col-md-4 col-sm-4">
-                @can(familias create)
+                @can('familias create')
                     <button type="button" class="btn btn-primary btn-sm" id="createFamilia">Agregar familias</button>
                 @endcan
             </div>
