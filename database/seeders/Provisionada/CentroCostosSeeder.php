@@ -10,13 +10,12 @@ class CentroCostosSeeder extends Seeder
     {
         \DB::table('centro_costos')->truncate();
 
-        \DB::table('centro_costos')->insert(array (
-            0 =>
-            array (
+        \DB::table('centro_costos')->insert([
+            [
                 'id' => 1,
                 'codigo' => '01',
                 'nombre' => 'ADMINISTRACION'
-            ),
-        ));
+            ]
+        ]);
     }
 }

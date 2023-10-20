@@ -35,9 +35,18 @@ class LoginController extends Controller
                 // $user->tokens()->delete();
             }
 
-            $token = $user->createToken("web_token");
+            $plainTextToken = '';
+            if ($user->remember_token) {
+                $plainTextToken = $user->remember_token;
+            } else {
+                $token = $user->createToken("web_token");
+                $plainTextToken = $token->plainTextToken;
+            }
 
-            $empresa = UsuarioEmpresa::where('id_usuario', $user->id)->first();
+            $empresa = UsuarioEmpresa::where('id_usuario', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+                
             $empresaSelect = Empresa::where('id', $empresa->id_empresa)->first();
             
             $user->has_empresa = $empresaSelect->token_db;
@@ -45,7 +54,7 @@ class LoginController extends Controller
 
             return response()->json([
                 'success'=>	true,
-                'access_token' => $token->plainTextToken,
+                'access_token' => $plainTextToken,
                 'token_type' => 'Bearer',
                 'empresa' => $empresaSelect,
                 'notificacion_code' => $empresaSelect->token_db.'_'.$user->id,

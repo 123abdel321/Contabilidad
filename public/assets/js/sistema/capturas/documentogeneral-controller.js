@@ -27,15 +27,6 @@ var $comboComprobante = $('#id_comprobante').select2({
 function documentogeneralInit() {
 
     fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    idDocumento = 0;
-    editandoCaptura = 0;
-    rowExtracto = '';
-    tipo_comprobante = '';
-    validarFactura = null;
-    calcularCabeza = true;
-    askSaveDocumentos = true;
-    documento_general_table = null;
-    documento_extracto = null;
 
     $('#fecha_manual').val(fecha);
 
@@ -262,8 +253,6 @@ function documentogeneralInit() {
         });
     }
 
-    initDatatableExtracto();
-
     if(!$comboComprobante) {
         $comboComprobante = $('#id_comprobante').select2({
             theme: 'bootstrap-5',
@@ -281,14 +270,13 @@ function documentogeneralInit() {
         });
     }
 
-    setTimeout(function(){
-        $comboComprobante.select2("open");
-    },10);
-}
-
-function initDatatableExtracto() {
     documento_extracto = $('#documentoExtractoTable').DataTable({
         dom: '',
+        responsive: false,
+        processing: true,
+        serverSide: false,
+        deferLoading: 0,
+        initialLoad: false,
         autoWidth: true,
         language: lenguajeDatatable,
         ordering: false,
@@ -315,6 +303,48 @@ function initDatatableExtracto() {
             }
         ]
     });
+
+    setTimeout(function(){
+        $comboComprobante.select2("open");
+    },10);
+}
+
+function initDatatableExtracto() {
+    if (!documento_extracto) {
+        documento_extracto = $('#documentoExtractoTable').DataTable({
+            dom: '',
+            autoWidth: true,
+            responsive: false,
+            processing: true,
+            serverSide: true,
+            deferLoading: 0,
+            initialLoad: false,
+            language: lenguajeDatatable,
+            ordering: false,
+            sScrollX: "100%",
+            scrollX: true,
+            fixedColumns : {
+                left: 0,
+                right : 1,
+            },
+            columns: [
+                {"data":'documento_referencia'},
+                {"data":'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                {"data":'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+                {"data":'fecha_manual'},
+                {"data":'dias_cumplidos'},
+                {
+                    "data": function (row, type, set){
+                        var html = '';
+                        if (!row.capturando) html+= '<span href="javascript:void(0)" id="documentoextracto_'+row.documento_referencia+'_'+row.saldo+'" class="btn badge bg-gradient-primary select-documento" style="margin-bottom: 0rem !important">Seleccionar</span>&nbsp;';
+                        else html+= '<span href="javascript:void(0)" class="btn badge bg-gradient-secondary disabled" style="margin-bottom: 0rem !important">Capturando</span>&nbsp;'
+                        return html;
+                    }
+                }
+            ]
+        });
+    }
 }
 
 function addRow(openCuenta = true) {
@@ -1261,30 +1291,20 @@ function totalValores() {
     return [debito, credito];
 }
 
-$(document).on('click', '#crearCapturaDocumentos', function () {
-
-    var debito = 0;
-    var credito = 0;
-    var diferencia = 0;
-
-    var dataDocumento = documento_general_table.rows().data();
+// $(document).on('click', '#crearCapturaDocumentos', function () {
     
-    if(dataDocumento.length > 0) {
-        for (let index = 0; index < dataDocumento.length; index++) {
-            var deb = $('#debito_'+index).val();
-            var cre = $('#credito_'+index).val();
-            debito+= parseInt(deb ? deb : 0);
-            credito+= parseInt(cre ? cre : 0);
-        }
-    }
+// });
 
-    diferencia = debito - credito;
+function capturarDcoumentosGenerales() {
+    
+    var [debito, credito] = totalValores();
+    var diferencia = debito - credito;
 
     var texto = 'Desea guardar documento en la tabla?';
     var type = 'question';
 
     if (!capturarDocumentosDescuadrados && diferencia != 0) {
-        agregarToast('warning', 'Creación errada', 'Documentos descuadrados', true);
+        agregarToast('warning', 'Documentos descuadrados', 'Para guardarlos debe activar la opción en Configuración > Empresa "Capturar documentos descuadrados".', false);
         return;
     }
 
@@ -1297,6 +1317,7 @@ $(document).on('click', '#crearCapturaDocumentos', function () {
     }
     
     if(askSaveDocumentos) {
+
         Swal.fire({
             title: 'Guardar documento?',
             text: texto,
@@ -1314,8 +1335,7 @@ $(document).on('click', '#crearCapturaDocumentos', function () {
         askSaveDocumentos = true;
         saveDocumentos();
     }
-
-});
+}
 
 function saveDocumentos() {
     $("#agregarDocumentos").hide();
@@ -1388,22 +1408,24 @@ function saveDocumentos() {
 }
 
 function getDocumentos(){
+    
     var data = [];
 
     var dataDocumento = documento_general_table.rows().data();
     if(dataDocumento.length > 0){
         for (let index = 0; index < dataDocumento.length; index++) {
+            var idDocumento = dataDocumento[index].id;
             
-            var debito = $('#debito_'+index).val();
-            var credito = $('#credito_'+index).val();
+            var debito = $('#debito_'+idDocumento).val();
+            var credito = $('#credito_'+idDocumento).val();
 
             if(debito || credito) {
 
-                var dctrf = $('#documento_referencia_'+index).val();
-                var concepto = $('#concepto_'+index).val();
-                var cuenta = $('#combo_cuenta_'+index).val();
-                var nit = $('#combo_nits_'+index).val();
-                var cecos = $('#combo_cecos_'+index).val();
+                var dctrf = $('#documento_referencia_'+idDocumento).val();
+                var concepto = $('#concepto_'+idDocumento).val();
+                var cuenta = $('#combo_cuenta_'+idDocumento).val();
+                var nit = $('#combo_nits_'+idDocumento).val();
+                var cecos = $('#combo_cecos_'+idDocumento).val();
 
                 data.push({
                     id_cuenta: cuenta ? parseInt(cuenta) : '',
