@@ -5,7 +5,6 @@
                 <h5 class="modal-title" id="textDocumentoFormCreate" style="display: none;">Agregar documento</h5>
                 <h5 class="modal-title" id="textDocumentoFormUpdate" style="display: none;">Editar documento</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">

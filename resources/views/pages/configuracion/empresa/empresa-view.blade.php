@@ -27,7 +27,11 @@
             <div class="row justify-content-center align-items-center">
                 <div class="col-sm-auto col-4">
                     <div class="avatar avatar-xl position-relative">
-                        <img src="https://bucketlistardatos.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}" alt="bruce" class="w-100">
+                        @if ($empresa->logo)
+                            <img src="https://bucketlistardatos.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}" alt="bruce" class="w-100">
+                        @else
+                            <img src="/img/logo_contabilidad.png" alt="bruce" class="w-100">
+                        @endif
                     </div>
                 </div>
                 <div class="col-sm-auto col-8 my-auto">

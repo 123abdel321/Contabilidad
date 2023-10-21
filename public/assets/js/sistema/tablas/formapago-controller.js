@@ -189,7 +189,7 @@ function formapagoInit() {
         }
     });
 
-    let column = formaspago_table.column(7);
+    let column = formaspago_table.column(5);
 
     if (!editarFormaPago && !eliminarFormaPago) column.visible(false);
     else column.visible(true);

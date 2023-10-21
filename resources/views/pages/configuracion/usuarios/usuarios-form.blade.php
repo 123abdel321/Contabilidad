@@ -5,7 +5,6 @@
                 <h5 class="modal-title" id="textUsuariosCreate" style="display: none;">Agregar usuario</h5>
                 <h5 class="modal-title" id="textUsuariosUpdate" style="display: none;">Editar usuario</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">

@@ -5,7 +5,6 @@
                 <h5 class="modal-title" id="textPlanCuentaCreate" style="display: none;">Agregar cuenta</h5>
                 <h5 class="modal-title" id="textPlanCuentaUpdate" style="display: none;">Editar cuenta</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">

@@ -82,7 +82,11 @@ $(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownErr
 
 $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
 $("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
-$("#side_main_logo").attr('src', bucketUrl+localStorage.getItem("empresa_logo"));
+if (localStorage.getItem("empresa_logo") == 'null') {
+    $("#side_main_logo").attr('src', '/img/logo_contabilidad.png');
+} else{ 
+    $("#side_main_logo").attr('src', bucketUrl+localStorage.getItem("empresa_logo"));
+}
 
 if (iconNavbarSidenavMaximo) {
     iconNavbarSidenavMaximo.addEventListener("click", toggleSidenavMaximo);
@@ -364,8 +368,10 @@ const lenguajeDatatable = {
 }
 
 $("#button-login").click(function(event){
+    
     $("#button-login-loading").show();
     $("#button-login").hide();
+
     $.ajax({
         url: base_web + 'login',
         headers: {
@@ -375,6 +381,7 @@ $("#button-login").click(function(event){
         data: {
             "email": $('#email_login').val(),
             "password": $('#password_login').val(),
+            "_token": $('meta[name="csrf-token"]').attr('content'),
         },
         dataType: 'json',
     }).done((res) => {

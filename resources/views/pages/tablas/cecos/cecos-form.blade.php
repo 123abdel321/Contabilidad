@@ -5,7 +5,6 @@
                 <h5 class="modal-title" id="textCecosCreate" style="display: none;">Agregar centros costros</h5>
                 <h5 class="modal-title" id="textCecosUpdate" style="display: none;">Editar centros costros</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">

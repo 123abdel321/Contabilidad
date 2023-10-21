@@ -192,7 +192,7 @@ class InstaladorController extends Controller
 			'fecha_inicio_suscripcion' => '',
 			'fecha_inicio_facturacion' => '',
 			'fecha_siguiente_pago' => '',
-			'estado' => '',
+			'estado' => 1,
 			'duracion' => '',
 			'precio' => '',
 			'descuento' => '',

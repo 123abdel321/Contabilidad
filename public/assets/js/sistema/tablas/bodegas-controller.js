@@ -59,9 +59,9 @@ function bodegasInit() {
         ]
     });
 
-    let column = bodegas_table.column(18);
+    let column = bodegas_table.column(6);
     
-    if (!editarFamilias && !eliminarFamilias) column.visible(false);
+    if (!editarBodegas && !eliminarBodegas) column.visible(false);
     else column.visible(true);
 
     if(bodegas_table) {

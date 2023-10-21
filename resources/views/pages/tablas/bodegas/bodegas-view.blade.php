@@ -3,7 +3,7 @@
         <div class="row" style="z-index: 9;">
             <div class="row" style="z-index: 9;">
                 <div class="col-12 col-md-6 col-sm-6">
-                    @can(bodegas create)
+                    @can('bodegas create')
                         <button type="button" class="btn btn-primary btn-sm" id="createBodega">Agregar bodegas</button>
                     @endcan
                 </div>

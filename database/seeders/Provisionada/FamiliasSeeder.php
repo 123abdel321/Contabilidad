@@ -32,7 +32,7 @@ class FamiliasSeeder extends Seeder
                 'id_cuenta_costos' => '82'
             ],
             [
-                'id' => 1,
+                'id' => 2,
                 'codigo' => '50',
                 'nombre' => 'SERVICIOS',
                 'inventario' => '1',
