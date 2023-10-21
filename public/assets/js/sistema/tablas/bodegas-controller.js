@@ -59,6 +59,11 @@ function bodegasInit() {
         ]
     });
 
+    let column = bodegas_table.column(6);
+    
+    if (!editarBodegas && !eliminarBodegas) column.visible(false);
+    else column.visible(true);
+
     if(bodegas_table) {
         //EDITAR BODEGAS
         bodegas_table.on('click', '.edit-bodegas', function() {

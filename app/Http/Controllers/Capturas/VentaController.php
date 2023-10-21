@@ -151,13 +151,13 @@ class VentaController extends Controller
                     ->where('id_producto', $producto->id_producto)
                     ->first();
 
-                if ($bodegaProducto && $producto->cantidad > $bodegaProducto->cantidad) {
+                if ($productoDb->familia->inventario && $bodegaProducto && $producto->cantidad > $bodegaProducto->cantidad) {
 
                     DB::connection('sam')->rollback();
                     return response()->json([
                         "success"=>false,
                         'data' => [],
-                        "message"=> ['Cantidad bodega' => ['La cantidad del producto'.$productoDb->codigo. ' - ' .$productoDb->nombre. ' supera la cantidad en bodega']]
+                        "message"=> ['Cantidad bodega' => ['La cantidad del producto '.$productoDb->codigo. ' - ' .$productoDb->nombre. ' supera la cantidad en bodega']]
                     ], 422);
                 }
 
@@ -219,25 +219,25 @@ class VentaController extends Controller
                     ->where('id_producto', $producto->id_producto)
                     ->first();
 
+                $movimiento = new FacProductosBodegasMovimiento([
+                    'id_producto' => $producto->id_producto,
+                    'id_bodega' => $venta->id_bodega,
+                    'cantidad_anterior' => $bodegaProducto->cantidad,
+                    'cantidad' => $producto->cantidad,
+                    'tipo_tranferencia' => 2,
+                    'inventario' => $productoDb->familia->inventario ? 1 : 0,
+                    'created_by' => request()->user()->id,
+                    'updated_by' => request()->user()->id
+                ]);
+
                 if ($bodegaProducto && $productoDb->familia->inventario) {
-
-                    $movimiento = new FacProductosBodegasMovimiento([
-                        'id_producto' => $producto->id_producto,
-                        'id_bodega' => $venta->id_bodega,
-                        'cantidad_anterior' => $bodegaProducto->cantidad,
-                        'cantidad' => $producto->cantidad,
-                        'tipo_tranferencia' => 2,
-                        'created_by' => request()->user()->id,
-                        'updated_by' => request()->user()->id
-                    ]);
-
                     $bodegaProducto->updated_by = request()->user()->id;
                     $bodegaProducto->cantidad-= $producto->cantidad;
                     $bodegaProducto->save();
-
-                    $movimiento->relation()->associate($venta);
-                    $venta->bodegas()->save($movimiento);
                 }
+
+                $movimiento->relation()->associate($venta);
+                $venta->bodegas()->save($movimiento);
             }
 
             //AGREGAR RETE FUENTE

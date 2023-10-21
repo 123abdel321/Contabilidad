@@ -62,6 +62,12 @@ class DocumentosPdf extends AbstractPrinterPdf
 			$calcularTotal = true;
 		}
 
+		$nombre_usuario = 'PROVEEDOR';
+
+		if ($this->factura->comprobante->tipo_comprobante == 0 || $this->factura->comprobante->tipo_comprobante == 3) {
+			$nombre_usuario = 'CLIENTE';
+		}
+
 		foreach ($this->factura->documentos as $documento) {
 			//AGREGAR SALDO A CUENTAS CON DOCUMENTO DE REFENCIA
 			if($documento->documento_referencia) {
@@ -135,7 +141,8 @@ class DocumentosPdf extends AbstractPrinterPdf
 			'documentos' => $documentos,
 			'observacion' => $observacion,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
-			'total_factura' => number_format($totalFactura)
+			'total_factura' => number_format($totalFactura),
+			'nombre_usuario' => $nombre_usuario,
 		];
 	}
 

@@ -48,40 +48,40 @@ class ProcessProvisionedDatabase implements ShouldQueue
 
         try {
 			$countDbPending = BaseDatosProvisionada::where('estado', 0)->count();
-
+			
 			if ($countDbPending > config('db-provisioned.quantity', 10)) {
-				throw new Exception("Se ha excedido el límite de bases de datos provisionadas en proceso. Bases de datos en proces: $countDbPending");
+				Log::error("Se ha excedido el límite de bases de datos provisionadas en proceso. Bases de datos en proces: $countDbPending");
+				return;
 			}
-
-			createDatabase($this->dbName);
 
 			$dbProvisionada = (new BaseDatosProvisionada())->setConnection('clientes')->create([
 				'hash' => $this->dbName,
 				'estado' => 0
 			]);
 
+			createDatabase($this->dbName);
+
 			if (!dbExists($this->dbName)) {
 				Log::error("La base de datos {$this->dbName} ya existe");
-
 				return;
 			}
 
 			if (!config('database.connections.' . $this->connectionName)) {
-				copyDBConnection('clientes', $this->connectionName);
+				copyDBConnection('sam', $this->dbName);
 			}
 
-			setDBInConnection($this->connectionName, $this->dbName);
+			setDBInConnection('sam', $this->dbName);
 
 			Artisan::call('migrate', [
 				'--force' => true,
 				'--path' => 'database/migrations/sistema',
-				'--database' => $this->connectionName
+				'--database' => 'sam'
 			]);
 
 			Artisan::call('db:seed', [
 				'--force' => true,
-				'--database' => $this->connectionName,
-				'--class' => ProvisionadaSeeder::class
+				'--class' => ProvisionadaSeeder::class,
+				'--database' => 'sam'
 			]);
 
 			$dbProvisionada->estado = 1;
@@ -93,6 +93,7 @@ class ProcessProvisionedDatabase implements ShouldQueue
 				$this->instalarEmpresa($this->idEmpresa);
 			}
 			
+			return $this->dbName;
 		} catch (Exception $exception) {
 			Log::error('Error al generar base de datos provisionada', ['message' => $exception->getMessage()]);
 

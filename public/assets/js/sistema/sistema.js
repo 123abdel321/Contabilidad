@@ -41,6 +41,7 @@ var moduloCreado = {
     'compras': false,
     'ventas': false,
     'usuarios': false,
+    'empresa': false,
 };
 
 var moduloRoute = {
@@ -62,7 +63,8 @@ var moduloRoute = {
     'compra': 'capturas',
     'ventas': 'informes',
     'venta': 'capturas',
-    'usuarios': 'configuracion'
+    'usuarios': 'configuracion',
+    'empresa': 'configuracion'
 }
 
 $('.water').show();
@@ -80,7 +82,11 @@ $(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownErr
 
 $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
 $("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
-$("#side_main_logo").attr('src', bucketUrl+localStorage.getItem("empresa_logo"));
+if (localStorage.getItem("empresa_logo") == 'null') {
+    $("#side_main_logo").attr('src', '/img/logo_contabilidad.png');
+} else{ 
+    $("#side_main_logo").attr('src', bucketUrl+localStorage.getItem("empresa_logo"));
+}
 
 if (iconNavbarSidenavMaximo) {
     iconNavbarSidenavMaximo.addEventListener("click", toggleSidenavMaximo);
@@ -192,6 +198,8 @@ function seleccionarView(id){
         nombre = 'Captura ventas';
     } else if(id == 'usuarios') {
         nombre = 'Usuarios';
+    } else if(id == 'empresa') {
+        nombre = 'Empresa';
     }
 
     $("#titulo-view").text(nombre);
@@ -262,6 +270,9 @@ function generateNewTabButton(id){
     } else if (id == 'usuarios') {
         icon = 'fas fa-cog';
         nombre = 'Usuarios';
+    } else if (id == 'empresa') {
+        icon = 'fas fa-cog';
+        nombre = 'Empresa';
     }
 
     var html = '';
@@ -357,8 +368,10 @@ const lenguajeDatatable = {
 }
 
 $("#button-login").click(function(event){
+    
     $("#button-login-loading").show();
     $("#button-login").hide();
+
     $.ajax({
         url: base_web + 'login',
         headers: {
@@ -368,6 +381,7 @@ $("#button-login").click(function(event){
         data: {
             "email": $('#email_login').val(),
             "password": $('#password_login').val(),
+            "_token": $('meta[name="csrf-token"]').attr('content'),
         },
         dataType: 'json',
     }).done((res) => {

@@ -87,14 +87,16 @@
     <div class="row">
         <div class="row" style="z-index: 9;">
             <div class="col-12 col-md-9 col-sm-9">
-                <button type="button" class="btn btn-primary btn-sm" id="createProducto">Agregar producto</button>
-                <button type="button" class="btn btn-info btn-sm" id="saveNewProducto"  style="display: none; margin-right: 10px;">Guardar producto</button>
-                <button type="button" class="btn btn-info btn-sm" id="saveEditProducto"  style="display: none; margin-right: 10px;">Actualizar producto</button>
-                <button id="saveNewProductoLoading" class="btn btn-success btn-sm ms-auto" style="display:none; float: left; opacity: 1;" disabled>
-                    Creando producto
-                    <i class="fas fa-spinner fa-spin"></i>
-                </button>
-                <button type="button" class="btn btn-danger btn-sm" id="cancelProducto" style="display: none;">Cancelar producto</button>
+                @can('productos create')
+                    <button type="button" class="btn btn-primary btn-sm" id="createProducto">Agregar producto</button>
+                    <button type="button" class="btn btn-info btn-sm" id="saveNewProducto"  style="display: none; margin-right: 10px;">Guardar producto</button>
+                    <button type="button" class="btn btn-info btn-sm" id="saveEditProducto"  style="display: none; margin-right: 10px;">Actualizar producto</button>
+                    <button id="saveNewProductoLoading" class="btn btn-success btn-sm ms-auto" style="display:none; float: left; opacity: 1;" disabled>
+                        Creando producto
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm" id="cancelProducto" style="display: none;">Cancelar producto</button>
+                @endcan
             </div>
             <div class="col-12 col-md-3 col-sm-3">
                 <input type="text" id="searchInputProductos" class="form-control form-control-sm search-table" placeholder="Buscar">
@@ -123,4 +125,6 @@
 
 <script>
     var primeraBodegas = JSON.parse('<?php echo $bodegas; ?>');
+    var editarProductos = '<?php echo auth()->user()->can('productos update'); ?>';
+    var eliminarProductos = '<?php echo auth()->user()->can('productos delete'); ?>';
 </script>

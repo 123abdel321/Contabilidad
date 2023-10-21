@@ -159,7 +159,7 @@
 								</td>
 								
 								<td class="logo padding5">
-									<img src="{{ $empresa->logo }}">
+									<img stype="position: absolute;" src="https://bucketlistardatos.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}">
 								</td>
 							</tr>
 						</table>
@@ -182,7 +182,7 @@
 									<table>
 										<thead>
 											<tr>
-												<th colspan="2" class="header-total padding5">CLIENTE</th>
+												<th colspan="2" class="header-total padding5">{{ $nombre_usuario }}</th>
 											</tr>
 										</thead>
 										<tbody>

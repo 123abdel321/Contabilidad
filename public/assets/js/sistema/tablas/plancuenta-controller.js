@@ -154,8 +154,8 @@ function plancuentaInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-plan-cuentas" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
-                    html+= '<span id="deleteplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-plan-cuentas" style="margin-bottom: 0rem !important">Eliminar</span>';
+                    if (editarPlanCuenta) html+= '<span id="editplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-plan-cuentas" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
+                    if (eliminarPlanCuenta) html+= '<span id="deleteplancuentas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-plan-cuentas" style="margin-bottom: 0rem !important">Eliminar</span>';
                     return html;
                 }
             }
@@ -296,6 +296,11 @@ function plancuentaInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#planCuentaFormModal'),
     });
+
+    let column = plan_cuentas_table.column(13);
+
+    if (!editarPlanCuenta && !eliminarPlanCuenta) column.visible(false);
+    else column.visible(true);
 
     $('.water').hide();
     plan_cuentas_table.ajax.reload();

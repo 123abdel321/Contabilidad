@@ -5,7 +5,6 @@
                 <h5 class="modal-title" id="textNitCreate" style="display: none;">Agregar Cedulas nit</h5>
                 <h5 class="modal-title" id="textNitUpdate" style="display: none;">Editar Cedulas nit</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">

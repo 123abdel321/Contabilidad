@@ -44,6 +44,7 @@ class DBProvisionedGenerator extends Command
         $dbProvisionadas = BaseDatosProvisionada::available()
 			->orWhere('estado', 0)
 			->count();
+
         $qty = config('db-provisioned.quantity');
 
         if ($this->option('quantity') || $this->option('now')) {
@@ -71,7 +72,7 @@ class DBProvisionedGenerator extends Command
 			exit(3);
 		}
 
-        $newDBs = "";
+        $newDBs = [];
 
 		if ($this->option('now')) {
 			$this->info('inicio: ' . date('Y-m-d H:i:s'));
@@ -80,18 +81,18 @@ class DBProvisionedGenerator extends Command
 
         for ($i = 0; $i < $qty; $i++) {
 			if ($this->option('now')) {
-				ProcessProvisionedDatabase::dispatchSync();
+				$newDBs[] = ProcessProvisionedDatabase::dispatchSync();
 			} else {
 				ProcessProvisionedDatabase::dispatch();
 			}
 		}
 
         if ($this->option('now')) {
-			// $this->info('bases de datos generadas...');
+			$this->info('bases de datos generadas...');
 
-            // $this->info($newDBs);
-			// foreach ($newDBs as $idx => $dbName) {
-			// }
+            foreach ($newDBs as $idx => $dbName) {
+				$this->info("\t" . $idx . '. ' . $dbName);
+			}
 
 			$this->info('fin: ' . date('Y-m-d H:i:s'));
 		}

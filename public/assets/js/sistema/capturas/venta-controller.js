@@ -107,49 +107,70 @@ function ventaInit () {
                 });
             });
 
-            function formatProducto (repo) {
+            function formatProducto (producto) {
+                if (producto.loading) return producto.text;
 
-                if (repo.loading) return repo.text;
-
-                var urlImagen = repo.imagen ?
-                    bucketUrl+repo.imagen :
+                var urlImagen = producto.imagen ?
+                    bucketUrl+producto.imagen :
                     '/img/sin_imagen.png';
 
-                var inventario = repo.inventarios.length > 0 ? 
-                    repo.inventarios[0].cantidad+' Existencias' :
+                var inventario = producto.inventarios.length > 0 ? 
+                    producto.inventarios[0].cantidad+' Existencias' :
                     'Sin inventario';
 
-                var color = repo.inventarios.length > 0 ?
-                    repo.inventarios[0].cantidad <= 0 ? 
+                var color = producto.inventarios.length > 0 ?
+                    producto.inventarios[0].cantidad <= 0 ? 
                     '#a30000' : '#1c4587' :
                     '#838383';
 
-                var $container = $(`
-                    <div class="row">
-                        <div class="col-3" style="display: flex; justify-content: center; align-items: center; padding-left: 0px;">
-                            <img
-                                style="width: 40px; border-radius: 10%;"
-                                src="${urlImagen}" />
-                        </div>
-                        <div class="col-9" style="padding-left: 0px !important">
-                            <div class="row">
-                                <div class="col-12" style="padding-left: 0px !important">
-                                    <h6 style="font-size: 14px; margin-bottom: 0px; color: black;">${repo.text}</h6>
-                                </div>
-                                <div class="col-12" style="padding-left: 0px !important">
-                                    <i class="fas fa-box-open" style="font-size: 11px; color: ${color};"></i>
-                                    ${inventario}
+                var $container = '';
+
+                if (producto.familia.inventario) {
+                    var $container = $(`
+                        <div class="row">
+                            <div class="col-3" style="display: flex; justify-content: center; align-items: center; padding-left: 0px;">
+                                <img
+                                    style="width: 40px; border-radius: 10%;"
+                                    src="${urlImagen}" />
+                            </div>
+                            <div class="col-9" style="padding-left: 0px !important">
+                                <div class="row">
+                                    <div class="col-12" style="padding-left: 0px !important">
+                                        <h6 style="font-size: 14px; margin-bottom: 0px; color: black;">${producto.text}</h6>
+                                    </div>
+                                    <div class="col-12" style="padding-left: 0px !important">
+                                        <i class="fas fa-box-open" style="font-size: 11px; color: ${color};"></i>
+                                        ${inventario}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `);
+                    `);
+                } else {
+                    var $container = $(`
+                        <div class="row">
+                            <div class="col-3" style="display: flex; justify-content: center; align-items: center; padding-left: 0px;">
+                                <img
+                                    style="width: 40px; border-radius: 10%;"
+                                    src="${urlImagen}" />
+                            </div>
+                            <div class="col-9" style="padding-left: 0px !important">
+                                <div class="row">
+                                    <div class="col-12" style="padding-left: 0px !important">
+                                        <h6 style="font-size: 14px; margin-bottom: 0px; color: black;">${producto.text}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                }
+
 
                 return $container;
             }
 
-            function formatRepoSelection (repo) {
-                return repo.full_name || repo.text;
+            function formatRepoSelection (producto) {
+                return producto.full_name || producto.text;
             }
         }
     });
@@ -173,7 +194,7 @@ function ventaInit () {
         columns: [
             {"data":'nombre'},
             {"data": function (row, type, set){
-                return `<input type="number" class="form-control form-control-sm" style="min-width: 100px;" value="0" onfocus="focusFormaPago(${row.id})" onfocusout="calcularVentaPagos(${row.id})" id="venta_forma_pago_${row.id}">`;
+                return `<input type="number" class="form-control form-control-sm" style="min-width: 100px;" value="0" onfocus="focusFormaPago(${row.id})" onfocusout="calcularVentaPagos(${row.id})" onkeypress="changeFormaPago(${row.id}, event)" id="venta_forma_pago_${row.id}">`;
             }},
         ],
     });
@@ -508,7 +529,7 @@ function totalValoresVentas() {
         $("#crearCapturaVentaDisabled").show();
     }
 
-    return [iva, retencion, descuento, total, valorBruto];
+    return [iva, retencion, descuento, total+iva, valorBruto];
 }
 
 function changeProductoVenta (idRow) {
@@ -516,10 +537,14 @@ function changeProductoVenta (idRow) {
 
     if (data.length == 0) return
     
-    if (data.inventarios.length > 0) {
+    if (data.inventarios.length > 0 && data.familia.inventario) {
         var totalInventario = parseFloat(data.inventarios[0].cantidad);
         $("#venta_existencia_"+idRow).val(totalInventario);
         $("#venta_cantidad_"+idRow).attr({"max" : totalInventario});
+    }
+
+    if (data.familia.cuenta_venta_iva && data.familia.cuenta_venta_iva.impuesto) {
+        $('#venta_iva_porcentaje_'+idRow).val(data.familia.cuenta_venta_iva.impuesto.porcentaje);
     }
 
     if (data.familia.cuenta_venta_retencion && data.familia.cuenta_venta_retencion.impuesto) {
@@ -558,11 +583,13 @@ function changeProductoVenta (idRow) {
 function CantidadVentakeyDown (idRow, event) {
     if(event.keyCode == 13){
 
-        var dataProductos = $('#venta_producto_'+idRow).select2("data");
-        var existencias = $('#venta_existencia_'+idRow).val();
-        var cantidad = $('#venta_cantidad_'+idRow).val();
-
-        if (dataProductos[0].inventarios.length > 0 && cantidad > existencias) {
+        var dataProductos = $('#venta_producto_'+idRow).select2("data")[0];
+        var existencias = parseInt($('#venta_existencia_'+idRow).val());
+        var cantidad = parseInt($('#venta_cantidad_'+idRow).val());
+        console.log('existencias: ',existencias);
+        console.log('cantidad: ',cantidad);
+        if (cantidad > existencias) {
+            console.log('if');
             $('#venta_cantidad_'+idRow).val(existencias);
             setTimeout(function(){
                 $('#venta_cantidad_'+idRow).focus();
@@ -570,11 +597,9 @@ function CantidadVentakeyDown (idRow, event) {
             },10);
 
         } else {
+            console.log('else');
             calcularProductoVenta(idRow);
-            setTimeout(function(){
-                $('#venta_costo_'+idRow).focus();
-                $('#venta_costo_'+idRow).select();
-            },10);
+            addRowProductoVenta();
         }
     }
 }
@@ -679,31 +704,36 @@ function focusFormaPago(idFormaPago) {
 function calcularVentaPagos(idFormaPago) {
     $('#total_faltante_venta').removeClass("is-invalid");
 
-    var [iva, retencion, descuento, total] = totalValoresVentas();
-    var totalVentaPagos = totalFormasPagoVentas();
-    
-    if (totalVentaPagos > total) {
-        var totalFaltanteActual = $('#total_faltante_venta').val();
-        $('#venta_forma_pago_'+idFormaPago).val(totalFaltanteActual);
+    var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
+    var [totalEfectivo, totalOtrosPagos] = totalFormasPagoVentas();
+    var totalFaltante = total - (totalEfectivo + totalOtrosPagos);
+
+    if ((totalEfectivo + totalOtrosPagos) > total) {
+        $('#venta_forma_pago_'+idFormaPago).val(totalFaltante < 0 ? 0 : totalFaltante);
         $('#venta_forma_pago_'+idFormaPago).select();
     } else {
-        $('#total_pagado_venta').val(totalVentaPagos);
-        $('#total_faltante_venta').val(total - totalVentaPagos);
+        $('#total_pagado_venta').val(totalEfectivo + totalOtrosPagos);
+        $('#total_faltante_venta').val(totalFaltante < 0 ? 0 : totalFaltante);
     }
 }
 
 function totalFormasPagoVentas() {
-    var totalPago = 0;
+    var totalEfectivo = 0;
+    var totalOtrosPagos = 0;
+
     var dataPagoVenta = venta_table_pagos.rows().data();
 
     if(dataPagoVenta.length > 0) {
         for (let index = 0; index < dataPagoVenta.length; index++) {
+
             var ventaPago = parseFloat($('#venta_forma_pago_'+dataPagoVenta[index].id).val());
-            totalPago+= ventaPago;
+
+            if (dataPagoVenta[index].id == 1) totalEfectivo+= ventaPago;
+            else totalOtrosPagos+= ventaPago;
         }
     }
 
-    return totalPago;
+    return [totalEfectivo, totalOtrosPagos];
 }
 
 $(document).on('click', '#saveVenta', function () {
@@ -853,4 +883,11 @@ function getProductosVenta() {
     }
 
     return data;
+}
+
+function changeFormaPago(idFormaPago, event) {
+    console.log('changeFormaPago: ',idFormaPago);
+    if(event.keyCode == 13){
+        calcularVentaPagos(idFormaPago)
+    }
 }

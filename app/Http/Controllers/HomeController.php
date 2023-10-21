@@ -42,6 +42,12 @@ class HomeController extends Controller
             ->where('estado', 1)
             ->with('padre')
             ->get();
+
+        foreach ($menus as $key => $menu) {
+            if ($menu->code_name && !$request->user()->hasPermissionTo($menu->code_name.' read')) {
+                unset($menus[$key]);
+            }
+        }
         
         $data = [
             'menus' => $menus->groupBy('id_padre')

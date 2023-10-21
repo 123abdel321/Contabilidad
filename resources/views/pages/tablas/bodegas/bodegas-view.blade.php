@@ -3,7 +3,9 @@
         <div class="row" style="z-index: 9;">
             <div class="row" style="z-index: 9;">
                 <div class="col-12 col-md-6 col-sm-6">
-                    <button type="button" class="btn btn-primary btn-sm" id="createBodega">Agregar bodegas</button>
+                    @can('bodegas create')
+                        <button type="button" class="btn btn-primary btn-sm" id="createBodega">Agregar bodegas</button>
+                    @endcan
                 </div>
                 <div class="col-12 col-md-6 col-sm-6">
                     <input type="text" id="searchInput" class="form-control form-control-sm search-table" placeholder="Buscar">
@@ -24,3 +26,8 @@
     @include('pages.tablas.bodegas.bodegas-form')
     
 </div>
+
+<script>
+    var editarBodegas = '<?php echo auth()->user()->can('bodegas update'); ?>';
+    var eliminarBodegas = '<?php echo auth()->user()->can('bodegas delete'); ?>';
+</script>

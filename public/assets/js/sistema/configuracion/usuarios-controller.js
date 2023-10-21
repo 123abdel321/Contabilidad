@@ -1,4 +1,5 @@
 var usuarios_table = null;
+var permisosUsuarios = [];
 var $comboBodegaUsuario = null;
 var $comboResolucionUsuario = null;
 
@@ -53,12 +54,17 @@ function usuariosInit() {
                 "data": function (row, type, set){
                     var html = '';
                     html+= '<span id="editusuarios_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-usuarios" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
-                    // html+= '<span id="deleteusuarios_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-usuarios" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    // if (eliminarUsuarios) html+= '<span id="deleteusuarios_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-usuarios" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }
             },
         ]
     });
+
+    let column = usuarios_table.column(8);
+    
+    if (!editarUsuarios && !eliminarUsuarios) column.visible(false);
+    else column.visible(true);
 
     if (usuarios_table) {
         usuarios_table.on('click', '.edit-usuarios', function() {
@@ -70,18 +76,23 @@ function usuariosInit() {
 
             var id = this.id.split('_')[1];
             var data = getDataById(id, usuarios_table);
-
-            console.log(data.ids_bodegas_responsable);
-            console.log(data.ids_bodegas_responsable.split(','));
     
             $("#id_usuarios_up").val(data.id);
             $("#usuario").val(data.username);
-            $("#email").val(data.email);
-            $("#firstname").val(data.firstname);
-            $("#lastname").val(data.lastname);
-            $("#address").val(data.address);
+            $("#email_usuario").val(data.email);
+            $("#firstname_usuario").val(data.firstname);
+            $("#lastname_usuario").val(data.lastname);
+            $("#address_usuario").val(data.address);
             $("#id_bodega_usuario").val(data.ids_bodegas_responsable.split(',')).change();
             $("#id_resolucion_usuario").val(data.ids_resolucion_responsable.split(',')).change();
+
+            clearPermisos();
+
+            data.permissions.forEach(permiso => {
+                var nombrePermisoSplit = permiso.name.split(' ');
+                var nombrePermiso = nombrePermisoSplit[0]+'_'+nombrePermisoSplit[1];
+                $('#'+nombrePermiso).prop('checked', true);
+            });
     
             $("#usuariosFormModal").modal('show');
         });
@@ -96,6 +107,26 @@ function usuariosInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#usuariosFormModal'),
     });
+
+    if (componentesMenu.length > 0) {
+        for (let i = 0; i < componentesMenu.length; i++) {
+            const componente = componentesMenu[i];
+            for (let j = 0; j < componente.menus.length; j++) {
+                const menu = componente.menus[j];
+                if (menu.permisos.length > 0) {
+                    for (let k = 0; k < menu.permisos.length; k++) {
+                        const permiso = menu.permisos[k];
+                        var permisoNombre = permiso.name.split(' ');
+                        permisosUsuarios.push({
+                            name: permisoNombre[0]+'_'+permisoNombre[1],
+                            id_permiso: permiso.id,
+                            value: false
+                        });
+                    }
+                }
+            }
+        }
+    }
 
     $('.water').hide();
     usuarios_table.ajax.reload();
@@ -120,15 +151,15 @@ function clearFormUsuarios(){
 
     $("#id_usuarios_up").val('');
     $("#usuario").val('');
-    $("#email").val('');
-    $("#firstname").val('');
-    $("#lastname").val('');
-    $("#address").val('');
+    $("#email_usuario").val('');
+    $("#firstname_usuario").val('');
+    $("#lastname_usuario").val('');
+    $("#address_usuario").val('');
     $("#password_usuario").val('');
     $("#id_bodega_usuario").val('').change();
     $("#id_resolucion_usuario").val('').change();
     $("#password_confirm").val('');
-    $("#telefono").val('');
+    $("#telefono_usuario").val('');
 }
 
 $(document).on('click', '#saveUsuarios', function () {
@@ -139,22 +170,35 @@ $(document).on('click', '#saveUsuarios', function () {
         return;
     }
 
+    var contrasena = $("#password_usuario").val();
+    var confirmarContrasena = $("#password_confirm").val();
+
+    if (contrasena != confirmarContrasena) {
+        $('#password_confirm').removeClass("is-valid");
+        $('#password_confirm').addClass("is-invalid");
+        return;
+    } else {
+        $('#password_confirm').addClass("is-valid");
+        $('#password_confirm').removeClass("is-invalid");
+    }
+
     $("#saveUsuariosLoading").show();
     $("#updateUsuarios").hide();
     $("#saveUsuarios").hide();
 
     let data = {
         usuario: $("#usuario").val(),
-        email: $("#email").val(),
-        firstname: $("#firstname").val(),
-        lastname: $("#lastname").val(),
-        address: $("#address").val(),
+        email: $("#email_usuario").val(),
+        firstname: $("#firstname_usuario").val(),
+        lastname: $("#lastname_usuario").val(),
+        address: $("#address_usuario").val(),
         password: $("#password_usuario").val(),
-        telefono: $("#telefono").val(),
+        telefono: $("#telefono_usuario").val(),
         id_bodega: $("#id_bodega_usuario").val(),
         id_resolucion: $("#id_resolucion_usuario").val(),
         facturacion_rapida: $("input[type='checkbox']#facturacion_rapida").is(':checked') ? '1' : '',
         rol_usuario: $("#rol_usuario").val(),
+        permisos: getPermisos(permisosUsuarios)
     }
 
     $.ajax({
@@ -201,6 +245,19 @@ $(document).on('click', '#updateUsuarios', function () {
         return;
     }
 
+    var contrasena = $("#password_usuario").val();
+    var confirmarContrasena = $("#password_confirm").val();
+
+    if (contrasena != confirmarContrasena) {
+        $('#password_confirm').removeClass("is-valid");
+        $('#password_confirm').addClass("is-invalid");
+        return;
+    } else {
+        $('#password_confirm').addClass("is-valid");
+        $('#password_confirm').removeClass("is-invalid");
+    }
+
+
     $("#saveUsuariosLoading").show();
     $("#updateUsuarios").hide();
     $("#saveUsuarios").hide();
@@ -208,16 +265,17 @@ $(document).on('click', '#updateUsuarios', function () {
     let data = {
         id: $("#id_usuarios_up").val(),
         usuario: $("#usuario").val(),
-        email: $("#email").val(),
-        firstname: $("#firstname").val(),
-        lastname: $("#lastname").val(),
-        address: $("#address").val(),
+        email: $("#email_usuario").val(),
+        firstname: $("#firstname_usuario").val(),
+        lastname: $("#lastname_usuario").val(),
+        address: $("#address_usuario").val(),
         password: $("#password_usuario").val(),
         id_bodega: $("#id_bodega_usuario").val(),
         id_resolucion: $("#id_resolucion_usuario").val(),
         facturacion_rapida: $("input[type='checkbox']#facturacion_rapida").is(':checked') ? '1' : '',
-        telefono: $("#telefono").val(),
+        telefono: $("#telefono_usuario").val(),
         rol_usuario: $("#rol_usuario").val(),
+        permisos: getPermisos(permisosUsuarios)
     }
 
     $.ajax({
@@ -255,3 +313,23 @@ $(document).on('click', '#updateUsuarios', function () {
     });
 
 });
+
+function getPermisos() {
+    for (let index = 0; index < permisosUsuarios.length; index++) {
+        const permiso = permisosUsuarios[index];
+        permiso.value = $("input[type='checkbox']#"+permiso.name).is(':checked') ? '1' : '';
+    }
+
+    return permisosUsuarios;
+}
+
+function clearPermisos() {
+    for (let index = 0; index < permisosUsuarios.length; index++) {
+        const permiso = permisosUsuarios[index];
+        permiso.value = ''
+    }
+
+    permisosUsuarios.forEach(permiso => {
+        $('#'+permiso.name).prop('checked', false);
+    });
+}

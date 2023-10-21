@@ -4,6 +4,8 @@ namespace App\Models\Empresas;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class ComponentesMenu extends Model
 {
@@ -18,6 +20,10 @@ class ComponentesMenu extends Model
         'id_componente',
         'nombre',
         'tipo',
+        'nombre',
+        'url',
+        'icon',
+        'code_name',
         'estado',
         'created_by',
         'updated_by'
@@ -26,9 +32,8 @@ class ComponentesMenu extends Model
     public function padre (){
         return $this->belongsTo("App\Models\Empresas\ComponentesMenu", "id_padre");
     }
-
-    public function componente (){
-        return $this->belongsTo("App\Models\Empresas\ComponentesMenu", "id_padre");
+    
+    public function permisos (){
+        return $this->hasMany(Permission::class, "id_componente_menu");
     }
-
 }

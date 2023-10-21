@@ -104,6 +104,11 @@ function cecosInit() {
         });
     }
 
+    let column = cecos_table.column(4);
+
+    if (!editarCecos && !eliminarCecos) column.visible(false);
+    else column.visible(true);
+
     $('.water').hide();
     cecos_table.ajax.reload();
 }

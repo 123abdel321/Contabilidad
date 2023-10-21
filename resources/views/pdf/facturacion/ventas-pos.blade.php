@@ -70,32 +70,34 @@
                         <img style="height:65px;" src="https://bucketlistardatos.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}" />
                     </td>
                 </tr>
-                <tr><td><b class="font-13">
-                    {{ $empresa->razon_social }}
-                </b></td></tr>
-                <tr><td class="font-12">
+                <tr>
+                    <th>
+                        <b class="font-13 center-item"> {{ $empresa->razon_social }} </b>
+                    </th>
+                </tr>
+                <tr><th class="font-12 center-item">
                     {{ $empresa->nit }}-{{ $empresa->dv }}
-                </td></tr>
-                <tr><td class="font-12">
+                </th></tr>
+                <tr><th class="font-12 center-item">
                     {{ $empresa->direccion }}
-                </td></tr>
-                <tr><td class="font-12">
+                </th></tr>
+                <tr><th class="font-12 center-item">
                     TELEFONO: {{ $empresa->telefono }}
-                </td></tr>
+                </th></tr>
 
                 <tr>
-					<td class="spacer-10"></td>
+					<th class="spacer-10"></th>
 				</tr>
 
-                <tr><td class="font-12">
+                <tr><th class="font-12">
                     FACTURA VENTA P.O.S: {{ $factura->documento_referencia }}
-                </td></tr>
-                <tr><td class="font-12">
+                </th></tr>
+                <tr><th class="font-12">
                     FECHA: {{ $factura->fecha_manual }}
-                </td></tr>
+                </th></tr>
 
                 <tr>
-					<td class="spacer padding5"></td>
+					<th class="spacer padding5"></th>
 				</tr>
             </thead>
         </table>
@@ -136,7 +138,7 @@
         <table class="width-100">
             <tbody>
                 <tr>
-                    <td class="font-13" style="width:56%;">DESCRIPCIÓN</td>
+                    <td class="font-13" style="width:56%;">DESCRIPCION</td>
                     <td class="font-13" style="width:22%;">BASE</td>
                     <td class="font-13" style="width:22%;text-align:right;">TOTAL</td>
                 </tr>

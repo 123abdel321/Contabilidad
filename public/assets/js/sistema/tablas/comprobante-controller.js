@@ -101,8 +101,9 @@ function comprobanteInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editcomprobante_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-comprobante" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
-                    html+= '<span id="deletecomprobante_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-comprobante" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+
+                    if (editarComprobante) html+= '<span id="editcomprobante_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-comprobante" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    if (eliminarComprobante) html+= '<span id="deletecomprobante_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-comprobante" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }
             },
@@ -170,6 +171,11 @@ function comprobanteInit() {
             })
         });
     }
+
+    let column = comprobante_table.column(7);
+
+    if (!editarComprobante && !eliminarComprobante) column.visible(false);
+    else column.visible(true);
 
     $('.water').hide();
     comprobante_table.ajax.reload();

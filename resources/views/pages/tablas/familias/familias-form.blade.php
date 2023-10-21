@@ -6,7 +6,6 @@
                 <h5 class="modal-title" id="textFamiliaUpdate" style="display: none;">Editar familia</h5>
                 <h5 class="modal-title" id="textFamiliaDuplicate" style="display: none;">Duplicar familia</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">

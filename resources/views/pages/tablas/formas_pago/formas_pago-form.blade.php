@@ -5,7 +5,6 @@
                 <h5 class="modal-title" id="textFormasPagoCreate" style="display: none;">Agregar formas de pago</h5>
                 <h5 class="modal-title" id="textFormasPagoUpdate" style="display: none;">Editar formas de pago</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">

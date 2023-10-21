@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('cantidad_anterior', 15)->default(0);
             $table->decimal('cantidad', 15)->default(0);
             $table->integer('tipo_tranferencia')->default(0)->comment('0:Creacion, 1:Cargue, 2:Descargue, 3:traslado');
+            $table->integer('inventario')->default(1)->comment('0:Sin inventario, 1:Inventario');
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

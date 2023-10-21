@@ -27,4 +27,12 @@ class EmpresaSuscripcion extends Model
         'precio',
         'descuento'
     ];
+
+    public function empresa(){
+		return $this->belongsTo("App\Models\Empresas\CliEmpresa","id_empresa");
+	}
+
+	public function componentes(){
+		return $this->hasMany("App\Models\Empresas\EmpresaComponentesSuscripcion","id_empresa_suscripcion");
+	}    
 }

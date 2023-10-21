@@ -34,9 +34,9 @@ label, .form-label {
 }
 
 .fondo-sistema {
-    background-image: url('https://i.blogs.es/d5130c/wallpaper-2.png/1366_2000.webp');
-    min-height: 350px !important;
-    background-position: bottom center;
+    background-image: url('https://www.solofondos.com/wp-content/uploads/2015/12/los-mejores-paisajes-del-mundo-para-fondo-de-pantalla-3.jpg');
+    min-height: 400px !important;
+    background-position: center;
     background-size: cover;
 }
 
@@ -119,7 +119,7 @@ label, .form-label {
     /* left: 29px !important; */
 }
 thead tr:first-child th {
-    background-color: #1c4587;
+    background-color: #2dceac;
     color: white;
     font-weight: bold;
     font-size: 14px;

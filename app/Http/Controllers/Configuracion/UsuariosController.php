@@ -32,12 +32,21 @@ class UsuariosController extends Controller
         ];
 	}
 
-    public function index ()
+    public function index (Request $request)
     {
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])
+            ->with(
+                'suscripcionActiva.componentes.menus.permisos',
+                'suscripcionActiva.componentes.menus.padre',
+                'suscripcionActiva.componentes.componente',
+            )
+            ->first();
+
         $data = [
             'roles' => Role::where('id', '!=', 1)->get(),
             'bodegas' => FacBodegas::all(),
             'resoluciones' => FacResoluciones::all(),
+            'componentes' => $empresa->suscripcionActiva->componentes
         ];
         
         return view('pages.configuracion.usuarios.usuarios-view', $data);
@@ -60,7 +69,7 @@ class UsuariosController extends Controller
         $searchValue = $search_arr['value']; // Search value
 
         $usuarios = User::orderBy($columnName,$columnSortOrder)
-            ->with('roles')
+            ->with('roles', 'permissions')
             ->where('id_empresa', $request->user()['id_empresa'])
             ->select(
                 '*',
@@ -100,7 +109,9 @@ class UsuariosController extends Controller
             'email' => 'required|email|string|max:255|unique:App\Models\User,email',
             'firstname' => 'nullable|string|max:255',
             'lastname' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:255'
+            'address' => 'nullable|string|max:255',
+            'permisos' => 'array|required',
+            'permisos.*.id_permiso' => 'required|exists:clientes.permissions,id',
         ];
         
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -115,7 +126,7 @@ class UsuariosController extends Controller
         }
 
         try {
-
+            
             DB::connection('sam')->beginTransaction();
 
             $rol = Role::where('id', $request->get('rol_usuario'))->first();
@@ -137,7 +148,18 @@ class UsuariosController extends Controller
                 'updated_by' => request()->user()->id,
             ]);
 
-            $usuario->assignRole($rol);
+            $permisos = [];
+
+            if (count($request->get('permisos')) > 0) {
+                foreach ($request->get('permisos') as $permiso) {
+                    if ($permiso['value'] == "1") {
+                        $permisos[] = $permiso['id_permiso'];
+                    }
+                }
+            }
+
+            $usuario->syncRoles($rol);
+            $usuario->syncPermissions($permisos);
 
             DB::connection('sam')->commit();
 
@@ -220,9 +242,20 @@ class UsuariosController extends Controller
                 $usuario->password = Hash::make($request->get('password'));
             }
 
-            $usuario->syncRoles($rol);
+            $permisos = [];
+
+            if (count($request->get('permisos')) > 0) {
+                foreach ($request->get('permisos') as $permiso) {
+                    if ($permiso['value'] == "1") {
+                        $permisos[] = $permiso['id_permiso'];
+                    }
+                }
+            }
 
             $usuario->save();
+
+            $usuario->syncRoles($rol);
+            $usuario->syncPermissions($permisos);
 
             DB::connection('sam')->commit();
 

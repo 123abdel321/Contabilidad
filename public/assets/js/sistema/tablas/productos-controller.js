@@ -82,7 +82,7 @@ function productosInit() {
             {"data": "precio", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
                 var inventarios = row.inventarios
-                if (inventarios.length > 0) {
+                if (row.familia.inventario && inventarios.length > 0) {
                     var html = ``;
                     inventarios.forEach(inventario => {
                         html+= `<span class="badge bg-light text-dark">${inventario.bodega.nombre} / ${inventario.cantidad} </span>&nbsp;`;
@@ -95,7 +95,7 @@ function productosInit() {
             {"data": function (row, type, set){  
                 var inventarios = row.inventarios;
                 var totalUnidades = 0
-                if (inventarios.length > 0) {
+                if (row.familia.inventario && inventarios.length > 0) {
                     inventarios.forEach(inventario => {
                         totalUnidades+= parseInt(inventario.cantidad);
                     });
@@ -121,14 +121,19 @@ function productosInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
-                    html+= '<span id="deleteproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    if (editarProductos) html+= '<span id="editproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    if (eliminarProductos) html+= '<span id="deleteproducto_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-producto" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }
             },
     
         ]
     });
+
+    let column = productos_table.column(9);
+    
+    if (!editarProductos && !eliminarProductos) column.visible(false);
+    else column.visible(true);
 
     if (productos_table) {
         productos_table.on('click', '.edit-producto', function() {
@@ -152,7 +157,8 @@ function productosInit() {
             }
 
             if(dataProducto.imagen) {
-                $('#new_produc_img').attr('src', 'https://bucketlistardatos.nyc3.digitaloceanspaces.com/'+dataProducto.imagen);
+
+                $('#new_produc_img').attr('src', bucketUrl+dataProducto.imagen);
                 $('#new_produc_img').show();
                 $('#default_produc_img').hide();
             } else {
@@ -315,9 +321,9 @@ function productosInit() {
                     return `<input type="number" class="form-control form-control-sm" onfocusout="actualizarPrecio(${row.id})" id="prodvari-precio_${row.id}" value="${row.precio}">`
                 }
             },
-            {//PRECIO MAXIMO
+            {//PRECIO MINIMO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" onfocusout="actualizarPrecioMaximo(${row.id})" id="prodvari-preciomaximo_${row.id}" value="${row.precio_maximo}">`
+                    return `<input type="number" class="form-control form-control-sm" onfocusout="actualizarPrecioMaximo(${row.id})" id="prodvari-preciomaximo_${row.id}" value="${row.precio_minimo}">`
                 }
             },
             {//PRECIO INICIAL
@@ -555,7 +561,7 @@ function asingnarDatosProductosVariantes (dataProducto) {
                 inventarios: asignarDatosInventario(productoHijo),
                 precio: parseFloat(productoHijo.precio),
                 precio_inicial: parseFloat(productoHijo.precio_inicial),
-                precio_maximo: parseFloat(productoHijo.precio_maximo),
+                precio_minimo: parseFloat(productoHijo.precio_minimo),
                 variantes: asignarOpciones(productoHijo),
             });
         });
@@ -603,7 +609,10 @@ $('.form-control').keyup(function() {
 
 $(document).on('click', '#createProducto', function () {
     clearFormProductos();
-
+    
+    if (primeraBodegas.length == 1) addBodegaToProduct(primeraBodegas[0], false);
+    else addBodegaToProduct(primeraBodegas[0]);
+    
     $("#table-products-view").hide();
     $("#add-products-view").show();
     $("#cancelProducto").show();
@@ -750,7 +759,7 @@ function clearFormProductos() {
     $('#codigo_producto').val('');
     $('#id_familia_producto').val(0).change();
     $('#precio_producto').val(0);
-    $('#precio_maximo').val(0);
+    $('#precio_minimo').val(0);
     $('#precio_inicial').val(0);
 
     document.getElementById("producto_variantes1").disabled = false;
@@ -768,7 +777,7 @@ function clearFormProductos() {
         id_familia: null,
         precio: 0,
         tipo_producto: 0,
-        precio_maximo: 0,
+        precio_minimo: 0,
         precio_inicial: 0,
         inventarios: [],
         variante: false,
@@ -796,7 +805,7 @@ function setCrearProducto() {
     nuevoProducto.tipo_producto = 0;
     $("#text_tipo_producto").show();
     $("#item-maneja-variante").show();
-    $('#producto-inventario').show();
+    $('#producto-inventario').hide();
     $('#producto-variantes').hide();
     document.getElementById("producto_variantes1").checked = true;
 }
@@ -818,14 +827,24 @@ function setCrearCombo() {
 }
 
 $('input[type=radio][name=producto_variantes]').change(function() {
+    var dataFamilia = $("#id_familia_producto").select2('data');
+    $('#producto-inventario').hide();
     if(!$("input[type='radio']#producto_variantes1").is(':checked')){
         nuevoProducto.variante = true;
-        $('#producto-inventario').hide();
+        dataFamilia = [];
         $('#producto-variantes').show();
     } else {
         nuevoProducto.variante = false;
-        $('#producto-inventario').show();
         $('#producto-variantes').hide();
+    }
+    if (dataFamilia.length > 0) {
+        if (dataFamilia[0].inventario) {
+            $('#producto-inventario').show();
+            productos_varaibles_table.column(5).visible(true);
+        }
+        else $('#producto-inventario').hide();
+    } else {
+        productos_varaibles_table.column(5).visible(false);
     }
 });
 
@@ -1026,11 +1045,11 @@ function generarVariantesProductos () {
                 cacheNuevosProductos = cacheNuevosProductos.concat({
                     precio: productosActuales.precio,
                     codigo: productosActuales.codigo,
-                    precio_maximo: productosActuales.precio_maximo,
+                    precio_minimo: productosActuales.precio_minimo,
                     precio_inicial: productosActuales.precio_inicial,
                     inventario: productosActuales.inventario,
                     estado: true,
-                    inventarios: [],
+                    inventarios: inventarioVariantes(),
                     variantesc: productosActuales.variantes,
                     edit: idProductoPadre ? true : false
                 });
@@ -1047,11 +1066,11 @@ function generarVariantesProductos () {
                 cacheNuevosProductos = cacheNuevosProductos.concat({
                     precio: nuevoProducto.precio,
                     codigo: nuevoProducto.codigo,
-                    precio_maximo: nuevoProducto.precio_maximo,
+                    precio_minimo: nuevoProducto.precio_minimo,
                     precio_inicial: nuevoProducto.precio_inicial,
                     inventario: false,
                     estado: true,
-                    inventarios: [],
+                    inventarios: inventarioVariantes(),
                     variantesc: [opcion],
                     edit: idProductoPadre ? true : false
                 });
@@ -1059,11 +1078,11 @@ function generarVariantesProductos () {
                 nuevoProducto.productos_variantes = nuevoProducto.productos_variantes.concat({
                     precio: nuevoProducto.precio,
                     codigo: nuevoProducto.codigo,
-                    precio_maximo: nuevoProducto.precio_maximo,
+                    precio_minimo: nuevoProducto.precio_minimo,
                     precio_inicial: nuevoProducto.precio_inicial,
                     inventario: false,
                     estado: true,
-                    inventarios: [],
+                    inventarios: inventarioVariantes(),
                     variantes: [opcion],
                     edit: idProductoPadre ? true : false
                 });
@@ -1081,7 +1100,7 @@ function generarVariantesProductos () {
                     var newData = {
                         precio: nuevoProducto.precio,
                         codigo: nuevoProducto.codigo,
-                        precio_maximo: nuevoProducto.precio_maximo,
+                        precio_minimo: nuevoProducto.precio_minimo,
                         precio_inicial: nuevoProducto.precio_inicial,
                         inventario: false,
                         estado: true,
@@ -1095,6 +1114,17 @@ function generarVariantesProductos () {
             }
         }
     }
+}
+
+function inventarioVariantes() {
+    return [{
+        id: primeraBodegas[0].id,
+        codigo: primeraBodegas[0].codigo,
+        nombre: primeraBodegas[0].nombre,
+        ubicacion: primeraBodegas[0].ubicacion,
+        cantidad: 0,    
+        edit: false
+    }];
 }
 
 function getVariantesActivas() {
@@ -1359,7 +1389,7 @@ function crearItemVariable (variante) {
 
 function crearItemBodegaProducto (bodega) {
     var existeBodegaProducto = getBodegaProductoVarianteById(bodega.id);
-    console.log('existeBodegaProducto: ',existeBodegaProducto);
+    
     if (!existeBodegaProducto) {
         newItemBodega(bodega);
     } else {
@@ -1388,6 +1418,8 @@ function newItemBodega (bodega, addProducto = true) {
         });
     }
 
+    var cantidad = bodega.cantidad ? bodega.cantidad : 0;
+
     var html = `
         <div style="padding: 5px; padding: 5px; border-top: solid 1px #dfdfdf; margin-left: 10px;"></div>
                                     
@@ -1398,7 +1430,7 @@ function newItemBodega (bodega, addProducto = true) {
 
         <div class="form-group col-12 col-sm-6 col-md-6" >
             <label for="example-text-input" class="form-control-label">Cantidad</label>
-            <input type="number" class="form-control form-control-sm" id="cantidad-producto-variante_${bodega.id}" value="${bodega.cantidad}" onfocusout="actualizarCantidadBodega(${bodega.id})" ${disabled}>
+            <input type="number" class="form-control form-control-sm" id="cantidad-producto-variante_${bodega.id}" value="${cantidad}" onfocusout="actualizarCantidadBodega(${bodega.id})" ${disabled}>
         </div>
     `;
     var btnEliminar = `
@@ -1688,7 +1720,7 @@ function addProductosVarianteItems (tomarPadre = true) {
             inventarios: producto.inventarios,
             precio: producto.precio,
             precio_inicial: producto.precio_inicial,
-            precio_maximo: producto.precio_maximo,
+            precio_minimo: producto.precio_minimo,
             variantes: producto.variantes,
             edit: idProductoPadre ? true : false 
         }).draw(false);
@@ -1725,7 +1757,7 @@ function actualizarPrecio (id) {
 
 function actualizarPrecioMaximo (id) {
     var value = $('#prodvari-preciomaximo_'+id).val();
-    nuevoProducto.productos_variantes[id].precio_maximo = value;
+    nuevoProducto.productos_variantes[id].precio_minimo = value;
 }
 
 function actualizarPrecioInicial (id) {
@@ -1754,6 +1786,8 @@ $("#id_familia_producto").on('change', function(e) {
 
     if (data.length > 0) {
         nuevoProducto.id_familia = parseInt(data[0].id);
+        if (data[0].inventario) $('#producto-inventario').show();
+        else $('#producto-inventario').hide();
     }
 });
 

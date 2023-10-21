@@ -32,12 +32,12 @@ class CreateNitsTable extends Migration
             $table->string('otros_nombres', 60)->nullable();
             $table->string('razon_social', 120)->nullable();
             $table->string('nombre_comercial', 120)->nullable()->default('');
-            $table->string('direccion', 100);
+            $table->string('direccion', 100)->nullable();
             $table->string('email', 250)->nullable();
             $table->string('email_recepcion_factura_electronica', 60)->nullable();
             $table->string('telefono_1', 30)->nullable();
             $table->string('telefono_2', 30)->nullable();
-            $table->boolean('tipo_cuenta_banco')->default(false)->comment('0 - Ahorro, 1 - Corriente');
+            $table->boolean('tipo_cuenta_banco')->default(false)->comment('0 - Ahorro, 1 - Corriente')->nullable();
             $table->string('cuenta_bancaria', 50)->nullable();
             $table->smallInteger('plazo')->nullable();
             $table->decimal('cupo', 15)->nullable();

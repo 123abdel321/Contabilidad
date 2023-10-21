@@ -19,6 +19,7 @@ class FacProductosBodegasMovimiento extends Model
         'cantidad_anterior',
         'cantidad',
         'tipo_tranferencia',
+        'inventario',
         'created_by',
         'updated_by',
     ];

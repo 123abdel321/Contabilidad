@@ -92,7 +92,7 @@ class FamiliasController extends Controller
     public function create (Request $request)
     {
         $rules = [
-            'codigo' => 'required|min:1|max:60',
+            'codigo' => 'required|min:1|max:60|unique:sam.fac_familias,codigo',
             'nombre' => 'required|min:1|max:200',
 			'id_cuenta_venta' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_venta_retencion' => 'nullable|exists:sam.plan_cuentas,id',

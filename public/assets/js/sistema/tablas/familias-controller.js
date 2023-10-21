@@ -183,14 +183,19 @@ function familiasInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editfamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-familias" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
-                    html+= '<span id="deletefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-familias" style="margin-bottom: 0rem !important">Eliminar</span>&nbsp';
-                    html+= '<span id="duplicatefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info duplicar-familias" style="margin-bottom: 0rem !important">Duplicar</span>';
+                    if (editarFamilias) html+= '<span id="editfamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-familias" style="margin-bottom: 0rem !important">Editar</span>&nbsp;';
+                    if (eliminarFamilias) html+= '<span id="deletefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-familias" style="margin-bottom: 0rem !important">Eliminar</span>&nbsp';
+                    if (crearFamilias) html+= '<span id="duplicatefamilias_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info duplicar-familias" style="margin-bottom: 0rem !important">Duplicar</span>';
                     return html;
                 }
             }
         ]
     });
+
+    let column = familias_table.column(18);
+    
+    if (!editarFamilias && !eliminarFamilias) column.visible(false);
+    else column.visible(true);
 
     if(familias_table) {
         //EDITAR FAMILIAS
@@ -1120,5 +1125,13 @@ function showInventario(show = false) {
         $('#input-familia-inventario').hide();
         $('#input-familia-costos').hide();
         $('#inputs-familias-compras').hide();
+        $('#id_cuenta_inventario').val('').trigger('change');
+        $('#id_cuenta_costos').val('').trigger('change');
+        $('#id_cuenta_compra').val('').trigger('change');
+        $('#id_cuenta_compra_retencion').val('').trigger('change');
+        $('#id_cuenta_compra_devolucion').val('').trigger('change');
+        $('#id_cuenta_compra_iva').val('').trigger('change');
+        $('#id_cuenta_compra_descuento').val('').trigger('change');
+        $('#id_cuenta_compra_devolucion_iva').val('').trigger('change');
     }
 }

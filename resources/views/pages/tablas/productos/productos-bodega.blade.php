@@ -5,7 +5,6 @@
                 <h5 class="modal-title" id="textBodegaProductoCreate" style="display: none;">Agregar bodega</h5>
                 <h5 class="modal-title" id="textBodegaProductoUpdate" style="display: none;">Editar bodega</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">

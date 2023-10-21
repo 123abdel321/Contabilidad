@@ -5,7 +5,6 @@
                 <h5 class="modal-title" id="textComprobanteCreate" style="display: none;">Agregar comprobante</h5>
                 <h5 class="modal-title" id="textComprobanteUpdate" style="display: none;">Editar comprobante</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">

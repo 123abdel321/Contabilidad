@@ -39,9 +39,10 @@ class ProductosController extends Controller
 
     public function index ()
     {
+        $totalBodegas = FacBodegas::count();
         $data = [
             'familias' => FacFamilias::all(),
-            'bodegas' => FacBodegas::first()
+            'bodegas' => FacBodegas::get()
         ];
         return view('pages.tablas.productos.productos-view', $data);
     }
@@ -147,8 +148,7 @@ class ProductosController extends Controller
                 'codigo' => $request->get('codigo'),
                 'nombre' => $request->get('nombre'),
                 'precio' => $request->get('precio'),
-                'precio_inicial' => $request->get('precio_inicial'),
-                'precio_minimo' => $request->get('precio_minimo'),
+                'precio_inicial' => $request->get('precio_minimo'),
                 'variante' => $request->get('variante'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id
@@ -200,8 +200,7 @@ class ProductosController extends Controller
                             'codigo' => $producto['codigo'],
                             'nombre' => $request->get('nombre') .' '. $this->nombreVariante($producto['variantes']),
                             'precio' => $request->get('precio'),
-                            'precio_inicial' => $request->get('precio_inicial'),
-                            'precio_minimo' => $request->get('precio_minimo'),
+                            'precio_inicial' => $request->get('precio_minimo'),
                             'variante' => $request->get('variante'),
                             'created_by' => request()->user()->id,
                             'updated_by' => request()->user()->id
@@ -449,7 +448,8 @@ class ProductosController extends Controller
         }
     }
 
-    private function agregarVariantes ($producto, $idOpcion) {
+    private function agregarVariantes ($producto, $idOpcion)
+    {
         $opcion = FacVariantesOpciones::find($idOpcion);
 
         $facProductosVariantes = FacProductosVariantes::create([
@@ -462,8 +462,8 @@ class ProductosController extends Controller
         return $facProductosVariantes;
     }
 
-    private function agregarBodega ($producto, $bodega) {
-
+    private function agregarBodega ($producto, $bodega)
+    {
         $facProductosBodegas = FacProductosBodegas::create([
             'id_producto' => $producto->id,
             'id_bodega' => $bodega['id'],
@@ -471,7 +471,7 @@ class ProductosController extends Controller
             'created_by' => request()->user()->id,
             'updated_by' => request()->user()->id
         ]);
-
+        
         $movimiento = new FacProductosBodegasMovimiento([
             'id_producto' => $producto->id,
             'id_bodega' => $bodega['id'],
@@ -481,14 +481,15 @@ class ProductosController extends Controller
             'created_by' => request()->user()->id,
             'updated_by' => request()->user()->id
         ]);
-
+        
         $movimiento->relation()->associate($producto);
         $producto->bodegas()->save($movimiento);
-
+        
         return $facProductosBodegas;
     }
 
-    private function nombreVariante ($variantes) {
+    private function nombreVariante ($variantes)
+    {
         $nombreVariante = '';
         $totalVariantes = 0;
         if (count($variantes) > 0) {
@@ -501,7 +502,8 @@ class ProductosController extends Controller
         return $nombreVariante;
     }
 
-    public function comboProducto (Request $request) {
+    public function comboProducto (Request $request)
+    {
         $producto = FacProductos::select(
                 \DB::raw('*'),
                 \DB::raw("CONCAT(codigo, ' - ', nombre) as text")

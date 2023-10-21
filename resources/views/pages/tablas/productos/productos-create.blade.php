@@ -6,99 +6,109 @@
         <form id="newProductoForm" class="needs-invalidation" noinvalidate>
 
             <div class="row">
-                <input type="text" class="form-control form-control-sm" name="id_producto_edit" id="id_producto_edit" style="display: none;">
-                <div class="col-12 col-sm-12 col-md-12" style="text-align: -webkit-center;">
 
+                <input type="text" class="form-control form-control-sm" name="id_producto_edit" id="id_producto_edit" style="display: none;">
+
+                <div style="text-align: -webkit-center;">
                     <label id="text_tipo_producto" style="color: #667793; font-size: 14px;">Crea los bienes y mercancías que vendes, tambien puedes tener el control de tu inventario.</label>
                     <label id="text_tipo_servicio" style="display: none; color: #667793; font-size: 14px;">Crea las actividades comerciales o de consultoría que ofreces a tus clientes.</label>
                     <label id="text_tipo_combo" style="display: none; color: #667793; font-size: 14px;">Agrupa en un solo ítem un conjunto de productos, servicios o una combinación entre ambos.</label>
-
-                    <div id="spacing-producto-type" style="padding: 5px;"></div>
-
-                    <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_producto" onChange="changeProducType()" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary" for="tipo_producto_producto">Producto</label>
-
-                    <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_servicio" onChange="changeProducType()" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="tipo_producto_servicio">Servicio</label>
-
-                    <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_combo" onChange="changeProducType()" autocomplete="off" disabled>
-                    <label class="btn btn-outline-primary" for="tipo_producto_combo">Combo</label>
-                    
                 </div>
-                <br/>
 
-                <div class="justify-content-center col-6 col-sm-4 col-md-4">
-                    <div style="text-align: -webkit-center; height: 80px;">
-                        <img id="default_produc_img" onclick="document.getElementById('newImagenProducto').click();" src="/img/add_product_img.png" class="img-fluid rounded mx-auto d-bloc" style="width: auto; height: 80px; cursor: pointer; border-radius: 10%;">
-                        <img id="new_produc_img" onclick="document.getElementById('newImagenProducto').click();" src="" class="img-fluid rounded mx-auto d-bloc" style="width: auto; height: 80px; cursor: pointer; border-radius: 10%;">
+                <div id="spacing-producto-type" style="padding: 5px;"></div>
+
+                <div class="row col-12 col-sm-6 col-md-6" style="text-align: -webkit-center;">
+                    <div class="form-group col-6 col-sm-6 col-md-6" >
+                        <label for="example-text-input" class="form-control-label">Código</label>
+                        <input type="text" class="form-control form-control-sm" name="codigo_producto" id="codigo_producto" onfocusout="addCodigoProducto()" required>
+                        <div class="invalid-feedback">
+                            El campo Código es requerido
+                        </div>
                     </div>
-                </div>
-
-                <input type="file" name="newImagenProducto" id="newImagenProducto" onchange="readURL(this);" style="display: none" />
-                
-                <div class="form-group col-6 col-sm-4 col-md-4" >
-                    <label for="example-text-input" class="form-control-label">Nombre</label>
-                    <input type="text" class="form-control form-control-sm" name="nombre_producto" id="nombre_producto" onfocusout="addNombreProducto()" required>
-                    <div class="invalid-feedback">
-                        El campo Nombre es requerido
+    
+                    <div class="form-group col-6 col-sm-6 col-md-6" >
+                        <label for="example-text-input" class="form-control-label">Nombre</label>
+                        <input type="text" class="form-control form-control-sm" name="nombre_producto" id="nombre_producto" onfocusout="addNombreProducto()" required>
+                        <div class="invalid-feedback">
+                            El campo Nombre es requerido
+                        </div>
                     </div>
-                </div>
-
-                <div class="form-group col-6 col-sm-4 col-md-4" >
-                    <label for="example-text-input" class="form-control-label">Código</label>
-                    <input type="text" class="form-control form-control-sm" name="codigo_producto" id="codigo_producto" onfocusout="addCodigoProducto()" required>
-                    <div class="invalid-feedback">
-                        El campo Código es requerido
+    
+                    <div class="form-group col-6 col-sm-6 col-md-6">
+                        <label for="exampleFormControlSelect1">Familia</label>
+                        <select name="id_familia_producto" id="id_familia_producto" class="form-control form-control-sm" required>
+                        </select>
+                        <div class="invalid-feedback">
+                            El campo Familia es requerido
+                        </div>
                     </div>
-                </div>
-
-                <div class="form-group col-6 col-sm-4 col-md-4">
-                    <label for="exampleFormControlSelect1">Familia</label>
-                    <select name="id_familia_producto" id="id_familia_producto" class="form-control form-control-sm" required>
-                    </select>
-                    <div class="invalid-feedback">
-                        El campo Familia es requerido
+    
+                    <div class="form-group col-6 col-sm-6 col-md-6" >
+                        <label for="example-text-input" class="form-control-label">Valor venta</label>
+                        <input type="number" class="form-control form-control-sm" name="precio_producto" id="precio_producto" onfocusout="addPrecioProducto()" value="0" required>
+                        <div class="invalid-feedback">
+                            El campo Precio es requerido
+                        </div>
                     </div>
-                </div>
-
-                <div class="form-group col-6 col-sm-4 col-md-4" >
-                    <label for="example-text-input" class="form-control-label">Valor venta</label>
-                    <input type="number" class="form-control form-control-sm" name="precio_producto" id="precio_producto" onfocusout="addPrecioProducto()" value="0" required>
-                    <div class="invalid-feedback">
-                        El campo Precio es requerido
+    
+                    <div class="form-group col-6 col-sm-6 col-md-6">
+                        <label for="example-text-input" class="form-control-label">Precio minimo</label>
+                        <input type="number" class="form-control form-control-sm" name="precio_minimo" id="precio_minimo" onfocusout="addPrecioMinimoProducto()" value="0" required>
+                        <div class="invalid-feedback">
+                            El campo Precio minimo es requerido
+                        </div>
                     </div>
-                </div>
-
-                <div class="form-group col-6 col-sm-4 col-md-4">
-                    <label for="example-text-input" class="form-control-label">Precio minimo</label>
-                    <input type="number" class="form-control form-control-sm" name="precio_minimo" id="precio_minimo" onfocusout="addPrecioMinimoProducto()" value="0" required>
-                    <div class="invalid-feedback">
-                        El campo Precio maximo es requerido
+    
+                    <div class="form-group col-6 col-sm-6 col-md-6" >
+                        <label for="example-text-input" class="form-control-label">Costo compra</label>
+                        <input type="number" class="form-control form-control-sm" name="precio_inicial" id="precio_inicial" onfocusout="addPrecioInicialProducto()" value="0" required>
+                        <div class="invalid-feedback">
+                            El campo Precio inicial es requerido
+                        </div>
                     </div>
-                </div>
-
-                <div class="form-group col-6 col-sm-4 col-md-4" >
-                    <label for="example-text-input" class="form-control-label">Costo compra</label>
-                    <input type="number" class="form-control form-control-sm" name="precio_inicial" id="precio_inicial" onfocusout="addPrecioInicialProducto()" value="0" required>
-                    <div class="invalid-feedback">
-                        El campo Precio inicial es requerido
+    
+                    <div class="form-group col-6 col-sm-6 col-md-6 row" style="margin-bottom: 0.1rem !important;" id="item-maneja-variante">
+                        <label for="example-text-input" class="form-control-label">Maneja variantes</label>
+                        <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 15px; cursor: pointer;">
+                            <input class="form-check-input" type="radio" name="producto_variantes" id="producto_variantes1" style="font-size: 11px; cursor: pointer;" checked>
+                            <label class="form-check-label" for="producto_variantes1" style="font-size: 11px;">
+                                Producto sin variantes
+                            </label>
+                        </div>
+                        <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 15px; cursor: pointer;">
+                            <input class="form-check-input" type="radio" name="producto_variantes" id="producto_variantes2" style="font-size: 11px; cursor: pointer;">
+                            <label class="form-check-label" for="producto_variantes2" style="font-size: 11px;">
+                                Productos con variantes 
+                            </label>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group col-6 col-sm-4 col-md-4 row" style="margin-bottom: 0.1rem !important;" id="item-maneja-variante">
-                    <label for="example-text-input" class="form-control-label">Maneja variantes</label>
-                    <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 15px; cursor: pointer;">
-                        <input class="form-check-input" type="radio" name="producto_variantes" id="producto_variantes1" style="font-size: 11px; cursor: pointer;" checked>
-                        <label class="form-check-label" for="producto_variantes1" style="font-size: 11px;">
-                            Producto sin variantes
-                        </label>
+                <div class="col-12 col-sm-6 col-md-6" style="text-align: -webkit-center;">
+
+                    <div class="col-12 col-sm-12 col-md-12" style="text-align: -webkit-center;">
+
+                        <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_producto" onChange="changeProducType()" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="tipo_producto_producto">Producto</label>
+
+                        <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_servicio" onChange="changeProducType()" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="tipo_producto_servicio">Servicio</label>
+
+                        <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_combo" onChange="changeProducType()" autocomplete="off" disabled>
+                        <label class="btn btn-outline-primary" for="tipo_producto_combo">Combo</label>
+                        
                     </div>
-                    <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 15px; cursor: pointer;">
-                        <input class="form-check-input" type="radio" name="producto_variantes" id="producto_variantes2" style="font-size: 11px; cursor: pointer;">
-                        <label class="form-check-label" for="producto_variantes2" style="font-size: 11px;">
-                            Productos con variantes 
-                        </label>
+
+                    <div class="justify-content-center col-12 col-sm-12 col-md-12">
+                        <div style="text-align: -webkit-center; height: 185px;">
+                            <img id="default_produc_img" onclick="document.getElementById('newImagenProducto').click();" src="/img/add_product_img.png" class="img-fluid rounded mx-auto d-bloc" style="width: auto; height: 100%; cursor: pointer; border-radius: 10%;">
+                            <img id="new_produc_img" onclick="document.getElementById('newImagenProducto').click();" src="" class="img-fluid rounded mx-auto d-bloc" style="width: auto; height: 100%; cursor: pointer; border-radius: 10%;">
+                        </div>
                     </div>
+    
+                    <input type="file" name="newImagenProducto" id="newImagenProducto" onchange="readURL(this);" style="display: none" />
+
+                    <br/>
                 </div>
 
             </div>
@@ -109,7 +119,7 @@
 
 <br/>
 
-<div class="card card-producto" id="producto-inventario">
+<div class="card card-producto" id="producto-inventario" style="display: none;">
     <div class="card-header" style="border-bottom: solid 1px #e4e4e4; padding: 0rem; background-color: #1c4587;">
         <h5 class="card-title" style="margin-top: 5px; color: #FFF; margin-left: 15px;">Inventario</h5>
     </div>
@@ -205,7 +215,7 @@
                             <tr>
                                 <th style="border-radius: 15px 0px 0px 0px !important;">Variantes</th>
                                 <th>Precio unidad</th>
-                                <th>Precio Maximo</th>
+                                <th>Precio minimo</th>
                                 <th>Precio Inicial</th>
                                 <th>Código</th>
                                 <th>Bodegas</th>

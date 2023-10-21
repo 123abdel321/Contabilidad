@@ -41,7 +41,7 @@
         @else
             @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
                 <div class="min-height-100 bg-dark position-absolute w-100 fondo-sistema">
-                    <span class="mask opacity-6 fondo-sistema-color"></span>
+                    <!-- <span class="mask opacity-6 fondo-sistema-color"></span> -->
                 </div>
             @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
                 <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">

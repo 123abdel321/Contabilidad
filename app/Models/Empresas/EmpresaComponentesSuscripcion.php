@@ -25,6 +25,10 @@ class EmpresaComponentesSuscripcion extends Model
     ];
 
     public function componente (){
-        return $this->belongsTo("App\Models\Empresas\ComponentesSuscripcion", "id_componente");
+        return $this->belongsTo("App\Models\Empresas\ComponentesSuscripcion", "id_componente", "id");
+    }
+
+    public function menus (){
+        return $this->hasMany("App\Models\Empresas\ComponentesMenu", "id_componente", "id_componente");
     }
 }
