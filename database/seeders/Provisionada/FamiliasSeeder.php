@@ -14,7 +14,7 @@ class FamiliasSeeder extends Seeder
             [
                 'id' => 1,
                 'codigo' => '01',
-                'nombre' => 'PRINCIPAL',
+                'nombre' => 'INVENTARIOS',
                 'inventario' => '1',
                 'id_cuenta_venta' => '72',
                 'id_cuenta_venta_retencion' => '',
@@ -30,6 +30,26 @@ class FamiliasSeeder extends Seeder
                 'id_cuenta_compra_devolucion_iva' => '',
                 'id_cuenta_inventario' => '78',
                 'id_cuenta_costos' => '82'
+            ],
+            [
+                'id' => 1,
+                'codigo' => '50',
+                'nombre' => 'SERVICIOS',
+                'inventario' => '1',
+                'id_cuenta_venta' => '72',
+                'id_cuenta_venta_retencion' => '',
+                'id_cuenta_venta_devolucion' => '',
+                'id_cuenta_venta_iva' => '75',
+                'id_cuenta_venta_descuento' => '',
+                'id_cuenta_venta_devolucion_iva' => '',
+                'id_cuenta_compra' => '',
+                'id_cuenta_compra_retencion' => '',
+                'id_cuenta_compra_devolucion' => '',
+                'id_cuenta_compra_iva' => '',
+                'id_cuenta_compra_descuento' => '',
+                'id_cuenta_compra_devolucion_iva' => '',
+                'id_cuenta_inventario' => '',
+                'id_cuenta_costos' => ''
             ]
         ]);
     }

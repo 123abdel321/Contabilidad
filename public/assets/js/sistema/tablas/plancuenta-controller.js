@@ -299,7 +299,7 @@ function plancuentaInit() {
 
     let column = plan_cuentas_table.column(13);
 
-    if (!editarComprobante && !eliminarComprobante) column.visible(false);
+    if (!editarPlanCuenta && !eliminarPlanCuenta) column.visible(false);
     else column.visible(true);
 
     $('.water').hide();

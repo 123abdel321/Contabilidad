@@ -74,7 +74,7 @@ trait BegConsecutiveTrait
 		$comprobante::unsetEventDispatcher();
 		$comprobante->save();
 
-        // $comprobante->resolucion()->update(["consecutivo" => $comprobante->consecutivo_siguiente]);
+        $comprobante->resolucion()->update(["consecutivo" => $comprobante->consecutivo_siguiente]);
 
         return $comprobante;
     }

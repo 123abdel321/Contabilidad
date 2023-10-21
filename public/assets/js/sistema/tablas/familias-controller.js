@@ -1125,5 +1125,13 @@ function showInventario(show = false) {
         $('#input-familia-inventario').hide();
         $('#input-familia-costos').hide();
         $('#inputs-familias-compras').hide();
+        $('#id_cuenta_inventario').val('').trigger('change');
+        $('#id_cuenta_costos').val('').trigger('change');
+        $('#id_cuenta_compra').val('').trigger('change');
+        $('#id_cuenta_compra_retencion').val('').trigger('change');
+        $('#id_cuenta_compra_devolucion').val('').trigger('change');
+        $('#id_cuenta_compra_iva').val('').trigger('change');
+        $('#id_cuenta_compra_descuento').val('').trigger('change');
+        $('#id_cuenta_compra_devolucion_iva').val('').trigger('change');
     }
 }

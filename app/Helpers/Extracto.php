@@ -3,6 +3,8 @@ namespace App\Helpers;
 
 use DB;
 use Carbon\Carbon;
+//MODEL
+use App\Models\Sistema\DocumentosGeneral;
 
 class Extracto
 {
@@ -70,10 +72,48 @@ class Extracto
                 DB::raw('SUM(total_facturas) AS total_facturas'),
                 DB::raw('SUM(saldo) AS saldo'),
             )
-            ->groupByRaw('id_cuenta, id_nit, documento_referencia');
+            ->groupByRaw('documento_referencia, id_cuenta, id_nit');
 
         return $extracto;
     }
+
+    public function actual2()
+	{
+        $fecha = Carbon::now();
+
+		return DocumentosGeneral::select(
+			"documentos_generals.id",
+			"fecha_manual",
+			"id_nit",
+			"id_cuenta",
+			"id_comprobante",
+			"id_centro_costos",
+			"documento_referencia",
+			"credito",
+			"debito",
+			"concepto",
+			"t2.naturaleza_cuenta",
+			DB::raw("IF(naturaleza_cuenta=0,SUM(debito),SUM(credito)) as total_factura"),
+			DB::raw("IF(naturaleza_cuenta=0,SUM(credito),SUM(debito)) as total_abono"),
+			DB::raw("IF(naturaleza_cuenta=0,SUM(debito-credito),SUM(credito-debito)) as saldo"),
+			DB::raw("DATEDIFF('{$fecha}', fecha_manual) AS dias_cumplidos")
+		)
+			->join('plan_cuentas AS t2', "id_cuenta", "=", "t2.id")
+			->where("anulado", 0)
+			->where("id_nit", $this->id_nit)
+            ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
+				$query->where('PC.id_tipo_cuenta', $this->id_tipo_cuenta);
+			})
+			->when($this->documento_referencia, function ($query, $documento_referencia) {
+				$query->where('documento_referencia', $documento_referencia);
+			}, function ($query) {
+				$query->havingRaw("IF(naturaleza_cuenta=0,SUM(debito-credito),SUM(credito-debito)) > 0");
+			})
+			->when($this->fecha, function ($query, $fecha) {
+				$query->where('fecha_manual', $fecha);
+			})
+			->groupBy("documento_referencia", "id_cuenta", "id_nit");
+	}
 
     public function queryActual()
     {
@@ -165,6 +205,5 @@ class Extracto
     {
         
     }
-
 
 }

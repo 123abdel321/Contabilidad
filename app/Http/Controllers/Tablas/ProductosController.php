@@ -148,8 +148,7 @@ class ProductosController extends Controller
                 'codigo' => $request->get('codigo'),
                 'nombre' => $request->get('nombre'),
                 'precio' => $request->get('precio'),
-                'precio_inicial' => $request->get('precio_inicial'),
-                'precio_minimo' => $request->get('precio_minimo'),
+                'precio_inicial' => $request->get('precio_minimo'),
                 'variante' => $request->get('variante'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id
@@ -201,8 +200,7 @@ class ProductosController extends Controller
                             'codigo' => $producto['codigo'],
                             'nombre' => $request->get('nombre') .' '. $this->nombreVariante($producto['variantes']),
                             'precio' => $request->get('precio'),
-                            'precio_inicial' => $request->get('precio_inicial'),
-                            'precio_minimo' => $request->get('precio_minimo'),
+                            'precio_inicial' => $request->get('precio_minimo'),
                             'variante' => $request->get('variante'),
                             'created_by' => request()->user()->id,
                             'updated_by' => request()->user()->id
@@ -466,7 +464,6 @@ class ProductosController extends Controller
 
     private function agregarBodega ($producto, $bodega)
     {
-
         $facProductosBodegas = FacProductosBodegas::create([
             'id_producto' => $producto->id,
             'id_bodega' => $bodega['id'],
@@ -474,7 +471,7 @@ class ProductosController extends Controller
             'created_by' => request()->user()->id,
             'updated_by' => request()->user()->id
         ]);
-
+        
         $movimiento = new FacProductosBodegasMovimiento([
             'id_producto' => $producto->id,
             'id_bodega' => $bodega['id'],
@@ -484,10 +481,10 @@ class ProductosController extends Controller
             'created_by' => request()->user()->id,
             'updated_by' => request()->user()->id
         ]);
-
+        
         $movimiento->relation()->associate($producto);
         $producto->bodegas()->save($movimiento);
-
+        
         return $facProductosBodegas;
     }
 

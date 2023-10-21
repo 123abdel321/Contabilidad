@@ -3,7 +3,7 @@
         <div class="row mt-4">
             <div class="col-lg-2">
             </div>
-            <div class="col-lg-8" style="height: 400px;">
+            <!-- <div class="col-lg-8" style="height: 400px;">
                 <div class="card card-carousel overflow-hidden h-100 p-0">
                     <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
                         <div class="carousel-inner border-radius-lg h-100">
@@ -50,6 +50,6 @@
                 </div>
             </div>
             <div class="col-lg-2">
-            </div>
+            </div> -->
         </div>
     </div>

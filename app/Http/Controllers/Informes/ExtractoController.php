@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Informes;
 
 use DB;
 use Carbon\Carbon;
+use App\Helpers\Extracto;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -80,6 +81,18 @@ class ExtractoController extends Controller
         return response()->json([
             'success'=>	true,
             'data' => array_values($this->carteraCollection),
+            'message'=> 'Extracto generado con exito!'
+        ]);
+
+        // $extracto = (new Extracto(
+        //     $request->get('id_nit', null),
+        //     $request->get('id_tipo_cuenta', null),
+        //     $request->get('documento_referencia', null)
+        // ))->actual2()->get();
+
+        return response()->json([
+            'success'=>	true,
+            'data' => $extracto,
             'message'=> 'Extracto generado con exito!'
         ]);
     }
