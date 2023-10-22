@@ -159,7 +159,11 @@
 								</td>
 								
 								<td class="logo padding5">
-									<img stype="position: absolute;" src="https://bucketlistardatos.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}">
+									@if ($empresa->logo)
+										<img stype="position: absolute;" src="https://bucketlistardatos.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}">
+									@else
+										<img src="/img/logo_contabilidad.png">
+									@endif
 								</td>
 							</tr>
 						</table>
@@ -193,11 +197,17 @@
 												<td class="padding3">{{ $nit->tipo_documento }} N° {{ $nit->numero_documento }}</td>
 											</tr>
 											<tr>
-												<td class="padding3">{{ $nit->direccion }} {{ $nit->ciudad }}</td>
+												<td class="padding3">{{ $nit->direccion }}
+													@if($nit->ciudad)
+														{{ $nit->ciudad->nombre }}
+													@endif
+												</td>
 											</tr>
-											<tr>
-												<td class="padding3"> TEL: {{ $nit->telefono }}</td>
-											</tr>
+											@if ($nit->telefono)
+												<tr>
+													<td class="padding3"> TEL: {{ $nit->telefono }}</td>
+												</tr>
+											@endif
 										</tbody>
 									</table>
 								</td>
