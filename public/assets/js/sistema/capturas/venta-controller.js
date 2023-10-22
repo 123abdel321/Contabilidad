@@ -7,6 +7,8 @@ var $comboResolucion = null;
 var $comboCliente = null;
 var porcentajeRetencionVenta = 0;
 var topeRetencionVenta = 0;
+var guardarVenta = false;
+var abrirFormasPago = false;
 
 function ventaInit () {
 
@@ -82,6 +84,7 @@ function ventaInit () {
             $('#ventaTable').on('draw.dt', function() {
                 $('.venta_producto').select2({
                     theme: 'bootstrap-5',
+                    dropdownCssClass: 'custom-venta_producto',
                     delay: 250,
                     minimumInputLength: 1,
                     ajax: {
@@ -194,7 +197,7 @@ function ventaInit () {
         columns: [
             {"data":'nombre'},
             {"data": function (row, type, set){
-                return `<input type="number" class="form-control form-control-sm" style="min-width: 100px;" value="0" onfocus="focusFormaPago(${row.id})" onfocusout="calcularVentaPagos(${row.id})" onkeypress="changeFormaPago(${row.id}, event)" id="venta_forma_pago_${row.id}">`;
+                return `<input type="number" class="form-control form-control-sm" style="min-width: 100px; font-size: initial; font-weight: 600; text-align: right;" value="0" onfocus="focusFormaPago(${row.id})" onfocusout="calcularVentaPagos(${row.id})" onkeypress="changeFormaPago(${row.id}, event)" id="venta_forma_pago_${row.id}">`;
             }},
         ],
     });
@@ -268,6 +271,26 @@ function ventaInit () {
         $comboCliente.select2("open");
     },10);
 }
+
+$(document).on('keydown', '.custom-venta_producto .select2-search__field', function (event) {
+    var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
+
+    if (total > 0) {
+
+        if (abrirFormasPago) {
+            document.getElementById('crearCapturaVenta').click();
+            $(".venta_producto").select2('close');
+            abrirFormasPago = false;
+            return;
+        }
+        
+        abrirFormasPago = true;
+
+        setTimeout(function(){
+            abrirFormasPago = false;
+        },500);
+    }
+});
 
 function consecutivoSiguienteVenta() {
     var id_resolucion = $('#id_resolucion_venta').val();
@@ -480,6 +503,12 @@ function calcularProductoVenta (idRow) {
 function mostrarValoresVentas () {
     var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
 
+    if (descuento) $('#totales_descuento').show();
+    else $('#totales_descuento').hide();
+
+    if (retencion) $('#totales_retencion').show();
+    else $('#totales_retencion').hide();
+
     $("#venta_total_iva").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(iva));
     $("#venta_total_descuento").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(descuento));
     $("#venta_total_retencion").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(retencion));
@@ -529,7 +558,7 @@ function totalValoresVentas() {
         $("#crearCapturaVentaDisabled").show();
     }
 
-    return [iva, retencion, descuento, total+iva, valorBruto];
+    return [iva, retencion, descuento, total, valorBruto];
 }
 
 function changeProductoVenta (idRow) {
@@ -582,14 +611,11 @@ function changeProductoVenta (idRow) {
 
 function CantidadVentakeyDown (idRow, event) {
     if(event.keyCode == 13){
-
+        
         var dataProductos = $('#venta_producto_'+idRow).select2("data")[0];
         var existencias = parseInt($('#venta_existencia_'+idRow).val());
         var cantidad = parseInt($('#venta_cantidad_'+idRow).val());
-        console.log('existencias: ',existencias);
-        console.log('cantidad: ',cantidad);
         if (cantidad > existencias) {
-            console.log('if');
             $('#venta_cantidad_'+idRow).val(existencias);
             setTimeout(function(){
                 $('#venta_cantidad_'+idRow).focus();
@@ -597,7 +623,6 @@ function CantidadVentakeyDown (idRow, event) {
             },10);
 
         } else {
-            console.log('else');
             calcularProductoVenta(idRow);
             addRowProductoVenta();
         }
@@ -683,41 +708,60 @@ function loadFormasPago() {
             venta_table_pagos.row(0).remove().draw();
         }
     }
-    venta_table_pagos.ajax.reload();
+    venta_table_pagos.ajax.reload(function(res) {
+        setTimeout(function(){
+            $('#venta_forma_pago_'+res.data[0].id).focus();
+            $('#venta_forma_pago_'+res.data[0].id).select();
+        },250);
+    });
 }
 
 $(document).on('click', '#crearCapturaVenta', function () {
     loadFormasPago();
     var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
-    $('#total_pagado_venta').val(0);
-    $('#total_faltante_venta').val(total);
+
+    document.getElementById('total_pagado_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
+    document.getElementById('total_faltante_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+    document.getElementById('total_cambio_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
+
     $("#ventaFormModal").modal('show');
 });
 
 function focusFormaPago(idFormaPago) {
-    var totalFaltante = parseFloat($('#total_faltante_venta').val());
-    var pagoActual = parseInt($('#venta_forma_pago_'+idFormaPago).val());
-    $('#venta_forma_pago_'+idFormaPago).val(totalFaltante + pagoActual);
+    var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
+    var [totalEfectivo, totalOtrosPagos] = totalFormasPagoVentas(idFormaPago);
+    var totalFactura = total - (totalEfectivo + totalOtrosPagos);
+
+    $('#venta_forma_pago_'+idFormaPago).val(totalFactura < 0 ? 0 : totalFactura);
     $('#venta_forma_pago_'+idFormaPago).select();
 }
 
 function calcularVentaPagos(idFormaPago) {
+
     $('#total_faltante_venta').removeClass("is-invalid");
 
     var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
     var [totalEfectivo, totalOtrosPagos] = totalFormasPagoVentas();
     var totalFaltante = total - (totalEfectivo + totalOtrosPagos);
+    
+    if ((totalOtrosPagos < total) && totalOtrosPagos + totalEfectivo >= total) {
+        var totalCambio = (totalEfectivo + totalOtrosPagos) - total;
 
-    if ((totalEfectivo + totalOtrosPagos) > total) {
-        $('#venta_forma_pago_'+idFormaPago).val(totalFaltante < 0 ? 0 : totalFaltante);
-        $('#venta_forma_pago_'+idFormaPago).select();
+        document.getElementById('total_cambio_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalCambio);
     } else {
-        $('#total_pagado_venta').val(totalEfectivo + totalOtrosPagos);
-        $('#total_faltante_venta').val(totalFaltante < 0 ? 0 : totalFaltante);
+        if (totalFaltante < 0) {
+            $('#venta_forma_pago_'+idFormaPago).val(totalFaltante * -1);
+            $('#venta_forma_pago_'+idFormaPago).select();
+        }
     }
+    var totalPagado = totalFaltante < 0 ? total : totalEfectivo + totalOtrosPagos;
+    var totalFaltante = totalFaltante < 0 ? 0 : totalFaltante;
+
+    document.getElementById('total_pagado_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalPagado);
+    document.getElementById('total_faltante_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalFaltante);
 }
 
-function totalFormasPagoVentas() {
+function totalFormasPagoVentas(idFormaPago = null) {
     var totalEfectivo = 0;
     var totalOtrosPagos = 0;
 
@@ -725,9 +769,10 @@ function totalFormasPagoVentas() {
 
     if(dataPagoVenta.length > 0) {
         for (let index = 0; index < dataPagoVenta.length; index++) {
-
+            
             var ventaPago = parseFloat($('#venta_forma_pago_'+dataPagoVenta[index].id).val());
-
+            
+            if (idFormaPago && idFormaPago == dataPagoVenta[index].id) continue;
             if (dataPagoVenta[index].id == 1) totalEfectivo+= ventaPago;
             else totalOtrosPagos+= ventaPago;
         }
@@ -886,8 +931,17 @@ function getProductosVenta() {
 }
 
 function changeFormaPago(idFormaPago, event) {
-    console.log('changeFormaPago: ',idFormaPago);
+
     if(event.keyCode == 13){
-        calcularVentaPagos(idFormaPago)
+        if (guardarVenta) {
+            document.getElementById('saveVenta').click();
+            return;
+        }
+        calcularVentaPagos(idFormaPago);
+        guardarVenta = true;
+
+        setTimeout(function(){
+            guardarVenta = false;
+        },500);
     }
 }

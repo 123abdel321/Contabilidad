@@ -67,7 +67,11 @@
 				</tr>
                 <tr>
                     <td style="width:100%;">
-                        <img style="height:65px;" src="https://bucketlistardatos.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}" />
+                        @if ($empresa->logo)
+                            <img style="height:65px;" src="https://bucketlistardatos.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}" />
+                        @else
+                            <img style="height:65px;" src="/img/logo_contabilidad.png" />
+                        @endif
                     </td>
                 </tr>
                 <tr>
@@ -180,12 +184,24 @@
             <tbody>
                 @if (count($pagos) > 0)
                     @foreach ($pagos as $pago)
-                        <tr>
-                            <td class="font-13" style="width:55%;">{{ $pago->forma_pago->nombre }}</td>
-                            <td class="font-13" style="width:45%;text-align:right;">{{ number_format($pago->valor) }}</td>
-                        </tr>
+                        @if ($pago->forma_pago->id == 1)
+                            <tr>
+                                <td class="font-13" style="width:55%;">{{ $pago->forma_pago->nombre }}</td>
+                                <td class="font-13" style="width:45%;text-align:right;">{{ number_format($pago->valor + $factura->total_cambio) }}</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td class="font-13" style="width:55%;">{{ $pago->forma_pago->nombre }}</td>
+                                <td class="font-13" style="width:45%;text-align:right;">{{ number_format($pago->valor) }}</td>
+                            </tr>
+                        @endif
                     @endforeach
                 @endif
+                <tr>
+                    <td class="font-13" style="width:55%;">CAMBIO:</td>
+                    <td class="font-13" style="width:45%;text-align:right;">{{ number_format($factura->total_cambio) }}</td>
+                </tr>
+                
                 <tr>
                     <td class="font-13" style="width:55%;">TOTAL: </td>
                     <td class="font-13" style="width:45%;text-align:right;">{{ number_format($pagos->sum('valor')) }}</td>

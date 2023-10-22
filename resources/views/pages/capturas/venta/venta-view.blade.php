@@ -65,6 +65,16 @@
         margin-bottom: 10px;
     }
 
+    #ventaFormaPago tbody>tr.odd {
+        font-size: initial;
+        font-weight: 600;
+    }
+
+    #ventaFormaPago tbody>tr.even {
+        font-size: initial;
+        font-weight: 600;
+    }
+
 </style>
 
 <div class="container-fluid py-2">
@@ -78,36 +88,62 @@
             </div>
         </div>
 
-        <div class="card cardTotalVenta" style="content-visibility: auto; overflow: auto; border-radius: 20px 20px 0px 0px;">
-            <div class="row" style="text-align: -webkit-center;">
-                <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">SUB TOTAL</p>
-                    <h6 id="venta_sub_total" style="color: #0002ff; margin-bottom: 0px;">0</h6>
-                </div>
-                <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">IVA</p>
-                    <h6 id="venta_total_iva" style="color: #0002ff; margin-bottom: 0px;">0</h6>
-                </div>
-                <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">DESCUENTO</p>
-                    <h6 id="venta_total_descuento" style="color: #0002ff; margin-bottom: 0px;">0</h6>
-                </div>
-                <div class="col-6 col-md col-sm" style="border-right: solid 1px #787878;">
-                    <p id="venta_texto_retencion" style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">RETENCIÓN</p>
-                    <h6 id="venta_total_retencion" style="color: #0002ff; margin-bottom: 0px;">0</h6>
-                </div>
-                <div class="col-12 col-md- col-sm">
-                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold; margin-bottom: 0px;">TOTAL</p>
-                    <h6 id="venta_total_valor" style="color: #0002ff; margin-bottom: 0px;">0</h6>
-                </div>
-            </div>
-        </div>
-        <div id="card-venta" class="card mb-4" style="content-visibility: auto; overflow: auto; border-radius: 0px 0px 20px 20px;">
+        <div id="card-venta" class="card mb-4" style="content-visibility: auto; overflow: auto; border-radius: 20px;">
             @include('pages.capturas.venta.venta-table')
         </div>
     </div>
 
     @include('pages.capturas.venta.venta-pagos')
+
+    <div class="card mb-4">
+        <div class="row" style="text-align: -webkit-center; margin-top: 5px;">
+            <div class="row col-12 col-sm-6 col-md-6">
+            </div>
+            <div class="row col-12 col-sm-6 col-md-6">
+                <div class="row col-12">
+                    <div class="col-6">
+                        <h6>SUB TOTAL: </h6>
+                    </div>
+                    <div class="col-6">
+                        <h6 style="float: right;" id="venta_sub_total">0.00</h6>
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="col-6">
+                        <h6>IVA: </h6>
+                    </div>
+                    <div class="col-6">
+                        <h6 style="float: right;" id="venta_total_iva">0.00</h6>
+                    </div>
+                </div>
+                <div id="totales_descuento" class="row col-12" style="display: none;">
+                    <div class="col-6">
+                        <h6>DESCUENTO: </h6>
+                    </div>
+                    <div class="col-6">
+                        <h6 style="float: right;" id="venta_total_descuento">0.00</h6>
+                    </div>
+                </div>
+                <div id="totales_retencion" class="row col-12" style="display: none;">
+                    <div class="col-6">
+                        <h6 id="venta_texto_retencion">RETENCION: </h6>
+                    </div>
+                    <div class="col-6">
+                        <h6 style="float: right;" id="venta_total_retencion">0.00</h6>
+                    </div>
+                </div>
+                <div style="width: 98%; height: 1px; border: 1px solid #e3e3e3; margin-top: 5px; margin-bottom: 10px; margin-left: 15px;"></div>
+                <div class="row col-12">
+                    <div class="col-6">
+                        <h6>TOTAL: </h6>
+                    </div>
+                    <div class="col-6">
+                        <h6 style="float: right;" id="venta_total_valor">0.00</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');

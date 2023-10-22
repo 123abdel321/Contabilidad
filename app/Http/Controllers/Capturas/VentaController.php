@@ -31,6 +31,10 @@ class VentaController extends Controller
     protected $bodega = null;
     protected $resolucion = null;
 	protected $messages = null;
+    protected $totalesPagos = [
+        'total_efectivo' => 0,
+        'total_otrospagos' => 0,
+    ];
     protected $totalesFactura = [
         'tope_retencion' => 0,
         'porcentaje_rete_fuente' => 0,
@@ -122,6 +126,7 @@ class VentaController extends Controller
             ->first();
 
         $consecutivo = $this->getNextConsecutive($this->resolucion->comprobante->id, $request->get('fecha_manual'));
+        
         $request->request->add([
             'id_comprobante' => $this->resolucion->comprobante->id,
             'consecutivo' => $consecutivo
@@ -263,14 +268,15 @@ class VentaController extends Controller
             //AGREGAR FORMAS DE PAGO
             foreach ($request->get('pagos') as $pago) {
                 $pago = (object)$pago;
+                $pagoValor = $pago->id == 1 ? $pago->valor - $this->totalesPagos['total_cambio'] : $pago->valor;
 
                 $formaPago = $this->findFormaPago($pago->id);
-                $totalProductos-= $pago->valor;
+                $totalProductos-= $pagoValor;
 
                 FacVentaPagos::create([
                     'id_venta' => $venta->id,
                     'id_forma_pago' => $formaPago->id,
-                    'valor' => $pago->valor,
+                    'valor' => $pagoValor,
                     'saldo' => $totalProductos,
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
@@ -282,8 +288,8 @@ class VentaController extends Controller
                     'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $venta->id_centro_costos : null,
                     'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
                     'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $venta->documento_referencia : null,
-                    'debito' => $formaPago->cuenta->naturaleza_cuenta == PlanCuentas::DEBITO ? $pago->valor : 0,
-                    'credito' => $formaPago->cuenta->naturaleza_cuenta == PlanCuentas::CREDITO ? $pago->valor : 0,
+                    'debito' => $formaPago->cuenta->naturaleza_cuenta == PlanCuentas::DEBITO ? $pagoValor : 0,
+                    'credito' => $formaPago->cuenta->naturaleza_cuenta == PlanCuentas::CREDITO ? $pagoValor : 0,
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
@@ -383,6 +389,7 @@ class VentaController extends Controller
     private function createFacturaVenta ($request)
     {
         $this->calcularTotales($request->get('productos'));
+        $this->calcularFormasPago($request->get('pagos'));
 
         $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
 
@@ -399,6 +406,7 @@ class VentaController extends Controller
             'total_iva' => $this->totalesFactura['total_iva'],
             'total_descuento' => $this->totalesFactura['total_descuento'],
             'total_rete_fuente' => $this->totalesFactura['total_rete_fuente'],
+            'total_cambio' => $this->totalesPagos['total_cambio'],
             'porcentaje_rete_fuente' => $this->totalesFactura['porcentaje_rete_fuente'],
             'total_factura' => $this->totalesFactura['total_factura'],
             'observacion' => $request->get('observacion'),
@@ -407,6 +415,23 @@ class VentaController extends Controller
         ]);
 
         return $venta;
+    }
+
+    public function calcularFormasPago($pagos)
+    {
+        $totalCambio = 0;
+        $totalPagos = 0;
+        foreach ($pagos as $pago) {
+            $pago = (object)$pago;
+            $totalPagos+= $pago->valor;
+            if ($pago->id == 1) $this->totalesPagos['total_efectivo']+= $pago->valor;
+            else $this->totalesPagos['total_otrospagos']+= $pago->valor;
+        }
+        if ($this->totalesFactura['total_factura'] < $totalPagos) {
+            $totalCambio = $totalPagos - $this->totalesFactura['total_factura'];
+        }
+        
+        $this->totalesPagos['total_cambio'] = $totalCambio;
     }
 
     public function showPdf(Request $request, $id)
