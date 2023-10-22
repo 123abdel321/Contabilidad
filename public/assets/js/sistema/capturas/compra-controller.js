@@ -493,9 +493,12 @@ function saveCompra() {
                 $comboProveedor.select2("open");
             },10);
         } else {
-            $('#crearCapturaCompra').show();
-            $('#iniciarCapturaCompra').show();
-            $('#iniciarCapturaCompraLoading').hide();
+            $("#agregarCompra").show();
+            $("#crearCapturaCompra").show();
+            $("#iniciarCapturaCompra").hide();
+            $("#cancelarCapturaCompra").show();
+            $("#crearCapturaCompraDisabled").hide();
+            $("#iniciarCapturaCompraLoading").hide();
             
             var mensaje = res.mensages;
             var errorsMsg = "";
@@ -508,12 +511,12 @@ function saveCompra() {
             agregarToast('error', 'Creación errada', errorsMsg);
         }
     }).fail((err) => {
-        $("#agregarDocumentos").show();
-        $("#crearCapturaDocumentos").show();
-        $("#iniciarCapturaDocumentos").hide();
-        $("#cancelarCapturaDocumentos").show();
-        $("#crearCapturaDocumentosDisabled").hide();
-        $("#iniciarCapturaDocumentosLoading").hide();
+        $("#agregarCompra").show();
+        $("#crearCapturaCompra").show();
+        $("#iniciarCapturaCompra").hide();
+        $("#cancelarCapturaCompra").show();
+        $("#crearCapturaCompraDisabled").hide();
+        $("#iniciarCapturaCompraLoading").hide();
 
         var mensaje = err.responseJSON.message;
         var errorsMsg = "";
