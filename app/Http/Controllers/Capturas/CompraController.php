@@ -100,7 +100,7 @@ class CompraController extends Controller
                 'consecutivo' => $consecutivo
             ]);
         }
-
+        
         $rules = [
             'id_proveedor' => 'required|exists:sam.nits,id',
             'id_bodega' => 'required|exists:sam.fac_bodegas,id',
@@ -113,10 +113,11 @@ class CompraController extends Controller
                 'required',
                 'exists:sam.fac_productos,id',
                 function ($attribute, $value, $fail) {
+
 					$producto = FacProductos::whereId($value)
                         ->with('familia')
                         ->first();
-
+                    
                     if (!$producto->familia->id_cuenta_compra) {
                         $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta compra configurada");
                     }
@@ -145,6 +146,7 @@ class CompraController extends Controller
 
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA COMPRAR
+            
             $compra = $this->createFacturaCompra($request);
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE COMPRAS
@@ -154,7 +156,7 @@ class CompraController extends Controller
                 $request->get('fecha_manual'),
                 $request->get('consecutivo')
             );
-
+            
             foreach ($request->get('productos') as $producto) {
                 $producto = (object)$producto;
     
@@ -182,23 +184,25 @@ class CompraController extends Controller
                 ]);
 
                 //AGREGAR MOVIMIENTO CONTABLE
+                
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
                     $cuentaRecord = $productoDb->familia->{$cuentaKey};
-    
-                    $keyTotalItem = $cuenta["valor"];
-    
-                    $doc = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaRecord->id,
-                        "id_nit" => $cuentaRecord->exige_nit ? $compra->id_proveedor : null,
-                        "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $compra->id_centro_costos : null,
-                        "concepto" => 'COMPRA: '.$cuentaRecord->exige_concepto ? $nit->nombre_nit.' - '.$compra->documento_referencia : null,
-                        "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $compra->documento_referencia : null,
-                        "debito" => $cuentaRecord->naturaleza_cuenta == PlanCuentas::DEBITO ? $producto->{$keyTotalItem} : 0,
-                        "credito" => $cuentaRecord->naturaleza_cuenta == PlanCuentas::CREDITO ? $producto->{$keyTotalItem} : 0,
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_cuenta);
+                    
+                    if ($cuentaRecord) {
+                        $keyTotalItem = $cuenta["valor"];
+                        $doc = new DocumentosGeneral([
+                            "id_cuenta" => $cuentaRecord->id,
+                            "id_nit" => $cuentaRecord->exige_nit ? $compra->id_proveedor : null,
+                            "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $compra->id_centro_costos : null,
+                            "concepto" => 'COMPRA: '.$cuentaRecord->exige_concepto ? $nit->nombre_nit.' - '.$compra->documento_referencia : null,
+                            "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $compra->documento_referencia : null,
+                            "debito" => $cuentaRecord->naturaleza_cuenta == PlanCuentas::DEBITO ? $producto->{$keyTotalItem} : 0,
+                            "credito" => $cuentaRecord->naturaleza_cuenta == PlanCuentas::CREDITO ? $producto->{$keyTotalItem} : 0,
+                            "created_by" => request()->user()->id,
+                            "updated_by" => request()->user()->id
+                        ]);
+                        $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_cuenta);
+                    }
                 }
 
                 //AGREGAR MOVIMIENTO BODEGA
@@ -232,6 +236,7 @@ class CompraController extends Controller
                 $bodegaProducto->cantidad+= $producto->cantidad;
                 $bodegaProducto->save();
             }
+            
             //AGREGAR RETEFUENTE
             if ($this->totalesFactura['total_rete_fuente']) {
                 $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();

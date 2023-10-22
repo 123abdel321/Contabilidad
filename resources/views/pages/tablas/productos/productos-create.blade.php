@@ -42,6 +42,14 @@
                             El campo Familia es requerido
                         </div>
                     </div>
+
+                    <div class="form-group col-6 col-sm-6 col-md-6" >
+                        <label for="example-text-input" class="form-control-label">Costo compra</label>
+                        <input type="number" class="form-control form-control-sm" name="precio_inicial" id="precio_inicial" onfocusout="addPrecioInicialProducto()" value="0" required>
+                        <div class="invalid-feedback">
+                            El campo Precio inicial es requerido
+                        </div>
+                    </div>
     
                     <div class="form-group col-6 col-sm-6 col-md-6" >
                         <label for="example-text-input" class="form-control-label">Valor venta</label>
@@ -58,15 +66,7 @@
                             El campo Precio minimo es requerido
                         </div>
                     </div>
-    
-                    <div class="form-group col-6 col-sm-6 col-md-6" >
-                        <label for="example-text-input" class="form-control-label">Costo compra</label>
-                        <input type="number" class="form-control form-control-sm" name="precio_inicial" id="precio_inicial" onfocusout="addPrecioInicialProducto()" value="0" required>
-                        <div class="invalid-feedback">
-                            El campo Precio inicial es requerido
-                        </div>
-                    </div>
-    
+
                     <div class="form-group col-6 col-sm-6 col-md-6 row" style="margin-bottom: 0.1rem !important;" id="item-maneja-variante">
                         <label for="example-text-input" class="form-control-label">Maneja variantes</label>
                         <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 15px; cursor: pointer;">
