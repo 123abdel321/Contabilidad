@@ -307,9 +307,23 @@ function ventaInit () {
 
     consecutivoSiguienteVenta();
 
-    setTimeout(function(){
-        $comboCliente.select2("open");
-    },10);
+    if (primeraNit) {
+        var dataCliente = {
+            id: primeraNit.id,
+            text: primeraNit.numero_documento + ' - ' + primeraNit.nombre_completo
+        };
+        var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
+        $comboCliente.append(newOption).trigger('change');
+        $comboCliente.val(dataCliente.id).trigger('change');
+        
+        addRowProductoVenta();
+
+    } else {
+        setTimeout(function(){
+            $comboCliente.select2("open");
+        },10);
+    }
+
 }
 
 $(document).on('keydown', '.custom-venta_producto .select2-search__field', function (event) {

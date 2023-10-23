@@ -138,6 +138,7 @@
     </div>
 
     <script>
+        var primeraNit = JSON.parse('<?php echo $cliente; ?>');
         var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');
         var primeraResolucionVenta = JSON.parse('<?php echo $resolucion; ?>');
         var agregarDescuento = '<?php echo auth()->user()->can('ventas descuento'); ?>';
