@@ -45,7 +45,7 @@
 
                     <div class="form-group col-6 col-sm-6 col-md-6" >
                         <label for="example-text-input" class="form-control-label">Costo compra</label>
-                        <input type="number" class="form-control form-control-sm" name="precio_inicial" id="precio_inicial" onfocusout="addPrecioInicialProducto()" value="0" required>
+                        <input type="number" class="form-control form-control-sm" name="precio_inicial" id="precio_inicial" onfocus="this.select();" onfocusout="addPrecioInicialProducto()" onkeypress="changeCostoCompra(event)" value="0" required>
                         <div class="invalid-feedback">
                             El campo Precio inicial es requerido
                         </div>
@@ -53,7 +53,7 @@
     
                     <div class="form-group col-6 col-sm-6 col-md-6" >
                         <label for="example-text-input" class="form-control-label">Valor venta</label>
-                        <input type="number" class="form-control form-control-sm" name="precio_producto" id="precio_producto" onfocusout="addPrecioProducto()" value="0" required>
+                        <input type="number" class="form-control form-control-sm" name="precio_producto" id="precio_producto" onfocus="this.select();" onfocusout="actualizarDatosProducto()" onkeypress="changeValorVenta(event)" value="0" required>
                         <div class="invalid-feedback">
                             El campo Precio es requerido
                         </div>
@@ -61,21 +61,37 @@
     
                     <div class="form-group col-6 col-sm-6 col-md-6">
                         <label for="example-text-input" class="form-control-label">Precio minimo</label>
-                        <input type="number" class="form-control form-control-sm" name="precio_minimo" id="precio_minimo" onfocusout="addPrecioMinimoProducto()" value="0" required>
+                        <input type="number" class="form-control form-control-sm" name="precio_minimo" id="precio_minimo" onfocus="this.select();" onfocusout="actualizarDatosProducto()" onkeypress="changePrecioMinimo(event)" value="0" required>
                         <div class="invalid-feedback">
                             El campo Precio minimo es requerido
                         </div>
                     </div>
 
+                    <div class="form-group col-6 col-sm-6 col-md-6">
+                        <label for="example-text-input" class="form-control-label">Porcentaje utilidad</label>
+                        <input type="number" class="form-control form-control-sm" name="porcentaje_utilidad" min="0" id="porcentaje_utilidad" onfocus="this.select();" onfocusout="actualizarDatosProducto()" onkeypress="changePorcentajeUtilidad(event)" value="0" required>
+                        <div class="invalid-feedback">
+                            El campo Porcentaje utilidad es requerido
+                        </div>
+                    </div>
+
+                    <div class="form-group col-6 col-sm-6 col-md-6">
+                        <label for="example-text-input" class="form-control-label">Valor utilidad</label>
+                        <input type="number" class="form-control form-control-sm" name="valor_utilidad" id="valor_utilidad" onfocus="this.select();" onkeypress="changeValorUtilidad(event)" onfocusout="actualizarDatosProducto()" value="0" required>
+                        <div class="invalid-feedback">
+                            El campo Valor utilidad es requerido
+                        </div>
+                    </div>
+
                     <div class="form-group col-6 col-sm-6 col-md-6 row" style="margin-bottom: 0.1rem !important;" id="item-maneja-variante">
                         <label for="example-text-input" class="form-control-label">Maneja variantes</label>
-                        <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 15px; cursor: pointer;">
+                        <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 15px; cursor: pointer; text-align: left;">
                             <input class="form-check-input" type="radio" name="producto_variantes" id="producto_variantes1" style="font-size: 11px; cursor: pointer;" checked>
                             <label class="form-check-label" for="producto_variantes1" style="font-size: 11px;">
                                 Producto sin variantes
                             </label>
                         </div>
-                        <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 15px; cursor: pointer;">
+                        <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 15px; cursor: pointer; text-align: left;">
                             <input class="form-check-input" type="radio" name="producto_variantes" id="producto_variantes2" style="font-size: 11px; cursor: pointer;">
                             <label class="form-check-label" for="producto_variantes2" style="font-size: 11px;">
                                 Productos con variantes 
@@ -214,10 +230,10 @@
                         <thead style="background-color: #7ea1ff2b;">
                             <tr>
                                 <th style="border-radius: 15px 0px 0px 0px !important;">Variantes</th>
-                                <th>Precio unidad</th>
+                                <th>Código</th>
+                                <th>Costo compra</th>
                                 <th>Precio minimo</th>
                                 <th>Precio Inicial</th>
-                                <th>Código</th>
                                 <th>Bodegas</th>
                                 <th style="border-radius: 0px 15px 0px 0px !important;">Acciones</th>
                             </tr>
