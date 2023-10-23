@@ -25,6 +25,7 @@ return new class extends Migration
             $table->decimal('total_iva', 15);
             $table->decimal('total_descuento', 15);
             $table->decimal('total_rete_fuente', 15);
+            $table->decimal('total_cambio', 15)->default(0);
             $table->decimal('porcentaje_rete_fuente', 15);
             $table->decimal('total_factura', 15);
             $table->mediumText('observacion')->nullable();

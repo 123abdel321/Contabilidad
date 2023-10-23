@@ -29,23 +29,33 @@
                                 El campo es requerido
                             </div>
                         </div>
+
+                        <div class="row col-12 col-sm-12 col-md-12">
+                            <div class="col-6">
+                                <h6>Total faltante: </h6>
+                            </div>
+                            <div class="col-6">
+                                <h6 style="float: right;" id="total_faltante_venta"></h6>
+                            </div>
+                        </div>
+
+                        <div class="row col-12 col-sm-12 col-md-12">
+                            <div class="col-6">
+                                <h6>Total pagado: </h6>
+                            </div>
+                            <div class="col-6">
+                                <h6 style="float: right;" id="total_pagado_venta"> 0.00</h6>
+                            </div>
+                        </div>
                         
-                        <div class="form-group col-12 col-sm-6 col-md-6">
-                            <label for="example-text-input" class="form-control-label">Total pagado</label>
-                            <input type="number" class="form-control form-control-sm" name="total_pagado_venta" id="total_pagado_venta" disabled>
-                            <div class="invalid-feedback">
-                                El campo es requerido
+                        <div class="row col-12 col-sm-12 col-md-12">
+                            <div class="col-6">
+                                <h6>Cambio: </h6>
+                            </div>
+                            <div class="col-6">
+                                <h6 style="float: right;" id="total_cambio_venta"></h6>
                             </div>
                         </div>
-
-                        <div class="form-group col-12 col-sm-6 col-md-6">
-                            <label for="example-text-input" class="form-control-label">Total faltante</label>
-                            <input type="number" class="form-control form-control-sm" name="total_faltante_venta" id="total_faltante_venta" disabled>
-                            <div class="invalid-feedback">
-                                El total faltando debe ser 0
-                            </div>
-                        </div>
-
                     </div>
                 </form>
             </div>

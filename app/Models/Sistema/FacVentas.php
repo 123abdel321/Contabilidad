@@ -26,6 +26,7 @@ class FacVentas extends Model
         'total_iva',
         'total_descuento',
         'total_rete_fuente',
+        'total_cambio',
         'porcentaje_rete_fuente',
         'total_factura',
         'observacion',

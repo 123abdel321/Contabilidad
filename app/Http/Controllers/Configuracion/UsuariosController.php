@@ -13,6 +13,7 @@ use Spatie\Permission\Models\Permission;
 use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacBodegas;
+use App\Models\Empresas\UsuarioEmpresa;
 use App\Models\Sistema\FacResoluciones;
 
 
@@ -80,11 +81,13 @@ class UsuariosController extends Controller
             );
 
         if ($searchValue) {
-            $usuarios->where('username', 'like', '%' .$searchValue. '%')
+            $usuarios = $usuarios->where('username', 'like', '%' .$searchValue. '%')
                 ->orWhere('firstname', 'like', '%' .$searchValue. '%')
                 ->orWhere('lastname', 'like', '%' .$searchValue. '%')
                 ->orWhere('email', 'like', '%' .$searchValue. '%');
-        } 
+        }
+
+        $usuarios = $usuarios->where('id_empresa', $request->user()['id_empresa']);
 
         $usuariosTotals = $usuarios->get();
 

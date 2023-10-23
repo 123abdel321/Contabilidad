@@ -120,6 +120,9 @@ function documentosInit() {
             }
         }
     });
+
+    $('.water').hide();
+    documento_table.ajax.reload();
 }
 
 $('input[type=radio][name=tipo_factura]').change(function() {

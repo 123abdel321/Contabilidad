@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\FacBodegas;
+use App\Models\Sistema\FacProductosBodegas;
 
 class BodegasController extends Controller
 {
@@ -224,6 +225,27 @@ class BodegasController extends Controller
         }
 
         return $bodega->paginate(40);
+    }
+
+    public function existenciasProducto(Request $request)
+    {
+        $productoBodega = FacProductosBodegas::where('id_producto', $request->get('id_producto'))
+            ->where('id_bodega', $request->get('id_bodega'))
+            ->first();
+
+        if ($productoBodega) {
+            return response()->json([
+                'success'=>	true,
+                'data' => $productoBodega,
+                'message'=> 'Producto consultado con exito!'
+            ]);
+        }
+        
+        return response()->json([
+            'success'=>	true,
+            'data' => null,
+            'message'=> 'Producto consultado con exito!'
+        ]);
     }
 
 

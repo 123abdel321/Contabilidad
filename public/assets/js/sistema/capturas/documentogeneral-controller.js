@@ -520,7 +520,7 @@ function buscarFactura(idRow, event) {
                         $('#documento_load_'+idRow).hide();
                     }
                 });
-            },100);
+            },300);
         }
     }
 }

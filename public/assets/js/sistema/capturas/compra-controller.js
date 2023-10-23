@@ -309,7 +309,7 @@ function buscarFacturaCompra(event) {
             }else {
                 $('#documento_referencia_compra').removeClass("is-valid");
                 $('#documento_referencia_compra').addClass("is-invalid");
-                $("#error_documento_referencia_compra").text('La factura ');
+                $("#error_documento_referencia_compra").text('La factura No '+documento_referencia+' ya existe!');
             }
         }).fail((err) => {
             $('#documento_referencia_compra_loading').hide();
@@ -608,6 +608,12 @@ function calcularProducto (idRow) {
 
 function mostrarValoresCompras () {
     var [iva, retencion, descuento, total, valorBruto] = totalValoresCompras();
+
+    if (descuento) $('#totales_descuento_compra').show();
+    else $('#totales_descuento_compra').hide();
+
+    if (retencion) $('#totales_retencion_compra').show();
+    else $('#totales_retencion_compra').hide();
 
     $("#compra_total_iva").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(iva));
     $("#compra_total_descuento").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(descuento));
