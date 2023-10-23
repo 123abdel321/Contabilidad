@@ -86,6 +86,9 @@ function usuariosInit() {
             $("#id_bodega_usuario").val(data.ids_bodegas_responsable.split(',')).change();
             $("#id_resolucion_usuario").val(data.ids_resolucion_responsable.split(',')).change();
 
+            if (data.facturacion_rapida) $('#facturacion_rapida').prop('checked', true);
+            else $('#facturacion_rapida').prop('checked', false);
+
             clearPermisos();
 
             data.permissions.forEach(permiso => {

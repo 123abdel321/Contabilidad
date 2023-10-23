@@ -102,8 +102,6 @@
         </div>
     </div>
 
-    @include('pages.capturas.venta.venta-pagos')
-
     <div class="card mb-4">
         <div class="row card-body" style="content-visibility: auto; text-align: -webkit-center; margin-top: 5px;">
             <div class="col-12 col-sm-6 col-md-6">
@@ -120,11 +118,11 @@
                             <td><h6 style="float: right; font-size: 0.9rem;" id="venta_total_iva">0.00</h6></td>
                         </tr>
                         <tr id="totales_descuento" style="display: none;">
-                            <td><h6 style="font-size: 0.9rem;">DESCUENTO:: </h6></td>
+                            <td><h6 style="font-size: 0.9rem;">DESCUENTO: </h6></td>
                             <td><h6 style="float: right; font-size: 0.9rem;" id="venta_total_descuento">0.00</h6></td>
                         </tr>
                         <tr id="totales_retencion" style="display: none;">
-                            <td><h6 style="font-size: 0.9rem;" id="venta_texto_retencion">RETENCION:: </h6></td>
+                            <td><h6 style="font-size: 0.9rem;" id="venta_texto_retencion">RETENCION: </h6></td>
                             <td><h6 style="float: right; font-size: 0.9rem;" id="venta_total_retencion">0.00</h6></td>
                         </tr>
                         <tr>
@@ -137,12 +135,14 @@
         </div>
     </div>
 
+    @include('pages.capturas.venta.venta-pagos')
+
     <script>
         var primeraNit = JSON.parse('<?php echo $cliente; ?>');
         var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');
         var primeraResolucionVenta = JSON.parse('<?php echo $resolucion; ?>');
-        var agregarDescuento = '<?php echo auth()->user()->can('venta descuento'); ?>';
-        var ventaExistencias = '<?php echo auth()->user()->can('venta existencia'); ?>';
+        var agregarDescuento = '<?php echo auth()->user()->can("venta descuento"); ?>';
+        var ventaExistencias = '<?php echo auth()->user()->can("venta existencia"); ?>';
     </script>
     
 </div>
