@@ -2,6 +2,7 @@ var fecha = null;
 var venta_table = null;
 var venta_table_pagos = null;
 var validarFacturaVenta = null;
+var validarExistenciasProducto = null;
 var idVentaProducto = 0;
 var $comboResolucion = null;
 var $comboCliente = null;
@@ -9,6 +10,7 @@ var porcentajeRetencionVenta = 0;
 var topeRetencionVenta = 0;
 var guardarVenta = false;
 var abrirFormasPago = false;
+var key13PressNewRow = false;
 
 function ventaInit () {
 
@@ -43,7 +45,14 @@ function ventaInit () {
             },
             {//CANTIDAD
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="CantidadVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `
+                        <div class="input-group" style="min-width: 130px; height: 30px;">
+                            <input type="number" class="form-control form-control-sm" style="min-width: 110px; border-right: solid 1px #b3b3b3; border-top-right-radius: 10px; border-bottom-right-radius: 10px;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="cantidadVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>
+                            <i class="fa fa-spinner fa-spin fa-fw venta_producto_load" id="venta_producto_load_${idVentaProducto}" style="display: none;"></i>
+                            <div id="venta_cantidad_text_${idVentaProducto}" style="position: absolute; margin-top: 30px;" class="invalid-feedback">
+                            </div>
+                        </div>
+                    `;
                 }
             },
             {//COSTO
@@ -267,6 +276,37 @@ function ventaInit () {
         $comboBodega.val(dataBodega.id).trigger('change');
     }
 
+    var column2 = venta_table.column(2);
+    var column5 = venta_table.column(5);
+    var column6 = venta_table.column(6);
+
+    if (agregarDescuento){
+        column5.visible(true);
+        column6.visible(true);
+    } else {
+        column5.visible(false);
+        column6.visible(false);
+    }
+
+    if (ventaExistencias) column2.visible(true);
+    else column2.visible(false);
+
+    $('#id_cliente_venta').on('select2:close', function(event) {
+        var data = $(this).select2('data');
+        if(data.length){
+            document.getElementById('iniciarCapturaVenta').click();
+        }
+    });
+    
+    $('#id_resolucion_venta').on('select2:close', function(event) {
+        var data = $(this).select2('data');
+        if(data.length){
+            document.getElementById('iniciarCapturaVenta').click();
+        }
+    });
+
+    consecutivoSiguienteVenta();
+
     setTimeout(function(){
         $comboCliente.select2("open");
     },10);
@@ -274,21 +314,22 @@ function ventaInit () {
 
 $(document).on('keydown', '.custom-venta_producto .select2-search__field', function (event) {
     var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
-
-    if (total > 0) {
-
-        if (abrirFormasPago) {
-            document.getElementById('crearCapturaVenta').click();
-            $(".venta_producto").select2('close');
-            abrirFormasPago = false;
-            return;
+    if(event.keyCode == 13){
+        if (total > 0) {
+    
+            if (abrirFormasPago) {
+                document.getElementById('crearCapturaVenta').click();
+                $(".venta_producto").select2('close');
+                abrirFormasPago = false;
+                return;
+            }
+            
+            abrirFormasPago = true;
+    
+            setTimeout(function(){
+                abrirFormasPago = false;
+            },500);
         }
-        
-        abrirFormasPago = true;
-
-        setTimeout(function(){
-            abrirFormasPago = false;
-        },500);
     }
 });
 
@@ -319,20 +360,6 @@ function consecutivoSiguienteVenta() {
 
 $("#id_resolucion_venta").on('change', function(event) {
     consecutivoSiguienteVenta();
-});
-
-$('#id_cliente_venta').on('select2:close', function(event) {
-    var data = $(this).select2('data');
-    if(data.length){
-        document.getElementById('iniciarCapturaVenta').click();
-    }
-});
-
-$('#id_resolucion_venta').on('select2:close', function(event) {
-    var data = $(this).select2('data');
-    if(data.length){
-        document.getElementById('iniciarCapturaVenta').click();
-    }
 });
 
 $("#fecha_manual_venta").on('keydown', function(event) {
@@ -429,6 +456,7 @@ function addRowProductoVenta () {
         "id": idVentaProducto,
         "cantidad": 1,
         "costo": 0,
+        "existencias": 0,
         "porcentaje_descuento": 0,
         "valor_descuento": 0,
         "porcentaje_iva": 0,
@@ -470,7 +498,7 @@ $(document).on('click', '#agregarVentaProducto', function () {
     },100);
 });
 
-function calcularProductoVenta (idRow) {
+function calcularProductoVenta (idRow, validarCantidad = false) {
     var costoProducto = $('#venta_costo_'+idRow).val();
     var cantidadProducto = $('#venta_cantidad_'+idRow).val();
     var ivaProducto = $('#venta_iva_porcentaje_'+idRow).val();
@@ -479,6 +507,8 @@ function calcularProductoVenta (idRow) {
     var totalIva = 0;
     var totalDescuento = 0;
     var totalProducto = 0;
+
+    if (validarCantidad && !validarExistencias(idRow)) return;
     
     if (cantidadProducto > 0) {
         totalPorCantidad = cantidadProducto * costoProducto;
@@ -498,6 +528,119 @@ function calcularProductoVenta (idRow) {
     $('#venta_total_'+idRow).val(totalProducto);
 
     mostrarValoresVentas ();
+}
+
+function validarExistencias (idRow) {
+    var producto = $('#venta_producto_'+idRow).select2('data')[0];
+    var cantidad = $('#venta_cantidad_'+idRow).val();
+    var rowProductos = venta_table.rows().data();
+
+    if (producto !== undefined && producto.familia && producto.familia.inventario){
+
+        if (rowProductos.length > 1) {
+            consultarExistencias(idRow);
+            return false;
+        } else {
+            if (cantidad > parseInt(producto.inventarios[0].cantidad)) {
+                $('#venta_cantidad_text_'+idRow).text("Se ha superado las existencias");
+                $('#venta_cantidad_'+idRow).addClass("is-invalid");
+                $('#venta_cantidad_'+idRow).removeClass("is-valid");
+                $('#venta_cantidad_'+idRow).val(1);
+                setTimeout(function(){
+                    $('#venta_cantidad_'+idRow).focus();
+                    $('#venta_cantidad_'+idRow).select();
+                },10);
+                return false;
+            } else {
+                if (key13PressNewRow) {
+                    key13PressNewRow = false;
+                    calcularProductoVenta(idRow);
+                    addRowProductoVenta();
+                }
+                $('#venta_cantidad_'+idRow).removeClass("is-invalid");
+            }
+        }
+    } else if (producto !== undefined && !producto.familia) {
+        consultarExistencias(idRow);
+        return false;
+    }
+    return true;
+}
+
+function totalCantidadProducto(idRow) {
+    
+    var rowProductos = venta_table.rows().data();
+    var cantidadActualRow = parseInt($('#venta_cantidad_'+idRow).val());
+    var cantidadTotal = 0;
+
+    for (let index = 0; index < rowProductos.length; index++) {
+        var producto = $('#venta_producto_'+rowProductos[index].id).val();
+         
+        if (producto && rowProductos[index].id != idRow) {
+            var cantidad = parseInt($('#venta_cantidad_'+rowProductos[index].id).val());
+            cantidadTotal+= cantidad;
+        }
+    }
+
+    return [cantidadActualRow, cantidadTotal];
+}
+
+function consultarExistencias(idRow) {
+
+    var idproducto = $('#venta_producto_'+idRow).val();
+    var bodega = $('#id_bodega_venta').val();
+    var [cantidadActualRow, cantidadTotal] = totalCantidadProducto(idRow)
+
+    if (validarExistenciasProducto) {
+        validarExistenciasProducto.abort();
+    }
+    
+    $('#venta_producto_load_'+idRow).show();
+    setTimeout(function(){
+        validarExistenciasProducto = $.ajax({
+            url: base_url + 'existencias-producto',
+            method: 'GET',
+            data: {
+                id_producto: idproducto,
+                id_bodega: bodega
+            },
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            validarExistenciasProducto = null;
+            $('#venta_producto_load_'+idRow).hide();
+            if (res.data) {
+                if (cantidadActualRow + cantidadTotal > parseInt(res.data.cantidad)) {
+                    $('#venta_cantidad_text_'+idRow).text("Se ha superado las existencias");
+                    $('#venta_cantidad_'+idRow).addClass("is-invalid");
+                    $('#venta_cantidad_'+idRow).removeClass("is-valid");
+
+                    if (1 + cantidadTotal > parseInt(res.data.cantidad)) $('#venta_cantidad_'+idRow).val(0);
+                    else $('#venta_cantidad_'+idRow).val(1);
+                    
+                    setTimeout(function(){
+                        $('#venta_cantidad_'+idRow).focus();
+                        $('#venta_cantidad_'+idRow).select();
+                    },10);
+
+                    return false;
+                } else {
+                    $('#venta_cantidad_'+idRow).removeClass("is-invalid");
+                    if (key13PressNewRow) {
+                        key13PressNewRow = false;
+                        calcularProductoVenta(idRow);
+                        addRowProductoVenta();
+                    }
+                }
+            }
+            
+        }).fail((err) => {
+            $('#venta_producto_load_'+idRow).hide();
+            validarExistenciasProducto = null;
+            if(err.statusText != "abort") {
+            }
+        });
+    },300);
 }
 
 function mostrarValoresVentas () {
@@ -535,6 +678,7 @@ function totalValoresVentas() {
                 var totaSum = $('#venta_total_'+dataVenta[index].id).val();
                 var descSum = $('#venta_descuento_valor_'+dataVenta[index].id).val();
     
+                descSum= parseFloat(descSum ? descSum : 0);
                 iva+= parseFloat(ivaSum ? ivaSum : 0);
                 descuento+= parseFloat(descSum ? descSum : 0);
                 total+= parseFloat(totaSum ? totaSum : 0);
@@ -564,7 +708,7 @@ function totalValoresVentas() {
 function changeProductoVenta (idRow) {
     var data = $('#venta_producto_'+idRow).select2('data')[0];
 
-    if (data.length == 0) return
+    if (data.length == 0) return;
     
     if (data.inventarios.length > 0 && data.familia.inventario) {
         var totalInventario = parseFloat(data.inventarios[0].cantidad);
@@ -598,7 +742,6 @@ function changeProductoVenta (idRow) {
     $('#venta_cantidad_'+idRow).prop('disabled', false);
     $('#venta_costo_'+idRow).prop('disabled', false);
     
-    
     document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%';
         
     calcularProductoVenta(idRow);
@@ -609,23 +752,10 @@ function changeProductoVenta (idRow) {
     },10);
 }
 
-function CantidadVentakeyDown (idRow, event) {
+function cantidadVentakeyDown (idRow, event) {
     if(event.keyCode == 13){
-        
-        var dataProductos = $('#venta_producto_'+idRow).select2("data")[0];
-        var existencias = parseInt($('#venta_existencia_'+idRow).val());
-        var cantidad = parseInt($('#venta_cantidad_'+idRow).val());
-        if (cantidad > existencias) {
-            $('#venta_cantidad_'+idRow).val(existencias);
-            setTimeout(function(){
-                $('#venta_cantidad_'+idRow).focus();
-                $('#venta_cantidad_'+idRow).select();
-            },10);
-
-        } else {
-            calcularProductoVenta(idRow);
-            addRowProductoVenta();
-        }
+        key13PressNewRow = true;
+        if (!validarExistencias(idRow)) return;
     }
 }
 
@@ -708,12 +838,7 @@ function loadFormasPago() {
             venta_table_pagos.row(0).remove().draw();
         }
     }
-    venta_table_pagos.ajax.reload(function(res) {
-        setTimeout(function(){
-            $('#venta_forma_pago_'+res.data[0].id).focus();
-            $('#venta_forma_pago_'+res.data[0].id).select();
-        },250);
-    });
+    venta_table_pagos.ajax.reload();
 }
 
 $(document).on('click', '#crearCapturaVenta', function () {

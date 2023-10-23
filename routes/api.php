@@ -160,6 +160,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('bodega', 'update');
             Route::delete('bodega', 'delete');
             Route::get('bodega/combo-bodega', 'comboBodega');
+            Route::get('existencias-producto', 'existenciasProducto');
+            
         });
         //VARIANTES
         Route::controller(VariantesController::class)->group(function () {
