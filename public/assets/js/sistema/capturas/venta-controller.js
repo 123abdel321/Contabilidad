@@ -137,7 +137,7 @@ function ventaInit () {
 
                 var $container = '';
 
-                if (producto.familia.inventario) {
+                if (producto.familia.inventario && ventaExistencias) {
                     var $container = $(`
                         <div class="row">
                             <div class="col-3" style="display: flex; justify-content: center; align-items: center; padding-left: 0px;">
@@ -166,7 +166,7 @@ function ventaInit () {
                                     style="width: 40px; border-radius: 10%;"
                                     src="${urlImagen}" />
                             </div>
-                            <div class="col-9" style="padding-left: 0px !important">
+                            <div class="col-9" style="padding-left: 0px !important; align-self: center;">
                                 <div class="row">
                                     <div class="col-12" style="padding-left: 0px !important">
                                         <h6 style="font-size: 14px; margin-bottom: 0px; color: black;">${producto.text}</h6>
@@ -743,7 +743,7 @@ function changeProductoVenta (idRow) {
         }
     }
 
-    if (data.familia.id_cuenta_venta_descuento) {
+    if (data.familia.id_cuenta_venta_descuento && agregarDescuento) {
         $('#venta_descuento_valor_'+idRow).prop('disabled', false);
         $('#venta_descuento_porcentaje_'+idRow).prop('disabled', false);
     } else {

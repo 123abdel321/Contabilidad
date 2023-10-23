@@ -98,7 +98,7 @@
 
         <div id="card-venta" class="card mb-4" style="content-visibility: auto; overflow: auto; border-radius: 20px;">
             @include('pages.capturas.venta.venta-table')
-            <div style="padding: 10px;"></div>
+            <div style="padding: 5px;"></div>
         </div>
     </div>
 
@@ -141,8 +141,8 @@
         var primeraNit = JSON.parse('<?php echo $cliente; ?>');
         var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');
         var primeraResolucionVenta = JSON.parse('<?php echo $resolucion; ?>');
-        var agregarDescuento = '<?php echo auth()->user()->can('ventas descuento'); ?>';
-        var ventaExistencias = '<?php echo auth()->user()->can('ventas existencia'); ?>';
+        var agregarDescuento = '<?php echo auth()->user()->can('venta descuento'); ?>';
+        var ventaExistencias = '<?php echo auth()->user()->can('venta existencia'); ?>';
     </script>
     
 </div>

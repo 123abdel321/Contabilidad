@@ -48,7 +48,7 @@ class LoginController extends Controller
                 ->first();
                 
             $empresaSelect = Empresa::where('id', $empresa->id_empresa)->first();
-            
+            $user->id_empresa = $empresa->id_empresa;
             $user->has_empresa = $empresaSelect->token_db;
             $user->save();
 
