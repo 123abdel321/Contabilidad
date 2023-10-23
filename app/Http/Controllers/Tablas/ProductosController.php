@@ -140,6 +140,7 @@ class ProductosController extends Controller
 
             DB::connection('sam')->beginTransaction();
 
+            $porcentajeUtilidad = ((floatval($request->get('precio')) - floatval($request->get('precio_inicial'))) / floatval($request->get('precio_inicial'))) * 100;
             //CREAR PRODUCTO PRINCIPAL
             $productoPadre = FacProductos::create([
                 'id_familia' => $request->get('id_familia'),
@@ -148,7 +149,10 @@ class ProductosController extends Controller
                 'codigo' => $request->get('codigo'),
                 'nombre' => $request->get('nombre'),
                 'precio' => $request->get('precio'),
-                'precio_inicial' => $request->get('precio_minimo'),
+                'precio_minimo' => $request->get('precio_minimo'),
+                'precio_inicial' => $request->get('precio_inicial'),
+                'porcentaje_utilidad' => $porcentajeUtilidad,
+                'valor_utilidad' => floatval($request->get('precio_inicial')) * ($porcentajeUtilidad / 100),
                 'variante' => $request->get('variante'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id
@@ -193,14 +197,20 @@ class ProductosController extends Controller
     
                 if (count($productosVariantes) > 0) {
                     foreach ($productosVariantes as $producto) {
+
+                        $porcentajeUtilidadVariante = ((floatval($producto['precio']) - floatval($producto['precio_inicial'])) / floatval($producto['precio_inicial'])) * 100;
+
                         $productoVariante = FacProductos::create([
                             'id_familia' => $request->get('id_familia'),
                             'id_padre' => $productoPadre->id,
                             'tipo_producto' => $request->get('tipo_producto'),
                             'codigo' => $producto['codigo'],
                             'nombre' => $request->get('nombre') .' '. $this->nombreVariante($producto['variantes']),
-                            'precio' => $request->get('precio'),
-                            'precio_inicial' => $request->get('precio_minimo'),
+                            'precio' => $producto['precio'],
+                            'precio_inicial' => $producto['precio_inicial'],
+                            'precio_minimo' => $producto['precio_minimo'],
+                            'porcentaje_utilidad' => $porcentajeUtilidadVariante,
+                            'valor_utilidad' => floatval($producto['precio_inicial']) * ($porcentajeUtilidadVariante / 100),
                             'variante' => $request->get('variante'),
                             'created_by' => request()->user()->id,
                             'updated_by' => request()->user()->id

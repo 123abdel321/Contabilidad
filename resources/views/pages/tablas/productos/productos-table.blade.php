@@ -7,6 +7,8 @@
             <th>Tipo producto</th>
             <th>Familia</th>
             <th>Precio</th>
+            <th>% Utilidad</th>
+            <th>Valor Utilidad</th>
             <th>Bodegas</th>
             <th>Existencia</th>
             <th>Creación registro</th>

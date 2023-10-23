@@ -19,6 +19,8 @@ var nuevoProducto = {
     tipo_producto: 0,
     precio_minimo: 0,
     precio_inicial: 0,
+    porcentaje_utilidad: 0,
+    valor_utilidad: 0,
     inventarios: [],
     variante: false,
     variantes: [],
@@ -80,6 +82,10 @@ function productosInit() {
                 return '';
             }},
             {"data": "precio", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){
+                return parseInt(row.porcentaje_utilidad)+ '%';
+            }, className: 'dt-body-right'},
+            {"data": "valor_utilidad", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
                 var inventarios = row.inventarios
                 if (row.familia.inventario && inventarios.length > 0) {
@@ -150,6 +156,8 @@ function productosInit() {
                 tipo_producto: dataProducto.tipo_producto,
                 precio_minimo: parseFloat(dataProducto.precio_minimo),
                 precio_inicial: parseFloat(dataProducto.precio_inicial),
+                porcentaje_utilidad: parseFloat(dataProducto.porcentaje_utilidad),
+                valor_utilidad: parseFloat(dataProducto.valor_utilidad),
                 inventarios: asignarDatosInventario(dataProducto),
                 variante: isVariante(dataProducto),
                 variantes: asignarDatosVariantes(dataProducto),
@@ -179,9 +187,11 @@ function productosInit() {
             $('#id_producto_edit').val(dataProducto.id);
             $("#nombre_producto").val(dataProducto.nombre);
             $("#codigo_producto").val(dataProducto.codigo);
-            $("#precio_producto").val(dataProducto.precio);
-            $("#precio_minimo").val(dataProducto.precio_minimo);
-            $("#precio_inicial").val(dataProducto.precio_inicial);
+            $("#precio_producto").val(parseInt(dataProducto.precio));
+            $("#precio_minimo").val(parseInt(dataProducto.precio_minimo));
+            $("#precio_inicial").val(parseInt(dataProducto.precio_inicial));
+            $("#porcentaje_utilidad").val(parseInt(dataProducto.porcentaje_utilidad));
+            $("#valor_utilidad").val(parseInt(dataProducto.valor_utilidad));
 
             document.getElementById("producto_variantes1").disabled = false;
             document.getElementById("producto_variantes2").disabled = false;
@@ -231,6 +241,8 @@ function productosInit() {
                 document.getElementById("tipo_producto_producto").disabled = true;
                 document.getElementById("tipo_producto_servicio").disabled = true;
             }
+
+            $('.dtfh-floatingparent').hide();
 
         });
 
@@ -316,7 +328,17 @@ function productosInit() {
                     return '';
                 }
             },
-            {//PRECIO
+            {//CODIGO
+                "data": function (row, type, set, col){
+                    return `<input type="text" class="form-control form-control-sm" onfocusout="actualizarCodigo(${row.id})" id="prodvari-codigo_${row.id}" value="${row.codigo}">`
+                }
+            },
+            {//COSTO COMPRA
+                "data": function (row, type, set, col){
+                    return `<input type="number" class="form-control form-control-sm" onfocusout="actualizarPrecioInicial(${row.id})" id="prodvari-precioinicial_${row.id}" value="${row.precio_inicial}">`
+                }
+            },
+            {//VALOR VENTA
                 "data": function (row, type, set, col){
                     return `<input type="number" class="form-control form-control-sm" onfocusout="actualizarPrecio(${row.id})" id="prodvari-precio_${row.id}" value="${row.precio}">`
                 }
@@ -324,16 +346,6 @@ function productosInit() {
             {//PRECIO MINIMO
                 "data": function (row, type, set, col){
                     return `<input type="number" class="form-control form-control-sm" onfocusout="actualizarPrecioMaximo(${row.id})" id="prodvari-preciomaximo_${row.id}" value="${row.precio_minimo}">`
-                }
-            },
-            {//PRECIO INICIAL
-                "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" onfocusout="actualizarPrecioInicial(${row.id})" id="prodvari-precioinicial_${row.id}" value="${row.precio_inicial}">`
-                }
-            },
-            {//CODIGO
-                "data": function (row, type, set, col){
-                    return `<input type="text" class="form-control form-control-sm" onfocusout="actualizarCodigo(${row.id})" id="prodvari-codigo_${row.id}" value="${row.codigo}">`
                 }
             },
             {
@@ -735,6 +747,7 @@ $(document).on('click', '#cancelProducto', function () {
     $("#saveEditProducto").hide();
     $("#saveNewProducto").hide();
     $("#createProducto").show();
+    $('.dtfh-floatingparent').show();
     $("#searchInputProductos").show();
     $("#titulo-view").text('Productos');
 });
@@ -1729,6 +1742,97 @@ function addProductosVarianteItems (tomarPadre = true) {
     
 }
 
+function changeCostoCompra(event) {
+    if(event.keyCode == 13) {
+        var costoCommpra = parseFloat($('#precio_inicial').val());
+        var valorVenta = parseFloat($('#precio_producto').val());
+
+        if (valorVenta) {
+            var porcentajeUtilidad = ((valorVenta - costoCommpra) / costoCommpra) * 100;
+
+            $('#porcentaje_utilidad').val(porcentajeUtilidad);
+            $('#valor_utilidad').val(costoCommpra * (porcentajeUtilidad / 100));
+
+            setTimeout(function(){
+                $('#precio_producto').focus();
+                $('#precio_producto').select();
+            },10);
+        } else {
+            setTimeout(function(){
+                $('#precio_producto').val(costoCommpra);
+                $('#precio_producto').focus();
+                $('#precio_producto').select();
+            },10);
+        }
+    }
+}
+
+function changeValorVenta(event) {
+    if(event.keyCode == 13) {
+
+        var costoCommpra = parseFloat($('#precio_inicial').val());
+        var valorVenta = parseFloat($('#precio_producto').val());
+
+        if (valorVenta < costoCommpra) {
+            setTimeout(function(){
+                $('#precio_producto').val(costoCommpra);
+                $('#precio_producto').focus();
+                $('#precio_producto').select();
+            },10);
+            return;
+        }
+
+        var porcentajeUtilidad = parseFloat((valorVenta - costoCommpra) / costoCommpra).toFixed(1);
+        var valorUtilidad = costoCommpra * porcentajeUtilidad;
+
+        $('#porcentaje_utilidad').val(porcentajeUtilidad * 100);
+        $('#valor_utilidad').val(valorUtilidad);
+
+        setTimeout(function(){
+            $('#precio_minimo').focus();
+            $('#precio_minimo').select();
+        },10);
+    }
+}
+
+function changePrecioMinimo(event) {
+    if(event.keyCode == 13) {
+        setTimeout(function(){
+            $('#porcentaje_utilidad').focus();
+            $('#porcentaje_utilidad').select();
+        },10);
+    }
+}
+
+function changePorcentajeUtilidad(event) {
+    if(event.keyCode == 13) {
+
+        var costoCommpra = parseFloat($('#precio_inicial').val());
+        var porcentajeUtilidad = parseFloat($('#porcentaje_utilidad').val()).toFixed(1);
+        var valorUtilidad = costoCommpra * (porcentajeUtilidad / 100);
+
+        $('#valor_utilidad').val(valorUtilidad);
+        $('#precio_producto').val(costoCommpra * ((porcentajeUtilidad / 100) + 1));
+
+        setTimeout(function(){
+            $('#valor_utilidad').focus();
+            $('#valor_utilidad').select();
+        },10);
+    }
+}
+
+function changeValorUtilidad(event) {
+    if(event.keyCode == 13) {
+        var costoCommpra = parseFloat($('#precio_inicial').val());
+        var valorUtilidad = parseFloat($('#valor_utilidad').val());
+
+        if (valorUtilidad > 0) {
+            $('#porcentaje_utilidad').val( parseFloat((valorUtilidad / costoCommpra) * 100).toFixed(1) );
+            $('#precio_producto').val(costoCommpra + valorUtilidad);
+        }
+    }
+}
+
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -1792,16 +1896,29 @@ $("#id_familia_producto").on('change', function(e) {
 });
 
 function addPrecioProducto () {
-    var value = $('#precio_producto').val();
-    nuevoProducto.precio = value;
+    actualizarDatosProducto();
 }
 
 function addPrecioMinimoProducto () {
-    var value = $('#precio_minimo').val();
-    nuevoProducto.precio_minimo = value;
+    actualizarDatosProducto();
 }
 
 function addPrecioInicialProducto () {
-    var value = $('#precio_inicial').val();
-    nuevoProducto.precio_inicial = value;
+    actualizarDatosProducto();
+}
+
+function addPorcentajeUtilidadProducto () {
+    actualizarDatosProducto();
+}
+
+function addValorUtilidadProducto () {
+    actualizarDatosProducto();
+}
+
+function actualizarDatosProducto () {
+    nuevoProducto.precio = $('#precio_producto').val();
+    nuevoProducto.precio_minimo = $('#precio_minimo').val();
+    nuevoProducto.precio_inicial = $('#precio_inicial').val();
+    nuevoProducto.porcentaje_utilidad = parseFloat($('#porcentaje_utilidad').val()).toFixed(1);
+    nuevoProducto.valor_utilidad = $('#valor_utilidad').val();
 }
