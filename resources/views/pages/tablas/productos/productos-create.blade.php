@@ -69,7 +69,7 @@
 
                     <div class="form-group col-6 col-sm-6 col-md-6">
                         <label for="example-text-input" class="form-control-label">Porcentaje utilidad</label>
-                        <input type="number" class="form-control form-control-sm" name="porcentaje_utilidad" min="0" id="porcentaje_utilidad" onfocus="this.select();" onfocusout="actualizarDatosProducto()" onkeypress="changePorcentajeUtilidad(event)" value="0" required>
+                        <input type="text" class="form-control form-control-sm" name="porcentaje_utilidad" id="porcentaje_utilidad" onfocus="this.select();" onfocusout="actualizarDatosProducto()" onkeypress="changePorcentajeUtilidad(event)" value="0" required>
                         <div class="invalid-feedback">
                             El campo Porcentaje utilidad es requerido
                         </div>

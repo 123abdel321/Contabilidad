@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('precio', 15)->default(0);
             $table->decimal('precio_inicial', 15)->default(0);
             $table->decimal('precio_minimo', 15)->default(0);
-            $table->decimal('porcentaje_utilidad', 15)->default(0);
+            $table->decimal('porcentaje_utilidad', 20, 20)->default(0);
             $table->decimal('valor_utilidad', 15)->default(0);
             $table->integer('variante')->default(0)->comment('0:no, 1:si');
             $table->boolean('estado')->default(true);

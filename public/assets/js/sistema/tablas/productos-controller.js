@@ -87,7 +87,7 @@ function productosInit() {
             }},
             {"data": "precio", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
-                return parseInt(row.porcentaje_utilidad)+ '%';
+                return parseFloat(row.porcentaje_utilidad)+ '%';
             }, className: 'dt-body-right'},
             {"data": "valor_utilidad", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
@@ -199,7 +199,7 @@ function productosInit() {
             $("#precio_producto").val(parseInt(dataProducto.precio));
             $("#precio_minimo").val(parseInt(dataProducto.precio_minimo));
             $("#precio_inicial").val(parseInt(dataProducto.precio_inicial));
-            $("#porcentaje_utilidad").val(parseInt(dataProducto.porcentaje_utilidad));
+            $("#porcentaje_utilidad").val(dataProducto.porcentaje_utilidad);
             $("#valor_utilidad").val(parseInt(dataProducto.valor_utilidad));
 
             document.getElementById("id_bodega_producto").disabled = true;
@@ -788,6 +788,8 @@ function clearFormProductos() {
     $('#precio_producto').val(0);
     $('#precio_minimo').val(0);
     $('#precio_inicial').val(0);
+    $('#porcentaje_utilidad').val(0);
+    $('#valor_utilidad').val(0);
 
     document.getElementById("producto_variantes1").disabled = false;
     document.getElementById("producto_variantes2").disabled = false;
@@ -1793,7 +1795,7 @@ function changeValorVenta(event) {
             return;
         }
 
-        var porcentajeUtilidad = parseFloat((valorVenta - costoCommpra) / costoCommpra).toFixed(1);
+        var porcentajeUtilidad = parseFloat(valorVenta - costoCommpra) / costoCommpra;
         var valorUtilidad = costoCommpra * porcentajeUtilidad;
 
         $('#porcentaje_utilidad').val(porcentajeUtilidad * 100);
@@ -1819,7 +1821,7 @@ function changePorcentajeUtilidad(event) {
     if(event.keyCode == 13) {
 
         var costoCommpra = parseFloat($('#precio_inicial').val());
-        var porcentajeUtilidad = parseFloat($('#porcentaje_utilidad').val()).toFixed(1);
+        var porcentajeUtilidad = parseFloat($('#porcentaje_utilidad').val());
         var valorUtilidad = costoCommpra * (porcentajeUtilidad / 100);
 
         $('#valor_utilidad').val(valorUtilidad);
@@ -1838,7 +1840,7 @@ function changeValorUtilidad(event) {
         var valorUtilidad = parseFloat($('#valor_utilidad').val());
 
         if (valorUtilidad > 0) {
-            $('#porcentaje_utilidad').val( parseFloat((valorUtilidad / costoCommpra) * 100).toFixed(1) );
+            $('#porcentaje_utilidad').val( parseFloat((valorUtilidad / costoCommpra) * 100) );
             $('#precio_producto').val(costoCommpra + valorUtilidad);
         }
     }
@@ -1930,6 +1932,6 @@ function actualizarDatosProducto () {
     nuevoProducto.precio = $('#precio_producto').val();
     nuevoProducto.precio_minimo = $('#precio_minimo').val();
     nuevoProducto.precio_inicial = $('#precio_inicial').val();
-    nuevoProducto.porcentaje_utilidad = parseFloat($('#porcentaje_utilidad').val()).toFixed(1);
+    nuevoProducto.porcentaje_utilidad = parseFloat($('#porcentaje_utilidad').val());
     nuevoProducto.valor_utilidad = $('#valor_utilidad').val();
 }

@@ -308,9 +308,10 @@ class ProductosController extends Controller
             $producto->precio = $request->get('precio');
             $producto->precio_inicial = $request->get('precio_inicial');
             $producto->precio_minimo = $request->get('precio_minimo');
+            $producto->porcentaje_utilidad = $request->get('porcentaje_utilidad');
+            $producto->valor_utilidad = $request->get('valor_utilidad');
             $producto->updated_by = request()->user()->id;
             
-
             if($request->imagen) {
                 $image = $request->imagen;
                 $ext = explode(";", explode("/",explode(",", $image)[0])[1])[0];
