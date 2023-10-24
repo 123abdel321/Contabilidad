@@ -3,6 +3,7 @@
         <tr>
             <!-- <th style="border-radius: 15px 0px 0px 0px !important;">Id</th> -->
             <th style="border-radius: 15px 0px 0px 0px !important;">Código</th>
+            <th>Img</th>
             <th>Nombre</th>
             <th>Tipo producto</th>
             <th>Familia</th>

@@ -53,14 +53,8 @@ class ProductosController extends Controller
         $start = $request->get("start");
         $rowperpage = 15; // Rows display per page
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
         $search_arr = $request->get('search');
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
         $productos = FacProductos::skip($start)
@@ -81,11 +75,8 @@ class ProductosController extends Controller
                 'fac_productos.created_by',
                 'fac_productos.updated_by'
             )
+            ->orderBy('id', 'desc')
             ->take($rowperpage);
-
-        if($columnName){
-            $productos->orderBy($columnName,$columnSortOrder);
-        }
 
         if($searchValue) {
             $productos->where('nombre', 'like', '%' .$searchValue . '%')

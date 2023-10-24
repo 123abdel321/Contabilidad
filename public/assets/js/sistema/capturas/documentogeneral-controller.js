@@ -533,6 +533,16 @@ function changeDebitoRow(idRow, event) {
 
 function changeCreditoRow(idRow, event) {
     if(event.keyCode == 13){
+        var inputCreditoMax = parseInt($("#credito_"+idRow)[0].max);
+        var inputCreditoValue = parseInt($("#credito_"+idRow).val());
+        if (inputCreditoValue > inputCreditoMax) {
+            setTimeout(function(){
+                $("#credito_"+idRow).val(inputCreditoMax);
+                $("#credito_"+idRow).focus();
+                $("#credito_"+idRow).select();
+            },10);
+            return;
+        }
         focusNextRow(5, idRow);
     }
 }

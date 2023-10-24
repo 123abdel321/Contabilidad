@@ -37,6 +37,7 @@ function productosInit() {
         processing: true,
         serverSide: true,
         fixedHeader: true,
+        ordering: false,
         deferLoading: 0,
         initialLoad: false,
         language: lenguajeDatatable,
@@ -58,8 +59,11 @@ function productosInit() {
                     return `<img
                     style="height: 35px; border-radius: 10%;"
                     src="${bucketUrl}${row.imagen}"
-                    alt="${row.nombre}" />  ${row.nombre}`;
+                    alt="${row.nombre}" />`;
                 }
+                return '';
+            }},
+            {"data": function (row, type, set){
                 return row.nombre;
             }},
             {"data": function (row, type, set){  
@@ -107,8 +111,10 @@ function productosInit() {
                     });
                     if (totalUnidades > 0) {
                         return totalUnidades;
+                    } else {
+                        
+                        return '<span class="badge rounded-pill bg-danger">Sin unidades</span>';
                     }
-                    return '<span class="badge rounded-pill bg-danger">'+totalUnidades+' </span>';
                 }
                 return '';
             }, className: 'dt-body-right'},
@@ -175,7 +181,9 @@ function productosInit() {
                 $('#default_produc_img').show();
             }
 
+            $("#botton-agregar-bodega").hide();
             $("#searchInputProductos").hide();
+            $('#producto-inventario').hide();
             $("#table-products-view").hide();
             $('#btn-modal-variantes').show();
             $("#add-products-view").show();
@@ -183,6 +191,7 @@ function productosInit() {
             $("#saveNewProducto").hide();
             $("#cancelProducto").show();
             $("#createProducto").hide();
+
 
             $('#id_producto_edit').val(dataProducto.id);
             $("#nombre_producto").val(dataProducto.nombre);
@@ -193,6 +202,7 @@ function productosInit() {
             $("#porcentaje_utilidad").val(parseInt(dataProducto.porcentaje_utilidad));
             $("#valor_utilidad").val(parseInt(dataProducto.valor_utilidad));
 
+            document.getElementById("id_bodega_producto").disabled = true;
             document.getElementById("producto_variantes1").disabled = false;
             document.getElementById("producto_variantes2").disabled = false;
             document.getElementById("tipo_producto_producto").disabled = false;
@@ -201,7 +211,7 @@ function productosInit() {
             if (dataProducto.id_padre && tipo_producto == 0) {
                 document.getElementById('producto_variantes1').click();
             }
-
+            console.log(dataProducto);
             if (dataProducto.hijos.length > 0) {
                 document.getElementById('producto_variantes2').click();
                 $('#contenedor-variantes-generales').show();
@@ -223,6 +233,7 @@ function productosInit() {
 
             if (dataProducto.tipo_producto == 0) {
                 document.getElementById('tipo_producto_producto').click();
+                $('#producto-inventario').show();
                 generarBodegas();
             }
             else if (dataProducto.tipo_producto == 1) {
@@ -625,12 +636,15 @@ $(document).on('click', '#createProducto', function () {
     if (primeraBodegas.length == 1) addBodegaToProduct(primeraBodegas[0], false);
     else addBodegaToProduct(primeraBodegas[0]);
     
+    $("#botton-agregar-bodega").show();
+    $("#searchInputProductos").hide();
     $("#table-products-view").hide();
     $("#add-products-view").show();
     $("#cancelProducto").show();
     $("#saveNewProducto").show();
     $("#createProducto").hide();
-    $("#searchInputProductos").hide();
+
+    document.getElementById("id_bodega_producto").disabled = false;
 
     $("#titulo-view").text('Agregar producto');
 });
@@ -922,11 +936,8 @@ function generarBodegas () {
                 </div>
         
                 <div>
-                    <div style="padding: 10px; cursor: not-allowed" >
-                        <i class="fas fa-edit" style="font-size: 15px; color: #939393;"></i>
-                    </div>
-                    <div style="padding: 10px; cursor: not-allowed" >
-                        <i class="fas fa-trash-alt" style="font-size: 15px; color: #939393;"></i>
+                    <div style="padding: 10px; cursor: pointer" onclick="editarBodega(${bodega.id})">
+                        <i class="fas fa-edit" style="font-size: 15px; color: lawngreen;"></i>
                     </div>
                 </div>
             `;
