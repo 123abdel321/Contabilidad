@@ -168,7 +168,7 @@
 
         <br/>
 
-        <div style="text-align: -webkit-center;">
+        <div style="text-align: -webkit-center;" id="botton-agregar-bodega">
             <button type="button" class="btn btn-outline-success" onclick="agregarBodegaProducto()">
                 <i class="fas fa-plus-circle"></i>
                 Agregar bodega
