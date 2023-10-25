@@ -62,7 +62,7 @@ class ProductosController extends Controller
                 'variantes.variante',
                 'variantes.opcion',
                 'inventarios.bodega',
-                'familia',
+                'familia.cuenta_venta_iva.impuesto',
                 'hijos.familia',
                 'hijos.variantes.variante',
                 'hijos.variantes.opcion',

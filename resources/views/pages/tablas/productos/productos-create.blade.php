@@ -17,7 +17,34 @@
 
                 <div id="spacing-producto-type" style="padding: 5px;"></div>
 
-                <div class="row col-12 col-sm-6 col-md-6" style="text-align: -webkit-center;">
+                <div class="col-12 col-sm-6 col-md-4" style="text-align: -webkit-center;">
+
+                    <div class="col-12 col-sm-12 col-md-12" style="text-align: -webkit-center;">
+
+                        <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_producto" onChange="changeProducType()" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="tipo_producto_producto">Producto</label>
+
+                        <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_servicio" onChange="changeProducType()" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="tipo_producto_servicio">Servicio</label>
+
+                        <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_combo" onChange="changeProducType()" autocomplete="off" disabled>
+                        <label class="btn btn-outline-primary" for="tipo_producto_combo">Combo</label>
+                        
+                    </div>
+
+                    <div class="justify-content-center col-12 col-sm-12 col-md-12">
+                        <div style="text-align: -webkit-center; height: 185px;">
+                            <img id="default_produc_img" onclick="document.getElementById('newImagenProducto').click();" src="/img/add_product_img.png" class="img-fluid rounded mx-auto d-bloc" style="width: auto; height: 100%; cursor: pointer; border-radius: 10%;">
+                            <img id="new_produc_img" onclick="document.getElementById('newImagenProducto').click();" src="" class="img-fluid rounded mx-auto d-bloc" style="width: auto; height: 100%; cursor: pointer; border-radius: 10%;">
+                        </div>
+                    </div>
+    
+                    <input type="file" name="newImagenProducto" id="newImagenProducto" onchange="readURL(this);" style="display: none" />
+
+                    <br/>
+                </div>
+
+                <div class="row col-12 col-sm-6 col-md-8" style="text-align: -webkit-center;">
                     <div class="form-group col-6 col-sm-6 col-md-6" >
                         <label for="example-text-input" class="form-control-label">Código</label>
                         <input type="text" class="form-control form-control-sm" name="codigo_producto" id="codigo_producto" onfocusout="addCodigoProducto()" required>
@@ -83,7 +110,21 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-6 col-md-6 row" style="margin-bottom: 0.1rem !important;" id="item-maneja-variante">
+                </div>
+
+                <div class="row col-12" style="text-align: -webkit-center;">
+
+                    <div class="form-group col-6 col-sm-4 col-md-4" id="input-iva-porcentaje" style="display: none">
+                        <label for="example-text-input" class="form-control-label" id="text_porcentaje_iva">Porcentaje iva</label>
+                        <input type="text" class="form-control form-control-sm" name="porcentaje_iva" id="porcentaje_iva" onfocus="this.select();" onfocusout="actualizarDatosProducto()" onkeypress="changePorcentajeUtilidad(event)" value="0" disabled>
+                    </div>
+
+                    <div class="form-group col-6 col-sm-4 col-md-4" id="input-iva-valor" style="display: none">
+                        <label for="example-text-input" class="form-control-label" id="text_porcentaje_iva">Valor iva</label>
+                        <input type="text" class="form-control form-control-sm" name="valor_iva" id="valor_iva" onfocus="this.select();" onfocusout="actualizarDatosProducto()" onkeypress="changePorcentajeUtilidad(event)" value="0" disabled>
+                    </div>
+
+                    <div class="form-group col-6 col-sm-4 col-md-4 row" style="margin-bottom: 0.1rem !important;" id="item-maneja-variante">
                         <label for="example-text-input" class="form-control-label">Maneja variantes</label>
                         <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 15px; cursor: pointer; text-align: left;">
                             <input class="form-check-input" type="radio" name="producto_variantes" id="producto_variantes1" style="font-size: 11px; cursor: pointer;" checked>
@@ -98,33 +139,6 @@
                             </label>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-md-6" style="text-align: -webkit-center;">
-
-                    <div class="col-12 col-sm-12 col-md-12" style="text-align: -webkit-center;">
-
-                        <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_producto" onChange="changeProducType()" autocomplete="off" checked>
-                        <label class="btn btn-outline-primary" for="tipo_producto_producto">Producto</label>
-
-                        <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_servicio" onChange="changeProducType()" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="tipo_producto_servicio">Servicio</label>
-
-                        <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_combo" onChange="changeProducType()" autocomplete="off" disabled>
-                        <label class="btn btn-outline-primary" for="tipo_producto_combo">Combo</label>
-                        
-                    </div>
-
-                    <div class="justify-content-center col-12 col-sm-12 col-md-12">
-                        <div style="text-align: -webkit-center; height: 185px;">
-                            <img id="default_produc_img" onclick="document.getElementById('newImagenProducto').click();" src="/img/add_product_img.png" class="img-fluid rounded mx-auto d-bloc" style="width: auto; height: 100%; cursor: pointer; border-radius: 10%;">
-                            <img id="new_produc_img" onclick="document.getElementById('newImagenProducto').click();" src="" class="img-fluid rounded mx-auto d-bloc" style="width: auto; height: 100%; cursor: pointer; border-radius: 10%;">
-                        </div>
-                    </div>
-    
-                    <input type="file" name="newImagenProducto" id="newImagenProducto" onchange="readURL(this);" style="display: none" />
-
-                    <br/>
                 </div>
 
             </div>

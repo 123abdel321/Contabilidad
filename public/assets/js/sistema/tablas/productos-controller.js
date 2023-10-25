@@ -192,7 +192,6 @@ function productosInit() {
             $("#cancelProducto").show();
             $("#createProducto").hide();
 
-
             $('#id_producto_edit').val(dataProducto.id);
             $("#nombre_producto").val(dataProducto.nombre);
             $("#codigo_producto").val(dataProducto.codigo);
@@ -211,7 +210,7 @@ function productosInit() {
             if (dataProducto.id_padre && tipo_producto == 0) {
                 document.getElementById('producto_variantes1').click();
             }
-            console.log(dataProducto);
+
             if (dataProducto.hijos.length > 0) {
                 document.getElementById('producto_variantes2').click();
                 $('#contenedor-variantes-generales').show();
@@ -251,6 +250,17 @@ function productosInit() {
             if (dataProducto.id_padre || dataProducto.hijos.length > 0 || dataProducto.inventarios.length > 0) {
                 document.getElementById("tipo_producto_producto").disabled = true;
                 document.getElementById("tipo_producto_servicio").disabled = true;
+            }
+
+            if (dataProducto.familia && dataProducto.familia.cuenta_venta_iva && dataProducto.familia.cuenta_venta_iva.impuesto) {
+                var porcentajeIva = dataProducto.familia.cuenta_venta_iva.impuesto.porcentaje;
+                $('#input-iva-porcentaje').show();
+                $('#input-iva-valor').show();
+                $('#porcentaje_iva').val(porcentajeIva);
+                $('#valor_iva').val(parseFloat(dataProducto.precio) * (parseFloat(porcentajeIva) / 100));
+            } else {
+                $('#input-iva-porcentaje').hide();
+                $('#input-iva-valor').hide();
             }
 
             $('.dtfh-floatingparent').hide();
@@ -637,11 +647,13 @@ $(document).on('click', '#createProducto', function () {
     else addBodegaToProduct(primeraBodegas[0]);
     
     $("#botton-agregar-bodega").show();
+    $('#input-iva-porcentaje').hide();
     $("#searchInputProductos").hide();
     $("#table-products-view").hide();
     $("#add-products-view").show();
-    $("#cancelProducto").show();
+    $('#input-iva-valor').hide();
     $("#saveNewProducto").show();
+    $("#cancelProducto").show();
     $("#createProducto").hide();
 
     document.getElementById("id_bodega_producto").disabled = false;
@@ -776,20 +788,22 @@ function clearFormProductos() {
     $('#variante_opcion_contenedor').empty();
     $('#button-new-opcion').hide();
     
+    $("#text_tipo_combo").hide();
     $("#text_tipo_producto").hide();
     $("#text_tipo_servicio").hide();
-    $("#text_tipo_combo").hide();
     $('#contenedor-variantes-generales').hide();
 
+    $('#id_familia_producto').val(0).change();
+    $('#porcentaje_utilidad').val(0);
     $('#id_producto_edit').val('');
     $('#nombre_producto').val('');
     $('#codigo_producto').val('');
-    $('#id_familia_producto').val(0).change();
     $('#precio_producto').val(0);
-    $('#precio_minimo').val(0);
-    $('#precio_inicial').val(0);
-    $('#porcentaje_utilidad').val(0);
     $('#valor_utilidad').val(0);
+    $('#porcentaje_iva').val(0);
+    $('#precio_inicial').val(0);
+    $('#precio_minimo').val(0);
+    $('#valor_iva').val(0);
 
     document.getElementById("producto_variantes1").disabled = false;
     document.getElementById("producto_variantes2").disabled = false;
@@ -1785,6 +1799,7 @@ function changeValorVenta(event) {
 
         var costoCommpra = parseFloat($('#precio_inicial').val());
         var valorVenta = parseFloat($('#precio_producto').val());
+        var porcentajeIva = parseFloat($('#porcentaje_iva').val());
 
         if (valorVenta < costoCommpra) {
             setTimeout(function(){
@@ -1798,6 +1813,7 @@ function changeValorVenta(event) {
         var porcentajeUtilidad = parseFloat(valorVenta - costoCommpra) / costoCommpra;
         var valorUtilidad = costoCommpra * porcentajeUtilidad;
 
+        $('#valor_iva').val(valorVenta * (porcentajeIva / 100));
         $('#porcentaje_utilidad').val(porcentajeUtilidad * 100);
         $('#valor_utilidad').val(valorUtilidad);
 
@@ -1821,11 +1837,16 @@ function changePorcentajeUtilidad(event) {
     if(event.keyCode == 13) {
 
         var costoCommpra = parseFloat($('#precio_inicial').val());
+        var porcentajeIva = parseFloat($('#porcentaje_iva').val());
         var porcentajeUtilidad = parseFloat($('#porcentaje_utilidad').val());
-        var valorUtilidad = costoCommpra * (porcentajeUtilidad / 100);
 
+        var valorUtilidad = costoCommpra * (porcentajeUtilidad / 100);
+        var precioProducto = costoCommpra * ((porcentajeUtilidad / 100) + 1);
+        var valorIva = precioProducto * (porcentajeIva / 100);
+        
+        $('#valor_iva').val(valorIva);
         $('#valor_utilidad').val(valorUtilidad);
-        $('#precio_producto').val(costoCommpra * ((porcentajeUtilidad / 100) + 1));
+        $('#precio_producto').val(precioProducto);
 
         setTimeout(function(){
             $('#valor_utilidad').focus();
@@ -1838,10 +1859,14 @@ function changeValorUtilidad(event) {
     if(event.keyCode == 13) {
         var costoCommpra = parseFloat($('#precio_inicial').val());
         var valorUtilidad = parseFloat($('#valor_utilidad').val());
-
+        
         if (valorUtilidad > 0) {
+            var porcentajeIva = parseFloat($('#porcentaje_iva').val());
+            var precioProducto = costoCommpra + valorUtilidad;
+
             $('#porcentaje_utilidad').val( parseFloat((valorUtilidad / costoCommpra) * 100) );
-            $('#precio_producto').val(costoCommpra + valorUtilidad);
+            $('#precio_producto').val(precioProducto);
+            $('#valor_iva').val(precioProducto * (porcentajeIva / 100));
         }
     }
 }
@@ -1902,8 +1927,17 @@ $("#id_familia_producto").on('change', function(e) {
     var data = $(this).select2('data');
 
     if (data.length > 0) {
-        nuevoProducto.id_familia = parseInt(data[0].id);
-        if (data[0].inventario) $('#producto-inventario').show();
+        var familia = data[0];
+        if (familia.cuenta_venta_iva && familia.cuenta_venta_iva.impuesto) {
+            $('#input-iva-porcentaje').show();
+            $('#input-iva-valor').show();
+            $('#porcentaje_iva').val(familia.cuenta_venta_iva.impuesto.porcentaje);
+        } else {
+            $('#input-iva-porcentaje').hide();
+            $('#input-iva-valor').hide();
+        }
+        nuevoProducto.id_familia = parseInt(familia.id);
+        if (familia.inventario) $('#producto-inventario').show();
         else $('#producto-inventario').hide();
     }
 });
