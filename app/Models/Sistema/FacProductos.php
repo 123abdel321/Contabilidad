@@ -27,6 +27,7 @@ class FacProductos extends Model
         'porcentaje_utilidad',
         'valor_utilidad',
         'variante',
+        'utilizado_captura',
         'estado',
         'created_by',
         'updated_by'

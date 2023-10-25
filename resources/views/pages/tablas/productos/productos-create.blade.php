@@ -22,13 +22,13 @@
                     <div class="col-12 col-sm-12 col-md-12" style="text-align: -webkit-center;">
 
                         <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_producto" onChange="changeProducType()" autocomplete="off" checked>
-                        <label class="btn btn-outline-primary" for="tipo_producto_producto">Producto</label>
+                        <label class="btn btn-sm btn-outline-primary" for="tipo_producto_producto">Producto</label>
 
                         <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_servicio" onChange="changeProducType()" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="tipo_producto_servicio">Servicio</label>
+                        <label class="btn btn-sm btn-outline-primary" for="tipo_producto_servicio">Servicio</label>
 
                         <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_combo" onChange="changeProducType()" autocomplete="off" disabled>
-                        <label class="btn btn-outline-primary" for="tipo_producto_combo">Combo</label>
+                        <label class="btn btn-sm btn-outline-primary" for="tipo_producto_combo">Combo</label>
                         
                     </div>
 
