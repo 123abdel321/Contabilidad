@@ -41,6 +41,7 @@ class LoginController extends Controller
             } else {
                 $token = $user->createToken("web_token");
                 $plainTextToken = $token->plainTextToken;
+                $user->remember_token = $plainTextToken;
             }
 
             $empresa = UsuarioEmpresa::where('id_usuario', $user->id)

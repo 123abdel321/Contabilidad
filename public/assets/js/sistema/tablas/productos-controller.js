@@ -86,6 +86,7 @@ function productosInit() {
                 return '';
             }},
             {"data": "precio", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "precio_inicial", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
                 return parseFloat(row.porcentaje_utilidad)+ '%';
             }, className: 'dt-body-right'},

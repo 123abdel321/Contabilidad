@@ -21,7 +21,7 @@ class ProductosPreciosImport implements ToCollection, WithValidation, WithHeadin
 
             $producto = FacProductos::where('codigo', $row['codigo'])
                 ->first();
-
+                
             $porcentajeUtilidad = floatval($producto->porcentaje_utilidad) / 100;
             $producto->precio_inicial = $row['costo'];
             $producto->valor_utilidad = $row['costo'] * $porcentajeUtilidad;
@@ -46,7 +46,7 @@ class ProductosPreciosImport implements ToCollection, WithValidation, WithHeadin
     public function rules(): array
     {
         return [
-            '*.codigo' => 'required|string|min:1|exists:sam.fac_productos,codigo',
+            '*.codigo' => 'required|min:1|exists:sam.fac_productos,codigo',
             '*.costo' => 'required|min:0',
         ];
     }
