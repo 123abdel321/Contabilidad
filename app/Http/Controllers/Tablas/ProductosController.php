@@ -62,7 +62,7 @@ class ProductosController extends Controller
                 'variantes.variante',
                 'variantes.opcion',
                 'inventarios.bodega',
-                'familia',
+                'familia.cuenta_venta_iva.impuesto',
                 'hijos.familia',
                 'hijos.variantes.variante',
                 'hijos.variantes.opcion',
@@ -131,7 +131,15 @@ class ProductosController extends Controller
 
             DB::connection('sam')->beginTransaction();
 
-            $porcentajeUtilidad = ((floatval($request->get('precio')) - floatval($request->get('precio_inicial'))) / floatval($request->get('precio_inicial'))) * 100;
+            $porcentajeUtilidad = 100;
+            $valorUtilidad = 0;
+            
+            if ($request->get('precio_inicial') == "0") {
+                $valorUtilidad = $request->get('precio');
+            } else {
+                $porcentajeUtilidad = ((floatval($request->get('precio')) - floatval($request->get('precio_inicial'))) / floatval($request->get('precio_inicial'))) * 100;
+                $valorUtilidad = floatval($request->get('precio_inicial')) * ($porcentajeUtilidad / 100);
+            }
             //CREAR PRODUCTO PRINCIPAL
             $productoPadre = FacProductos::create([
                 'id_familia' => $request->get('id_familia'),
@@ -143,7 +151,7 @@ class ProductosController extends Controller
                 'precio_minimo' => $request->get('precio_minimo'),
                 'precio_inicial' => $request->get('precio_inicial'),
                 'porcentaje_utilidad' => $porcentajeUtilidad,
-                'valor_utilidad' => floatval($request->get('precio_inicial')) * ($porcentajeUtilidad / 100),
+                'valor_utilidad' => $valorUtilidad,
                 'variante' => $request->get('variante'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id
@@ -189,7 +197,15 @@ class ProductosController extends Controller
                 if (count($productosVariantes) > 0) {
                     foreach ($productosVariantes as $producto) {
 
-                        $porcentajeUtilidadVariante = ((floatval($producto['precio']) - floatval($producto['precio_inicial'])) / floatval($producto['precio_inicial'])) * 100;
+                        $porcentajeUtilidadVariante = 100;
+                        $valorUtilidadVariable = 0;
+                        
+                        if ($request->get('precio_inicial') == "0") {
+                            $valorUtilidadVariable = $producto['precio'];
+                        } else {
+                            $porcentajeUtilidadVariante = ((floatval($producto['precio']) - floatval($producto['precio_inicial'])) / floatval($producto['precio_inicial'])) * 100;
+                            $valorUtilidadVariable = floatval($producto['precio_inicial']) * ($porcentajeUtilidadVariante / 100);
+                        }
 
                         $productoVariante = FacProductos::create([
                             'id_familia' => $request->get('id_familia'),
@@ -201,7 +217,7 @@ class ProductosController extends Controller
                             'precio_inicial' => $producto['precio_inicial'],
                             'precio_minimo' => $producto['precio_minimo'],
                             'porcentaje_utilidad' => $porcentajeUtilidadVariante,
-                            'valor_utilidad' => floatval($producto['precio_inicial']) * ($porcentajeUtilidadVariante / 100),
+                            'valor_utilidad' => $valorUtilidadVariable,
                             'variante' => $request->get('variante'),
                             'created_by' => request()->user()->id,
                             'updated_by' => request()->user()->id
@@ -308,9 +324,10 @@ class ProductosController extends Controller
             $producto->precio = $request->get('precio');
             $producto->precio_inicial = $request->get('precio_inicial');
             $producto->precio_minimo = $request->get('precio_minimo');
+            $producto->porcentaje_utilidad = $request->get('porcentaje_utilidad');
+            $producto->valor_utilidad = $request->get('valor_utilidad');
             $producto->updated_by = request()->user()->id;
             
-
             if($request->imagen) {
                 $image = $request->imagen;
                 $ext = explode(";", explode("/",explode(",", $image)[0])[1])[0];
@@ -325,12 +342,35 @@ class ProductosController extends Controller
             $producto->save();
 
             //ASOCIAR BODEGAS GENERALES AL PRODUCTO
-            $bodegas = $request->get('inventarios');
+            if ($producto->utilizado_captura == 0) {
+                $bodegas = $request->get('inventarios');
+                if (count($bodegas) > 0 ) {
+                    foreach ($bodegas as $bodega) {
+                        if (array_key_exists('edit', $bodega) && $bodega['edit'] == true) {
 
-            if (count($bodegas) > 0 ) {
-                foreach ($bodegas as $bodega) {
-                    if (array_key_exists('edit', $bodega) && $bodega['edit'] == true) {
-                        $this->agregarBodega($producto, $bodega);
+                            FacProductosBodegasMovimiento::where('id_producto', $producto->id)
+                                ->where('id_bodega', $bodega['id'])
+                                ->delete();
+
+                            FacProductosBodegas::where('id_producto', $producto->id)
+                                ->where('id_bodega', $bodega['id'])
+                                ->update([
+                                    'cantidad' => $bodega['cantidad']
+                                ]);
+
+                            $movimiento = new FacProductosBodegasMovimiento([
+                                'id_producto' => $producto->id,
+                                'id_bodega' => $bodega['id'],
+                                'cantidad_anterior' => 0,
+                                'cantidad' => $bodega['cantidad'],
+                                'tipo_tranferencia' => 0,
+                                'created_by' => request()->user()->id,
+                                'updated_by' => request()->user()->id
+                            ]);
+                            
+                            $movimiento->relation()->associate($producto);
+                            $producto->bodegas()->save($movimiento);
+                        }
                     }
                 }
             }

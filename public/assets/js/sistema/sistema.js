@@ -42,6 +42,7 @@ var moduloCreado = {
     'ventas': false,
     'usuarios': false,
     'empresa': false,
+    'productoprecios': false,
 };
 
 var moduloRoute = {
@@ -64,7 +65,8 @@ var moduloRoute = {
     'ventas': 'informes',
     'venta': 'capturas',
     'usuarios': 'configuracion',
-    'empresa': 'configuracion'
+    'empresa': 'configuracion',
+    'productoprecios': 'importador',
 }
 
 $('.water').show();
@@ -200,8 +202,10 @@ function seleccionarView(id){
         nombre = 'Usuarios';
     } else if(id == 'empresa') {
         nombre = 'Empresa';
+    } else if(id == 'productoprecios') {
+        nombre = 'Producto precios';
     }
-
+    
     $("#titulo-view").text(nombre);
 }
 
@@ -273,6 +277,9 @@ function generateNewTabButton(id){
     } else if (id == 'empresa') {
         icon = 'fas fa-cog';
         nombre = 'Empresa';
+    } else if (id == 'productoprecios') {
+        icon = 'fas fa-file-import';
+        nombre = 'Producto precios';
     }
 
     var html = '';

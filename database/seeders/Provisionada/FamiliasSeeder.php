@@ -35,7 +35,7 @@ class FamiliasSeeder extends Seeder
                 'id' => 2,
                 'codigo' => '50',
                 'nombre' => 'SERVICIOS',
-                'inventario' => '1',
+                'inventario' => '0',
                 'id_cuenta_venta' => '72',
                 'id_cuenta_venta_retencion' => '',
                 'id_cuenta_venta_devolucion' => '',

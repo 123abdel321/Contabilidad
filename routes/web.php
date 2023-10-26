@@ -31,7 +31,8 @@ use App\Http\Controllers\Capturas\DocumentoGeneralController;
 //CONFIGURACION
 use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
-
+//IMPORTADORES
+use App\Http\Controllers\Importador\ProductoImportadorController;
 
 
 /*
@@ -125,6 +126,11 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/usuarios', [UsuariosController::class, 'index'])->name('usuarios');
 		//EMPRESA
 		Route::get('/empresa', [EmpresaController::class, 'index'])->name('empresa');
+
+		//IMPORTADORES
+		Route::get('/productoprecios', [ProductoImportadorController::class, 'index'])->name('producto.precios');
+		Route::get('/productoprecios-exportar', [ProductoImportadorController::class, 'exportar'])->name('producto.exportar');
+		Route::post('/productoprecios-importar', [ProductoImportadorController::class, 'importar'])->name('producto.importar');
 	});
 
 	//ARGON

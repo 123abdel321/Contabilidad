@@ -87,7 +87,7 @@ function productosInit() {
             }},
             {"data": "precio", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
-                return parseInt(row.porcentaje_utilidad)+ '%';
+                return parseFloat(row.porcentaje_utilidad)+ '%';
             }, className: 'dt-body-right'},
             {"data": "valor_utilidad", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
@@ -171,7 +171,6 @@ function productosInit() {
             }
 
             if(dataProducto.imagen) {
-
                 $('#new_produc_img').attr('src', bucketUrl+dataProducto.imagen);
                 $('#new_produc_img').show();
                 $('#default_produc_img').hide();
@@ -192,14 +191,13 @@ function productosInit() {
             $("#cancelProducto").show();
             $("#createProducto").hide();
 
-
             $('#id_producto_edit').val(dataProducto.id);
             $("#nombre_producto").val(dataProducto.nombre);
             $("#codigo_producto").val(dataProducto.codigo);
             $("#precio_producto").val(parseInt(dataProducto.precio));
             $("#precio_minimo").val(parseInt(dataProducto.precio_minimo));
             $("#precio_inicial").val(parseInt(dataProducto.precio_inicial));
-            $("#porcentaje_utilidad").val(parseInt(dataProducto.porcentaje_utilidad));
+            $("#porcentaje_utilidad").val(dataProducto.porcentaje_utilidad);
             $("#valor_utilidad").val(parseInt(dataProducto.valor_utilidad));
 
             document.getElementById("id_bodega_producto").disabled = true;
@@ -211,7 +209,7 @@ function productosInit() {
             if (dataProducto.id_padre && tipo_producto == 0) {
                 document.getElementById('producto_variantes1').click();
             }
-            console.log(dataProducto);
+
             if (dataProducto.hijos.length > 0) {
                 document.getElementById('producto_variantes2').click();
                 $('#contenedor-variantes-generales').show();
@@ -233,8 +231,6 @@ function productosInit() {
 
             if (dataProducto.tipo_producto == 0) {
                 document.getElementById('tipo_producto_producto').click();
-                $('#producto-inventario').show();
-                generarBodegas();
             }
             else if (dataProducto.tipo_producto == 1) {
                 document.getElementById('tipo_producto_servicio').click();
@@ -253,8 +249,23 @@ function productosInit() {
                 document.getElementById("tipo_producto_servicio").disabled = true;
             }
 
-            $('.dtfh-floatingparent').hide();
+            if (dataProducto.familia && dataProducto.familia.cuenta_venta_iva && dataProducto.familia.cuenta_venta_iva.impuesto) {
+                var porcentajeIva = dataProducto.familia.cuenta_venta_iva.impuesto.porcentaje;
+                $('#input-iva-porcentaje').show();
+                $('#input-iva-valor').show();
+                $('#porcentaje_iva').val(porcentajeIva);
+                $('#valor_iva').val(parseFloat(dataProducto.precio) * (parseFloat(porcentajeIva) / 100));
+            } else {
+                $('#input-iva-porcentaje').hide();
+                $('#input-iva-valor').hide();
+            }
 
+            if (dataProducto.familia && dataProducto.familia.inventario && dataProducto.utilizado_captura == 0) {
+                $('#producto-inventario').show();
+                generarBodegas();
+            }
+
+            $('.dtfh-floatingparent').hide();
         });
 
         productos_table.on('click', '.drop-producto', function() {
@@ -637,12 +648,18 @@ $(document).on('click', '#createProducto', function () {
     else addBodegaToProduct(primeraBodegas[0]);
     
     $("#botton-agregar-bodega").show();
+    $('#input-iva-porcentaje').hide();
     $("#searchInputProductos").hide();
     $("#table-products-view").hide();
+    $('#default_produc_img').show();
     $("#add-products-view").show();
-    $("#cancelProducto").show();
+    $('#input-iva-valor').hide();
     $("#saveNewProducto").show();
+    $("#cancelProducto").show();
     $("#createProducto").hide();
+
+    $('#new_produc_img').attr('src', '');
+    $('#new_produc_img').hide();
 
     document.getElementById("id_bodega_producto").disabled = false;
 
@@ -776,18 +793,22 @@ function clearFormProductos() {
     $('#variante_opcion_contenedor').empty();
     $('#button-new-opcion').hide();
     
+    $("#text_tipo_combo").hide();
     $("#text_tipo_producto").hide();
     $("#text_tipo_servicio").hide();
-    $("#text_tipo_combo").hide();
     $('#contenedor-variantes-generales').hide();
 
+    $('#id_familia_producto').val(0).change();
+    $('#porcentaje_utilidad').val(0);
     $('#id_producto_edit').val('');
     $('#nombre_producto').val('');
     $('#codigo_producto').val('');
-    $('#id_familia_producto').val(0).change();
     $('#precio_producto').val(0);
-    $('#precio_minimo').val(0);
+    $('#valor_utilidad').val(0);
+    $('#porcentaje_iva').val(0);
     $('#precio_inicial').val(0);
+    $('#precio_minimo').val(0);
+    $('#valor_iva').val(0);
 
     document.getElementById("producto_variantes1").disabled = false;
     document.getElementById("producto_variantes2").disabled = false;
@@ -1184,6 +1205,7 @@ $(document).on('click', '#updateBodegaProducto', function () {
     Object.values(nuevoProducto.inventarios).forEach(inventario => {
         if (inventario.id == idBodega) {
             inventario.cantidad = totalBodega;
+            inventario.edit = true;
         }
     });
 
@@ -1783,6 +1805,7 @@ function changeValorVenta(event) {
 
         var costoCommpra = parseFloat($('#precio_inicial').val());
         var valorVenta = parseFloat($('#precio_producto').val());
+        var porcentajeIva = parseFloat($('#porcentaje_iva').val());
 
         if (valorVenta < costoCommpra) {
             setTimeout(function(){
@@ -1793,12 +1816,19 @@ function changeValorVenta(event) {
             return;
         }
 
-        var porcentajeUtilidad = parseFloat((valorVenta - costoCommpra) / costoCommpra).toFixed(1);
-        var valorUtilidad = costoCommpra * porcentajeUtilidad;
+        if (costoCommpra == 0) {
+            $('#porcentaje_utilidad').val(100);
+            $('#valor_utilidad').val(valorVenta);
+        } else {
+            var porcentajeUtilidad = parseFloat(valorVenta - costoCommpra) / costoCommpra;
+            var valorUtilidad = costoCommpra * porcentajeUtilidad;
 
-        $('#porcentaje_utilidad').val(porcentajeUtilidad * 100);
-        $('#valor_utilidad').val(valorUtilidad);
+            $('#porcentaje_utilidad').val(porcentajeUtilidad * 100);
+            $('#valor_utilidad').val(valorUtilidad);
+        }
 
+        $('#valor_iva').val(valorVenta * (porcentajeIva / 100));
+        
         setTimeout(function(){
             $('#precio_minimo').focus();
             $('#precio_minimo').select();
@@ -1819,12 +1849,23 @@ function changePorcentajeUtilidad(event) {
     if(event.keyCode == 13) {
 
         var costoCommpra = parseFloat($('#precio_inicial').val());
-        var porcentajeUtilidad = parseFloat($('#porcentaje_utilidad').val()).toFixed(1);
-        var valorUtilidad = costoCommpra * (porcentajeUtilidad / 100);
+        var valorVenta = parseFloat($('#precio_producto').val());
+        var porcentajeIva = parseFloat($('#porcentaje_iva').val());
+        var porcentajeUtilidad = parseFloat($('#porcentaje_utilidad').val());
 
-        $('#valor_utilidad').val(valorUtilidad);
-        $('#precio_producto').val(costoCommpra * ((porcentajeUtilidad / 100) + 1));
+        if (costoCommpra == 0 && valorVenta > 0) {
+            $('#porcentaje_utilidad').val(100);
+            $('#valor_utilidad').val(valorVenta);
+        } else {
+            var valorUtilidad = costoCommpra * (porcentajeUtilidad / 100);
+            var precioProducto = costoCommpra * ((porcentajeUtilidad / 100) + 1);
+            var valorIva = precioProducto * (porcentajeIva / 100);
+            
+            $('#valor_iva').val(valorIva);
+            $('#valor_utilidad').val(valorUtilidad);
+            $('#precio_producto').val(precioProducto);
 
+        }
         setTimeout(function(){
             $('#valor_utilidad').focus();
             $('#valor_utilidad').select();
@@ -1835,11 +1876,20 @@ function changePorcentajeUtilidad(event) {
 function changeValorUtilidad(event) {
     if(event.keyCode == 13) {
         var costoCommpra = parseFloat($('#precio_inicial').val());
+        var valorProducto = parseFloat($('#precio_producto').val());
         var valorUtilidad = parseFloat($('#valor_utilidad').val());
 
-        if (valorUtilidad > 0) {
-            $('#porcentaje_utilidad').val( parseFloat((valorUtilidad / costoCommpra) * 100).toFixed(1) );
-            $('#precio_producto').val(costoCommpra + valorUtilidad);
+        if (costoCommpra == 0 && valorProducto > 0) {
+            $('#porcentaje_utilidad').val(100);
+            $('#valor_utilidad').val(valorProducto);
+
+        } else if (valorUtilidad > 0) {
+            var porcentajeIva = parseFloat($('#porcentaje_iva').val());
+            var precioProducto = costoCommpra + valorUtilidad;
+
+            $('#porcentaje_utilidad').val( parseFloat((valorUtilidad / costoCommpra) * 100) );
+            $('#precio_producto').val(precioProducto);
+            $('#valor_iva').val(precioProducto * (porcentajeIva / 100));
         }
     }
 }
@@ -1900,8 +1950,17 @@ $("#id_familia_producto").on('change', function(e) {
     var data = $(this).select2('data');
 
     if (data.length > 0) {
-        nuevoProducto.id_familia = parseInt(data[0].id);
-        if (data[0].inventario) $('#producto-inventario').show();
+        var familia = data[0];
+        if (familia.cuenta_venta_iva && familia.cuenta_venta_iva.impuesto) {
+            $('#input-iva-porcentaje').show();
+            $('#input-iva-valor').show();
+            $('#porcentaje_iva').val(familia.cuenta_venta_iva.impuesto.porcentaje);
+        } else {
+            $('#input-iva-porcentaje').hide();
+            $('#input-iva-valor').hide();
+        }
+        nuevoProducto.id_familia = parseInt(familia.id);
+        if (familia.inventario) $('#producto-inventario').show();
         else $('#producto-inventario').hide();
     }
 });
@@ -1930,6 +1989,6 @@ function actualizarDatosProducto () {
     nuevoProducto.precio = $('#precio_producto').val();
     nuevoProducto.precio_minimo = $('#precio_minimo').val();
     nuevoProducto.precio_inicial = $('#precio_inicial').val();
-    nuevoProducto.porcentaje_utilidad = parseFloat($('#porcentaje_utilidad').val()).toFixed(1);
+    nuevoProducto.porcentaje_utilidad = parseFloat($('#porcentaje_utilidad').val());
     nuevoProducto.valor_utilidad = $('#valor_utilidad').val();
 }

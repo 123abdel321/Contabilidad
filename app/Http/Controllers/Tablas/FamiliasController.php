@@ -310,9 +310,25 @@ class FamiliasController extends Controller
     public function comboFamilia(Request $request)
     {
         $familia = FacFamilias::select(
-            \DB::raw('*'),
-            \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
-        );
+                \DB::raw('*'),
+                \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+            )
+            ->with(
+                'cuenta_venta',
+                'cuenta_venta_retencion',
+                'cuenta_venta_devolucion',
+                'cuenta_venta_iva.impuesto',
+                'cuenta_venta_descuento',
+                'cuenta_venta_devolucion_iva',
+                'cuenta_compra',
+                'cuenta_compra_retencion',
+                'cuenta_compra_devolucion',
+                'cuenta_compra_iva',
+                'cuenta_compra_descuento',
+                'cuenta_compra_devolucion_iva',
+                'cuenta_inventario',
+                'cuenta_costos'
+            );
 
         if ($request->get("q")) {
             $familia->where('codigo', 'LIKE', '%' . $request->get("q") . '%')

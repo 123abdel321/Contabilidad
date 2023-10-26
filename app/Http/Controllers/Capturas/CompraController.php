@@ -466,7 +466,7 @@ class CompraController extends Controller
 
     private function findProducto ($id_producto)
     {
-        return FacProductos::where('id', $id_producto)
+        $producto = FacProductos::where('id', $id_producto)
             ->with(
                 'familia.cuenta_compra',
                 'familia.cuenta_compra_retencion.impuesto',
@@ -474,6 +474,13 @@ class CompraController extends Controller
                 'familia.cuenta_compra_descuento'
             )
             ->first();
+
+        if ($producto->utilizado_captura == 0) {
+            $producto->utilizado_captura = 1;
+            $producto->save();
+        }
+
+        return $producto;
     }
 
 }

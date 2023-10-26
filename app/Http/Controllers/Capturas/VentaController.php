@@ -514,7 +514,7 @@ class VentaController extends Controller
 
     private function findProducto ($id_producto)
     {
-        return FacProductos::where('id', $id_producto)
+        $producto = FacProductos::where('id', $id_producto)
             ->with(
                 'familia.cuenta_venta',
                 'familia.cuenta_venta_retencion.impuesto',
@@ -522,6 +522,13 @@ class VentaController extends Controller
                 'familia.cuenta_venta_descuento'
             )
             ->first();
+
+        if ($producto->utilizado_captura == 0) {
+            $producto->utilizado_captura = 1;
+            $producto->save();
+        }
+
+        return $producto;
     }
 
     private function findFormaPago ($id_forma_pago)
