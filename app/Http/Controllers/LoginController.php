@@ -37,7 +37,9 @@ class LoginController extends Controller
 
             $plainTextToken = '';
             if ($user->remember_token) {
-                $plainTextToken = $user->remember_token;
+                $token = $user->createToken("web_token");
+                $plainTextToken = $token->plainTextToken;
+                $user->remember_token = $plainTextToken;
             } else {
                 $token = $user->createToken("web_token");
                 $plainTextToken = $token->plainTextToken;

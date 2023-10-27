@@ -19,7 +19,8 @@
                         </span>
                     </p>
                     <p style="font-size: 14px !important; margin-bottom: 0px;" >2. Realiza los cambios en cada archivo y guárdalo en formato Excel (.xlsx)</p>
-                    <p style="font-size: 14px !important; margin-bottom: 0px;" >3. Adjunta el archivo y haz clic en "Actualizar precios"</p>
+                    <p style="font-size: 14px !important; margin-bottom: 0px;" >3. Adjunta el archivo y haz click en "Cargar plantilla"</p>
+                    <p style="font-size: 14px !important; margin-bottom: 0px;" >4. Valida los productos que seran actualizados y haz click "Actualizar productos"</p>
                 </div>
                 <br>
                 <div class="row">
@@ -29,14 +30,17 @@
                             <input class="form-control form-control-sm" id="file" name="file" type="file">
                         </div>
                         <div class="col-6">
-
-                            <button type="submit" id="cargarPlantilla" href="javascript:void(0)" class="btn badge bg-gradient-primary">
-                                <i class="fas fa-upload" style="font-size: 17px;"></i>
-                                <b style="vertical-align: text-top;">Actualizar precios</b>
+                            <button type="submit" id="cargarPlantilla" href="javascript:void(0)" class="btn btn-sm badge bg-gradient-success">
+                                <i class="far fa-file-excel" style="font-size: 17px;"></i>&nbsp;
+                                <b style="vertical-align: text-top;">Cargar plantilla</b>
                             </button>
-                            <button id="cargarPlantillaLoagind" class="btn badge btn-sm bg-gradient-primary" style="display:none; float: left;" disabled>
-                                Cargando
-                                <i class="fas fa-spinner fa-spin"></i>
+                            <button id="actualizarPrecios" href="javascript:void(0)" class="btn btn-sm badge bg-gradient-primary" style="display: none;">
+                                <i class="fas fa-upload" style="font-size: 17px;"></i>&nbsp;
+                                <b style="vertical-align: text-top;">Actualizar productos</b>
+                            </button>&nbsp;
+                            <button id="cargarPlantillaLoagind" class="btn btn-sm badge bg-gradient-primary" style="display:none; float: left;" disabled>
+                                <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>&nbsp;
+                                <b style="vertical-align: text-top;">Cargando</b>
                             </button>
                         </div>
                     </form>
