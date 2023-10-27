@@ -56,12 +56,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get("usuario-accion","App\Http\Controllers\ApiController@getUsuario");
     Route::post("empresa","App\Http\Controllers\InstaladorController@createEmpresa");
     Route::post("seleccionar-empresa","App\Http\Controllers\ApiController@setEmpresa");
-    Route::post("productoprecios-importar","App\Http\Controllers\Importador\ProductoImportadorController@setEmpresa");
     Route::get('responsabilidades-combo', 'App\Http\Controllers\Configuracion\EmpresaController@comboResponsabilidades');
     Route::put('empresa', 'App\Http\Controllers\Configuracion\EmpresaController@updateEmpresa');
     
     //EMPRESA SELECCIONADA
     Route::group(['middleware' => ['clientconnection']], function() {
+        //IMPORTADORES
+        Route::get('producto-precio-cache-import', 'App\Http\Controllers\Importador\ProductoImportadorController@generate');
+        Route::post('producto-precio-actualizar', 'App\Http\Controllers\Importador\ProductoImportadorController@actualizar');
         //INFORMES
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
         Route::get('existe-factura', 'App\Http\Controllers\Informes\ExtractoController@existeFactura');
