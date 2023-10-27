@@ -19,7 +19,8 @@
                         </span>
                     </p>
                     <p style="font-size: 14px !important; margin-bottom: 0px;" >2. Realiza los cambios en cada archivo y guárdalo en formato Excel (.xlsx)</p>
-                    <p style="font-size: 14px !important; margin-bottom: 0px;" >3. Adjunta el archivo y haz clic en "Actualizar precios"</p>
+                    <p style="font-size: 14px !important; margin-bottom: 0px;" >3. Adjunta el archivo y haz click en "Cargar plantilla"</p>
+                    <p style="font-size: 14px !important; margin-bottom: 0px;" >4. Valida los productos que seran actualizados y haz click "Actualizar productos"</p>
                 </div>
                 <br>
                 <div class="row">
