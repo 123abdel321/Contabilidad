@@ -3,6 +3,7 @@ const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
 // const base_url = 'http://localhost:8000/api/';
 // const base_web = 'http://localhost:8000/';
 const bucketUrl = 'https://bucketlistardatos.nyc3.digitaloceanspaces.com/';
+const btnLogout = document.getElementById('sessionLogout');
 const base_url = 'https://listardatos.com/api/';
 const base_web = 'https://listardatos.com/';
 const dateNow = new Date();
@@ -11,6 +12,7 @@ const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo
 const headers = {
     "Authorization": auth_token,
     "Content-Type": "application/json",
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 };
 
 let body = document.getElementsByTagName('body')[0];
@@ -83,7 +85,9 @@ $(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownErr
 });
 
 $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
+$("#nombre-empresa-topnav").text(localStorage.getItem("empresa_nombre"));
 $("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
+
 if (localStorage.getItem("empresa_logo") == 'null') {
     $("#side_main_logo").attr('src', '/img/logo_contabilidad.png');
 } else{ 
@@ -374,37 +378,37 @@ const lenguajeDatatable = {
     }
 }
 
-$("#button-login").click(function(event){
+// $("#button-login").click(function(event){
     
-    $("#button-login-loading").show();
-    $("#button-login").hide();
+//     $("#button-login-loading").show();
+//     $("#button-login").hide();
 
-    $.ajax({
-        url: base_web + 'login',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        method: 'POST',
-        data: {
-            "email": $('#email_login').val(),
-            "password": $('#password_login').val(),
-            "_token": $('meta[name="csrf-token"]').attr('content'),
-        },
-        dataType: 'json',
-    }).done((res) => {
-        $("#button-login-loading").hide();
-        $("#button-login").show();
-        if(res.success){
-            localStorage.setItem("auth_token", res.token_type+' '+res.access_token);
-            localStorage.setItem("empresa_nombre", res.empresa.razon_social);
-            localStorage.setItem("empresa_logo", res.empresa.logo);
-            window.location.href = '/home';
-        }
-    }).fail((err) => {
-        $("#button-login-loading").hide();
-        $("#button-login").show();
-    });
-});
+//     $.ajax({
+//         url: base_web + 'login',
+//         headers: {
+//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//         },
+//         method: 'POST',
+//         data: {
+//             "email": $('#email_login').val(),
+//             "password": $('#password_login').val(),
+//             "_token": $('meta[name="csrf-token"]').attr('content'),
+//         },
+//         dataType: 'json',
+//     }).done((res) => {
+//         $("#button-login-loading").hide();
+//         $("#button-login").show();
+//         if(res.success){
+//             localStorage.setItem("auth_token", res.token_type+' '+res.access_token);
+//             localStorage.setItem("empresa_nombre", res.empresa.razon_social);
+//             localStorage.setItem("empresa_logo", res.empresa.logo);
+//             window.location.href = '/home';
+//         }
+//     }).fail((err) => {
+//         $("#button-login-loading").hide();
+//         $("#button-login").show();
+//     });
+// });
 
 $(".btn-cerrar").click(function(event){
     console.log('asdasd');
@@ -664,3 +668,21 @@ function loadExcel(data) {
     window.open('https://'+data.url_file, "_blank");
     agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
 }
+
+$(document).on('click', '#descargarPlantilla', function () {
+    
+});
+
+btnLogout.addEventListener('click', event => {
+
+    event.preventDefault();
+    $.ajax({
+        url: base_web + 'logout',
+        method: 'POST',
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        window.location.href = '/';
+    }).fail((err) => {
+    });
+});

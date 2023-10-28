@@ -79,6 +79,10 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return response()->json([
+    		'success'=>	false,
+    		'data' => '',
+    		'message'=> 'logout true'
+    	], 200);
     }
 }

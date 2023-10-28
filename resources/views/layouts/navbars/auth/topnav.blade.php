@@ -34,9 +34,7 @@
                 <li class="nav-item px-2 d-flex align-items-center">
                     <form role="form" method="post" action="{{ route('logout') }}" id="logout-form">
                         @csrf
-                        <a href="{{ route('logout') }}"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                            class="nav-link text-white font-weight-bold px-0">
+                        <a id="sessionLogout" class="nav-link text-white font-weight-bold px-0" style="cursor: pointer;">
                             <i class="fa fa-sign-out" aria-hidden="true"></i>
                         </a>
                     </form>

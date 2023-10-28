@@ -24,13 +24,13 @@
                 </div>
                 <br>
                 <div class="row">
-                    <form id="form-producto-precios" action="{{ route('producto.importar') }}" method="POST" enctype="multipart/form-data">
+                    <form id="form-producto-precios" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="mb-3 col-6">
                             <input class="form-control form-control-sm" id="file" name="file" type="file">
                         </div>
                         <div class="col-6">
-                            <button type="submit" id="cargarPlantilla" href="javascript:void(0)" class="btn btn-sm badge bg-gradient-success">
+                            <button id="cargarPlantilla" href="javascript:void(0)" class="btn btn-sm badge bg-gradient-success">
                                 <i class="far fa-file-excel" style="font-size: 17px;"></i>&nbsp;
                                 <b style="vertical-align: text-top;">Cargar plantilla</b>
                             </button>

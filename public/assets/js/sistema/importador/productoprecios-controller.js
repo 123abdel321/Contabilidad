@@ -1,5 +1,5 @@
 var productos_precios_table = null;
-const btn = document.getElementById('actualizarPrecios');
+var btn = document.getElementById('actualizarPrecios');
 
 function productopreciosInit() {
     productos_precios_table = $('#importProductoPrecios').DataTable({
