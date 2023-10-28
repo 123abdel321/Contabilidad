@@ -17,7 +17,7 @@
                             <div class="card card-plain">
                                 <div class="card-header pb-0 text-start">
                                     <h4 class="font-weight-bolder">Iniciar sesión</h4>
-                                    <p class="mb-0">Ingre el correo y la contraseña para continuar</p>
+                                    <p class="mb-0">Ingrese correo y contraseña para continuar</p>
                                 </div>
                                 <div class="card-body">
 
