@@ -34,7 +34,7 @@ label, .form-label {
 }
 
 .fondo-sistema {
-    background-image: url('https://i.blogs.es/d5130c/wallpaper-2.png/1366_2000.webp');
+    background-image: url('/img/fondo-erp.png');
     min-height: 400px !important;
     background-position: center;
     background-size: cover;
