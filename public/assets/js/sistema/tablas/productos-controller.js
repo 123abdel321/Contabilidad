@@ -713,7 +713,7 @@ $(document).on('click', '#saveNewProducto', function () {
         $('#saveNewProducto').show();
         $('#cancelProducto').show();
         $('#saveNewProductoLoading').hide();
-        agregarToast('error', 'Creación errada', errorsMsg);
+        agregarToast('error', 'Carga errada', errorsMsg);
     });
 
     

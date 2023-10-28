@@ -11,26 +11,26 @@
             <div class="accordion-body text-sm" style="padding: 0 !important;">
                 <br>
                 <div>
-                    <p style="font-size: 14px !important; margin-bottom: 0px;" >
-                        1. Descarga la plantilla para actualizar precios. Cada plantilla contiene máximo 500 registros &nbsp;
-                        <span id="descargarPlantilla" href="javascript:void(0)" class="btn badge bg-gradient-success" style="min-width: 40px; margin-right: 3px; margin-bottom: 0px !important;">
+                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" >
+                        <b>1.</b> Descarga la plantilla para actualizar precios. Cada plantilla contiene máximo 500 registros &nbsp;
+                        <span id="descargarPlantilla" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; margin-right: 3px; margin-bottom: 0px !important;">
                             <i class="fas fa-download" style="font-size: 17px;"></i>
                             <b style="vertical-align: text-top;">Descargar plantilla</b>
                         </span>
                     </p>
-                    <p style="font-size: 14px !important; margin-bottom: 0px;" >2. Realiza los cambios en cada archivo y guárdalo en formato Excel (.xlsx)</p>
-                    <p style="font-size: 14px !important; margin-bottom: 0px;" >3. Adjunta el archivo y haz click en "Cargar plantilla"</p>
-                    <p style="font-size: 14px !important; margin-bottom: 0px;" >4. Valida los productos que seran actualizados y haz click "Actualizar productos"</p>
+                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" ><b>2.</b> Realiza los cambios en cada archivo y guárdalo en formato Excel (.xlsx)</p>
+                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" ><b>3.</b> Adjunta el archivo y haz click en "Cargar plantilla"</p>
+                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" ><b>4.</b> Valida los productos que seran actualizados y haz click en "Actualizar productos"</p>
                 </div>
                 <br>
                 <div class="row">
-                    <form id="form-producto-precios" action="{{ route('producto.importar') }}" method="POST" enctype="multipart/form-data">
+                    <form id="form-producto-precios" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="mb-3 col-6">
                             <input class="form-control form-control-sm" id="file" name="file" type="file">
                         </div>
                         <div class="col-6">
-                            <button type="submit" id="cargarPlantilla" href="javascript:void(0)" class="btn btn-sm badge bg-gradient-success">
+                            <button id="cargarPlantilla" href="javascript:void(0)" class="btn btn-sm badge bg-gradient-success">
                                 <i class="far fa-file-excel" style="font-size: 17px;"></i>&nbsp;
                                 <b style="vertical-align: text-top;">Cargar plantilla</b>
                             </button>

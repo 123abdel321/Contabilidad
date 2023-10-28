@@ -1,5 +1,5 @@
 var productos_precios_table = null;
-const btn = document.getElementById('actualizarPrecios');
+var btn = document.getElementById('actualizarPrecios');
 
 function productopreciosInit() {
     productos_precios_table = $('#importProductoPrecios').DataTable({
@@ -39,6 +39,7 @@ function productopreciosInit() {
                         <label>Con errores</label>
                     </span>`
             }},
+            {"data":'observacion'},
             {"data":'codigo'},
             {"data":'nombre'},
             {"data": function (row, type, set){
@@ -72,8 +73,7 @@ function productopreciosInit() {
                     }
                 }
                 return '';
-            }},
-            {"data":'observacion'},
+            }}
         ]
     });
 }
@@ -95,7 +95,7 @@ $("#form-producto-precios").submit(function(e) {
     xhr.onload = function(res) {
         var responseData = JSON.parse(res.currentTarget.response);
         var errorsMsg = '';
-
+        console.log('responseData: ',responseData);
         $('#cargarPlantilla').show();
         $('#cargarPlantillaLoagind').hide();
 
@@ -111,7 +111,7 @@ $("#form-producto-precios").submit(function(e) {
                         errorsMsg += "Fila "+element.row+"- "+element.errors[campo]+" <br>";
                     }
                 }
-                agregarToast('error', 'Creación errada', errorsMsg);
+                agregarToast('error', 'Carga errada', errorsMsg);
                 return;
             } else if (typeof responseData.message === 'object'){
                 for (field in responseData.message) {
@@ -120,7 +120,7 @@ $("#form-producto-precios").submit(function(e) {
                         errorsMsg += "- "+errores[campo]+" <br>";
                     }
                 };
-                agregarToast('error', 'Creación errada', errorsMsg);
+                agregarToast('error', 'Carga errada', errorsMsg);
                 return;
             }
         }

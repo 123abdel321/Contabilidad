@@ -61,10 +61,11 @@
                         <div
                             class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
                             <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden"
-                                style="background-image: url('https://img.freepik.com/foto-gratis/vista-trasera-hombre-que-trabaja-casa_329181-14512.jpg?size=626&ext=jpg&ga=GA1.1.386372595.1697932800&semt=ais');
+                                style="background-image: url('/img/login-img.avif');
               background-size: cover;">
-                                <span class="mask bg-gradient-primary opacity-6"></span>
-                                <h4 class="mt-5 text-white font-weight-bolder position-relative">ERP LISTAR DATOS</h4>
+                                <span class="mask bg-gradient-primary opacity-4"></span>
+                                <img src="/img/logo_contabilidad.png" class="navbar-brand-img h-10 position-relative" style="width: 100px; align-self: center;" alt="main_logo-login">
+                                <h4 class="mt-1 text-white font-weight-bolder position-relative">ERP LISTAR DATOS</h4>
                                 <p class="text-white position-relative">BETA {{ config('app.version') }}</p>
                             </div>
                         </div>
