@@ -632,6 +632,7 @@
         const base_web = 'https://listardatos.com/';
 
         $("#button-login").click(function(event){
+            $('#error-login').hide();
             $("#button-login-loading").show();
             $("#button-login").hide();
             $.ajax({
@@ -654,10 +655,13 @@
                     localStorage.setItem("empresa_logo", res.empresa.logo);
                     localStorage.setItem("notificacion_code", res.notificacion_code);
                     window.location.href = '/home';
+                } else {
+                    $('#error-login').show();
                 }
             }).fail((err) => {
                 $("#button-login-loading").hide();
                 $("#button-login").show();
+                $('#error-login').show();
             });
         });
     </script>
