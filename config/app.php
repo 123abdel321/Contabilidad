@@ -13,7 +13,7 @@ return [
     | este dato se imprime en el footer debajo de boton de login
     */
 
-    'version' => '0.1.1 - 2023-10-27', //fecha de la ultima compilacion de produccion
+    'version' => '0.1.5 - 2023-10-27', //fecha de la ultima compilacion de produccion
 
     /*
     |--------------------------------------------------------------------------
