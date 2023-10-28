@@ -7,13 +7,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Version del app - se maneja con el tag que lleva la rama master y la subversion x en el tercer . ej  3.2.x  o 3.2.1, 3.2.2, 3.2.3 para cada compilacion de desarrollo
+    | Version del app
     |--------------------------------------------------------------------------
-    |tambien se adjunta fecha de la ultima compilacion de produccion, no se si sea necesario poner la de desarrollo
-    | este dato se imprime en el footer debajo de boton de login
+    |
+    | Tambien se adjunta fecha de la ultima compilacion de produccion
+    |
     */
 
-    'version' => '0.1.5 - 2023-10-27', //fecha de la ultima compilacion de produccion
+    'version' => '0.1.5 - 2023/10/27',
 
     /*
     |--------------------------------------------------------------------------
