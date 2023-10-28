@@ -100,36 +100,33 @@
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="row card-body" style="content-visibility: auto; text-align: -webkit-center; margin-top: 5px;">
-            <div class="col-12 col-sm-6 col-md-6">
-            </div>
-            <div class="col-12 col-sm-6 col-md-6">
-                <table class="table table-bordered" width="100%">
-                    <tbody>
-                        <tr>
-                            <td><h6 style="font-size: 0.9rem;">SUB TOTAL: </h6></td>
-                            <td><h6 style="float: right; font-size: 0.9rem;" id="compra_sub_total">0.00</h6></td>
-                        </tr>
-                        <tr>
-                            <td><h6 style="font-size: 0.9rem;">IVA: </h6></td>
-                            <td><h6 style="float: right; font-size: 0.9rem;" id="compra_total_iva">0.00</h6></td>
-                        </tr>
-                        <tr id="totales_descuento_compra" style="display: none;">
-                            <td><h6 style="font-size: 0.9rem;">DESCUENTO: </h6></td>
-                            <td><h6 style="float: right; font-size: 0.9rem;" id="compra_total_descuento">0.00</h6></td>
-                        </tr>
-                        <tr id="totales_retencion_compra" style="display: none;">
-                            <td><h6 style="font-size: 0.9rem;" id="compra_texto_retencion">RETENCION: </h6></td>
-                            <td><h6 style="float: right; font-size: 0.9rem;" id="compra_total_retencion">0.00</h6></td>
-                        </tr>
-                        <tr>
-                            <td><h6 style="font-weight: bold;">TOTAL: </h6></td>
-                            <td><h6 style="float: right; font-weight: bold;" id="compra_total_valor">0.00</h6></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <div class="row">
+        <div class="col-6"></div>
+        <div class="card mb-4 col-6">
+            <table class="table table-bordered" width="100%" style="margin-top: 12px;">
+                <tbody>
+                    <tr>
+                        <td><h6 style="font-size: 0.9rem;">SUB TOTAL: </h6></td>
+                        <td><h6 style="float: right; font-size: 0.9rem;" id="compra_sub_total">0.00</h6></td>
+                    </tr>
+                    <tr>
+                        <td><h6 style="font-size: 0.9rem;">IVA: </h6></td>
+                        <td><h6 style="float: right; font-size: 0.9rem;" id="compra_total_iva">0.00</h6></td>
+                    </tr>
+                    <tr id="totales_descuento_compra" style="display: none;">
+                        <td><h6 style="font-size: 0.9rem;">DESCUENTO: </h6></td>
+                        <td><h6 style="float: right; font-size: 0.9rem;" id="compra_total_descuento">0.00</h6></td>
+                    </tr>
+                    <tr id="totales_retencion_compra" style="display: none;">
+                        <td><h6 style="font-size: 0.9rem;" id="compra_texto_retencion">RETENCION: </h6></td>
+                        <td><h6 style="float: right; font-size: 0.9rem;" id="compra_total_retencion">0.00</h6></td>
+                    </tr>
+                    <tr>
+                        <td><h6 style="font-weight: bold;">TOTAL: </h6></td>
+                        <td><h6 style="float: right; font-weight: bold;" id="compra_total_valor">0.00</h6></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
