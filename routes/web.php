@@ -57,7 +57,7 @@ use App\Http\Controllers\Importador\ProductoImportadorController;
 // });
 
 Route::get('/', function () {
-	return view('auth.login');
+	return redirect('/home');
 });
 
 Auth::routes();

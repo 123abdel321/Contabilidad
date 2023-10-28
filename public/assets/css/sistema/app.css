@@ -653,3 +653,9 @@ td{
     height: 0.5rem !important;
     cursor: pointer;
 }
+
+@media only screen and (min-width: 768px) {
+    #nombre-empresa-topnav {
+        display: none !important;
+    }
+} 
