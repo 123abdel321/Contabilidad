@@ -23,6 +23,11 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
+    public function validateSession (Request $request)
+    {
+        return view('auth.login');
+    }
+
     public function login(Request $request)
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
