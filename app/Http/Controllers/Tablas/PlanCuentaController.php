@@ -67,8 +67,6 @@ class PlanCuentaController extends Controller
                 'created_by',
                 'updated_by'
             );
-
-        $cuentasTotals = $cuentas->get();
         
         $cuentasPaginate = $cuentas->skip($start)
             ->take($rowperpage);
@@ -76,8 +74,8 @@ class PlanCuentaController extends Controller
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
-            'iTotalRecords' => $cuentasTotals->count(),
-            'iTotalDisplayRecords' => $cuentasTotals->count(),
+            'iTotalRecords' => $cuentas->count(),
+            'iTotalDisplayRecords' => $cuentas->count(),
             'data' => $cuentasPaginate->get(),
             'perPage' => $rowperpage,
             'message'=> 'Comprobante generado con exito!'

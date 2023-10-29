@@ -51,10 +51,16 @@ class ProductosController extends Controller
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
-        $rowperpage = 15; // Rows display per page
+        $rowperpage = $request->get("length");
 
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
         $search_arr = $request->get('search');
 
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
         $productos = FacProductos::skip($start)
@@ -75,20 +81,22 @@ class ProductosController extends Controller
                 'fac_productos.created_by',
                 'fac_productos.updated_by'
             )
-            ->orderBy('id', 'desc')
-            ->take($rowperpage);
+            ->orderBy('id', 'desc');
 
         if($searchValue) {
             $productos->where('nombre', 'like', '%' .$searchValue . '%')
                 ->orWhere('codigo', 'like', '%' .$searchValue . '%');
         }
 
+        $productosPaginate = $productos->skip($start)
+            ->take($rowperpage);
+
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
             'iTotalRecords' => $productos->count(),
             'iTotalDisplayRecords' => $productos->count(),
-            'data' => $productos->get(),
+            'data' => $productosPaginate->get(),
             'perPage' => $rowperpage,
             'message'=> 'Productos cargados con exito!'
         ]);
