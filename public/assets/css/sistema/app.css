@@ -34,10 +34,12 @@ label, .form-label {
 }
 
 .fondo-sistema {
-    background-image: url('/img/fondo-erp.png');
-    min-height: 400px !important;
+    background-image: url(/img/fondo-erp.png);
+    height: 100% !important;
     background-position: center;
     background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .btn {
@@ -154,7 +156,7 @@ thead tr:first-child th {
     color: black;
     background-color: #FFF !important;
     cursor: pointer;
-    border: solid 1px #d9d9d9;
+    border: solid 1px #2a3548;
 }
 
 .footer-navigation .nav-item .nav-link.active {
