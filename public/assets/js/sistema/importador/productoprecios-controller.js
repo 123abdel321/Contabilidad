@@ -43,32 +43,32 @@ function productopreciosInit() {
             {"data":'codigo'},
             {"data":'nombre'},
             {"data": function (row, type, set){
-                if (row.estado == 2) {
-                    if (row.precio_inicial > row.producto.precio_inicial) {
-                        return `<label style="margin-top: -5px; position: fixed;">${row.precio_inicial}&nbsp;<i class="fas fas fa-sort-up" style="color: lightgreen; vertical-align: sub;"></i></label><br>
-                                <label style="margin-top: -10px; font-size: 11px; position: fixed; margin-left: 10px; font-weight: 500;">
-                                    ${row.producto.precio_inicial}
-                                </label>`;
-                    } else {
-                        return `<label style="margin-top: -5px; position: fixed;">${row.precio_inicial}&nbsp;<i class="fas fa-sort-down" style="color: red; -webkit-writing-mode: horizontal-tb;"></i></label><br>
-                                <label style="margin-top: -10px; font-size: 11px; position: fixed; margin-left: 10px; font-weight: 500;">
-                                    ${row.producto.precio_inicial}
-                                </label>`;
-                    }
+                if (row.estado && row.producto) {
+                    return parseFloat(row.producto.porcentaje_utilidad).toFixed(2)+'%';
                 }
-                return row.precio;
-            }},
+                return '';
+            }, className: 'dt-body-right'},
+            {"data": function (row, type, set){
+                if (row.estado && row.producto) {
+                    return row.producto.precio_inicial;
+                }
+                return '';
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'precio_inicial', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'precio_inicial', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
                 if (row.estado == 2) {
+                    var productoPrecioNew = numberWithCommas(row.precio);
+                    var productoPrecioOld = numberWithCommas(row.producto.precio);
                     if (row.precio > row.producto.precio) {
-                        return `<label style="margin-top: -5px; position: fixed;">${row.precio}&nbsp;<i class="fas fas fa-sort-up" style="color: lightgreen; vertical-align: sub;"></i></label><br>
+                        return `<label style="margin-top: -5px; position: fixed;">${productoPrecioNew}&nbsp;<i class="fas fas fa-sort-up" style="color: lightgreen; vertical-align: sub;"></i></label><br>
                                 <label style="margin-top: -10px; font-size: 11px; position: fixed; margin-left: 10px; font-weight: 500;">
-                                    ${row.producto.precio}
+                                    ${productoPrecioOld}
                                 </label>`;
                     } else {
-                        return `<label style="margin-top: -5px; position: fixed;">${row.precio}&nbsp;<i class="fas fa-sort-down" style="color: red; -webkit-writing-mode: horizontal-tb;"></i></label><br>
+                        return `<label style="margin-top: -5px; position: fixed;">${productoPrecioNew}&nbsp;<i class="fas fa-sort-down" style="color: red; -webkit-writing-mode: horizontal-tb;"></i></label><br>
                                 <label style="margin-top: -10px; font-size: 11px; position: fixed; margin-left: 10px; font-weight: 500;">
-                                    ${row.producto.precio}
+                                    ${productoPrecioOld}
                                 </label>`;
                     }
                 }
@@ -126,7 +126,6 @@ $("#form-producto-precios").submit(function(e) {
         }
     };
     xhr.onerror = function (res) {
-        console.log('res erres: ',res);
         $('#cargarPlantilla').hide();
         $('#cargarPlantillaLoagind').show();
     };

@@ -6,7 +6,10 @@
             <th>Observación</th>
             <th>Código</th>
             <th>Nombre</th>
-            <th>Costo</th>
+            <th>Utilidad</th>
+            <th>Costo actual</th>
+            <th>Costo Importado</th>
+            <th>Costo Promedio</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Venta</th>
         </tr>
     </thead>
