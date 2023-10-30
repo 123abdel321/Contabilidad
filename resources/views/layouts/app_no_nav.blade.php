@@ -62,9 +62,12 @@
         }
 
         .fondo-sistema {
-            background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg');
-            min-height: 350px !important;
-            background-position: center center;
+            background-image: url(/img/fondo-erp.png);
+            height: 100% !important;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
 
         .btn {

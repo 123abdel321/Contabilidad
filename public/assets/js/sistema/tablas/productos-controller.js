@@ -30,14 +30,13 @@ var nuevoProducto = {
 function productosInit() {
 
     productos_table = $('#productoTable').DataTable({
-        pageLength: 30,
+        pageLength: 20,
         dom: 'Brtip',
         paging: true,
         responsive: false,
         processing: true,
         serverSide: true,
         fixedHeader: true,
-        ordering: false,
         deferLoading: 0,
         initialLoad: false,
         language: lenguajeDatatable,
@@ -85,10 +84,10 @@ function productosInit() {
                 }
                 return '';
             }},
-            {"data": "precio", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "precio_inicial", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "precio", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
-                return parseFloat(row.porcentaje_utilidad)+ '%';
+                return  parseFloat(row.porcentaje_utilidad).toFixed(2)+ '%';
             }, className: 'dt-body-right'},
             {"data": "valor_utilidad", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
@@ -309,7 +308,7 @@ function productosInit() {
     }
 
     productos_varaibles_table = $('#productosVariantesTable').DataTable({
-        dom: 'tip',
+        dom: 'Brtip',
         paging: false,
         responsive: false,
         processing: true,

@@ -7,8 +7,8 @@
             <th>Nombre</th>
             <th>Tipo producto</th>
             <th>Familia</th>
-            <th>Precio</th>
             <th>Costo</th>
+            <th>Precio</th>
             <th>% Utilidad</th>
             <th>Valor Utilidad</th>
             <th>Bodegas</th>

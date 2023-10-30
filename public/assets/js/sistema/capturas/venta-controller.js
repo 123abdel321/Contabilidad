@@ -11,6 +11,7 @@ var topeRetencionVenta = 0;
 var guardarVenta = false;
 var abrirFormasPago = false;
 var key13PressNewRow = false;
+var guardandoVenta = false;
 
 function ventaInit () {
 
@@ -40,14 +41,14 @@ function ventaInit () {
             },
             {//EXISTENCIAS
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_existencia_${idVentaProducto}" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 30px; text-align: right;" id="venta_existencia_${idVentaProducto}" disabled>`;
                 }
             },
             {//CANTIDAD
                 "data": function (row, type, set, col){
                     return `
-                        <div class="input-group" style="min-width: 130px; height: 30px;">
-                            <input type="number" class="form-control form-control-sm" style="min-width: 110px; border-right: solid 1px #b3b3b3; border-top-right-radius: 10px; border-bottom-right-radius: 10px;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="cantidadVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>
+                        <div class="input-group" style="height: 30px;">
+                            <input type="number" class="form-control form-control-sm" style="min-width: 80px; border-right: solid 1px #b3b3b3; border-top-right-radius: 10px; border-bottom-right-radius: 10px;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="cantidadVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>
                             <i class="fa fa-spinner fa-spin fa-fw venta_producto_load" id="venta_producto_load_${idVentaProducto}" style="display: none;"></i>
                             <div id="venta_cantidad_text_${idVentaProducto}" style="position: absolute; margin-top: 30px;" class="invalid-feedback">
                             </div>
@@ -57,32 +58,33 @@ function ventaInit () {
             },
             {//COSTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_costo_${idVentaProducto}" value="0" onkeydown="CostoVentakeyDown(${idVentaProducto}, event)" style="min-width: 100px;" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="venta_costo_${idVentaProducto}" value="0" onkeydown="CostoVentakeyDown(${idVentaProducto}, event)" style="min-width: 100px;" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
                 }
             },
             {//% DESCUENTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_descuento_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idVentaProducto}, event)" maxlength="2" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px;" id="venta_descuento_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idVentaProducto}, event)" maxlength="2" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
                 }
             },
             {//VALOR DESCUENTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_descuento_valor_${idVentaProducto}" value="0" onkeydown="DescuentoTotalVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
-                }
-            },
-            {//% IVA
-                "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_iva_porcentaje_${idVentaProducto}" value="0" onkeydown="IvaVentakeyDown(${idVentaProducto}, event)" maxlength="2" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="venta_descuento_valor_${idVentaProducto}" value="0" onkeydown="DescuentoTotalVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
                 }
             },
             {//VALOR IVA
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_iva_valor_${idVentaProducto}" value="0" onkeydown="IvaTotalkeyDown(${idVentaProducto}, event)" disabled>`;
+                    return `<div class="form-group mb-3" style="min-width: 80px;">
+                        <div class="input-group input-group-sm" style="height: 18px; min-width: 100px;">
+                            <span id="venta_iva_porcentaje_text_${idVentaProducto}" class="input-group-text" id="basic-addon2" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">0%</span>
+                            <input style="height: 30px; text-align: right;" type="text" class="form-control form-control-sm" value="0" id="venta_iva_valor_${idVentaProducto}" value="0" onkeydown="IvaTotalkeyDown(${idVentaProducto}, event)" disabled>
+                        </div>
+                    </div>
+                    <input type="number" class="form-control form-control-sm" style="min-width: 110px; display: none;" id="venta_iva_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idVentaProducto}, event)" maxlength="2" onfocusout="calcularProductoVenta(${idVentaProducto})">`;
                 }
             },
             {//TOTAL
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="venta_total_${idVentaProducto}" value="0" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 90px; text-align: right;" id="venta_total_${idVentaProducto}" value="0" disabled>`;
                 }
             },
         ],
@@ -148,7 +150,7 @@ function ventaInit () {
                             <div class="col-9" style="padding-left: 0px !important">
                                 <div class="row">
                                     <div class="col-12" style="padding-left: 0px !important">
-                                        <h6 style="font-size: 14px; margin-bottom: 0px; color: black;">${producto.text}</h6>
+                                        <h6 style="font-size: 12px; margin-bottom: 0px; color: black; margin-left: 10px;">${producto.text}</h6>
                                     </div>
                                     <div class="col-12" style="padding-left: 0px !important">
                                         <i class="fas fa-box-open" style="font-size: 11px; color: ${color};"></i>
@@ -169,7 +171,7 @@ function ventaInit () {
                             <div class="col-9" style="padding-left: 0px !important; align-self: center;">
                                 <div class="row">
                                     <div class="col-12" style="padding-left: 0px !important">
-                                        <h6 style="font-size: 14px; margin-bottom: 0px; color: black;">${producto.text}</h6>
+                                        <h6 style="font-size: 12px; margin-bottom: 0px; color: black; margin-left: 10px;">${producto.text}</h6>
                                     </div>
                                 </div>
                             </div>
@@ -198,6 +200,7 @@ function ventaInit () {
         language: lenguajeDatatable,
         sScrollX: "100%",
         scrollX: true,
+        ordering: false,
         ajax:  {
             type: "GET",
             headers: headers,
@@ -206,7 +209,7 @@ function ventaInit () {
         columns: [
             {"data":'nombre'},
             {"data": function (row, type, set){
-                return `<input type="number" class="form-control form-control-sm" style="min-width: 100px; font-size: initial; font-weight: 600; text-align: right;" value="0" onfocus="focusFormaPago(${row.id})" onfocusout="calcularVentaPagos(${row.id})" onkeypress="changeFormaPago(${row.id}, event)" id="venta_forma_pago_${row.id}">`;
+                return `<input type="number" class="form-control form-control-sm" style="text-align: right; font-size: larger;" value="0" onfocus="focusFormaPago(${row.id})" onfocusout="calcularVentaPagos(${row.id})" onkeypress="changeFormaPago(${row.id}, event)" id="venta_forma_pago_${row.id}">`;
             }},
         ],
     });
@@ -306,6 +309,7 @@ function ventaInit () {
     });
 
     consecutivoSiguienteVenta();
+    loadFormasPago();
 
     if (primeraNit) {
         var dataCliente = {
@@ -316,30 +320,30 @@ function ventaInit () {
         $comboCliente.append(newOption).trigger('change');
         $comboCliente.val(dataCliente.id).trigger('change');
         
-        addRowProductoVenta();
+        document.getElementById('iniciarCapturaVenta').click();
 
     } else {
         setTimeout(function(){
             $comboCliente.select2("open");
         },10);
     }
-
 }
 
 $(document).on('keydown', '.custom-venta_producto .select2-search__field', function (event) {
     var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
-    if(event.keyCode == 13){
+    console.log(event.keyCode);
+    if (event.keyCode == 110) abrirFormasPago = true;
+    if (event.keyCode == 13){
         if (total > 0) {
-    
             if (abrirFormasPago) {
                 document.getElementById('crearCapturaVenta').click();
+                
                 $(".venta_producto").select2('close');
+                focusFormaPago(1);
                 abrirFormasPago = false;
                 return;
             }
             
-            abrirFormasPago = true;
-    
             setTimeout(function(){
                 abrirFormasPago = false;
             },500);
@@ -446,6 +450,7 @@ $(document).on('click', '#iniciarCapturaVenta', function () {
     $('#agregarVentaProducto').show();
     $("#crearCapturaVenta").hide();
     $("#cancelarCapturaVenta").show();
+    $('#cambio-totals').hide();
     $("#crearCapturaVentaDisabled").show();
 
     addRowProductoVenta();
@@ -548,13 +553,16 @@ function validarExistencias (idRow) {
     var producto = $('#venta_producto_'+idRow).select2('data')[0];
     var cantidad = $('#venta_cantidad_'+idRow).val();
     var rowProductos = venta_table.rows().data();
-
+    console.log('validarExistencias: ',rowProductos);
+    console.log('producto: ',producto);
     if (producto !== undefined && producto.familia && producto.familia.inventario){
-
+        console.log('if');
         if (rowProductos.length > 1) {
+            console.log('if if');
             consultarExistencias(idRow);
             return false;
         } else {
+            console.log('if else');
             if (cantidad > parseInt(producto.inventarios[0].cantidad)) {
                 $('#venta_cantidad_text_'+idRow).text("Se ha superado las existencias");
                 $('#venta_cantidad_'+idRow).addClass("is-invalid");
@@ -575,14 +583,18 @@ function validarExistencias (idRow) {
             }
         }
     } else if (producto !== undefined && !producto.familia) {
+        console.log('else if');
         consultarExistencias(idRow);
         return false;
     }
+    addRowProductoVenta();
+    calcularProductoVenta(idRow);
     return true;
 }
 
 function totalCantidadProducto(idRow) {
     
+    var idProducto = $('#venta_producto_'+idRow).val();
     var rowProductos = venta_table.rows().data();
     var cantidadActualRow = parseInt($('#venta_cantidad_'+idRow).val());
     var cantidadTotal = 0;
@@ -590,7 +602,7 @@ function totalCantidadProducto(idRow) {
     for (let index = 0; index < rowProductos.length; index++) {
         var producto = $('#venta_producto_'+rowProductos[index].id).val();
          
-        if (producto && rowProductos[index].id != idRow) {
+        if (producto && rowProductos[index].id != idRow && producto == idProducto) {
             var cantidad = parseInt($('#venta_cantidad_'+rowProductos[index].id).val());
             cantidadTotal+= cantidad;
         }
@@ -671,6 +683,7 @@ function mostrarValoresVentas () {
     $("#venta_total_retencion").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(retencion));
     $("#venta_total_valor").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total));
     $("#venta_sub_total").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valorBruto));
+    document.getElementById('total_faltante_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
 }
 
 function totalValoresVentas() {
@@ -731,7 +744,9 @@ function changeProductoVenta (idRow) {
     }
 
     if (data.familia.cuenta_venta_iva && data.familia.cuenta_venta_iva.impuesto) {
+        
         $('#venta_iva_porcentaje_'+idRow).val(data.familia.cuenta_venta_iva.impuesto.porcentaje);
+        $('#venta_iva_porcentaje_text_'+idRow).text(parseInt(data.familia.cuenta_venta_iva.impuesto.porcentaje)+'%');
     }
 
     if (data.familia.cuenta_venta_retencion && data.familia.cuenta_venta_retencion.impuesto) {
@@ -768,6 +783,7 @@ function changeProductoVenta (idRow) {
 
 function cantidadVentakeyDown (idRow, event) {
     if(event.keyCode == 13){
+        console.log('enter');
         key13PressNewRow = true;
         if (!validarExistencias(idRow)) return;
     }
@@ -798,6 +814,7 @@ function DescuentoTotalVentakeyDown (idRow, event) {
         var porcentajeDescuento = descuentoProductoValor * 100 / (costoProducto * cantidadProducto);
 
         $('#venta_descuento_porcentaje_'+idRow).val(porcentajeDescuento);
+        
         calcularProductoVenta(idRow);
         setTimeout(function(){
             $('#venta_iva_porcentaje_'+idRow).focus();
@@ -845,7 +862,6 @@ function cancelarVenta() {
 
 function loadFormasPago() {
     var totalRows = venta_table_pagos.rows().data().length;
-    idVentaProducto = 0;
     if(venta_table_pagos.rows().data().length){
         venta_table_pagos.clear([]).draw();
         for (let index = 0; index < totalRows; index++) {
@@ -856,14 +872,12 @@ function loadFormasPago() {
 }
 
 $(document).on('click', '#crearCapturaVenta', function () {
-    loadFormasPago();
-    var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
+    
+    // var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
 
-    document.getElementById('total_pagado_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
-    document.getElementById('total_faltante_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
-    document.getElementById('total_cambio_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
-
-    $("#ventaFormModal").modal('show');
+    // document.getElementById('total_pagado_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
+    // document.getElementById('total_faltante_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+    // document.getElementById('total_cambio_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
 });
 
 function focusFormaPago(idFormaPago) {
@@ -885,9 +899,10 @@ function calcularVentaPagos(idFormaPago) {
     
     if ((totalOtrosPagos < total) && totalOtrosPagos + totalEfectivo >= total) {
         var totalCambio = (totalEfectivo + totalOtrosPagos) - total;
-
+        if(parseInt(totalCambio) > 0)$('#cambio-totals').show();
         document.getElementById('total_cambio_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalCambio);
     } else {
+        $('#cambio-totals').hide();
         if (totalFaltante < 0) {
             $('#venta_forma_pago_'+idFormaPago).val(totalFaltante * -1);
             $('#venta_forma_pago_'+idFormaPago).select();
@@ -921,22 +936,26 @@ function totalFormasPagoVentas(idFormaPago = null) {
 }
 
 $(document).on('click', '#saveVenta', function () {
-    var totalFaltante = $('#total_faltante_venta').val();
-    $('#total_faltante_venta').removeClass("is-invalid");
 
-    if(totalFaltante > 0){
-        $('#total_faltante_venta').addClass("is-invalid");
-        $('#total_faltante_venta').removeClass("is-valid");
-        return;
+    if (!guardandoVenta) {
+        var totalFaltante = $('#total_faltante_venta').val();
+        $('#total_faltante_venta_text').css("color","#484848");
+        $('#total_faltante_venta').css("color","#484848");
+    
+        if(totalFaltante > 0){
+            $('#total_faltante_venta_text').css("color","red");
+            $('#total_faltante_venta').css("color","red");
+            return;
+        }
+        guardandoVenta = true;
+        saveVenta();
     }
-
-    saveVenta();
 });
 
 function saveVenta() {
 
-    $("#saveVenta").hide();
-    $("#saveVentaLoading").show();
+    $("#crearCapturaVenta").hide();
+    $("#crearCapturaVentaLoading").show();
 
     let data = {
         pagos: getVentasPagos(),
@@ -956,12 +975,16 @@ function saveVenta() {
         headers: headers,
         dataType: 'json',
     }).done((res) => {
+        guardandoVenta = false;
         if(res.success){
+            $("#crearCapturaVenta").show();
+            $("#crearCapturaVentaLoading").hide();
+
             if(res.impresion) {
                 window.open("/ventas-print/"+res.impresion, "", "_blank");
             }
             idVentaProducto = 0;
-            $("#ventaFormModal").modal('hide');
+
             $('#iniciarCapturaVenta').hide();
             $('#iniciarCapturaVentaLoading').hide();
             $('#documento_referencia_venta').val('');
@@ -975,6 +998,7 @@ function saveVenta() {
             agregarToast('exito', 'Creación exitosa', 'Venta creada con exito!', true);
             consecutivoSiguienteVenta();
             setTimeout(function(){
+                $('#id_cliente_venta').focus();
                 $comboCliente.select2("open");
             },10);
         } else {
@@ -989,9 +1013,9 @@ function saveVenta() {
             agregarToast('error', 'Creación errada', errorsMsg);
         }
     }).fail((err) => {
-        $("#saveVenta").show();
-        $("#saveVentaLoading").hide();
-
+        guardandoVenta = false;
+        $("#crearCapturaVenta").show();
+        $("#crearCapturaVentaLoading").hide();
         var mensaje = err.responseJSON.message;
         var errorsMsg = "";
         if (typeof mensaje === 'object') {
@@ -1003,7 +1027,6 @@ function saveVenta() {
                 agregarToast('error', 'Creación errada', errorsMsg);
             };
         } else {
-
             agregarToast('error', 'Creación errada', mensaje);
         }
     });
@@ -1072,6 +1095,10 @@ function getProductosVenta() {
 function changeFormaPago(idFormaPago, event) {
 
     if(event.keyCode == 13){
+        var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
+        if (!total) {
+            return;
+        }
         if (guardarVenta) {
             document.getElementById('saveVenta').click();
             return;
