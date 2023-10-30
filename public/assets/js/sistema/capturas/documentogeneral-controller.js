@@ -580,9 +580,9 @@ function changeConceptoRow(idRow, event) {
             }
         }
         
-        var dataNit = $('#combo_nits_'+idRow).select2('data');
-        if(!dataNit.length > 0) {
-            $('#combo_nits_'+idRow).select2('open');
+        var dataCuenta = $('#combo_cuenta_'+idRow).select2('data');
+        if(!dataCuenta.length > 0) {
+            $('#combo_cuenta_'+idRow).select2('open');
         } else {
             document.getElementById('agregarDocumentos').click();
         }
