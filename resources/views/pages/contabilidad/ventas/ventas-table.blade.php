@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Factura</th>
-            <th>Proveedor</th>
+            <th>Cliente</th>
             <th>Bodega</th>
             <th>Fecha</th>
             <th>Subtotal</th>
