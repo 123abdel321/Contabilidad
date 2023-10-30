@@ -10,14 +10,7 @@
                 <form id="ventaForm" style="margin-top: 10px;">
                     <div class="row">
                         <div class="form-group col-12 col-sm-12 col-md-12">
-                            <table id="ventaFormaPago" class="table table-bordered display responsive" width="100%">
-                                <thead>
-                                    <tr style="border: 0px !important;">
-                                        <th style="border-radius: 15px 0px 0px 0px !important;">Forma de pago</th>
-                                        <th style="border-radius: 0px 15px 0px 0px !important;">Total</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                            
                         </div>
                         
                         <div class="line-horizontal"></div>

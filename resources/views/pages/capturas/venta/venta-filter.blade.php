@@ -87,6 +87,10 @@
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR VENTA</b>
                     </span>
+                    <span id="crearCapturaVentaLoading" class="badge bg-gradient-success" style="display:none; min-width: 40px; margin-bottom: 16px; float: right;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">CARGANDO</b>
+                    </span>
                 </div>
             </div>
         </div>
