@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('precio', 15)->default(0);
             $table->decimal('precio_inicial', 15)->default(0);
             $table->decimal('precio_minimo', 15)->default(0);
-            $table->varchar('porcentaje_utilidad',30)->default(0);
+            $table->char('porcentaje_utilidad',30)->default(0);
             $table->decimal('valor_utilidad', 15)->default(0);
             $table->integer('variante')->default(0)->comment('0:no, 1:si');
             $table->boolean('utilizado_captura')->default(false)->comment('Producto utilizado en captura');
