@@ -13,7 +13,7 @@ class ResolucionesSeeder extends Seeder
         \DB::table('fac_resoluciones')->insert([
             [
                 'id' => 1,
-                'id_comprobante' => 1,
+                'id_comprobante' => 10,
                 'nombre' => 'FACTURACION POS',
                 'prefijo' => 'F-POS',
                 'consecutivo' => '1',
