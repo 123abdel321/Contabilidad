@@ -10,15 +10,14 @@ class BodegasSeeder extends Seeder
     {
         \DB::table('fac_bodegas')->truncate();
 
-        \DB::table('fac_bodegas')->insert(array (
-            0 =>
-            array (
+        \DB::table('fac_bodegas')->insert([
+            [
                 'id' => 1,
                 'codigo' => '01',
                 'nombre' => 'PRINCIPAL',
                 'ubicacion' => '',
                 'id_centro_costos' => 1,
-            ),
-        ));
+            ]
+        ]);
     }
 }
