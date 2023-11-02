@@ -874,7 +874,7 @@ $(document).on('click', '#crearCapturaVenta', function () {
     // document.getElementById('total_pagado_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
     // document.getElementById('total_faltante_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
     // document.getElementById('total_cambio_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
-    document.getElementById('saveVenta').click();
+    validateSaveVenta();
 });
 
 function focusFormaPagoVenta(idFormaPago) {
@@ -932,8 +932,7 @@ function totalFormasPagoVentas(idFormaPago = null) {
     return [totalEfectivo, totalOtrosPagos];
 }
 
-$(document).on('click', '#saveVenta', function () {
-
+function validateSaveVenta() {
     if (!guardandoVenta) {
         var totalFaltante = $('#total_faltante_venta').val();
         $('#total_faltante_venta_text').css("color","#484848");
@@ -947,7 +946,7 @@ $(document).on('click', '#saveVenta', function () {
         guardandoVenta = true;
         saveVenta();
     }
-});
+}
 
 function saveVenta() {
 
@@ -1102,7 +1101,7 @@ function changeFormaPago(idFormaPago, event) {
         }
 
         if (guardarVenta) {
-            document.getElementById('saveVenta').click();
+            validateSaveVenta();
             return;
         }
 

@@ -49,8 +49,8 @@ class VentaController extends Controller
         "cuenta_venta" => ["valor" => "subtotal"],
 		"cuenta_venta_descuento" => ["valor" => "descuento_valor"],
         "cuenta_venta_iva" => ["valor" => "iva_valor"],
-        "id_cuenta_inventario" => ["valor" => "subtotal"],
-        "id_cuenta_costos" => ["valor" => "subtotal"],
+        "cuenta_inventario" => ["valor" => "subtotal"],
+        "cuenta_costos" => ["valor" => "subtotal"],
     ];
 
     public function __construct(Request $request)
@@ -193,7 +193,7 @@ class VentaController extends Controller
 
                 //AGREGAR MOVIMIENTO CONTABLE
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
-
+                    
                     $cuentaRecord = $productoDb->familia->{$cuentaKey};
                     $keyTotalItem = $cuenta["valor"];
 
@@ -521,7 +521,9 @@ class VentaController extends Controller
                 'familia.cuenta_venta',
                 'familia.cuenta_venta_retencion.impuesto',
                 'familia.cuenta_venta_iva.impuesto',
-                'familia.cuenta_venta_descuento'
+                'familia.cuenta_venta_descuento',
+                'familia.cuenta_inventario',
+                'familia.cuenta_costos',
             )
             ->first();
 
