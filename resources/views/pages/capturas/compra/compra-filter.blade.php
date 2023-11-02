@@ -60,13 +60,13 @@
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>
-                    <span id="agregarCompra" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; display:none;">
-                        <i class="fas fa-plus-circle" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">AGREGAR PRODUCTO</b>
-                    </span>
                     <span id="cancelarCapturaCompra" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="min-width: 40px; display:none;">
                         <i class="fas fa-times-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">CANCELAR COMPRA</b>
+                    </span>
+                    <span id="agregarCompra" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; display:none;">
+                        <i class="fas fa-plus-circle" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">AGREGAR PRODUCTO</b>
                     </span>
                     <span id="crearCapturaCompraDisabled" href="javascript:void(0)" class="badge bg-success" style="min-width: 40px; display:none; float: right; background-color: #2dce899c !important; cursor: no-drop;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;

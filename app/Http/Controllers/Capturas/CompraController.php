@@ -16,6 +16,8 @@ use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\FacCompras;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\FacProductos;
+use App\Models\Sistema\FacFormasPago;
+use App\Models\Sistema\FacCompraPagos;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
 use App\Models\Sistema\FacCompraDetalles;
@@ -28,6 +30,10 @@ class CompraController extends Controller
 
     protected $bodega = null;
 	protected $messages = null;
+    protected $totalesPagos = [
+        'total_efectivo' => 0,
+        'total_otrospagos' => 0,
+    ];
     protected $totalesFactura = [
         'tope_retencion' => 0,
         'porcentaje_rete_fuente' => 0,
@@ -146,7 +152,6 @@ class CompraController extends Controller
 
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA COMPRAR
-            
             $compra = $this->createFacturaCompra($request);
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE COMPRAS
@@ -184,7 +189,6 @@ class CompraController extends Controller
                 ]);
 
                 //AGREGAR MOVIMIENTO CONTABLE
-                
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
                     $cuentaRecord = $productoDb->familia->{$cuentaKey};
                     
@@ -254,21 +258,39 @@ class CompraController extends Controller
                 ]);
                 $documentoGeneral->addRow($doc, $cuentaRetencion->naturaleza_cuenta);
             }
-            //AGREGAR COMPRA EN ANTICIPOS CLIENTES
-            $cuentaAnticipos = PlanCuentas::whereId($idCuentaAnticipos->valor)->first();
-            
-            $doc = new DocumentosGeneral([
-                "id_cuenta" => $cuentaAnticipos->id,
-                "id_nit" => $cuentaAnticipos->exige_nit ? $compra->id_proveedor : null,
-                "id_centro_costos" => $cuentaAnticipos->exige_centro_costos ? $compra->id_centro_costos : null,
-                "concepto" => 'TOTAL COMPRA: '.$cuentaAnticipos->exige_concepto ? $nit->nombre_nit.' - '.$compra->documento_referencia : null,
-                "documento_referencia" => $cuentaAnticipos->exige_documento_referencia ? $compra->documento_referencia : null,
-                "debito" => $cuentaAnticipos->naturaleza_compras == PlanCuentas::DEBITO ? $compra->total_factura : 0,
-                "credito" => $cuentaAnticipos->naturaleza_compras == PlanCuentas::CREDITO ? $compra->total_factura : 0,
-                "created_by" => request()->user()->id,
-                "updated_by" => request()->user()->id
-            ]);
-            $documentoGeneral->addRow($doc, $cuentaAnticipos->naturaleza_compras);
+
+            $totalProductos = $this->totalesFactura['total_factura'];
+
+            //AGREGAR FORMAS DE PAGO
+            foreach ($request->get('pagos') as $pago) {
+                $pago = (object)$pago;
+                $pagoValor = $pago->id == 1 ? $pago->valor - $this->totalesPagos['total_cambio'] : $pago->valor;
+
+                $formaPago = $this->findFormaPago($pago->id);
+                $totalProductos-= $pagoValor;
+
+                FacCompraPagos::create([
+                    'id_compra' => $compra->id,
+                    'id_forma_pago' => $formaPago->id,
+                    'valor' => $pagoValor,
+                    'saldo' => $totalProductos,
+                    'created_by' => request()->user()->id,
+                    'updated_by' => request()->user()->id
+                ]);
+
+                $doc = new DocumentosGeneral([
+                    'id_cuenta' => $formaPago->cuenta->id,
+                    'id_nit' => $formaPago->cuenta->exige_nit ? $compra->id_proveedor : null,
+                    'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $compra->id_centro_costos : null,
+                    'concepto' => 'TOTAL COMPRA: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$compra->documento_referencia : null,
+                    'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $compra->documento_referencia : null,
+                    'debito' => $formaPago->cuenta->naturaleza_cuenta == PlanCuentas::DEBITO ? $pagoValor : 0,
+                    'credito' => $formaPago->cuenta->naturaleza_cuenta == PlanCuentas::CREDITO ? $pagoValor : 0,
+                    'created_by' => request()->user()->id,
+                    'updated_by' => request()->user()->id
+                ]);
+                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_cuenta);
+            }
 
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 
@@ -360,10 +382,25 @@ class CompraController extends Controller
         ]);
     }
 
+    public function calcularFormasPago($pagos)
+    {
+        $totalCambio = 0;
+        $totalPagos = 0;
+        foreach ($pagos as $pago) {
+            $pago = (object)$pago;
+            $totalPagos+= $pago->valor;
+            if ($pago->id == 1) $this->totalesPagos['total_efectivo']+= $pago->valor;
+            else $this->totalesPagos['total_otrospagos']+= $pago->valor;
+        }
+        if ($this->totalesFactura['total_factura'] < $totalPagos) {
+            $totalCambio = $totalPagos - $this->totalesFactura['total_factura'];
+        }
+        
+        $this->totalesPagos['total_cambio'] = $totalCambio;
+    }
+
     public function showPdf(Request $request, $id)
     {
-        // return $request->user();
-
         $factura = FacCompras::whereId($id)->first();
 
         if(!$factura) {
@@ -375,8 +412,9 @@ class CompraController extends Controller
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        // $data = (new ComprasPdf($empresa, $factura))->buildPdf()->getData();
-        // return view('pdf.facturacion.compras', $data);
+        $data = (new ComprasPdf($empresa, $factura))->buildPdf()->getData();
+        
+        return view('pdf.facturacion.compras', $data);
  
         return (new ComprasPdf($empresa, $factura))
             ->buildPdf()
@@ -386,6 +424,7 @@ class CompraController extends Controller
     private function createFacturaCompra ($request)
     {
         $this->calcularTotales($request->get('productos'));
+        $this->calcularFormasPago($request->get('pagos'));
 
         $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
 
@@ -481,6 +520,15 @@ class CompraController extends Controller
         }
 
         return $producto;
+    }
+
+    private function findFormaPago ($id_forma_pago)
+    {
+        return FacFormasPago::where('id', $id_forma_pago)
+            ->with(
+                'cuenta'
+            )
+            ->first();
     }
 
 }
