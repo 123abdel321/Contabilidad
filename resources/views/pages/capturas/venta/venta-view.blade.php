@@ -138,20 +138,20 @@
                     <table class="table table-bordered table-captura-ventas" width="100%" style="margin-top: 12px;">
                         <tbody>
                             <tr>
-                                <td><h6 style="margin-bottom: 0px; margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">SUB TOTAL: </h6></td>
-                                <td><h6 style="margin-bottom: 0px; margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_sub_total">0.00</h6></td>
+                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">SUB TOTAL: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_sub_total">0.00</h6></td>
                             </tr>
                             <tr>
-                                <td><h6 style="margin-bottom: 0px; margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">IVA: </h6></td>
-                                <td><h6 style="margin-bottom: 0px; margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_total_iva">0.00</h6></td>
+                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">IVA: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_total_iva">0.00</h6></td>
                             </tr>
                             <tr id="totales_descuento" style="display: none;">
-                                <td><h6 style="margin-bottom: 0px; margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">DESCUENTO: </h6></td>
-                                <td><h6 style="margin-bottom: 0px; margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_total_descuento">0.00</h6></td>
+                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">DESCUENTO: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_total_descuento">0.00</h6></td>
                             </tr>
                             <tr id="totales_retencion" style="display: none;">
-                                <td><h6 style="margin-bottom: 0px; margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;" id="venta_texto_retencion">RETENCION: </h6></td>
-                                <td><h6 style="margin-bottom: 0px; margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_total_retencion">0.00</h6></td>
+                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;" id="venta_texto_retencion">RETENCION: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_total_retencion">0.00</h6></td>
                             </tr>
                             <tr>
                                 <td><h6 style="margin-bottom: 0px; font-weight: bold;">TOTAL: </h6></td>
@@ -204,8 +204,6 @@
             
         </div>
     </div>
-
-    @include('pages.capturas.venta.venta-pagos')
 
     <script>
         var primeraNit = JSON.parse('<?php echo $cliente; ?>');

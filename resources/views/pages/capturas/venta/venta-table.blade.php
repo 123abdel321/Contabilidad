@@ -5,7 +5,7 @@
             <th>Producto</th>
             <th>Invt.</th>
             <th>Cant.</th>
-            <th>Costo</th>
+            <th>Valor</th>
             <th>% Dscto</th>
             <th>Dscto</th>
             <th>Iva</th>

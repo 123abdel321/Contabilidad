@@ -657,7 +657,7 @@ td{
 }
 
 @media only screen and (max-width: 500px) {
-    #nombre-empresa-topnav {
+    #nombre-usuario-topnav {
         display: none !important;
     }
 }

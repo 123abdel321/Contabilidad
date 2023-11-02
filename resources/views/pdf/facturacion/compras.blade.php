@@ -206,9 +206,11 @@
 													@endif
 												</td>
 											</tr>
+											@if ($proveedor->telefono)
 											<tr>
 												<td class="padding3"> TEL: {{ $proveedor->telefono }}</td>
 											</tr>
+											@endif
 										</tbody>
 									</table>
 								</td>
@@ -255,7 +257,7 @@
 					<tr>
 						<td class="padding5 detalle-factura-descripcion">{{ $producto->descripcion }}</td>
 						<td class="padding5 valor">{{ number_format($producto->cantidad) }}</td>
-						<td class="padding5 valor">{{ number_format($producto->producto) }}</td>
+						<td class="padding5 valor">{{ number_format($producto->costo) }}</td>
 						<td class="padding5 valor">{{ number_format($producto->subtotal) }}</td>
 						<td class="padding5 valor">{{ number_format($producto->descuento_valor) }}</td>
 						<td class="padding5 valor">{{ number_format($producto->iva_valor) }}</td>
@@ -281,10 +283,6 @@
 								<td class="table-total-factura padding5">
 									<table>
 										<tbody>
-											<tr >
-												<td >FECHA</td>
-												<td class="valor ">{{ $factura->fecha_manual }}</td>
-											</tr>
                                             <tr>
                                                 <td >SUBTOTAL</td>
                                                 <td class="valor ">{{ number_format($factura->subtotal) }}</td>

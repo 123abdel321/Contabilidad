@@ -29,7 +29,7 @@
 
 </head>
 
-<body class="{{ $class ?? '' }} ">
+<body class="{{ $class ?? '' }} " style="background-color: #060e26;">
 
     @guest
         @yield('content')

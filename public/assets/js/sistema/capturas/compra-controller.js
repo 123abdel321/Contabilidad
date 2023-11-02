@@ -1,16 +1,19 @@
 var fecha = null;
 var compra_table = null;
+var compra_table_pagos = null;
 var validarFacturaCompra = null;
 var idCompraProducto = 0;
 var $comboBodega = null;
 var $comboProveedor = null;
+var guardarCompra = false
 var porcentajeRetencion = 0;
 var topeRetencion = 0;
+var abrirFormasPagoCompras = false;
+var guardandoCompra = false;
 
 function compraInit () {
     
     fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-
     $('#fecha_manual_compra').val(fecha);
 
     compra_table = $('#compraTable').DataTable({
@@ -36,42 +39,43 @@ function compraInit () {
             },
             {//EXISTENCIAS
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_existencia_${idCompraProducto}" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 30px; text-align: right;" id="compra_existencia_${idCompraProducto}" disabled>`;
                 }
             },
             {//CANTIDAD
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_cantidad_${idCompraProducto}" min="1" value="1" onkeydown="CantidadkeyDown(${idCompraProducto}, event)" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="compra_cantidad_${idCompraProducto}" min="1" value="1" onkeydown="CantidadkeyDown(${idCompraProducto}, event)" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
                 }
             },
             {//COSTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_costo_${idCompraProducto}" value="0" onkeydown="CostokeyDown(${idCompraProducto}, event)" style="min-width: 100px;" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="compra_costo_${idCompraProducto}" value="0" onkeydown="CostokeyDown(${idCompraProducto}, event)" style="min-width: 100px;" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
                 }
             },
             {//% DESCUENTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_descuento_porcentaje_${idCompraProducto}" value="0"  onkeydown="DescuentokeyDown(${idCompraProducto}, event)" maxlength="2" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="compra_descuento_porcentaje_${idCompraProducto}" value="0"  onkeydown="DescuentokeyDown(${idCompraProducto}, event)" maxlength="2" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
                 }
             },
             {//VALOR DESCUENTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_descuento_valor_${idCompraProducto}" value="0" onkeydown="DescuentoTotalkeyDown(${idCompraProducto}, event)" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
-                }
-            },
-            {//% IVA
-                "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_iva_porcentaje_${idCompraProducto}" value="0" onkeydown="IvakeyDown(${idCompraProducto}, event)" maxlength="2" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="compra_descuento_valor_${idCompraProducto}" value="0" onkeydown="DescuentoTotalkeyDown(${idCompraProducto}, event)" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
                 }
             },
             {//VALOR IVA
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_iva_valor_${idCompraProducto}" value="0" onkeydown="IvaTotalkeyDown(${idCompraProducto}, event)" disabled>`;
+                    return `<div class="form-group mb-3" style="min-width: 80px;">
+                        <div class="input-group input-group-sm" style="height: 18px; min-width: 100px;">
+                            <span id="compra_iva_porcentaje_text_${idCompraProducto}" class="input-group-text" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">0%</span>
+                            <input style="height: 30px; text-align: right;" type="text" class="form-control form-control-sm" value="0" id="compra_iva_valor_${idCompraProducto}" value="0" disabled>
+                        </div>
+                    </div>
+                    <input type="number" class="form-control form-control-sm" style="min-width: 110px; display: none;" id="compra_iva_porcentaje_${idCompraProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idCompraProducto}, event)" maxlength="2" onfocusout="calcularProducto(${idCompraProducto})">`;
                 }
             },
             {//TOTAL
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 110px;" id="compra_total_${idCompraProducto}" value="0" disabled>`;
+                    return `<input type="number" class="form-control form-control-sm" style="min-width: 90px; text-align: right;" id="compra_total_${idCompraProducto}" value="0" disabled>`;
                 }
             },
         ],
@@ -82,11 +86,31 @@ function compraInit () {
             $('#compraTable').on('draw.dt', function() {
                 $('.combo_producto').select2({
                     theme: 'bootstrap-5',
+                    dropdownCssClass: 'custom-combo_producto',
                     delay: 250,
                     minimumInputLength: 1,
+                    language: {
+                        noResults: function() {
+                            return "No hay resultado";        
+                        },
+                        searching: function() {
+                            return "Buscando..";
+                        },
+                        inputTooShort: function () {
+                            return "Por favor introduce 1 o más caracteres";
+                        }
+                    },
                     ajax: {
                         url: 'api/producto/combo-producto',
                         headers: headers,
+                        data: function (params) {
+                            var query = {
+                                q: params.term,
+                                id_bodega: $("#id_proveedor_compra").val(),
+                                _type: 'query'
+                            }
+                            return query;
+                        },
                         dataType: 'json',
                         processResults: function (data) {
                             return {
@@ -94,54 +118,118 @@ function compraInit () {
                             };
                         }
                     },
-                    // templateResult: formatProducto,
-                    // templateSelection: formatRepoSelection
+                    templateResult: formatProducto,
+                    templateSelection: formatRepoSelection
                 });
             });
 
-            function formatProducto (repo) {
-                console.log(repo);
-                if (repo.loading) {
-                  return repo.text;
-                }
+            function formatProducto (producto) {
+                if (producto.loading) return producto.text;
 
-                var $container = $(`<div>
-                </div>`);
-              
-                // var $container = $(
-                //   "<div class='select2-result-repository clearfix'>" +
-                //     "<div class='select2-result-repository__avatar'><img src='https://listardatos.com/img/logo_contabilidad.png' /></div>" +
-                //     "<div class='select2-result-repository__meta'>" +
-                //       "<div class='select2-result-repository__title'></div>" +
-                //       "<div class='select2-result-repository__description'></div>" +
-                //       "<div class='select2-result-repository__statistics'>" +
-                //         "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> </div>" +
-                //         "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> </div>" +
-                //         "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> </div>" +
-                //       "</div>" +
-                //     "</div>" +
-                //   "</div>"
-                // );
-              
-                // $container.find(".select2-result-repository__title").text(repo.full_name);
-                // $container.find(".select2-result-repository__description").text(repo.description);
-                // $container.find(".select2-result-repository__forks").append(repo.forks_count + " Forks");
-                // $container.find(".select2-result-repository__stargazers").append(repo.stargazers_count + " Stars");
-                // $container.find(".select2-result-repository__watchers").append(repo.watchers_count + " Watchers");
-              
+                var urlImagen = producto.imagen ?
+                    bucketUrl+producto.imagen :
+                    '/img/sin_imagen.png';
+
+                var inventario = producto.inventarios.length > 0 ? 
+                    producto.inventarios[0].cantidad+' Existencias' :
+                    'Sin inventario';
+
+                var color = producto.inventarios.length > 0 ?
+                    producto.inventarios[0].cantidad <= 0 ? 
+                    '#a30000' : '#1c4587' :
+                    '#838383';
+
+                var $container = '';
+
+                if (producto.familia.inventario && ventaExistenciasCompra) {
+                    var $container = $(`
+                        <div class="row">
+                            <div class="col-3" style="display: flex; justify-content: center; align-items: center;">
+                                <img
+                                    style="width: 40px; border-radius: 10%;"
+                                        src="${urlImagen}" />
+                                </div>
+                                <div class="col-9" style="padding-left: 0px !important">
+                                    <div class="row" style="margin-left: 5px;">
+                                        <div class="col-12" style="padding-left: 0px !important">
+                                            <h6 style="font-size: 12px; margin-bottom: 0px; color: black;">${producto.text}</h6>
+                                        </div>
+                                        <div class="col-12" style="padding-left: 0px !important">
+                                            <i class="fas fa-box-open" style="font-size: 11px; color: ${color};"></i>
+                                            ${inventario}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    } else {
+                        var $container = $(`
+                            <div class="row">
+                                <div class="col-3" style="display: flex; justify-content: center; align-items: center;">
+                                    <img
+                                        style="width: 40px; border-radius: 10%;"
+                                        src="${urlImagen}" />
+                                </div>
+                                <div class="col-9">
+                                    <div class="row">
+                                        <div class="col-12" style="padding-left: 0px !important">
+                                            <h6 style="font-size: 12px; margin-bottom: 0px; color: black;">${producto.text}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    }
+
+
                 return $container;
-                
             }
 
-            function formatRepoSelection (repo) {
-                return repo.full_name || repo.text;
+            function formatRepoSelection (producto) {
+                return producto.full_name || producto.text;
             }
         }
+    });
+
+    compra_table_pagos = $('#compraFormaPago').DataTable({
+        dom: '',
+        paging: false,
+        responsive: false,
+        processing: true,
+        serverSide: true,
+        deferLoading: 0,
+        initialLoad: false,
+        language: lenguajeDatatable,
+        sScrollX: "100%",
+        scrollX: true,
+        ordering: false,
+        ajax:  {
+            type: "GET",
+            headers: headers,
+            url: base_url + 'forma-pago/combo-forma-pago',
+        },
+        columns: [
+            {"data":'nombre'},
+            {"data": function (row, type, set){
+                return `<input type="number" class="form-control form-control-sm" style="text-align: right; font-size: larger;" value="0" onfocus="focusFormaPagoCompra(${row.id})" onfocusout="calcularCompraPagos()" onkeypress="changeFormaPagoCompra(${row.id}, event)" id="compra_forma_pago_${row.id}">`;
+            }},
+        ],
     });
 
     $comboProveedor = $('#id_proveedor_compra').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Debes ingresar más caracteres...";
+            }
+        },
         ajax: {
             url: 'api/nit/combo-nit',
             headers: headers,
@@ -157,6 +245,17 @@ function compraInit () {
     $comboBodega = $('#id_bodega_compra').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
         ajax: {
             url: 'api/bodega/combo-bodega',
             headers: headers,
@@ -169,6 +268,47 @@ function compraInit () {
         }
     });
 
+    $('#id_proveedor_compra').on('select2:close', function(event) {
+        var data = $(this).select2('data');
+        if(data.length){
+            setTimeout(function(){
+                $comboBodega.select2("open");
+                $('#id_bodega_compra').focus();
+            },10);
+        }
+    });
+
+    $('#id_bodega_compra').on('select2:close', function(event) {
+        var data = $(this).select2('data');
+        if(data.length){
+            setTimeout(function(){
+                $('#fecha_manual_compra').focus();
+                $('#fecha_manual_compra').select();
+            },10);
+        }
+    });
+
+    $("#fecha_manual_compra").on('keydown', function(event) {
+        if(event.keyCode == 13){
+            event.preventDefault();
+            setTimeout(function(){
+                $('#documento_referencia_compra').focus();
+                $('#documento_referencia_compra').select();
+            },10);
+        }
+    });
+
+    $("#documento_referencia_compra").on('keydown', function(event) {
+        if(event.keyCode == 13){
+            event.preventDefault();
+            document.getElementById('iniciarCapturaCompra').click();
+        }
+    });
+
+    $("#compraFilterForm").submit(function(event) {
+        event.preventDefault();
+    });
+
     if(primeraBodegaCompra){
         var dataBodega = {
             id: primeraBodegaCompra.id,
@@ -179,12 +319,117 @@ function compraInit () {
         $comboBodega.val(dataBodega.id).trigger('change');
     }
 
+    var column2 = compra_table.column(2);
+    var column5 = compra_table.column(5);
+    var column6 = compra_table.column(6);
+
+    if (agregarDescuentoCompra){
+        column5.visible(true);
+        column6.visible(true);
+    } else {
+        column5.visible(false);
+        column6.visible(false);
+    }
+
+    if (ventaExistenciasCompra) column2.visible(true);
+    else column2.visible(false);
+
+    loadFormasPagoCompra()
+
     setTimeout(function(){
         $comboProveedor.select2("open");
     },10);
 }
 
-function addRowProducto () {
+function loadFormasPagoCompra() {
+    var totalRows = compra_table_pagos.rows().data().length;
+    if(compra_table_pagos.rows().data().length){
+        compra_table_pagos.clear([]).draw();
+        for (let index = 0; index < totalRows; index++) {
+            compra_table_pagos.row(0).remove().draw();
+        }
+    }
+    compra_table_pagos.ajax.reload();
+}
+
+function focusFormaPagoCompra(idFormaPago) {
+    var [iva, retencion, descuento, total, subtotal] = totalValoresCompras();
+    var totalPagos = totalFormasPagoCompras(idFormaPago);
+    var totalFactura = total - totalPagos;
+
+    $('#compra_forma_pago_'+idFormaPago).val(totalFactura < 0 ? 0 : totalFactura);
+    $('#compra_forma_pago_'+idFormaPago).select();
+}
+
+function calcularCompraPagos() {
+
+    $('#total_faltante_compra').removeClass("is-invalid");
+
+    var [iva, retencion, descuento, total, subtotal] = totalValoresCompras();
+    var totalPagos = totalFormasPagoCompras();
+    var totalFaltante = total - totalPagos;
+
+    var totalPagado = totalFaltante < 0 ? total : totalPagos;
+    var totalFaltante = totalFaltante < 0 ? 0 : totalFaltante;
+
+    document.getElementById('total_pagado_compra').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalPagado);
+    document.getElementById('total_faltante_compra').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalFaltante);
+}
+
+
+function totalFormasPagoCompras(idFormaPago = null) {
+
+    var totalPagos = 0;
+    var dataPagoCompra = compra_table_pagos.rows().data();
+
+    if(dataPagoCompra.length > 0) {
+        for (let index = 0; index < dataPagoCompra.length; index++) {
+            
+            var ventaPago = parseFloat($('#compra_forma_pago_'+dataPagoCompra[index].id).val());
+
+            if (idFormaPago && idFormaPago == dataPagoCompra[index].id) continue;
+            totalPagos+= ventaPago;
+        }
+    }
+
+    return totalPagos;
+}
+
+$(document).on('keydown', '.custom-combo_producto .select2-search__field', function (event) {
+    var [iva, retencion, descuento, total, valorBruto] = totalValoresCompras();
+
+    if (event.keyCode == 96) abrirFormasPagoCompras = true;
+    if (event.keyCode == 13){
+        if (total > 0) {
+            if (abrirFormasPagoCompras) {
+                $(".combo_producto").select2('close');
+                focusFormaPagoCompra(1);
+                abrirFormasPagoCompras = false;
+                return;
+            }
+            
+            setTimeout(function(){
+                abrirFormasPagoCompras = false;
+            },500);
+        }
+    }
+});
+
+function addRowProductoCompra () {
+
+    var rows = compra_table.rows().data();
+    var totalRows = rows.length;
+    var dataLast = rows[totalRows - 1];
+
+    if (dataLast) {
+        var cuentaLast = $('#combo_producto_'+dataLast.id).val();
+        if (!cuentaLast) {
+            $('#combo_producto_'+dataLast.id).select2('open');
+            document.getElementById("card-compra").scrollLeft = 0;
+            return;
+        }
+    }
+
     compra_table.row.add({
         "id": idCompraProducto,
         "cantidad": 1,
@@ -207,19 +452,17 @@ function addRowProducto () {
 function changeProductoCompra (idRow) {
     var data = $('#combo_producto_'+idRow).select2('data')[0];
 
-    if (data.length == 0) {
-        return
-    }
+    if (data.length == 0) return;
     
     if (data.inventarios) {
         var totalInventario = parseInt(data.inventarios[0].cantidad);
         $("#compra_existencia_"+idRow).val(totalInventario);
-        // $("#compra_cantidad_"+idRow).attr({"max" : totalInventario});
     }
 
     if (data.familia.cuenta_compra_iva && data.familia.cuenta_compra_iva.impuesto) {
-        $('#compra_iva_porcentaje_'+idRow).prop('disabled', false);
+
         $('#compra_iva_porcentaje_'+idRow).val(data.familia.cuenta_compra_iva.impuesto.porcentaje);
+        $('#compra_iva_porcentaje_text_'+idRow).text(parseInt(data.familia.cuenta_compra_iva.impuesto.porcentaje)+'%');
     }
 
     if (data.familia.cuenta_compra_retencion && data.familia.cuenta_compra_retencion.impuesto) {
@@ -231,15 +474,18 @@ function changeProductoCompra (idRow) {
         }
     }
 
+    if (data.familia.id_cuenta_compra_descuento && agregarDescuentoCompra) {
+        $('#compra_descuento_valor_'+idRow).prop('disabled', false);
+        $('#compra_descuento_porcentaje_'+idRow).prop('disabled', false);
+    } else {
+        $('#compra_descuento_valor_'+idRow).prop('disabled', true);
+        $('#compra_descuento_porcentaje_'+idRow).prop('disabled', true);
+    }
+
     $('#compra_costo_'+idRow).val(parseFloat(data.precio_inicial));
     $('#combo_producto_'+idRow).select2('open');
     $('#compra_cantidad_'+idRow).prop('disabled', false);
     $('#compra_costo_'+idRow).prop('disabled', false);
-    $('#compra_descuento_porcentaje_'+idRow).prop('disabled', false);
-    $('#compra_descuento_valor_'+idRow).prop('disabled', false);
-    $('#compra_iva_porcentaje_'+idRow).prop('disabled', false);
-    // $('#compra_iva_valor_'+idRow).prop('disabled', false);
-    // $('#compra_total_'+idRow).prop('disabled', false);
     
     document.getElementById('compra_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencion+'%';
         
@@ -255,26 +501,19 @@ $("#id_proveedor_compra").on('change', function(event) {
     var data = $(this).select2('data');
     if(data.length){
         setTimeout(function(){
+            $('#id_bodega_compra').focus();
+            $('#id_bodega_compra').select();
+        },10);
+    }
+});
+
+$("#id_bodega_compra").on('change', function(event) {
+    var data = $(this).select2('data');
+    if(data.length){
+        setTimeout(function(){
             $('#fecha_manual_compra').focus();
             $('#fecha_manual_compra').select();
         },10);
-    }
-});
-
-$("#fecha_manual_compra").on('keydown', function(event) {
-    if(event.keyCode == 13){
-        event.preventDefault();
-        setTimeout(function(){
-            $('#documento_referencia_compra').focus();
-            $('#documento_referencia_compra').select();
-        },10);
-    }
-});
-
-$("#documento_referencia_compra").on('keydown', function(event) {
-    if(event.keyCode == 13){
-        event.preventDefault();
-        document.getElementById('iniciarCapturaCompra').click();
     }
 });
 
@@ -283,16 +522,17 @@ function buscarFacturaCompra(event) {
     if (validarFacturaCompra) {
         validarFacturaCompra.abort();
     }
-    
-    $('#documento_referencia_compra_loading').show();
-
     var botonPrecionado = event.key.length == 1 ? event.key : '';
     var documento_referencia = $('#documento_referencia_compra').val()+''+botonPrecionado;
+
+    if (event.key == 'Backspace') documento_referencia = documento_referencia.slice(0, -1);
+    if (!documento_referencia) return;
+    
+    $('#documento_referencia_compra_loading').show();
     
     $('#documento_referencia_compra').removeClass("is-invalid");
     $('#documento_referencia_compra').removeClass("is-valid");
 
-    if(event.key == 'Backspace') documento_referencia = documento_referencia.slice(0, -1);
     setTimeout(function(){
         validarFacturaCompra = $.ajax({
             url: base_url + 'existe-factura',
@@ -319,10 +559,9 @@ function buscarFacturaCompra(event) {
 
 function CantidadkeyDown (idRow, event) {
     if(event.keyCode == 13){
-        // var existencias = $('#compra_existencia_'+idRow).val();
+        
         var cantidad = $('#compra_cantidad_'+idRow).val();
 
-        // if (cantidad > existencias) {
         if (cantidad <= 0) {
             $('#compra_cantidad_'+idRow).val(1);
             setTimeout(function(){
@@ -342,10 +581,7 @@ function CantidadkeyDown (idRow, event) {
 function CostokeyDown (idRow, event) {
     if(event.keyCode == 13){
         calcularProducto (idRow);
-        setTimeout(function(){
-            $('#compra_descuento_porcentaje_'+idRow).focus();
-            $('#compra_descuento_porcentaje_'+idRow).select();
-        },10);
+        addRowProductoCompra();
     }
 }
 
@@ -378,7 +614,7 @@ function DescuentoTotalkeyDown (idRow, event) {
 function IvakeyDown (idRow, event) {
     if(event.keyCode == 13){
         calcularProducto(idRow);
-        addRowProducto();
+        addRowProductoCompra();
     }
 }
 
@@ -428,11 +664,11 @@ $(document).on('click', '#iniciarCapturaCompra', function () {
     $("#cancelarCapturaCompra").show();
     $("#crearCapturaCompraDisabled").show();
 
-    addRowProducto();
+    addRowProductoCompra();
 });
 
 $(document).on('click', '#agregarCompra', function () {
-    addRowProducto();
+    addRowProductoCompra();
 });
 
 $(document).on('click', '#crearCapturaCompra', function () {
@@ -460,6 +696,7 @@ function saveCompra() {
     $('#iniciarCapturaCompraLoading').show();
 
     let data = {
+        pagos: getComprasPagos(),
         productos: getProductosCompra(),
         id_proveedor: $("#id_proveedor_compra").val(),
         id_bodega: $("#id_bodega_compra").val(),
@@ -473,6 +710,7 @@ function saveCompra() {
         headers: headers,
         dataType: 'json',
     }).done((res) => {
+        guardandoCompra = false;
         if(res.success){
             if(res.impresion) {
                 window.open("/compras-print/"+res.impresion, "", "_blank");
@@ -489,9 +727,7 @@ function saveCompra() {
 
             mostrarValoresCompras();
             agregarToast('exito', 'Creación exitosa', 'Compra creada con exito!', true);
-            setTimeout(function(){
-                $comboProveedor.select2("open");
-            },10);
+            cancelarCompra();
         } else {
             $("#agregarCompra").show();
             $("#crearCapturaCompra").show();
@@ -541,7 +777,6 @@ function ocultarBotonesCabezaCompra () {
 
 function getProductosCompra(){
     var data = [];
-    console.log('getProductosCompra');
 
     var dataDocumento = compra_table.rows().data();
     if(dataDocumento.length > 0){
@@ -620,6 +855,7 @@ function mostrarValoresCompras () {
     $("#compra_total_retencion").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(retencion));
     $("#compra_total_valor").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total));
     $("#compra_sub_total").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valorBruto));
+    document.getElementById('total_faltante_compra').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
 }
 
 function totalValoresCompras() {
@@ -673,4 +909,67 @@ function deleteProductoCompra (idRow) {
         }
     }
     mostrarValoresCompras();
+}
+
+function changeFormaPagoCompra(idFormaPago, event) {
+    if(event.keyCode == 13){
+
+        calcularCompraPagos(idFormaPago);
+        var totalPagos = totalFormasPagoCompras();
+        var [iva, retencion, descuento, total, valorBruto] = totalValoresCompras();
+
+        if (!total) {
+            return;
+        }
+
+        if (guardarCompra) {
+            validateSaveCompra();
+            return;
+        }
+        
+        if (total <= totalPagos) {
+            guardarCompra = true;
+
+            setTimeout(function(){
+                guardarCompra = false;
+            },500);
+        }
+    }
+}
+
+function getComprasPagos() {
+    var data = [];
+
+    var dataCompraPagos = compra_table_pagos.rows().data();
+
+    if(!dataCompraPagos.length > 0) return data;
+
+    for (let index = 0; index < dataCompraPagos.length; index++) {
+        const dataPagoCompra = dataCompraPagos[index];
+        var pagoCompra = $('#compra_forma_pago_'+dataPagoCompra.id).val();
+        if (pagoCompra > 0) {
+            data.push({
+                id: dataPagoCompra.id,
+                valor: pagoCompra
+            });
+        }
+    }
+
+    return data;
+}
+
+function validateSaveCompra() {
+    if (!guardandoCompra) {
+        var totalFaltante = $('#total_faltante_compra').val();
+        $('#total_faltante_compra_text').css("color","#484848");
+        $('#total_faltante_compra').css("color","#484848");
+    
+        if(totalFaltante > 0){
+            $('#total_faltante_compra_text').css("color","red");
+            $('#total_faltante_compra').css("color","red");
+            return;
+        }
+        guardandoCompra = true;
+        saveCompra();
+    }
 }

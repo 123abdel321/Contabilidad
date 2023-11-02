@@ -7,11 +7,11 @@
     }
 
     .combo-grid-nit {
-        width: 300px !important;
+        width: 200px !important;
     }
 
     .combo-grid {
-        width: 300px !important;
+        width: 230px !important;
     }
 
     .drop-row-grid {
