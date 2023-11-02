@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use App\Models\Empresas\BaseDatosProvisionada;
 
 class RunMigrationSistema extends Command
