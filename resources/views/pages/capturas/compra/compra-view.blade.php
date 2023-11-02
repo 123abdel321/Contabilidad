@@ -202,6 +202,7 @@
 
     <script>
         var primeraBodegaCompra = JSON.parse('<?php echo $bodegas; ?>');
+        var primerComprobanteCompra = JSON.parse('<?php echo $comprobante; ?>');
         var agregarDescuentoCompra = '<?php echo auth()->user()->can("compra descuento"); ?>';
         var ventaExistenciasCompra = '<?php echo auth()->user()->can("compra existencia"); ?>';
     </script>

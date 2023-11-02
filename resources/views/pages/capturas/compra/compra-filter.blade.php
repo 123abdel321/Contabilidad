@@ -23,6 +23,16 @@
                     </div>
 
                     <div class="form-group col-6 col-sm-4 col-md-3">
+                        <label>Comprobante <span style="color: red">*</span></label>
+                        <select name="id_comprobante_compra" id="id_comprobante_compra" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
+                        </select>
+                        
+                        <div class="invalid-feedback">
+                            El comprobante es requerido
+                        </div>
+                    </div>
+
+                    <div class="form-group col-6 col-sm-4 col-md-2">
                         <label>Bodega<span style="color: red">*</span></label>
                         <select name="id_bodega_compra" id="id_bodega_compra" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
@@ -32,7 +42,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-4 col-md-3">
+                    <div class="form-group col-6 col-sm-4 col-md-2">
                         <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
                         <input name="fecha_manual_compra" id="fecha_manual_compra" class="form-control form-control-sm" type="date" required>
                         <div class="invalid-feedback">
@@ -40,7 +50,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-4 col-md-3">
+                    <div class="form-group col-6 col-sm-4 col-md-2">
                         <label for="example-text-input" class="form-control-label">No. factura <span style="color: red">*</span></label>
                         <input type="text" class="form-control form-control-sm" name="documento_referencia_compra" id="documento_referencia_compra" onkeydown="buscarFacturaCompra(event)" required>
                         <i class="fa fa-spinner fa-spin fa-fw compra-load" id="documento_referencia_compra_loading" style="display: none;"></i>

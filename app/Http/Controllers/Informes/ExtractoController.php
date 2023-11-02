@@ -99,7 +99,8 @@ class ExtractoController extends Controller
 
     public function existeFactura(Request $request)
     {
-        $documento = DocumentosGeneral::where('documento_referencia', $request->get('documento_referencia'));
+        $documento = DocumentosGeneral::where('documento_referencia', $request->get('documento_referencia'))
+            ->where('id_comprobante', $request->get('id_comprobante'));
 
         return response()->json([
             'success'=>	true,
