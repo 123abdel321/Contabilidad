@@ -49,6 +49,8 @@ class VentaController extends Controller
         "cuenta_venta" => ["valor" => "subtotal"],
 		"cuenta_venta_descuento" => ["valor" => "descuento_valor"],
         "cuenta_venta_iva" => ["valor" => "iva_valor"],
+        "id_cuenta_inventario" => ["valor" => "subtotal"],
+        "id_cuenta_costos" => ["valor" => "subtotal"],
     ];
 
     public function __construct(Request $request)

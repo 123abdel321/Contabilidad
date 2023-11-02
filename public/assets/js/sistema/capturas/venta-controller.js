@@ -48,7 +48,7 @@ function ventaInit () {
                 "data": function (row, type, set, col){
                     return `
                         <div class="input-group" style="height: 30px;">
-                            <input type="number" class="form-control form-control-sm" style="min-width: 80px; border-right: solid 1px #b3b3b3; border-top-right-radius: 10px; border-bottom-right-radius: 10px;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="cantidadVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>
+                            <input type="number" class="form-control form-control-sm" style="min-width: 80px; border-right: solid 1px #b3b3b3; border-top-right-radius: 10px; border-bottom-right-radius: 10px; text-align: right;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="cantidadVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>
                             <i class="fa fa-spinner fa-spin fa-fw venta_producto_load" id="venta_producto_load_${idVentaProducto}" style="display: none;"></i>
                             <div id="venta_cantidad_text_${idVentaProducto}" style="position: absolute; margin-top: 30px;" class="invalid-feedback">
                             </div>
@@ -75,8 +75,8 @@ function ventaInit () {
                 "data": function (row, type, set, col){
                     return `<div class="form-group mb-3" style="min-width: 80px;">
                         <div class="input-group input-group-sm" style="height: 18px; min-width: 100px;">
-                            <span id="venta_iva_porcentaje_text_${idVentaProducto}" class="input-group-text" id="basic-addon2" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">0%</span>
-                            <input style="height: 30px; text-align: right;" type="text" class="form-control form-control-sm" value="0" id="venta_iva_valor_${idVentaProducto}" value="0" onkeydown="IvaTotalkeyDown(${idVentaProducto}, event)" disabled>
+                            <span id="venta_iva_porcentaje_text_${idVentaProducto}" class="input-group-text" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">0%</span>
+                            <input style="height: 30px; text-align: right;" type="text" class="form-control form-control-sm" value="0" id="venta_iva_valor_${idVentaProducto}" value="0" disabled>
                         </div>
                     </div>
                     <input type="number" class="form-control form-control-sm" style="min-width: 110px; display: none;" id="venta_iva_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idVentaProducto}, event)" maxlength="2" onfocusout="calcularProductoVenta(${idVentaProducto})">`;
@@ -98,6 +98,17 @@ function ventaInit () {
                     dropdownCssClass: 'custom-venta_producto',
                     delay: 250,
                     minimumInputLength: 1,
+                    language: {
+                        noResults: function() {
+                            return "No hay resultado";        
+                        },
+                        searching: function() {
+                            return "Buscando..";
+                        },
+                        inputTooShort: function () {
+                            return "Por favor introduce 1 o más caracteres";
+                        }
+                    },
                     ajax: {
                         url: 'api/producto/combo-producto',
                         headers: headers,
@@ -141,16 +152,16 @@ function ventaInit () {
 
                 if (producto.familia.inventario && ventaExistencias) {
                     var $container = $(`
-                        <div class="row">
-                            <div class="col-3" style="display: flex; justify-content: center; align-items: center; padding-left: 0px;">
-                                <img
-                                    style="width: 40px; border-radius: 10%;"
+                    <div class="row">
+                        <div class="col-3" style="display: flex; justify-content: center; align-items: center;">
+                            <img
+                                style="width: 40px; border-radius: 10%;"
                                     src="${urlImagen}" />
                             </div>
                             <div class="col-9" style="padding-left: 0px !important">
-                                <div class="row">
+                                <div class="row" style="margin-left: 5px;">
                                     <div class="col-12" style="padding-left: 0px !important">
-                                        <h6 style="font-size: 12px; margin-bottom: 0px; color: black; margin-left: 10px;">${producto.text}</h6>
+                                        <h6 style="font-size: 12px; margin-bottom: 0px; color: black;">${producto.text}</h6>
                                     </div>
                                     <div class="col-12" style="padding-left: 0px !important">
                                         <i class="fas fa-box-open" style="font-size: 11px; color: ${color};"></i>
@@ -163,12 +174,12 @@ function ventaInit () {
                 } else {
                     var $container = $(`
                         <div class="row">
-                            <div class="col-3" style="display: flex; justify-content: center; align-items: center; padding-left: 0px;">
+                            <div class="col-3" style="display: flex; justify-content: center; align-items: center;">
                                 <img
                                     style="width: 40px; border-radius: 10%;"
                                     src="${urlImagen}" />
                             </div>
-                            <div class="col-9" style="padding-left: 0px !important; align-self: center;">
+                            <div class="col-9">
                                 <div class="row">
                                     <div class="col-12" style="padding-left: 0px !important">
                                         <h6 style="font-size: 12px; margin-bottom: 0px; color: black; margin-left: 10px;">${producto.text}</h6>
@@ -209,7 +220,7 @@ function ventaInit () {
         columns: [
             {"data":'nombre'},
             {"data": function (row, type, set){
-                return `<input type="number" class="form-control form-control-sm" style="text-align: right; font-size: larger;" value="0" onfocus="focusFormaPago(${row.id})" onfocusout="calcularVentaPagos(${row.id})" onkeypress="changeFormaPago(${row.id}, event)" id="venta_forma_pago_${row.id}">`;
+                return `<input type="number" class="form-control form-control-sm" style="text-align: right; font-size: larger;" value="0" onfocus="focusFormaPagoVenta(${row.id})" onfocusout="calcularVentaPagos(${row.id})" onkeypress="changeFormaPago(${row.id}, event)" id="venta_forma_pago_${row.id}">`;
             }},
         ],
     });
@@ -217,6 +228,17 @@ function ventaInit () {
     $comboCliente = $('#id_cliente_venta').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
         ajax: {
             url: 'api/nit/combo-nit',
             headers: headers,
@@ -232,6 +254,17 @@ function ventaInit () {
     $comboResolucion = $('#id_resolucion_venta').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
         ajax: {
             url: 'api/resoluciones/combo-resoluciones',
             headers: headers,
@@ -247,6 +280,17 @@ function ventaInit () {
     $comboBodega = $('#id_bodega_venta').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
         ajax: {
             url: 'api/bodega/combo-bodega',
             headers: headers,
@@ -332,14 +376,12 @@ function ventaInit () {
 $(document).on('keydown', '.custom-venta_producto .select2-search__field', function (event) {
     var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
     console.log(event.keyCode);
-    if (event.keyCode == 110) abrirFormasPago = true;
+    if (event.keyCode == 96) abrirFormasPago = true;
     if (event.keyCode == 13){
         if (total > 0) {
             if (abrirFormasPago) {
-                document.getElementById('crearCapturaVenta').click();
-                
                 $(".venta_producto").select2('close');
-                focusFormaPago(1);
+                focusFormaPagoVenta(1);
                 abrirFormasPago = false;
                 return;
             }
@@ -508,13 +550,7 @@ function deleteProductoVenta (idRow) {
 }
 
 $(document).on('click', '#agregarVentaProducto', function () {
-    $('#agregarVentaProducto').hide();
-    $('#iniciarCapturaVentaLoading').show();
-    setTimeout(function(){
-        addRowProductoVenta();
-        $('#agregarVentaProducto').show();
-        $('#iniciarCapturaVentaLoading').hide();
-    },100);
+    addRowProductoVenta();
 });
 
 function calcularProductoVenta (idRow, validarCantidad = false) {
@@ -878,9 +914,10 @@ $(document).on('click', '#crearCapturaVenta', function () {
     // document.getElementById('total_pagado_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
     // document.getElementById('total_faltante_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
     // document.getElementById('total_cambio_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
+    document.getElementById('saveVenta').click();
 });
 
-function focusFormaPago(idFormaPago) {
+function focusFormaPagoVenta(idFormaPago) {
     var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
     var [totalEfectivo, totalOtrosPagos] = totalFormasPagoVentas(idFormaPago);
     var totalFactura = total - (totalEfectivo + totalOtrosPagos);
@@ -1095,19 +1132,26 @@ function getProductosVenta() {
 function changeFormaPago(idFormaPago, event) {
 
     if(event.keyCode == 13){
+
+        calcularVentaPagos(idFormaPago);
+        var [totalEfectivo, totalOtrosPagos] = totalFormasPagoVentas();
         var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
+
         if (!total) {
             return;
         }
+
         if (guardarVenta) {
             document.getElementById('saveVenta').click();
             return;
         }
-        calcularVentaPagos(idFormaPago);
-        guardarVenta = true;
 
-        setTimeout(function(){
-            guardarVenta = false;
-        },500);
+        if (total <= (totalEfectivo + totalOtrosPagos)) {
+            guardarVenta = true;
+
+            setTimeout(function(){
+                guardarVenta = false;
+            },500);
+        }
     }
 }
