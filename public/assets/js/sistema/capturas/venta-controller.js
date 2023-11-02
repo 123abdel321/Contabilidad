@@ -439,46 +439,6 @@ $("#documento_referencia_venta").on('keydown', function(event) {
     }
 });
 
-function buscarFacturaVenta(event) {
-
-    if (validarFacturaVenta) {
-        validarFacturaVenta.abort();
-    }
-    
-    $('#documento_referencia_venta_loading').show();
-
-    var botonPrecionado = event.key.length == 1 ? event.key : '';
-    var documento_referencia = $('#documento_referencia_venta').val()+''+botonPrecionado;
-    
-    $('#documento_referencia_venta').removeClass("is-invalid");
-    $('#documento_referencia_venta').removeClass("is-valid");
-
-    if(event.key == 'Backspace') documento_referencia = documento_referencia.slice(0, -1);
-    
-    setTimeout(function(){
-        validarFacturaVenta = $.ajax({
-            url: base_url + 'existe-factura',
-            method: 'GET',
-            data: {documento_referencia: documento_referencia},
-            headers: headers,
-            dataType: 'json',
-        }).done((res) => {
-            validarFacturaVenta = null;
-            $('#documento_referencia_venta_loading').hide();
-            if(res.data == 0){
-                $('#documento_referencia_venta').removeClass("is-invalid");
-                $('#documento_referencia_venta').addClass("is-valid");
-            }else {
-                $('#documento_referencia_venta').removeClass("is-valid");
-                $('#documento_referencia_venta').addClass("is-invalid");
-                $("#error_documento_referencia_venta").text('La factura ');
-            }
-        }).fail((err) => {
-            $('#documento_referencia_venta_loading').hide();
-        });
-    },100);
-}
-
 $(document).on('click', '#iniciarCapturaVenta', function () {
     var form = document.querySelector('#ventaFilterForm');
 

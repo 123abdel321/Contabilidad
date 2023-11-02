@@ -216,6 +216,10 @@ class ComprobantesController extends Controller
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
 
+        if ($request->get("tipo_comprobante")) {
+            $comprobantes->where('tipo_comprobante', $request->get("tipo_comprobante"));
+        }
+
         return $comprobantes->paginate(20);
     }
 }

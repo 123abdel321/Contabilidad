@@ -33,7 +33,8 @@ class RunMigrationSistema extends Command
 
             if ($dbProvisionadas->count()) {
                 foreach ($dbProvisionadas as $database) {
-    
+                    
+                    copyDBConnection('sam', $database->hash);
                     setDBInConnection('sam', $database->hash);
     
                     Artisan::call('migrate', [

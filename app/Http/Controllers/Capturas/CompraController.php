@@ -15,6 +15,7 @@ use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\FacCompras;
 use App\Models\Sistema\PlanCuentas;
+use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacCompraPagos;
@@ -65,8 +66,10 @@ class CompraController extends Controller
     public function index ()
     {
         $data = [
-            'bodegas' => FacBodegas::first()
+            'bodegas' => FacBodegas::first(),
+            'comprobante' => Comprobantes::where('tipo_comprobante', 2)->first()
         ];
+        
         return view('pages.capturas.compra.compra-view', $data);
     }
 
@@ -91,18 +94,17 @@ class CompraController extends Controller
             $request->request->add(['id_cuenta_cobrar' => $idCuentaAnticipos->valor]);
         }
 
-        $comprobanteCompras = VariablesEntorno::where('nombre', 'id_comprobante_compra')->first();
+        $comprobanteCompras = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
-        if(!$comprobanteCompras || !$comprobanteCompras->valor) {
+        if(!$comprobanteCompras) {
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=> ['Comprobante compras' => ['El Comprobante de compras no se encuentra configurado!']]
+                "message"=> ['Comprobante compras' => ['El Comprobante de compras es incorrecto!']]
             ], 422);
         } else {
-            $consecutivo = $this->getNextConsecutive($comprobanteCompras->id, $request->get('fecha_manual'));
+            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
             $request->request->add([
-                'id_comprobante' => $comprobanteCompras->valor,
                 'consecutivo' => $consecutivo
             ]);
         }
@@ -414,7 +416,7 @@ class CompraController extends Controller
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         $data = (new ComprasPdf($empresa, $factura))->buildPdf()->getData();
         
-        return view('pdf.facturacion.compras', $data);
+        // return view('pdf.facturacion.compras', $data);
  
         return (new ComprasPdf($empresa, $factura))
             ->buildPdf()

@@ -5,6 +5,7 @@ var validarFacturaCompra = null;
 var idCompraProducto = 0;
 var $comboBodega = null;
 var $comboProveedor = null;
+var $comboComprobante  = null;
 var guardarCompra = false
 var porcentajeRetencion = 0;
 var topeRetencion = 0;
@@ -216,6 +217,29 @@ function compraInit () {
         ],
     });
 
+    $comboComprobante = $('#id_comprobante_compra').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        ajax: {
+            url: 'api/comprobantes/combo-comprobante',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_comprobante: 2,
+                    _type: 'query'
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     $comboProveedor = $('#id_proveedor_compra').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -272,8 +296,18 @@ function compraInit () {
         var data = $(this).select2('data');
         if(data.length){
             setTimeout(function(){
+                $comboComprobante.select2("open");
+                $('#id_comprobante_compra').focus();
+            },10);
+        }
+    });
+
+    $("#id_comprobante_compra").on('select2:close', function(event) {
+        var data = $(this).select2('data');
+        if(data.length){
+            setTimeout(function(){
                 $comboBodega.select2("open");
-                $('#id_bodega_compra').focus();
+                $('#id_bodega_compra').select();
             },10);
         }
     });
@@ -301,6 +335,9 @@ function compraInit () {
     $("#documento_referencia_compra").on('keydown', function(event) {
         if(event.keyCode == 13){
             event.preventDefault();
+
+            calcularCompraPagos();
+            clearFormasPagoCompras();
             document.getElementById('iniciarCapturaCompra').click();
         }
     });
@@ -317,6 +354,16 @@ function compraInit () {
         var newOption = new Option(dataBodega.text, dataBodega.id, false, false);
         $comboBodega.append(newOption).trigger('change');
         $comboBodega.val(dataBodega.id).trigger('change');
+    }
+
+    if(primerComprobanteCompra){
+        var dataComprobante = {
+            id: primerComprobanteCompra.id,
+            text: primerComprobanteCompra.codigo + ' - ' + primerComprobanteCompra.nombre
+        };
+        var newOption = new Option(dataComprobante.text, dataComprobante.id, false, false);
+        $comboComprobante.append(newOption).trigger('change');
+        $comboComprobante.val(dataComprobante.id).trigger('change');
     }
 
     var column2 = compra_table.column(2);
@@ -361,13 +408,20 @@ function focusFormaPagoCompra(idFormaPago) {
     $('#compra_forma_pago_'+idFormaPago).select();
 }
 
-function calcularCompraPagos() {
+function calcularCompraPagos(idFormaPago = null) {
 
     $('#total_faltante_compra').removeClass("is-invalid");
 
     var [iva, retencion, descuento, total, subtotal] = totalValoresCompras();
     var totalPagos = totalFormasPagoCompras();
     var totalFaltante = total - totalPagos;
+
+    if (idFormaPago && totalFaltante < 0) {
+        var totalPagoSinActual = totalFormasPagoCompras(idFormaPago);
+        $('#compra_forma_pago_'+idFormaPago).val(total - totalPagoSinActual);
+        $('#compra_forma_pago_'+idFormaPago).select();
+        return;
+    }
 
     var totalPagado = totalFaltante < 0 ? total : totalPagos;
     var totalFaltante = totalFaltante < 0 ? 0 : totalFaltante;
@@ -497,31 +551,12 @@ function changeProductoCompra (idRow) {
     },10);
 }
 
-$("#id_proveedor_compra").on('change', function(event) {
-    var data = $(this).select2('data');
-    if(data.length){
-        setTimeout(function(){
-            $('#id_bodega_compra').focus();
-            $('#id_bodega_compra').select();
-        },10);
-    }
-});
-
-$("#id_bodega_compra").on('change', function(event) {
-    var data = $(this).select2('data');
-    if(data.length){
-        setTimeout(function(){
-            $('#fecha_manual_compra').focus();
-            $('#fecha_manual_compra').select();
-        },10);
-    }
-});
-
 function buscarFacturaCompra(event) {
 
     if (validarFacturaCompra) {
         validarFacturaCompra.abort();
     }
+
     var botonPrecionado = event.key.length == 1 ? event.key : '';
     var documento_referencia = $('#documento_referencia_compra').val()+''+botonPrecionado;
 
@@ -537,7 +572,10 @@ function buscarFacturaCompra(event) {
         validarFacturaCompra = $.ajax({
             url: base_url + 'existe-factura',
             method: 'GET',
-            data: {documento_referencia: documento_referencia},
+            data: {
+                id_comprobante: $("#id_comprobante_compra").val(),
+                documento_referencia: documento_referencia
+            },
             headers: headers,
             dataType: 'json',
         }).done((res) => {
@@ -700,6 +738,7 @@ function saveCompra() {
         productos: getProductosCompra(),
         id_proveedor: $("#id_proveedor_compra").val(),
         id_bodega: $("#id_bodega_compra").val(),
+        id_comprobante: $("#id_comprobante_compra").val(),
         fecha_manual: $("#fecha_manual_compra").val(),
         documento_referencia: $("#documento_referencia_compra").val(),
     }
@@ -915,6 +954,7 @@ function changeFormaPagoCompra(idFormaPago, event) {
     if(event.keyCode == 13){
 
         calcularCompraPagos(idFormaPago);
+
         var totalPagos = totalFormasPagoCompras();
         var [iva, retencion, descuento, total, valorBruto] = totalValoresCompras();
 
@@ -935,6 +975,19 @@ function changeFormaPagoCompra(idFormaPago, event) {
             },500);
         }
     }
+}
+
+function clearFormasPagoCompras() {
+    var dataCompraPagos = compra_table_pagos.rows().data();
+
+    if(!dataCompraPagos.length > 0) return;
+
+    for (let index = 0; index < dataCompraPagos.length; index++) {
+        const dataPagoCompra = dataCompraPagos[index];
+        $('#compra_forma_pago_'+dataPagoCompra.id).val(0);
+    }
+
+    calcularCompraPagos();
 }
 
 function getComprasPagos() {
