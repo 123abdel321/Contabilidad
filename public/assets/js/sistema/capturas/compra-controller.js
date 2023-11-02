@@ -301,6 +301,9 @@ function compraInit () {
     $("#documento_referencia_compra").on('keydown', function(event) {
         if(event.keyCode == 13){
             event.preventDefault();
+
+            calcularCompraPagos();
+            clearFormasPagoCompras();
             document.getElementById('iniciarCapturaCompra').click();
         }
     });
@@ -361,13 +364,20 @@ function focusFormaPagoCompra(idFormaPago) {
     $('#compra_forma_pago_'+idFormaPago).select();
 }
 
-function calcularCompraPagos() {
+function calcularCompraPagos(idFormaPago = null) {
 
     $('#total_faltante_compra').removeClass("is-invalid");
 
     var [iva, retencion, descuento, total, subtotal] = totalValoresCompras();
     var totalPagos = totalFormasPagoCompras();
     var totalFaltante = total - totalPagos;
+
+    if (idFormaPago && totalFaltante < 0) {
+        var totalPagoSinActual = totalFormasPagoCompras(idFormaPago);
+        $('#compra_forma_pago_'+idFormaPago).val(total - totalPagoSinActual);
+        $('#compra_forma_pago_'+idFormaPago).select();
+        return;
+    }
 
     var totalPagado = totalFaltante < 0 ? total : totalPagos;
     var totalFaltante = totalFaltante < 0 ? 0 : totalFaltante;
@@ -522,6 +532,7 @@ function buscarFacturaCompra(event) {
     if (validarFacturaCompra) {
         validarFacturaCompra.abort();
     }
+
     var botonPrecionado = event.key.length == 1 ? event.key : '';
     var documento_referencia = $('#documento_referencia_compra').val()+''+botonPrecionado;
 
@@ -915,6 +926,7 @@ function changeFormaPagoCompra(idFormaPago, event) {
     if(event.keyCode == 13){
 
         calcularCompraPagos(idFormaPago);
+
         var totalPagos = totalFormasPagoCompras();
         var [iva, retencion, descuento, total, valorBruto] = totalValoresCompras();
 
@@ -935,6 +947,19 @@ function changeFormaPagoCompra(idFormaPago, event) {
             },500);
         }
     }
+}
+
+function clearFormasPagoCompras() {
+    var dataCompraPagos = compra_table_pagos.rows().data();
+
+    if(!dataCompraPagos.length > 0) return;
+
+    for (let index = 0; index < dataCompraPagos.length; index++) {
+        const dataPagoCompra = dataCompraPagos[index];
+        $('#compra_forma_pago_'+dataPagoCompra.id).val(0);
+    }
+
+    calcularCompraPagos();
 }
 
 function getComprasPagos() {
