@@ -85,7 +85,7 @@ $(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownErr
 });
 
 $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
-$("#nombre-empresa-topnav").text(localStorage.getItem("empresa_nombre"));
+// $("#nombre-usuario-topnav").text(localStorage.getItem("empresa_nombre"));
 $("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
 
 if (localStorage.getItem("empresa_logo") == 'null') {

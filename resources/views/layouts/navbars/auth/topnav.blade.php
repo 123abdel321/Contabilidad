@@ -13,7 +13,12 @@
             <ul class="navbar-nav justify-content-end" style="flex-direction: inherit !important;">
 
                 <li class="nav-item px-2 d-flex align-items-center">
-                    <div style="color: aliceblue; text-transform: uppercase; font-size: 16px; font-weight: bold;" id="nombre-empresa-topnav">
+                    <div style="color: aliceblue; text-transform: uppercase; font-size: 16px; font-weight: bold;" id="nombre-usuario-topnav">
+                        @if (Auth::user()->firstname)
+                            {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}
+                        @else
+                            {{ Auth::user()->username }}
+                        @endif
                     </div>
                 </li>
                 

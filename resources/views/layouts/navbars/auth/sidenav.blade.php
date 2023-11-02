@@ -50,40 +50,40 @@
             <span class="ms-1 font-weight-bold" id="nombre-empresa" style="color: antiquewhite"></span>
         </a>
     </div>
+    
     <hr class="horizontal dark mt-0">
-    <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main" style="height: 100%;">
-        <ul class="navbar-nav">
 
-        @foreach ($menus as $menu)
+    <ul class="collapse navbar-collapse navbar-nav" id="sidenav-collapse-main" style="height: 100%;">
 
-            <li class="nav-item">
-                <div data-bs-toggle="collapse" href="#collapse{{ $menu[0]->padre->nombre }}" class="nav-link collapsed" aria-controls="dashboardsExamples" role="button" aria-expanded="false" style="color: white;">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        
-                        <i class="{{ $menu[0]->padre->icon }} text-sm opacity-10"></i>
+            @foreach ($menus as $menu)
+
+                <li class="nav-item">
+                    <div data-bs-toggle="collapse" href="#collapse{{ $menu[0]->padre->nombre }}" class="nav-link collapsed" aria-controls="dashboardsExamples" role="button" aria-expanded="false" style="color: white;">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            
+                            <i class="{{ $menu[0]->padre->icon }} text-sm opacity-10"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">{{ $menu[0]->padre->nombre }}</span>
                     </div>
-                    <span class="nav-link-text ms-1">{{ $menu[0]->padre->nombre }}</span>
-                </div>
 
-                <div class="collapse" id="collapse{{ $menu[0]->padre->nombre }}" >
-                    <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
+                    <div class="collapse" id="collapse{{ $menu[0]->padre->nombre }}" >
+                        <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #2dce89; margin-left: 30px;">
 
-                        @foreach ($menu as $item)
-                            <li class="nav-item">
-                                <a class="nav-link button-side-nav" id="sidenav_{{ $item->url }}" style="margin-left: 20px;">
-                                    <span class="nav-link-text ms-1">{{ $item->nombre }}</span>
-                                </a>
-                            </li>
-                        @endforeach
+                            @foreach ($menu as $item)
+                                <li class="nav-item">
+                                    <a class="nav-link button-side-nav" id="sidenav_{{ $item->url }}" style="margin-left: 20px;">
+                                        <span class="nav-link-text ms-1">{{ $item->nombre }}</span>
+                                    </a>
+                                </li>
+                            @endforeach
 
-                    </ul>
-                </div>
-            </li>
+                        </ul>
+                    </div>
+                </li>
 
-        @endforeach
+            @endforeach
 
-        </ul>
-    </div>
+    </ul>
 </aside>
 
 <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl" id="sidenav-main-2" style="z-index: 99 !important; width: 11px; cursor: pointer; background-color: #1c4587 !important; border-radius: 0px 7px 7px 0px;">
