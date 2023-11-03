@@ -196,7 +196,7 @@ class CompraController extends Controller
 
                     $costoAnterior = $productoDb->precio_inicial * $existenciasBodega;
                     $costoNuevo = $producto->costo * $producto->cantidad;
-                    $costoPromedio = ($costoAnterior + $costoNuevo) / ($existenciasBodega + 10);
+                    $costoPromedio = ($costoAnterior + $costoNuevo) / ($existenciasBodega + $producto->cantidad);
                     $productoDb->precio_inicial = round($costoPromedio);
                     $productoDb->save();
                 }
