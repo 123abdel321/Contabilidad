@@ -107,7 +107,8 @@ function compraInit () {
                         data: function (params) {
                             var query = {
                                 q: params.term,
-                                id_bodega: $("#id_proveedor_compra").val(),
+                                id_bodega: $("#id_bodega_compra").val(),
+                                captura: 'compra',
                                 _type: 'query'
                             }
                             return query;
@@ -508,9 +509,11 @@ function changeProductoCompra (idRow) {
 
     if (data.length == 0) return;
     
-    if (data.inventarios) {
+    if (data.inventarios.length > 0) {
         var totalInventario = parseInt(data.inventarios[0].cantidad);
         $("#compra_existencia_"+idRow).val(totalInventario);
+    } else {
+        $("#compra_existencia_"+idRow).val(0);
     }
 
     if (data.familia.cuenta_compra_iva && data.familia.cuenta_compra_iva.impuesto) {
