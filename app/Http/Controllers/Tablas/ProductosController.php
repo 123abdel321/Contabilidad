@@ -553,11 +553,27 @@ class ProductosController extends Controller
 
     public function comboProducto (Request $request)
     {
+        $with = [
+            'familia.cuenta_compra.impuesto',
+            'familia.cuenta_compra_retencion.impuesto',
+            'familia.cuenta_compra_devolucion.impuesto',
+            'familia.cuenta_compra_iva.impuesto',
+            'familia.cuenta_compra_descuento.impuesto',
+            'familia.cuenta_compra_devolucion_iva.impuesto',
+            'familia.cuenta_venta.impuesto',
+            'familia.cuenta_venta_retencion.impuesto',
+            'familia.cuenta_venta_devolucion.impuesto',
+            'familia.cuenta_venta_iva.impuesto',
+            'familia.cuenta_venta_descuento.impuesto',
+            'familia.cuenta_venta_devolucion_iva.impuesto',
+            'familia.cuenta_inventario.impuesto',
+            'familia.cuenta_costos.impuesto'
+        ];
+
         $producto = FacProductos::select(
                 \DB::raw('*'),
                 \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
-            )
-            ->with(
+            )->with([
                 'familia.cuenta_compra.impuesto',
                 'familia.cuenta_compra_retencion.impuesto',
                 'familia.cuenta_compra_devolucion.impuesto',
@@ -571,9 +587,8 @@ class ProductosController extends Controller
                 'familia.cuenta_venta_descuento.impuesto',
                 'familia.cuenta_venta_devolucion_iva.impuesto',
                 'familia.cuenta_inventario.impuesto',
-                'familia.cuenta_costos.impuesto',
-                'inventarios'
-            );
+                'familia.cuenta_costos.impuesto'
+            ]);
 
         if ($request->get("q")) {
             $producto->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
@@ -581,10 +596,11 @@ class ProductosController extends Controller
         }
 
         if ($request->has("id_bodega")) {
-            $producto->whereHas('inventarios', function (Builder $query) use ($request) {
-                    $query->where('id_bodega', $request->get("id_bodega"));
-                })
-                ->orDoesntHave('inventarios');
+            $producto->with(['inventarios' => function ($query) use ($request) {
+                $query->where('id_bodega', $request->get("id_bodega"));
+            }]);
+        } else {
+            $producto->with('inventarios');
         }
 
         return $producto->paginate(40);

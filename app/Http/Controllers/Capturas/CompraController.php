@@ -151,7 +151,7 @@ class CompraController extends Controller
         }
 
         try {
-
+            
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA COMPRAR
             $compra = $this->createFacturaCompra($request);
@@ -189,6 +189,17 @@ class CompraController extends Controller
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
+
+                //PROMEDIAR PRECIO
+                if ($productoDb->precio_inicial != $producto->costo) {
+                    $existenciasBodega = FacProductosBodegas::where('id_producto', $producto->id_producto)->sum('cantidad');
+
+                    $costoAnterior = $productoDb->precio_inicial * $existenciasBodega;
+                    $costoNuevo = $producto->costo * $producto->cantidad;
+                    $costoPromedio = ($costoAnterior + $costoNuevo) / ($existenciasBodega + 10);
+                    $productoDb->precio_inicial = round($costoPromedio);
+                    $productoDb->save();
+                }
 
                 //AGREGAR MOVIMIENTO CONTABLE
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
