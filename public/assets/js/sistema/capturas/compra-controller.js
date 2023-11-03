@@ -915,11 +915,11 @@ function totalValoresCompras() {
                 var ivaSum = $('#compra_iva_valor_'+dataCompra[index].id).val();
                 var totaSum = $('#compra_total_'+dataCompra[index].id).val();
                 var descSum = $('#compra_descuento_valor_'+dataCompra[index].id).val();
-    
+
                 iva+= parseInt(ivaSum ? ivaSum : 0);
                 descuento+= parseInt(descSum ? descSum : 0);
                 total+= parseInt(totaSum ? totaSum : 0);
-                valorBruto+= (cantidad*costo) - descSum;
+                valorBruto+= (cantidad*costo) - parseInt(descSum ? descSum : 0);
             }
         }
         if (total >= topeRetencion) {
