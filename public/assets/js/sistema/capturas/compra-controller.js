@@ -208,6 +208,9 @@ function compraInit () {
         ajax:  {
             type: "GET",
             headers: headers,
+            data: {
+                type: 'compras'
+            },
             url: base_url + 'forma-pago/combo-forma-pago',
         },
         columns: [

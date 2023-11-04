@@ -225,6 +225,12 @@ class FormasPagoController extends Controller
             $formasPago->where('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
 
+        if ($request->has("type")) {
+            $formasPago->whereHas('cuenta', function ($query) use ($request) {
+                $query->whereNotNull('naturaleza_'.$request->get("type"));
+            });
+        }
+
         return $formasPago->paginate(40);
     }
 
