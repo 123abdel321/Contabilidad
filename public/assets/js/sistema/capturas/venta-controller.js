@@ -1101,17 +1101,30 @@ function changeFormaPago(idFormaPago, event) {
             return;
         }
 
-        if (guardarVenta) {
+        if ((totalEfectivo + totalOtrosPagos) >= total) {
             validateSaveVenta();
             return;
         }
 
-        if (total <= (totalEfectivo + totalOtrosPagos)) {
-            guardarVenta = true;
+        focusNextFormasPagoVentas(idFormaPago);
+    }
+}
 
-            setTimeout(function(){
-                guardarVenta = false;
-            },500);
+function focusNextFormasPagoVentas(idFormaPago) {
+    var dataVentaPagos = venta_table_pagos.rows().data();
+    var idFormaPagoFocus = dataVentaPagos[0].id;
+    var obtenerFormaPago = false;
+
+    if(!dataVentaPagos.length > 0) return;
+
+    for (let index = 0; index < dataVentaPagos.length; index++) {
+        const dataPagoCompra = dataVentaPagos[index];
+        if (obtenerFormaPago) {
+            idFormaPagoFocus = dataPagoCompra.id;
+            obtenerFormaPago = false;
+        } else if (dataPagoCompra.id == idFormaPago) {
+            obtenerFormaPago = true;
         }
     }
+    focusFormaPagoVenta(idFormaPagoFocus);
 }

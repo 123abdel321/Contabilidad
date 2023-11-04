@@ -965,19 +965,32 @@ function changeFormaPagoCompra(idFormaPago, event) {
             return;
         }
 
-        if (guardarCompra) {
+        if (totalPagos >= total) {
             validateSaveCompra();
             return;
         }
         
-        if (total <= totalPagos) {
-            guardarCompra = true;
+        focusNextFormasPagoCompras(idFormaPago);
+    }
+}
 
-            setTimeout(function(){
-                guardarCompra = false;
-            },500);
+function focusNextFormasPagoCompras(idFormaPago) {
+    var dataCompraPagos = compra_table_pagos.rows().data();
+    var idFormaPagoFocus = dataCompraPagos[0].id;
+    var obtenerFormaPago = false;
+
+    if(!dataCompraPagos.length > 0) return;
+
+    for (let index = 0; index < dataCompraPagos.length; index++) {
+        const dataPagoCompra = dataCompraPagos[index];
+        if (obtenerFormaPago) {
+            idFormaPagoFocus = dataPagoCompra.id;
+            obtenerFormaPago = false;
+        } else if (dataPagoCompra.id == idFormaPago) {
+            obtenerFormaPago = true;
         }
     }
+    focusFormaPagoCompra(idFormaPagoFocus);
 }
 
 function clearFormasPagoCompras() {
