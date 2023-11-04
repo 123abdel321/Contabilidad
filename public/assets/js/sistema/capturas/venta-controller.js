@@ -4,6 +4,7 @@ var venta_table_pagos = null;
 var validarFacturaVenta = null;
 var validarExistenciasProducto = null;
 var idVentaProducto = 0;
+var $comboBodegaVenta = null;
 var $comboResolucion = null;
 var $comboCliente = null;
 var porcentajeRetencionVenta = 0;
@@ -281,7 +282,7 @@ function ventaInit () {
         }
     });
 
-    $comboBodega = $('#id_bodega_venta').select2({
+    $comboBodegaVenta = $('#id_bodega_venta').select2({
         theme: 'bootstrap-5',
         delay: 250,
         language: {
@@ -323,8 +324,8 @@ function ventaInit () {
             text: primeraBodegaVenta.codigo + ' - ' + primeraBodegaVenta.nombre
         };
         var newOption = new Option(dataBodega.text, dataBodega.id, false, false);
-        $comboBodega.append(newOption).trigger('change');
-        $comboBodega.val(dataBodega.id).trigger('change');
+        $comboBodegaVenta.append(newOption).trigger('change');
+        $comboBodegaVenta.val(dataBodega.id).trigger('change');
     }
 
     var column2 = venta_table.column(2);
@@ -379,7 +380,7 @@ function ventaInit () {
 
 $(document).on('keydown', '.custom-venta_producto .select2-search__field', function (event) {
     var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
-    console.log(event.keyCode);
+    
     if (event.keyCode == 96) abrirFormasPago = true;
     if (event.keyCode == 13){
         if (total > 0) {
@@ -733,6 +734,7 @@ function totalValoresVentas() {
 }
 
 function changeProductoVenta (idRow) {
+    console.log('changeProductoVenta');
     var data = $('#venta_producto_'+idRow).select2('data')[0];
 
     if (data.length == 0) return;

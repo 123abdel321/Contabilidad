@@ -3,7 +3,7 @@ var compra_table = null;
 var compra_table_pagos = null;
 var validarFacturaCompra = null;
 var idCompraProducto = 0;
-var $comboBodega = null;
+var $comboBodegaCompra = null;
 var $comboProveedor = null;
 var $comboComprobante  = null;
 var guardarCompra = false
@@ -270,7 +270,7 @@ function compraInit () {
         }
     });
 
-    $comboBodega = $('#id_bodega_compra').select2({
+    $comboBodegaCompra = $('#id_bodega_compra').select2({
         theme: 'bootstrap-5',
         delay: 250,
         language: {
@@ -308,9 +308,10 @@ function compraInit () {
 
     $("#id_comprobante_compra").on('select2:close', function(event) {
         var data = $(this).select2('data');
+        console.log('id_comprobante_compra close', data.length);
         if(data.length){
             setTimeout(function(){
-                $comboBodega.select2("open");
+                $comboBodegaCompra.select2("open");
                 $('#id_bodega_compra').select();
             },10);
         }
@@ -356,8 +357,8 @@ function compraInit () {
             text: primeraBodegaCompra.codigo + ' - ' + primeraBodegaCompra.nombre
         };
         var newOption = new Option(dataBodega.text, dataBodega.id, false, false);
-        $comboBodega.append(newOption).trigger('change');
-        $comboBodega.val(dataBodega.id).trigger('change');
+        $comboBodegaCompra.append(newOption).trigger('change');
+        $comboBodegaCompra.val(dataBodega.id).trigger('change');
     }
 
     if(primerComprobanteCompra){

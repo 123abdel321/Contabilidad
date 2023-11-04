@@ -125,8 +125,8 @@
         </div>
 
         <div class="col-12 col-sm-12 col-md-3 ml-auto">
+            
             <div class="row justify-content-between">
-
                 <div id="totales-compra-card" class="card col-12 col-sm-5 col-md-12 ml-auto" style="height: min-content; margin-bottom: 0.5rem !important;">
                     <table class="table table-bordered table-captura-compras" width="100%" style="margin-top: 12px;">
                         <tbody>
@@ -153,8 +153,7 @@
                         </tbody>
                     </table>
                 </div>
-
-                <form id="compraForm" class="card mb-4 col-12 col-sm-7 col-md-12 ml-auto">
+                <div id="compraForm" class="card mb-4 col-12 col-sm-7 col-md-12 ml-auto">
                     <div style="max-height: 143px; overflow: auto;">
                         <table id="compraFormaPago" class="table table-bordered display responsive table-captura-compras" width="100%">
                             <thead>
@@ -193,11 +192,10 @@
                         </div>
                     </div>
                     
-                </form>
-
+                </div>
             </div>
-        </div>
 
+        </div>
     </div>
 
     <script>
