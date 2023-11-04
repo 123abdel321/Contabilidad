@@ -155,7 +155,7 @@
                 </div>
 
                 <form id="compraForm" class="card mb-4 col-12 col-sm-7 col-md-12 ml-auto">
-                    <div style="height: 143px; overflow: auto;">
+                    <div style="max-height: 143px; overflow: auto;">
                         <table id="compraFormaPago" class="table table-bordered display responsive table-captura-compras" width="100%">
                             <thead>
                                 <tr style="border: 0px !important;">

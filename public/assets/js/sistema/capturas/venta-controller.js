@@ -216,6 +216,9 @@ function ventaInit () {
         ajax:  {
             type: "GET",
             headers: headers,
+            data: {
+                type: 'ventas'
+            },
             url: base_url + 'forma-pago/combo-forma-pago',
         },
         columns: [
