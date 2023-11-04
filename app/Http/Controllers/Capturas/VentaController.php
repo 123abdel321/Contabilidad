@@ -214,13 +214,13 @@ class VentaController extends Controller
                             "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $venta->id_centro_costos : null,
                             "concepto" => 'COMPRA: '.$cuentaRecord->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
                             "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $venta->documento_referencia : null,
-                            "debito" => $cuentaRecord->naturaleza_cuenta == PlanCuentas::DEBITO ? $producto->{$keyTotalItem} : 0,
-                            "credito" => $cuentaRecord->naturaleza_cuenta == PlanCuentas::CREDITO ? $producto->{$keyTotalItem} : 0,
+                            "debito" => $cuentaRecord->naturaleza_ventas == PlanCuentas::DEBITO ? $producto->{$keyTotalItem} : 0,
+                            "credito" => $cuentaRecord->naturaleza_ventas == PlanCuentas::CREDITO ? $producto->{$keyTotalItem} : 0,
                             "created_by" => request()->user()->id,
                             "updated_by" => request()->user()->id
                         ]);
     
-                        $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_cuenta);
+                        $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_ventas);
                     }
                 }
 
@@ -260,12 +260,12 @@ class VentaController extends Controller
                     "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $venta->id_centro_costos : null,
                     "concepto" => 'TOTAL: '.$cuentaRetencion->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
                     "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $venta->documento_referencia : null,
-                    "debito" => $cuentaRetencion->naturaleza_cuenta == PlanCuentas::DEBITO ? $this->totalesFactura['total_rete_fuente'] : 0,
-                    "credito" => $cuentaRetencion->naturaleza_cuenta == PlanCuentas::CREDITO ? $this->totalesFactura['total_rete_fuente'] : 0,
+                    "debito" => $cuentaRetencion->naturaleza_ventas == PlanCuentas::DEBITO ? $this->totalesFactura['total_rete_fuente'] : 0,
+                    "credito" => $cuentaRetencion->naturaleza_ventas == PlanCuentas::CREDITO ? $this->totalesFactura['total_rete_fuente'] : 0,
                     "created_by" => request()->user()->id,
                     "updated_by" => request()->user()->id
                 ]);
-                $documentoGeneral->addRow($doc, $cuentaRetencion->naturaleza_cuenta);
+                $documentoGeneral->addRow($doc, $cuentaRetencion->naturaleza_ventas);
             }
 
             $totalProductos = $this->totalesFactura['total_factura'];
@@ -293,12 +293,12 @@ class VentaController extends Controller
                     'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $venta->id_centro_costos : null,
                     'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
                     'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $venta->documento_referencia : null,
-                    'debito' => $formaPago->cuenta->naturaleza_cuenta == PlanCuentas::DEBITO ? $pagoValor : 0,
-                    'credito' => $formaPago->cuenta->naturaleza_cuenta == PlanCuentas::CREDITO ? $pagoValor : 0,
+                    'debito' => $formaPago->cuenta->naturaleza_ventas == PlanCuentas::DEBITO ? $pagoValor : 0,
+                    'credito' => $formaPago->cuenta->naturaleza_ventas == PlanCuentas::CREDITO ? $pagoValor : 0,
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
-                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_cuenta);
+                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
             }
 
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
