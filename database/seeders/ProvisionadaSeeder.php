@@ -29,19 +29,19 @@ class ProvisionadaSeeder extends Seeder
     {
         DB::statement('SET foreign_key_checks = 0');
 
+        $this->call(NitsSeeder::class);
+        $this->call(BodegasSeeder::class);
+        $this->call(FamiliasSeeder::class);
+        $this->call(ImpuestosSeeder::class);
         $this->call(CentroCostosSeeder::class);
         $this->call(ComprobantesSeeder::class);
-        $this->call(FamiliasSeeder::class);
-        $this->call(BodegasSeeder::class);
-        $this->call(NitsSeeder::class);
         $this->call(ResolucionesSeeder::class);
-        $this->call(TiposFormasPagosSeeder::class);
-        $this->call(TipoImpuestosSeeder::class);
-        $this->call(ImpuestosSeeder::class);
         $this->call(FormasPagosSeeder::class);
-        $this->call(PlanCuentasSeeder::class);;
-        $this->call(TipoCuentasSeeder::class);;
+        $this->call(PlanCuentasSeeder::class);
+        $this->call(TipoCuentasSeeder::class);
+        $this->call(TipoImpuestosSeeder::class);
         $this->call(TipoDocumentosSeeder::class);
+        $this->call(TiposFormasPagosSeeder::class);
 
         DB::statement('SET foreign_key_checks = 1');
     }
