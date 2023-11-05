@@ -106,28 +106,18 @@ if (sidenav2) {
     sidenav2.addEventListener("click", toggleSidenavMaximo);
 }
 
-$(document).on('click', '.button-side-nav', function () {
-    var id = this.id.split('_')[1];
+function openNewItem(id, nombre, icon) {
     if($('#containner-'+id).length == 0) {
-        generatView(id);
+        generatView(id, nombre, icon);
     }
-
-    seleccionarView(id);
-    
+    seleccionarView(id, nombre);
     document.getElementById('sidenav-main-2').click();
-});
+}    
 
-$(document).on('click', '.seleccionar-view', function () {
-    var id = this.id.split('-')[1];
-    if(id) {
-        seleccionarView(id);
-    }
-});      
-
-function generatView(id){
+function generatView(id, nombre, icon){
     $('.water').show();
     $('#contenerdores-views').append('<main class="tab-pane main-content border-radius-lg change-view" style="margin-left: 5px;" id="containner-'+id+'"></main>');
-    $('#footer-navigation').append(generateNewTabButton(id));
+    $('#footer-navigation').append(generateNewTabButton(id, nombre, icon));
     $('#containner-'+id).load('/'+id, function() {
 
         if(!moduloCreado[id]) includeJs(id);
@@ -154,10 +144,8 @@ function includeJs(id){
     moduloCreado[id] = true;
 }
 
-function seleccionarView(id){
+function seleccionarView(id, nombre = 'Inicio'){
 
-    var nombre = 'Inicio';
-    // console.log('seleccionarView:', id);
     $(".dtfh-floatingparent").remove();
     $('.change-view').removeClass("active");
     $('.seleccionar-view').removeClass("active");
@@ -165,50 +153,6 @@ function seleccionarView(id){
     $('#containner-'+id).addClass("active");
     $('#tab-'+id).addClass("active");
     $('#sidenav_'+id).addClass("active");
-
-    if(id == 'nit') {
-        nombre = 'Cedulas nit'
-    } else if(id == 'comprobante') {
-        nombre = 'Comprobantes';
-    } else if(id == 'plancuenta') {
-        nombre = 'Cuentas contables';
-    } else if(id == 'auxiliar') {
-        nombre = 'Auxiliar';
-    } else if(id == 'documentogeneral') {
-        nombre = 'Captura documentos';
-    } else if(id == 'balance') {
-        nombre = 'Balance';
-    } else if(id == 'cartera') {
-        nombre = 'Cartera';
-    } else if(id == 'documentos') {
-        nombre = 'Documentos';
-    } else if(id == 'compras') {
-        nombre = 'Informe compras';
-    } else if(id == 'ventas') {
-        nombre = 'Informe ventas';
-    } else if(id == 'cecos') {
-        nombre = 'Centro costos';
-    } else if(id == 'familias') {
-        nombre = 'Familias';
-    } else if(id == 'resolucion') {
-        nombre = 'Resoluciones';
-    } else if(id == 'formapago') {
-        nombre = 'Formas pago';
-    } else if(id == 'bodegas') {
-        nombre = 'Bodegas';
-    } else if(id == 'productos') {
-        nombre = 'Productos'
-    } else if(id == 'compra') {
-        nombre = 'Captura compras';
-    } else if(id == 'venta') {
-        nombre = 'Captura ventas';
-    } else if(id == 'usuarios') {
-        nombre = 'Usuarios';
-    } else if(id == 'empresa') {
-        nombre = 'Empresa';
-    } else if(id == 'productoprecios') {
-        nombre = 'Producto precios';
-    }
     
     $("#titulo-view").text(nombre);
 }
@@ -217,83 +161,17 @@ function generateNewTabView(id){
     var html = '<main class="tab-pane main-content border-radius-lg change-view" style="margin-left: 5px;" id="containner-'+id+'"></main>';
 }
 
-function generateNewTabButton(id){
-    var icon = '';
-    var nombre = '';
-    // console.log('generateNewTabButton:', id);
-    if(id == 'nit') {
-        icon = 'fas fa-table';
-        nombre = 'Cedulas nits';
-    } else if (id == 'comprobante') {
-        icon = 'fas fa-table';
-        nombre = 'Comprobantes';
-    } else if (id == 'plancuenta') {
-        icon = 'fas fa-table';
-        nombre = 'Cuentas contables';
-    } else if (id == 'documentogeneral') {
-        icon = 'fas fa-folder-open';
-        nombre = 'Captura documentos';
-    } else if (id == 'auxiliar') {
-        icon = 'fas fa-chart-line';
-        nombre = 'Auxiliar';
-    } else if (id == 'balance') {
-        icon = 'fas fa-chart-line';
-        nombre = 'Balance';
-    } else if (id == 'cartera') {
-        icon = 'fas fa-chart-line';
-        nombre = 'Cartera';
-    } else if (id == 'documentos') {
-        icon = 'fas fa-chart-line';
-        nombre = 'Documentos';
-    } else if (id == 'compras') {
-        icon = 'fas fa-chart-line';
-        nombre = 'Compras';
-    } else if (id == 'ventas') {
-        icon = 'fas fa-chart-line';
-        nombre = 'Ventas';
-    } else if (id == 'cecos') {
-        icon = 'fas fa-table';
-        nombre = 'Centro de costos';
-    } else if (id == 'familias') {
-        icon = 'fas fa-box-open';
-        nombre = 'Familias';
-    } else if (id == 'resolucion') {
-        icon = 'fas fa-table';
-        nombre = 'Resoluciones';
-    } else if (id == 'formapago') {
-        icon = 'fas fa-table';
-        nombre = 'Formas pago';
-    } else if (id == 'bodegas') {
-        icon = 'fas fa-box-open';
-        nombre = 'Bodegas';
-    } else if (id == 'productos') {
-        icon = 'fas fa-box-open';
-        nombre = 'Productos';
-    } else if (id == 'compra') {
-        icon = 'fas fa-folder-open';
-        nombre = 'Compras';
-    } else if (id == 'venta') {
-        icon = 'fas fa-folder-open';
-        nombre = 'Ventas';
-    } else if (id == 'usuarios') {
-        icon = 'fas fa-cog';
-        nombre = 'Usuarios';
-    } else if (id == 'empresa') {
-        icon = 'fas fa-cog';
-        nombre = 'Empresa';
-    } else if (id == 'productoprecios') {
-        icon = 'fas fa-file-import';
-        nombre = 'Producto precios';
-    }
-
-    var html = '';
-    html+=  '<li class="nav-item" id="lista_view_'+id+'">';
-    html+=      '<div class="nav-link col seleccionar-view" id="tab-'+id+'">';
-    html+=          '<i class="'+icon+'"></i>&nbsp;';
-    html+=          nombre+'&nbsp;&nbsp;';
-    html+=          '<i class="fas fa-times-circle close_item_navigation" id="closetab_'+id+'" onclick="closeView(this)"></i>&nbsp;';
-    html+=      '</div>';
-    html+=  '</li>';
+function generateNewTabButton(id, nombre, icon){
+    
+    var html = `
+        <li class="nav-item" id="lista_view_${id}">
+            <div class="nav-link col seleccionar-view" onclick="seleccionarView('${id}', '${nombre}')" id="tab-${id}">
+                <i class="${icon}"></i>&nbsp;
+                ${nombre}&nbsp;&nbsp;
+                <i class="fas fa-times-circle close_item_navigation" id="closetab_${id}" onclick="closeView(this)"></i>&nbsp;
+            </div>
+        </li>
+    `;
     return html;
 }
 
