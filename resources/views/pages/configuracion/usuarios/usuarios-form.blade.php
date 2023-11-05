@@ -51,20 +51,6 @@
                                         <label for="example-text-input" class="form-control-label">Dirección</label>
                                         <input type="text" class="form-control form-control-sm" name="address_usuario" id="address_usuario">
                                     </div>
-                                    <div class="form-group form-group col-12 col-sm-6 col-md-6">
-                                        <label for="example-text-input" class="form-control-label">Contraseña</label>
-                                        <input type="password" class="form-control form-control-sm" name="password_usuario" id="password_usuario" autocomplete="off" aria-autocomplete="none">
-                                        <!-- <div class="invalid-feedback">
-                                            El contraseña es requerida
-                                        </div> -->
-                                    </div>
-                                    <div class="form-group form-group col-12 col-sm-6 col-md-6">
-                                        <label for="example-text-input" class="form-control-label">Confirmar contraseña</label>
-                                        <input type="password" class="form-control form-control-sm" name="password_confirm" id="password_confirm" autocomplete="off" aria-autocomplete="none">
-                                        <div class="invalid-feedback">
-                                            Las contraseñas no coinciden
-                                        </div>
-                                    </div>
             
                                     <div class="form-group col-12 col-sm-6 col-md-6">
                                         <label>Bodegas a cargo</label>

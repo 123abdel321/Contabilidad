@@ -173,17 +173,17 @@ $(document).on('click', '#saveUsuarios', function () {
         return;
     }
 
-    var contrasena = $("#password_usuario").val();
-    var confirmarContrasena = $("#password_confirm").val();
+    // var contrasena = $("#password_usuario").val();
+    // var confirmarContrasena = $("#password_confirm").val();
 
-    if (contrasena != confirmarContrasena) {
-        $('#password_confirm').removeClass("is-valid");
-        $('#password_confirm').addClass("is-invalid");
-        return;
-    } else {
-        $('#password_confirm').addClass("is-valid");
-        $('#password_confirm').removeClass("is-invalid");
-    }
+    // if (contrasena != confirmarContrasena) {
+    //     $('#password_confirm').removeClass("is-valid");
+    //     $('#password_confirm').addClass("is-invalid");
+    //     return;
+    // } else {
+    //     $('#password_confirm').addClass("is-valid");
+    //     $('#password_confirm').removeClass("is-invalid");
+    // }
 
     $("#saveUsuariosLoading").show();
     $("#updateUsuarios").hide();
@@ -195,7 +195,7 @@ $(document).on('click', '#saveUsuarios', function () {
         firstname: $("#firstname_usuario").val(),
         lastname: $("#lastname_usuario").val(),
         address: $("#address_usuario").val(),
-        password: $("#password_usuario").val(),
+        // password: $("#password_usuario").val(),
         telefono: $("#telefono_usuario").val(),
         id_bodega: $("#id_bodega_usuario").val(),
         id_resolucion: $("#id_resolucion_usuario").val(),
@@ -248,17 +248,17 @@ $(document).on('click', '#updateUsuarios', function () {
         return;
     }
 
-    var contrasena = $("#password_usuario").val();
-    var confirmarContrasena = $("#password_confirm").val();
+    // var contrasena = $("#password_usuario").val();
+    // var confirmarContrasena = $("#password_confirm").val();
 
-    if (contrasena != confirmarContrasena) {
-        $('#password_confirm').removeClass("is-valid");
-        $('#password_confirm').addClass("is-invalid");
-        return;
-    } else {
-        $('#password_confirm').addClass("is-valid");
-        $('#password_confirm').removeClass("is-invalid");
-    }
+    // if (contrasena != confirmarContrasena) {
+    //     $('#password_confirm').removeClass("is-valid");
+    //     $('#password_confirm').addClass("is-invalid");
+    //     return;
+    // } else {
+    //     $('#password_confirm').addClass("is-valid");
+    //     $('#password_confirm').removeClass("is-invalid");
+    // }
 
 
     $("#saveUsuariosLoading").show();
@@ -272,7 +272,7 @@ $(document).on('click', '#updateUsuarios', function () {
         firstname: $("#firstname_usuario").val(),
         lastname: $("#lastname_usuario").val(),
         address: $("#address_usuario").val(),
-        password: $("#password_usuario").val(),
+        // password: $("#password_usuario").val(),
         id_bodega: $("#id_bodega_usuario").val(),
         id_resolucion: $("#id_resolucion_usuario").val(),
         facturacion_rapida: $("input[type='checkbox']#facturacion_rapida").is(':checked') ? '1' : '',
