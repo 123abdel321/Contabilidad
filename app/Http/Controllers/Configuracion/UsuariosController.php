@@ -141,7 +141,7 @@ class UsuariosController extends Controller
                 'firstname' => $request->get('firstname'),
                 'lastname' => $request->get('lastname'),
                 'email' => $request->get('email'),
-                'password' => Hash::make($request->get('password')),
+                'password' => Hash::make('admin'),
                 'address' => $request->get('address'),
                 'telefono' => $request->get('telefono'),
                 'ids_bodegas_responsable' => implode(",",$request->get('id_bodega')),
@@ -240,10 +240,6 @@ class UsuariosController extends Controller
             $usuario->ids_resolucion_responsable = implode(",",$request->get('id_resolucion'));
             $usuario->facturacion_rapida = $request->get('facturacion_rapida');
             $usuario->updated_by = request()->user()->id;
-
-            if ($request->get('password')) {
-                $usuario->password = Hash::make($request->get('password'));
-            }
 
             $permisos = [];
 
