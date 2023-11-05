@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('codigo', 60)->unique();
             $table->string('nombre', 200);
-            $table->string('ubicacion', 200);
+            $table->string('ubicacion', 200)->nullable();
             $table->integer('id_centro_costos')->nullable();
             $table->integer('id_responsable')->nullable();
             $table->integer('created_by')->nullable();
