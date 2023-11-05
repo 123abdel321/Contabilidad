@@ -19,7 +19,7 @@ class FormasPagosSeeder extends Seeder
             ],
             [
                 'id' => 2,
-                'id_cuenta' => 4,
+                'id_cuenta' => 6,
                 'id_tipo_formas_pago' => 14,
                 'nombre' => 'TRANSFERENCIA'
             ],
