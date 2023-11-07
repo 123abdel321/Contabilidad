@@ -14,6 +14,7 @@ use App\Http\Controllers\Informes\CarteraController;
 use App\Http\Controllers\Informes\BalanceController;
 use App\Http\Controllers\Informes\AuxiliarController;
 use App\Http\Controllers\Informes\DocumentoController;
+use App\Http\Controllers\Informes\DocumentosGeneralesController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\BodegasController;
@@ -122,6 +123,9 @@ Route::group(['middleware' => ['auth']], function () {
 		//DOCUMENTOS
 		Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos');
 		Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('documento-pdf');
+		//DOCUMENTOS GENERALES
+		Route::get('/documentosgenerales', [DocumentosGeneralesController::class, 'index']);
+		// Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('documento-pdf');
 		//USUARIOS
 		Route::get('/usuarios', [UsuariosController::class, 'index'])->name('usuarios');
 		//EMPRESA

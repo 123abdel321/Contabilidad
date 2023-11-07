@@ -682,3 +682,7 @@ td{
     padding: 0.375rem 0.75rem !important;
     min-height: calc(1.2em + 0.75rem + 2px) !important;
 }
+
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-search {
+    display: none !important;
+}
