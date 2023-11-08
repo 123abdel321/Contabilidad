@@ -280,4 +280,23 @@ class UsuariosController extends Controller
         }
     }
 
+    public function comboUsuario (Request $request)
+    {
+        $usuario = User::where('id_empresa', $request->user()['id_empresa'])
+            ->select(
+                \DB::raw('*'),
+                \DB::raw("CONCAT(firstname, ' ', lastname) as text")
+            );
+
+        if ($request->get("q")) {
+            $usuario->where('firstname', 'LIKE', '%' . $request->get("q") . '%');
+            $usuario->Orwhere('lastname', 'LIKE', '%' . $request->get("q") . '%');
+            $usuario->Orwhere('email', 'LIKE', '%' . $request->get("q") . '%');
+            $usuario->Orwhere('username', 'LIKE', '%' . $request->get("q") . '%');
+            $usuario->Orwhere('telefono', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        return $usuario->paginate(40);
+    }
+
 }

@@ -204,7 +204,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.2.6/jquery.inputmask.bundle.min.js"></script>
 
     <script src="assets/js/sistema/sistema.js" rel="stylesheet"></script>
-
+    <!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js" rel="stylesheet"></script> -->
+    
     @stack('js')
 </body>
 

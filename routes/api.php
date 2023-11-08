@@ -54,6 +54,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     //EMPRESA
     Route::get("empresa","App\Http\Controllers\ApiController@getEmpresas");
     Route::get("usuario-accion","App\Http\Controllers\ApiController@getUsuario");
+
     Route::post("empresa","App\Http\Controllers\InstaladorController@createEmpresa");
     Route::post("seleccionar-empresa","App\Http\Controllers\ApiController@setEmpresa");
     Route::get('responsabilidades-combo', 'App\Http\Controllers\Configuracion\EmpresaController@comboResponsabilidades');
@@ -67,7 +68,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //INFORMES
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
         Route::get('existe-factura', 'App\Http\Controllers\Informes\ExtractoController@existeFactura');
-        //DOCUMENTOS
+        //DOCUMENTOS CAPTURADOS
         Route::get('documento', 'App\Http\Controllers\Informes\DocumentoController@generate');
         Route::get('documento-print', 'App\Http\Controllers\Informes\DocumentoController@print');
         //BALANCE
@@ -85,12 +86,16 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('cartera-show', 'App\Http\Controllers\Informes\CarteraController@show');
         Route::get('cartera-find', 'App\Http\Controllers\Informes\CarteraController@find');
         Route::post('cartera-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
+        //DOCUMENTOS GENERALES
+        Route::get('documentos-generales', 'App\Http\Controllers\Informes\DocumentosGeneralesController@generate');
+        Route::get('documentos-generales-show', 'App\Http\Controllers\Informes\DocumentosGeneralesController@show');
 
         //USUARIOS
         Route::controller(UsuariosController::class)->group(function () {
             Route::get('usuarios', 'generate');
             Route::post('usuarios', 'create');
             Route::put('usuarios', 'update');
+            Route::get('usuarios/combo', 'comboUsuario');
         });
         //IMPUESTOS
         Route::controller(ImpuestosController::class)->group(function () {
