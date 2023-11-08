@@ -62,13 +62,14 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 'consecutivo' => $this->request['consecutivo'],
                 'concepto' => $this->request['concepto'],
                 'agrupar' => $this->request['agrupar'],
-                // 'agrupado' => $this->request['agrupado'],
+                'agrupado' => $this->request['agrupado'],
             ]);
 
             $this->id_documentos_generales = $documentosGenerales->id;
-            if (!$this->request['agrupar']) $this->documentosGeneralesSinAgrupar();
-            if ($this->request['agrupar']) $this->documentosGeneralesAgruparNormal();
-            // $this->documentosGeneralesAgruparNiveles();
+
+            if ($this->request['agrupar'] && $this->request['agrupado']) $this->documentosGeneralesAgruparNiveles();
+            else if (!$this->request['agrupar']) $this->documentosGeneralesSinAgrupar();
+            else if ($this->request['agrupar']) $this->documentosGeneralesAgruparNormal();
 
             foreach (array_chunk($this->documentosCollection,233) as $documentosCollection){
                 DB::connection('informes')
@@ -91,6 +92,36 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
 
 			throw $exception;
         }
+    }
+
+    private function documentosGeneralesAgruparNiveles()
+    {
+        $query = $this->DocumentosGeneralesQuery();
+
+        DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS documentosgeneralesdata"))
+            ->mergeBindings($query)
+            ->orderByRaw($this->request['agrupar'])
+            ->chunk(233, function ($documentos) {
+                $count = 0;
+                $documentos->each(function ($documento) use($count){
+                    $agrupacionesTotales = [];
+                    $count++;
+                    foreach ($this->agrupacion as $key => $agrupacion) {
+                        $agrupacionesTotales[] = $agrupacion;
+                        $cuentaDetalle = $this->getCuentaPadre($documento, $agrupacionesTotales);
+                        $cuentaPadre = $this->getCuentaPadreNiveles($documento, $agrupacionesTotales);
+
+                        if ($this->hasCuentaData($cuentaPadre)) $this->sumCuentaData($cuentaPadre, $documento);
+                        else $this->newCuentaTotalNiveles($cuentaPadre, $documento, $agrupacionesTotales);
+                        $this->newCuentaDetalle($cuentaDetalle, $documento);
+                    }
+                });
+            });
+            
+        ksort($this->documentosCollection, SORT_STRING | SORT_FLAG_CASE);
+
+        $this->addTotalData($query);
     }
 
     private function documentosGeneralesAgruparNormal()
@@ -117,6 +148,18 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
         $this->addTotalData($query);
     }
 
+    private function getCuentaPadreNiveles($documento, $agrupacionesTotales)
+    {
+        $cuenta = '';
+        foreach ($agrupacionesTotales as $nameValue) {
+            $cuenta.= $documento->{$nameValue} ? $documento->{$nameValue} : '0';
+            $cuenta.='-';
+        }
+        $cuenta = substr_replace($cuenta ,"",-1);
+
+        return $cuenta;
+    }
+
     private function getCuentaPadre($documento)
     {
         $cuenta = '';
@@ -127,7 +170,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             $cuenta.='-';
         }
         $cuenta = substr_replace($cuenta ,"",-1);
-        // dd($cuenta, $documento);
+        
         return $cuenta;
     }
 
@@ -322,6 +365,40 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'diferencia' => $documento->diferencia,
             'total_columnas' => $documento->total_columnas,
             'nivel' => 1,
+            'fecha_creacion' => null,
+            'fecha_edicion' => null,
+            'created_by' => null,
+            'updated_by' => null,
+        ];
+    }
+
+    private function newCuentaTotalNiveles($cuenta, $documento, $agrupacionesTotales)
+    {
+        $this->documentosCollection[$cuenta] = [
+            'id_documentos_generales' => $this->id_documentos_generales,
+            'id_nit' => in_array('id_nit', $agrupacionesTotales) ? $documento->id_nit : null,
+            'id_cuenta' => in_array('id_cuenta', $agrupacionesTotales) ? $documento->id_cuenta : null,
+            'id_usuario' => null,
+            'id_comprobante' => in_array('id_comprobante', $agrupacionesTotales) ? $documento->id_comprobante : null,
+            'id_centro_costos' => in_array('id_centro_costos', $agrupacionesTotales) ? $documento->id_centro_costos : null,
+            'cuenta' => in_array('id_cuenta', $agrupacionesTotales) ? $documento->cuenta : null,
+            'nombre_cuenta' => in_array('id_cuenta', $agrupacionesTotales) ? $documento->nombre_cuenta : null,
+            'numero_documento' => in_array('id_nit', $agrupacionesTotales) ? $documento->numero_documento : null,
+            'nombre_nit' => in_array('id_nit', $agrupacionesTotales) ? $documento->nombre_nit : null,
+            'razon_social' => in_array('id_nit', $agrupacionesTotales) ? $documento->razon_social : null,
+            'codigo_cecos' => in_array('id_centro_costos', $agrupacionesTotales) ? $documento->codigo_cecos : null,
+            'nombre_cecos' => in_array('id_centro_costos', $agrupacionesTotales) ? $documento->nombre_cecos : null,
+            'codigo_comprobante' => in_array('id_comprobante', $agrupacionesTotales) ? $documento->codigo_comprobante : null,
+            'nombre_comprobante' => in_array('id_comprobante', $agrupacionesTotales) ? $documento->nombre_comprobante : null,
+            'documento_referencia' => null,
+            'consecutivo' => null,
+            'concepto' => null,
+            'fecha_manual' => null,
+            'debito' => $documento->debito,
+            'credito' => $documento->credito,
+            'diferencia' => $documento->diferencia,
+            'total_columnas' => $documento->total_columnas,
+            'nivel' => count($agrupacionesTotales),
             'fecha_creacion' => null,
             'fecha_edicion' => null,
             'created_by' => null,

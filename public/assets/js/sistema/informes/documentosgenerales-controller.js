@@ -51,6 +51,21 @@ function documentosgeneralesInit() {
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
+            if(data.nivel == 2){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
+                $('td', row).css('font-weight', 'bold');
+                return;
+            }
+            if(data.nivel == 3){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
+                $('td', row).css('font-weight', 'bold');
+                return;
+            }
+            if(data.nivel == 4){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
+                $('td', row).css('font-weight', 'bold');
+                return;
+            }
         },
         columns: [
             {"data": function (row, type, set){ //CUENTA
