@@ -109,6 +109,8 @@ function documentosInit() {
     $('#id_comprobante_documento').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        placeholder: "Seleccione un Comprobante",
+        allowClear: true,
         ajax: {
             url: 'api/comprobantes/combo-comprobante',
             headers: headers,

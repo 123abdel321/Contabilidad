@@ -113,6 +113,8 @@ function balanceInit() {
 var $comboPadre = $('#id_cuenta_balance').select2({
     theme: 'bootstrap-5',
     delay: 250,
+    placeholder: "Seleccione una Cuenta",
+    allowClear: true,
     ajax: {
         url: 'api/plan-cuenta/combo-cuenta',
         headers: headers,

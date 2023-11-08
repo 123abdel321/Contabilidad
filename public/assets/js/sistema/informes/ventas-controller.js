@@ -88,6 +88,8 @@ function ventasInit() {
     $('#id_cliente_ventas').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        placeholder: "Seleccione un Cliente",
+        allowClear: true,
         ajax: {
             url: 'api/nit/combo-nit',
             headers: headers,
