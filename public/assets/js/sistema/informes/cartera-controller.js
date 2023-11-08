@@ -144,6 +144,8 @@ function carteraInit() {
     $('#id_cuenta_cartera').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        placeholder: "Seleccione una Cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             data: function (params) {
@@ -166,6 +168,8 @@ function carteraInit() {
     $('#id_nit_cartera').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        placeholder: "Seleccione una Cédula/nit",
+        allowClear: true,
         ajax: {
             url: 'api/nit/combo-nit',
             dataType: 'json',

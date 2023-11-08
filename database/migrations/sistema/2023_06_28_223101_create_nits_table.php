@@ -22,6 +22,7 @@ class CreateNitsTable extends Migration
             $table->integer('id_actividad_econo')->nullable()->index();
             $table->integer('id_banco')->nullable()->index();
             $table->longText('id_responsabilidades')->nullable();
+            $table->string('logo_nit', 255)->nullable();
             $table->string('numero_documento', 30)->unique();
             $table->string('digito_verificacion', 30)->nullable();
             $table->boolean('empleado')->nullable()->default(false);

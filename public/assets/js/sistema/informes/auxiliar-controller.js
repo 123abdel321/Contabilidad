@@ -184,6 +184,8 @@ function auxiliarInit() {
     $('#id_nit_auxiliar').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        placeholder: "Seleccione una Cédula/nit",
+        allowClear: true,
         ajax: {
             url: 'api/nit/combo-nit',
             dataType: 'json',
@@ -199,6 +201,8 @@ function auxiliarInit() {
     $('#id_cuenta_auxiliar').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        placeholder: "Seleccione una Cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,

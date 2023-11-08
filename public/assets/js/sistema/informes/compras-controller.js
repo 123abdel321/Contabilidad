@@ -88,6 +88,8 @@ function comprasInit() {
     $('#id_proveedor_compras').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        placeholder: "Seleccione un Proveedor",
+        allowClear: true,
         ajax: {
             url: 'api/nit/combo-nit',
             headers: headers,
