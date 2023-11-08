@@ -28,7 +28,7 @@
                                         @error('email') <p class="text-danger text-xs pt-1"> {{$message}} </p>@enderror
                                     </div>
                                     <div class="flex flex-col mb-3">
-                                        <input type="password" id="password_login" name="password" class="form-control form-control-lg" aria-label="Password" value="" placeholder="Contraseña">
+                                        <input type="password" id="password_login" name="password" class="form-control form-control-lg" aria-label="Password" value="" onkeypress="changePassWord(event)" placeholder="Contraseña">
                                         @error('password') <p class="text-danger text-xs pt-1"> {{$message}} </p>@enderror
                                     </div>
                                     <!-- <div class="form-check form-switch">

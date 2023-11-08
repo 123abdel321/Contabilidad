@@ -43,6 +43,8 @@ class DocumentosGeneralesController extends Controller
         $documentosGenerales = InfDocumentosGenerales::where('id_empresa', $empresa->id)
             ->where('fecha_hasta', $requestData['fecha_hasta'])
             ->where('fecha_desde', $requestData['fecha_desde'])
+            ->where('precio_desde', $requestData['precio_desde'])
+            ->where('precio_hasta', $requestData['precio_hasta'])
             ->where('id_nit', $requestData['id_nit'])
             ->where('id_cuenta', $requestData['id_cuenta'])
             ->where('id_usuario', $requestData['id_usuario'])

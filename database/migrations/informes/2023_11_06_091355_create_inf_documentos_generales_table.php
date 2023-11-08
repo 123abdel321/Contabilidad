@@ -16,6 +16,8 @@ return new class extends Migration
             $table->integer('id_empresa');
             $table->date('fecha_desde');
             $table->date('fecha_hasta');
+            $table->decimal('precio_desde', 15)->nullable();
+            $table->decimal('precio_hasta', 15)->nullable();
             $table->integer('id_nit')->nullable();
             $table->integer('id_cuenta')->nullable();
             $table->integer('id_usuario')->nullable();

@@ -635,6 +635,17 @@
         const base_web = 'https://listardatos.com/';
 
         $("#button-login").click(function(event){
+            sendDataLogin();
+        });
+
+        password_login
+        function changePassWord(event) {
+            if(event.keyCode == 13) {
+                sendDataLogin();
+            }
+        }
+        
+        function sendDataLogin() {
             $('#error-login').hide();
             $("#button-login-loading").show();
             $("#button-login").hide();
@@ -666,8 +677,10 @@
                 $("#button-login").show();
                 $('#error-login').show();
             });
-        });
+        }
     </script>
+
+     
 </body>
 
 </html>

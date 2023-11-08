@@ -26,7 +26,6 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
     public $documentos = [];
     public $id_documentos_generales;
     public $documentosCollection = [];
-    public $niveles = ['A', 'B', 'C', 'D'];//TOTAL NIVELES AGRUPADOS;
     
 
     public function __construct($request, $id_usuario, $id_empresa)
@@ -53,6 +52,8 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 'id_empresa' => $this->id_empresa,
                 'fecha_desde' => $this->request['fecha_desde'],
                 'fecha_hasta' => $this->request['fecha_hasta'],
+                'precio_desde' => $this->request['precio_desde'],
+                'precio_hasta' => $this->request['precio_hasta'],
                 'id_nit' => $this->request['id_nit'],
                 'id_cuenta' => $this->request['id_cuenta'],
                 'id_usuario' => $this->request['id_usuario'],
@@ -70,7 +71,6 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             if ($this->request['agrupar'] && $this->request['agrupado']) $this->documentosGeneralesAgruparNiveles();
             else if (!$this->request['agrupar']) $this->documentosGeneralesSinAgrupar();
             else if ($this->request['agrupar']) $this->documentosGeneralesAgruparNormal();
-
             foreach (array_chunk($this->documentosCollection,233) as $documentosCollection){
                 DB::connection('informes')
                     ->table('inf_documentos_generales_detalles')
@@ -97,7 +97,6 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
     private function documentosGeneralesAgruparNiveles()
     {
         $query = $this->DocumentosGeneralesQuery();
-
         DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS documentosgeneralesdata"))
             ->mergeBindings($query)
@@ -177,7 +176,6 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
     private function documentosGeneralesSinAgrupar()
     {
         $query = $this->DocumentosGeneralesQuery();
-
         DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS documentosgeneralesdata"))
             ->mergeBindings($query)
@@ -303,7 +301,8 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 "debito",
                 "credito",
                 DB::raw("0 AS diferencia"),
-                DB::raw("1 AS total_columnas")
+                DB::raw("1 AS total_columnas"),
+                DB::raw("IF(debito - credito < 0, (debito - credito) * -1, debito - credito) AS valor_total")
             ])
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
@@ -312,6 +311,13 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
+            ->where(function ($query) {
+                $query->when(isset($this->request['precio_desde']), function ($query) {
+                    $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) >= ?', [$this->request['precio_desde']]);
+                })->when(isset($this->request['precio_hasta']), function ($query) {
+                    $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) <= ?', [$this->request['precio_hasta']]);
+                });
+            })
             ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
                 $query->where('DG.id_nit', $this->request['id_nit']);
             })

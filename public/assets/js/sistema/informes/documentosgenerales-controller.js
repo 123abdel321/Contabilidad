@@ -300,6 +300,8 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
     var url = base_url + 'documentos-generales';
     url+= '?fecha_desde='+$('#fecha_desde_documentos_generales').val();
     url+= '&fecha_hasta='+$('#fecha_hasta_documentos_generales').val();
+    url+= '&precio_desde='+$('#precio_desde_documentos_generales').val();
+    url+= '&precio_hasta='+$('#precio_hasta_documentos_generales').val();
     url+= '&id_nit='+ id_nit;
     url+= '&id_comprobante='+ id_comprobante;
     url+= '&id_centro_costos='+ id_centro_costos;
