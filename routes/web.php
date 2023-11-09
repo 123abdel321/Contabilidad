@@ -25,6 +25,7 @@ use App\Http\Controllers\Tablas\FormasPagoController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
+use App\Http\Controllers\Tablas\CargueDescargueController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
@@ -120,6 +121,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/bodegas', [BodegasController::class, 'index'])->name('bodegas');
 		//BODEGAS
 		Route::get('/productos', [ProductosController::class, 'index'])->name('productos');
+		//CARGUE DESCARGUE
+		Route::get('/carguedescargue', [CargueDescargueController::class, 'index']);
 		//DOCUMENTOS
 		Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos');
 		Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('documento-pdf');

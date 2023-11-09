@@ -16,6 +16,7 @@ use App\Http\Controllers\Tablas\FormasPagoController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
+use App\Http\Controllers\Tablas\CargueDescargueController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
@@ -185,6 +186,15 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::delete('producto', 'delete');
             Route::get('producto/combo-producto', 'comboProducto');
         });
+        //CARGUE DESCARGUE
+        Route::controller(CargueDescargueController::class)->group(function () {
+            Route::get('cargue-descargue', 'generate');
+            Route::post('cargue-descargue', 'create');
+            Route::put('cargue-descargue', 'update');
+            Route::delete('cargue-descargue', 'delete');
+            // Route::get('producto/combo-producto', 'comboProducto');
+        });
+        
         
         //CAPTURA GENERAL
         Route::controller(DocumentoGeneralController::class)->group(function () {

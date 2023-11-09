@@ -8,7 +8,7 @@
                     @endcan
                 </div>
                 <div class="col-12 col-md-6 col-sm-6">
-                    <input type="text" id="searchInput" class="form-control form-control-sm search-table" placeholder="Buscar">
+                    <input type="text" id="searchInputCecos" class="form-control form-control-sm search-table" placeholder="Buscar">
                 </div>
             </div>
         </div>

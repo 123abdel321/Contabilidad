@@ -13,11 +13,11 @@
                         <input type="text" class="form-control" name="id_comprobante_up" id="id_comprobante_up" style="display: none;">
                         <div class="form-group col-md-6">
                             <label for="example-text-input" c|lass="form-control-label">Codigo</label>
-                            <input type="text" class="form-control form-control-sm" name="codigo" id="codigo" placeholder="123" required>
+                            <input type="text" class="form-control form-control-sm" name="codigo_comprobante" id="codigo_comprobante" placeholder="123" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="example-text-input" class="form-control-label">Nombre</label>
-                            <input type="text" class="form-control form-control-sm" name="nombre" id="nombre" placeholder="comprobante" required>
+                            <input type="text" class="form-control form-control-sm" name="nombre_comprobante" id="nombre_comprobante" placeholder="comprobante" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlSelect1">Tipo comprobante</label>

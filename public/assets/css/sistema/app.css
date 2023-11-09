@@ -625,7 +625,9 @@ svg.tea #steamR {
 }
 
 .btn-check:checked + .btn-outline-primary:hover {
-    color: #596CFF;
+    color: #ffffff;
+    background-color: var(--bs-primary);
+    opacity: 1;
 }
 
 td.dtfc-fixed-left {
