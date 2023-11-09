@@ -67,7 +67,6 @@
             <div class="modal-header">
                 <h6 class="modal-title" id="modal-title-usuario-accion">Creado por</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">x</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -103,7 +102,7 @@
                 <div class="modal-header">
                     <h6 class="modal-title" id="modal-title-usuario-accion">Cedula Nit</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span >x</span>
+                    
                     </button>
                 </div>
                 <div class="modal-body">
@@ -199,10 +198,9 @@
     <script src="assets/js/sistema/jquery.validate.min.js"></script>
     <!-- sweetalert2 -->
     <script src="assets/js/sistema/sweetalert2.all.min.js"></script>
-    
+    <!-- PUSHER -->
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.2.6/jquery.inputmask.bundle.min.js"></script>
-
+    <!-- SISTEMA -->
     <script src="assets/js/sistema/sistema.js" rel="stylesheet"></script>
     <!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js" rel="stylesheet"></script> -->
     

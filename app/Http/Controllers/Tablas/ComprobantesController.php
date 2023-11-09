@@ -105,6 +105,8 @@ class ComprobantesController extends Controller
                 'imprimir_en_capturas' => $request->get('imprimir_en_capturas'),
                 'tipo_impresion' => $request->get('tipo_impresion'),
                 'consecutivo_siguiente' => $request->get('consecutivo_siguiente'),
+                'created_by' => request()->user()->id,
+                'updated_by' => request()->user()->id,
             ]);
 
             DB::connection('sam')->commit();

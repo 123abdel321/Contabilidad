@@ -117,9 +117,9 @@ $('.form-control').keyup(function() {
     $(this).val($(this).val().toUpperCase());
 });
 
-$("#searchInput").on("input", function (e) {
+$("#searchInputCecos").on("input", function (e) {
     cecos_table.context[0].jqXHR.abort();
-    $('#cecosTable').DataTable().search($("#searchInput").val()).draw();
+    $('#cecosTable').DataTable().search($("#searchInputCecos").val()).draw();
 });
 
 $(document).on('click', '#createCecos', function () {

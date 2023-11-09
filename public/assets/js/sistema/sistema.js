@@ -46,6 +46,7 @@ var moduloCreado = {
     'usuarios': false,
     'empresa': false,
     'productoprecios': false,
+    'carguedescargue': false,
 };
 
 var moduloRoute = {
@@ -58,6 +59,7 @@ var moduloRoute = {
     'formapago': 'tablas',
     'bodegas': 'tablas',
     'productos': 'tablas',
+    'carguedescargue': 'tablas',
     'documentogeneral': 'capturas',
     'auxiliar': 'informes',
     'balance': 'informes',

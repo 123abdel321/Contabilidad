@@ -124,8 +124,8 @@ function comprobanteInit() {
             var data = getDataById(id, comprobante_table);
             
             $("#id_comprobante_up").val(id);
-            $("#codigo").val(data.codigo);
-            $("#nombre").val(data.nombre);
+            $("#codigo_comprobante").val(data.codigo);
+            $("#nombre_comprobante").val(data.nombre);
             $("#tipo_comprobante").val(data.tipo_comprobante).change();
             $("#tipo_consecutivo").val(data.tipo_consecutivo).change();
             $("#imprimir_en_capturas").val(data.imprimir_en_capturas).change();
@@ -211,8 +211,8 @@ $(document).on('click', '#saveComprobante', function () {
     $("#saveComprobante").hide();
 
     let data = {
-        codigo: $("#codigo").val(),
-        nombre: $("#nombre").val(),
+        codigo: $("#codigo_comprobante").val(),
+        nombre: $("#nombre_comprobante").val(),
         tipo_comprobante: $("#tipo_comprobante").val(),
         tipo_consecutivo: $("#tipo_consecutivo").val(),
         imprimir_en_capturas: $("#imprimir_en_capturas").val(),
@@ -260,8 +260,8 @@ function clearFormComprobante(){
     $("#saveComprobanteLoading").hide();
 
     $("#id_comprobante_up").val('');
-    $("#codigo").val('');
-    $("#nombre").val('');
+    $("#codigo_comprobante").val('');
+    $("#nombre_comprobante").val('');
     $("#tipo_comprobante").val(0).change();
     $("#tipo_consecutivo").val(0).change();
     $("#imprimir_en_capturas").val(0).change();
@@ -284,8 +284,8 @@ $(document).on('click', '#updateComprobante', function () {
 
     let data = {
         id: $("#id_comprobante_up").val(),
-        codigo: $("#codigo").val(),
-        nombre: $("#nombre").val(),
+        codigo: $("#codigo_comprobante").val(),
+        nombre: $("#nombre_comprobante").val(),
         tipo_comprobante: $("#tipo_comprobante").val(),
         tipo_consecutivo: $("#tipo_consecutivo").val(),
         imprimir_en_capturas: $("#imprimir_en_capturas").val(),
