@@ -38,7 +38,7 @@ return new class extends Migration
             $table->string('fe_codigo_identificador', 100)->nullable()->comment('CUFE, CUDE');
             $table->dateTime('fe_fecha_validacion')->nullable();
             $table->dateTime('fe_fecha_envio_correo')->nullable();
-            $table->boolean('fe_estado_acuse')->nullable()->comment('	0: Pendiente, 1: Aprobada, 2: Rechazada');
+            $table->boolean('fe_estado_acuse')->nullable()->comment('0: Pendiente, 1: Aprobada, 2: Rechazada');
             $table->string('fe_codigo_qr', 1000)->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();

@@ -21,6 +21,7 @@ use App\Http\Controllers\Tablas\CargueDescargueController;
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
+use App\Http\Controllers\Capturas\MovimientoInventarioController;
 //SISTEMA
 use App\Http\Controllers\Sistema\UbicacionController;
 //CONFIGURACION
@@ -192,9 +193,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('cargue-descargue', 'create');
             Route::put('cargue-descargue', 'update');
             Route::delete('cargue-descargue', 'delete');
-            // Route::get('producto/combo-producto', 'comboProducto');
+            Route::get('cargue-descargue/combo', 'comboCargueDescargue');
         });
-        
         
         //CAPTURA GENERAL
         Route::controller(DocumentoGeneralController::class)->group(function () {
@@ -214,6 +214,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('ventas', 'generate');
             Route::post('ventas', 'create');
         });
+        //CAPTURA MOVIMIENTO INVENTARIO
+        Route::controller(MovimientoInventarioController::class)->group(function () {
+            Route::get('movimiento-inventario', 'generate');
+            Route::post('movimiento-inventario', 'create');
+        });
+        
     });
     
 });

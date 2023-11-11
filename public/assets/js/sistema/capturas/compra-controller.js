@@ -717,21 +717,7 @@ $(document).on('click', '#agregarCompra', function () {
 });
 
 $(document).on('click', '#crearCapturaCompra', function () {
-
-
-    Swal.fire({
-        title: 'Guardar compra?',
-        text: 'Desea guardar compra en la tabla?',
-        icon: 'question',
-        showCancelButton: true,
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Guardar!',
-        reverseButtons: true,
-    }).then((result) => {
-        if (result.value){
-            saveCompra();
-        }
-    })
+    validateSaveCompra();
 });
 
 function saveCompra() {
@@ -1032,17 +1018,21 @@ function getComprasPagos() {
 }
 
 function validateSaveCompra() {
+    $('#total_faltante_compra_text').css("color","#484848");
+    $('#total_faltante_compra').css("color","#484848");
+
     if (!guardandoCompra) {
-        var totalFaltante = $('#total_faltante_compra').val();
-        $('#total_faltante_compra_text').css("color","#484848");
-        $('#total_faltante_compra').css("color","#484848");
-    
-        if(totalFaltante > 0){
+
+        var [iva, retencion, descuento, total, subtotal] = totalValoresCompras();
+        var totalPagos = totalFormasPagoCompras();
+
+        if (totalPagos >= total) {
+            guardandoCompra = true;
+            saveCompra(); 
+        } else {
             $('#total_faltante_compra_text').css("color","red");
             $('#total_faltante_compra').css("color","red");
             return;
         }
-        guardandoCompra = true;
-        saveCompra();
     }
 }

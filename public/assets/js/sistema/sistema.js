@@ -47,6 +47,7 @@ var moduloCreado = {
     'empresa': false,
     'productoprecios': false,
     'carguedescargue': false,
+    'movimientoinventario': false,
 };
 
 var moduloRoute = {
@@ -73,6 +74,7 @@ var moduloRoute = {
     'usuarios': 'configuracion',
     'empresa': 'configuracion',
     'productoprecios': 'importador',
+    'movimientoinventario': 'capturas',
 }
 
 $('.water').show();

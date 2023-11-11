@@ -235,4 +235,23 @@ class CargueDescargueController extends Controller
             ], 422);
         }
     }
+
+    public function comboCargueDescargue (Request $request)
+    {
+        $cargueDescargue = FacCargueDescargue::select(
+                \DB::raw('*'),
+                \DB::raw("CONCAT(nombre) as text")
+            )
+            ->with('nit', 'comprobante', 'cuenta_debito', 'cuenta_credito');
+
+        if ($request->get("q")) {
+            $cargueDescargue->where('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        if ($request->has("tipo")) {
+            $cargueDescargue->where('tipo', $request->get("tipo"));
+        }
+
+        return $cargueDescargue->paginate(40);
+    }
 }

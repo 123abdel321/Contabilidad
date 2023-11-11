@@ -30,6 +30,7 @@ use App\Http\Controllers\Tablas\CargueDescargueController;
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
+use App\Http\Controllers\Capturas\MovimientoInventarioController;
 //CONFIGURACION
 use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
@@ -95,6 +96,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/cartera', [CarteraController::class, 'index'])->name('cartera');
 		//DOCUMENTO GENERAL
 		Route::get('/documentogeneral', [DocumentoGeneralController::class, 'index'])->name('documento-general');
+		//MOVIMIENTO INVENTARIO
+		Route::get('/movimientoinventario', [MovimientoInventarioController::class, 'index']);
 		//COMPRAS
 		Route::get('/compra', [CompraController::class, 'index'])->name('compra');
 		Route::get('/compras', [CompraController::class, 'indexInforme'])->name('compras');

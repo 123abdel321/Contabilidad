@@ -10,17 +10,14 @@ class NitsSeeder extends Seeder
     {
         \DB::table('nits')->truncate();
 
-        \DB::table('nits')->insert(array (
-            0 =>
-            array (
-                'id' => 1,
-                'id_tipo_documento' => '3',
-                'numero_documento' => '22222222',
-                'tipo_contribuyente' => '2',
-                'primer_apellido' => 'DOE',
-                'primer_nombre' => 'JHON',
-                'observaciones' => 'CLIENTE POR DEFECTO',
-            ),
-        ));
+        \DB::table('nits')->insert([
+            'id' => 1,
+            'id_tipo_documento' => '3',
+            'numero_documento' => '222222222222',
+            'tipo_contribuyente' => '2',
+            'primer_apellido' => 'CONSUMIDOR',
+            'primer_nombre' => 'FINAL',
+            'observaciones' => 'CLIENTE POR DEFECTO',
+        ]);
     }
 }
