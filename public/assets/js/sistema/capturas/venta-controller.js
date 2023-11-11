@@ -554,21 +554,18 @@ function validarExistencias (idRow) {
     var producto = $('#venta_producto_'+idRow).select2('data')[0];
     var cantidad = $('#venta_cantidad_'+idRow).val();
     var rowProductos = venta_table.rows().data();
-    console.log('validarExistencias: ',rowProductos);
-    console.log('producto: ',producto);
+
     if (producto !== undefined && producto.familia && producto.familia.inventario){
-        console.log('if');
+
         if (rowProductos.length > 1) {
-            console.log('if if');
             consultarExistencias(idRow);
             return false;
         } else {
-            console.log('if else');
             if (cantidad > parseInt(producto.inventarios[0].cantidad)) {
                 $('#venta_cantidad_text_'+idRow).text("Se ha superado las existencias");
                 $('#venta_cantidad_'+idRow).addClass("is-invalid");
                 $('#venta_cantidad_'+idRow).removeClass("is-valid");
-                $('#venta_cantidad_'+idRow).val(1);
+                $('#venta_cantidad_'+idRow).val(0);
                 setTimeout(function(){
                     $('#venta_cantidad_'+idRow).focus();
                     $('#venta_cantidad_'+idRow).select();
@@ -584,7 +581,6 @@ function validarExistencias (idRow) {
             }
         }
     } else if (producto !== undefined && !producto.familia) {
-        console.log('else if');
         consultarExistencias(idRow);
         return false;
     }
@@ -643,7 +639,7 @@ function consultarExistencias(idRow) {
                     $('#venta_cantidad_'+idRow).removeClass("is-valid");
 
                     if (1 + cantidadTotal > parseInt(res.data.cantidad)) $('#venta_cantidad_'+idRow).val(0);
-                    else $('#venta_cantidad_'+idRow).val(1);
+                    else $('#venta_cantidad_'+idRow).val(0);
                     
                     setTimeout(function(){
                         $('#venta_cantidad_'+idRow).focus();
@@ -734,10 +730,10 @@ function totalValoresVentas() {
 }
 
 function changeProductoVenta (idRow) {
-    console.log('changeProductoVenta');
-    var data = $('#venta_producto_'+idRow).select2('data')[0];
 
+    var data = $('#venta_producto_'+idRow).select2('data');
     if (data.length == 0) return;
+    data = data[0];
     
     if (data.inventarios.length > 0 && data.familia.inventario) {
         var totalInventario = parseFloat(data.inventarios[0].cantidad);
@@ -785,7 +781,6 @@ function changeProductoVenta (idRow) {
 
 function cantidadVentakeyDown (idRow, event) {
     if(event.keyCode == 13){
-        console.log('enter');
         key13PressNewRow = true;
         if (!validarExistencias(idRow)) return;
     }
