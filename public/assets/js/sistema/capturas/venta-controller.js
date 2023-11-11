@@ -934,18 +934,22 @@ function totalFormasPagoVentas(idFormaPago = null) {
 }
 
 function validateSaveVenta() {
+    $('#total_faltante_venta_text').css("color","#484848");
+    $('#total_faltante_venta').css("color","#484848");
+
     if (!guardandoVenta) {
-        var totalFaltante = $('#total_faltante_venta').val();
-        $('#total_faltante_venta_text').css("color","#484848");
-        $('#total_faltante_venta').css("color","#484848");
-    
-        if(totalFaltante > 0){
+
+        var [totalEfectivo, totalOtrosPagos] = totalFormasPagoVentas();
+        var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
+
+        if ((totalEfectivo + totalOtrosPagos) >= total) {
+            
+            guardandoVenta = true;
+            saveVenta();
+        } else {
             $('#total_faltante_venta_text').css("color","red");
             $('#total_faltante_venta').css("color","red");
-            return;
         }
-        guardandoVenta = true;
-        saveVenta();
     }
 }
 
@@ -1102,7 +1106,7 @@ function changeFormaPago(idFormaPago, event) {
         }
 
         if ((totalEfectivo + totalOtrosPagos) >= total) {
-            validateSaveVenta();
+            saveVenta();
             return;
         }
 
