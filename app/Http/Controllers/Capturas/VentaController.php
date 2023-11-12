@@ -161,8 +161,13 @@ class VentaController extends Controller
                 $bodegaProducto = FacProductosBodegas::where('id_bodega', $this->bodega->id)
                     ->where('id_producto', $producto->id_producto)
                     ->first();
-
-                if ($productoDb->familia->inventario && $bodegaProducto && $producto->cantidad > $bodegaProducto->cantidad) {
+                    
+                if (
+                    $productoDb->familia->inventario &&
+                    $bodegaProducto &&
+                    $producto->cantidad > $bodegaProducto->cantidad &&
+                    !request()->user()->can('venta negativa')
+                ) {
 
                     DB::connection('sam')->rollback();
                     return response()->json([

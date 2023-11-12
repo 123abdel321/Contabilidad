@@ -24,7 +24,7 @@
 
                     <div class="form-group col-12 col-sm-6 col-md-6">
                         <label for="exampleFormid_tipo_documento">Tipo documento </label>
-                        <select name="id_tipo_documento" id="id_tipo_documento" class="form-control form-control-sm">
+                        <select name="id_tipo_documento" id="id_tipo_documento" class="form-control form-control-sm" required>
                         </select>
                         <div class="invalid-feedback">
                             El campo es requerido
