@@ -65,8 +65,10 @@ class CompraController extends Controller
 
     public function index ()
     {
+        $bodegas = explode(",", request()->user()->ids_bodegas_responsable);
+
         $data = [
-            'bodegas' => FacBodegas::first(),
+            'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
             'comprobante' => Comprobantes::where('tipo_comprobante', 2)->first()
         ];
         

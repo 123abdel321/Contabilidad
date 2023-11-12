@@ -88,9 +88,6 @@ function usuariosInit() {
             $("#id_bodega_usuario").val(data.ids_bodegas_responsable.split(',')).change();
             $("#id_resolucion_usuario").val(data.ids_resolucion_responsable.split(',')).change();
 
-            if (data.facturacion_rapida) $('#facturacion_rapida').prop('checked', true);
-            else $('#facturacion_rapida').prop('checked', false);
-
             clearPermisos();
 
             data.permissions.forEach(permiso => {
@@ -204,7 +201,6 @@ $(document).on('click', '#saveUsuarios', function () {
         telefono: $("#telefono_usuario").val(),
         id_bodega: $("#id_bodega_usuario").val(),
         id_resolucion: $("#id_resolucion_usuario").val(),
-        facturacion_rapida: $("input[type='checkbox']#facturacion_rapida").is(':checked') ? '1' : '',
         rol_usuario: $("#rol_usuario").val(),
         permisos: getPermisos(permisosUsuarios)
     }
@@ -245,17 +241,19 @@ $(document).on('click', '#saveUsuarios', function () {
 
 });
 
-function validateUserPassword() {
+function validateUserPassword(newPassword = true) {
     var contrasena = $("#password_usuario").val();
     var confirmarContrasena = $("#password_confirm").val();
 
-    if (!contrasena || !confirmarContrasena) {
-        $('#password_confirm').removeClass("is-valid");
-        $('#password_confirm').addClass("is-invalid");
-        $('#collapseDatosUsuario').addClass('show');
-        $('#collapsePermisosUsuarios').removeClass('show');
-        $('#password-error-username').text('La contraseña es obligatoria');
-        return false;
+    if (newPassword) {
+        if (!contrasena || !confirmarContrasena) {
+            $('#password_confirm').removeClass("is-valid");
+            $('#password_confirm').addClass("is-invalid");
+            $('#collapseDatosUsuario').addClass('show');
+            $('#collapsePermisosUsuarios').removeClass('show');
+            $('#password-error-username').text('La contraseña es obligatoria');
+            return false;
+        }
     }
 
     if (contrasena != confirmarContrasena) {
@@ -281,7 +279,7 @@ $(document).on('click', '#updateUsuarios', function () {
         return;
     }
 
-    if (!validateUserPassword()) {
+    if (!validateUserPassword(false)) {
         return;
     }
 
@@ -299,7 +297,6 @@ $(document).on('click', '#updateUsuarios', function () {
         password: $("#password_usuario").val(),
         id_bodega: $("#id_bodega_usuario").val(),
         id_resolucion: $("#id_resolucion_usuario").val(),
-        facturacion_rapida: $("input[type='checkbox']#facturacion_rapida").is(':checked') ? '1' : '',
         telefono: $("#telefono_usuario").val(),
         rol_usuario: $("#rol_usuario").val(),
         permisos: getPermisos(permisosUsuarios)

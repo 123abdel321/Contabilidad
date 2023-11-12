@@ -67,12 +67,13 @@ class VentaController extends Controller
 
     public function index (Request $request)
     {
-        $cliente = $request->user()->facturacion_rapida ? Nits::where('numero_documento', '22222222')->first() : 0;
+        $bodegas = explode(",", request()->user()->ids_bodegas_responsable);
+        $resoluciones = explode(",", request()->user()->ids_resolucion_responsable);
 
         $data = [
-            'cliente' => $cliente,
-            'bodegas' => FacBodegas::first(),
-            'resolucion' => FacResoluciones::first()
+            'cliente' => Nits::where('numero_documento', '22222222')->first(),
+            'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
+            'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get()
         ];
 
         return view('pages.capturas.venta.venta-view', $data);

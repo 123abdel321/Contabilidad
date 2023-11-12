@@ -28,7 +28,7 @@
                         </select>
                         
                         <div class="invalid-feedback">
-                            La resolución es requerido
+                            La resolución es requerida
                         </div>
                     </div>
 
@@ -38,7 +38,7 @@
                         </select>
                         
                         <div class="invalid-feedback">
-                            La bodega es requerido
+                            La bodega es requerida
                         </div>
                     </div>
 
@@ -46,7 +46,7 @@
                         <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
                         <input name="fecha_manual_venta" id="fecha_manual_venta" class="form-control form-control-sm" type="date" required disabled>
                         <div class="invalid-feedback">
-                            La fecha es requerido
+                            La fecha es requerida
                         </div>
                     </div>
 
@@ -55,7 +55,7 @@
                         <input type="text" class="form-control form-control-sm" name="documento_referencia_venta" id="documento_referencia_venta" required disabled>
                         <i class="fa fa-spinner fa-spin fa-fw venta-load" id="documento_referencia_venta_loading" style="display: none;"></i>
                         <div class="invalid-feedback" id="error_documento_referencia_venta">
-                            El No. factura requerido
+                            El No. factura requerida
                         </div>
                     </div>
                     

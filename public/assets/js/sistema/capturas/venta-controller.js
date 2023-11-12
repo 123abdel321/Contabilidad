@@ -51,7 +51,7 @@ function ventaInit () {
                         <div class="input-group" style="height: 30px;">
                             <input type="number" class="form-control form-control-sm" style="min-width: 80px; border-right: solid 1px #b3b3b3; border-top-right-radius: 10px; border-bottom-right-radius: 10px; text-align: right;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="cantidadVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>
                             <i class="fa fa-spinner fa-spin fa-fw venta_producto_load" id="venta_producto_load_${idVentaProducto}" style="display: none;"></i>
-                            <div id="venta_cantidad_text_${idVentaProducto}" style="position: absolute; margin-top: 30px;" class="invalid-feedback">
+                            <div id="venta_cantidad_text_${idVentaProducto}" style="position: absolute; margin-top: 30px; z-index: 9;" class="invalid-feedback">
                             </div>
                         </div>
                     `;
@@ -308,20 +308,20 @@ function ventaInit () {
         }
     });
 
-    if(primeraResolucionVenta){
+    if(primeraResolucionVenta.length > 0){
         var dataResolucion = {
-            id: primeraResolucionVenta.id,
-            text: primeraResolucionVenta.prefijo + ' - ' + primeraResolucionVenta.nombre
+            id: primeraResolucionVenta[0].id,
+            text: primeraResolucionVenta[0].prefijo + ' - ' + primeraResolucionVenta[0].nombre
         };
         var newOption = new Option(dataResolucion.text, dataResolucion.id, false, false);
         $comboResolucion.append(newOption).trigger('change');
         $comboResolucion.val(dataResolucion.id).trigger('change');
     }
 
-    if(primeraBodegaVenta){
+    if(primeraBodegaVenta.length > 0){
         var dataBodega = {
-            id: primeraBodegaVenta.id,
-            text: primeraBodegaVenta.codigo + ' - ' + primeraBodegaVenta.nombre
+            id: primeraBodegaVenta[0].id,
+            text: primeraBodegaVenta[0].codigo + ' - ' + primeraBodegaVenta[0].nombre
         };
         var newOption = new Option(dataBodega.text, dataBodega.id, false, false);
         $comboBodegaVenta.append(newOption).trigger('change');
@@ -332,7 +332,7 @@ function ventaInit () {
     var column5 = venta_table.column(5);
     var column6 = venta_table.column(6);
 
-    if (agregarDescuento){
+    if (ventaDescuento){
         column5.visible(true);
         column6.visible(true);
     } else {
@@ -360,7 +360,15 @@ function ventaInit () {
     consecutivoSiguienteVenta();
     loadFormasPago();
 
-    if (primeraNit) {
+    if (!primeraBodegaVenta.length) {
+        agregarToast('warning', 'Sin bodegas asignadas', '', true);
+    }
+
+    if (!primeraResolucionVenta.length) {
+        agregarToast('warning', 'Sin Resoluciones asigandas', '', true);
+    }
+
+    if (primeraNit && ventaRapida) {
         var dataCliente = {
             id: primeraNit.id,
             text: primeraNit.numero_documento + ' - ' + primeraNit.nombre_completo
@@ -554,6 +562,12 @@ function validarExistencias (idRow) {
     var producto = $('#venta_producto_'+idRow).select2('data')[0];
     var cantidad = $('#venta_cantidad_'+idRow).val();
     var rowProductos = venta_table.rows().data();
+
+    if (ventaNegativa) {
+        addRowProductoVenta();
+        calcularProductoVenta(idRow);
+        return true;
+    }
 
     if (producto !== undefined && producto.familia && producto.familia.inventario){
 
@@ -756,7 +770,7 @@ function changeProductoVenta (idRow) {
         }
     }
 
-    if (data.familia.id_cuenta_venta_descuento && agregarDescuento) {
+    if (data.familia.id_cuenta_venta_descuento && ventaDescuento) {
         $('#venta_descuento_valor_'+idRow).prop('disabled', false);
         $('#venta_descuento_porcentaje_'+idRow).prop('disabled', false);
     } else {

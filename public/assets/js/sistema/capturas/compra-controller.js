@@ -296,36 +296,36 @@ function compraInit () {
         }
     });
 
-    $('#id_proveedor_compra').on('select2:close', function(event) {
-        var data = $(this).select2('data');
-        if(data.length){
-            setTimeout(function(){
-                $comboComprobante.select2("open");
-                $('#id_comprobante_compra').focus();
-            },10);
-        }
-    });
+    // $('#id_proveedor_compra').on('select2:close', function(event) {
+    //     var data = $(this).select2('data');
+    //     if(data.length){
+    //         setTimeout(function(){
+    //             $comboComprobante.select2("open");
+    //             $('#id_comprobante_compra').focus();
+    //         },10);
+    //     }
+    // });
 
-    $("#id_comprobante_compra").on('select2:close', function(event) {
-        var data = $(this).select2('data');
-        console.log('id_comprobante_compra close', data.length);
-        if(data.length){
-            setTimeout(function(){
-                $comboBodegaCompra.select2("open");
-                $('#id_bodega_compra').select();
-            },10);
-        }
-    });
+    // $("#id_comprobante_compra").on('select2:close', function(event) {
+    //     var data = $(this).select2('data');
+    //     console.log('id_comprobante_compra close', data.length);
+    //     if(data.length){
+    //         setTimeout(function(){
+    //             $comboBodegaCompra.select2("open");
+    //             $('#id_bodega_compra').select();
+    //         },10);
+    //     }
+    // });
 
-    $('#id_bodega_compra').on('select2:close', function(event) {
-        var data = $(this).select2('data');
-        if(data.length){
-            setTimeout(function(){
-                $('#fecha_manual_compra').focus();
-                $('#fecha_manual_compra').select();
-            },10);
-        }
-    });
+    // $('#id_bodega_compra').on('select2:close', function(event) {
+    //     var data = $(this).select2('data');
+    //     if(data.length){
+    //         setTimeout(function(){
+    //             $('#fecha_manual_compra').focus();
+    //             $('#fecha_manual_compra').select();
+    //         },10);
+    //     }
+    // });
 
     $("#fecha_manual_compra").on('keydown', function(event) {
         if(event.keyCode == 13){
@@ -351,10 +351,14 @@ function compraInit () {
         event.preventDefault();
     });
 
-    if(primeraBodegaCompra){
+    if (!primeraBodegaCompra.length) {
+        agregarToast('warning', 'Sin bodegas asignadas', '', true);
+    }
+
+    if(primeraBodegaCompra.length > 0){
         var dataBodega = {
-            id: primeraBodegaCompra.id,
-            text: primeraBodegaCompra.codigo + ' - ' + primeraBodegaCompra.nombre
+            id: primeraBodegaCompra[0].id,
+            text: primeraBodegaCompra[0].codigo + ' - ' + primeraBodegaCompra[0].nombre
         };
         var newOption = new Option(dataBodega.text, dataBodega.id, false, false);
         $comboBodegaCompra.append(newOption).trigger('change');

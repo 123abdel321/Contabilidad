@@ -93,11 +93,6 @@
                                         </select>
                                     </div>
             
-                                    <div class="form-check form-switch col-12 col-sm-6 col-md-6">
-                                        <input class="form-check-input" type="checkbox" name="facturacion_rapida" id="facturacion_rapida" style="height: 20px;">
-                                        <label class="form-check-label" for="facturacion_rapida">Facturación pos rapida</label>
-                                    </div>
-            
                                 </div>
                             </div>
                         </div>
@@ -110,19 +105,21 @@
                             </h2>
                             <div id="collapsePermisosUsuarios" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionDatosUsuarios">
                                 <div class="accordion-body row">
+                                    
                                     @foreach ($componentes as $componente)
                                         @foreach ($componente->menus as $menu)
                                             @if (count($menu->permisos) > 0)
-                                                
-                                                <h6>{{$menu->padre->nombre}} > {{$menu->nombre}}</h6>
-
-                                                @foreach ($menu->permisos as $permisos)
-                                                    <div class="form-check form-switch col-6 col-sm-3 col-md-3">
-                                                        <input class="form-check-input" type="checkbox" name="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" id="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" style="height: 20px;">
-                                                        <label class="form-check-label" for="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}">{{explode(' ', $permisos->name)[1]}}</label>
-                                                    </div>
-                                                @endforeach
-                                                <div style="padding: 5px; border-top: solid 1px #dbdbdb; margin-top: 5px;"></div>
+                                            <div class="col-12 col-sm-6 col-md-6 row">
+                                                <div class="col-12" style="margin-top: 5px;">
+                                                    <h6>{{$menu->padre->nombre}} > {{$menu->nombre}}</h6>
+                                                    @foreach ($menu->permisos as $permisos)
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" id="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" style="height: 20px;">
+                                                            <label class="form-check-label" for="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}">{{explode(' ', $permisos->name)[1]}}</label>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
                                             @endif
                                         @endforeach
                                     @endforeach
