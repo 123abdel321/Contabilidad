@@ -194,6 +194,16 @@ class BodegasController extends Controller
     {
         try {
 
+            $bodegaConProductos = FacProductosBodegas::where('id_bodega', $request->get('id'));
+
+            if($bodegaConProductos->count() > 0) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => '',
+                    'message'=> 'Esta bodega contiene productos, no puede ser eliminada!'
+                ]);
+            }
+
             FacBodegas::where('id', $request->get('id'))->delete();
 
             return response()->json([

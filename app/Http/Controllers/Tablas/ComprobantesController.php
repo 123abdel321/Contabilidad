@@ -179,27 +179,34 @@ class ComprobantesController extends Controller
 
     public function delete (Request $request)
     {
-        $documentos = DocumentosGeneral::where('id_comprobante', $request->get('id'));
+        try {
 
-        if($documentos->count() > 0) {
+            $documentos = DocumentosGeneral::where('id_comprobante', $request->get('id'));
+
+            if($documentos->count() > 0) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => '',
+                    'message'=> 'Este comprobante tiene transacciones contables, no puede ser eliminado!'
+                ]);
+            }
+
+            Comprobantes::where('id', $request->get('id'))->delete();
+
             return response()->json([
-                'success'=>	false,
+                'success'=>	true,
                 'data' => '',
-                'message'=> 'No se puede eliminar un comprobante usado por los documentos!'
+                'message'=> 'Comprobante eliminado con exito!'
             ]);
+            
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
         }
-
-        DB::connection('sam')->beginTransaction();
-
-        Comprobantes::where('id', $request->get('id'))->delete();
-
-        DB::connection('sam')->commit();
-
-        return response()->json([
-            'success'=>	true,
-            'data' => '',
-            'message'=> 'Comprobante eliminado con exito!'
-        ]);
     }
 
     public function comboComprobante(Request $request)
