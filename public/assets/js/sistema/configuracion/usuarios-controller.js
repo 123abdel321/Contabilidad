@@ -77,6 +77,8 @@ function usuariosInit() {
             var id = this.id.split('_')[1];
             var data = getDataById(id, usuarios_table);
     
+            $('#password_usuario').val('');
+            $('#password_confirm').val('');
             $("#id_usuarios_up").val(data.id);
             $("#usuario").val(data.username);
             $("#email_usuario").val(data.email);
@@ -165,6 +167,17 @@ function clearFormUsuarios(){
     $("#telefono_usuario").val('');
 }
 
+function usuarioNombre(event){
+    if (event.keyCode == 8) {
+        return true;
+    }
+
+    patron = /[A-Za-z0-9]/;
+    tecla_final = String.fromCharCode(event.keyCode);
+
+    return patron.test(tecla_final);
+}
+
 $(document).on('click', '#saveUsuarios', function () {
     var form = document.querySelector('#usuariosForm');
 
@@ -173,17 +186,9 @@ $(document).on('click', '#saveUsuarios', function () {
         return;
     }
 
-    // var contrasena = $("#password_usuario").val();
-    // var confirmarContrasena = $("#password_confirm").val();
-
-    // if (contrasena != confirmarContrasena) {
-    //     $('#password_confirm').removeClass("is-valid");
-    //     $('#password_confirm').addClass("is-invalid");
-    //     return;
-    // } else {
-    //     $('#password_confirm').addClass("is-valid");
-    //     $('#password_confirm').removeClass("is-invalid");
-    // }
+    if (!validateUserPassword()) {
+        return;
+    }
 
     $("#saveUsuariosLoading").show();
     $("#updateUsuarios").hide();
@@ -195,7 +200,7 @@ $(document).on('click', '#saveUsuarios', function () {
         firstname: $("#firstname_usuario").val(),
         lastname: $("#lastname_usuario").val(),
         address: $("#address_usuario").val(),
-        // password: $("#password_usuario").val(),
+        password: $("#password_usuario").val(),
         telefono: $("#telefono_usuario").val(),
         id_bodega: $("#id_bodega_usuario").val(),
         id_resolucion: $("#id_resolucion_usuario").val(),
@@ -240,6 +245,34 @@ $(document).on('click', '#saveUsuarios', function () {
 
 });
 
+function validateUserPassword() {
+    var contrasena = $("#password_usuario").val();
+    var confirmarContrasena = $("#password_confirm").val();
+
+    if (!contrasena || !confirmarContrasena) {
+        $('#password_confirm').removeClass("is-valid");
+        $('#password_confirm').addClass("is-invalid");
+        $('#collapseDatosUsuario').addClass('show');
+        $('#collapsePermisosUsuarios').removeClass('show');
+        $('#password-error-username').text('La contraseña es obligatoria');
+        return false;
+    }
+
+    if (contrasena != confirmarContrasena) {
+        $('#password_confirm').removeClass("is-valid");
+        $('#password_confirm').addClass("is-invalid");
+        $('#collapseDatosUsuario').addClass('show');
+        $('#collapsePermisosUsuarios').removeClass('show');
+        $('#password-error-username').text('Las contraseñas no coinciden');
+        return false;
+    }
+
+    $('#password_confirm').addClass("is-valid");
+    $('#password_confirm').removeClass("is-invalid");
+
+    return true;
+}
+
 $(document).on('click', '#updateUsuarios', function () {
     var form = document.querySelector('#usuariosForm');
 
@@ -248,18 +281,9 @@ $(document).on('click', '#updateUsuarios', function () {
         return;
     }
 
-    // var contrasena = $("#password_usuario").val();
-    // var confirmarContrasena = $("#password_confirm").val();
-
-    // if (contrasena != confirmarContrasena) {
-    //     $('#password_confirm').removeClass("is-valid");
-    //     $('#password_confirm').addClass("is-invalid");
-    //     return;
-    // } else {
-    //     $('#password_confirm').addClass("is-valid");
-    //     $('#password_confirm').removeClass("is-invalid");
-    // }
-
+    if (!validateUserPassword()) {
+        return;
+    }
 
     $("#saveUsuariosLoading").show();
     $("#updateUsuarios").hide();
@@ -272,7 +296,7 @@ $(document).on('click', '#updateUsuarios', function () {
         firstname: $("#firstname_usuario").val(),
         lastname: $("#lastname_usuario").val(),
         address: $("#address_usuario").val(),
-        // password: $("#password_usuario").val(),
+        password: $("#password_usuario").val(),
         id_bodega: $("#id_bodega_usuario").val(),
         id_resolucion: $("#id_resolucion_usuario").val(),
         facturacion_rapida: $("input[type='checkbox']#facturacion_rapida").is(':checked') ? '1' : '',

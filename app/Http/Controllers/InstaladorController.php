@@ -222,7 +222,7 @@ class InstaladorController extends Controller
 			UsuarioEmpresa::create([
 				'id_usuario' => $user->id,
 				'id_empresa' => $company_id,
-				'id_rol' => 4, // default: 1
+				'id_rol' => 2, // default: 2
 				'estado' => 1, // default: 1 activo
 			]);
 		}

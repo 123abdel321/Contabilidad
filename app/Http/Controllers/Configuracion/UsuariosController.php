@@ -141,7 +141,6 @@ class UsuariosController extends Controller
                 'firstname' => $request->get('firstname'),
                 'lastname' => $request->get('lastname'),
                 'email' => $request->get('email'),
-                'password' => Hash::make('admin'),
                 'address' => $request->get('address'),
                 'telefono' => $request->get('telefono'),
                 'ids_bodegas_responsable' => implode(",",$request->get('id_bodega')),
@@ -160,6 +159,19 @@ class UsuariosController extends Controller
                     }
                 }
             }
+
+            if ($request->get('password')) {
+                $usuario->update([
+                    'password' => $request->get('password')
+                ]);
+            }
+
+            UsuarioEmpresa::create([
+                'id_usuario' => $usuario->id,
+                'id_empresa' => $request->user()['id_empresa'],
+                'id_rol' => $request->get('rol_usuario'), 
+                'estado' => 1,
+            ]);
 
             $usuario->syncRoles($rol);
             $usuario->syncPermissions($permisos);
@@ -252,6 +264,12 @@ class UsuariosController extends Controller
             }
 
             $usuario->save();
+
+            if ($request->get('password')) {
+                $usuario->update([
+                    'password' => $request->get('password')
+                ]);
+            }
 
             $usuario->syncRoles($rol);
             $usuario->syncPermissions($permisos);

@@ -1,5 +1,5 @@
 <div class="modal fade" id="usuariosFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="textUsuariosCreate" style="display: none;">Agregar usuario</h5>
@@ -23,7 +23,7 @@
                                     <input type="text" class="form-control" name="id_usuarios_up" id="id_usuarios_up" style="display: none;">
                                     <div class="form-group form-group col-12 col-sm-6 col-md-6">
                                         <label for="example-text-input" class="form-control-label">Usuario</label>
-                                        <input type="text" class="form-control form-control-sm" name="usuario" id="usuario" required>
+                                        <input type="text" class="form-control form-control-sm" name="usuario" id="usuario" onkeypress="return usuarioNombre(event)" required>
                                         <div class="invalid-feedback">
                                             El usuario es requerido
                                         </div>
@@ -33,6 +33,20 @@
                                         <input type="email" class="form-control form-control-sm" name="email_usuario" id="email_usuario" required>
                                         <div class="invalid-feedback">
                                             El correo es requerido
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group col-12 col-sm-6 col-md-6">
+                                        <label for="example-text-input" class="form-control-label">Contraseña</label>
+                                        <input type="password" class="form-control form-control-sm" name="password_usuario" id="password_usuario" autocomplete="false" aria-autocomplete="none">
+                                        <!-- <div class="invalid-feedback">
+                                            El contraseña es requerida
+                                        </div> -->
+                                    </div>
+                                    <div class="form-group form-group col-12 col-sm-6 col-md-6">
+                                        <label for="example-text-input" class="form-control-label">Confirmar contraseña</label>
+                                        <input type="password" class="form-control form-control-sm" name="password_confirm" id="password_confirm" autocomplete="off" aria-autocomplete="none" onfocusout="validateUserPassword()">
+                                        <div class="invalid-feedback" id="password-error-username">
+                                            Las contraseñas no coinciden
                                         </div>
                                     </div>
                                     <div class="form-group form-group col-12 col-sm-6 col-md-6">
