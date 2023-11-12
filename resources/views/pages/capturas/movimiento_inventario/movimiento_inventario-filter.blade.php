@@ -15,8 +15,8 @@
                     <div class="form-group col-12 col-sm-3 col-md-2">
                         <label for="exampleFormControlSelect1">Tipo<span style="color: red">*</span></label>
                         <select class="form-control form-control-sm" id="tipo_movimiento_inventario" onchange="changeTipoMovimientoInventario()">
-                            <option value="0">DESCARGUE</option>
                             <option value="1">CARGUE</option>
+                            <option value="0">DESCARGUE</option>
                             <option value="2">TRASLADOS</option>
                         </select>
                     </div>

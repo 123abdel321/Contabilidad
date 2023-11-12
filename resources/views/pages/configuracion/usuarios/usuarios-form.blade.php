@@ -1,5 +1,5 @@
 <div class="modal fade" id="usuariosFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="textUsuariosCreate" style="display: none;">Agregar usuario</h5>
@@ -23,7 +23,7 @@
                                     <input type="text" class="form-control" name="id_usuarios_up" id="id_usuarios_up" style="display: none;">
                                     <div class="form-group form-group col-12 col-sm-6 col-md-6">
                                         <label for="example-text-input" class="form-control-label">Usuario</label>
-                                        <input type="text" class="form-control form-control-sm" name="usuario" id="usuario" required>
+                                        <input type="text" class="form-control form-control-sm" name="usuario" id="usuario" onkeypress="return usuarioNombre(event)" required>
                                         <div class="invalid-feedback">
                                             El usuario es requerido
                                         </div>
@@ -33,6 +33,20 @@
                                         <input type="email" class="form-control form-control-sm" name="email_usuario" id="email_usuario" required>
                                         <div class="invalid-feedback">
                                             El correo es requerido
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group col-12 col-sm-6 col-md-6">
+                                        <label for="example-text-input" class="form-control-label">Contraseña</label>
+                                        <input type="password" class="form-control form-control-sm" name="password_usuario" id="password_usuario" autocomplete="false" aria-autocomplete="none">
+                                        <!-- <div class="invalid-feedback">
+                                            El contraseña es requerida
+                                        </div> -->
+                                    </div>
+                                    <div class="form-group form-group col-12 col-sm-6 col-md-6">
+                                        <label for="example-text-input" class="form-control-label">Confirmar contraseña</label>
+                                        <input type="password" class="form-control form-control-sm" name="password_confirm" id="password_confirm" autocomplete="off" aria-autocomplete="none" onfocusout="validateUserPassword()">
+                                        <div class="invalid-feedback" id="password-error-username">
+                                            Las contraseñas no coinciden
                                         </div>
                                     </div>
                                     <div class="form-group form-group col-12 col-sm-6 col-md-6">
@@ -79,11 +93,6 @@
                                         </select>
                                     </div>
             
-                                    <div class="form-check form-switch col-12 col-sm-6 col-md-6">
-                                        <input class="form-check-input" type="checkbox" name="facturacion_rapida" id="facturacion_rapida" style="height: 20px;">
-                                        <label class="form-check-label" for="facturacion_rapida">Facturación pos rapida</label>
-                                    </div>
-            
                                 </div>
                             </div>
                         </div>
@@ -96,19 +105,21 @@
                             </h2>
                             <div id="collapsePermisosUsuarios" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionDatosUsuarios">
                                 <div class="accordion-body row">
+                                    
                                     @foreach ($componentes as $componente)
                                         @foreach ($componente->menus as $menu)
                                             @if (count($menu->permisos) > 0)
-                                                
-                                                <h6>{{$menu->padre->nombre}} > {{$menu->nombre}}</h6>
-
-                                                @foreach ($menu->permisos as $permisos)
-                                                    <div class="form-check form-switch col-6 col-sm-3 col-md-3">
-                                                        <input class="form-check-input" type="checkbox" name="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" id="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" style="height: 20px;">
-                                                        <label class="form-check-label" for="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}">{{explode(' ', $permisos->name)[1]}}</label>
-                                                    </div>
-                                                @endforeach
-                                                <div style="padding: 5px; border-top: solid 1px #dbdbdb; margin-top: 5px;"></div>
+                                            <div class="col-12 col-sm-6 col-md-6 row">
+                                                <div class="col-12" style="margin-top: 5px;">
+                                                    <h6>{{$menu->padre->nombre}} > {{$menu->nombre}}</h6>
+                                                    @foreach ($menu->permisos as $permisos)
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" name="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" id="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" style="height: 20px;">
+                                                            <label class="form-check-label" for="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}">{{explode(' ', $permisos->name)[1]}}</label>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
                                             @endif
                                         @endforeach
                                     @endforeach

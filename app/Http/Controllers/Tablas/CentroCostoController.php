@@ -170,7 +170,7 @@ class CentroCostoController extends Controller
             return response()->json([
                 'success'=>	false,
                 'data' => '',
-                'message'=> 'No se puede eliminar un cecos usado por los documentos!'
+                'message'=> 'Este centro de costos tiene transacciones contables, no puede ser eliminado!'
             ]);
         }
 

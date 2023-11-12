@@ -464,13 +464,23 @@ class ProductosController extends Controller
 
             DB::connection('sam')->beginTransaction();
 
-            $producto = FacProductos::where('id_padre', $request->get('id'));
+            $productoVariante = FacProductos::where('id_padre', $request->get('id'));
 
-            if ($producto->count() > 0) {
+            $productoConMovimientos = FacProductosBodegasMovimiento::where('id_producto', $request->get('id'));
+
+            if ($productoVariante->count() > 0) {
                 return response()->json([
                     'success'=>	false,
                     'data' => '',
                     'message'=> 'No se puede eliminar producto que posee variantes, eliminar primero las variantes!'
+                ]);
+            }
+
+            if ($productoConMovimientos->count() > 0) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => '',
+                    'message'=> 'No se puede eliminar producto con movimientos en inventario'
                 ]);
             }
 

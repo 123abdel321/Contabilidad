@@ -264,6 +264,8 @@ class ResolucionesController extends Controller
 
     public function comboResolucion (Request $request)
     {
+        $resolucionesResponsable = explode(",", request()->user()->ids_resolucion_responsable);
+
         $resolucion = FacResoluciones::select(
             \DB::raw('*'),
             \DB::raw("CONCAT(prefijo, ' - ', nombre) as text")
@@ -273,6 +275,8 @@ class ResolucionesController extends Controller
             $resolucion->where('prefijo', 'LIKE', '%' . $request->get("q") . '%')
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
+
+        $resolucion->whereIn('id', $resolucionesResponsable);
 
         return $resolucion->paginate(40);
     }

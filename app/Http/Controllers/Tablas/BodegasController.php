@@ -194,6 +194,16 @@ class BodegasController extends Controller
     {
         try {
 
+            $bodegaConProductos = FacProductosBodegas::where('id_bodega', $request->get('id'));
+
+            if($bodegaConProductos->count() > 0) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => '',
+                    'message'=> 'Esta bodega contiene productos, no puede ser eliminada!'
+                ]);
+            }
+
             FacBodegas::where('id', $request->get('id'))->delete();
 
             return response()->json([
@@ -214,6 +224,8 @@ class BodegasController extends Controller
 
     public function comboBodega(Request $request)
     {
+        $bodegasResponsable = explode(",", request()->user()->ids_bodegas_responsable);
+
         $bodega = FacBodegas::select(
             \DB::raw('*'),
             \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
@@ -223,6 +235,8 @@ class BodegasController extends Controller
             $bodega->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
+
+        $bodega->whereIn('id', $bodegasResponsable);
 
         return $bodega->paginate(40);
     }

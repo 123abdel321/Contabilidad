@@ -30,7 +30,10 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        $credenciales1 = ['email' => $request->email, 'password' => $request->password];
+        $credenciales2 = ['username' => $request->email, 'password' => $request->password];
+
+        if (Auth::attempt($credenciales1) || Auth::attempt($credenciales2)) {
             $request->session()->regenerate();
             $user =  User::find(Auth::user()->id);
 

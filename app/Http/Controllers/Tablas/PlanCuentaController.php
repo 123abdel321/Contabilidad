@@ -88,7 +88,6 @@ class PlanCuentaController extends Controller
 
         $rules = [
 			'id_padre' => 'nullable|exists:sam.plan_cuentas,id',
-            // 'id_tipo_cuenta' => 'nullable|exists:sam.tipo_cuentas,id',
             'id_impuesto' => 'nullable|exists:sam.impuestos,id',
             'cuenta' => [
 				"required",
@@ -111,6 +110,7 @@ class PlanCuentaController extends Controller
             'naturaleza_compras'=>'nullable|boolean',
             'naturaleza_ventas'=>'nullable|boolean'
 		];
+
         $validator = Validator::make($request->all(), $rules, $this->messages);
         
         if ($validator->fails()){
@@ -236,9 +236,9 @@ class PlanCuentaController extends Controller
                 $cuentaPadre = $padre->cuenta;
             }
 
-            $auxiliar = 0;
+            $auxiliar = 1;
             $auxiliarPadre = PlanCuentas::where('id_padre', $request->get('id'))->first();
-            if ($auxiliarPadre) $auxiliar = 1;
+            if ($auxiliarPadre) $auxiliar = 0;
 
             PlanCuentas::where('id', $request->get('id'))
                 ->update([

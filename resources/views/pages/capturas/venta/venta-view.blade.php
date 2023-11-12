@@ -209,8 +209,10 @@
         var primeraNit = JSON.parse('<?php echo $cliente; ?>');
         var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');
         var primeraResolucionVenta = JSON.parse('<?php echo $resolucion; ?>');
-        var agregarDescuento = '<?php echo auth()->user()->can("venta descuento"); ?>';
         var ventaExistencias = '<?php echo auth()->user()->can("venta existencia"); ?>';
+        var ventaDescuento = '<?php echo auth()->user()->can("venta descuento"); ?>';
+        var ventaNegativa = '<?php echo auth()->user()->can("venta negativa"); ?>';
+        var ventaRapida = '<?php echo auth()->user()->can("venta rapida"); ?>';
     </script>
     
 </div>

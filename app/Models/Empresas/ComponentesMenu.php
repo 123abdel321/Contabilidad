@@ -34,6 +34,6 @@ class ComponentesMenu extends Model
     }
     
     public function permisos (){
-        return $this->hasMany(Permission::class, "id_componente_menu");
+        return $this->hasMany(Permission::class, "id_componente_menu")->orderBy('id_componente_menu');
     }
 }
