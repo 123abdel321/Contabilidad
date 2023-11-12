@@ -29,7 +29,7 @@ function carguedescargueInit() {
         columns: [
             {"data":'nombre'},
             {"data": function (row, type, set){  
-                if (row.tipo == 1) return 'DESCARGUE';
+                if (row.tipo == 1) return 'CARGUE';
                 if (row.tipo == 2) return 'TRASLADO';
                 return 'DESCARGUE';
             }},
