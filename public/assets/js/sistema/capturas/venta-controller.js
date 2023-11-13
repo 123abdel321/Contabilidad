@@ -13,6 +13,7 @@ var guardarVenta = false;
 var abrirFormasPago = false;
 var key13PressNewRow = false;
 var guardandoVenta = false;
+var totalAnticiposDisponibles = 0;
 
 function ventaInit () {
 
@@ -225,7 +226,19 @@ function ventaInit () {
         columns: [
             {"data":'nombre'},
             {"data": function (row, type, set){
-                return `<input type="number" class="form-control form-control-sm" style="text-align: right; font-size: larger;" value="0" onfocus="focusFormaPagoVenta(${row.id})" onfocusout="calcularVentaPagos(${row.id})" onkeypress="changeFormaPago(${row.id}, event)" id="venta_forma_pago_${row.id}">`;
+                var anticipos = false;
+                var className = '';
+                if (row.cuenta.tipos_cuenta.length > 0) {
+                    var tiposCuentas = row.cuenta.tipos_cuenta;
+                    for (let index = 0; index < tiposCuentas.length; index++) {
+                        const tipoCuenta = tiposCuentas[index];
+                        if (tipoCuenta.id_tipo_cuenta == 8) {
+                            anticipos = true;
+                            className = 'anticipos'
+                        }
+                    }
+                }
+                return `<input type="number" class="form-control form-control-sm ${className}" style="text-align: right; font-size: larger;" value="0" onfocus="focusFormaPagoVenta(${row.id}, ${anticipos})" onfocusout="calcularVentaPagos(${row.id}, ${anticipos})" onkeypress="changeFormaPago(${row.id}, ${anticipos}, event)" id="venta_forma_pago_${row.id}">`;
             }},
         ],
     });
@@ -343,12 +356,12 @@ function ventaInit () {
     if (ventaExistencias) column2.visible(true);
     else column2.visible(false);
 
-    $('#id_cliente_venta').on('select2:close', function(event) {
-        var data = $(this).select2('data');
-        if(data.length){
-            document.getElementById('iniciarCapturaVenta').click();
-        }
-    });
+    // $('#id_cliente_venta').on('select2:close', function(event) {
+    //     var data = $(this).select2('data');
+    //     if(data.length){
+    //         document.getElementById('iniciarCapturaVenta').click();
+    //     }
+    // });
     
     $('#id_resolucion_venta').on('select2:close', function(event) {
         var data = $(this).select2('data');
@@ -376,6 +389,8 @@ function ventaInit () {
         var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
         $comboCliente.append(newOption).trigger('change');
         $comboCliente.val(dataCliente.id).trigger('change');
+
+        loadAnticiposCliente();
         
         document.getElementById('iniciarCapturaVenta').click();
 
@@ -386,16 +401,51 @@ function ventaInit () {
     }
 }
 
+function loadAnticiposCliente() {
+
+    totalAnticiposDisponibles = 0;
+    $('#input-anticipos-venta').hide();
+    $('#id_saldo_anticipo_venta').val(0);
+
+    let data = {
+        id_nit: $('#id_cliente_venta').val(),
+        id_tipo_cuenta: 8
+    }
+
+    $.ajax({
+        url: base_url + 'extracto-anticipos',
+        method: 'GET',
+        data: data,
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            var saldo = parseFloat(res.data.saldo);
+            if (saldo > 0) {
+                $('#input-anticipos-venta').show();
+                totalAnticiposDisponibles = saldo;
+                $('#id_saldo_anticipo_venta').val(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(saldo));
+            }
+        }
+    }).fail((err) => {
+    });
+}
+
 $(document).on('keydown', '.custom-venta_producto .select2-search__field', function (event) {
     var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
     
-    if (event.keyCode == 96) abrirFormasPago = true;
+    if (event.keyCode == 96) {
+        abrirFormasPago = true;
+        setTimeout(function(){
+            abrirFormasPago = false;
+        },500);
+    }
     if (event.keyCode == 13){
         if (total > 0) {
             if (abrirFormasPago) {
+                abrirFormasPago = false;
                 $(".venta_producto").select2('close');
                 focusFormaPagoVenta(1);
-                abrirFormasPago = false;
                 return;
             }
             
@@ -484,6 +534,8 @@ function addRowProductoVenta () {
             document.getElementById("card-venta").scrollLeft = 0;
             return;
         }
+    } else {
+        clearFormasPago();
     }
     
     venta_table.row.add({
@@ -865,6 +917,7 @@ function cancelarVenta() {
     $("#crearCapturaVenta").hide();
     $("#cancelarCapturaVenta").hide();
     $("#crearCapturaVentaDisabled").hide();
+    $('#input-anticipos-venta').hide();
 
     setTimeout(function(){
         $comboCliente.select2("open");
@@ -882,6 +935,18 @@ function loadFormasPago() {
     venta_table_pagos.ajax.reload();
 }
 
+function clearFormasPago() {
+    var dataFormasPago = venta_table_pagos.rows().data();
+
+    if (dataFormasPago.length) {
+        for (let index = 0; index < dataFormasPago.length; index++) {
+            var formaPago = dataFormasPago[index];
+            $('#venta_forma_pago_'+formaPago.id).val(0);
+        }
+    }
+    calcularVentaPagos();
+}
+
 $(document).on('click', '#crearCapturaVenta', function () {
     
     // var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
@@ -892,25 +957,36 @@ $(document).on('click', '#crearCapturaVenta', function () {
     validateSaveVenta();
 });
 
-function focusFormaPagoVenta(idFormaPago) {
+function focusFormaPagoVenta(idFormaPago, anticipo = false) {
     var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
-    var [totalEfectivo, totalOtrosPagos] = totalFormasPagoVentas(idFormaPago);
-    var totalFactura = total - (totalEfectivo + totalOtrosPagos);
+    var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas(idFormaPago);
+    
+    var totalFactura = total - (totalEfectivo + totalOtrosPagos + totalAnticipos);
+    totalFactura = totalFactura < 0 ? 0 : totalFactura;
 
-    $('#venta_forma_pago_'+idFormaPago).val(totalFactura < 0 ? 0 : totalFactura);
+    if (anticipo) {
+        if ((totalAnticiposDisponibles - totalAnticipos) < totalFactura) {
+            $('#venta_forma_pago_'+idFormaPago).val(totalAnticiposDisponibles - totalAnticipos);
+            $('#venta_forma_pago_'+idFormaPago).select();
+            return;
+        }
+    }
+
+    $('#venta_forma_pago_'+idFormaPago).val(totalFactura);
     $('#venta_forma_pago_'+idFormaPago).select();
 }
 
-function calcularVentaPagos(idFormaPago) {
+function calcularVentaPagos(idFormaPago, anticipo = false) {
 
     $('#total_faltante_venta').removeClass("is-invalid");
 
     var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
-    var [totalEfectivo, totalOtrosPagos] = totalFormasPagoVentas();
-    var totalFaltante = total - (totalEfectivo + totalOtrosPagos);
+    var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
+    var totalPagosAnticipos
+    var totalFaltante = total - (totalEfectivo + totalOtrosPagos + totalAnticipos);
     
     if ((totalOtrosPagos < total) && totalOtrosPagos + totalEfectivo >= total) {
-        var totalCambio = (totalEfectivo + totalOtrosPagos) - total;
+        var totalCambio = (totalEfectivo + totalOtrosPagos + totalAnticipos) - total;
         if(parseInt(totalCambio) > 0)$('#cambio-totals').show();
         document.getElementById('total_cambio_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalCambio);
     } else {
@@ -920,7 +996,7 @@ function calcularVentaPagos(idFormaPago) {
             $('#venta_forma_pago_'+idFormaPago).select();
         }
     }
-    var totalPagado = totalFaltante < 0 ? total : totalEfectivo + totalOtrosPagos;
+    var totalPagado = totalFaltante < 0 ? total : totalEfectivo + totalOtrosPagos + totalAnticipos;
     var totalFaltante = totalFaltante < 0 ? 0 : totalFaltante;
 
     document.getElementById('total_pagado_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalPagado);
@@ -929,6 +1005,7 @@ function calcularVentaPagos(idFormaPago) {
 
 function totalFormasPagoVentas(idFormaPago = null) {
     var totalEfectivo = 0;
+    var totalAnticipos = 0;
     var totalOtrosPagos = 0;
 
     var dataPagoVenta = venta_table_pagos.rows().data();
@@ -939,12 +1016,14 @@ function totalFormasPagoVentas(idFormaPago = null) {
             var ventaPago = parseFloat($('#venta_forma_pago_'+dataPagoVenta[index].id).val());
             
             if (idFormaPago && idFormaPago == dataPagoVenta[index].id) continue;
+
             if (dataPagoVenta[index].id == 1) totalEfectivo+= ventaPago;
+            else if ($('#venta_forma_pago_'+dataPagoVenta[index].id).hasClass("anticipos")) totalAnticipos+= ventaPago;
             else totalOtrosPagos+= ventaPago;
         }
     }
 
-    return [totalEfectivo, totalOtrosPagos];
+    return [totalEfectivo, totalOtrosPagos, totalAnticipos];
 }
 
 function validateSaveVenta() {
@@ -953,10 +1032,10 @@ function validateSaveVenta() {
 
     if (!guardandoVenta) {
 
-        var [totalEfectivo, totalOtrosPagos] = totalFormasPagoVentas();
+        var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
         var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
 
-        if ((totalEfectivo + totalOtrosPagos) >= total) {
+        if ((totalEfectivo + totalOtrosPagos + totalAnticipos) >= total) {
             
             guardandoVenta = true;
             saveVenta();
@@ -1010,8 +1089,10 @@ function saveVenta() {
             }
 
             mostrarValoresVentas();
+
             agregarToast('exito', 'Creación exitosa', 'Venta creada con exito!', true);
             consecutivoSiguienteVenta();
+            loadAnticiposCliente();
             setTimeout(function(){
                 $('#id_cliente_venta').focus();
                 $comboCliente.select2("open");
@@ -1107,19 +1188,31 @@ function getProductosVenta() {
     return data;
 }
 
-function changeFormaPago(idFormaPago, event) {
+function changeFormaPago(idFormaPago, anticipo, event) {
 
     if(event.keyCode == 13){
 
-        calcularVentaPagos(idFormaPago);
-        var [totalEfectivo, totalOtrosPagos] = totalFormasPagoVentas();
+        var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
         var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
 
         if (!total) {
             return;
         }
 
-        if ((totalEfectivo + totalOtrosPagos) >= total) {
+        if (anticipo) {
+            if (totalAnticipos > totalAnticiposDisponibles || totalAnticipos > total) {
+
+                var [efectivo, pagos, totalOtrosAnticipos] = totalFormasPagoVentas(idFormaPago);
+
+                $('#venta_forma_pago_'+idFormaPago).val(totalAnticiposDisponibles - totalOtrosAnticipos);
+                $('#venta_forma_pago_'+idFormaPago).select();
+                return;
+            }
+        }
+
+        calcularVentaPagos(idFormaPago);
+
+        if ((totalEfectivo + totalOtrosPagos + totalAnticipos) >= total) {
             saveVenta();
             return;
         }

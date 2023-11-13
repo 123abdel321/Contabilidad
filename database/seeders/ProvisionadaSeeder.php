@@ -17,6 +17,8 @@ use Database\Seeders\Provisionada\ComprobantesSeeder;
 use Database\Seeders\Provisionada\TipoImpuestosSeeder;
 use Database\Seeders\Provisionada\TipoDocumentosSeeder;
 use Database\Seeders\Provisionada\TiposFormasPagosSeeder;
+use Database\Seeders\Provisionada\PlanCuentasTiposSeeder;
+
 
 class ProvisionadaSeeder extends Seeder
 {
@@ -42,6 +44,7 @@ class ProvisionadaSeeder extends Seeder
         $this->call(TipoImpuestosSeeder::class);
         $this->call(TipoDocumentosSeeder::class);
         $this->call(TiposFormasPagosSeeder::class);
+        $this->call(PlanCuentasTiposSeeder::class);
 
         DB::statement('SET foreign_key_checks = 1');
     }

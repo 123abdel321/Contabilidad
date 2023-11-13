@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::post('producto-precio-actualizar', 'App\Http\Controllers\Importador\ProductoImportadorController@actualizar');
         //INFORMES
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
+        Route::get('extracto-anticipos', 'App\Http\Controllers\Informes\ExtractoController@extractoActicipos');
         Route::get('existe-factura', 'App\Http\Controllers\Informes\ExtractoController@existeFactura');
         //DOCUMENTOS CAPTURADOS
         Route::get('documento', 'App\Http\Controllers\Informes\DocumentoController@generate');

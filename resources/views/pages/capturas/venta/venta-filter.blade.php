@@ -58,6 +58,14 @@
                             El No. factura requerida
                         </div>
                     </div>
+
+                    <div id="input-anticipos-venta" class="form-group col-6 col-sm-4 col-md-2" style="display: none;">
+                        <label for="example-text-input" class="form-control-label">Anticipos <span style="color: red">*</span></label>
+                        <input name="id_saldo_anticipo_venta" id="id_saldo_anticipo_venta" class="form-control form-control-sm" type="text" disabled style="text-align: right;">
+                        <div class="invalid-feedback" id="error-anticipo-cliente-venta">
+                            Valor superado
+                        </div>
+                    </div>
                     
                 </form>
                 <div class="col-md normal-rem">

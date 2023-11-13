@@ -77,6 +77,34 @@ class Extracto
         return $extracto;
     }
 
+    public function anticipos()
+    {
+        $fecha = Carbon::now();
+
+        $query = $this->queryAnticipos();
+
+        $anticipo = DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS documentosanticipos"))
+            ->mergeBindings($query)
+            ->select(
+                "id_nit",
+                "id_cuenta",
+                "id_comprobante",
+                "id_centro_costos",
+                "fecha_manual",
+                "consecutivo",
+                "documento_referencia",
+                "naturaleza_cuenta",
+                DB::raw('IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono'),
+                DB::raw('IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) AS saldo'),
+                DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
+            )
+            ->groupByRaw('id_nit')
+            ->where('fecha_manual', '<=', $fecha);
+
+        return $anticipo;
+    }
+
     public function actual2()
 	{
         $fecha = Carbon::now();
@@ -114,6 +142,34 @@ class Extracto
 			})
 			->groupBy("documento_referencia", "id_cuenta", "id_nit");
 	}
+
+    public function queryAnticipos()
+    {
+        return DB::connection('sam')->table('documentos_generals AS DG')
+            ->select(
+                "DG.id_nit",
+                "DG.id_cuenta",
+                "DG.id_comprobante",
+                "DG.id_centro_costos",
+                "DG.fecha_manual",
+                "DG.consecutivo",
+                "DG.documento_referencia",
+                "DG.debito",
+                "DG.credito",
+                "DG.concepto",
+                "DG.anulado",
+                "PC.naturaleza_cuenta"
+            )
+            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+            ->leftJoin('plan_cuentas_tipos AS PCT', 'DG.id_cuenta', 'PCT.id_cuenta')
+            ->where('anulado', 0)
+            ->when($this->id_nit ? $this->id_nit : false, function ($query) {
+				$query->where('DG.id_nit', $this->id_nit);
+			})
+            ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
+				$query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
+			});
+    }
 
     public function queryActual()
     {

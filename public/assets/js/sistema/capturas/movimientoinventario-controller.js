@@ -341,6 +341,22 @@ function cancelarCaptura () {
     clearFiltersMovimientoInventario();
 }
 
+function deleteProductoMovimientoInventario (idRow) {
+    let dataMovimientoInventario = movimiento_inventario_table.rows().data();
+
+    for (let row = 0; row < dataMovimientoInventario.length; row++) {
+        let element = dataMovimientoInventario[row];
+        if(element.id == idRow) {
+            movimiento_inventario_table.row(row).remove().draw();
+            if(!movimiento_inventario_table.rows().data().lengt){
+                $("#crearCapturaMovimientoInventarioDisabled").show();
+                $("#crearCapturaMovimientoInventario").hide();
+            }
+        }
+    }
+    mostrarValoresMovimientoInventario();
+}
+
 function changeProductoMovimientoInventario (idRow) {
 
     var data = $('#movimiento-inventario_producto_'+idRow).select2('data');
