@@ -97,6 +97,22 @@ class ExtractoController extends Controller
         ]);
     }
 
+    public function extractoActicipos(Request $request)
+    {
+        $extracto = (new Extracto(
+            $request->get('id_nit'),
+            8,
+            null,
+            Carbon::now()->format('Y-m-d H:i:s')
+        ))->anticipos();
+
+        return response()->json([
+            'success'=>	true,
+            'data' => $extracto->first(),
+            'message'=> 'Anticipos consultados con exito!'
+        ]);
+    }
+
     public function existeFactura(Request $request)
     {
         $documento = DocumentosGeneral::where('documento_referencia', $request->get('documento_referencia'))

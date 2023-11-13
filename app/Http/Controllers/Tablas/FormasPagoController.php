@@ -219,7 +219,7 @@ class FormasPagoController extends Controller
         $formasPago = FacFormasPago::select(
             \DB::raw('*'),
             \DB::raw("CONCAT(nombre) as text")
-        );
+        )->with('cuenta.tipos_cuenta');
 
         if ($request->get("q")) {
             $formasPago->where('nombre', 'LIKE', '%' . $request->get("q") . '%');

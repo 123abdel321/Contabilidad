@@ -235,6 +235,16 @@ class VentaController extends Controller
                     ->where('id_producto', $producto->id_producto)
                     ->first();
 
+                if (!$bodegaProducto) {
+                    $bodegaProducto = FacProductosBodegas::create([
+                        'id_producto' => $producto->id_producto,
+                        'id_bodega' => $venta->id_bodega,
+                        'cantidad' => 0,
+                        'created_by' => request()->user()->id,
+                        'updated_by' => request()->user()->id
+                    ]);
+                }
+
                 $movimiento = new FacProductosBodegasMovimiento([
                     'id_producto' => $producto->id_producto,
                     'id_bodega' => $venta->id_bodega,
