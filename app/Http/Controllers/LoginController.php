@@ -59,16 +59,21 @@ class LoginController extends Controller
                 ->first();
                 
             $empresaSelect = Empresa::where('id', $empresa->id_empresa)->first();
-            $user->id_empresa = $empresa->id_empresa;
-            $user->has_empresa = $empresaSelect->token_db;
-            $user->save();
+            $notificacionCode =  null;
+
+            if ($empresaSelect) {
+                $notificacionCode = $empresaSelect->token_db.'_'.$user->id;
+                $user->id_empresa = $empresa->id_empresa;
+                $user->has_empresa = $empresaSelect->token_db;
+                $user->save();
+            }
 
             return response()->json([
                 'success'=>	true,
                 'access_token' => $plainTextToken,
                 'token_type' => 'Bearer',
                 'empresa' => $empresaSelect,
-                'notificacion_code' => $empresaSelect->token_db.'_'.$user->id,
+                'notificacion_code' => $notificacionCode,
                 'message'=> 'Usuario logeado con exito!'
             ], 200);
         }

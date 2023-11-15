@@ -31,6 +31,11 @@ class EmpresaController extends Controller
 
     public function index(Request $request)
     {
+        $user = $request->user();
+        $user->permisos = [];
+		$empresasExternas = $user->empresasExternas->pluck("id_empresa");
+		$empresasExternas = $empresasExternas->toArray();
+
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         $capturarDocumentosDescuadrados = VariablesEntorno::where('nombre', 'capturar_documento_descuadrado')->first();
         $responsabilidades = ResponsabilidadesTributarias::get();
@@ -42,8 +47,16 @@ class EmpresaController extends Controller
             $capturarDocumentosDescuadrados->save();
         }
 
+        $query = Empresa::whereNotNull("id");
+
+        $query->where(function($q) use($empresasExternas,$user){
+            $q->whereIn("id",$empresasExternas);
+            $q->orWhere("id_usuario_owner",$user->id);
+        });
+
         $data = [
             'empresa' => $empresa,
+            'empresas' => $query->get(),
             'responsabilidades' => $responsabilidades,
             'capturarDocumentosDescuadrados' => $capturarDocumentosDescuadrados,
         ];
