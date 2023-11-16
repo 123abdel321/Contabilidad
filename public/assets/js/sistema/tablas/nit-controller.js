@@ -271,23 +271,23 @@ $(document).on('click', '#createNits', function () {
 $("#tipo_contribuyente").on('change', function(e) {
     var tipoContribuyente = $("#tipo_contribuyente").val();
 
-    if (tipoContribuyente == 1) {
-        $("#primer_nombre").prop('required',false);
-        $("#otros_nombres").prop('required',false);
-        $("#primer_apellido").prop('required',false);
-        $("#segundo_apellido").prop('required',false);
-        $("#razon_social").prop('required',true);
-    } else {
-        $("#primer_nombre").prop('required',true);
-        $("#otros_nombres").prop('required',false);
-        $("#primer_apellido").prop('required',true);
-        $("#segundo_apellido").prop('required',false);
-        $("#razon_social").prop('required',false);
-    }
+    // if (tipoContribuyente == 1) {
+    //     $("#primer_nombre").prop('required',false);
+    //     $("#otros_nombres").prop('required',false);
+    //     $("#primer_apellido").prop('required',false);
+    //     $("#segundo_apellido").prop('required',false);
+    //     $("#razon_social").prop('required',true);
+    // } else {
+    //     $("#primer_nombre").prop('required',true);
+    //     $("#otros_nombres").prop('required',false);
+    //     $("#primer_apellido").prop('required',true);
+    //     $("#segundo_apellido").prop('required',false);
+    //     $("#razon_social").prop('required',false);
+    // }
     $("#numero_documento").prop('required',false);
-    $("#direccion").prop('required',true);
+    // $("#direccion").prop('required',true);
     $("#email").prop('required',true);
-    $("#telefono_1").prop('required',false);
+    // $("#telefono_1").prop('required',false);
     
 });
 
