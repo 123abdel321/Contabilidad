@@ -9,6 +9,7 @@ use App\Helpers\Printers\VentasPdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
+use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
@@ -407,6 +408,39 @@ class VentaController extends Controller
         ]);
     }
 
+    public function read(Request $request)
+    {
+        $facturas = FacVentas::with(
+                'bodega',
+                'cliente',
+                'comprobante'
+            )
+            ->orderBy('id', 'DESC')
+            ->take(10);
+
+        if ($request->get('consecutivo')) {
+            $facturas->where('consecutivo', $request->get('consecutivo'));
+        }
+
+        if ($request->get('id_cliente')) {
+            $facturas->where('id_cliente', $request->get('id_cliente'));
+        }
+
+        if ($request->get('id_bodega')) {
+            $facturas->where('id_bodega', $request->get('id_bodega'));
+        }
+
+        if ($request->get('id_resolucion')) {
+            $facturas->where('id_resolucion', $request->get('id_resolucion'));
+        }
+
+        return response()->json([
+            'success'=>	true,
+            'data' => $facturas->get(),
+            'message'=> ''
+        ]);
+    }
+
     private function createFacturaVenta ($request)
     {
         $this->calcularTotales($request->get('productos'));
@@ -429,6 +463,7 @@ class VentaController extends Controller
             'total_rete_fuente' => $this->totalesFactura['total_rete_fuente'],
             'total_cambio' => $this->totalesPagos['total_cambio'],
             'porcentaje_rete_fuente' => $this->totalesFactura['porcentaje_rete_fuente'],
+            'codigo_tipo_documento_dian' => CodigoDocumentoDianTypes::VENTA_NACIONAL,
             'total_factura' => $this->totalesFactura['total_factura'],
             'observacion' => $request->get('observacion'),
             'created_by' => request()->user()->id,

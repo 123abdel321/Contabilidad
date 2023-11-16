@@ -82,7 +82,7 @@ class User extends Authenticatable
 	}
 
     public function getEmpresasAttribute(){
-		$clientesPropios = $this->empresasPropias()->get();
+		$clientesPropios = $this->empresasPropias()->get()->pluck("empresa");
 		$clientesExternos = $this->empresasExternas()->get()->pluck("empresa");
         // dd($clientesPropios, $clientesExternos);
 		return $clientesPropios->merge($clientesExternos);

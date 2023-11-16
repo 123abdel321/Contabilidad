@@ -29,6 +29,7 @@ use App\Http\Controllers\Tablas\CargueDescargueController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
+use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
 //CONFIGURACION
@@ -106,6 +107,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/venta', [VentaController::class, 'index'])->name('venta');
 		Route::get('/ventas', [VentaController::class, 'indexInforme'])->name('ventas');
 		Route::get('/ventas-print/{id}', [VentaController::class, 'showPdf'])->name('venta-pdf');
+		//NOTA CREDITO
+		Route::get('/notacredito', [NotaCreditoController::class, 'index']);
 		//NITS
 		Route::get('/nit', [NitController::class, 'index'])->name('nit');
 		//PLAN CUENTAS

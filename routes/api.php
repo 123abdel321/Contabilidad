@@ -214,6 +214,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(VentaController::class)->group(function () {
             Route::get('ventas', 'generate');
             Route::post('ventas', 'create');
+            Route::get('facturas', 'read');
         });
         //CAPTURA MOVIMIENTO INVENTARIO
         Route::controller(MovimientoInventarioController::class)->group(function () {

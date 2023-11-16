@@ -175,9 +175,12 @@ class ApiController extends Controller
             $user->has_empresa = $empresaSelect->token_db;
             $user->save();
 
+            $notificacionCode = $empresaSelect->token_db.'_'.$user->id;
+
 			return response()->json([
 				"success"=>true,
-				"empresa"=>$empresaSelect
+				"empresa"=>$empresaSelect,
+                "notificacion_code"=>$notificacionCode
 			]);
 		}else{
 			return response()->json([

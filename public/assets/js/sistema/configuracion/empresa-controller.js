@@ -91,3 +91,37 @@ $(document).on('click', '#updateEmpresa', function () {
     });
     
 });
+
+function seleccionarEmpresa(hash) {
+
+    $.ajax({
+        url: base_url + 'seleccionar-empresa',
+        method: 'POST',
+        data: JSON.stringify({empresa: hash}),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            localStorage.setItem("empresa_nombre", res.empresa.razon_social);
+            localStorage.setItem("empresa_logo", res.empresa.logo);
+            localStorage.setItem("notificacion_code", res.notificacion_code);
+            location.reload();
+        }
+    }).fail((err) => {
+        $("#updateEmpresaLoading").hide();
+            $("#updateEmpresa").show();
+        var errorsMsg = "";
+        var mensaje = err.responseJSON.message;
+        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += "- "+errores[campo]+" <br>";
+                }
+            };
+        } else {
+            errorsMsg = mensaje
+        }
+        agregarToast('error', 'Actualización errada', errorsMsg);
+    });
+}
