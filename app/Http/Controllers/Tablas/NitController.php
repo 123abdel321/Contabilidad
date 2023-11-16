@@ -96,11 +96,11 @@ class NitController extends Controller
             'observaciones' => 'nullable|string',
 			'id_actividad_econo' => 'nullable|exists:sam.actividades_economicas,id',
 			'numero_documento' => 'required|unique:sam.nits,numero_documento|max:30',
-			'digito_verificacion' => "nullable|between:0,9|numeric|required_if:id_tipo_documento,$idTipoDocumentoNit", // Campo requerido si el tipo de documento es nit (codigo: 31)
+			'digito_verificacion' => "nullable|between:0,9|numeric",
 			'tipo_contribuyente' => 'required|in:1,2',
-			'primer_apellido' => 'nullable|string|max:60|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_NATURAL, // Campo requerido si el tipo contribuyente es persona natural (id: 2)
-			'segundo_apellido' => 'nullable|string|max:60|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_NATURAL, // Campo requerido si el tipo contribuyente es persona natural (id: 2)
-			'primer_nombre' => 'nullable|string|max:60|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_NATURAL, // Campo requerido si el tipo contribuyente es persona natural (id: 2)
+			'primer_apellido' => 'nullable|string|max:60',
+			'segundo_apellido' => 'nullable|string|max:60',
+			'primer_nombre' => 'nullable|string|max:60|',
 			'otros_nombres' => 'nullable|string|max:60',
 			'razon_social' => 'nullable|string|max:120|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_JURIDICA, // Campo requerido si el tipo contribuyente es persona jurídica (id: 1)
 			'nombre_comercial' => 'nullable|string|max:120',
