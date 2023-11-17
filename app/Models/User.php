@@ -36,9 +36,6 @@ class User extends Authenticatable
         'id_empresa',
         'avatar',
         'telefono',
-        'ids_bodegas_responsable',
-        'ids_resolucion_responsable',
-        'facturacion_rapida',
         'created_by',
         'updated_by'
     ];

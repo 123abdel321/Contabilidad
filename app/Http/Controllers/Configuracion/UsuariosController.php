@@ -145,11 +145,16 @@ class UsuariosController extends Controller
                 'email' => $request->get('email'),
                 'address' => $request->get('address'),
                 'telefono' => $request->get('telefono'),
-                'ids_bodegas_responsable' => implode(",",$request->get('id_bodega')),
-                'ids_resolucion_responsable' => implode(",",$request->get('id_resolucion')),
-                'facturacion_rapida' => $request->get('facturacion_rapida'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
+            ]);
+
+            UsuarioPermisos::updateOrCreate([
+                'id_user' => $usuario->id,
+                'id_empresa' => $request->user()['id_empresa']
+            ],[
+                'ids_bodegas_responsable' => implode(",",$request->get('id_bodega')),
+                'ids_resolucion_responsable' => implode(",",$request->get('id_resolucion')),
             ]);
 
             $permisos = [];
@@ -257,8 +262,6 @@ class UsuariosController extends Controller
             $usuario->email = $request->get('email');
             $usuario->address = $request->get('address');
             $usuario->telefono = $request->get('telefono');
-            $usuario->ids_bodegas_responsable = implode(",",$request->get('id_bodega'));
-            $usuario->ids_resolucion_responsable = implode(",",$request->get('id_resolucion'));
             $usuario->facturacion_rapida = $request->get('facturacion_rapida');
             $usuario->updated_by = request()->user()->id;
             $usuario->save();
@@ -285,7 +288,9 @@ class UsuariosController extends Controller
                 'id_user' => $usuario->id,
                 'id_empresa' => $request->user()['id_empresa']
             ],[
-                'ids_permission' => implode(',', $permisos)
+                'ids_permission' => implode(',', $permisos),
+                'ids_bodegas_responsable' => implode(",", $request->get('id_bodega')),
+                'ids_resolucion_responsable' => implode(",", $request->get('id_resolucion')),
             ]);
 
             DB::connection('sam')->commit();

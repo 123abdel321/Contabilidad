@@ -20,6 +20,7 @@ use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacVentaPagos;
 use App\Models\Sistema\FacResoluciones;
+use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Sistema\FacVentaDetalles;
 use App\Models\Sistema\DocumentosGeneral;
 use App\Models\Sistema\FacProductosBodegas;
@@ -68,8 +69,13 @@ class VentaController extends Controller
 
     public function index (Request $request)
     {
-        $bodegas = explode(",", request()->user()->ids_bodegas_responsable);
-        $resoluciones = explode(",", request()->user()->ids_resolucion_responsable);
+        $usuarioPermisos = UsuarioPermisos::where([
+            ['id_user' => request()->user()->id],
+            ['id_empresa' => request()->user()->id_empresa],
+        ])->first();
+
+        $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
+        $resoluciones = explode(",", $usuarioPermisos->ids_resolucion_responsable);
 
         $data = [
             'cliente' => Nits::where('numero_documento', '22222222')->first(),

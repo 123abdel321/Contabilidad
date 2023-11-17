@@ -20,6 +20,7 @@ use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacCompraPagos;
 use App\Models\Sistema\VariablesEntorno;
+use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Sistema\DocumentosGeneral;
 use App\Models\Sistema\FacCompraDetalles;
 use App\Models\Sistema\FacProductosBodegas;
@@ -65,7 +66,12 @@ class CompraController extends Controller
 
     public function index ()
     {
-        $bodegas = explode(",", request()->user()->ids_bodegas_responsable);
+        $usuarioPermisos = UsuarioPermisos::where([
+            ['id_user' => request()->user()->id],
+            ['id_empresa' => request()->user()->id_empresa],
+        ])->first();
+
+        $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
 
         $data = [
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
