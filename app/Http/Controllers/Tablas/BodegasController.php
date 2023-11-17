@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\FacBodegas;
+use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Sistema\FacProductosBodegas;
 
 class BodegasController extends Controller
@@ -224,7 +225,12 @@ class BodegasController extends Controller
 
     public function comboBodega(Request $request)
     {
-        $bodegasResponsable = explode(",", request()->user()->ids_bodegas_responsable);
+        $usuarioPermisos = UsuarioPermisos::where([
+            ['id_user' => request()->user()->id],
+            ['id_empresa' => request()->user()->id_empresa],
+        ])->first();
+
+        $bodegasResponsable = explode(",", $usuarioPermisos->ids_bodegas_responsable);
 
         $bodega = FacBodegas::select(
             \DB::raw('*'),

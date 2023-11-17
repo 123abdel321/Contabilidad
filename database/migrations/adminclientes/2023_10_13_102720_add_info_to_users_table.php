@@ -15,9 +15,6 @@ return new class extends Migration
             $table->integer('id_empresa')->nullable();
             $table->string('avatar', 300)->nullable();
             $table->string('telefono', 30)->nullable();
-            $table->string('ids_bodegas_responsable', 200)->default('')->nullable();
-            $table->string('ids_resolucion_responsable', 200)->default('')->nullable();
-            $table->boolean('facturacion_rapida')->default(false)->nullable();
             $table->integer('created_by');
             $table->integer('updated_by');
         });

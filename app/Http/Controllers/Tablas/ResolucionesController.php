@@ -264,7 +264,12 @@ class ResolucionesController extends Controller
 
     public function comboResolucion (Request $request)
     {
-        $resolucionesResponsable = explode(",", request()->user()->ids_resolucion_responsable);
+        $usuarioPermisos = UsuarioPermisos::where([
+            ['id_user' => request()->user()->id],
+            ['id_empresa' => request()->user()->id_empresa],
+        ])->first();
+
+        $resolucionesResponsable = explode(",", $usuarioPermisos->ids_resolucion_responsable);
 
         $resolucion = FacResoluciones::select(
             \DB::raw('*'),
