@@ -420,11 +420,13 @@ function loadAnticiposCliente() {
         dataType: 'json',
     }).done((res) => {
         if(res.success){
-            var saldo = parseFloat(res.data.saldo);
-            if (saldo > 0) {
-                $('#input-anticipos-venta').show();
-                totalAnticiposDisponibles = saldo;
-                $('#id_saldo_anticipo_venta').val(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(saldo));
+            if (res.data) {
+                var saldo = parseFloat(res.data.saldo);
+                if (saldo > 0) {
+                    $('#input-anticipos-venta').show();
+                    totalAnticiposDisponibles = saldo;
+                    $('#id_saldo_anticipo_venta').val(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(saldo));
+                }
             }
         }
     }).fail((err) => {

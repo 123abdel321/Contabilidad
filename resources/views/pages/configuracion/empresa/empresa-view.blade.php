@@ -159,10 +159,6 @@
                     </select>
                 </div>
                 <div class="form-group col-12 col-sm-4 col-md-3">
-                    <label for="example-text-input" class="form-control-label" style="display: unset;">Razon social</label>
-                    <input type="text" class="form-control form-control-sm" name=" razon_social_empresa" id="razon_social_empresa" value="{{ $empresaItem->razon_social }}" {{ auth()->user()->can('empresa update') ? '' : 'readonly' }}>
-                </div>
-                <div class="form-group col-12 col-sm-4 col-md-3">
                     <label for="example-text-input" class="form-control-label" style="display: unset;">Primer nombre</label>
                     <input type="text" class="form-control form-control-sm" name=" primer_nombre_empresa" id="primer_nombre_empresa" value="{{ $empresaItem->primer_nombre }}" {{ auth()->user()->can('empresa update') ? '' : 'readonly' }}>
                 </div>

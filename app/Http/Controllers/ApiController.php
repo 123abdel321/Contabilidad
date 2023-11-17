@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Empresas\UsuarioEmpresa;
+use App\Models\Empresas\UsuarioPermisos;
 
 class ApiController extends Controller
 {
@@ -65,7 +66,8 @@ class ApiController extends Controller
             if($user){
                 if(Hash::check($data->password, $user->password)){
                     
-                    $tokenExist = $user->remember_token;
+                    // $tokenExist = $user->remember_token; //RECORDAR TOKEN
+                    $tokenExist = null;
 
                     if($tokenExist) {
                         $token = $user->remember_token;
@@ -75,18 +77,21 @@ class ApiController extends Controller
                         $user->save();
                     }
                     
-                    $empresa = UsuarioEmpresa::where('id_usuario', $user->id)->first();
-                    
-                    if ($empresa) {
-                        $empresaSelect = Empresa::where('id', $empresa->id_empresa)->first();
-                        $user->has_empresa = $empresaSelect->token_db;
-                        $user->save();
-                    }
+                    $empresaSelect = UsuarioEmpresa::where('id_usuario', $user->id_empresa)->first();
+                    $user->has_empresa = $empresaSelect->token_db;
+                    $user->save();
+
+                    $usuarioPermisosEmpresa = UsuarioPermisos::where([
+                        ['id_user', $user->id],
+                        ['id_empresa', $empresaSelect->id]
+                    ])->first();
+        
+                    $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
 
                     return response()->json([
                         'success'=>	true,
                         'access_token' => $token,
-                        'empresa' => $empresa ? $empresa->razon_social : '',
+                        'empresa' => $empresaSelect ? $empresaSelect->razon_social : '',
                         'token_type' => 'Bearer',
                         'message'=> 'Usuario logeado con exito!'
                     ], 200);
@@ -172,10 +177,18 @@ class ApiController extends Controller
 		if($check){
             $empresaSelect = Empresa::where('hash', $empresa)->first();
             $user = $request->user();
+            $user->id_empresa = $empresaSelect->id;
             $user->has_empresa = $empresaSelect->token_db;
             $user->save();
 
             $notificacionCode = $empresaSelect->token_db.'_'.$user->id;
+
+            $usuarioPermisosEmpresa = UsuarioPermisos::where([
+                ['id_user', $user->id],
+                ['id_empresa', $empresaSelect->id]
+            ])->first();
+
+            $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
 
 			return response()->json([
 				"success"=>true,
