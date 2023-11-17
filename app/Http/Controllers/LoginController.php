@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Empresas\UsuarioEmpresa;
+use App\Models\Empresas\UsuarioPermisos;
 
 class LoginController extends Controller
 {
@@ -54,19 +55,41 @@ class LoginController extends Controller
                 $user->remember_token = $plainTextToken;
             }
 
-            $empresa = UsuarioEmpresa::where('id_usuario', $user->id)
-                ->orderBy('created_at', 'desc')
-                ->first();
-                
-            $empresaSelect = Empresa::where('id', $empresa->id_empresa)->first();
-            $notificacionCode =  null;
+            $idEmpresa = $user->id_empresa;
 
-            if ($empresaSelect) {
-                $notificacionCode = $empresaSelect->token_db.'_'.$user->id;
-                $user->id_empresa = $empresa->id_empresa;
-                $user->has_empresa = $empresaSelect->token_db;
-                $user->save();
+            if (!$idEmpresa) {
+                $empresa = UsuarioEmpresa::where('id_usuario', $user->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
+                if (!$empresa){
+                    return response()->json([
+                        'success'=>	true,
+                        'access_token' => $plainTextToken,
+                        'token_type' => 'Bearer',
+                        'empresa' => '',
+                        'notificacion_code' => '',
+                        'message'=> 'Usuario logeado con exito!'
+                    ], 200);
+                }
+
+                $idEmpresa = $empresa->id;
             }
+                
+            $notificacionCode =  null;
+            $empresaSelect = Empresa::where('id', $idEmpresa)->first();
+
+            $notificacionCode = $empresaSelect->token_db.'_'.$user->id;
+            $user->id_empresa = $empresaSelect->id;
+            $user->has_empresa = $empresaSelect->token_db;
+            $user->save();
+
+            $usuarioPermisosEmpresa = UsuarioPermisos::where([
+                ['id_user', $user->id],
+                ['id_empresa', $empresaSelect->id]
+            ])->first();
+
+            $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
 
             return response()->json([
                 'success'=>	true,

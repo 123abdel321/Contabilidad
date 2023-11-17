@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Empresas\UsuarioEmpresa;
+use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Empresas\EmpresaSuscripcion;
 use App\Models\Empresas\BaseDatosProvisionada;
 use App\Models\Empresas\ComponentesSuscripcion;
@@ -232,11 +233,18 @@ class InstaladorController extends Controller
 		$rol = Role::where('id', 2)->first();
 
 		foreach ($permissions as $permissions) {
+
 			$permisos[] = $permissions->id;
 		}
-
+		
 		$user->syncRoles($rol);
 		$user->syncPermissions($permisos);
+		UsuarioPermisos::updateOrCreate([
+			'id_user' => $user->id,
+			'id_empresa' => $company_id
+		],[
+			'ids_permission' => implode(',', $permisos)
+		]);
 
 		return;
 	}

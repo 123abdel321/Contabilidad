@@ -15,6 +15,8 @@ use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacBodegas;
 use App\Models\Empresas\UsuarioEmpresa;
 use App\Models\Sistema\FacResoluciones;
+use App\Models\Empresas\UsuarioPermisos;
+
 
 
 class UsuariosController extends Controller
@@ -176,6 +178,13 @@ class UsuariosController extends Controller
             $usuario->syncRoles($rol);
             $usuario->syncPermissions($permisos);
 
+            UsuarioPermisos::updateOrCreate([
+                'id_user' => $usuario->id,
+                'id_empresa' => $request->user()['id_empresa']
+            ],[
+                'ids_permission' => implode(',', $permisos)
+            ]);
+
             DB::connection('sam')->commit();
 
             return response()->json([
@@ -252,6 +261,13 @@ class UsuariosController extends Controller
             $usuario->ids_resolucion_responsable = implode(",",$request->get('id_resolucion'));
             $usuario->facturacion_rapida = $request->get('facturacion_rapida');
             $usuario->updated_by = request()->user()->id;
+            $usuario->save();
+
+            if ($request->get('password')) {
+                $usuario->update([
+                    'password' => $request->get('password')
+                ]);
+            }
 
             $permisos = [];
 
@@ -262,17 +278,15 @@ class UsuariosController extends Controller
                     }
                 }
             }
-
-            $usuario->save();
-
-            if ($request->get('password')) {
-                $usuario->update([
-                    'password' => $request->get('password')
-                ]);
-            }
-
             $usuario->syncRoles($rol);
             $usuario->syncPermissions($permisos);
+
+            UsuarioPermisos::updateOrCreate([
+                'id_user' => $usuario->id,
+                'id_empresa' => $request->user()['id_empresa']
+            ],[
+                'ids_permission' => implode(',', $permisos)
+            ]);
 
             DB::connection('sam')->commit();
 

@@ -45,7 +45,6 @@ $(document).on('click', '#updateEmpresa', function () {
     $("#updateEmpresa").hide();
 
     let data = {
-        'razon_social': $('#razon_social_empresa').val(),
         'nit': $('#nit_empresa').val(),
         'dv': $('#dv_empresa').val(),
         'direccion': $('#direccion_empresa').val(),
