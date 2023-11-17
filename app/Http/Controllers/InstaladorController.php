@@ -12,6 +12,7 @@ use Spatie\Permission\Models\Permission;
 use App\Jobs\ProcessProvisionedDatabase;
 use Illuminate\Support\Facades\Validator;
 // MODELS
+use App\Models\User;
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Empresas\UsuarioEmpresa;
@@ -116,7 +117,7 @@ class InstaladorController extends Controller
 			$empresa->hash = Hash::make($empresa->id);
 			$empresa->save();
 
-			$this->associateUserToCompany($user, $empresa->id);
+			$this->associateUserToCompany($user, $empresa);
 
 			$dbProvisionada = BaseDatosProvisionada::available()->first();
 
@@ -213,16 +214,21 @@ class InstaladorController extends Controller
 		return;
 	}
 
-    private function associateUserToCompany($user, $company_id)
+    private function associateUserToCompany($user, $empresa)
 	{
 		$usuarioEmpresa = UsuarioEmpresa::where('id_usuario', $user->id)
-			->where('id_empresa', $company_id)
+			->where('id_empresa', $empresa->id)
 			->first();
+
+			User::where('id', $user->id)->update([
+				'id_empresa' => $empresa->id,
+				'has_empresa' => $empresa->hash
+			]);
 
 		if(!$usuarioEmpresa){
 			UsuarioEmpresa::create([
 				'id_usuario' => $user->id,
-				'id_empresa' => $company_id,
+				'id_empresa' => $empresa->id,
 				'id_rol' => 2, // default: 2
 				'estado' => 1, // default: 1 activo
 			]);
@@ -241,7 +247,7 @@ class InstaladorController extends Controller
 		$user->syncPermissions($permisos);
 		UsuarioPermisos::updateOrCreate([
 			'id_user' => $user->id,
-			'id_empresa' => $company_id
+			'id_empresa' => $empresa->id
 		],[
 			'ids_permission' => implode(',', $permisos)
 		]);
