@@ -116,6 +116,25 @@ class ProcessProvisionedDatabase implements ShouldQueue
 
 		copyDBConnection($empresa->servidor ?: 'sam', 'sam');
 		setDBInConnection('sam', $empresa->token_db);
+
+		Nits::create([
+			'id_tipo_documento' => 3,
+			'numero_documento' => $empresa->nit,
+			'digito_verificacion' => $empresa->dv,
+			'tipo_contribuyente' => $empresa->tipo_contribuyente,
+			'primer_apellido' => $empresa->primer_apellido,
+			'segundo_apellido' => $empresa->segundo_apellido,
+			'primer_nombre' => $empresa->primer_nombre,
+			'otros_nombres' => $empresa->otros_nombres,
+			'razon_social' => $empresa->razon_social,
+			// 'direccion' => $request->get('direccion'),
+			// 'email' => $request->get('email'),
+			'telefono_1' => $empresa->telefono,
+			// 'id_ciudad' => $request->get('id_ciudad'),
+			// 'observaciones' => $request->get('observaciones'),
+			'created_by' => request()->user()->id,
+			'updated_by' => request()->user()->id,
+		]);
 	}
 
     private function dropDb($schemaName)
