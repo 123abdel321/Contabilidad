@@ -78,13 +78,23 @@ class ApiController extends Controller
                     }
                     
                     $empresaSelect = UsuarioEmpresa::where('id_usuario', $user->id_empresa)->first();
+
+                    if (!$empresaSelect) {
+                        return response()->json([
+                            'success'=>	true,
+                            'access_token' => $token,
+                            'empresa' => '',
+                            'token_type' => 'Bearer',
+                            'message'=> 'Usuario logeado con exito!'
+                        ], 200);
+                    }
+
                     $user->has_empresa = $empresaSelect->token_db;
                     $user->save();
 
-                    $usuarioPermisosEmpresa = UsuarioPermisos::where([
-                        ['id_user', $user->id],
-                        ['id_empresa', $empresaSelect->id]
-                    ])->first();
+                    $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', request()->user()->id)
+                        ->where('id_empresa', $empresaSelect->id)
+                        ->first();
         
                     $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
 
@@ -183,10 +193,9 @@ class ApiController extends Controller
 
             $notificacionCode = $empresaSelect->token_db.'_'.$user->id;
 
-            $usuarioPermisosEmpresa = UsuarioPermisos::where([
-                ['id_user', $user->id],
-                ['id_empresa', $empresaSelect->id]
-            ])->first();
+            $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', request()->user()->id)
+                ->where('id_empresa', $empresaSelect->id)
+                ->first();
 
             $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
 
