@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('id_cuenta_venta_retencion')->nullable();
             $table->integer('id_cuenta_venta_iva')->nullable();
             $table->integer('id_cuenta_venta_descuento')->nullable();
+            $table->integer('id_producto')->nullable();
             $table->string('descripcion', 200)->nullable();
             $table->decimal('cantidad', 15)->default(0);
             $table->decimal('costo', 15)->default(0);

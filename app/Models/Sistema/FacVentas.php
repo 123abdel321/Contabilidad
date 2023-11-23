@@ -19,6 +19,7 @@ class FacVentas extends Model
         'id_comprobante',
         'id_centro_costos',
         'id_bodega',
+        'id_factura',
         'fecha_manual',
         'consecutivo',
         'documento_referencia',
@@ -55,6 +56,11 @@ class FacVentas extends Model
         return $this->belongsTo('App\Models\Sistema\FacBodegas', 'id_bodega');
 	}
 
+    public function centro_costo()
+    {
+        return $this->belongsTo('App\Models\Sistema\CentroCostos', 'id_centro_costos');
+	}
+
     public function cliente()
     {
         return $this->belongsTo('App\Models\Sistema\Nits', 'id_cliente');
@@ -73,5 +79,20 @@ class FacVentas extends Model
     public function pagos()
 	{
 		return $this->hasMany('App\Models\Sistema\FacVentaPagos', 'id_venta');
+	}
+
+    public function resolucion()
+	{
+		return $this->belongsTo('App\Models\Sistema\FacResoluciones', 'id_resolucion');
+	}
+
+    public function getDocumentoReferenciaAttribute()
+	{
+		return $this->resolucion ? "{$this->resolucion->prefijo}-{$this->consecutivo}" : '';
+	}
+
+	public function getDocumentoReferenciaFeAttribute()
+	{
+		return $this->resolucion ? "{$this->resolucion->prefijo}{$this->consecutivo}" : '';
 	}
 }

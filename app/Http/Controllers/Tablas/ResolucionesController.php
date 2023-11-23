@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\FacCompras;
 use App\Models\Sistema\FacResoluciones;
+use App\Models\Empresas\UsuarioPermisos;
+
+
 
 class ResolucionesController extends Controller
 {
@@ -264,10 +267,9 @@ class ResolucionesController extends Controller
 
     public function comboResolucion (Request $request)
     {
-        $usuarioPermisos = UsuarioPermisos::where([
-            ['id_user' => request()->user()->id],
-            ['id_empresa' => request()->user()->id_empresa],
-        ])->first();
+        $usuarioPermisos = UsuarioPermisos::where('id_user', request()->user()->id)
+            ->where('id_empresa', request()->user()->id_empresa)
+            ->first();
 
         $resolucionesResponsable = explode(",", $usuarioPermisos->ids_resolucion_responsable);
 
