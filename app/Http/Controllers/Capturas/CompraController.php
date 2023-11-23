@@ -66,10 +66,9 @@ class CompraController extends Controller
 
     public function index ()
     {
-        $usuarioPermisos = UsuarioPermisos::where([
-            ['id_user' => request()->user()->id],
-            ['id_empresa' => request()->user()->id_empresa],
-        ])->first();
+        $usuarioPermisos = UsuarioPermisos::where('id_user', request()->user()->id)
+            ->where('id_empresa', request()->user()->id_empresa)
+            ->first();
 
         $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
 

@@ -69,16 +69,15 @@ class VentaController extends Controller
 
     public function index (Request $request)
     {
-        $usuarioPermisos = UsuarioPermisos::where([
-            ['id_user' => request()->user()->id],
-            ['id_empresa' => request()->user()->id_empresa],
-        ])->first();
+        $usuarioPermisos = UsuarioPermisos::where('id_user', request()->user()->id)
+            ->where('id_empresa', request()->user()->id_empresa)
+            ->first();
 
         $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
         $resoluciones = explode(",", $usuarioPermisos->ids_resolucion_responsable);
 
         $data = [
-            'cliente' => Nits::where('numero_documento', '22222222')->first(),
+            'cliente' => Nits::where('numero_documento', '222222222222')->first(),
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
             'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get()
         ];
@@ -187,6 +186,7 @@ class VentaController extends Controller
                 //CREAR COMPRA DETALLE
                 FacVentaDetalles::create([
                     'id_venta' => $venta->id,
+                    'id_producto' => $productoDb->id,
                     'id_cuenta_venta' => $productoDb->familia->id_cuenta_venta,
                     'id_cuenta_venta_retencion' => $productoDb->familia->id_cuenta_venta_retencion,
                     'id_cuenta_venta_iva' => $productoDb->familia->id_cuenta_venta_iva,
@@ -419,7 +419,8 @@ class VentaController extends Controller
         $facturas = FacVentas::with(
                 'bodega',
                 'cliente',
-                'comprobante'
+                'comprobante',
+                'centro_costo',
             )
             ->orderBy('id', 'DESC')
             ->take(10);
