@@ -84,10 +84,9 @@ class LoginController extends Controller
             $user->has_empresa = $empresaSelect->token_db;
             $user->save();
 
-            $usuarioPermisosEmpresa = UsuarioPermisos::where([
-                ['id_user', $user->id],
-                ['id_empresa', $empresaSelect->id]
-            ])->first();
+            $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', $user->id)
+                ->where('id_empresa', $empresaSelect->id)
+                ->first();
 
             $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
 
