@@ -20,6 +20,7 @@ use App\Http\Controllers\Tablas\CargueDescargueController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
+use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
 //SISTEMA
@@ -220,6 +221,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(MovimientoInventarioController::class)->group(function () {
             Route::get('movimiento-inventario', 'generate');
             Route::post('movimiento-inventario', 'create');
+        });
+        //CAPTURA NOTA CREDITO
+        Route::controller(NotaCreditoController::class)->group(function () {
+            Route::get('nota-credito/factura-detalle', 'detalleFactura');
         });
         
     });

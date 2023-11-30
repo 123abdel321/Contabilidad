@@ -321,7 +321,7 @@ function ventaInit () {
         }
     });
 
-    if(primeraResolucionVenta.length > 0){
+    if(primeraResolucionVenta && primeraResolucionVenta.length > 0){
         var dataResolucion = {
             id: primeraResolucionVenta[0].id,
             text: primeraResolucionVenta[0].prefijo + ' - ' + primeraResolucionVenta[0].nombre
@@ -331,7 +331,7 @@ function ventaInit () {
         $comboResolucion.val(dataResolucion.id).trigger('change');
     }
 
-    if(primeraBodegaVenta.length > 0){
+    if(primeraBodegaVenta && primeraBodegaVenta.length > 0){
         var dataBodega = {
             id: primeraBodegaVenta[0].id,
             text: primeraBodegaVenta[0].codigo + ' - ' + primeraBodegaVenta[0].nombre
@@ -373,11 +373,11 @@ function ventaInit () {
     consecutivoSiguienteVenta();
     loadFormasPago();
 
-    if (!primeraBodegaVenta.length) {
+    if (!primeraBodegaVenta) {
         agregarToast('warning', 'Sin bodegas asignadas', '', true);
     }
 
-    if (!primeraResolucionVenta.length) {
+    if (!primeraResolucionVenta) {
         agregarToast('warning', 'Sin Resoluciones asigandas', '', true);
     }
 

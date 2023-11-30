@@ -124,6 +124,7 @@
         <div id="tabla-captura-nota_credito" class="card mb-4 col-12 col-sm-12 col-md-9 ml-auto">
             <div id="card-nota_credito" class="card-body" style="content-visibility: auto; overflow: auto; border-radius: 20px;">
 
+                @include('pages.capturas.nota_credito.nota_credito-table')
                 <div style="padding: 8px;"></div>
 
             </div>

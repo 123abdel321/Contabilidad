@@ -476,7 +476,7 @@ class ProductosController extends Controller
                 ]);
             }
 
-            if ($productoConMovimientos->count() > 0) {
+            if ($productoConMovimientos->count() > 1) {
                 return response()->json([
                     'success'=>	false,
                     'data' => '',
