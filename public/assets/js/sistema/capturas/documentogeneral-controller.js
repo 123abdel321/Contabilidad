@@ -9,20 +9,7 @@ var calcularCabeza = true;
 var askSaveDocumentos = true;
 var documento_general_table = null;
 var documento_extracto = null;
-var $comboComprobante = $('#id_comprobante').select2({
-    theme: 'bootstrap-5',
-    delay: 250,
-    ajax: {
-        url: 'api/comprobantes/combo-comprobante',
-        headers: headers,
-        dataType: 'json',
-        processResults: function (data) {
-            return {
-                results: data.data
-            };
-        }
-    }
-});
+var $comboComprobante = null
 
 function documentogeneralInit() {
 
@@ -253,22 +240,20 @@ function documentogeneralInit() {
         });
     }
 
-    if(!$comboComprobante) {
-        $comboComprobante = $('#id_comprobante').select2({
-            theme: 'bootstrap-5',
-            delay: 250,
-            ajax: {
-                url: 'api/comprobantes/combo-comprobante',
-                headers: headers,
-                dataType: 'json',
-                processResults: function (data) {
-                    return {
-                        results: data.data
-                    };
-                }
+    $comboComprobante = $('#id_comprobante').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        ajax: {
+            url: 'api/comprobantes/combo-comprobante',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
             }
-        });
-    }
+        }
+    });
 
     documento_extracto = $('#documentoExtractoTable').DataTable({
         dom: '',
