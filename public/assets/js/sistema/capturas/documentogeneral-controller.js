@@ -255,6 +255,18 @@ function documentogeneralInit() {
         }
     });
 
+    $('#id_comprobante').on('select2:close', function(event) {
+        var data = $(this).select2('data');
+        if(data.length){
+            setTimeout(function(){
+                $('#fecha_manual_documento').focus();
+                $('#fecha_manual_documento').select();
+            },10);
+            tipo_comprobante = data[0].tipo_comprobante;
+            consecutivoSiguiente();
+        }
+    });
+
     documento_extracto = $('#documentoExtractoTable').DataTable({
         dom: '',
         responsive: false,
@@ -425,21 +437,23 @@ function changeCuentaRow(idRow) {
         $("#documento_referencia_"+idRow).addClass("normal_input");
         $("#documento_referencia_"+idRow).prop("readonly", false);
     }
-    document.getElementById("card-documento-general").scrollLeft = 380;
+    document.getElementById("card-documento-general").scrollLeft = 310;
     focusNextRow(0, idRow);
 }
 
 function changeNitRow(idRow) {
     if($('#combo_nits_'+idRow).val()){
-        document.getElementById("card-documento-general").scrollLeft = 680;
+        document.getElementById("card-documento-general").scrollLeft = 550;
         if (cambiarNit) {
-            focusNextRow(1, idRow);
-        } else {
-            cambiarNit = true;
-            setTimeout(function(){
-                $('#combo_nits_'+idRow).select2('open');
-            },10);
+            if($('#combo_cecos_'+idRow).val()) focusNextRow(2, idRow);
+            else focusNextRow(1, idRow);
+            return;
         }
+
+        cambiarNit = true;
+        setTimeout(function(){
+            $('#combo_nits_'+idRow).select2('open');
+        },10);
     }
 }
 
@@ -664,10 +678,11 @@ function setDisabledRows(data, idRow) {
         $("#combo_nits_"+idRow).prop('disabled', true);
     }
     if(data && data.exige_centro_costos) {
-        if(primerCecosGeneral) {
+        if(primerCecosGeneral.length == 1) {
+            cecosGeneral = primerCecosGeneral[0];
             var dataCecos = {
-                id: primerCecosGeneral.id,
-                text: primerCecosGeneral.codigo+ ' - ' +primerCecosGeneral.nombre,
+                id: cecosGeneral.id,
+                text: cecosGeneral.codigo+ ' - ' +cecosGeneral.nombre,
             };
             var newOptionCecos = new Option(dataCecos.text, dataCecos.id, false, false);
             $('#combo_cecos_'+idRow).append(newOptionCecos).trigger('change');
@@ -764,6 +779,7 @@ function focusNextRow(Idcolumn, idRow) {
                     setTimeout(function(){
                         $('#documentoReferenciaTable tr').find(idInput).select();
                     },10);
+                    document.getElementById("card-documento-general").scrollLeft = 1000;
                 }
                 if(inputsId[idNextColumn] == '#credito') {
                     var [debito, credito] = totalValores();
@@ -775,6 +791,7 @@ function focusNextRow(Idcolumn, idRow) {
                     setTimeout(function(){
                         $('#documentoReferenciaTable tr').find(idInput).select();
                     },10);
+                    document.getElementById("card-documento-general").scrollLeft = 1000;
                 }
 
                 setTimeout(function(){
@@ -1111,18 +1128,6 @@ function mostrarModalFormDocumentos() {
     
     $("#documentoGeneralFormModal").modal('show');
 }
-
-$('#id_comprobante').on('select2:close', function(event) {
-    var data = $(this).select2('data');
-    if(data.length){
-        setTimeout(function(){
-            $('#fecha_manual_documento').focus();
-            $('#fecha_manual_documento').select();
-        },10);
-        tipo_comprobante = data[0].tipo_comprobante;
-        consecutivoSiguiente();
-    }
-});
 
 function consecutivoSiguiente() {
     var id_comprobante = $('#id_comprobante').val();

@@ -46,7 +46,7 @@ class DocumentoGeneralController extends Controller
 		else $capturarDocumentosDescuadrados = $capturarDocumentosDescuadrados->valor;
 
 		$data = [
-            'cecos' => CentroCostos::first(),
+            'cecos' => CentroCostos::get(),
 			'capturarDocumentosDescuadrados' => $capturarDocumentosDescuadrados
         ];
 
