@@ -28,7 +28,7 @@ function documentogeneralInit() {
 
     fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
 
-    $('#fecha_manual').val(fecha);
+    $('#fecha_manual_documento').val(fecha);
 
     documento_general_table = $('#documentoReferenciaTable').DataTable({
         dom: '',
@@ -597,6 +597,7 @@ function changeConcecutivo(event) {
 
 function changeFecha(event) {
     if(event.keyCode == 13){
+        validarFechaManualDocumentos();
         setTimeout(function(){
             $('#consecutivo').focus();
             $('#consecutivo').select();
@@ -636,6 +637,39 @@ function clearRows(data, idRow) {
     } else {
         $("#credito_"+idRow).val('');
     }
+}
+
+function validarFechaManualDocumentos() {
+    var fechaManual = $("#fecha_manual_documento").val();
+
+    $('#fecha_manual_documento').removeClass("is-valid");
+    $('#fecha_manual_documento').removeClass("is-invalid");
+
+    if (!fechaManual) {
+        $('#fecha_manual_documento').removeClass("is-valid");
+        $('#fecha_manual_documento').addClass("is-invalid");
+        $('#fecha_manual_documento-feedback').text('La Fecha manual es requerida')
+        return;
+    }
+
+    $.ajax({
+        url: base_url + 'anio-cerrado',
+        method: 'GET',
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+
+        var fechaCierre = new Date(res.data).getTime();
+        var fechaManual = new Date($("#fecha_manual_documento").val()).getTime();
+
+        if (fechaManual <= fechaCierre) {
+            $('#fecha_manual_documento').removeClass("is-valid");
+            $('#fecha_manual_documento').addClass("is-invalid");
+            $('#fecha_manual_documento-feedback').text('La Fecha se encuentra en un año cerrado');
+        }
+    }).fail((err) => {
+    });
+
 }
 
 function setDisabledRows(data, idRow) {
@@ -890,7 +924,6 @@ function searchCaptura() {
     if(form.checkValidity()){
 
         $("#id_comprobante").prop('disabled', true);
-        // $("#fecha_manual").prop('disabled', true);
         $("#consecutivo").prop('disabled', true);
         
         $("#iniciarCapturaDocumentos").hide();
@@ -898,7 +931,7 @@ function searchCaptura() {
 
         let data = {
             id_comprobante: $("#id_comprobante").val(),
-            fecha_manual: $("#fecha_manual").val(),
+            fecha_manual: $("#fecha_manual_documento").val(),
             consecutivo: $("#consecutivo").val()
         }
 
@@ -1022,7 +1055,6 @@ function cancelarFacturas() {
     }
 
     $("#id_comprobante").prop('disabled', false);
-    // $("#fecha_manual").prop('disabled', false);
     $("#consecutivo").prop('disabled', false);
 
     $("#iniciarCapturaDocumentos").show();
@@ -1099,27 +1131,17 @@ $('#id_comprobante').on('select2:close', function(event) {
     var data = $(this).select2('data');
     if(data.length){
         setTimeout(function(){
-            $('#fecha_manual').focus();
-            $('#fecha_manual').select();
+            $('#fecha_manual_documento').focus();
+            $('#fecha_manual_documento').select();
         },10);
         tipo_comprobante = data[0].tipo_comprobante;
         consecutivoSiguiente();
     }
 });
 
-$("#fecha_manual").on('change', function(event) {
-    var data = $('#fecha_manual').val();
-    if(event.keyCode == 13){
-        setTimeout(function(){
-            $('#consecutivo').focus();
-            $('#consecutivo').select();
-        },10);
-    }
-});
-
 function consecutivoSiguiente() {
     var id_comprobante = $('#id_comprobante').val();
-    var fecha_manual = $('#fecha_manual').val();
+    var fecha_manual = $('#fecha_manual_documento').val();
     if(id_comprobante && fecha_manual) {
         $("#consecutivo").prop('disabled', true);
         $("#iniciarCapturaDocumentos").hide();
@@ -1358,7 +1380,7 @@ function saveDocumentos() {
         documento: getDocumentos(),
         id_comprobante: $("#id_comprobante").val(),
         consecutivo: $("#consecutivo").val(),
-        fecha_manual: $("#fecha_manual").val(),
+        fecha_manual: $("#fecha_manual_documento").val(),
         editing_documento: $("#editing_documento").val(),
     }
     $.ajax({

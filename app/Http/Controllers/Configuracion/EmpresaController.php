@@ -109,6 +109,7 @@ class EmpresaController extends Controller
                     'razon_social' => $request->get('razon_social'),
                     'codigos_responsabilidades' => implode(',', $request->get('id_responsabilidades')),
                     'nit' => $request->get('nit'),
+                    'fecha_ultimo_cierre' => $request->get('fecha_ultimo_cierre'),
                     'dv' => $request->get('dv'),
                     'telefono' => $request->get('telefono'),
                 ]);

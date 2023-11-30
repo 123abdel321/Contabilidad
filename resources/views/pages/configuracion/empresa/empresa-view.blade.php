@@ -174,9 +174,13 @@
                     <label for="example-text-input" class="form-control-label" style="display: unset;">Segundo apellido</label>
                     <input type="text" class="form-control form-control-sm" name="segundo_apellido_empresa" id="segundo_apellido_empresa" value="{{ $empresaItem->segundo_apellido }}" {{ auth()->user()->can('empresa update') ? '' : 'readonly' }}>
                 </div>
-                <div class="form-check form-switch col-12 col-sm-4 col-md-3">
+                <!-- <div class="form-check form-switch col-12 col-sm-4 col-md-3">
                     <input class="form-check-input" type="checkbox" name="capturar_documento_descuadrado_empresa" id="capturar_documento_descuadrado_empresa" style="height: 20px;" {{ $capturarDocumentosDescuadrados->valor ? 'checked' : '' }} {{ auth()->user()->can('empresa update') ? '' : 'readonly' }}>
                     <label class="form-check-label" for="capturar_documento_descuadrado_empresa">Capturar documentos descuadrados</label>
+                </div> -->
+                <div class="form-group col-12 col-sm-4 col-md-3">
+                    <label for="example-text-input" class="form-control-label">Fecha ultimo cierre</label>
+                    <input name="fecha_ultimo_cierre" id="fecha_ultimo_cierre" class="form-control form-control-sm" type="date" value="{{ $empresaItem->fecha_ultimo_cierre }}" {{ auth()->user()->can('empresa update') ? '' : 'readonly' }}>
                 </div>
                 <div class="form-group col-12 col-sm-8 col-md-6">
                     <label for="exampleFormControlSelect1">Responsabilidades tributarias</label>
@@ -187,11 +191,13 @@
                     </select>
                 </div>
 
-                <button type="button" class="btn btn-primary btn-sm" id="updateEmpresa">Actualizar datos</button>
-                <button id="updateEmpresaLoading" class="btn btn-success btn-sm ms-auto" style="display:none; float: left;" disabled>
-                    Cargando
-                    <i class="fas fa-spinner fa-spin"></i>
-                </button>
+                @can('empresa update')
+                    <button type="button" class="btn btn-primary btn-sm" id="updateEmpresa">Actualizar datos</button>
+                    <button id="updateEmpresaLoading" class="btn btn-success btn-sm ms-auto" style="display:none; float: left;" disabled>
+                        Cargando
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </button>
+                @endcan
 
             </form>
         </div>

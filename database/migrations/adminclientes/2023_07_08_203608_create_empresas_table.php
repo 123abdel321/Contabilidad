@@ -34,6 +34,7 @@ return new class extends Migration
             $table->string('logo', 300)->nullable();
             // $table->integer('id_rut');
             $table->date('fecha_retiro')->nullable();
+            $table->date('fecha_ultimo_cierre')->nullable();
             // $table->string('ciudad', 100)->comment('info');
             $table->string('direccion', 200);
             // $table->string('geo_locations', 500)->comment('Array JSON {lat, lng}');
