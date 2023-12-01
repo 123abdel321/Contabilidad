@@ -11,9 +11,10 @@ function documentosgeneralesInit() {
     documentos_generales_table = $('#documentosGeneralesInformeTable').DataTable({
         pageLength: 100,
         dom: 'Brtip',
+        
         paging: true,
         colReorder: true,
-        responsive: false,
+        responsive: true,
         processing: true,
         serverSide: true,
         fixedHeader: true,
