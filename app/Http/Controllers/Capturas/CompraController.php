@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Capturas;
 
 use DB;
+use DateTimeImmutable;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
 use App\Helpers\Printers\ComprasPdf;
@@ -89,18 +90,6 @@ class CompraController extends Controller
 
     public function create (Request $request)
     {
-        $idCuentaAnticipos = VariablesEntorno::where('nombre', 'id_cuenta_cobrar')->first();
-
-        if(!$idCuentaAnticipos || !$idCuentaAnticipos->valor) {
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=> ["Cuenta anticipos" => ['La cuenta por cobrar en compras no se encuentra configurada!']]
-            ], 422);
-        } else {
-            $request->request->add(['id_cuenta_cobrar' => $idCuentaAnticipos->valor]);
-        }
-
         $comprobanteCompras = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
         if(!$comprobanteCompras) {
@@ -120,7 +109,6 @@ class CompraController extends Controller
             'id_proveedor' => 'required|exists:sam.nits,id',
             'id_bodega' => 'required|exists:sam.fac_bodegas,id',
             'id_comprobante' => 'required|exists:sam.comprobantes,id',
-            'id_cuenta_cobrar' => 'required|exists:sam.plan_cuentas,id',
             'fecha_manual' => 'required|date',
             'documento_referencia' => 'required |string',
             'productos' => 'array|required',
