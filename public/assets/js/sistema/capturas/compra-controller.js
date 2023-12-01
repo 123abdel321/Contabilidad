@@ -817,6 +817,7 @@ function saveCompra() {
             agregarToast('error', 'Creación errada', errorsMsg);
         }
     }).fail((err) => {
+        guardandoCompra = false;
         $("#agregarCompra").show();
         $("#crearCapturaCompra").show();
         $("#iniciarCapturaCompra").hide();
