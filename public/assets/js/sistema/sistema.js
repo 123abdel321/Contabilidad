@@ -9,6 +9,7 @@ const base_web = 'https://listardatos.com/';
 const dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
+
 const headers = {
     "Authorization": auth_token,
     "Content-Type": "application/json",
@@ -48,6 +49,7 @@ var moduloCreado = {
     'productoprecios': false,
     'carguedescargue': false,
     'movimientoinventario': false,
+    'notacredito': false,
 };
 
 var moduloRoute = {
@@ -75,6 +77,7 @@ var moduloRoute = {
     'empresa': 'configuracion',
     'productoprecios': 'importador',
     'movimientoinventario': 'capturas',
+    'notacredito': 'capturas',
 }
 
 $('.water').show();
@@ -91,8 +94,11 @@ $(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownErr
 });
 
 $("#nombre-empresa").text(localStorage.getItem("empresa_nombre"));
-// $("#nombre-usuario-topnav").text(localStorage.getItem("empresa_nombre"));
 $("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
+$("#titulo-empresa").text(localStorage.getItem("empresa_nombre"));
+setTimeout(function(){
+    $(".fondo-sistema").css('background-image', 'url(' +bucketUrl + localStorage.getItem("fondo_sistema")+ ')');
+},200);
 
 if (localStorage.getItem("empresa_logo") == 'null') {
     $("#side_main_logo").attr('src', '/img/logo_contabilidad.png');

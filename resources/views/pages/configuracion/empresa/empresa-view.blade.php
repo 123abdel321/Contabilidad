@@ -137,7 +137,7 @@
 
                 <div class="form-group col-12 col-sm-4 col-md-3">
                     <label for="exampleFormid_tipo_documento">Dirección</label>
-                    <input type="text" class="form-control form-control-sm" name=" direccion_empresa" id="direccion_empresa" value="{{ $empresaItem->direccion }}" required {{ auth()->user()->can('empresa update') ? '' : 'readonly' }}>
+                    <input type="text" class="form-control form-control-sm" name=" direccion_empresa" id="direccion_empresa" value="{{ $empresaItem->direccion }}" {{ auth()->user()->can('empresa update') ? '' : 'readonly' }}>
                     <div class="invalid-feedback">
                         El campo es requerido
                     </div>
@@ -178,17 +178,28 @@
                     <input class="form-check-input" type="checkbox" name="capturar_documento_descuadrado_empresa" id="capturar_documento_descuadrado_empresa" style="height: 20px;" {{ $capturarDocumentosDescuadrados->valor ? 'checked' : '' }} {{ auth()->user()->can('empresa update') ? '' : 'readonly' }}>
                     <label class="form-check-label" for="capturar_documento_descuadrado_empresa">Capturar documentos descuadrados</label>
                 </div> -->
+
                 <div class="form-group col-12 col-sm-4 col-md-3">
                     <label for="example-text-input" class="form-control-label">Fecha ultimo cierre</label>
                     <input name="fecha_ultimo_cierre" id="fecha_ultimo_cierre" class="form-control form-control-sm" type="date" value="{{ $empresaItem->fecha_ultimo_cierre }}" {{ auth()->user()->can('empresa update') ? '' : 'readonly' }}>
                 </div>
-                <div class="form-group col-12 col-sm-8 col-md-6">
+
+                <div class="form-group col-12 col-sm-6 col-md-6">
                     <label for="exampleFormControlSelect1">Responsabilidades tributarias</label>
                     <select class="form-control form-control-sm" id="id_responsabilidades" name="id_responsabilidades[]" multiple="multiple" requiere {{ auth()->user()->can('empresa update') ? '' : 'disabled' }}>
                         @foreach ($responsabilidades as $responsabilidad)
                             <option value="{{ $responsabilidad->id }}">{{ $responsabilidad->codigo.' - '.$responsabilidad->nombre }}</option>
                         @endforeach
                     </select>
+                </div>
+                
+                <div class="justify-content-center col-12 col-sm-6 col-md-6">
+                    <label for="example-text-input" class="form-control-label">Fondo de sistema</label>
+                    <div style="height: 80px;">
+                        <img id="default_fondo_sistema" onclick="document.getElementById('newFondoSistema').click();" src="/img/add_product_img.png" class="img-fluid border border-2 border-white" style="width: 80px; height: auto; cursor: pointer; border-radius: 5%;">
+                        <img id="empresa_fondo_sistema" onclick="document.getElementById('newFondoSistema').click();" src="" class="img-fluid border border-2 border-white" style="width: 80px; height: auto; cursor: pointer; border-radius: 5%;">
+                        <input type="file" name="newFondoSistema" id="newFondoSistema" onchange="readURLFonsoSistema(this);" style="display: none" />
+                    </div>
                 </div>
 
                 @can('empresa update')

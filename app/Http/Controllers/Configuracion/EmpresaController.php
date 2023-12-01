@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Configuracion;
 
 use DB;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 //MODELS
+use App\Models\User;
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\VariablesEntorno;
@@ -113,8 +114,22 @@ class EmpresaController extends Controller
                     'dv' => $request->get('dv'),
                     'telefono' => $request->get('telefono'),
                 ]);
-            
+
+            $user = User::where('id', $request->user()->id)->first();
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+            if($request->fondo_imagen) {
+                $image = $request->fondo_imagen;
+                $ext = explode(";", explode("/",explode(",", $image)[0])[1])[0];
+                $image = str_replace('data:image/'.$ext.';base64,', '', $image);
+                $image = str_replace(' ', '+', $image);
+                $imageName = 'fondo_imagen_'.$request->get('codigo').'_'.uniqid().'.'. $ext;
+                
+                Storage::disk('do_spaces')->put('imagen/empresa/'.$imageName, base64_decode($image), 'public');
+                
+                $user->fondo_sistema = 'imagen/empresa/'.$imageName;
+                $user->save();
+            }
 
             copyDBConnection($empresa->servidor ?: 'sam', 'sam');
             setDBInConnection('sam', $empresa->token_db);
@@ -129,6 +144,7 @@ class EmpresaController extends Controller
             return response()->json([
                 'success'=>	true,
                 'data' => '',
+                'fondo_sistema' => $user->fondo_sistema,
                 'message'=> 'Empresa actualizada con exito!'
             ]);
 

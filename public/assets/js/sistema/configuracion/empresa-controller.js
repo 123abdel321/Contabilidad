@@ -1,4 +1,3 @@
-
 function empresaInit() {
     $('#id_responsabilidades').select2({
         theme: 'bootstrap-5',
@@ -35,29 +34,49 @@ $("#tipo_contribuyente_empresa").on('change', function(e) {
     form.checkValidity();
 });
 
+function readURLFonsoSistema(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            fondoSistema = e.target.result;
+            $('#empresa_fondo_sistema').attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+
+        $('#default_fondo_sistema').hide();
+        $('#empresa_fondo_sistema').show();
+    }
+}
+
 $(document).on('click', '#updateEmpresa', function () {
 
     var form = document.querySelector('#empresaForm');
 
-    if(!form.checkValidity()) form.classList.add('was-validated');
+    if(!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+    }
 
     $("#updateEmpresaLoading").show();
     $("#updateEmpresa").hide();
 
     let data = {
-        'nit': $('#nit_empresa').val(),
-        'dv': $('#dv_empresa').val(),
-        'direccion': $('#direccion_empresa').val(),
-        'telefono': $('#telefono_empresa').val(),
-        'tipo_contribuyente': $('#tipo_contribuyente_empresa').val(),
-        'razon_social': $('#razon_social_empresa').val(),
-        'primer_nombre': $('#primer_nombre_empresa').val(),
-        'otros_nombres': $('#otros_nombres_empresa').val(),
-        'primer_apellido': $('#primer_apellido_empresa').val(),
-        'segundo_apellido': $('#segundo_apellido_empresa').val(),
-        'fecha_ultimo_cierre': $('#fecha_ultimo_cierre').val(),
-        'id_responsabilidades': $('#id_responsabilidades').val(),
-        'capturar_documento_descuadrado': $("input[type='checkbox']#capturar_documento_descuadrado_empresa").is(':checked') ? '1' : '',
+        nit: $('#nit_empresa').val(),
+        dv: $('#dv_empresa').val(),
+        direccion: $('#direccion_empresa').val(),
+        telefono: $('#telefono_empresa').val(),
+        tipo_contribuyente: $('#tipo_contribuyente_empresa').val(),
+        razon_social: $('#razon_social_empresa').val(),
+        primer_nombre: $('#primer_nombre_empresa').val(),
+        otros_nombres: $('#otros_nombres_empresa').val(),
+        primer_apellido: $('#primer_apellido_empresa').val(),
+        segundo_apellido: $('#segundo_apellido_empresa').val(),
+        fecha_ultimo_cierre: $('#fecha_ultimo_cierre').val(),
+        id_responsabilidades: $('#id_responsabilidades').val(),
+        capturar_documento_descuadrado: $("input[type='checkbox']#capturar_documento_descuadrado_empresa").is(':checked') ? '1' : '',
+        fondo_imagen : fondoSistema,
     }
 
     $.ajax({
@@ -68,8 +87,13 @@ $(document).on('click', '#updateEmpresa', function () {
         dataType: 'json',
     }).done((res) => {
         if(res.success){
+            localStorage.setItem("fondo_sistema", res.fondo_sistema);
             $("#updateEmpresaLoading").hide();
             $("#updateEmpresa").show();
+
+            setTimeout(function(){
+                $(".fondo-sistema").css('background-image', 'url(' +bucketUrl + res.fondo_sistema+ ')');
+            },300);
             agregarToast('exito', 'Actualización exitosa', 'Datos de empresa actualizados con exito!', true);
         }
     }).fail((err) => {
@@ -109,7 +133,7 @@ function seleccionarEmpresa(hash) {
         }
     }).fail((err) => {
         $("#updateEmpresaLoading").hide();
-            $("#updateEmpresa").show();
+        $("#updateEmpresa").show();
         var errorsMsg = "";
         var mensaje = err.responseJSON.message;
         if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
