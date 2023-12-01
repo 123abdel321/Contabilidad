@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Capturas;
 
 use DB;
+use DateTimeImmutable;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 //MODELS
+use App\Models\Empresas\Empresa;
 use App\Models\Sistema\Nits;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\CentroCostos;
@@ -44,7 +46,7 @@ class DocumentoGeneralController extends Controller
 		else $capturarDocumentosDescuadrados = $capturarDocumentosDescuadrados->valor;
 
 		$data = [
-            'cecos' => CentroCostos::first(),
+            'cecos' => CentroCostos::get(),
 			'capturarDocumentosDescuadrados' => $capturarDocumentosDescuadrados
         ];
 
@@ -69,6 +71,18 @@ class DocumentoGeneralController extends Controller
 			"documento.*.cuenta" => "required_without:documento.*.id_cuenta|sometimes|nullable|exists:sam.con_plan_cuentas,cuenta",
 			'documento.*.numero_documento' => 'nullable|sometimes|exists:sam.nits,numero_documento',
         ];
+
+		$empresa = Empresa::where('id', request()->user()->id_empresa)->first();
+		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
+        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
+
+        if ($fechaManual <= $fechaCierre) {
+			return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+            ], 422);
+		}
 
 		$validator = Validator::make($request->all(), $rules, $this->messages);
 
@@ -329,4 +343,15 @@ class DocumentoGeneralController extends Controller
     		'message'=> 'Consecutivo siguiente generado con exito!'
     	]);
     }
+
+	public function getAnioCerrado(Request $request)
+	{
+		$empresa = Empresa::where('id', request()->user()->id_empresa)->first();
+
+		return response()->json([
+			'success'=>	true,
+			'data' =>  $empresa->fecha_ultimo_cierre,
+			'message'=> 'Año cerrado consultado con exito!'
+		], 200);
+	}
 }

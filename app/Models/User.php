@@ -37,7 +37,8 @@ class User extends Authenticatable
         'avatar',
         'telefono',
         'created_by',
-        'updated_by'
+        'updated_by',
+        'fondo_sistema'
     ];
 
     /**

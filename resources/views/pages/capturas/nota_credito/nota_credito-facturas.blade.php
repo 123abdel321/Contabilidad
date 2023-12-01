@@ -14,6 +14,7 @@
                         <th>Consecutivo</th>
                         <th>Total</th>
                         <th>Cecos</th>
+                        <th>Bodega</th>
                         <th>Fecha</th>
                         <th></th>
                     </tr>

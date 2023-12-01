@@ -20,6 +20,7 @@ use App\Http\Controllers\Tablas\CargueDescargueController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
+use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
 //SISTEMA
@@ -56,11 +57,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     //EMPRESA
     Route::get("empresa","App\Http\Controllers\ApiController@getEmpresas");
     Route::get("usuario-accion","App\Http\Controllers\ApiController@getUsuario");
-
     Route::post("empresa","App\Http\Controllers\InstaladorController@createEmpresa");
     Route::post("seleccionar-empresa","App\Http\Controllers\ApiController@setEmpresa");
     Route::get('responsabilidades-combo', 'App\Http\Controllers\Configuracion\EmpresaController@comboResponsabilidades');
     Route::put('empresa', 'App\Http\Controllers\Configuracion\EmpresaController@updateEmpresa');
+
+    //ANIO CERRADO
+    Route::get("anio-cerrado","App\Http\Controllers\Capturas\DocumentoGeneralController@getAnioCerrado");
     
     //EMPRESA SELECCIONADA
     Route::group(['middleware' => ['clientconnection']], function() {
@@ -220,6 +223,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(MovimientoInventarioController::class)->group(function () {
             Route::get('movimiento-inventario', 'generate');
             Route::post('movimiento-inventario', 'create');
+        });
+        //CAPTURA NOTA CREDITO
+        Route::controller(NotaCreditoController::class)->group(function () {
+            Route::get('nota-credito/factura-detalle', 'detalleFactura');
         });
         
     });

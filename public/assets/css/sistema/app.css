@@ -1,3 +1,5 @@
+
+
 .select2-selection{
     font-size: 13px !important;
 }
@@ -34,7 +36,6 @@ label, .form-label {
 }
 
 .fondo-sistema {
-    background-image: url(/img/fondo-erp.png);
     height: 100% !important;
     background-position: center;
     background-size: cover;
@@ -229,12 +230,13 @@ tr.even:focus {
 }
 
 td.dtfc-fixed-right {
+    right: -3px !important;
     background-color: white;
     border-left: solid 1px #e9ecef !important;
 }
 
 th.dtfc-fixed-right {
-    right: 0px !important;
+    right: -3px !important;
     border-left: solid 1px #e9ecef !important;
 }
 

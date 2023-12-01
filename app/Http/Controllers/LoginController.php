@@ -96,6 +96,7 @@ class LoginController extends Controller
                 'token_type' => 'Bearer',
                 'empresa' => $empresaSelect,
                 'notificacion_code' => $notificacionCode,
+                'fondo_sistema' => $user->fondo_sistema,
                 'message'=> 'Usuario logeado con exito!'
             ], 200);
         }
