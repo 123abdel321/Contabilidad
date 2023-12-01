@@ -10,6 +10,7 @@
     }
     #sidenav-main {
         background-color: #172b4d !important;
+        opacity: 0.85 !important;
     }
 
     .text-blue {

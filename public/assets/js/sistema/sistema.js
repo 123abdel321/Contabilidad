@@ -124,7 +124,13 @@ function openNewItem(id, nombre, icon) {
     }
     seleccionarView(id, nombre);
     document.getElementById('sidenav-main-2').click();
-}    
+}
+
+function closeMenu() {
+    if (body.classList.contains(className)) {
+        toggleSidenavMaximo();
+    }
+}
 
 function generatView(id, nombre, icon){
     $('.water').show();
@@ -413,7 +419,7 @@ function showNit (id_nit) {
             $('#telefono_1_nit').val(data.telefono_1);
             $('#email_nit').val(data.email);
             $('#observaciones_nit').val(data.observaciones);
-            $('#ciudad_nit').val(data.ciudad.nombre_completo);
+            $('#ciudad_nit').val(data.ciudad ? data.ciudad.nombre_completo : '');
         }
         $('.water').hide();
     }).fail((err) => {

@@ -40,8 +40,8 @@
             @yield('content')
         @else
             @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
-                <div class="min-height-100 bg-dark position-absolute w-100 fondo-sistema">
-                    <!-- <span class="mask opacity-6 fondo-sistema-color"></span> -->
+                <div class="min-height-100 bg-dark position-absolute w-100 fondo-sistema" onclick="closeMenu()">
+                    
                 </div>
             @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
                 <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
@@ -50,7 +50,7 @@
             @endif
             @include('layouts.navbars.auth.sidenav', ['menus', $menus])
             @include('layouts.navbars.auth.topnav')
-            <div id="contenerdores-views" class="tab-content clearfix">
+            <div id="contenerdores-views" class="tab-content clearfix" onclick="closeMenu()">
                 <main class="tab-pane main-content border-radius-lg change-view active" style="margin-left: 5px;" id="containner-dashboard">
                     
                 </main>
@@ -109,7 +109,7 @@
                     <div class="row">  
                         <div class="justify-content-center col-12 col-md-6 col-sm-6">
                             <div style="text-align: -webkit-center; height: 80px;">
-                                <img id="avatar_nit" src="/img/theme/tim.png" class="img-fluid border border-2 border-white" style="width: 80px; height: 100%; cursor: pointer; border-radius: 50%;">
+                                <img id="avatar_nit" src="/img/theme/tim.png" class="img-fluid border border-2 border-white" style="width: 80px; height: 100%; cursor: pointer; border-radius: 50%;" alt="no-imagen">
                             </div>
                         </div>
                         <div class="form-group col-12 col-md-6 col-sm-6">

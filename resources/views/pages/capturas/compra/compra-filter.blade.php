@@ -45,9 +45,7 @@
                     <div class="form-group col-6 col-sm-4 col-md-2">
                         <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
                         <input name="fecha_manual_compra" id="fecha_manual_compra" class="form-control form-control-sm" type="date" required>
-                        <div class="invalid-feedback">
-                            La fecha es requerido
-                        </div>
+                        <div id="fecha_manual_compra-feedback" class="invalid-feedback"></div>
                     </div>
 
                     <div class="form-group col-6 col-sm-4 col-md-2">

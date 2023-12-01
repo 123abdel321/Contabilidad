@@ -72,6 +72,16 @@ class DocumentoGeneralController extends Controller
 			'documento.*.numero_documento' => 'nullable|sometimes|exists:sam.nits,numero_documento',
         ];
 
+		$validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->messages()
+            ], 422);
+        }
+
 		$empresa = Empresa::where('id', request()->user()->id_empresa)->first();
 		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
         $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
@@ -83,16 +93,6 @@ class DocumentoGeneralController extends Controller
                 "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
             ], 422);
 		}
-
-		$validator = Validator::make($request->all(), $rules, $this->messages);
-
-		if ($validator->fails()){
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$validator->messages()
-            ], 422);
-        }
 		
 		try {
 
