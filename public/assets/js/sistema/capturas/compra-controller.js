@@ -330,12 +330,46 @@ function compraInit () {
     $("#fecha_manual_compra").on('keydown', function(event) {
         if(event.keyCode == 13){
             event.preventDefault();
+            validarFechaManualCompras();
             setTimeout(function(){
                 $('#documento_referencia_compra').focus();
                 $('#documento_referencia_compra').select();
             },10);
         }
     });
+
+    function validarFechaManualCompras() {
+        var fechaManual = $("#fecha_manual_compra").val();
+    
+        $('#fecha_manual_compra').removeClass("is-valid");
+        $('#fecha_manual_compra').removeClass("is-invalid");
+    
+        if (!fechaManual) {
+            $('#fecha_manual_compra').removeClass("is-valid");
+            $('#fecha_manual_compra').addClass("is-invalid");
+            $('#fecha_manual_compra-feedback').text('La Fecha manual es requerida')
+            return;
+        }
+    
+        $.ajax({
+            url: base_url + 'anio-cerrado',
+            method: 'GET',
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+    
+            var fechaCierre = new Date(res.data).getTime();
+            var fechaManual = new Date($("#fecha_manual_compra").val()).getTime();
+    
+            if (fechaManual <= fechaCierre) {
+                $('#fecha_manual_compra').removeClass("is-valid");
+                $('#fecha_manual_compra').addClass("is-invalid");
+                $('#fecha_manual_compra-feedback').text('La Fecha se encuentra en un año cerrado');
+            }
+        }).fail((err) => {
+        });
+    
+    }
 
     $("#documento_referencia_compra").on('keydown', function(event) {
         if(event.keyCode == 13){

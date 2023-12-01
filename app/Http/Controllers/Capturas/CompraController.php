@@ -157,6 +157,18 @@ class CompraController extends Controller
             ], 422);
         }
 
+        $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
+		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
+        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
+
+        if ($fechaManual <= $fechaCierre) {
+			return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+            ], 422);
+		}
+
         try {
             
             DB::connection('sam')->beginTransaction();
