@@ -22,6 +22,7 @@ function ventaInit () {
 
     venta_table = $('#ventaTable').DataTable({
         dom: '',
+        pageLength: 200,
         responsive: false,
         processing: true,
         serverSide: false,
@@ -536,10 +537,10 @@ function addRowProductoVenta () {
             document.getElementById("card-venta").scrollLeft = 0;
             return;
         }
-    } else {
+    } else if(totalRows > 1) {
         clearFormasPago();
     }
-    
+
     venta_table.row.add({
         "id": idVentaProducto,
         "cantidad": 1,
@@ -840,6 +841,7 @@ function changeProductoVenta (idRow) {
     document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%';
         
     calcularProductoVenta(idRow);
+    clearFormasPago();
     
     setTimeout(function(){
         $('#venta_cantidad_'+idRow).focus();
@@ -1073,6 +1075,9 @@ function saveVenta() {
     }).done((res) => {
         guardandoVenta = false;
         if(res.success){
+
+            agregarToast('exito', 'Creación exitosa', 'Venta creada con exito!', true);
+
             $("#crearCapturaVenta").show();
             $("#crearCapturaVentaLoading").hide();
 
@@ -1090,15 +1095,19 @@ function saveVenta() {
                 venta_table.row(0).remove().draw();
             }
 
-            mostrarValoresVentas();
-
-            agregarToast('exito', 'Creación exitosa', 'Venta creada con exito!', true);
             consecutivoSiguienteVenta();
+            mostrarValoresVentas();
             loadAnticiposCliente();
-            setTimeout(function(){
-                $('#id_cliente_venta').focus();
-                $comboCliente.select2("open");
-            },10);
+
+            if (ventaRapida) {
+                addRowProductoVenta();
+            } else {
+                setTimeout(function(){
+                    $('#id_cliente_venta').focus();
+                    $comboCliente.select2("open");
+                },10);
+            }
+
         } else {
             var mensaje = res.mensages;
             var errorsMsg = "";
