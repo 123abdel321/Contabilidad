@@ -8,9 +8,8 @@
             <th>Dscto</th>
             <th>Iva</th>
             <th>Total Disp.</th>
-            <th>Total Devolución</th>
             <th>Observación</th>
-            <th style="border-radius: 0px 15px 0px 0px !important; right: -3px !important;">Total devuelto</th>
+            <th style="border-radius: 0px 15px 0px 0px !important; right: -3px !important;">Total Devolución</th>
         </tr>
     </thead>
 </table>
