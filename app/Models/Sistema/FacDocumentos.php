@@ -15,6 +15,7 @@ class FacDocumentos extends Model
 
     protected $fillable = [
         'id_comprobante',
+        'id_nit',
         'fecha_manual',
         'consecutivo',
         'debito',

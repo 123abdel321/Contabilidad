@@ -1,6 +1,12 @@
+var fechaDesde = null;
 var documento_table = null;
 
 function documentosInit() {
+
+    fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+
+    $('#fecha_desde_documento').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
+    $('#fecha_hasta_documento').val(fechaDesde);
 
     documento_table = $('#DocumentosInformeTable').DataTable({
         dom: 't',
@@ -8,6 +14,7 @@ function documentosInit() {
         processing: true,
         serverSide: true,
         fixedHeader: true,
+        ordering: false,
         deferLoading: 0,
         initialLoad: false,
         language: lenguajeDatatable,
@@ -34,7 +41,8 @@ function documentosInit() {
             headers: headers,
             data: function ( d ) {
                 d.id_comprobante = $('#id_comprobante_documento').val();
-                d.fecha_manual = $('#fecha_manual_documento').val();
+                d.fecha_desde = $('#fecha_desde_documento').val();
+                d.fecha_hasta = $('#fecha_hasta_documento').val();
                 d.consecutivo = $('#consecutivo_documento').val();
                 d.tipo_factura = getEstadoDocumentos();
             }
