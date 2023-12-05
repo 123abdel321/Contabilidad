@@ -190,6 +190,7 @@ function productosInit() {
             $("#saveNewProducto").hide();
             $("#cancelProducto").show();
             $("#createProducto").hide();
+            $("#reloadProducto").hide();
 
             $('#id_producto_edit').val(dataProducto.id);
             $("#nombre_producto").val(dataProducto.nombre);
@@ -657,6 +658,7 @@ $(document).on('click', '#createProducto', function () {
     $("#saveNewProducto").show();
     $("#cancelProducto").show();
     $("#createProducto").hide();
+    $("#reloadProducto").hide();
 
     $('#new_produc_img').attr('src', '');
     $('#new_produc_img').hide();
@@ -664,6 +666,10 @@ $(document).on('click', '#createProducto', function () {
     document.getElementById("id_bodega_producto").disabled = false;
 
     $("#titulo-view").text('Agregar producto');
+});
+
+$(document).on('click', '#reloadProducto', function () {
+    productos_table.ajax.reload();
 });
 
 $(document).on('click', '#saveNewProducto', function () {
@@ -778,6 +784,7 @@ $(document).on('click', '#cancelProducto', function () {
     $("#saveEditProducto").hide();
     $("#saveNewProducto").hide();
     $("#createProducto").show();
+    $("#reloadProducto").show();
     $('.dtfh-floatingparent').show();
     $("#searchInputProductos").show();
     $("#titulo-view").text('Productos');
