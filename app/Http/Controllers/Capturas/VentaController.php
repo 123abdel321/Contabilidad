@@ -129,13 +129,29 @@ class VentaController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>$validator->messages()
+                "message"=>$validator->errors()
             ], 422);
         }
 
         $this->resolucion = FacResoluciones::whereId($request->get('id_resolucion'))
             ->with('comprobante')
             ->first();
+
+        if (!$this->resolucion->isValid) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está agotada"]]
+            ], 422);
+        }
+
+        if (!$this->resolucion->isActive) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está vencida"]]
+            ], 422);
+        }
 
         $consecutivo = $this->getNextConsecutive($this->resolucion->comprobante->id, $request->get('fecha_manual'));
         
@@ -441,6 +457,8 @@ class VentaController extends Controller
             $facturas->where('id_resolucion', $request->get('id_resolucion'));
         }
 
+        $facturas->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL);
+
         return response()->json([
             'success'=>	true,
             'data' => $facturas->get(),
@@ -542,17 +560,18 @@ class VentaController extends Controller
                     $this->totalesFactura['id_cuenta_rete_fuente'] = $cuentaRetencion->id;
                 }
             }
-            $subtotal = $producto->cantidad * $producto->costo;
+
+            $subtotal = ($producto->cantidad * $producto->costo) - $producto->descuento_valor;
             $this->totalesFactura['subtotal']+= $subtotal;
             $this->totalesFactura['total_iva']+= $producto->iva_valor;
             $this->totalesFactura['total_descuento']+= $producto->descuento_valor;
-            $this->totalesFactura['total_factura']+= $subtotal - $producto->descuento_valor + $producto->iva_valor;
+            $this->totalesFactura['total_factura']+= $subtotal + $producto->iva_valor;
         }
 
-        if ($this->totalesFactura['total_factura'] > $this->totalesFactura['tope_retencion'] && $this->totalesFactura['porcentaje_rete_fuente'] > 0) {
+        if ($this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] && $this->totalesFactura['porcentaje_rete_fuente'] > 0) {
             $total_rete_fuente = ($this->totalesFactura['subtotal'] * $this->totalesFactura['porcentaje_rete_fuente']) / 100;
             $this->totalesFactura['total_rete_fuente'] = $total_rete_fuente;
-            $this->totalesFactura['total_factura']-= $total_rete_fuente;
+            $this->totalesFactura['total_factura'] = $this->totalesFactura['total_factura'] - $total_rete_fuente;
         } else {
             $this->totalesFactura['id_cuenta_rete_fuente'] = null;
         }

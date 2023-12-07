@@ -161,7 +161,7 @@
                     </table>
                 </div>
                 <div id="ventaForm" class="card mb-4 col-12 col-sm-7 col-md-12 ml-auto">
-                    <div style="max-height: 143px; overflow: auto;">
+                    <div style="overflow: auto;">
                         <table id="ventaFormaPago" class="table table-bordered display responsive table-captura-ventas" width="100%">
                             <thead>
                                 <tr style="border: 0px !important;">

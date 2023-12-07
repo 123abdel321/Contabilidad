@@ -112,7 +112,10 @@
                 <tr>
                     <th class="border-dashed" style="width:55%;"> <b class="font-13">PRODUCTO </b></th>
                     <th class="border-dashed" style="width:5%;text-align:center;"> <b class="font-13">CANT. </b></th>
-                    <th class="border-dashed" style="width:20%;text-align:center;"> <b class="font-13">V. UNI </b></th>
+                    <th class="border-dashed" style="width:20%;text-align:center;"> <b class="font-13">V. UNI. </b></th>
+                    @if ($factura->total_descuento)
+                        <th class="border-dashed" style="width:20%;text-align:center;"> <b class="font-13">DESC. </b></th>
+                    @endif
                     <th class="border-dashed" style="width:20%;text-align:right;"> <b class="font-13">TOTAL </b></th>
                 </tr>
             </thead>
@@ -122,7 +125,10 @@
                     <tr>
                         <td class="font-13" style="width:55%;">{{ $producto->descripcion }}</td>
                         <td class="font-13" style="width:5%;text-align:center;">{{ number_format($producto->cantidad) }}</td>
-                        <td class="font-13" style="width:20%;text-align:center;">{{ number_format($producto->subtotal) }}</td>
+                        <td class="font-13" style="width:20%;text-align:center;">{{ number_format($producto->costo) }}</td>
+                        @if ($factura->total_descuento)
+                            <td class="font-13" style="width:auto;text-align:center;">{{ number_format($producto->descuento_valor) }}</td>
+                        @endif
                         <td class="font-13" style="width:20%;text-align:right;">{{ number_format($producto->total) }}</td>
                     </tr>
                 @endforeach
@@ -151,6 +157,21 @@
                     <td class="font-13" style="width:22%;"></td>
                     <td class="font-13" style="width:22%;text-align:right;">{{ number_format($factura->subtotal) }}</td>
                 </tr>
+                @if ($factura->total_descuento > 0)
+                    <tr>
+                        <td class="font-13" style="width:56%;">DESCUENTO</td>
+                        <td class="font-13" style="width:22%;"></td>
+                        <td class="font-13" style="width:22%;text-align:right;">{{ number_format($factura->total_descuento) }}</td>
+                    </tr>
+                @endif
+
+                @if ($factura->total_rete_fuente > 0)
+                    <tr>
+                        <td class="font-13" style="width:56%;">RETENCION {{ number_format($factura->porcentaje_rete_fuente) }}%</td>
+                        <td class="font-13" style="width:22%;"></td>
+                        <td class="font-13" style="width:22%;text-align:right;">{{ number_format($factura->total_rete_fuente) }}</td>
+                    </tr>
+                @endif
 
                 @if (count($impuestosIva) > 0)
                     @foreach ($impuestosIva as $impuestos)

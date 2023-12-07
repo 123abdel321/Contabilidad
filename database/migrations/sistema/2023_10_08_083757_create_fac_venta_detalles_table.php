@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('fac_venta_detalles', function (Blueprint $table) {
             $table->id();
             $table->integer('id_venta');
+            $table->integer('id_venta_detalle')->nullable();
             $table->integer('id_cuenta_venta')->nullable();
             $table->integer('id_cuenta_venta_retencion')->nullable();
             $table->integer('id_cuenta_venta_iva')->nullable();
