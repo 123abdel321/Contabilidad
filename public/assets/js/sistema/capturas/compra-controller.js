@@ -526,6 +526,8 @@ function addRowProductoCompra () {
             document.getElementById("card-compra").scrollLeft = 0;
             return;
         }
+    } else if(totalRows > 1) {
+        clearFormasPagoCompras();
     }
 
     compra_table.row.add({
@@ -590,6 +592,7 @@ function changeProductoCompra (idRow) {
     document.getElementById('compra_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionCompras+'%'+'<br> BASE '+ new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(topeRetencionCompras);
         
     calcularProducto(idRow);
+    clearFormasPagoCompras();
     
     setTimeout(function(){
         $('#compra_cantidad_'+idRow).focus();
