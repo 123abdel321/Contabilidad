@@ -55,6 +55,12 @@ function documentosInit() {
                 return row.comprobante.codigo + ' - ' +row.comprobante.nombre;
             }},
             {"data": function (row, type, set){
+                if(!row.nit){
+                    return '';
+                }
+                return row.nit.numero_documento + ' - ' +row.nit.nombre_completo;
+            }},
+            {"data": function (row, type, set){
                 if(!row.consecutivo){
                     return '';
                 }

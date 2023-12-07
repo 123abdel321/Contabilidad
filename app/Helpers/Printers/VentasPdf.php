@@ -57,12 +57,15 @@ class VentasPdf extends AbstractPrinterPdf
 					$cuentaImpuesto = PlanCuentas::where('id', $key)
 						->with('impuesto')
 						->first();
-					$impuestosIva[] = (object)[
-						'nombre' => $cuentaImpuesto->impuesto->nombre,
-						'porcentaje' => $cuentaImpuesto->impuesto->porcentaje,
-						'base' => $gImpuestos->sum('subtotal'),
-						'total'	=> $gImpuestos->sum('iva_valor')
-					];
+					
+					if ($cuentaImpuesto->impuesto) {
+						$impuestosIva[] = (object)[
+							'nombre' => $cuentaImpuesto->impuesto->nombre,
+							'porcentaje' => $cuentaImpuesto->impuesto->porcentaje,
+							'base' => $gImpuestos->sum('subtotal'),
+							'total'	=> $gImpuestos->sum('iva_valor')
+						];
+					}
 				}
 			}
 		}

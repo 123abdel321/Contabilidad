@@ -509,6 +509,8 @@ $(document).on('keydown', '.custom-combo_producto .select2-search__field', funct
                 abrirFormasPagoCompras = false;
             },500);
         }
+    } else {
+        abrirFormasPagoCompras = false;
     }
 });
 
