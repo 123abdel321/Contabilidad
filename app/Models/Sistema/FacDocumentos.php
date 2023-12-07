@@ -37,4 +37,9 @@ class FacDocumentos extends Model
 	{
 		return $this->belongsTo('App\Models\Sistema\Comprobantes', 'id_comprobante');
 	}
+
+    public function nit()
+	{
+		return $this->belongsTo('App\Models\Sistema\Nits', 'id_nit');
+	}
 }

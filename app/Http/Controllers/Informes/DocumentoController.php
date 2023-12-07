@@ -24,7 +24,7 @@ class DocumentoController extends Controller
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') fecha_creacion"),
                 DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') fecha_edicion")
             )
-            ->with('comprobante');
+            ->with('comprobante', 'nit');
 
         if($request->has('id_comprobante') && $request->get('id_comprobante')) {
             $FacDocumentos->where('id_comprobante', $request->get('id_comprobante'));
