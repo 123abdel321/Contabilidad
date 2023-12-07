@@ -2,8 +2,9 @@
 
 namespace App\Models\Sistema;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FacResoluciones extends Model
 {
@@ -55,6 +56,28 @@ class FacResoluciones extends Model
 		return $query->whereRaw('consecutivo BETWEEN consecutivo_desde AND consecutivo_hasta')
 			->where('fecha', '<=', date('Y-m-d'))
 			->whereRaw('? < DATE_ADD(fecha, INTERVAL vigencia MONTH)', [date('Y-m-d')]);
+	}
+
+    public function getNombreCompletoAttribute()
+	{
+		return "{$this->nombre} - ({$this->prefijo}{$this->consecutivo_desde} - {$this->prefijo}{$this->consecutivo_hasta})";
+	}
+
+    public function getIsValidAttribute()
+	{
+		return $this->consecutivo >= $this->consecutivo_desde && $this->consecutivo <= $this->consecutivo_hasta;
+	}
+
+    public function getIsActiveAttribute()
+	{
+		$maxDateResolucion = Carbon::parse($this->fecha)
+			->addMonthsNoOverflow($this->vigencia)
+			->format('Y-m-d');
+
+		$dateNow = date('Y-m-d');
+		$isVigente = $dateNow >= $this->fecha && $dateNow < $maxDateResolucion ;
+
+		return $isVigente;
 	}
     
 }

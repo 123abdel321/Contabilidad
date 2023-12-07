@@ -90,7 +90,7 @@ class ComprobantesController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>$validator->messages()
+                "message"=>$validator->errors()
             ], 422);
         }
 
@@ -142,7 +142,7 @@ class ComprobantesController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>$validator->messages()
+                "message"=>$validator->errors()
             ], 422);
         }
 

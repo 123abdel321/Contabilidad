@@ -55,7 +55,7 @@ class ApiController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>$validator->messages()
+                "message"=>$validator->errors()
             ], 422);
         }
 
@@ -142,7 +142,7 @@ class ApiController extends Controller
                 return response()->json([
                     "success"=>false,
                     'data' => [],
-                    "message"=>$validator->messages()
+                    "message"=>$validator->errors()
                 ], 422);
             }
             // dd(Hash::make($request->password), bcrypt($request->password));
