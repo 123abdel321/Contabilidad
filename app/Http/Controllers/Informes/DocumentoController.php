@@ -24,23 +24,27 @@ class DocumentoController extends Controller
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') fecha_creacion"),
                 DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') fecha_edicion")
             )
-            ->with('comprobante');
+            ->with('comprobante', 'nit');
 
         if($request->has('id_comprobante') && $request->get('id_comprobante')) {
             $FacDocumentos->where('id_comprobante', $request->get('id_comprobante'));
         }
-        
+
         if($request->has('fecha_hasta') && $request->get('fecha_hasta')) {
-            $FacDocumentos->where('fecha_manual', $request->get('fecha_manual'));
+            $FacDocumentos->whereDate('fecha_manual', '<=', $request->get('fecha_hasta'));
         }
 
+        if($request->has('fecha_desde') && $request->get('fecha_desde')) {
+            $FacDocumentos->whereDate('fecha_manual', '>=', $request->get('fecha_desde'));
+        }
+        
         if($request->has('consecutivo') && $request->get('consecutivo')) {
             $FacDocumentos->where('consecutivo', $request->get('consecutivo'));
         }
         
-        // if($request->has('tipo_factura') && $request->get('tipo_factura') == 'anuladas') {
-        //     $FacDocumentos->where('anulado', 1);
-        // }
+        if($request->has('tipo_factura') && $request->get('tipo_factura') == '1') {
+            $FacDocumentos->where('anulado', 1);
+        }
         
         return response()->json($FacDocumentos->paginate());
 

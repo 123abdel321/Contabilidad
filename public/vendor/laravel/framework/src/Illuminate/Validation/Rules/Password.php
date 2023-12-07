@@ -320,7 +320,7 @@ class Password implements Rule, DataAwareRule, ValidatorAwareRule
         });
 
         if ($validator->fails()) {
-            return $this->fail($validator->messages()->all());
+            return $this->fail($validator->errors()->all());
         }
 
         if ($this->uncompromised && ! Container::getInstance()->make(UncompromisedVerifier::class)->verify([

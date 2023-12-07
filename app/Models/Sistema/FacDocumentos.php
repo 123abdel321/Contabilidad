@@ -15,6 +15,7 @@ class FacDocumentos extends Model
 
     protected $fillable = [
         'id_comprobante',
+        'id_nit',
         'fecha_manual',
         'consecutivo',
         'debito',
@@ -35,5 +36,10 @@ class FacDocumentos extends Model
     public function comprobante()
 	{
 		return $this->belongsTo('App\Models\Sistema\Comprobantes', 'id_comprobante');
+	}
+
+    public function nit()
+	{
+		return $this->belongsTo('App\Models\Sistema\Nits', 'id_nit');
 	}
 }

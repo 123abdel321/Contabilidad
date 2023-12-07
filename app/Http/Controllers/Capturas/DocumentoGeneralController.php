@@ -78,7 +78,7 @@ class DocumentoGeneralController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>$validator->messages()
+                "message"=>$validator->errors()
             ], 422);
         }
 
@@ -156,13 +156,13 @@ class DocumentoGeneralController extends Controller
 					'updated_by' => request()->user()->id,
 				]);
 			}
-
+			$primerIdNit = null;
 			$documentoGeneral = new Documento($request->get('id_comprobante'), $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
 
 			if ($request->get('editing_documento')) $documentoGeneral->setCreatedAt($facDocumento->created_at);
 
 			foreach ($documento as $doc) {
-				
+				// dd($doc);
 				$naturaleza = null;
 
 				if (array_key_exists('debito', $doc) && $doc['debito']) {
@@ -185,7 +185,10 @@ class DocumentoGeneralController extends Controller
 
 				if (array_key_exists('numero_documento', $doc)) {
 					$doc['id_nit'] = Nits::whereNumeroDocumento($doc['numero_documento'])->value('id');
+					if(!$primerIdNit) $primerIdNit = $doc['id_nit'];
 					unset($doc['numero_documento']);
+				} else {
+					if(!$primerIdNit) $primerIdNit = $doc['id_nit'];
 				}
 
 				$doc['created_by'] = request()->user()->id;
@@ -215,8 +218,9 @@ class DocumentoGeneralController extends Controller
 				$facDocumento->credito = $credito;
 				$facDocumento->saldo_final = $debito - $credito;
 				$facDocumento->updated_by = request()->user()->id;
-				$facDocumento->save();
 			}
+			$facDocumento->id_nit = $primerIdNit;
+			$facDocumento->save();
 
 			DB::connection('sam')->commit();
 			
@@ -243,13 +247,13 @@ class DocumentoGeneralController extends Controller
 		$documento = DocumentosGeneral::with(['centro_costos', 'cuenta', 'nit'])
 			->where('id_comprobante', $request->get('id_comprobante'))
 			->where('consecutivo', $request->get('consecutivo'))
-			->where('fecha_manual', $request->get('fecha_manual'))
+			// ->where('fecha_manual', $request->get('fecha_manual'))
             ->get();
 
 		return response()->json([
 			'success'=>	true,
 			'data' => $documento,
-			'message'=> 'Documentos creados con exito!'
+			'message'=> 'Documentos cargados con exito!'
 		]);
     }
 
@@ -268,7 +272,7 @@ class DocumentoGeneralController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>$validator->messages()
+                "message"=>$validator->errors()
             ], 422);
         }
 

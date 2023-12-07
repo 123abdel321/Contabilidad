@@ -227,6 +227,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //CAPTURA NOTA CREDITO
         Route::controller(NotaCreditoController::class)->group(function () {
             Route::get('nota-credito/factura-detalle', 'detalleFactura');
+            Route::post('nota-credito', 'create');
         });
         
     });

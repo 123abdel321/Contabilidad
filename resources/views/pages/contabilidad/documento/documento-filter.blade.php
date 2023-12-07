@@ -21,8 +21,13 @@
                         </div>
 
                         <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Fecha</label>
-                            <input name="fecha_manual_documento" id="fecha_manual_documento" class="form-control form-control-sm" type="date">
+                            <label for="example-text-input" class="form-control-label">Fecha desde</label>
+                            <input name="fecha_desde_documento" id="fecha_desde_documento" class="form-control form-control-sm" type="date">
+                        </div>
+
+                        <div class="form-group col-12 col-sm-4 col-md-3">
+                            <label for="example-text-input" class="form-control-label">Fecha hasta</label>
+                            <input name="fecha_hasta_documento" id="fecha_hasta_documento" class="form-control form-control-sm" type="date">
                         </div>
 
                         <div class="form-group col-12 col-sm-4 col-md-3">

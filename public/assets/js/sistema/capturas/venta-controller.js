@@ -10,7 +10,7 @@ var $comboCliente = null;
 var porcentajeRetencionVenta = 0;
 var topeRetencionVenta = 0;
 var guardarVenta = false;
-var abrirFormasPago = false;
+var abrirFormasPagoVentas = false;
 var key13PressNewRow = false;
 var guardandoVenta = false;
 var totalAnticiposDisponibles = 0;
@@ -438,24 +438,20 @@ $(document).on('keydown', '.custom-venta_producto .select2-search__field', funct
     var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
     
     if (event.keyCode == 96) {
-        abrirFormasPago = true;
+        abrirFormasPagoVentas = true;
         setTimeout(function(){
-            abrirFormasPago = false;
+            abrirFormasPagoVentas = false;
         },500);
-    }
-    if (event.keyCode == 13){
+    } else if (event.keyCode == 13){
         if (total > 0) {
-            if (abrirFormasPago) {
-                abrirFormasPago = false;
+            if (abrirFormasPagoVentas) {
+                abrirFormasPagoVentas = false;
                 $(".venta_producto").select2('close');
                 focusFormaPagoVenta(1);
-                return;
             }
-            
-            setTimeout(function(){
-                abrirFormasPago = false;
-            },500);
         }
+    } else {
+        abrirFormasPagoVentas = false;
     }
 });
 
@@ -838,7 +834,7 @@ function changeProductoVenta (idRow) {
     $('#venta_cantidad_'+idRow).prop('disabled', false);
     $('#venta_costo_'+idRow).prop('disabled', false);
     
-    document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%';
+    document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%'+'<br> BASE '+ new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(topeRetencionVenta);
         
     calcularProductoVenta(idRow);
     clearFormasPago();

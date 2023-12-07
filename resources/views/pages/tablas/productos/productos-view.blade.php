@@ -97,6 +97,9 @@
                     </button>
                     <button type="button" class="btn btn-danger btn-sm" id="cancelProducto" style="display: none;">Cancelar producto</button>
                 @endcan
+                <button type="button" class="btn btn-light btn-sm" id="reloadProducto" style="padding: 8px;">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
             </div>
             <div class="col-12 col-md-3 col-sm-3">
                 <input type="text" id="searchInputProductos" class="form-control form-control-sm search-table" placeholder="Buscar">

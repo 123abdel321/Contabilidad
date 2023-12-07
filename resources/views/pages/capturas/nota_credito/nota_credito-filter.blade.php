@@ -53,9 +53,9 @@
                     <div class="form-group col-6 col-sm-4 col-md-2">
                         <label for="example-text-input" class="form-control-label">No. factura <span style="color: red">*</span></label>
                         <input type="text" class="form-control form-control-sm" name="consecutivo_nota_credito" id="consecutivo_nota_credito" required>
-                        <i class="fa fa-spinner fa-spin fa-fw nota-credito-load" id="consecutivo_nota_credito_loading" style="display: none;"></i>
+                        <i class="fa fa-spinner fa-spin fa-fw nota-credito-load" id="consecutivo_nota_credito_loading" style="display: none; margin-top: -22px; float: right;"></i>
                         <div class="invalid-feedback" id="error_consecutivo_nota_credito">
-                            El No. factura requerida
+                            El No. factura requerido
                         </div>
                     </div>
                     
@@ -64,7 +64,7 @@
                     <!-- BOTON GENERAR -->
                     <span id="iniciarCapturaNotaCredito" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
                         <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">BUSCAR NOTA CREDITO</b>
+                        <b style="vertical-align: text-top;">BUSCAR FACTURA</b>
                     </span>
                     <span id="iniciarCapturaNotaCreditoLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>

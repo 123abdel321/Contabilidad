@@ -135,6 +135,10 @@
                 <div id="totales-nota_credito-card" class="card col-12 col-sm-5 col-md-12 ml-auto" style="height: min-content; margin-bottom: 0.5rem !important;">
                     <table class="table table-bordered table-captura-nota_credito" width="100%" style="margin-top: 12px;">
                         <tbody>
+                            <tr id="totales_productos_nota_credito" style="display: none;">
+                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">PRODUCTOS: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="nota_credito_total_productos">0.00</h6></td>
+                            </tr>
                             <tr>
                                 <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">SUB TOTAL: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="nota_credito_sub_total">0.00</h6></td>
@@ -143,11 +147,11 @@
                                 <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">IVA: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="nota_credito_total_iva">0.00</h6></td>
                             </tr>
-                            <tr id="totales_descuento" style="display: none;">
+                            <tr id="totales_descuento_nota_credito" style="display: none;">
                                 <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">DESCUENTO: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="nota_credito_total_descuento">0.00</h6></td>
                             </tr>
-                            <tr id="totales_retencion" style="display: none;">
+                            <tr id="totales_retencion_nota_credito" style="display: none;">
                                 <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;" id="nota_credito_texto_retencion">RETENCION: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="nota_credito_total_retencion">0.00</h6></td>
                             </tr>
@@ -159,7 +163,7 @@
                     </table>
                 </div>
                 <div id="nota_creditoForm" class="card mb-4 col-12 col-sm-7 col-md-12 ml-auto">
-                    <div style="max-height: 143px; overflow: auto;">
+                    <div style="min-height: 143px; overflow: auto;">
                         <table id="notaCreditoFormaPago" class="table table-bordered display responsive table-captura-nota_credito" width="100%">
                             <thead>
                                 <tr style="border: 0px !important;">
@@ -185,15 +189,6 @@
                         </div>
                         <div class="col-6" style="text-align: end;">
                             <h6 id="total_faltante_nota_credito" style="margin-bottom: 0px; font-weight: bold; margin-right: 25px; font-size: 13px;">0,00</h6>
-                        </div>
-                    </div>
-
-                    <div id="cambio-totals" class="row" style="display: none;">
-                        <div class="col-6">
-                            <h6 style="margin-bottom: 0px; font-weight: bold; margin-left: 4px; color: blue;">CAMBIO: </h6>
-                        </div>
-                        <div class="col-6" style="text-align: end;">
-                            <h6 id="total_cambio_nota_credito" style="margin-bottom: 0px; font-weight: bold; margin-right: 25px; color: blue;">0,00</h6>
                         </div>
                     </div>
                     

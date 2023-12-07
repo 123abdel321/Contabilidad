@@ -205,6 +205,10 @@ function closeView(nameView) {
     }, 10)
 }
 
+$("#tab-dashboard").click(function(event){
+    seleccionarView('dashboard');
+});
+
 function toggleSidenavMaximo() {
     if (body.classList.contains(className)) {
 

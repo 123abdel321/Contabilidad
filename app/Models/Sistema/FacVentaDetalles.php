@@ -17,6 +17,7 @@ class FacVentaDetalles extends Model
 
     protected $fillable = [
         'id_venta',
+        'id_venta_detalle',
         'id_producto',
         'id_cuenta_venta',
         'id_cuenta_venta_retencion',
@@ -38,20 +39,5 @@ class FacVentaDetalles extends Model
     public function producto()
 	{
 		return $this->belongsTo(FacProductos::class, 'id_producto', 'id');
-	}
-
-    public function scopeWithValoresDevueltos($query) {
-		return $query->select([
-			'fac_venta_detalles.*',
-			DB::raw('COALESCE(SUM(notas_credito_detalle.cantidad), 0) as cantidad_devuelta'),
-			DB::raw('COALESCE(SUM(notas_credito_detalle.total), 0) as total_devuelto')
-		])
-			->leftJoin('fac_ventas AS venta', 'fac_venta_detalles.id_venta', 'venta.id')
-			->leftJoin('fac_ventas AS devolucion', function ($join) {
-				$join->on('devolucion.id_factura', 'venta.id')
-					->where('devolucion.codigo_tipo_documento_dian', CodigoDocumentoDianTypes::NOTA_CREDITO);
-			})
-			->leftJoin('fac_venta_detalles AS notas_credito_detalle', 'notas_credito_detalle.id_venta', 'devolucion.id')
-			->groupBy('fac_venta_detalles.id');
 	}
 }

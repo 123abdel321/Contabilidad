@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('fac_documentos', function (Blueprint $table) {
             $table->id();
             $table->integer('id_comprobante')->index();
+            $table->integer('id_nit')->nullable();
             $table->date('fecha_manual');
             $table->string('consecutivo', 20);
             $table->decimal('debito', 15);
