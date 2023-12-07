@@ -19,6 +19,11 @@ class DocumentoController extends Controller
 
     public function generate (Request $request)
     {
+        
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length");
+        
         $FacDocumentos = FacDocumentos::select(
                 '*',
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') fecha_creacion"),
@@ -45,8 +50,29 @@ class DocumentoController extends Controller
         if($request->has('tipo_factura') && $request->get('tipo_factura') == '1') {
             $FacDocumentos->where('anulado', 1);
         }
+
+        $FacDocumentosPaginate = $FacDocumentos->skip($start)
+            ->take($rowperpage);
+
+        $credito = $FacDocumentosPaginate->sum('credito');
+        $debito = $FacDocumentosPaginate->sum('debito');
+
+        return response()->json([
+            'success'=>	true,
+            'draw' => $draw,
+            'iTotalRecords' => $FacDocumentos->count(),
+            'iTotalDisplayRecords' => $FacDocumentos->count(),
+            'data' => $FacDocumentosPaginate->get(),
+            'perPage' => $rowperpage,
+            'total' => [
+                'credito' => $credito,
+                'debito' => $debito,
+                'diferencia' => $credito - $debito
+            ],
+            'message'=> 'Documentos capturados generados con exito!'
+        ]);
         
-        return response()->json($FacDocumentos->paginate());
+        return response()->json($FacDocumentos->paginate(50));
 
     }
 
