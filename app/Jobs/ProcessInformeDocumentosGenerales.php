@@ -176,6 +176,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
     private function documentosGeneralesSinAgrupar()
     {
         $query = $this->DocumentosGeneralesQuery();
+
         DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS documentosgeneralesdata"))
             ->mergeBindings($query)
@@ -214,7 +215,6 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                     ];
                 });
             });
-
         $this->addTotalData($query);
     }  
     
@@ -272,8 +272,8 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 'N.id AS id_nit',
                 'N.numero_documento',
                 DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    WHEN N.id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN N.id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
                     ELSE NULL
                 END) AS nombre_nit"),
                 "N.razon_social",
