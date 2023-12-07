@@ -372,7 +372,7 @@ function ventaInit () {
     });
 
     consecutivoSiguienteVenta();
-    loadFormasPago();
+    loadFormasPagoVenta();
 
     if (!primeraBodegaVenta) {
         agregarToast('warning', 'Sin bodegas asignadas', '', true);
@@ -534,7 +534,7 @@ function addRowProductoVenta () {
             return;
         }
     } else if(totalRows > 1) {
-        clearFormasPago();
+        clearFormasPagoVenta();
     }
 
     venta_table.row.add({
@@ -837,7 +837,7 @@ function changeProductoVenta (idRow) {
     document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%'+'<br> BASE '+ new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(topeRetencionVenta);
         
     calcularProductoVenta(idRow);
-    clearFormasPago();
+    clearFormasPagoVenta();
     
     setTimeout(function(){
         $('#venta_cantidad_'+idRow).focus();
@@ -924,7 +924,7 @@ function cancelarVenta() {
     },10);
 }
 
-function loadFormasPago() {
+function loadFormasPagoVenta() {
     var totalRows = venta_table_pagos.rows().data().length;
     if(venta_table_pagos.rows().data().length){
         venta_table_pagos.clear([]).draw();
@@ -935,7 +935,7 @@ function loadFormasPago() {
     venta_table_pagos.ajax.reload();
 }
 
-function clearFormasPago() {
+function clearFormasPagoVenta() {
     var dataFormasPago = venta_table_pagos.rows().data();
 
     if (dataFormasPago.length) {
@@ -948,12 +948,6 @@ function clearFormasPago() {
 }
 
 $(document).on('click', '#crearCapturaVenta', function () {
-    
-    // var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
-
-    // document.getElementById('total_pagado_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
-    // document.getElementById('total_faltante_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
-    // document.getElementById('total_cambio_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(0);
     validateSaveVenta();
 });
 

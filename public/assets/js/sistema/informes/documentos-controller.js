@@ -138,7 +138,14 @@ function documentosInit() {
     });
 
     $('.water').hide();
-    documento_table.ajax.reload();
+    documento_table.ajax.reload(function(data) {
+        var totales = data.total;
+        
+        $('#documentos_capturados_debito').text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.debito));
+        $('#documentos_capturados_credito').text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.credito));
+        $('#documentos_capturados_diferencia').text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.diferencia));
+        console.log('data: ',data);
+    },false);
 }
 
 $('input[type=radio][name=tipo_factura]').change(function() {
