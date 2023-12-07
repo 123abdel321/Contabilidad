@@ -7,8 +7,8 @@ var $comboBodegaCompra = null;
 var $comboProveedor = null;
 var $comboComprobante  = null;
 var guardarCompra = false
-var porcentajeRetencion = 0;
-var topeRetencion = 0;
+var porcentajeRetencionCompras = 0;
+var topeRetencionCompras = 0;
 var abrirFormasPagoCompras = false;
 var guardandoCompra = false;
 
@@ -495,19 +495,18 @@ function totalFormasPagoCompras(idFormaPago = null) {
 $(document).on('keydown', '.custom-combo_producto .select2-search__field', function (event) {
     var [iva, retencion, descuento, total, valorBruto] = totalValoresCompras();
 
-    if (event.keyCode == 96) abrirFormasPagoCompras = true;
-    if (event.keyCode == 13){
+    if (event.keyCode == 96) {
+        abrirFormasPagoCompras = true;
+        setTimeout(function(){
+            abrirFormasPagoCompras = false;
+        },500);
+    } else if (event.keyCode == 13){
         if (total > 0) {
             if (abrirFormasPagoCompras) {
                 $(".combo_producto").select2('close');
                 focusFormaPagoCompra(1);
                 abrirFormasPagoCompras = false;
-                return;
             }
-            
-            setTimeout(function(){
-                abrirFormasPagoCompras = false;
-            },500);
         }
     } else {
         abrirFormasPagoCompras = false;
@@ -569,9 +568,9 @@ function changeProductoCompra (idRow) {
     if (data.familia.cuenta_compra_retencion && data.familia.cuenta_compra_retencion.impuesto) {
         var impuestoPorcentaje = parseFloat(data.familia.cuenta_compra_retencion.impuesto.porcentaje);
         var topeValor = parseFloat(data.familia.cuenta_compra_retencion.impuesto.base);
-        if (impuestoPorcentaje > porcentajeRetencion) {
-            porcentajeRetencion = impuestoPorcentaje;
-            topeRetencion = topeValor;
+        if (impuestoPorcentaje > porcentajeRetencionCompras) {
+            porcentajeRetencionCompras = impuestoPorcentaje;
+            topeRetencionCompras = topeValor;
         }
     }
 
@@ -588,7 +587,7 @@ function changeProductoCompra (idRow) {
     $('#compra_cantidad_'+idRow).prop('disabled', false);
     $('#compra_costo_'+idRow).prop('disabled', false);
     
-    document.getElementById('compra_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencion+'%';
+    document.getElementById('compra_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionCompras+'%'+'<br> BASE '+ new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(topeRetencionCompras);
         
     calcularProducto(idRow);
     
@@ -956,8 +955,8 @@ function totalValoresCompras() {
                 valorBruto+= (cantidad*costo) - parseInt(descSum ? descSum : 0);
             }
         }
-        if (total >= topeRetencion) {
-            retencion = porcentajeRetencion ? (valorBruto * porcentajeRetencion) / 100 : 0;
+        if (total >= topeRetencionCompras) {
+            retencion = porcentajeRetencionCompras ? (valorBruto * porcentajeRetencionCompras) / 100 : 0;
             total = total - retencion;
         }
     } else {

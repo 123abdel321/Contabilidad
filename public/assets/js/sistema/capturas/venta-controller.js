@@ -442,19 +442,13 @@ $(document).on('keydown', '.custom-venta_producto .select2-search__field', funct
         setTimeout(function(){
             abrirFormasPagoVentas = false;
         },500);
-    }
-    if (event.keyCode == 13){
+    } else if (event.keyCode == 13){
         if (total > 0) {
             if (abrirFormasPagoVentas) {
                 abrirFormasPagoVentas = false;
                 $(".venta_producto").select2('close');
                 focusFormaPagoVenta(1);
-                return;
             }
-            
-            setTimeout(function(){
-                abrirFormasPagoVentas = false;
-            },500);
         }
     } else {
         abrirFormasPagoVentas = false;
@@ -840,7 +834,7 @@ function changeProductoVenta (idRow) {
     $('#venta_cantidad_'+idRow).prop('disabled', false);
     $('#venta_costo_'+idRow).prop('disabled', false);
     
-    document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%';
+    document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%'+'<br> BASE '+ new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(topeRetencionVenta);
         
     calcularProductoVenta(idRow);
     clearFormasPago();

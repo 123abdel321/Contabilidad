@@ -222,13 +222,21 @@ class VentaController extends Controller
 
                 //AGREGAR MOVIMIENTO CONTABLE
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
-                    
                     $cuentaRecord = $productoDb->familia->{$cuentaKey};
                     $keyTotalItem = $cuenta["valor"];
 
+                    //VALIDAR PRODUCTO INVENTARIO
+                    if ($productoDb->tipo_producto == 1 && $cuentaKey == 'cuenta_inventario') {
+                        continue;
+                    }
+                    //VALIDAR COSTO PRODUCTO
+                    if ($productoDb->precio_inicial <= 0 && $cuentaKey == 'cuenta_costos') {
+                        continue;
+                    }
+
                     if ($producto->{$keyTotalItem} > 0) {
+                        
                         if(!$cuentaRecord) {
-                            
                             DB::connection('sam')->rollback();
                             return response()->json([
                                 "success"=>false,
