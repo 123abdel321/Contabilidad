@@ -144,7 +144,6 @@ function documentosInit() {
         $('#documentos_capturados_debito').text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.debito));
         $('#documentos_capturados_credito').text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.credito));
         $('#documentos_capturados_diferencia').text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.diferencia));
-        console.log('data: ',data);
     },false);
 }
 
@@ -157,9 +156,15 @@ $(document).on('click', '#generarDocumento', function () {
     $("#generarDocumento").hide();
     $("#generarDocumentoLoading").show();
 
-    documento_table.ajax.reload(function() {
+    documento_table.ajax.reload(function(data) {
+        var totales = data.total;
+
         $("#generarDocumento").show();
-        $("#generarDocumentoLoading").hide();
+        $("#generarDocumentoLoading").hide();        
+        
+        $('#documentos_capturados_debito').text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.debito));
+        $('#documentos_capturados_credito').text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.credito));
+        $('#documentos_capturados_diferencia').text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.diferencia));
     },false);
 });
 
