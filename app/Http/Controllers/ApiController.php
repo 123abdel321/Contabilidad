@@ -92,7 +92,7 @@ class ApiController extends Controller
                     $user->has_empresa = $empresaSelect->token_db;
                     $user->save();
 
-                    $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', request()->user()->id)
+                    $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', $user->id)
                         ->where('id_empresa', $empresaSelect->id)
                         ->first();
         
@@ -115,7 +115,6 @@ class ApiController extends Controller
             ], 422);
 
         } catch (Exception $e) {
-
             return response()->json([
                 "success"=>false,
                 'data' => [],
