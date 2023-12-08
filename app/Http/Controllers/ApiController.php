@@ -78,7 +78,7 @@ class ApiController extends Controller
                     }
                     
                     $empresaSelect = UsuarioEmpresa::where('id_usuario', $user->id_empresa)->first();
-
+                    
                     if (!$empresaSelect) {
                         return response()->json([
                             'success'=>	true,
@@ -93,7 +93,7 @@ class ApiController extends Controller
                     $user->save();
 
                     $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', $user->id)
-                        ->where('id_empresa', $empresaSelect->id)
+                        ->where('id_empresa', $empresaSelect->id_empresa)
                         ->first();
         
                     $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
