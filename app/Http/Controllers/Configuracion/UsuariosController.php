@@ -74,6 +74,9 @@ class UsuariosController extends Controller
         $usuarios = User::orderBy($columnName,$columnSortOrder)
             ->with('roles', 'permissions')
             ->where('id_empresa', $request->user()['id_empresa'])
+            ->withWhereHas('permisos', function ($query) use ($request){
+                $query->where('id_empresa', $request->user()['id_empresa']);
+            })
             ->select(
                 '*',
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
@@ -90,7 +93,6 @@ class UsuariosController extends Controller
         }
 
         $usuarios = $usuarios->where('id_empresa', $request->user()['id_empresa']);
-
         $usuariosTotals = $usuarios->get();
 
         $usuariosPaginate = $usuarios->skip($start)

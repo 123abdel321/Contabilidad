@@ -199,7 +199,7 @@
 											<tr>
 												<td class="padding3">{{ $nit->direccion }}
 													@if($nit->ciudad)
-														{{ $nit->ciudad->nombre }}
+														{{ $nit->ciudad }}
 													@endif
 												</td>
 											</tr>

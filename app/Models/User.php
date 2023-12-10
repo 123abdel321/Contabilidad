@@ -79,6 +79,10 @@ class User extends Authenticatable
 		return $this->hasMany("App\Models\Empresas\Empresa","id_usuario_owner")->select(["*",DB::raw("1 as propio")]);
 	}
 
+    public function permisos(){
+        return $this->hasMany("App\Models\Empresas\UsuarioPermisos","id_user");
+    }
+
     public function getEmpresasAttribute(){
 		$clientesPropios = $this->empresasPropias()->get()->pluck("empresa");
 		$clientesExternos = $this->empresasExternas()->get()->pluck("empresa");
@@ -89,4 +93,5 @@ class User extends Authenticatable
     public function checkRelacionEmpresa($empresa,$campo = "hash"){
 		return $this->empresas->where($campo,$empresa)->first();
 	}
+
 }

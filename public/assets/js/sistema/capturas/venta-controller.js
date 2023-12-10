@@ -374,11 +374,11 @@ function ventaInit () {
     consecutivoSiguienteVenta();
     loadFormasPagoVenta();
 
-    if (!primeraBodegaVenta) {
+    if (!primeraBodegaVenta.length) {
         agregarToast('warning', 'Sin bodegas asignadas', '', true);
     }
 
-    if (!primeraResolucionVenta) {
+    if (!primeraResolucionVenta.length) {
         agregarToast('warning', 'Sin Resoluciones asigandas', '', true);
     }
 

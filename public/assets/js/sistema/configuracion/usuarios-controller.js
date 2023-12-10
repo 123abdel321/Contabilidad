@@ -76,7 +76,7 @@ function usuariosInit() {
 
             var id = this.id.split('_')[1];
             var data = getDataById(id, usuarios_table);
-    
+
             $('#password_usuario').val('');
             $('#password_confirm').val('');
             $("#id_usuarios_up").val(data.id);
@@ -85,8 +85,8 @@ function usuariosInit() {
             $("#firstname_usuario").val(data.firstname);
             $("#lastname_usuario").val(data.lastname);
             $("#address_usuario").val(data.address);
-            $("#id_bodega_usuario").val(data.ids_bodegas_responsable.split(',')).change();
-            $("#id_resolucion_usuario").val(data.ids_resolucion_responsable.split(',')).change();
+            $("#id_bodega_usuario").val(data.permisos[0].ids_bodegas_responsable.split(',')).change();
+            $("#id_resolucion_usuario").val(data.permisos[0].ids_resolucion_responsable.split(',')).change();
 
             clearPermisos();
 
