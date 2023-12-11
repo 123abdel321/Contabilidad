@@ -11,6 +11,7 @@ class ComprasPdf extends AbstractPrinterPdf
 {
     public $compra;
 	public $empresa;
+	public $tipoEmpresion;
 
     public function __construct(Empresa $empresa, FacCompras $compra)
 	{
@@ -21,6 +22,7 @@ class ComprasPdf extends AbstractPrinterPdf
 
 		$this->compra = $compra;
 		$this->empresa = $empresa;
+		$this->tipoEmpresion = $this->compra->comprobante->tipo_impresion;
 	}
 
     public function view()
@@ -35,6 +37,9 @@ class ComprasPdf extends AbstractPrinterPdf
 
     public function paper()
 	{
+		if ($this->tipoEmpresion == 1) return 'landscape';
+		if ($this->tipoEmpresion == 2) return 'portrait';
+
 		return '';
 	}
 

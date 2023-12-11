@@ -188,27 +188,27 @@
 									<table>
 										<thead>
 											<tr>
-												<th colspan="2" class="header-total padding5">PROVEEDOR</th>
+												<th colspan="2" class="header-total padding5">CLIENTE</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td class="padding3">{{ $proveedor->nombre_completo }}</td>
+												<td class="padding3">{{ $cliente->nombre_completo }}</td>
 											</tr>
 											<tr>
-												<td class="padding3">{{ $proveedor->tipo_documento->nombre }} N° {{ $proveedor->numero_documento }}</td>
+												<td class="padding3">{{ $cliente->tipo_documento->nombre }} N° {{ $cliente->numero_documento }}</td>
 											</tr>
 											<tr>
 												<td class="padding3">
-													{{ $proveedor->direccion }}
-													@if($proveedor->ciudad)
-														{{ $proveedor->ciudad->nombre }}
+													{{ $cliente->direccion }}
+													@if($cliente->ciudad)
+														{{ $cliente->ciudad->nombre }}
 													@endif
 												</td>
 											</tr>
-											@if ($proveedor->telefono)
+											@if ($cliente->telefono)
 											<tr>
-												<td class="padding3"> TEL: {{ $proveedor->telefono }}</td>
+												<td class="padding3"> TEL: {{ $cliente->telefono }}</td>
 											</tr>
 											@endif
 										</tbody>
@@ -278,10 +278,54 @@
 						<table>
 							<tr>
 								<td class="aling-top padding5">
+									<table class="width-100">
+										<thead>
+											<tr>
+												<th colspan="2" class="header-total padding5">PAGOS</th>
+											</tr>
+										</thead>
+										<tbody>
+											@if (count($pagos) > 0)
+												@foreach ($pagos as $pago)
+													@if ($pago->forma_pago->id == 1)
+														<tr>
+															<td class="font-13" style="width:55%;">{{ $pago->forma_pago->nombre }}</td>
+															<td class="font-13" style="width:45%;text-align:right;">{{ number_format($pago->valor + $factura->total_cambio) }}</td>
+														</tr>
+													@else
+														<tr>
+															<td class="font-13" style="width:55%;">{{ $pago->forma_pago->nombre }}</td>
+															<td class="font-13" style="width:45%;text-align:right;">{{ number_format($pago->valor) }}</td>
+														</tr>
+													@endif
+												@endforeach
+											@endif
+											<tr>
+												<td class="font-13" style="width:55%;">CAMBIO:</td>
+												<td class="font-13" style="width:45%;text-align:right;">{{ number_format($factura->total_cambio) }}</td>
+											</tr>
+											
+											<tr>
+												<td style="font-weight: bold;">TOTAL</td>
+												<td class="font-13" style="width:45%;text-align:right;">{{ number_format($pagos->sum('valor')) }}</td>
+											</tr>
+											<tr>
+												<td class="spacer-10 padding5"></td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+
+								<td class="aling-top padding5">
 								</td>
 								
 								<td class="table-total-factura padding5">
 									<table>
+										<thead>
+											<tr>
+												<th colspan="2" class="header-total padding5">TOTALES</th>
+											</tr>
+										</thead>
 										<tbody>
                                             <tr>
                                                 <td >SUBTOTAL</td>

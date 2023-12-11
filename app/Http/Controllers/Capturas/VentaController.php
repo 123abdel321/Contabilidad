@@ -525,7 +525,9 @@ class VentaController extends Controller
 
     public function showPdf(Request $request, $id)
     {
-        $factura = FacVentas::whereId($id)->first();
+        $factura = FacVentas::whereId($id)
+            ->with('resolucion')
+            ->first();
 
         if(!$factura) {
             return response()->json([
@@ -537,8 +539,10 @@ class VentaController extends Controller
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         $data = (new VentasPdf($empresa, $factura))->buildPdf()->getData();
-
-        return view('pdf.facturacion.ventas-pos', $data);
+        
+        if ($factura->resolucion->tipo_impresion == 0) {
+            return view('pdf.facturacion.ventas-pos', $data);
+        }
  
         return (new VentasPdf($empresa, $factura))
             ->buildPdf()

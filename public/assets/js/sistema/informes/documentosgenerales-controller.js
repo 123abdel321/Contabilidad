@@ -14,7 +14,7 @@ function documentosgeneralesInit() {
         
         paging: true,
         colReorder: true,
-        responsive: true,
+        responsive: false,
         processing: true,
         serverSide: true,
         fixedHeader: true,
@@ -119,8 +119,7 @@ function documentosgeneralesInit() {
                 return html;
             }},
         ]
-    });
-    
+    }); 
 
     $('#id_nit_documentos_generales').select2({
         theme: 'bootstrap-5',
@@ -142,6 +141,17 @@ function documentosgeneralesInit() {
     $('#id_comprobante_documentos_generales').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
         placeholder: "Seleccione un Comprobante",
         allowClear: true,
         ajax: {

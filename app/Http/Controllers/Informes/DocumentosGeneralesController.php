@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Informes;
 
 use Illuminate\Http\Request;
-use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeDocumentosGenerales;
 //MODELS

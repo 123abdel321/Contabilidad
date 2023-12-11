@@ -329,6 +329,14 @@ function notacreditoInit () {
         ajax: {
             url: 'api/resoluciones/combo-resoluciones',
             headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_resoluciones: [5],
+                    _type: 'query'
+                }
+                return query;
+            },
             dataType: 'json',
             processResults: function (data) {
                 return {
