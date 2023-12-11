@@ -208,9 +208,9 @@ class CompraController extends Controller
                         $productoDb->precio_inicial = round($costoPromedio);
                     } else {
                         $productoDb->precio_inicial = $producto->costo;
-                        if ($productoDb->porcentaje_utilidad != 100 && $productoDb->porcentaje_utilidad > 0) {
-                            $productoDb->precio = ($producto->costo * ($productoDb->porcentaje_utilidad / 100)) + $producto->costo;
-                        }
+                    }
+                    if ($productoDb->porcentaje_utilidad != 100 && $productoDb->porcentaje_utilidad > 0) {
+                        $productoDb->precio = ($producto->costo * ($productoDb->porcentaje_utilidad / 100)) + $producto->costo;
                     }
                     $productoDb->save();
                 }
