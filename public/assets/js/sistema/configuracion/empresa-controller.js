@@ -1,3 +1,5 @@
+var fondoSistema = null;
+
 function empresaInit() {
     $('#id_responsabilidades').select2({
         theme: 'bootstrap-5',
