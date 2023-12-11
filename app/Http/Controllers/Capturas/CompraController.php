@@ -173,10 +173,9 @@ class CompraController extends Controller
             
             foreach ($request->get('productos') as $producto) {
                 $producto = (object)$producto;
-    
+                
                 $nit = $this->findProveedor($compra->id_proveedor);
                 $productoDb = $this->findProducto($producto->id_producto);
-
                 //CREAR COMPRA DETALLE
                 FacCompraDetalles::create([
                     'id_compra' => $compra->id,
@@ -199,12 +198,20 @@ class CompraController extends Controller
 
                 //PROMEDIAR PRECIO
                 if ($productoDb->precio_inicial != $producto->costo) {
-                    $existenciasBodega = FacProductosBodegas::where('id_producto', $producto->id_producto)->sum('cantidad');
-
-                    $costoAnterior = $productoDb->precio_inicial * $existenciasBodega;
-                    $costoNuevo = $producto->costo * $producto->cantidad;
-                    $costoPromedio = ($costoAnterior + $costoNuevo) / ($existenciasBodega + $producto->cantidad);
-                    $productoDb->precio_inicial = round($costoPromedio);
+                    $existenciasBodega = FacProductosBodegas::where('id_producto', $producto->id_producto)
+                        ->where('id_bodega', $this->bodega->id)
+                        ->sum('cantidad');
+                    if (intval($existenciasBodega) > 0) {
+                        $costoAnterior = $productoDb->precio_inicial * $existenciasBodega;
+                        $costoNuevo = $producto->costo * $producto->cantidad;
+                        $costoPromedio = ($costoAnterior + $costoNuevo) / (intval($existenciasBodega) + intval($producto->cantidad));
+                        $productoDb->precio_inicial = round($costoPromedio);
+                    } else {
+                        $productoDb->precio_inicial = $producto->costo;
+                        if ($productoDb->porcentaje_utilidad != 100 && $productoDb->porcentaje_utilidad > 0) {
+                            $productoDb->precio = ($producto->costo * ($productoDb->porcentaje_utilidad / 100)) + $producto->costo;
+                        }
+                    }
                     $productoDb->save();
                 }
 
