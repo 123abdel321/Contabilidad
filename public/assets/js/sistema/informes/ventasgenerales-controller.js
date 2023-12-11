@@ -101,7 +101,12 @@ function ventasgeneralesInit() {
             { data: 'documento_referencia'}, //FACTURA
             { data: "debito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: "credito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            { data: "total", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){
+                if (row.total < 0) {
+                    return row.total * -1
+                }
+                return row.total
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: 'fecha_manual'},
             { data: 'concepto'},
             { data: 'total_columnas'},
