@@ -100,7 +100,7 @@ function ventaInit () {
                     theme: 'bootstrap-5',
                     dropdownCssClass: 'custom-venta_producto',
                     delay: 250,
-                    minimumInputLength: 1,
+                    minimumInputLength: 2,
                     language: {
                         noResults: function() {
                             return "No hay resultado";        
@@ -109,7 +109,7 @@ function ventaInit () {
                             return "Buscando..";
                         },
                         inputTooShort: function () {
-                            return "Por favor introduce 1 o más caracteres";
+                            return "Por favor introduce 2 o más caracteres";
                         }
                     },
                     ajax: {
@@ -447,9 +447,9 @@ $(document).on('keydown', '.custom-venta_producto .select2-search__field', funct
     
     if (event.keyCode == 96) {
         abrirFormasPagoVentas = true;
-        setTimeout(function(){
-            abrirFormasPagoVentas = false;
-        },500);
+        // setTimeout(function(){
+        //     abrirFormasPagoVentas = false;
+        // },1000);
     } else if (event.keyCode == 13){
         if (total > 0) {
             if (abrirFormasPagoVentas) {

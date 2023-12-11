@@ -89,7 +89,7 @@ function compraInit () {
                     theme: 'bootstrap-5',
                     dropdownCssClass: 'custom-combo_producto',
                     delay: 250,
-                    minimumInputLength: 1,
+                    minimumInputLength: 2,
                     language: {
                         noResults: function() {
                             return "No hay resultado";        
@@ -98,7 +98,7 @@ function compraInit () {
                             return "Buscando..";
                         },
                         inputTooShort: function () {
-                            return "Por favor introduce 1 o más caracteres";
+                            return "Por favor introduce 2 o más caracteres";
                         }
                     },
                     ajax: {
@@ -273,6 +273,7 @@ function compraInit () {
     $comboBodegaCompra = $('#id_bodega_compra').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        minimumInputLength: 2,
         language: {
             noResults: function() {
                 return "No hay resultado";        
@@ -281,7 +282,7 @@ function compraInit () {
                 return "Buscando..";
             },
             inputTooShort: function () {
-                return "Por favor introduce 1 o más caracteres";
+                return "Por favor introduce 2 o más caracteres";
             }
         },
         ajax: {
@@ -497,9 +498,6 @@ $(document).on('keydown', '.custom-combo_producto .select2-search__field', funct
 
     if (event.keyCode == 96) {
         abrirFormasPagoCompras = true;
-        setTimeout(function(){
-            abrirFormasPagoCompras = false;
-        },500);
     } else if (event.keyCode == 13){
         if (total > 0) {
             if (abrirFormasPagoCompras) {
