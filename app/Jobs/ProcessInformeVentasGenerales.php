@@ -132,7 +132,7 @@ class ProcessInformeVentasGenerales implements ShouldQueue
             // ->when(isset($this->request['id_producto']) ? $this->request['id_producto'] : false, function ($query) {
             //     $query->where('V.id_cliente', $this->request['id_producto']);
             // })
-            ->orderByRaw('V.created_at')
+            ->orderByRaw('V.created_at DESC')
             ->chunk(233, function ($ventas) {
                 $ventas->each(function ($venta) {
 

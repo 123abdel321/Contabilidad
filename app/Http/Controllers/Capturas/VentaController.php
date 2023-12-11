@@ -52,7 +52,7 @@ class VentaController extends Controller
 		"cuenta_venta_descuento" => ["valor" => "descuento_valor"],
         "cuenta_venta_iva" => ["valor" => "iva_valor"],
         "cuenta_inventario" => ["valor" => "subtotal"],
-        "cuenta_costos" => ["valor" => "subtotal"],
+        "cuenta_costos" => ["valor" => "costo_total"],
     ];
 
     public function __construct(Request $request)
@@ -175,9 +175,9 @@ class VentaController extends Controller
 
             foreach ($request->get('productos') as $producto) {
                 $producto = (object)$producto;
-
                 $nit = $this->findCliente($venta->id_cliente);
                 $productoDb = $this->findProducto($producto->id_producto);
+                $producto->costo_total = $productoDb->precio_inicial * $producto->cantidad;
 
                 //AGREGAR MOVIMIENTO BODEGA
                 $bodegaProducto = FacProductosBodegas::where('id_bodega', $this->bodega->id)
@@ -256,7 +256,7 @@ class VentaController extends Controller
                             "created_by" => request()->user()->id,
                             "updated_by" => request()->user()->id
                         ]);
-    
+
                         $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_ventas);
                     }
                 }
