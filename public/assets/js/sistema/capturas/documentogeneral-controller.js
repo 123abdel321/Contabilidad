@@ -267,6 +267,10 @@ function documentogeneralInit() {
         }
     });
 
+    $('#fecha_manual_documento').on( "focusout", function() {
+        validarFechaManualDocumentos();
+    });
+
     documento_extracto = $('#documentoExtractoTable').DataTable({
         dom: '',
         responsive: false,
@@ -595,6 +599,7 @@ function changeConcecutivo(event) {
 }
 
 function changeFecha(event) {
+
     if(event.keyCode == 13){
         validarFechaManualDocumentos();
         setTimeout(function(){
