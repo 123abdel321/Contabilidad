@@ -50,6 +50,7 @@ var moduloCreado = {
     'carguedescargue': false,
     'movimientoinventario': false,
     'notacredito': false,
+    'ventasgenestales': false
 };
 
 var moduloRoute = {
@@ -78,6 +79,7 @@ var moduloRoute = {
     'productoprecios': 'importador',
     'movimientoinventario': 'capturas',
     'notacredito': 'capturas',
+    'ventasgenerales': 'informes',
 }
 
 $('.water').show();

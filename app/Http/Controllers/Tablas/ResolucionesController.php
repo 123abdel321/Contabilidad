@@ -270,7 +270,7 @@ class ResolucionesController extends Controller
         $usuarioPermisos = UsuarioPermisos::where('id_user', request()->user()->id)
             ->where('id_empresa', request()->user()->id_empresa)
             ->first();
-
+            
         $resolucionesResponsable = explode(",", $usuarioPermisos->ids_resolucion_responsable);
 
         $resolucion = FacResoluciones::select(
@@ -281,6 +281,10 @@ class ResolucionesController extends Controller
         if ($request->get("q")) {
             $resolucion->where('prefijo', 'LIKE', '%' . $request->get("q") . '%')
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        if ($request->get("tipo_resoluciones")) {
+            $resolucion->whereIn('tipo_resolucion', $request->get("tipo_resoluciones"));
         }
 
         $resolucion->whereIn('id', $resolucionesResponsable);

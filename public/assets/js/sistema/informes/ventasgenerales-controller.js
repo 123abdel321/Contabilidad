@@ -1,14 +1,13 @@
-var documentos_generales_table = null;
+var ventas_generales_table = null;
 var generarDocumentosGenerales = false;
 
-function documentosgeneralesInit() {
+function ventasgeneralesInit() {
+    fechaDesdeVentasGenerales = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
 
-    fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    $('#fecha_desde_ventas_generales').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
+    $('#fecha_hasta_ventas_generales').val(fechaDesdeVentasGenerales);
 
-    $('#fecha_desde_documentos_generales').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-    $('#fecha_hasta_documentos_generales').val(fechaDesde);
-
-    documentos_generales_table = $('#documentosGeneralesInformeTable').DataTable({
+    ventas_generales_table = $('#ventasGeneralesInformeTable').DataTable({
         pageLength: 100,
         dom: 'Brtip',
         
@@ -37,7 +36,7 @@ function documentosgeneralesInit() {
         },
         ajax:  {
             type: "GET",
-            url: base_url + 'documentos-generales-show',
+            url: base_url + 'ventas-generales-show',
             headers: headers
         },
         rowCallback: function(row, data, index){
@@ -102,7 +101,7 @@ function documentosgeneralesInit() {
             { data: 'documento_referencia'}, //FACTURA
             { data: "debito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: "credito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            { data: "diferencia", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            { data: "total", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: 'fecha_manual'},
             { data: 'concepto'},
             { data: 'total_columnas'},
@@ -119,13 +118,24 @@ function documentosgeneralesInit() {
                 return html;
             }},
         ]
-    }); 
+    });
 
-    $('#id_nit_documentos_generales').select2({
+    $('#id_nit_ventas_generales').select2({
         theme: 'bootstrap-5',
         delay: 250,
-        placeholder: "Seleccione una Cédula/nit",
+        placeholder: "Seleccione un cliente",
         allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
         ajax: {
             url: 'api/nit/combo-nit',
             headers: headers,
@@ -137,8 +147,8 @@ function documentosgeneralesInit() {
             }
         }
     });
-
-    $('#id_comprobante_documentos_generales').select2({
+    
+    $('#id_resolucion_ventas_generales').select2({
         theme: 'bootstrap-5',
         delay: 250,
         language: {
@@ -152,11 +162,17 @@ function documentosgeneralesInit() {
                 return "Por favor introduce 1 o más caracteres";
             }
         },
-        placeholder: "Seleccione un Comprobante",
-        allowClear: true,
         ajax: {
-            url: 'api/comprobantes/combo-comprobante',
+            url: 'api/resoluciones/combo-resoluciones',
             headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_resoluciones: [0, 1],
+                    _type: 'query'
+                }
+                return query;
+            },
             dataType: 'json',
             processResults: function (data) {
                 return {
@@ -165,14 +181,23 @@ function documentosgeneralesInit() {
             }
         }
     });
-
-    $('#id_cecos_documentos_generales').select2({
+    
+    $('#id_bodega_ventas_generales').select2({
         theme: 'bootstrap-5',
         delay: 250,
-        placeholder: "Seleccione un Centro de costos",
-        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
         ajax: {
-            url: 'api/centro-costos/combo-centro-costo',
+            url: 'api/bodega/combo-bodega',
             headers: headers,
             dataType: 'json',
             processResults: function (data) {
@@ -182,29 +207,23 @@ function documentosgeneralesInit() {
             }
         }
     });
-
-    $('#id_cuenta_documentos_generales').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        placeholder: "Seleccione una Cuenta",
-        allowClear: true,
-        ajax: {
-            url: 'api/plan-cuenta/combo-cuenta',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    $('#id_usuario_documentos_generales').select2({
+    
+    $('#id_usuario_ventas_generales').select2({
         theme: 'bootstrap-5',
         delay: 250,
         placeholder: "Seleccione un Usuario",
         allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
         ajax: {
             url: 'api/usuarios/combo',
             headers: headers,
@@ -217,38 +236,43 @@ function documentosgeneralesInit() {
         }
     });
 
-    $('#agrupar_documentos_generales').select2({
+    $('#id_producto_ventas_generales').select2({
         theme: 'bootstrap-5',
-        sorter: function(data) {
-            var enabled = data.filter(function(d) {
-                return !d.disabled;
-            });
-            var disabled = data.filter(function(d) {
-                return d.disabled;
-            });
-            return enabled.concat(disabled);
+        dropdownCssClass: 'custom-venta_producto',
+        delay: 250,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/producto/combo-producto',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    captura: 'venta',
+                    _type: 'query'
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
         }
-    });
-
-    $("#agrupar_documentos_generales").on("select2:select", function(evt) {
-        var element = evt.params.data.element;
-        var $element = $(element);
-      
-        if ($("#agrupar_documentos_generales").find(":selected").length > 1) {
-          var $second = $("#agrupar_documentos_generales").find(":selected").eq(-2);
-          $element.detach();
-          $second.after($element);
-        } else {
-          $element.detach();
-          $("#agrupar_documentos_generales").prepend($element);
-        }
-      
-        $("#agrupar_documentos_generales").trigger("change");
-        var orderedArray= $("#agrupar_documentos_generales").serializeArray;
     });
 }
 
-var channel = pusher.subscribe('informe-documentos-generales-'+localStorage.getItem("notificacion_code"));
+var channel = pusher.subscribe('informe-ventas-generales-'+localStorage.getItem("notificacion_code"));
 
 channel.bind('notificaciones', function(data) {
     console.log('notificaciones', data);
@@ -256,78 +280,55 @@ channel.bind('notificaciones', function(data) {
         loadExcel(data);
         return;
     }
-    if(data.id_documento_general){
-        $('#id_auxiliar_cargado').val(data.id_documento_general);
-        loadDocumentosGeneralesById(data.id_documento_general);
+    if(data.id_venta_general){
+        loadVentasGeneralesById(data.id_venta_general);
         return;
     }
 });
 
-function loadDocumentosGeneralesById(id_documento_general) {
-    documentos_generales_table.ajax.url(base_url + 'documentos-generales-show?id='+id_documento_general).load(function(res) {
+function loadVentasGeneralesById(id_venta_general) {
+    $("#generarVentasGenerales").hide();
+    $("#generarVentasGeneralesLoading").show();
+    ventas_generales_table.ajax.url(base_url + 'ventas-generales-show?id='+id_venta_general).load(function(res) {
         if(res.success){
-            $("#generarDocumentosGenerales").show();
-            $("#generarDocumentosGeneralesLoading").hide();
-            // $('#descargarExcelAuxiliar').prop('disabled', false);
-            // $("#descargarExcelAuxiliar").show();
-            // $("#descargarExcelAuxiliarDisabled").hide();
-            // $('#generarAuxiliarUltimo').hide();
-            // $('#generarAuxiliarUltimoLoading').hide();
-            agregarToast('exito', 'Documentos generales cargados', 'Informe cargado con exito!', true);
+            $("#generarVentasGenerales").show();
+            $("#generarVentasGeneralesLoading").hide();
+            agregarToast('exito', 'Informe ventas generales', res.message, true);
         }
     });
 }
 
-function getNivelAgrupado() {
-    if($("input[type='radio']#agrupado_documentos_generales0").is(':checked')) return 0;
-    if($("input[type='radio']#agrupado_documentos_generales1").is(':checked')) return 1;
 
-    return false;
-}
+$(document).on('click', '#generarVentasGenerales', function () {
+    generarVentasGenerales = false;
 
-$(document).on('click', '#generarDocumentosGenerales', function () {
-    generarDocumentosGenerales = false;
+    $("#generarVentasGenerales").hide();
+    $("#generarVentasGeneralesLoading").show();
 
-    $("#generarDocumentosGenerales").hide();
-    $("#generarDocumentosGeneralesLoading").show();
+    var id_nit = $('#id_nit_ventas_generales').val();
+    var id_resolucion= $('#id_resolucion_ventas_generales').val();
+    var id_bodega= $('#id_bodega_ventas_generales').val();
+    var id_usuario= $('#id_usuario_ventas_generales').val();
+    var id_producto = $('#id_producto_ventas_generales').val();
 
-    var agruparDocumentos = $("#agrupar_documentos_generales").val();
-    var agruparDocumentosText = '';
-
-    if (agruparDocumentos.length) {
-        for (let index = 0; index < agruparDocumentos.length; index++) {
-            const element = agruparDocumentos[index];
-            agruparDocumentosText+= element+',';
-        }
-        agruparDocumentosText = agruparDocumentosText.slice(0, -1);
-    }
-
-    var id_nit = $('#id_nit_documentos_generales').val();
-    var id_comprobante= $('#id_comprobante_documentos_generales').val();
-    var id_centro_costos= $('#id_cecos_documentos_generales').val();
-    var id_cuenta= $('#id_cuenta_documentos_generales').val();
-    var id_usuario= $('#id_usuario_documentos_generales').val();
-
-    var url = base_url + 'documentos-generales';
-    url+= '?fecha_desde='+$('#fecha_desde_documentos_generales').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_documentos_generales').val();
-    url+= '&precio_desde='+$('#precio_desde_documentos_generales').val();
-    url+= '&precio_hasta='+$('#precio_hasta_documentos_generales').val();
+    var url = base_url + 'ventas-generales';
+    url+= '?fecha_desde='+$('#fecha_desde_ventas_generales').val();
+    url+= '&fecha_hasta='+$('#fecha_hasta_ventas_generales').val();
+    url+= '&precio_desde='+$('#precio_desde_ventas_generales').val();
+    url+= '&precio_hasta='+$('#precio_hasta_ventas_generales').val();
     url+= '&id_nit='+ id_nit;
-    url+= '&id_comprobante='+ id_comprobante;
-    url+= '&id_centro_costos='+ id_centro_costos;
-    url+= '&id_cuenta='+ id_cuenta;
-    url+= '&documento_referencia='+$('#factura_documentos_generales').val();
-    url+= '&consecutivo='+$('#consecutivo_documentos_generales').val();
-    url+= '&concepto='+$('#concepto_documentos_generales').val();
+    url+= '&id_resolucion='+ id_resolucion;
+    url+= '&id_bodega='+ id_bodega;
     url+= '&id_usuario='+ id_usuario;
-    url+= '&agrupar='+agruparDocumentosText;
-    url+= '&agrupado='+getNivelAgrupado();
-    url+= '&generar='+generarDocumentosGenerales;
+    url+= '&id_producto='+ id_producto;
+    url+= '&consecutivo='+$('#consecutivo_ventas_generales').val();
+    url+= '&generar='+generarVentasGenerales;
     
-    documentos_generales_table.ajax.url(url).load(function(res) {
+    ventas_generales_table.ajax.url(url).load(function(res) {
         if(res.success) {
-            agregarToast('info', 'Generando documentos generales', 'En un momento se le notificará cuando el informe esté generado...', true );
+            agregarToast('info', 'Generando informe de ventas generales', 'En un momento se le notificará cuando el informe esté generado...', true );
         }
     });
 });
+
+

@@ -12,6 +12,7 @@ class VentasPdf extends AbstractPrinterPdf
 {
     public $venta;
 	public $empresa;
+	public $tipoEmpresion;
 
     public function __construct(Empresa $empresa, FacVentas $venta)
 	{
@@ -22,11 +23,15 @@ class VentasPdf extends AbstractPrinterPdf
 
 		$this->venta = $venta;
 		$this->empresa = $empresa;
+		$this->tipoEmpresion = $this->venta->resolucion->tipo_impresion;
 	}
 
     public function view()
 	{
-		return 'pdf.facturacion.ventas-pos';
+		if ($this->tipoEmpresion == 0) {
+			return 'pdf.facturacion.ventas-pos';
+		}
+		return 'pdf.facturacion.ventas';
 	}
 
     public function name()
@@ -36,6 +41,9 @@ class VentasPdf extends AbstractPrinterPdf
 
     public function paper()
 	{
+		if ($this->tipoEmpresion == 1) return 'landscape';
+		if ($this->tipoEmpresion == 2) return 'portrait';
+
 		return '';
 	}
 
@@ -47,7 +55,7 @@ class VentasPdf extends AbstractPrinterPdf
             'detalles',
 			'pagos.forma_pago'
         ]);
-		// dd($this->venta->pagos[0]->forma_pago);
+
 		$impuestosIva = [];
 		$groupImpuestosIva = $this->venta->detalles->groupBy('id_cuenta_venta_iva');
 
@@ -69,7 +77,7 @@ class VentasPdf extends AbstractPrinterPdf
 				}
 			}
 		}
-		// dd($this->venta->cliente);
+
         return [
 			'empresa' => $this->empresa,
 			'cliente' => $this->venta->cliente,

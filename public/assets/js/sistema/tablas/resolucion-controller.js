@@ -48,11 +48,12 @@ function resolucionInit() {
             {"data":'consecutivo'},
             {"data":'numero_resolucion'},
             {"data": function (row, type, set){
-                if (row.tipo_resolucion == 1) return 'Facturacion electronica';
-                if (row.tipo_resolucion == 2) return 'Nota debito';
-                if (row.tipo_resolucion == 3) return 'Nota credito';
-                if (row.tipo_resolucion == 4) return 'Documento Equivalente/Soporte';
-                return 'POS';
+                if (row.tipo_resolucion == 1) return 'POS';
+                if (row.tipo_resolucion == 2) return 'Facturacion electronica';
+                if (row.tipo_resolucion == 3) return 'Nota debito';
+                if (row.tipo_resolucion == 4) return 'Nota credito';
+                if (row.tipo_resolucion == 5) return 'Documento Equivalente/Soporte';
+                return 'COMPUTADOR';
             }},
             {"data":'fecha'},
             {"data":'vigencia'},
@@ -173,6 +174,9 @@ function resolucionInit() {
     }
 
     let column = resoluciones_table.column(12);
+
+    var today = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    document.getElementById("fecha_resolucion").setAttribute("max", today);
 
     if (!editarResoluciones && !eliminarResoluciones) column.visible(false);
     else column.visible(true);

@@ -95,6 +95,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //DOCUMENTOS GENERALES
         Route::get('documentos-generales', 'App\Http\Controllers\Informes\DocumentosGeneralesController@generate');
         Route::get('documentos-generales-show', 'App\Http\Controllers\Informes\DocumentosGeneralesController@show');
+        //VENTAS GENERALES
+        Route::get('ventas-generales', 'App\Http\Controllers\Informes\VentasGeneralesController@generate');
+        Route::get('ventas-generales-show', 'App\Http\Controllers\Informes\VentasGeneralesController@show');
 
         //USUARIOS
         Route::controller(UsuariosController::class)->group(function () {

@@ -287,6 +287,14 @@ function ventaInit () {
         ajax: {
             url: 'api/resoluciones/combo-resoluciones',
             headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_resoluciones: [0, 1],
+                    _type: 'query'
+                }
+                return query;
+            },
             dataType: 'json',
             processResults: function (data) {
                 return {
@@ -1072,7 +1080,7 @@ function saveVenta() {
             $("#crearCapturaVentaLoading").hide();
 
             if(res.impresion) {
-                window.open("/ventas-print/"+res.impresion, "", "_blank");
+                window.open("/ventas-print/"+res.impresion, '_blank');
             }
             idVentaProducto = 0;
 
