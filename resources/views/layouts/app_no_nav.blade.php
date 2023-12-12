@@ -668,6 +668,12 @@
                     localStorage.setItem("empresa_logo", res.empresa.logo);
                     localStorage.setItem("notificacion_code", res.notificacion_code);
                     localStorage.setItem("fondo_sistema", res.fondo_sistema);
+                    var itemMenuActiveIn = localStorage.getItem("item_active_menu");
+                    if (itemMenuActiveIn == 0 || itemMenuActiveIn == 1 || itemMenuActiveIn == 2 || itemMenuActiveIn == 3) {
+                    } else {
+                        localStorage.setItem("item_active_menu", 'contabilidad');
+                    }
+
                     window.location.href = '/home';
                 } else {
                     $('#error-login').show();
