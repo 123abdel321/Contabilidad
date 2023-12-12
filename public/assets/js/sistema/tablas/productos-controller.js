@@ -10,7 +10,7 @@ var $comboBodega = null;
 var $comboBodegaVariante = null;
 var cacheProducto = null;
 
-var ivaIncluido = true;
+var ivaIncluidoProductos = true;
 
 var nuevoProducto = {
     imagen: '',
@@ -258,7 +258,7 @@ function productosInit() {
                 $('#input-iva-valor').show();
                 $('#porcentaje_iva').val(porcentajeIva);
                 var valorIva = parseFloat(dataProducto.precio) * (parseFloat(porcentajeIva) / 100);
-                if(ivaIncluido) {//CALCULAR IVA INCLUIDO
+                if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
                     valorIva = parseFloat(dataProducto.precio) - (parseFloat(dataProducto.precio) / (1 + (parseFloat(porcentajeIva) / 100)));
                 }
                 $('#valor_iva').val(valorIva);
@@ -1846,7 +1846,7 @@ function calcularPrecioProducto() {
 
     if (porcentajeIva) {
         var totalIva = valorVenta * (porcentajeIva / 100);
-        if(ivaIncluido) {//CALCULAR IVA INCLUIDO
+        if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
             totalIva = valorVenta - (valorVenta / (1 + (porcentajeIva / 100)));
         }
         $('#valor_iva').val(totalIva);
@@ -1886,7 +1886,7 @@ function calcularPorcentajeUtilidad() {
         var valorUtilidad = costoCommpra * (porcentajeUtilidad / 100);
         var precioProducto = costoCommpra * ((porcentajeUtilidad / 100) + 1);
         var valorIva = precioProducto * (porcentajeIva / 100);
-        if(ivaIncluido) {//CALCULAR IVA INCLUIDO
+        if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
             valorIva = valorVenta - (valorVenta / (1 + (porcentajeIva / 100)));
         }
         $('#valor_iva').val(valorIva);
@@ -1914,7 +1914,8 @@ function calcularValorUtilidad() {
         var porcentajeIva = parseFloat($('#porcentaje_iva').val());
         var precioProducto = costoCommpra + valorUtilidad;
         var valorIva = precioProducto * (porcentajeIva / 100);
-        if(ivaIncluido) {//CALCULAR IVA INCLUIDO
+        if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
+            
             valorIva = precioProducto - (precioProducto / (1 + (porcentajeIva / 100)));
         }
 
