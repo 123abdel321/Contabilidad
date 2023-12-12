@@ -54,6 +54,17 @@
     
     <hr class="horizontal dark mt-0">
 
+    <div class="dropdown" style="text-align-last: center;">
+        <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="dropdownTiposMenu" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #2E34FF;">
+            Facturación
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownTiposMenu" style="margin-left: 40px;">
+            <li id="dropdown-item-facturacion"><a onclick="selectMenu('facturacion')" class="dropdown-item">Facturación</a></li>
+            <li id="dropdown-item-contabilidad"><a onclick="selectMenu('contabilidad')" class="dropdown-item">Contabilidad</a></li>
+            <li id="dropdown-item-nomina"><a class="dropdown-item disabled" aria-disabled="true">Nomina</a></li>
+        </ul>
+    </div>
+
     <ul class="collapse navbar-collapse navbar-nav" id="sidenav-collapse-main" style="height: 100%;">
 
             @foreach ($menus as $menu)
@@ -71,7 +82,7 @@
                         <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #0dd7f6; margin-left: 30px;">
 
                             @foreach ($menu as $item)
-                                <li class="nav-item">
+                                <li class="nav-item tipo_menu_{{ $item->tipo_menu }}">
                                     <a class="nav-link button-side-nav" id="sidenav_{{ $item->url }}" onclick="openNewItem('{{ $item->url }}', '{{ $item->nombre }}', '{{ $item->icon }}')" style="margin-left: 20px;">
                                         <span class="nav-link-text ms-1">{{ $item->nombre }}</span>
                                     </a>

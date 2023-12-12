@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('id_padre')->nullable();
             $table->integer('id_componente')->nullable();
             $table->boolean('tipo')->comment('0:menu; 1:submenu');
+            $table->boolean('tipo_menu')->comment('0:Ninguno; 1:Contabilidad; 2:Facturación; 3:Nomina');
             $table->string('nombre', 100)->default('');
             $table->string('url', 100)->default('');
             $table->string('icon', 100)->default('');

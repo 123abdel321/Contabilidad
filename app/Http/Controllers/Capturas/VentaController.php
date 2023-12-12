@@ -51,7 +51,7 @@ class VentaController extends Controller
         "cuenta_venta" => ["valor" => "subtotal"],
 		"cuenta_venta_descuento" => ["valor" => "descuento_valor"],
         "cuenta_venta_iva" => ["valor" => "iva_valor"],
-        "cuenta_inventario" => ["valor" => "subtotal"],
+        "cuenta_inventario" => ["valor" => "costo_total"],
         "cuenta_costos" => ["valor" => "costo_total"],
     ];
 
@@ -301,18 +301,27 @@ class VentaController extends Controller
             if ($this->totalesFactura['total_rete_fuente']) {
                 $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
 
-                $doc = new DocumentosGeneral([
-                    "id_cuenta" => $cuentaRetencion->id,
-                    "id_nit" => $cuentaRetencion->exige_nit ? $venta->id_cliente : null,
-                    "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $venta->id_centro_costos : null,
-                    "concepto" => 'TOTAL: '.$cuentaRetencion->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
-                    "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $venta->documento_referencia : null,
-                    "debito" => $cuentaRetencion->naturaleza_ventas == PlanCuentas::DEBITO ? $this->totalesFactura['total_rete_fuente'] : 0,
-                    "credito" => $cuentaRetencion->naturaleza_ventas == PlanCuentas::CREDITO ? $this->totalesFactura['total_rete_fuente'] : 0,
-                    "created_by" => request()->user()->id,
-                    "updated_by" => request()->user()->id
-                ]);
-                $documentoGeneral->addRow($doc, $cuentaRetencion->naturaleza_ventas);
+                if ($cuentaRetencion->naturaleza_ventas == PlanCuentas::DEBITO || $cuentaRetencion->naturaleza_ventas == PlanCuentas::CREDITO) {
+                    $doc = new DocumentosGeneral([
+                        "id_cuenta" => $cuentaRetencion->id,
+                        "id_nit" => $cuentaRetencion->exige_nit ? $venta->id_cliente : null,
+                        "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $venta->id_centro_costos : null,
+                        "concepto" => 'TOTAL: '.$cuentaRetencion->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
+                        "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $venta->documento_referencia : null,
+                        "debito" => $this->totalesFactura['total_rete_fuente'],
+                        "credito" => $this->totalesFactura['total_rete_fuente'],
+                        "created_by" => request()->user()->id,
+                        "updated_by" => request()->user()->id
+                    ]);
+                    $documentoGeneral->addRow($doc, $cuentaRetencion->naturaleza_ventas);
+                } else {
+                    DB::connection('sam')->rollback();
+                    return response()->json([
+                        "success"=>false,
+                        'data' => [],
+                        "message"=> ['Cuenta retención' => ['La cuenta '.$cuentaRetencion->cuenta. ' - ' .$cuentaRetencion->nombre. ' no tiene naturaleza en ventas']]
+                    ], 422);
+                }
             }
 
             $totalProductos = $this->totalesFactura['total_factura'];
