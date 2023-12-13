@@ -29,8 +29,13 @@ class FacProductos extends Model
         'variante',
         'utilizado_captura',
         'estado',
+        'movimientos_totales',
         'created_by',
         'updated_by'
+    ];
+
+    protected $attributes = [
+        'movimientos_totales' => null
     ];
 
     public function bodegas()
@@ -56,6 +61,21 @@ class FacProductos extends Model
     public function hijos()
     {
         return $this->hasMany('App\Models\Sistema\FacProductos', 'id_padre');
+	}
+
+    public function movimientos()
+    {
+        return $this->hasMany(FacProductosBodegasMovimiento::class, 'id_producto');
+    }
+
+    public function setMovimientosTotalesAttribute()
+	{
+		return $this->movimientos->count();
+	}
+
+    public function getMovimientosTotalesAttribute()
+	{
+		return $this->movimientos->count();
 	}
 
 }

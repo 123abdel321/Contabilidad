@@ -20,6 +20,7 @@ use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacVentaPagos;
 use App\Models\Sistema\FacResoluciones;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Sistema\FacVentaDetalles;
 use App\Models\Sistema\DocumentosGeneral;
@@ -73,13 +74,16 @@ class VentaController extends Controller
             ->where('id_empresa', request()->user()->id_empresa)
             ->first();
 
+        $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
+
         $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
         $resoluciones = explode(",", $usuarioPermisos->ids_resolucion_responsable);
 
         $data = [
             'cliente' => Nits::where('numero_documento', '222222222222')->first(),
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
-            'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get()
+            'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get(),
+            'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : ''
         ];
 
         return view('pages.capturas.venta.venta-view', $data);
@@ -229,6 +233,11 @@ class VentaController extends Controller
                     if ($productoDb->tipo_producto == 1 && $cuentaKey == 'cuenta_inventario') {
                         continue;
                     }
+
+                    if ($productoDb->tipo_producto == 1 && $cuentaKey == 'cuenta_costos') {
+                        continue;
+                    }
+
                     //VALIDAR COSTO PRODUCTO
                     if ($productoDb->precio_inicial <= 0 && $cuentaKey == 'cuenta_costos') {
                         continue;
@@ -560,6 +569,9 @@ class VentaController extends Controller
 
     private function calcularTotales ($productos)
     {
+        $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
+        $ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
+        
         foreach ($productos as $producto) {
             $producto = (object)$producto;
 
@@ -582,11 +594,33 @@ class VentaController extends Controller
                 }
             }
 
-            $subtotal = ($producto->cantidad * $producto->costo) - $producto->descuento_valor;
+            $iva = 0;
+            $costo = $producto->costo;
+            $cuentaIva = $productoDb->familia->cuenta_venta_iva;
+
+            if ($cuentaIva && $cuentaIva->impuesto) {
+                $impuesto = $cuentaIva->impuesto;
+                
+                if (floatval($impuesto->porcentaje) > $this->totalesFactura['porcentaje_rete_fuente']) {
+                    $this->totalesFactura['porcentaje_iva'] = floatval($impuesto->porcentaje);
+                    $this->totalesFactura['id_cuenta_iva'] = $cuentaIva->id;
+                }
+
+                $iva = ($costo * (1 + ($this->totalesFactura['porcentaje_iva'] / 100))) - $costo;
+                if ($ivaIncluido) {
+                    $iva = round((float)$producto->costo - ($producto->costo / (1 + ($this->totalesFactura['porcentaje_iva'] / 100))), 2);
+                }
+            }
+
+            if ($ivaIncluido) {
+                $costo = round((float)$producto->costo / (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 2);
+            }
+
+            $subtotal = ($producto->cantidad * $costo) - $producto->descuento_valor;
             $this->totalesFactura['subtotal']+= $subtotal;
-            $this->totalesFactura['total_iva']+= $producto->iva_valor;
+            $this->totalesFactura['total_iva']+= $iva;
             $this->totalesFactura['total_descuento']+= $producto->descuento_valor;
-            $this->totalesFactura['total_factura']+= $subtotal + $producto->iva_valor;
+            $this->totalesFactura['total_factura']+= $subtotal + $iva;
         }
 
         if ($this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] && $this->totalesFactura['porcentaje_rete_fuente'] > 0) {

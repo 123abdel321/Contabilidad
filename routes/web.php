@@ -34,6 +34,7 @@ use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
 //CONFIGURACION
+use App\Http\Controllers\Configuracion\EntornoController;
 use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
 //IMPORTADORES
@@ -142,6 +143,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/usuarios', [UsuariosController::class, 'index'])->name('usuarios');
 		//EMPRESA
 		Route::get('/empresa', [EmpresaController::class, 'index'])->name('empresa');
+		//ENTORNO
+		Route::get('/entorno', [EntornoController::class, 'index'])->name('entorno');
 
 		//IMPORTADORES
 		Route::get('/productoprecios', [ProductoImportadorController::class, 'index'])->name('producto.precios');

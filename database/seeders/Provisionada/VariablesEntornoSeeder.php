@@ -13,18 +13,18 @@ class BodegasSeeder extends Seeder
         \DB::table('variables_entornos')->insert([
             [
                 'id' => 1,
-                'nombre' => 'capturar_documento_descuadrado',
-                'valor' => '0',
+                'nombre' => 'iva_incluido',
+                'valor' => '1',
             ],
             [
                 'id' => 2,
-                'nombre' => 'id_comprobante_compra',
-                'valor' => '3',
+                'nombre' => 'capturar_documento_descuadrado',
+                'valor' => '',
             ],
             [
                 'id' => 3,
-                'nombre' => 'id_cuenta_cobrar',
-                'valor' => '13',
+                'nombre' => 'valor_uvt',
+                'valor' => '0',
             ],
         ]);
     }
