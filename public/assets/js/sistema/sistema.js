@@ -10,6 +10,12 @@ const base_web = 'https://listardatos.com/';
 const dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
+$.ajaxSetup({
+    'headers':{
+        "Authorization": auth_token,
+        "Content-Type": "application/json"
+    }
+});
 
 const headers = {
     "Authorization": auth_token,
@@ -127,7 +133,7 @@ selectMenu(itemMenuActive);
 
 function openNewItem(id, nombre, icon) {
     if($('#containner-'+id).length == 0) {
-        generatView(id, nombre, icon);
+        generateView(id, nombre, icon);
     }
     seleccionarView(id, nombre);
     document.getElementById('sidenav-main-2').click();
@@ -139,7 +145,7 @@ function closeMenu() {
     }
 }
 
-function generatView(id, nombre, icon){
+function generateView(id, nombre, icon){
     $('.water').show();
     $('#contenerdores-views').append('<main class="tab-pane main-content border-radius-lg change-view" style="margin-left: 5px;" id="containner-'+id+'"></main>');
     $('#footer-navigation').append(generateNewTabButton(id, nombre, icon));

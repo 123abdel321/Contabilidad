@@ -79,7 +79,7 @@ Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('gue
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
 
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth:sanctum']], function () {
 
 	//EMPRESA
 	Route::get('/seleccionar-empresa', [ApiController::class, 'index'])->name('seleccionar-empresa');
