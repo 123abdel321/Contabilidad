@@ -47,8 +47,8 @@ $(document).on('click', '#updateEntorno', function () {
             agregarToast('exito', 'Actualización exitosa', 'Datos de entorno actualizados con exito!', true);
         }
     }).fail((err) => {
-        $("#updateEmpresaLoading").hide();
-            $("#updateEmpresa").show();
+        $("#updateEntornoLoading").hide();
+        $("#updateEntorno").show();
         var errorsMsg = "";
         var mensaje = err.responseJSON.message;
         if(typeof mensaje  === 'object' || Array.isArray(mensaje)){

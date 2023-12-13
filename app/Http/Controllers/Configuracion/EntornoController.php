@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\Impuestos;
+use App\Models\Sistema\TipoImpuestos;
 use App\Models\Sistema\VariablesEntorno;
 
 class EntornoController extends Controller
@@ -56,6 +58,19 @@ class EntornoController extends Controller
                 VariablesEntorno::where('nombre', $variable)->update([
                     'valor' => $request->get($variable)
                 ]);
+
+                if ($variable == 'valor_uvt') {
+                    
+                    $retenciones = Impuestos::where('total_uvt', '>', 0)->get();
+
+                    foreach ($retenciones as $retencion) {
+                        $retencion->base = 0;
+                        if ($request->get('valor_uvt')) {
+                            $retencion->base = $retencion->total_uvt * $request->get($variable);
+                        }
+                        $retencion->save();
+                    }
+                }
             }
 
             DB::connection('sam')->commit();
