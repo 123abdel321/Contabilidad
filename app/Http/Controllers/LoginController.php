@@ -110,7 +110,8 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        $user =  User::find(Auth::user()->id);
+        $user->tokens()->delete();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
