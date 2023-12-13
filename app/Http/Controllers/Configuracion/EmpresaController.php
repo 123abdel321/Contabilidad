@@ -148,7 +148,7 @@ class EmpresaController extends Controller
                 'message'=> 'Empresa actualizada con exito!'
             ]);
 
-        }  catch (Exception $e) {
+        } catch (Exception $e) {
             DB::connection('sam')->rollback();
             return response()->json([
                 "success"=>false,

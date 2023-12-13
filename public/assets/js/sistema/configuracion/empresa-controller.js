@@ -77,7 +77,6 @@ $(document).on('click', '#updateEmpresa', function () {
         segundo_apellido: $('#segundo_apellido_empresa').val(),
         fecha_ultimo_cierre: $('#fecha_ultimo_cierre').val(),
         id_responsabilidades: $('#id_responsabilidades').val(),
-        capturar_documento_descuadrado: $("input[type='checkbox']#capturar_documento_descuadrado_empresa").is(':checked') ? '1' : '',
         fondo_imagen : fondoSistema,
     }
 

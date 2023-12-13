@@ -20,6 +20,7 @@ use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacVentaPagos;
 use App\Models\Sistema\FacResoluciones;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Sistema\FacVentaDetalles;
 use App\Models\Sistema\DocumentosGeneral;
@@ -73,13 +74,16 @@ class VentaController extends Controller
             ->where('id_empresa', request()->user()->id_empresa)
             ->first();
 
+        $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
+
         $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
         $resoluciones = explode(",", $usuarioPermisos->ids_resolucion_responsable);
 
         $data = [
             'cliente' => Nits::where('numero_documento', '222222222222')->first(),
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
-            'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get()
+            'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get(),
+            'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : ''
         ];
 
         return view('pages.capturas.venta.venta-view', $data);
@@ -565,7 +569,9 @@ class VentaController extends Controller
 
     private function calcularTotales ($productos)
     {
-        $ivaIncluido = true;
+        $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
+        $ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
+        
         foreach ($productos as $producto) {
             $producto = (object)$producto;
 

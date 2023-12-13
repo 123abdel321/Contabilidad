@@ -14,8 +14,6 @@ var abrirFormasPagoVentas = false;
 var key13PressNewRow = false;
 var guardandoVenta = false;
 var totalAnticiposDisponibles = 0;
-
-var ivaIncluidoVentas = false;
 var redondearFactura = false;
 
 function ventaInit () {

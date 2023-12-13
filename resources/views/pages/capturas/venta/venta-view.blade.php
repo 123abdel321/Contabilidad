@@ -210,9 +210,11 @@
         var ventaDescuento = '<?php echo auth()->user()->can("venta descuento"); ?>';
         var ventaNegativa = '<?php echo auth()->user()->can("venta negativa"); ?>';
         var ventaRapida = '<?php echo auth()->user()->can("venta rapida"); ?>';
+        
         var primeraNit = JSON.parse('<?php echo $cliente; ?>');
         var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');
         var primeraResolucionVenta = JSON.parse('<?php echo $resolucion; ?>');
+        var ivaIncluidoVentas = '<?php echo $iva_incluido; ?>';
     </script>
     
 </div>
