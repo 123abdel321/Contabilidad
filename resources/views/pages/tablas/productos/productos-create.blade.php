@@ -88,7 +88,7 @@
 
                     <div class="form-group col-6 col-sm-6 col-md-6">
                         <label for="example-text-input" class="form-control-label">Valor utilidad</label>
-                        <input type="number" class="form-control form-control-sm" name="valor_utilidad" id="valor_utilidad" onfocus="this.select();" onfocusout="addValorUtilidadProducto()" onkeypress="changeValorUtilidad(event)" value="0" required>
+                        <input type="number" class="form-control form-control-sm" name="valor_utilidad" id="valor_utilidad" onfocus="this.select();" onfocusout="addValorUtilidadProducto()" onkeypress="changeValorUtilidad(event)" value="0" step="any">
                         <div class="invalid-feedback">
                             El campo Valor utilidad es requerido
                         </div>
@@ -96,7 +96,7 @@
 
                     <div class="form-group col-6 col-sm-6 col-md-6" >
                         <label for="example-text-input" class="form-control-label">Valor venta</label>
-                        <input type="number" class="form-control form-control-sm" name="precio_producto" id="precio_producto" onfocus="this.select();" onfocusout="addPrecioProducto()" onkeypress="changeValorVenta(event)" value="0" required>
+                        <input type="number" class="form-control form-control-sm" name="precio_producto" id="precio_producto" onfocus="this.select();" onfocusout="addPrecioProducto()" onkeypress="changeValorVenta(event)" value="0" step="any">
                         <div class="invalid-feedback">
                             El campo Precio es requerido
                         </div>
