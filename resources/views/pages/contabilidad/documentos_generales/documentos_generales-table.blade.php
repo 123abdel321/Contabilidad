@@ -2,6 +2,8 @@
     <thead>
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
+            <th>Base</th>
+            <th>Porcentaje</th>
             <th>Nit</th>
             <th>Comprobante</th>
             <th>Consecutivo</th>

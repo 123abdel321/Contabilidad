@@ -74,6 +74,8 @@ function documentosgeneralesInit() {
                 if (row.id_cuenta) return row.cuenta + ' - ' +row.nombre_cuenta;
                 return '';
             }},
+            { data: "base_cuenta", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            { data: "porcentaje_cuenta", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){ //NIT
                 if(!row.numero_documento){
                     return '';

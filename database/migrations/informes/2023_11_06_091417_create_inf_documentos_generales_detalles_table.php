@@ -21,6 +21,8 @@ return new class extends Migration
             $table->integer('id_centro_costos')->nullable();
             $table->string('cuenta', 10)->nullable();
             $table->string('nombre_cuenta', 100)->nullable();
+            $table->decimal('base_cuenta', 15)->nullable();
+            $table->decimal('porcentaje_cuenta', 15)->nullable();
             $table->string('numero_documento', 50)->nullable();
             $table->string('nombre_nit', 100)->nullable();
             $table->string('razon_social', 100)->nullable();
