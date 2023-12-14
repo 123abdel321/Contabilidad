@@ -107,14 +107,13 @@ function productosInit() {
             {"data": function (row, type, set){  
                 var inventarios = row.inventarios;
                 var totalUnidades = 0
-                if (row.familia.inventario && inventarios.length > 0) {
+                if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
                     inventarios.forEach(inventario => {
                         totalUnidades+= parseInt(inventario.cantidad);
                     });
                     if (totalUnidades > 0) {
                         return totalUnidades;
                     } else {
-                        
                         return '<span class="badge rounded-pill bg-danger">Sin unidades</span>';
                     }
                 }
@@ -1790,8 +1789,8 @@ function changeCostoCompra(event) {
     if(event.keyCode == 13) {
         calcularCostoCompra();
         setTimeout(function(){
-            $('#precio_producto').focus();
-            $('#precio_producto').select();
+            $('#porcentaje_utilidad').focus();
+            $('#porcentaje_utilidad').select();
         },10);
     }
 }
@@ -1898,6 +1897,10 @@ function calcularPorcentajeUtilidad() {
 function changeValorUtilidad(event) {
     if(event.keyCode == 13) {
         calcularValorUtilidad();
+        setTimeout(function(){
+            $('#precio_producto').focus();
+            $('#precio_producto').select();
+        },10);
     }
 }
 
