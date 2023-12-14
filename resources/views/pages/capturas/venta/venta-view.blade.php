@@ -107,6 +107,10 @@
         padding: 0.1rem 0.1rem;
     }
 
+    #ventaFilterForm .select2-container--bootstrap-5 {
+        height: 30px;
+    }
+
 </style>
 
 <div class="ventas-capturas-view container-fluid py-2">
@@ -204,6 +208,8 @@
             
         </div>
     </div>
+
+    @include('pages.capturas.venta.venta-nits-form')
 
     <script>
         var ventaExistencias = '<?php echo auth()->user()->can("venta existencia"); ?>';

@@ -454,6 +454,13 @@ function focusFormaPagoCompra(idFormaPago) {
 
 function calcularCompraPagos(idFormaPago = null) {
 
+    if (
+        $('#compra_forma_pago_'+idFormaPago).val() == '' ||
+        $('#compra_forma_pago_'+idFormaPago).val() < 0
+    ) {
+        $('#compra_forma_pago_'+idFormaPago).val(0);
+    }
+
     $('#total_faltante_compra').removeClass("is-invalid");
 
     var [iva, retencion, descuento, total, subtotal] = totalValoresCompras();
@@ -937,8 +944,6 @@ function totalValoresCompras() {
     var dataCompra = compra_table.rows().data();
 
     if(dataCompra.length > 0) {
-        $("#crearCapturaCompra").show();
-        $("#crearCapturaCompraDisabled").hide();
         
         for (let index = 0; index < dataCompra.length; index++) {
             var producto = $('#combo_producto_'+dataCompra[index].id).val();
@@ -960,6 +965,16 @@ function totalValoresCompras() {
             retencion = porcentajeRetencionCompras ? (valorBruto * porcentajeRetencionCompras) / 100 : 0;
             total = total - retencion;
         }
+    } else {
+        $("#crearCapturaCompra").hide();
+        $("#crearCapturaCompraDisabled").show();
+    }
+
+    var totalPagos = totalFormasPagoCompras();
+
+    if (total > 0 && totalPagos >= total) {
+        $("#crearCapturaCompra").show();
+        $("#crearCapturaCompraDisabled").hide();
     } else {
         $("#crearCapturaCompra").hide();
         $("#crearCapturaCompraDisabled").show();

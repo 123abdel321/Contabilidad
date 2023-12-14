@@ -104,8 +104,8 @@ class NitController extends Controller
 			'otros_nombres' => 'nullable|string|max:60',
 			'razon_social' => 'nullable|string|max:120|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_JURIDICA, // Campo requerido si el tipo contribuyente es persona jurídica (id: 1)
 			'nombre_comercial' => 'nullable|string|max:120',
-			'direccion' => 'required|min:3|max:100',
-			'email' => 'required|email|max:250',
+			'direccion' => 'nullable|min:3|max:100',
+			'email' => 'nullable|email|max:250',
 			'email_recepcion_factura_electronica' => 'nullable|email|max:60',
 			'telefono_1' => 'nullable|numeric|digits_between:1,30',
 			'telefono_2' => 'nullable|numeric|digits_between:1,30',
