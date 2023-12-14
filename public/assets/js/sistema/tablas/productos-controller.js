@@ -679,8 +679,21 @@ $(document).on('click', '#reloadProducto', function () {
 $(document).on('click', '#saveNewProducto', function () {
     var form = document.querySelector('#newProductoForm');
 
+    $('#valor_utilidad').removeClass("is-invalid");
+    $('#precio_producto').removeClass("is-invalid");
+
     if(!form.checkValidity()){
         form.classList.add('was-validated');
+        return;
+    }
+
+    if (!$('#valor_utilidad').val()) {
+        $('#valor_utilidad').addClass("is-invalid");
+        return;
+    }
+
+    if (!$('#precio_producto').val()) {
+        $('#precio_producto').addClass("is-invalid");
         return;
     }
 

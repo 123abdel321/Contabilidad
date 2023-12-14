@@ -1304,10 +1304,9 @@ function changeFormaPago(idFormaPago, anticipo, event) {
         calcularVentaPagos(idFormaPago);
 
         if ((totalEfectivo + totalOtrosPagos + totalAnticipos) >= total) {
-            saveVenta();
+            validateSaveVenta();
             return;
         }
-
         focusNextFormasPagoVentas(idFormaPago);
     }
 }
