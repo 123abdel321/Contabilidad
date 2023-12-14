@@ -22,6 +22,8 @@ class InfDocumentosGeneralesDetalle extends Model
         'id_centro_costos',
         'cuenta',
         'nombre_cuenta',
+        'base_cuenta',
+        'porcentaje_cuenta',
         'numero_documento',
         'nombre_nit',
         'razon_social',

@@ -15,6 +15,7 @@ var key13PressNewRow = false;
 var guardandoVenta = false;
 var totalAnticiposDisponibles = 0;
 var redondearFactura = false;
+var createNewNit = false;
 
 function ventaInit () {
 
@@ -248,11 +249,14 @@ function ventaInit () {
     $comboCliente = $('#id_cliente_venta').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        dropdownCssClass: 'custom-id_cliente_venta',
         language: {
             noResults: function() {
+                createNewNit = true;
                 return "No hay resultado";        
             },
             searching: function() {
+                createNewNit = false;
                 return "Buscando..";
             },
             inputTooShort: function () {
@@ -321,6 +325,38 @@ function ventaInit () {
         },
         ajax: {
             url: 'api/bodega/combo-bodega',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $('#id_tipo_documento_venta_nit').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#nitVentaFormModal'),
+        delay: 250,
+        ajax: {
+            url: 'api/nit/combo-tipo-documento',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $('#id_ciudad_venta_nit').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#nitVentaFormModal'),
+        delay: 250,
+        ajax: {
+            url: 'api/ciudades',
             headers: headers,
             dataType: 'json',
             processResults: function (data) {
@@ -461,6 +497,15 @@ $(document).on('keydown', '.custom-venta_producto .select2-search__field', funct
         }
     } else {
         abrirFormasPagoVentas = false;
+    }
+});
+
+$(document).on('keydown', '.custom-id_cliente_venta .select2-search__field', function (event) {
+    if (event.keyCode == 13){
+        openModalNewNit();
+        var documentoBuscado = $('.select2-search__field').val();
+        $comboCliente.select2('close');
+        $("#numero_documento_venta_nit").val(documentoBuscado);
     }
 });
 
@@ -812,12 +857,11 @@ function totalValoresVentas() {
 
         }
         
-    } else {
-        $("#crearCapturaVenta").hide();
-        $("#crearCapturaVentaDisabled").show();
     }
 
-    if (total > 0) {
+    var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
+
+    if (total > 0 && (totalEfectivo + totalOtrosPagos + totalAnticipos) >= total) {
         $("#crearCapturaVenta").show();
         $("#crearCapturaVentaDisabled").hide();
     } else {
@@ -1004,7 +1048,14 @@ function focusFormaPagoVenta(idFormaPago, anticipo = false) {
     $('#venta_forma_pago_'+idFormaPago).select();
 }
 
-function calcularVentaPagos(idFormaPago, anticipo = false) {
+function calcularVentaPagos(idFormaPago) {
+
+    if (
+        $('#venta_forma_pago_'+idFormaPago).val() == '' ||
+        $('#venta_forma_pago_'+idFormaPago).val() < 0
+    ) {
+        $('#venta_forma_pago_'+idFormaPago).val(0);
+    }
 
     $('#total_faltante_venta').removeClass("is-invalid");
 
@@ -1279,3 +1330,96 @@ function focusNextFormasPagoVentas(idFormaPago) {
     }
     focusFormaPagoVenta(idFormaPagoFocus);
 }
+
+function openModalNewNit() {
+    clearFormNitsVenta();
+    $("#nitVentaFormModal").modal('show');
+}
+
+function clearFormNitsVenta() {
+    $("#id_tipo_documento_venta_nit").val('').change();
+    $("#id_ciudad_venta_nit").val('').change();
+    $("#observaciones_venta_nit").val('');
+    $("#numero_documento_venta_nit").val('');
+    $("#tipo_contribuyente_venta_nit").val(2).change();
+    $("#primer_apellido_venta_nit").val('');
+    $("#segundo_apellido_venta_nit").val('');
+    $("#primer_nombre_venta_nit").val('');
+    $("#otros_nombres_venta_nit").val('');
+    $("#razon_social_venta_nit").val('');
+    $("#telefono_1_venta_nit").val('');
+    $("#direccion_venta_nit").val('');
+    $("#email_venta_nit").val('');
+}
+
+$(document).on('click', '#saveNitVenta', function () {
+    var form = document.querySelector('#ventaNitsForm');
+
+    if(form.checkValidity()){
+
+        $("#saveNitVentaLoading").show();
+        $("#saveNitVenta").hide();
+
+        let data = {
+            id_tipo_documento: $("#id_tipo_documento_venta_nit").val(),
+            numero_documento: $("#numero_documento_venta_nit").val(),
+            tipo_contribuyente: $("#tipo_contribuyente_venta_nit").val(),
+            primer_apellido: $("#primer_apellido_venta_nit").val(),
+            segundo_apellido: $("#segundo_apellido_venta_nit").val(),
+            primer_nombre: $("#primer_nombre_venta_nit").val(),
+            otros_nombres: $("#otros_nombres_venta_nit").val(),
+            razon_social: $("#razon_social_venta_nit").val(),
+            direccion: $("#direccion_venta_nit").val(),
+            email: $("#email_venta_nit").val(),
+            telefono_1: $("#telefono_1_venta_nit").val(),
+            id_ciudad: $("#id_ciudad_venta_nit").val(),
+            observaciones: $("#observaciones_venta_nit").val(),
+        }
+
+        $.ajax({
+            url: base_url + 'nit',
+            method: 'POST',
+            data: JSON.stringify(data),
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            if(res.success){
+                clearFormNitsVenta();
+                $("#saveNitVenta").show();
+                $("#saveNitVentaLoading").hide();
+                $("#nitVentaFormModal").modal('hide');
+
+                var dataCliente = {
+                    id: res.data.id,
+                    text: res.data.numero_documento + ' - ' + res.data.nombre_completo
+                };
+                var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
+                $comboCliente.append(newOption).trigger('change');
+                $comboCliente.val(dataCliente.id).trigger('change');
+
+                agregarToast('exito', 'Creación exitosa', 'Cedula nit creada con exito!', true);
+
+                document.getElementById('iniciarCapturaVenta').click();
+            }
+        }).fail((err) => {
+            $('#saveNitVenta').show();
+            $('#saveNitVentaLoading').hide();
+            var errorsMsg = "";
+            var mensaje = err.responseJSON.message;
+            if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                for (field in mensaje) {
+                    var errores = mensaje[field];
+                    for (campo in errores) {
+                        errorsMsg += "- "+errores[campo]+" <br>";
+                    }
+                };
+            } else {
+                errorsMsg = mensaje
+            }
+            agregarToast('error', 'Creación errada', errorsMsg);
+        });
+    } else {
+        form.classList.add('was-validated');
+    }
+});
+

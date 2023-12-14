@@ -71,6 +71,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             if ($this->request['agrupar'] && $this->request['agrupado']) $this->documentosGeneralesAgruparNiveles();
             else if (!$this->request['agrupar']) $this->documentosGeneralesSinAgrupar();
             else if ($this->request['agrupar']) $this->documentosGeneralesAgruparNormal();
+            
             foreach (array_chunk($this->documentosCollection,233) as $documentosCollection){
                 DB::connection('informes')
                     ->table('inf_documentos_generales_detalles')
@@ -193,6 +194,8 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                         'cuenta' => $documento->cuenta,
                         'nombre_cuenta' => $documento->nombre_cuenta,
                         'numero_documento' => $documento->numero_documento,
+                        'base_cuenta' => $documento->base_cuenta,
+                        'porcentaje_cuenta' => $documento->porcentaje_cuenta,
                         'nombre_nit' => $documento->nombre_nit,
                         'razon_social' => $documento->razon_social,
                         'codigo_cecos' => $documento->codigo_cecos,
@@ -241,6 +244,8 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'id_centro_costos' => null,
             'cuenta' => 'TOTAL',
             'nombre_cuenta' => null,
+            'base_cuenta' => null,
+            'porcentaje_cuenta' => null,
             'numero_documento' => null,
             'nombre_nit' => null,
             'razon_social' => null,
@@ -282,6 +287,8 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 "PC.naturaleza_cuenta",
                 "PC.auxiliar",
                 "PC.nombre AS nombre_cuenta",
+                "IM.base AS base_cuenta",
+                "IM.porcentaje AS porcentaje_cuenta",
                 "DG.documento_referencia",
                 "DG.id_centro_costos",
                 "CC.codigo AS codigo_cecos",
@@ -306,6 +313,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             ])
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+            ->leftJoin('impuestos AS IM', 'PC.id_impuesto', 'IM.id')
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
@@ -355,6 +363,8 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'id_centro_costos' => in_array('id_centro_costos', $this->agrupacion) ? $documento->id_centro_costos : null,
             'cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->cuenta : null,
             'nombre_cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->nombre_cuenta : null,
+            'base_cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->base_cuenta : null,
+            'porcentaje_cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->porcentaje_cuenta : null,
             'numero_documento' => in_array('id_nit', $this->agrupacion) ? $documento->numero_documento : null,
             'nombre_nit' => in_array('id_nit', $this->agrupacion) ? $documento->nombre_nit : null,
             'razon_social' => in_array('id_nit', $this->agrupacion) ? $documento->razon_social : null,
@@ -389,6 +399,8 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'id_centro_costos' => in_array('id_centro_costos', $agrupacionesTotales) ? $documento->id_centro_costos : null,
             'cuenta' => in_array('id_cuenta', $agrupacionesTotales) ? $documento->cuenta : null,
             'nombre_cuenta' => in_array('id_cuenta', $agrupacionesTotales) ? $documento->nombre_cuenta : null,
+            'base_cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->base_cuenta : null,
+            'porcentaje_cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->porcentaje_cuenta : null,
             'numero_documento' => in_array('id_nit', $agrupacionesTotales) ? $documento->numero_documento : null,
             'nombre_nit' => in_array('id_nit', $agrupacionesTotales) ? $documento->nombre_nit : null,
             'razon_social' => in_array('id_nit', $agrupacionesTotales) ? $documento->razon_social : null,
@@ -423,6 +435,8 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'id_centro_costos' => $documento->id_centro_costos,
             'cuenta' => $documento->cuenta,
             'nombre_cuenta' => $documento->nombre_cuenta,
+            'base_cuenta' =>$documento->base_cuenta,
+            'porcentaje_cuenta' =>$documento->porcentaje_cuenta,
             'numero_documento' => $documento->numero_documento,
             'nombre_nit' => $documento->nombre_nit,
             'razon_social' => $documento->razon_social,
