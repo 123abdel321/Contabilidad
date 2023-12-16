@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('consecutivo');
             $table->string('numero_resolucion', 250);
             $table->integer('tipo_impresion')->comment('0: POS, 1: Media Carta, 2: Carta, 3: Personalizada');
-            $table->integer('tipo_resolucion')->default(0)->comment('0:Computador, 1: POS, 2: Facturacion electronica, 3: Contingencia, 4: Nota debito, 5: Nota credito, 6: Documento Equivalente/Soporte');
+            $table->integer('tipo_resolucion')->default(0)->comment('0: POS, 1: Facturacion electronica, 2: Nota debito, 3: Nota credito, 4: Documento Equivalente/Soporte');
             $table->date('fecha');
             $table->integer('vigencia');
             $table->integer('consecutivo_desde');
