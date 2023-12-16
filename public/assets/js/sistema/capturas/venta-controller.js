@@ -795,8 +795,6 @@ function consultarExistencias(idRow) {
 function mostrarValoresVentas () {
     var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
 
-    // ACA/
-
     if (descuento) $('#totales_descuento').show();
     else $('#totales_descuento').hide();
 

@@ -40,12 +40,11 @@
                         <label for="exampleFormControlSelect1">Tipo resolución</label>
                             <select class="form-control form-control-sm" id="tipo_resolucion_resolucion" name="tipo_resolucion_resolucion" required>
                             
-                                <option value="0">Computador</option>
-                                <option value="1">POS</option>
-                                <option value="2">Facturacion electronica</option>
-                                <option value="3">Nota debito</option>
-                                <option value="4">Nota credito</option>
-                                <option value="5">Documento Equivalente/Soporte</option>
+                                <option value="0">POS</option>
+                                <option value="1">Facturacion electronica</option>
+                                <option value="2">Nota debito</option>
+                                <option value="3">Nota credito</option>
+                                <option value="4">Documento Equivalente/Soporte</option>
                             </select>
                         </div>
                         <div class="form-group col-12 col-sm-6 col-md-6">

@@ -48,12 +48,12 @@ function resolucionInit() {
             {"data":'consecutivo'},
             {"data":'numero_resolucion'},
             {"data": function (row, type, set){
-                if (row.tipo_resolucion == 1) return 'POS';
-                if (row.tipo_resolucion == 2) return 'Facturacion electronica';
-                if (row.tipo_resolucion == 3) return 'Nota debito';
-                if (row.tipo_resolucion == 4) return 'Nota credito';
-                if (row.tipo_resolucion == 5) return 'Documento Equivalente/Soporte';
-                return 'COMPUTADOR';
+                if (row.tipo_resolucion == 0) return 'POS';
+                if (row.tipo_resolucion == 1) return 'Facturacion electronica';
+                if (row.tipo_resolucion == 2) return 'Nota debito';
+                if (row.tipo_resolucion == 3) return 'Nota credito';
+                if (row.tipo_resolucion == 4) return 'Documento Equivalente/Soporte';
+                return '';
             }},
             {"data":'fecha'},
             {"data":'vigencia'},
