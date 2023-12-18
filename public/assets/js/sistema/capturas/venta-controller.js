@@ -402,12 +402,13 @@ function ventaInit () {
     if (ventaExistencias) column2.visible(true);
     else column2.visible(false);
 
-    // $('#id_cliente_venta').on('select2:close', function(event) {
-    //     var data = $(this).select2('data');
-    //     if(data.length){
-    //         document.getElementById('iniciarCapturaVenta').click();
-    //     }
-    // });
+    $('#id_cliente_venta').on('select2:close', function(event) {
+        var data = $(this).select2('data');
+        if(data.length){
+            loadAnticiposCliente();
+            clearFormasPagoVenta();
+        }
+    });
     
     $('#id_resolucion_venta').on('select2:close', function(event) {
         var data = $(this).select2('data');
@@ -466,12 +467,21 @@ function loadAnticiposCliente() {
         dataType: 'json',
     }).done((res) => {
         if(res.success){
+            var disabled = true;
             if (res.data) {
                 var saldo = parseFloat(res.data.saldo);
                 if (saldo > 0) {
+                    disabled = false;
                     $('#input-anticipos-venta').show();
                     totalAnticiposDisponibles = saldo;
                     $('#id_saldo_anticipo_venta').val(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(saldo));
+                }
+            }
+            var pagosAnticipos = document.getElementsByClassName('anticipos');
+            if (pagosAnticipos) { //HIDE ELEMENTS
+                for (let index = 0; index < pagosAnticipos.length; index++) {
+                    const element = pagosAnticipos[index];
+                    element.disabled = disabled;
                 }
             }
         }
@@ -801,6 +811,9 @@ function mostrarValoresVentas () {
     if (retencion) $('#totales_retencion').show();
     else $('#totales_retencion').hide();
 
+    if (total) disabledFormasPagoVenta(false);
+    else disabledFormasPagoVenta();
+
     $("#venta_total_iva").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(iva));
     $("#venta_total_descuento").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(descuento));
     $("#venta_total_retencion").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(retencion));
@@ -1008,7 +1021,9 @@ function loadFormasPagoVenta() {
             venta_table_pagos.row(0).remove().draw();
         }
     }
-    venta_table_pagos.ajax.reload();
+    venta_table_pagos.ajax.reload(function(res) {
+        disabledFormasPagoVenta();
+    });
 }
 
 function clearFormasPagoVenta() {
@@ -1021,6 +1036,27 @@ function clearFormasPagoVenta() {
         }
     }
     calcularVentaPagos();
+}
+
+function disabledFormasPagoVenta(estado = true) {
+    var dataFormasPago = venta_table_pagos.rows().data();
+
+    if (dataFormasPago.length) {
+        for (let index = 0; index < dataFormasPago.length; index++) {
+            var formaPago = dataFormasPago[index];
+            $('#venta_forma_pago_'+formaPago.id).prop('disabled', estado);
+        }
+    }
+
+    if (totalAnticiposDisponibles <= 0) {
+        var pagosAnticipos = document.getElementsByClassName('anticipos');
+        if (pagosAnticipos) { //HIDE ELEMENTS
+            for (let index = 0; index < pagosAnticipos.length; index++) {
+                const element = pagosAnticipos[index];
+                element.disabled = true;
+            }
+        }
+    }
 }
 
 $(document).on('click', '#crearCapturaVenta', function () {
@@ -1059,10 +1095,9 @@ function calcularVentaPagos(idFormaPago) {
 
     var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
     var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
-    var totalPagosAnticipos
     var totalFaltante = total - (totalEfectivo + totalOtrosPagos + totalAnticipos);
     
-    if ((totalOtrosPagos < total) && totalOtrosPagos + totalEfectivo >= total) {
+    if ((totalOtrosPagos + totalEfectivo + totalAnticipos) >= total) {
         var totalCambio = (totalEfectivo + totalOtrosPagos + totalAnticipos) - total;
         if(parseInt(totalCambio) > 0)$('#cambio-totals').show();
         document.getElementById('total_cambio_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalCambio);
@@ -1139,6 +1174,9 @@ function saveVenta() {
         observacion: $("#observacion_venta").val(),
     }
 
+    $('#card-venta').focus();
+    disabledFormasPagoVenta();
+
     $.ajax({
         url: base_url + 'ventas',
         method: 'POST',
@@ -1168,10 +1206,6 @@ function saveVenta() {
                 venta_table.row(0).remove().draw();
             }
 
-            consecutivoSiguienteVenta();
-            mostrarValoresVentas();
-            loadAnticiposCliente();
-
             if (ventaRapida) {
                 addRowProductoVenta();
             } else {
@@ -1180,6 +1214,10 @@ function saveVenta() {
                     $comboCliente.select2("open");
                 },10);
             }
+
+            consecutivoSiguienteVenta();
+            loadAnticiposCliente();
+            disabledFormasPagoVenta();
 
         } else {
             var mensaje = res.mensages;
@@ -1281,6 +1319,8 @@ function changeFormaPago(idFormaPago, anticipo, event) {
 
     if(event.keyCode == 13){
 
+        calcularVentaPagos(idFormaPago);
+
         var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
         var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
 
@@ -1298,8 +1338,6 @@ function changeFormaPago(idFormaPago, anticipo, event) {
                 return;
             }
         }
-
-        calcularVentaPagos(idFormaPago);
 
         if ((totalEfectivo + totalOtrosPagos + totalAnticipos) >= total) {
             validateSaveVenta();
@@ -1356,6 +1394,8 @@ $(document).on('click', '#saveNitVenta', function () {
 
         $("#saveNitVentaLoading").show();
         $("#saveNitVenta").hide();
+
+        disabledFormasPagoVenta();
 
         let data = {
             id_tipo_documento: $("#id_tipo_documento_venta_nit").val(),
