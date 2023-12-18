@@ -5,8 +5,13 @@
             <th>Cliente</th>
             <th>Bodega</th>
             <th>Fecha</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Costo</th>
             <th>Subtotal</th>
-            <th>IVA</th>
+            <th>Iva %</th>
+            <th>Iva</th>
+            <th>Descuento %</th>
             <th>Descuento</th>
             <th>Rete fuente</th>
             <th>Total</th>

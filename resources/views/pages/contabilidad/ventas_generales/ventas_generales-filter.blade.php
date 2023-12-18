@@ -56,19 +56,11 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-6 col-sm-4 col-md-3">
-                            <label for="bodega-text-input" class="form-control-label">Producto</label>
-                            <select name="id_producto_ventas_generales" id="id_producto_ventas_generales" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
-                            </select>
-                        </div>
-
                         <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="usuario-text-input" class="form-control-label">Usuario</label>
                             <select name="id_usuario_ventas_generales" id="id_usuario_ventas_generales" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
                         </div>
-
-                        
 
                     </div>
                 </form>
