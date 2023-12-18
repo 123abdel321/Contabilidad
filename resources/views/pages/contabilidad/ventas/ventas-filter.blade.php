@@ -86,6 +86,11 @@
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">BUSCANDO</b>
                     </span>
+
+                    <span id="generarVentasGenerales" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
+                        <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">INFORME Z</b>
+                    </span>
                 </div>
             </div>
         </div>
