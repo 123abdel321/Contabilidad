@@ -34,6 +34,7 @@ class VentaController extends Controller
     protected $bodega = null;
     protected $resolucion = null;
 	protected $messages = null;
+    protected $ventaData = [];
     protected $totalesPagos = [
         'total_efectivo' => 0,
         'total_otrospagos' => 0,
@@ -418,7 +419,8 @@ class VentaController extends Controller
             ->with(
                 'bodega',
                 'cliente',
-                'comprobante'
+                'comprobante',
+                'detalles'
             )
             ->select(
                 '*',
@@ -433,16 +435,46 @@ class VentaController extends Controller
             $ventas->orderBy($columnName,$columnSortOrder);
         }
         
-        if ($request->get('consecutivo')) {
-            $ventas->where('consecutivo', $request->get('consecutivo'));
-        }
-
-        if ($request->get('fecha_manual')) {
-            $ventas->where('fecha_manual', $request->get('fecha_manual'));
-        }
-
         if ($request->get('id_cliente')) {
             $ventas->where('id_cliente', $request->get('id_cliente'));
+        }
+
+        if ($request->get('fecha_desde')) {
+            $ventas->where('fecha_manual', '>=', $request->get('fecha_desde'));
+        }
+
+        if ($request->get('fecha_hasta')) {
+            $ventas->where('fecha_manual', '<=', $request->get('fecha_hasta'));
+        }
+
+        if ($request->get('factura')) {
+            $ventas->where('documento_referencia', 'LIKE', '%'.$request->get('factura').'%');
+        }
+
+        if ($request->get('id_resolucion')) {
+            $ventas->where('id_resolucion', $request->get('id_resolucion'));
+        }
+
+        if ($request->get('id_bodega')) {
+            $ventas->where('id_bodega', $request->get('id_bodega'));
+        }
+
+        if ($request->get('id_producto')) {
+            $ventas->whereHas('detalles', function ($query) use($request) {
+                return $query->where('id_producto', '=', $request->get('id_producto'));
+            });
+        }
+
+        if ($request->get('id_usuario')) {
+            $ventas->where('created_by', $request->get('id_usuario'));
+        }
+
+        $dataVentas = $ventas->get();
+
+        if ($request->get('detallar_venta') == 'si') {
+            $this->generarVentaDetalles($dataVentas);
+        } else {
+            $this->generarVentaDetalles($dataVentas, false);
         }
 
         return response()->json([
@@ -450,10 +482,69 @@ class VentaController extends Controller
             'draw' => $draw,
             'iTotalRecords' => $ventas->count(),
             'iTotalDisplayRecords' => $ventas->count(),
-            'data' => $ventas->get(),
+            'data' => $this->ventaData,
             'perPage' => $rowperpage,
             'message'=> 'Ventas cargados con exito!'
         ]);
+    }
+
+    private function generarVentaDetalles($dataVentas, $detallar = true)
+    {
+        foreach ($dataVentas as $value) {
+            
+            $this->ventaData[] = [
+                "id" => $value->id,
+                "descripcion" => "",
+                "cantidad" => "",
+                "costo" => "",
+                "nombre_bodega" => $value->id_bodega ? $value->bodega->codigo.' - '.$value->bodega->nombre : "",
+                "nombre_completo" => $value->id_cliente ? $value->cliente->nombre_completo : "",
+                "documento_referencia" => $value->documento_referencia,
+                "fecha_manual" => $value->fecha_manual,
+                "subtotal" => $value->subtotal,
+                "iva_porcentaje" => "",
+                "total_iva" => $value->total_iva,
+                "descuento_porcentaje" => "",
+                "total_descuento" => $value->total_descuento,
+                "rete_fuente_porcentaje" => "",
+                "total_rete_fuente" => $value->total_rete_fuente,
+                "total_factura" => $value->total_factura,
+                "anulado" => $value->anulado,
+                "fecha_creacion" => $value->fecha_creacion,
+                "fecha_edicion" => $value->fecha_edicion,
+                "created_by" => $value->created_by,
+                "updated_by" => $value->updated_by,
+                "detalle" => $detallar ? false : true
+            ];
+            if ($detallar) {
+                foreach ($value->detalles as $ventaDetalle) {
+                    $this->ventaData[] = [
+                        "id" => "",
+                        "descripcion" => $ventaDetalle->descripcion,
+                        "cantidad" => $ventaDetalle->cantidad,
+                        "costo" => $ventaDetalle->costo,
+                        "subtotal" => $ventaDetalle->subtotal,
+                        "nombre_bodega" => "",
+                        "nombre_completo" => "",
+                        "documento_referencia" => "",
+                        "fecha_manual" => "",
+                        "iva_porcentaje" => $ventaDetalle->iva_porcentaje,
+                        "total_iva" => $ventaDetalle->iva_valor,
+                        "descuento_porcentaje" => $ventaDetalle->descuento_porcentaje,
+                        "total_descuento" => $ventaDetalle->descuento_valor,
+                        "rete_fuente_porcentaje" => "",
+                        "total_rete_fuente" => "",
+                        "total_factura" => $ventaDetalle->total,
+                        "anulado" => "",
+                        "fecha_creacion" => "",
+                        "fecha_edicion" => "",
+                        "created_by" => "",
+                        "updated_by" => "",
+                        "detalle" => true
+                    ];
+                }
+            }
+        }
     }
 
     public function read(Request $request)

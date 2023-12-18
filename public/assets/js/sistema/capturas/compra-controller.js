@@ -440,7 +440,9 @@ function loadFormasPagoCompra() {
             compra_table_pagos.row(0).remove().draw();
         }
     }
-    compra_table_pagos.ajax.reload();
+    compra_table_pagos.ajax.reload(function(res) {
+        disabledFormasPagoCompras();
+    });
 }
 
 function focusFormaPagoCompra(idFormaPago) {
@@ -782,6 +784,9 @@ function saveCompra() {
         fecha_manual: $("#fecha_manual_compra").val(),
         documento_referencia: $("#documento_referencia_compra").val(),
     }
+
+    disabledFormasPagoCompras();
+
     $.ajax({
         url: base_url + 'compras',
         method: 'POST',
@@ -806,7 +811,9 @@ function saveCompra() {
 
             mostrarValoresCompras();
             agregarToast('exito', 'Creación exitosa', 'Compra creada con exito!', true);
+            disabledFormasPagoCompras();
             cancelarCompra();
+
         } else {
             $("#agregarCompra").show();
             $("#crearCapturaCompra").show();
@@ -930,12 +937,26 @@ function mostrarValoresCompras () {
     if (retencion) $('#totales_retencion_compra').show();
     else $('#totales_retencion_compra').hide();
 
+    if (total) disabledFormasPagoCompras(false);
+    else disabledFormasPagoCompras();
+
     $("#compra_total_iva").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(iva));
     $("#compra_total_descuento").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(descuento));
     $("#compra_total_retencion").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(retencion));
     $("#compra_total_valor").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total));
     $("#compra_sub_total").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valorBruto));
     document.getElementById('total_faltante_compra').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+}
+
+function disabledFormasPagoCompras(estado = true) {
+    var dataFormasPago = compra_table_pagos.rows().data();
+
+    if (dataFormasPago.length) {
+        for (let index = 0; index < dataFormasPago.length; index++) {
+            var formaPago = dataFormasPago[index];
+            $('#compra_forma_pago_'+formaPago.id).prop('disabled', estado);
+        }
+    }
 }
 
 function totalValoresCompras() {

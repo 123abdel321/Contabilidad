@@ -1,9 +1,18 @@
+var fechaDesde = null;
 var ventas_table = null;
 
 function ventasInit() {
+
+    fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+
+    $('#fecha_manual_desde_ventas').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
+    $('#fecha_manual_hasta_ventas').val(fechaDesde);
+
+    var newLenguaje = lenguajeDatatable;
+    newLenguaje.sInfo = "Ventas del _START_ al _END_ de un total de _TOTAL_ "
     
     ventas_table = $('#VentasInformeTable').DataTable({
-        pageLength: 30,
+        pageLength: 20,
         dom: 'Brtip',
         paging: true,
         responsive: false,
@@ -18,28 +27,42 @@ function ventasInit() {
             left: 0,
             right : 1,
         },
+        'rowCallback': function(row, data, index){
+            if (data.detalle == '') {
+                $('td', row).css('background-color', 'rgb(180 215 244)');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'black');
+                return;
+            }
+        },
         ajax:  {
             type: "GET",
             headers: headers,
             url: base_url + 'ventas',
+            data: function ( d ) {
+                d.id_cliente = $('#id_cliente_ventas').val();
+                d.fecha_desde = $('#fecha_manual_desde_ventas').val();
+                d.fecha_hasta = $('#fecha_manual_hasta_ventas').val();
+                d.factura = $('#factura_ventas').val();
+                d.id_resolucion = $('#id_resolucion_ventas').val();
+                d.id_bodega = $('#id_bodega_ventas').val();
+                d.id_producto = $('#id_producto_ventas').val();
+                d.id_usuario = $('#id_usuario_ventas').val();
+                d.detallar_venta = $("input[type='radio']#detallar_venta1").is(':checked') ? 'si' : 'no';
+            }
         },
         columns: [
-            {"data":'documento_referencia'},
-            {"data": function (row, type, set){  
-                if (row.cliente) {
-                    return row.cliente.nombre_completo;
-                }
-                return '';
-            }},
-            {"data": function (row, type, set){  
-                if (row.bodega) {
-                    return row.bodega.codigo+' - '+row.bodega.nombre;
-                }
-                return '';
-            }},
-            {"data":'fecha_manual'},
+            {"data": "documento_referencia"},
+            {"data": "nombre_completo"},
+            {"data": "nombre_bodega"},
+            {"data": "fecha_manual"},
+            {"data": "descripcion"},
+            {"data": "cantidad", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "costo", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "subtotal", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "iva_porcentaje", className: 'dt-body-right'},
             {"data": "total_iva", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "descuento_porcentaje", className: 'dt-body-right'},
             {"data": "total_descuento", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "total_rete_fuente", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "total_factura", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
@@ -57,42 +80,163 @@ function ventasInit() {
             }},
             {
                 "data": function (row, type, set){
-                    if(row.anulado == 1) {
-                        return ''
+                    if (row.id) {
+                        var html = '';
+                        html+= '<span id="imprimirventa_'+row.id+'" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-venta" style="margin-bottom: 0rem !important; color: black; background-color: white !important;">Imprimir</span>';
+                        return html;
                     }
-                    var html = '';
-                    html+= '<span id="imprimirventa_'+row.id+'" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-venta" style="margin-bottom: 0rem !important; color: black;">PDF</span>';
-                    return html;
-    
+                    return ''
                 }
             }
     
         ]
     });
 
-    // $('#id_comprobante_venta').select2({
-    //     theme: 'bootstrap-5',
-    //     delay: 250,
-    //     ajax: {
-    //         url: 'api/comprobantes/combo-comprobante',
-    //         headers: headers,
-    //         dataType: 'json',
-    //         processResults: function (data) {
-    //             return {
-    //                 results: data.data
-    //             };
-    //         }
-    //     }
-    // });
+    $('#id_resolucion_ventas').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/resoluciones/combo-resoluciones',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_resoluciones: [0, 1],
+                    _type: 'query'
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
 
     $('#id_cliente_ventas').select2({
         theme: 'bootstrap-5',
         delay: 250,
         placeholder: "Seleccione un Cliente",
         allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
         ajax: {
             url: 'api/nit/combo-nit',
             headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $('#id_bodega_ventas').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/bodega/combo-bodega',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $('#id_usuario_ventas').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione un Usuario",
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/usuarios/combo',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $('#id_producto_ventas').select2({
+        theme: 'bootstrap-5',
+        dropdownCssClass: 'custom-venta_producto',
+        delay: 250,
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/producto/combo-producto',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    captura: 'venta',
+                    _type: 'query'
+                }
+                return query;
+            },
             dataType: 'json',
             processResults: function (data) {
                 return {
@@ -115,13 +259,29 @@ $(document).on('click', '#generarVentas', function () {
 
     $("#generarVentas").hide();
     $("#generarVentasLoading").show();
+    ventas_table.ajax.reload(function () {
+        $("#generarVentas").show();
+        $("#generarVentasLoading").hide();
+    });
+});
 
-    var url = base_url + 'ventas';
-    url+= '?id_cliente='+$('#id_cliente_ventas').val();
-    url+= '&fecha_manual='+$('#fecha_manual_ventas').val();
-    url+= '&consecutivo='+$('#consecutivo_ventas').val();
-
-    ventas_table.ajax.url(url).load(function(res) {
+$('input[type=radio][name=detallar_venta]').change(function() {
+    $("#generarVentas").hide();
+    $("#generarVentasLoading").show();
+    if($("input[type='radio']#detallar_venta1").is(':checked')){
+        ventas_table.column(4).visible(true);
+        ventas_table.column(5).visible(true);
+        ventas_table.column(6).visible(true);
+        ventas_table.column(8).visible(true);
+        ventas_table.column(10).visible(true);
+    } else {
+        ventas_table.column(4).visible(false);
+        ventas_table.column(5).visible(false);
+        ventas_table.column(6).visible(false);
+        ventas_table.column(8).visible(false);
+        ventas_table.column(10).visible(false);
+    }
+    ventas_table.ajax.reload(function () {
         $("#generarVentas").show();
         $("#generarVentasLoading").hide();
     });
