@@ -1174,7 +1174,6 @@ function saveVenta() {
         observacion: $("#observacion_venta").val(),
     }
 
-    $('#card-venta').focus();
     disabledFormasPagoVenta();
 
     $.ajax({
@@ -1394,8 +1393,6 @@ $(document).on('click', '#saveNitVenta', function () {
 
         $("#saveNitVentaLoading").show();
         $("#saveNitVenta").hide();
-
-        disabledFormasPagoVenta();
 
         let data = {
             id_tipo_documento: $("#id_tipo_documento_venta_nit").val(),
