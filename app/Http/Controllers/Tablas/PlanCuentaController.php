@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\TipoCuenta;
 use App\Models\Sistema\PlanCuentas;
+use App\Models\Sistema\ConPlanCuentas;
 use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\PlanCuentasTipo;
 use App\Models\Sistema\DocumentosGeneral;
@@ -33,6 +34,48 @@ class PlanCuentaController extends Controller
     {
         $tipoCuenta = TipoCuenta::get();
 
+        // $cuentasContables = ConPlanCuentas::skip(2400)->take(400)->get();
+        
+        // foreach ($cuentasContables as $cuenta) {
+        //     $idPadre = null;
+
+        //     if ($cuenta->id_padre) {
+        //         $cuentaPadreImport = ConPlanCuentas::where('id', $cuenta->id_padre)->first();
+        //         $cuentaPadre = PlanCuentas::where('cuenta', $cuentaPadreImport->cuenta)->first();
+        //         if ($cuentaPadre) {
+        //             $idPadre = $cuentaPadre->id;
+        //         }
+        //     }
+
+        //     $planCuenta = PlanCuentas::create([
+        //         'id_padre' => $idPadre,
+        //         'id_impuesto' => $cuenta->id_impuesto,
+        //         'cuenta' => $cuenta->cuenta,
+        //         'nombre' => $cuenta->nombre,
+        //         'pasarela' => $cuenta->pasarela, // Check si es una cuenta usada para sacar el extracto de pasarela
+        //         'auxiliar' => $cuenta->auxiliar,
+        //         'exige_nit' => $cuenta->exige_nit,
+        //         'exige_documento_referencia' => $cuenta->exige_documento_referencia,
+        //         'exige_concepto' => $cuenta->exige_concepto,
+        //         'exige_centro_costos' => $cuenta->exige_centro_costos,
+        //         'naturaleza_cuenta' => $cuenta->naturaleza_cuenta,
+        //         'naturaleza_ingresos' => null,
+        //         'naturaleza_egresos' => null,
+        //         'naturaleza_compras' => null,
+        //         'naturaleza_ventas' => null,
+        //         'cuenta_corriente' => $cuenta->cuenta_corriente,
+        //     ]);
+
+        //     if ($cuenta->id_tipo_cuenta) {
+        //         PlanCuentasTipo::create([
+        //             'id_cuenta' => $planCuenta->id,
+        //             'id_tipo_cuenta' => $cuenta->id_tipo_cuenta
+        //         ]);
+        //     }
+        // }
+
+        // dd('migrados!');
+
         $data = [
             'tipoCuenta' => $tipoCuenta,
         ];
@@ -42,44 +85,69 @@ class PlanCuentaController extends Controller
 
     public function generate (Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length");
-
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
-
-        $cuentas = PlanCuentas::orderBy($columnName,$columnSortOrder)
-            ->with('tipos_cuenta', 'padre', 'impuesto')
-            ->where('nombre', 'like', '%' .$searchValue . '%')
-            ->orWhere('cuenta', 'like', '%' .$searchValue . '%')
-            ->select(
-                '*',
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                'created_by',
-                'updated_by'
-            );
+        try {
+            if($request->get("length")) {
+                $draw = $request->get('draw');
+                $start = $request->get("start");
+                $rowperpage = $request->get("length");
         
-        $cuentasPaginate = $cuentas->skip($start)
-            ->take($rowperpage);
+                $columnIndex_arr = $request->get('order');
+                $columnName_arr = $request->get('columns');
+                $order_arr = $request->get('order');
+                $search_arr = $request->get('search');
+        
+                $columnIndex = $columnIndex_arr[0]['column']; // Column index
+                $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+                $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+                $searchValue = $search_arr['value']; // Search value
+        
+                $cuentas = PlanCuentas::orderBy($columnName,$columnSortOrder)
+                    ->with('tipos_cuenta', 'padre', 'impuesto')
+                    ->where('nombre', 'like', '%' .$searchValue . '%')
+                    ->orWhere('cuenta', 'like', '%' .$searchValue . '%')
+                    ->select(
+                        '*',
+                        DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                        DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                        'created_by',
+                        'updated_by'
+                    );
 
-        return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $cuentas->count(),
-            'iTotalDisplayRecords' => $cuentas->count(),
-            'data' => $cuentasPaginate->get(),
-            'perPage' => $rowperpage,
-            'message'=> 'Comprobante generado con exito!'
-        ]);
+                $totalCuentas = $cuentas->count();
+                
+                $cuentasPaginate = $cuentas->skip($start)
+                    ->take($rowperpage);
+        
+                return response()->json([
+                    'success'=>	true,
+                    'draw' => $draw,
+                    'iTotalRecords' => $totalCuentas,
+                    'iTotalDisplayRecords' => $totalCuentas,
+                    'data' => $cuentasPaginate->get(),
+                    'perPage' => $rowperpage,
+                    'message'=> 'Plan de cuentas generadas con exito!'
+                ]);
+            } else {
+                $planCuentas = PlanCuentas::whereNotNull('id');
+
+                if ($request->get("auxiliar")) {
+                    $planCuentas->where('auxiliar', $request->get("auxiliar"));
+                }
+
+                return response()->json([
+                    'success'=>	true,
+                    'data' => $planCuentas->get(),
+                    'message'=> 'Plan de cuentas generadas con exito!'
+                ]);
+            }
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
     }
 
     public function create (Request $request)
@@ -175,7 +243,7 @@ class PlanCuentaController extends Controller
                 'message'=> 'Cuenta creada con exito!'
             ]);
 
-        }  catch (Exception $e) {
+        } catch (Exception $e) {
             DB::connection('sam')->rollback();
             return response()->json([
                 "success"=>false,
@@ -247,6 +315,20 @@ class PlanCuentaController extends Controller
                     'nombre' => $request->get('nombre'),
                     'auxiliar' => $auxiliar,
                     'id_impuesto' => $request->get('id_impuesto'),
+                    'exige_nit' => $request->get('exige_nit'),
+                    'exige_documento_referencia' => $request->get('exige_documento_referencia'),
+                    'exige_concepto' => $request->get('exige_concepto'),
+                    'exige_centro_costos' => $request->get('exige_centro_costos'),
+                    'naturaleza_cuenta' => $request->get('naturaleza_cuenta'),
+                    'naturaleza_ingresos' => $request->get('naturaleza_ingresos'),
+                    'naturaleza_egresos' => $request->get('naturaleza_egresos'),
+                    'naturaleza_compras' => $request->get('naturaleza_compras'),
+                    'naturaleza_ventas' => $request->get('naturaleza_ventas'),
+                    'updated_by' => request()->user()->id,
+                ]);
+
+            PlanCuentas::where('cuenta', 'LIKE', $cuentaPadre.$request->get('cuenta').'%')
+                ->update([
                     'exige_nit' => $request->get('exige_nit'),
                     'exige_documento_referencia' => $request->get('exige_documento_referencia'),
                     'exige_concepto' => $request->get('exige_concepto'),

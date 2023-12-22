@@ -33,45 +33,65 @@ class CentroCostoController extends Controller
 
     public function generate (Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length");
+        try {
+            if($request->get("length")) {
+                $draw = $request->get('draw');
+                $start = $request->get("start");
+                $rowperpage = $request->get("length");
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+                $columnIndex_arr = $request->get('order');
+                $columnName_arr = $request->get('columns');
+                $order_arr = $request->get('order');
+                $search_arr = $request->get('search');
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+                $columnIndex = $columnIndex_arr[0]['column']; // Column index
+                $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+                $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+                $searchValue = $search_arr['value']; // Search value
 
-        $cecos = CentroCostos::orderBy($columnName,$columnSortOrder)
-            ->where('nombre', 'like', '%' .$searchValue . '%')
-            ->orWhere('codigo', 'like', '%' .$searchValue . '%')
-            ->select(
-                '*',
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                'created_by',
-                'updated_by'
-            );
+                $cecos = CentroCostos::orderBy($columnName,$columnSortOrder)
+                    ->where('nombre', 'like', '%' .$searchValue . '%')
+                    ->orWhere('codigo', 'like', '%' .$searchValue . '%')
+                    ->select(
+                        '*',
+                        DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                        DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                        'created_by',
+                        'updated_by'
+                    );
 
-        $cecosTotals = $cecos->get();
+                $cecosTotals = $cecos->get();
 
-        $cuentasPaginate = $cecos->skip($start)
-            ->take($rowperpage);
+                $cuentasPaginate = $cecos->skip($start)
+                    ->take($rowperpage);
 
-        return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $cecosTotals->count(),
-            'iTotalDisplayRecords' => $cecosTotals->count(),
-            'data' => $cuentasPaginate->get(),
-            'perPage' => $rowperpage,
-            'message'=> 'Comprobante generado con exito!'
-        ]);
+                return response()->json([
+                    'success'=>	true,
+                    'draw' => $draw,
+                    'iTotalRecords' => $cecosTotals->count(),
+                    'iTotalDisplayRecords' => $cecosTotals->count(),
+                    'data' => $cuentasPaginate->get(),
+                    'perPage' => $rowperpage,
+                    'message'=> 'Comprobante generado con exito!'
+                ]);
+            } else {
+                $cecos = CentroCostos::whereNotNull('id');
+
+                return response()->json([
+                    'success'=>	true,
+                    'data' => $cecos->get(),
+                    'message'=> 'Centro de costos generados con exito!'
+                ]);
+            }
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+        
     }
 
     public function create (Request $request)
