@@ -35,64 +35,96 @@ class NitController extends Controller
 
     public function generate (Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = 15; // Rows display per page
+        try {
+            if ($request->get("length")) {
+                $draw = $request->get('draw');
+                $start = $request->get("start");
+                $rowperpage = 15; // Rows display per page
+    
+                $columnIndex_arr = $request->get('order');
+                $columnName_arr = $request->get('columns');
+                $order_arr = $request->get('order');
+                $search_arr = $request->get('search');
+    
+                $columnIndex = $columnIndex_arr[0]['column']; // Column index
+                $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+                $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+                $searchValue = $search_arr['value']; // Search value
+    
+                $nits = Nits::skip($start)
+                    ->with('tipo_documento', 'ciudad')
+                    ->select(
+                        '*',
+                        DB::raw("DATE_FORMAT(nits.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                        DB::raw("DATE_FORMAT(nits.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                        'nits.created_by',
+                        'nits.updated_by'
+                    )
+                    ->take($rowperpage);
+    
+                if($columnName){
+                    $nits->orderBy($columnName,$columnSortOrder);
+                }
+    
+                if($searchValue) {
+                    $nits->where('primer_apellido', 'like', '%' .$searchValue . '%')
+                        ->orWhere('segundo_apellido', 'like', '%' .$searchValue . '%')
+                        ->orWhere('primer_nombre', 'like', '%' .$searchValue . '%')
+                        ->orWhere('otros_nombres', 'like', '%' .$searchValue . '%')
+                        ->orWhere('email', 'like', '%' .$searchValue . '%')
+                        ->orWhere('telefono_1', 'like', '%' .$searchValue . '%')
+                        ->orWhere('razon_social', 'like', '%' .$searchValue . '%');
+                }
+    
+                return response()->json([
+                    'success'=>	true,
+                    'draw' => $draw,
+                    'iTotalRecords' => $nits->count(),
+                    'iTotalDisplayRecords' => $nits->count(),
+                    'data' => $nits->get(),
+                    'perPage' => $rowperpage,
+                    'message'=> 'Comprobante generado con exito!'
+                ]);
+            } else {
+                $nits = Nits::whereNotNull('id');
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+                if ($request->get("id")) {
+                    $nits->where('id', $request->get("id"));
+                }
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+                if ($request->get("numero_documento")) {
+                    $nits->where('numero_documento', $request->get("numero_documento"));
+                }
 
-        $nits = Nits::skip($start)
-            ->with('tipo_documento', 'ciudad')
-            ->select(
-                '*',
-                DB::raw("DATE_FORMAT(nits.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(nits.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                'nits.created_by',
-                'nits.updated_by'
-            )
-            ->take($rowperpage);
-
-        if($columnName){
-            $nits->orderBy($columnName,$columnSortOrder);
+                return response()->json([
+                    'success'=>	true,
+                    'data' => $nits->get(),
+                    'message'=> 'Nits generados con exito!'
+                ]);
+            }
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
         }
-
-        if($searchValue) {
-            $nits->where('primer_apellido', 'like', '%' .$searchValue . '%')
-                ->orWhere('segundo_apellido', 'like', '%' .$searchValue . '%')
-                ->orWhere('primer_nombre', 'like', '%' .$searchValue . '%')
-                ->orWhere('otros_nombres', 'like', '%' .$searchValue . '%')
-                ->orWhere('email', 'like', '%' .$searchValue . '%')
-                ->orWhere('telefono_1', 'like', '%' .$searchValue . '%')
-                ->orWhere('razon_social', 'like', '%' .$searchValue . '%');
-        }
-
-        return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $nits->count(),
-            'iTotalDisplayRecords' => $nits->count(),
-            'data' => $nits->get(),
-            'perPage' => $rowperpage,
-            'message'=> 'Comprobante generado con exito!'
-        ]);
     }
 
     public function create (Request $request)
     {
         $tipoDocumentoNit = TipoDocumentos::where('nombre', 'NIT')->first(['id']);
 		$idTipoDocumentoNit = $tipoDocumentoNit ? $tipoDocumentoNit->id : 0;
-
+        // return response()->json([
+        //     'success'=>	true,
+        //     'data' => Nits::first(),
+        //     'message'=> 'Nit creado con exito!'
+        // ]);
+        // dd($request->all());
         $rules = [
 			'id_tipo_documento' => 'required|exists:sam.tipos_documentos,id',
-			'id_ciudad' => 'nullable|exists:clientes.ciudades,id',
+			// 'id_ciudad' => 'nullable|exists:clientes.ciudades,id',
             'observaciones' => 'nullable|string',
 			'id_actividad_econo' => 'nullable|exists:sam.actividades_economicas,id',
 			'numero_documento' => 'required|unique:sam.nits,numero_documento|max:30',
