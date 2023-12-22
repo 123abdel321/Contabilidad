@@ -260,18 +260,18 @@ class PlanCuentaController extends Controller
 			'id_padre' => 'nullable|exists:sam.plan_cuentas,id',
             // 'id_tipo_cuenta' => 'nullable|exists:sam.tipo_cuentas,id',
             'id_impuesto' => 'nullable|exists:sam.impuestos,id',
-            'cuenta' => [
-				"nullable",
-				function ($attribute, $value, $fail) use ($request) {
-                    $cuenta = PlanCuentas::find($request->get('id'));
-                    if ($cuenta->cuenta != $request->get('cuenta')) {
-                        $cuentaExist = PlanCuentas::where('cuenta', $request->get('cuenta'))->count();
-                        if ($cuentaExist > 0) {
-                            $fail("La cuenta ".$value." ya existe.");
-                        }
-                    }
-                },
-			],
+            // 'cuenta' => [
+			// 	"nullable",
+			// 	function ($attribute, $value, $fail) use ($request) {
+            //         $cuenta = PlanCuentas::find($request->get('id'));
+            //         if ($cuenta->cuenta != $request->get('cuenta')) {
+            //             $cuentaExist = PlanCuentas::where('cuenta', $request->get('cuenta'))->count();
+            //             if ($cuentaExist > 0) {
+            //                 $fail("La cuenta ".$value." ya existe.");
+            //             }
+            //         }
+            //     },
+			// ],
             'nombre' => 'required',
             'exige_nit'=>'required|boolean',
 			'exige_documento_referencia'=>'required|boolean',
