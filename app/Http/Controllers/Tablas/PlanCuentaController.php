@@ -104,7 +104,7 @@ class PlanCuentaController extends Controller
                 $cuentas = PlanCuentas::orderBy($columnName,$columnSortOrder)
                     ->with('tipos_cuenta', 'padre', 'impuesto')
                     ->where('nombre', 'like', '%' .$searchValue . '%')
-                    ->orWhere('cuenta', 'like', '%' .$searchValue . '%')
+                    ->orWhere('cuenta', 'like', $searchValue . '%')
                     ->select(
                         '*',
                         DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
