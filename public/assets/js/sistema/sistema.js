@@ -1,12 +1,14 @@
 // Pusher.logToConsole = true;
-const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
 // const base_url = 'http://localhost:8000/api/';
 // const base_web = 'http://localhost:8000/';
+const base_url = 'https://portafolioerp.com/api/';
+const base_web = 'https://portafolioerp.com/';
+
+const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
 const bucketUrl = 'https://bucketlistardatos.nyc3.digitaloceanspaces.com/';
 const btnLogout = document.getElementById('sessionLogout');
 const itemMenuActive = localStorage.getItem("item_active_menu");
-const base_url = 'https://listardatos.com/api/';
-const base_web = 'https://listardatos.com/';
+
 const dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
@@ -16,7 +18,6 @@ $.ajaxSetup({
         "Content-Type": "application/json"
     }
 });
-
 const headers = {
     "Authorization": auth_token,
     "Content-Type": "application/json",

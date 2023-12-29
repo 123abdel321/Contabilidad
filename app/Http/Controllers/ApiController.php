@@ -127,7 +127,8 @@ class ApiController extends Controller
     {
         if($request->get('es_carta') == 'soy yo'){
             $rules = [
-                'name' => 'required|string',
+                'firstname' => 'required|string',
+                'lastname' => 'required|string',
                 'email' => 'required|string|email|max:255|unique:users',
                 'telefono' => 'required|string',
                 'documento' => 'required|string',

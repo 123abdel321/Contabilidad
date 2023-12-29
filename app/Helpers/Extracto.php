@@ -229,6 +229,7 @@ class Extracto
             )
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+            ->leftJoin('plan_cuentas_tipos AS PCT', 'DG.id_cuenta', 'PCT.id_cuenta')
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->leftJoin('tipos_documentos AS TD', 'N.id_tipo_documento', 'TD.id')
@@ -237,7 +238,7 @@ class Extracto
 				$query->where('N.id', $this->id_nit);
 			})
             ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
-				$query->where('PC.id_tipo_cuenta', $this->id_tipo_cuenta);
+				$query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
 			})
             ->when($this->documento_referencia ? $this->documento_referencia : false, function ($query) {
 				$query->where('DG.documento_referencia', $this->documento_referencia);
@@ -252,7 +253,6 @@ class Extracto
                 $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) > 0");
 			})
             ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
-
 
         return $queryActual;
     }

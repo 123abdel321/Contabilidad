@@ -22,7 +22,7 @@ class DocumentoController extends Controller
         
         $draw = $request->get('draw');
         $start = $request->get("start");
-        $rowperpage = $request->get("length");
+        $rowperpage = 20;
         
         $FacDocumentos = FacDocumentos::select(
                 '*',

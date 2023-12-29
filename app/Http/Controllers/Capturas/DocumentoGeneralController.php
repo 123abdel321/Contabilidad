@@ -25,6 +25,14 @@ class DocumentoGeneralController extends Controller
     use BegConsecutiveTrait;
 
 	protected $messages = null;
+	protected $cuentasDocumentos = [
+		'id_cuenta_por_cobrar' => 'total',
+		'id_cuenta_por_pagar' => 'total',
+		'id_cuenta_rete_fuente' => 'valor_total_retencion',
+		'id_cuenta_ingreso' => 'total',
+		'id_cuenta_gasto' => 'total',
+		'id_cuenta_iva' => 'valor_total_iva',
+	];
 
     public function __construct()
 	{
@@ -53,6 +61,129 @@ class DocumentoGeneralController extends Controller
         return view('pages.capturas.documento_general.documento_general-view', $data);
     }
 
+	public function bulkDocumentos(Request $request)
+	{
+		$rules = [
+			'documento' => 'array|required',
+			'documento.*.id_comprobante' => 'sometimes|required_if:cod_comprobante,=,null|exists:sam.comprobantes,id',
+			'documento.*.cod_comprobante' => 'sometimes|required_if:id_comprobante,=,null|exists:sam.comprobantes,codigo',
+			'documento.*.id_centro_costos' => 'sometimes|required_if:cod_centro_costos,=,null|exists:sam.centro_costos,id',
+			'documento.*.cod_centro_costos' => 'sometimes|required_if:id_centro_costos,=,null|exists:sam.centro_costos,codigo',
+			'documento.*.id_tercero_erp' => 'nullable|sometimes|exists:sam.nits,id',
+			'documento.*.fecha_factura' => 'date|required',
+			'documento.*.consecutivo_factura' => 'sometimes|required_if:id_comprobante,!=,null',
+			'documento.*.descripcion' => 'nullable|string',
+			'documento.*.total' => 'nullable|numeric',
+			'documento.*.valor_total_iva' => 'nullable|numeric',
+			'documento.*.valor_total_retencion' => 'nullable|numeric',
+			'documento.*.documento_referencia_custom' => 'nullable|string',
+			'documento.*.id_cuenta_por_cobrar' => 'nullable|exists:sam.plan_cuentas,id',
+			'documento.*.id_cuenta_por_pagar' => 'nullable|exists:sam.plan_cuentas,id',
+			'documento.*.id_cuenta_rete_fuente' => 'nullable|exists:sam.plan_cuentas,id',
+			'documento.*.id_cuenta_ingreso' => 'nullable|exists:sam.plan_cuentas,id',
+			'documento.*.id_cuenta_gasto' => 'nullable|exists:sam.plan_cuentas,id',
+			'documento.*.id_cuenta_iva' => 'nullable|exists:sam.plan_cuentas,id',
+			'documento.*.nombre_concepto' => 'nullable|string',
+        ];
+		
+		$validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 401);
+        }
+
+		try {
+			DB::connection('sam')->beginTransaction();
+
+			$documento = $request->get('documento');
+
+			foreach ($documento as $doc) {
+
+				$doc = (object)$doc;
+				
+				DocumentosGeneral::where('id_comprobante', $doc->id_comprobante)
+					->where('consecutivo', $doc->consecutivo_factura)
+					->where('fecha_manual', $doc->fecha_factura)
+					->delete();
+				
+				$facDocumento = FacDocumentos::create([
+					'id_nit' => $doc->id_tercero_erp,
+					'id_comprobante' => $doc->id_comprobante,
+					'fecha_manual' => $doc->fecha_factura,
+					'consecutivo' => $doc->consecutivo_factura,
+					'debito' => $doc->total,
+					'credito' => $doc->total,
+					'saldo_final' => 0,
+					'created_by' => request()->user()->id,
+					'updated_by' => request()->user()->id,
+				]);
+
+				$documentoGeneral = new Documento($doc->id_comprobante, $facDocumento, $doc->fecha_factura, $doc->consecutivo_factura);
+
+				foreach ($this->cuentasDocumentos as $nombreCuenta => $nombreTotal) {
+					if (property_exists($doc, $nombreCuenta) && $doc->{$nombreCuenta} && property_exists($doc, $nombreTotal) && $doc->{$nombreTotal}) {
+						
+						$naturaleza = null;
+						$docGeneral = $this->newDocGeneral();
+						$cuentaContable = PlanCuentas::where('id', $doc->{$nombreCuenta})->first();
+	
+						$naturaleza = null;
+	
+						if ($cuentaContable->naturaleza_cuenta == PlanCuentas::DEBITO) {
+							$naturaleza = PlanCuentas::DEBITO;
+							$docGeneral['debito'] = $doc->{$nombreTotal};
+						} else {
+							$naturaleza = PlanCuentas::CREDITO;
+							$docGeneral['credito'] = $doc->{$nombreTotal};
+						}
+	
+						$docGeneral['id_nit'] = $doc->id_tercero_erp;
+						$docGeneral['id_cuenta'] = $cuentaContable->id;
+						$docGeneral['id_centro_costos'] = $doc->id_centro_costos;
+						$docGeneral['consecutivo'] = $doc->consecutivo_factura;
+						$docGeneral['created_by'] = request()->user()->id;
+						$docGeneral['updated_by'] = request()->user()->id;
+	
+						$docGeneral = new DocumentosGeneral($docGeneral);
+						$documentoGeneral->addRow($docGeneral, $naturaleza);
+					}
+				}
+
+				if (!$documentoGeneral->save()) {
+
+					DB::connection('sam')->rollback();
+					return response()->json([
+						'success'=>	false,
+						'data' => [],
+						'message'=> $documentoGeneral->getErrors()
+					], 200);
+				}
+
+				$this->updateConsecutivo($doc->id_comprobante, $doc->consecutivo_factura);
+			}
+
+			DB::connection('sam')->commit();
+				
+			return response()->json([
+				'success'=>	true,
+				'data' => [],
+				'message'=> 'Documentos creados con exito!'
+			], 200);
+		} catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 401);
+        }
+	}
+
     public function create(Request $request)
     {
 		$rules = [
@@ -79,7 +210,7 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], 200);
         }
 
 		$empresa = Empresa::where('id', request()->user()->id_empresa)->first();
@@ -91,7 +222,7 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
-            ], 422);
+            ], 200);
 		}
 		
 		try {
@@ -129,7 +260,7 @@ class DocumentoGeneralController extends Controller
 						"success"=>false,
 						'data' => [],
 						"message"=> "El consecutivo {$request->get('consecutivo')} ya está en uso."
-					], 422);
+					], 200);
 				}
 			}
 
@@ -206,7 +337,7 @@ class DocumentoGeneralController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], 200);
 			}
 
 			if(!$request->get('editing_documento')) {
@@ -238,7 +369,7 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], 200);
         }
     }
 
@@ -273,7 +404,7 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], 200);
         }
 
 		try {
@@ -309,7 +440,7 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], 200);
         }
 
 		DB::connection('sam')->beginTransaction();
@@ -357,5 +488,22 @@ class DocumentoGeneralController extends Controller
 			'data' =>  $empresa->fecha_ultimo_cierre,
 			'message'=> 'Año cerrado consultado con exito!'
 		], 200);
+	}
+
+	private function newDocGeneral()
+	{
+		return [
+			'id_nit' => '',
+			'id_cuenta' => '',
+			'id_centro_costos' => '',
+			'created_by' => '',
+			'updated_by' => '',
+			'consecutivo' => '',
+			'concepto' => '',
+			'credito' => 0,
+			'debito' => 0,
+			'saldo' => 0,
+			'documento_referencia' => ''
+		];
 	}
 }
