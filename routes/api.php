@@ -211,6 +211,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('documentos', 'generate');
             Route::put('documentos', 'anular');
             Route::post('documentos', 'create');
+            Route::post('bulk-documentos', 'bulkDocumentos');
             Route::get('documento-vacio', 'vacio');
         });
         //CAPTURA COMPRA

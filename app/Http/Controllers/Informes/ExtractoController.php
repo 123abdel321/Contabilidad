@@ -52,9 +52,9 @@ class ExtractoController extends Controller
             ], 422);
         }
 
-        $extractos = DB::connection('sam')->select($this->queryExtracto($request));
-
-        if($request->has('detallar_cartera') && $request->get('detallar_cartera')) {
+        if ($request->has('detallar_cartera') && $request->get('detallar_cartera')) {
+            $extractos = DB::connection('sam')->select($this->queryExtracto($request));
+    
             $extractosDetalle = DB::connection('sam')->select($this->queryExtractoDetalle($request));
             //AGREGAR ROWS SUMA TOTAL CUENTAS PADRE
             foreach ($extractos as $extracto) {
@@ -72,29 +72,49 @@ class ExtractoController extends Controller
             $this->addDetilsData($extractosDetalle);
             //AGREGAR ROW TOTALES
             $this->addTotalsData($extractos);
+            //AGREGAR ROWS EXTRACTO
+            $this->addTotalNitsData($extractos);
+    
+            ksort($this->carteraCollection, SORT_STRING | SORT_FLAG_CASE);
+            // dd($this->carteraCollection);
+            return response()->json([
+                'success'=>	true,
+                'data' => array_values($this->carteraCollection),
+                'message'=> 'Extracto generado con exito!'
+            ]);
+    
+            // $extracto = (new Extracto(
+            //     $request->get('id_nit', null),
+            //     $request->get('id_tipo_cuenta', null),
+            //     $request->get('documento_referencia', null)
+            // ))->actual2()->get();
+    
+            return response()->json([
+                'success'=>	true,
+                'data' => $extracto,
+                'message'=> 'Extracto generado con exito!'
+            ]);
+        } else {
+            $extracto = (new Extracto(
+                $request->get('id_nit', null),
+                $request->get('id_tipo_cuenta', null),
+                $request->get('documento_referencia', null),
+                $request->get('fecha_manual', Carbon::now()->format('Y-m-d H:i:s'))
+            ))->actual();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => $extracto->get(),
+                'message'=> 'Extracto consultados con exito!'
+            ]);
         }
-        //AGREGAR ROWS EXTRACTO
-        $this->addTotalNitsData($extractos);
-
-        ksort($this->carteraCollection, SORT_STRING | SORT_FLAG_CASE);
-        // dd($this->carteraCollection);
-        return response()->json([
-            'success'=>	true,
-            'data' => array_values($this->carteraCollection),
-            'message'=> 'Extracto generado con exito!'
-        ]);
-
-        // $extracto = (new Extracto(
-        //     $request->get('id_nit', null),
-        //     $request->get('id_tipo_cuenta', null),
-        //     $request->get('documento_referencia', null)
-        // ))->actual2()->get();
 
         return response()->json([
-            'success'=>	true,
-            'data' => $extracto,
-            'message'=> 'Extracto generado con exito!'
+            'success'=>	false,
+            'data' => [],
+            'message'=> 'Extracto consultados con exito!'
         ]);
+
     }
 
     public function extractoActicipos(Request $request)
@@ -131,7 +151,7 @@ class ExtractoController extends Controller
         $fecha = Carbon::now();
 
         if($request->has('id_tipo_cuenta') && $request->get('id_tipo_cuenta')) {
-            $wheres.= ' AND PC.id_tipo_cuenta = '.$request->get('id_tipo_cuenta');
+            $wheres.= ' AND PCT.id_tipo_cuenta = '.$request->get('id_tipo_cuenta');
         }
 
         if($request->has('id_nit') && $request->get('id_nit')){
@@ -206,6 +226,7 @@ class ExtractoController extends Controller
                     
             LEFT JOIN nits N ON DG.id_nit = N.id
             LEFT JOIN plan_cuentas PC ON DG.id_cuenta = PC.id
+            LEFT JOIN plan_cuentas_tipos PCT ON PC.id = PCT.id_cuenta
             LEFT JOIN centro_costos CC ON DG.id_centro_costos = CC.id
             LEFT JOIN comprobantes CO ON DG.id_comprobante = CO.id
                     
