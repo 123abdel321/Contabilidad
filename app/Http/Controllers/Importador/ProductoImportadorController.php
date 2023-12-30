@@ -109,7 +109,7 @@ class ProductoImportadorController extends Controller
     {
         return response()->json([
             'success'=>	true,
-            'url' => 'https://bucketlistardatos.nyc3.digitaloceanspaces.com/import/importador_precio_productos.xlsx',
+            'url' => 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/import/importador_precio_productos.xlsx',
             'message'=> 'Url generada con exito'
         ]);
         

@@ -48,7 +48,7 @@
                                                         <div class="text-center" styl="padding: 10px 0px 0px 0px;">
                                                             <a href="javascript:;">
                                                                 @if($empresaItem->logo)
-                                                                    <img class="w-50 border-radius-md" src="https://bucketlistardatos.nyc3.digitaloceanspaces.com/{{ $empresaItem->logo }}">
+                                                                    <img class="w-50 border-radius-md" src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/{{ $empresaItem->logo }}">
                                                                 @else
                                                                     <img class="w-50 border-radius-md" src="/img/logo_contabilidad.png">
                                                                 @endif

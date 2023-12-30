@@ -11,7 +11,7 @@ const base_web = 'https://test.portafolioerp.com/';
 
 const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
 // Pusher.logToConsole = true;
-const bucketUrl = 'https://bucketlistardatos.nyc3.digitaloceanspaces.com/';
+const bucketUrl = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/';
 const btnLogout = document.getElementById('sessionLogout');
 const itemMenuActive = localStorage.getItem("item_active_menu");
 
@@ -433,7 +433,7 @@ function showNit (id_nit) {
 
             var data = res.data;
             if(data.logo_nit) {
-                $('#avatar_nit').attr('src', 'bucketlistardatos.nyc3.digitaloceanspaces.com/'+data.logo_nit);
+                $('#avatar_nit').attr('src', 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'+data.logo_nit);
             } else {
                 $('#avatar_nit').attr('src', '/img/theme/tim.png');
             }
