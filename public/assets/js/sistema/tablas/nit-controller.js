@@ -145,7 +145,7 @@ function nitInit() {
             $("#observaciones").val(data.observaciones);
             
             if(data.logo_nit) {
-                $('#new_avatar').attr('src', 'https://bucketlistardatos.nyc3.digitaloceanspaces.com/'+data.logo_nit);
+                $('#new_avatar').attr('src', 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/'+data.logo_nit);
                 $('#new_avatar').show();
                 $('#default_avatar').hide();
             } else {

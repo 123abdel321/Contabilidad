@@ -148,7 +148,7 @@ class BalanceController extends Controller
             $url = $fileName;
 
             $informeBalance->exporta_excel = 1;
-            $informeBalance->archivo_excel = 'bucketlistardatos.nyc3.digitaloceanspaces.com/'.$url;
+            $informeBalance->archivo_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
             $informeBalance->save();
 
             (new BalanceExport($request->get('id')))->store($fileName, 'do_spaces', null, [
@@ -158,7 +158,7 @@ class BalanceController extends Controller
                     'tipo' => 'exito',
                     'mensaje' => 'Excel de Balance generado con exito!',
                     'titulo' => 'Excel generado',
-                    'url_file' => 'bucketlistardatos.nyc3.digitaloceanspaces.com/'.$url,
+                    'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
                     'autoclose' => false
                 ])),
                 $informeBalance->exporta_excel = 2,

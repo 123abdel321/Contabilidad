@@ -68,7 +68,7 @@
                 <tr>
                     <td style="width:100%;">
                         @if ($empresa->logo)
-                            <img style="height:65px;" src="https://bucketlistardatos.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}" />
+                            <img style="height:65px;" src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}" />
                         @else
                             <img style="height:65px;" src="/img/logo_contabilidad.png" />
                         @endif
