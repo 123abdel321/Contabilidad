@@ -289,7 +289,7 @@
 					<table>
 						<tr >
 							<td class="empresa-footer padding5">
-								LISTAR DATOS<br>
+								Portafolio ERP<br>
 								{{ $fecha_pdf }}
 							</td>
 						</tr>
@@ -300,8 +300,8 @@
 					<table>
 						<tr>
 							<td class="empresa-footer-left padding5">
-								ESTE INFORME FU&Eacute; GENERADO POR LISTARDATOS <br>
-								www.listardatos.com
+								ESTE INFORME FU&Eacute; GENERADO POR PORTAFOLIOERP <br>
+								www.portafolioerp.com
 							</td>
 						</tr>
 					</table>

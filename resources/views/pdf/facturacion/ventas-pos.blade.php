@@ -289,12 +289,12 @@
 
                 <tr>
                     <td class="font-10">
-                        Esta factura fue generado por Listar Datos
+                        Esta factura fue generado por Portafolio ERP
                     </td>
                 </tr>
                 <tr>
                     <td class="font-10">
-                        www.listardatos.com | NIT: 103665647-7
+                        www.portafolioerp.com | NIT: 103665647-7
                     </td>
                 </tr>
             </thead>
