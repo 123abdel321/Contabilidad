@@ -1,10 +1,16 @@
-// Pusher.logToConsole = true;
+
+//LOCAL
 // const base_url = 'http://localhost:8000/api/';
 // const base_web = 'http://localhost:8000/';
-const base_url = 'https://portafolioerp.com/api/';
-const base_web = 'https://portafolioerp.com/';
+//DEV
+const base_url = 'https://test.portafolioerp.com/api/';
+const base_web = 'https://test.portafolioerp.com/';
+//PRO
+// const base_url = 'https://app.portafolioerp.com/api/';
+// const base_web = 'https://app.portafolioerp.com/';
 
 const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
+// Pusher.logToConsole = true;
 const bucketUrl = 'https://bucketlistardatos.nyc3.digitaloceanspaces.com/';
 const btnLogout = document.getElementById('sessionLogout');
 const itemMenuActive = localStorage.getItem("item_active_menu");
