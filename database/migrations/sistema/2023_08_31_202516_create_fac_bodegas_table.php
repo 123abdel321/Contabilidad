@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('ubicacion', 200)->nullable();
             $table->integer('id_centro_costos')->nullable();
             $table->integer('id_responsable')->nullable();
+            $table->integer('id_cuenta_carta')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

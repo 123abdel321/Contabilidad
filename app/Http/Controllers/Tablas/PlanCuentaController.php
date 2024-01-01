@@ -469,20 +469,17 @@ class PlanCuentaController extends Controller
             }
         }
 
-        $planCuenta = PlanCuentas::select($select);
+        $planCuenta = PlanCuentas::select($select)->with('tipos_cuenta');
 
         if ($request->has("id_comprobante") && $comprobante) {
             $planCuenta->whereNotNull($naturaleza);
         }
-
-        if ($request->has("cartera")) {
-            $planCuenta->whereIn('id_tipo_cuenta', [3, 4])
-                ->where('auxiliar', 1);
-        }
-
+        
         if ($request->has("id_tipo_cuenta")) {
             $planCuenta->where('auxiliar', 1);
-            // $planCuenta->whereIn('id_tipo_cuenta',  $request->get('id_tipo_cuenta'));
+            $planCuenta->whereHas('tipos_cuenta', function ($query) use($request) {
+                $query->whereIn('id_tipo_cuenta', $request->get('id_tipo_cuenta'));
+            });
         }
 
         if ($request->get("search")) {
