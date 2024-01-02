@@ -4,7 +4,6 @@ var ventas_table = null;
 function ventasInit() {
 
     fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    $('.popover-item').popover({ container: 'body' });
 
     $('#fecha_manual_desde_ventas').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
     $('#fecha_manual_hasta_ventas').val(fechaDesde);
@@ -213,7 +212,6 @@ function ventasInit() {
 
     $('#id_producto_ventas').select2({
         theme: 'bootstrap-5',
-        dropdownCssClass: 'custom-venta_producto',
         delay: 250,
         allowClear: true,
         language: {

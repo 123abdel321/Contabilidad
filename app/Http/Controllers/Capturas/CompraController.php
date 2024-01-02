@@ -33,6 +33,7 @@ class CompraController extends Controller
 
     protected $bodega = null;
 	protected $messages = null;
+    protected $compraData = [];
     protected $totalesPagos = [
         'total_efectivo' => 0,
         'total_otrospagos' => 0,
@@ -371,7 +372,8 @@ class CompraController extends Controller
             ->with(
                 'bodega',
                 'proveedor',
-                'comprobante'
+                'comprobante',
+                'detalles'
             )
             ->select(
                 '*',
@@ -385,28 +387,117 @@ class CompraController extends Controller
         if($columnName){
             $compras->orderBy($columnName,$columnSortOrder);
         }
-        
-        if ($request->get('consecutivo')) {
-            $compras->where('consecutivo', $request->get('consecutivo'));
-        }
-
-        if ($request->get('fecha_manual')) {
-            $compras->where('fecha_manual', $request->get('fecha_manual'));
-        }
 
         if ($request->get('id_proveedor')) {
             $compras->where('id_proveedor', $request->get('id_proveedor'));
         }
 
+        if ($request->get('fecha_desde')) {
+            $compras->where('fecha_manual', '>=', $request->get('fecha_desde'));
+        }
+
+        if ($request->get('fecha_hasta')) {
+            $compras->where('fecha_manual', '<=', $request->get('fecha_hasta'));
+        }
+
+        if ($request->get('factura')) {
+            $compras->where('documento_referencia', 'LIKE', '%'.$request->get('factura').'%');
+        }
+
+        if ($request->get('id_comprobante')) {
+            $compras->where('id_comprobante', $request->get('id_comprobante'));
+        }
+
+        if ($request->get('id_bodega')) {
+            $compras->where('id_bodega', $request->get('id_bodega'));
+        }
+
+        if ($request->get('id_producto')) {
+            $compras->whereHas('detalles', function ($query) use($request) {
+                return $query->where('id_producto', '=', $request->get('id_producto'));
+            });
+        }
+
+        if ($request->get('id_usuario')) {
+            $compras->where('created_by', $request->get('id_usuario'));
+        }
+
+        $dataCompras = $compras->get();
+
+        if ($request->get('detallar_compra') == 'si') {
+            $this->generarCompraDetalles($dataCompras);
+        } else {
+            $this->generarCompraDetalles($dataCompras, false);
+        } 
+        
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
             'iTotalRecords' => $compras->count(),
             'iTotalDisplayRecords' => $compras->count(),
-            'data' => $compras->get(),
+            'data' => $this->compraData,
             'perPage' => $rowperpage,
             'message'=> 'Compras cargados con exito!'
         ]);
+    }
+
+    private function generarCompraDetalles($dataCompras, $detallar = true)
+    {
+        foreach ($dataCompras as $value) {
+            
+            $this->compraData[] = [
+                "id" => $value->id,
+                "descripcion" => "",
+                "cantidad" => $value->detalles()->sum('cantidad'),
+                "costo" => "",
+                "nombre_bodega" => $value->id_bodega ? $value->bodega->codigo.' - '.$value->bodega->nombre : "",
+                "nombre_completo" => $value->id_proveedor ? $value->proveedor->nombre_completo : "",
+                "documento_referencia" => $value->documento_referencia,
+                "fecha_manual" => $value->fecha_manual,
+                "subtotal" => $value->subtotal,
+                "iva_porcentaje" => "",
+                "total_iva" => $value->total_iva,
+                "descuento_porcentaje" => "",
+                "total_descuento" => $value->total_descuento,
+                "rete_fuente_porcentaje" => "",
+                "total_rete_fuente" => $value->total_rete_fuente,
+                "total_factura" => $value->total_factura,
+                "anulado" => $value->anulado,
+                "fecha_creacion" => $value->fecha_creacion,
+                "fecha_edicion" => $value->fecha_edicion,
+                "created_by" => $value->created_by,
+                "updated_by" => $value->updated_by,
+                "detalle" => $detallar ? false : true
+            ];
+            if ($detallar) {
+                foreach ($value->detalles as $ventaDetalle) {
+                    $this->compraData[] = [
+                        "id" => "",
+                        "descripcion" => $ventaDetalle->descripcion,
+                        "cantidad" => $ventaDetalle->cantidad,
+                        "costo" => $ventaDetalle->costo,
+                        "subtotal" => $ventaDetalle->subtotal,
+                        "nombre_bodega" => "",
+                        "nombre_completo" => "",
+                        "documento_referencia" => "",
+                        "fecha_manual" => "",
+                        "iva_porcentaje" => $ventaDetalle->iva_porcentaje,
+                        "total_iva" => $ventaDetalle->iva_valor,
+                        "descuento_porcentaje" => $ventaDetalle->descuento_porcentaje,
+                        "total_descuento" => $ventaDetalle->descuento_valor,
+                        "rete_fuente_porcentaje" => "",
+                        "total_rete_fuente" => "",
+                        "total_factura" => $ventaDetalle->total,
+                        "anulado" => "",
+                        "fecha_creacion" => "",
+                        "fecha_edicion" => "",
+                        "created_by" => "",
+                        "updated_by" => "",
+                        "detalle" => true
+                    ];
+                }
+            }
+        }
     }
 
     public function calcularFormasPago($pagos)
