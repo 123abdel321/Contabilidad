@@ -851,6 +851,7 @@ function totalValoresVentas() {
 
         if (total >= topeRetencionVenta) {
             retencion = porcentajeRetencionVenta ? (valorBruto * porcentajeRetencionVenta) / 100 : 0;
+            retencion = parseFloat(retencion).toFixed(0);
             total-= retencion;
         }
 
@@ -860,12 +861,8 @@ function totalValoresVentas() {
         if (redondearFactura) {
             var totalParaRedondear =  parseFloat(total / 1000);
             var totalRedondeado =  totalParaRedondear.toFixed(2) * 1000;
-            console.log('totalRedondeado: ',totalRedondeado);
-            console.log('total: ',total);
             redondeo = totalRedondeado - total;
             total = totalRedondeado;
-            console.log('total before: ',total);
-
         }
         
     }

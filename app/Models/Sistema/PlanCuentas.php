@@ -22,7 +22,6 @@ class PlanCuentas extends Model
         'id_impuesto',
         'cuenta',
         'nombre',
-        'pasarela', // Check si es una cuenta usada para sacar el extracto de pasarela
         'auxiliar',
         'exige_nit',
         'exige_documento_referencia',
@@ -40,16 +39,16 @@ class PlanCuentas extends Model
 
     public function impuesto()
     {
-        return $this->belongsTo("App\Models\Sistema\Impuestos", "id_impuesto");
+        return $this->belongsTo(Impuestos::class, "id_impuesto");
     }
 
     public function padre()
     {
-        return $this->belongsTo("App\Models\Sistema\PlanCuentas", "id_padre");
+        return $this->belongsTo(PlanCuentas::class, "id_padre");
     }
 
 	public function tipos_cuenta()
     {
-        return $this->hasMany("App\Models\Sistema\PlanCuentasTipo", "id_cuenta");
+        return $this->hasMany(PlanCuentasTipo::class, "id_cuenta");
     }
 }

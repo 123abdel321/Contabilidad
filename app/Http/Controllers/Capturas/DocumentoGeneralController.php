@@ -160,7 +160,7 @@ class DocumentoGeneralController extends Controller
 						'success'=>	false,
 						'data' => [],
 						'message'=> $documentoGeneral->getErrors()
-					], 200);
+					], 401);
 				}
 
 				$this->updateConsecutivo($doc->id_comprobante, $doc->consecutivo_factura);
