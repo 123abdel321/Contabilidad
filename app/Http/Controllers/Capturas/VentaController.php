@@ -7,6 +7,7 @@ use App\Helpers\Documento;
 use Illuminate\Http\Request;
 use App\Helpers\Printers\VentasPdf;
 use App\Http\Controllers\Controller;
+use App\Helpers\Printers\VentasInformeZ;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
@@ -204,7 +205,7 @@ class VentaController extends Controller
                     ], 422);
                 }
 
-                //CREAR COMPRA DETALLE
+                //CREAR VENTA DETALLE
                 FacVentaDetalles::create([
                     'id_venta' => $venta->id,
                     'id_producto' => $productoDb->id,
@@ -259,7 +260,7 @@ class VentaController extends Controller
                             "id_cuenta" => $cuentaRecord->id,
                             "id_nit" => $cuentaRecord->exige_nit ? $venta->id_cliente : null,
                             "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $venta->id_centro_costos : null,
-                            "concepto" => 'COMPRA: '.$cuentaRecord->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
+                            "concepto" => $cuentaRecord->exige_concepto ? 'VENTA: '. $nit->nombre_nit .' - '. $nit->documento .' - '. $venta->documento_referencia : null,
                             "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $venta->documento_referencia : null,
                             "debito" => $cuentaRecord->naturaleza_ventas == PlanCuentas::DEBITO ? $producto->{$keyTotalItem} : 0,
                             "credito" => $cuentaRecord->naturaleza_ventas == PlanCuentas::CREDITO ? $producto->{$keyTotalItem} : 0,
@@ -495,7 +496,7 @@ class VentaController extends Controller
             $this->ventaData[] = [
                 "id" => $value->id,
                 "descripcion" => "",
-                "cantidad" => "",
+                "cantidad" => $value->detalles()->sum('cantidad'),
                 "costo" => "",
                 "nombre_bodega" => $value->id_bodega ? $value->bodega->codigo.' - '.$value->bodega->nombre : "",
                 "nombre_completo" => $value->id_cliente ? $value->cliente->nombre_completo : "",
@@ -587,9 +588,8 @@ class VentaController extends Controller
     {
         $this->calcularTotales($request->get('productos'));
         $this->calcularFormasPago($request->get('pagos'));
-
         $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
-
+        
         $venta = FacVentas::create([
             'id_cliente' => $request->get('id_cliente'),
             'id_resolucion' => $request->get('id_resolucion'),
@@ -643,7 +643,7 @@ class VentaController extends Controller
                 'success'=>	false,
                 'data' => [],
                 'message'=> 'La factura no existe'
-            ]);
+            ], 422);
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
@@ -656,6 +656,27 @@ class VentaController extends Controller
         return (new VentasPdf($empresa, $factura))
             ->buildPdf()
             ->showPdf();
+    }
+
+    public function showPdfZ(Request $request)
+    {
+        // dd($request->all());
+        // $factura = FacVentas::whereId($id)
+        //     ->with('resolucion')
+        //     ->first();
+
+        // if(!$factura) {
+        //     return response()->json([
+        //         'success'=>	false,
+        //         'data' => [],
+        //         'message'=> 'La factura no existe'
+        //     ], 422);
+        // }
+
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        $data = (new VentasInformeZ($empresa, $request->all()))->buildPdf()->getData();
+        // dd($data);
+        return view('pdf.facturacion.ventas-informez-pos', $data);
     }
 
     private function calcularTotales ($productos)
@@ -687,6 +708,7 @@ class VentaController extends Controller
 
             $iva = 0;
             $costo = $producto->costo;
+            $totalPorCantidad = $producto->cantidad * $costo;
             $cuentaIva = $productoDb->familia->cuenta_venta_iva;
 
             if ($cuentaIva && $cuentaIva->impuesto) {
@@ -697,11 +719,13 @@ class VentaController extends Controller
                     $this->totalesFactura['id_cuenta_iva'] = $cuentaIva->id;
                 }
 
-                $iva = ($costo * (1 + ($this->totalesFactura['porcentaje_iva'] / 100))) - $costo;
+                $iva = (($totalPorCantidad - $producto->descuento_valor) * ($this->totalesFactura['porcentaje_iva'] / 100));
                 if ($ivaIncluido) {
-                    $iva = round((float)$producto->costo - ($producto->costo / (1 + ($this->totalesFactura['porcentaje_iva'] / 100))), 2);
+                    $iva = round(($totalPorCantidad - $producto->descuento_valor) - (($totalPorCantidad - $producto->descuento_valor) / (1 + ($this->totalesFactura['porcentaje_iva'] / 100))), 2);
                 }
             }
+
+            
 
             if ($ivaIncluido) {
                 $costo = round((float)$producto->costo / (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 2);
@@ -715,9 +739,9 @@ class VentaController extends Controller
         }
 
         if ($this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] && $this->totalesFactura['porcentaje_rete_fuente'] > 0) {
-            $total_rete_fuente = ($this->totalesFactura['subtotal'] * $this->totalesFactura['porcentaje_rete_fuente']) / 100;
-            $this->totalesFactura['total_rete_fuente'] = $total_rete_fuente;
-            $this->totalesFactura['total_factura'] = $this->totalesFactura['total_factura'] - $total_rete_fuente;
+            $total_rete_fuente = $ivaIncluido ? $this->totalesFactura['total_factura'] * ($this->totalesFactura['porcentaje_rete_fuente'] / 100) : $this->totalesFactura['subtotal'] * ($this->totalesFactura['porcentaje_rete_fuente'] / 100);
+            $this->totalesFactura['total_rete_fuente'] = round($total_rete_fuente);
+            $this->totalesFactura['total_factura'] = round($this->totalesFactura['total_factura'] - $total_rete_fuente, 1);
         } else {
             $this->totalesFactura['id_cuenta_rete_fuente'] = null;
         }
