@@ -105,7 +105,7 @@ class BodegasController extends Controller
                 'nombre' => $request->get('nombre'),
                 'ubicacion' => $request->get('ubicacion'),
                 'id_centro_costos' => $request->get('id_centro_costos'),
-                'id_cuenta_carta' => $request->get('id_cuenta_carta'),
+                'id_cuenta_cartera' => $request->get('id_cuenta_cartera'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
@@ -113,7 +113,8 @@ class BodegasController extends Controller
             $bodega->save();
 
             $bodega->load([
-                'cecos'
+                'cecos',
+                'cuenta_cartera'
             ]);
 
             DB::connection('sam')->commit();
@@ -166,7 +167,7 @@ class BodegasController extends Controller
                     'nombre' => $request->get('nombre'),
                     'ubicacion' => $request->get('ubicacion'),
                     'id_centro_costos' => $request->get('id_centro_costos'),
-                    'id_cuenta_carta' => $request->get('id_cuenta_carta'),
+                    'id_cuenta_cartera' => $request->get('id_cuenta_cartera'),
                     'updated_by' => request()->user()->id,
                 ]);
             
@@ -233,8 +234,8 @@ class BodegasController extends Controller
         $bodegasResponsable = explode(",", $usuarioPermisos->ids_bodegas_responsable);
 
         $bodega = FacBodegas::select(
-            \DB::raw('*'),
-            \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+            DB::raw('*'),
+            DB::raw("CONCAT(codigo, ' - ', nombre) as text")
         );
 
         if ($request->get("q")) {

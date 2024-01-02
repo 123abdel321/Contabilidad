@@ -31,6 +31,6 @@ class FacBodegas extends Model
 
     public function cuenta_cartera()
     {
-        return $this->belongsTo(PlanCuentas::class, 'id_cuenta_carta');
+        return $this->belongsTo(PlanCuentas::class, 'id_cuenta_cartera');
     }
 }
