@@ -1,6 +1,7 @@
 var newImgProfile = '';
 var nits_table = null;
 var $comboCiudad = null;
+var $comboVendedores = null;
 var $comboTipoDocumento = null;
 
 function nitInit() {
@@ -109,6 +110,16 @@ function nitInit() {
             var trNit = $(this).closest('tr');
             var id = this.id.split('_')[1];
             var data = getDataById(id, nits_table);
+            
+            if(data.vendedor){
+                var dataVendedor = {
+                    id: data.vendedor.id,
+                    text: data.vendedor.nit.nombre_completo
+                };
+                var newOption = new Option(dataVendedor.text, dataVendedor.id, false, false);
+                $comboVendedores.append(newOption).trigger('change');
+                $comboVendedores.val(dataVendedor.id).trigger('change');
+            }
         
             if(data.tipo_documento){
                 var dataCuenta = {
@@ -119,7 +130,6 @@ function nitInit() {
                 $comboTipoDocumento.append(newOption).trigger('change');
                 $comboTipoDocumento.val(dataCuenta.id).trigger('change');
             }
-        
         
             if(data.ciudad){
                 var dataCiudad = {
@@ -198,6 +208,18 @@ function nitInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#nitFormModal'),
         delay: 250,
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
         ajax: {
             url: 'api/ciudades',
             headers: headers,
@@ -223,6 +245,38 @@ function nitInit() {
                     results: data.data
                 };
             }
+        }
+    });
+
+    $comboVendedores = $('#id_vendedor_nit').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#nitFormModal'),
+        delay: 250,
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/vendedores/combo',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                var data_modified = $.map(data.data, function (obj) {
+                    obj.text = obj.nit.nombre_completo;
+                    return obj;
+                });
+                return {
+                    results: data_modified
+                };
+            },
         }
     });
 
@@ -315,6 +369,7 @@ $(document).on('click', '#updateNit', function () {
             telefono_1: $("#telefono_1").val(),
             id_ciudad: $("#id_ciudad").val(),
             observaciones: $("#observaciones").val(),
+            id_vendedor: $('#id_vendedor_nit').val(),
             avatar: newImgProfile
         }
 
@@ -380,6 +435,7 @@ $(document).on('click', '#saveNit', function () {
             telefono_1: $("#telefono_1").val(),
             id_ciudad: $("#id_ciudad").val(),
             observaciones: $("#observaciones").val(),
+            id_vendedor: $('#id_vendedor_nit').val(),
             avatar: newImgProfile
         }
 
@@ -427,6 +483,7 @@ function clearFormNits(){
     $("#saveNitLoading").hide();
 
     $("#id_tipo_documento").val('').change();
+    $("#id_vendedor_nit").val('').change();
     $("#id_ciudad").val('').change();
     $("#observaciones").val('');
     $("#numero_documento").val('');

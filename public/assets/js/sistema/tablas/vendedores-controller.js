@@ -28,7 +28,6 @@ function vendedoresInit() {
         columns: [
             {"data":'id', visible: false},
             {"data": function (row, type, set){
-                console.log('row: ',row);
                 if (row.nit) {
                     return row.nit.numero_documento;
                 }
@@ -275,7 +274,6 @@ $(document).on('click', '#updateVendedores', function () {
         dataType: 'json',
     }).done((res) => {
     if(res.success){
-        console.log(res.data);
         clearFormVendedores();
         $("#saveVendedores").show();
         $("#saveVendedoresLoading").hide();

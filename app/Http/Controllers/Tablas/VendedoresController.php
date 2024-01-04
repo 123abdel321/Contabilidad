@@ -222,10 +222,7 @@ class VendedoresController extends Controller
 
     public function comboVendedores(Request $request)
     {
-        $vendedores = FacVendedores::select(
-            \DB::raw('*'),
-            \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
-        );
+        $vendedores = FacVendedores::with('nit');
 
         if ($request->get("q")) {
             $vendedores->where('plazo_dias', 'LIKE', '%' . $request->get("q") . '%')

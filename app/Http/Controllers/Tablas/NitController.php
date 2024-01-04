@@ -52,7 +52,7 @@ class NitController extends Controller
                 $searchValue = $search_arr['value']; // Search value
     
                 $nits = Nits::skip($start)
-                    ->with('tipo_documento', 'ciudad')
+                    ->with('tipo_documento', 'ciudad', 'vendedor.nit')
                     ->select(
                         '*',
                         DB::raw("DATE_FORMAT(nits.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
@@ -116,15 +116,11 @@ class NitController extends Controller
     {
         $tipoDocumentoNit = TipoDocumentos::where('nombre', 'NIT')->first(['id']);
 		$idTipoDocumentoNit = $tipoDocumentoNit ? $tipoDocumentoNit->id : 0;
-        // return response()->json([
-        //     'success'=>	true,
-        //     'data' => Nits::first(),
-        //     'message'=> 'Nit creado con exito!'
-        // ]);
-        // dd($request->all());
+
         $rules = [
 			'id_tipo_documento' => 'required|exists:sam.tipos_documentos,id',
 			// 'id_ciudad' => 'nullable|exists:clientes.ciudades,id',
+			'id_vendedor' => 'nullable|exists:sam.fac_vendedores,id',
             'observaciones' => 'nullable|string',
 			'id_actividad_econo' => 'nullable|exists:sam.actividades_economicas,id',
 			'numero_documento' => 'required|unique:sam.nits,numero_documento|max:30',
@@ -165,6 +161,7 @@ class NitController extends Controller
         try {
             $nit = Nits::create([
                 'id_tipo_documento' => $request->get('id_tipo_documento'),
+                'id_vendedor' => $request->get('id_vendedor'),
                 'numero_documento' => $request->get('numero_documento'),
                 'tipo_contribuyente' => $request->get('tipo_contribuyente'),
                 'primer_apellido' => $request->get('primer_apellido'),
@@ -228,6 +225,7 @@ class NitController extends Controller
         Nits::where('id', $request->get('id'))
             ->update([
                 'id_tipo_documento' => $request->get('id_tipo_documento'),
+                'id_vendedor' => $request->get('id_vendedor'),
                 'numero_documento' => $request->get('numero_documento'),
                 'tipo_contribuyente' => $request->get('tipo_contribuyente'),
                 'primer_apellido' => $request->get('primer_apellido'),
@@ -243,7 +241,7 @@ class NitController extends Controller
                 'updated_by' => request()->user()->id,
             ]);
 
-        $nit = Nits::where('id', $request->get('id'))->with('tipo_documento')->first();
+        $nit = Nits::where('id', $request->get('id'))->with('tipo_documento', 'vendedor')->first();
 
         if($request->avatar) {
             $image = $request->avatar;
