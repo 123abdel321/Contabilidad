@@ -23,6 +23,7 @@ use App\Http\Controllers\Tablas\FamiliasController;
 use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\FormasPagoController;
+use App\Http\Controllers\Tablas\VendedoresController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
@@ -138,6 +139,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/comprobante', [ComprobantesController::class, 'index'])->name('comprobante');
 		//COMPROBANTES
 		Route::get('/cecos', [CentroCostoController::class, 'index'])->name('cecos');
+		//COMPROBANTES
+		Route::get('/vendedores', [VendedoresController::class, 'index'])->name('vendedores');
 		//FAMILIAS
 		Route::get('/familias', [FamiliasController::class, 'index'])->name('familias');
 		//RESOLUCION

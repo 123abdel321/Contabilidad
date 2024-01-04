@@ -24,6 +24,7 @@ class Nits extends Model
 		'id_actividad_econo',
 		'id_banco',
 		'id_responsabilidades',
+		'id_vendedor',
 		'numero_documento',
 		'digito_verificacion',
 		'empleado',

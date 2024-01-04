@@ -12,6 +12,7 @@ use App\Http\Controllers\Tablas\VariantesController;
 use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\ImpuestosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
+use App\Http\Controllers\Tablas\VendedoresController;
 use App\Http\Controllers\Tablas\FormasPagoController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
@@ -203,6 +204,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('cargue-descargue', 'update');
             Route::delete('cargue-descargue', 'delete');
             Route::get('cargue-descargue/combo', 'comboCargueDescargue');
+        });
+        //VENDEDORES
+        Route::controller(VendedoresController::class)->group(function () {
+            Route::get('vendedores', 'generate');
+            Route::post('vendedores', 'create');
+            Route::put('vendedores', 'update');
+            Route::delete('vendedores', 'delete');
+            Route::get('vendedores/combo', 'comboVendedores');
         });
         
         //CAPTURA GENERAL
