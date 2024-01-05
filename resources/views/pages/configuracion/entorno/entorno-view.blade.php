@@ -38,14 +38,22 @@
                                     Documentos descuadrados
                                 </label>
                             </div>
-
-                            
     
                             <div class="form-group col-12 col-sm-6 col-md-4" >
                                 <label for="example-text-input" class="form-control-label">Valor UVT </label>
                                 <input type="number" class="form-control form-control-sm" name="valor_uvt" id="valor_uvt">
                             </div>
+
+                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
+                                <input class="form-check-input" type="checkbox" name="vendedores_ventas" id="vendedores_ventas" style="height: 20px;">
+                                <label class="form-check-label" for="vendedores_ventas">
+                                    Vendedores ventas
+                                </label>
+                            </div>
+
                         </div>
+
+                        <br/>
 
                     </div>
                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>

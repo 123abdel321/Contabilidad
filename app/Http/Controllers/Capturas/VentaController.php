@@ -77,6 +77,7 @@ class VentaController extends Controller
             ->first();
 
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
+        $vendedorVentas = VariablesEntorno::where('nombre', 'vendedores_ventas')->first();
 
         $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
         $resoluciones = explode(",", $usuarioPermisos->ids_resolucion_responsable);
@@ -85,7 +86,8 @@ class VentaController extends Controller
             'cliente' => Nits::where('numero_documento', '222222222222')->first(),
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
             'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get(),
-            'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : ''
+            'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : '',
+            'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : ''
         ];
 
         return view('pages.capturas.venta.venta-view', $data);
@@ -421,7 +423,8 @@ class VentaController extends Controller
                 'bodega',
                 'cliente',
                 'comprobante',
-                'detalles'
+                'detalles',
+                'vendedor.nit'
             )
             ->select(
                 '*',
@@ -477,7 +480,7 @@ class VentaController extends Controller
         } else {
             $this->generarVentaDetalles($dataVentas, false);
         }
-
+        
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
@@ -504,6 +507,7 @@ class VentaController extends Controller
                 "fecha_manual" => $value->fecha_manual,
                 "subtotal" => $value->subtotal,
                 "iva_porcentaje" => "",
+                "nombre_vendedor" => $value->id_vendedor ? $value->vendedor->nit->nombre_completo : "",
                 "total_iva" => $value->total_iva,
                 "descuento_porcentaje" => "",
                 "total_descuento" => $value->total_descuento,
@@ -530,6 +534,7 @@ class VentaController extends Controller
                         "documento_referencia" => "",
                         "fecha_manual" => "",
                         "iva_porcentaje" => $ventaDetalle->iva_porcentaje,
+                        "nombre_vendedor" => "",
                         "total_iva" => $ventaDetalle->iva_valor,
                         "descuento_porcentaje" => $ventaDetalle->descuento_porcentaje,
                         "total_descuento" => $ventaDetalle->descuento_valor,
@@ -596,6 +601,7 @@ class VentaController extends Controller
             'id_comprobante' => $this->resolucion->comprobante->id,
             'id_bodega' => $request->get('id_bodega'),
             'id_centro_costos' => $this->bodega->id_centro_costos,
+            'id_vendedor' => $request->get('id_vendedor'),
             'fecha_manual' => $request->get('fecha_manual'),
             'consecutivo' => $request->get('consecutivo'),
             'documento_referencia' => $request->get('documento_referencia'),

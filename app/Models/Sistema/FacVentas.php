@@ -20,6 +20,7 @@ class FacVentas extends Model
         'id_centro_costos',
         'id_bodega',
         'id_factura',
+        'id_vendedor',
         'fecha_manual',
         'consecutivo',
         'documento_referencia',
@@ -64,6 +65,11 @@ class FacVentas extends Model
     public function cliente()
     {
         return $this->belongsTo(Nits::class, 'id_cliente');
+	}
+
+    public function vendedor()
+    {
+        return $this->belongsTo(FacVendedores::class, 'id_vendedor');
 	}
 
     public function comprobante()

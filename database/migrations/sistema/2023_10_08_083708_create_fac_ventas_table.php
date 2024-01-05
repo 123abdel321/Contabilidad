@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('id_centro_costos');
             $table->integer('id_bodega')->nullable();
             $table->integer('id_factura')->nullable();
+            $table->integer('id_vendedor')->nullable();
             $table->date('fecha_manual')->nullable();
             $table->string('consecutivo', 20);
             $table->string('documento_referencia', 20)->nullable();
