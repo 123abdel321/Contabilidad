@@ -20,6 +20,9 @@ class PlanCuentas extends Model
         'id_padre',
         'id_tipo_cuenta',
         'id_impuesto',
+        'id_exogena_formato',
+        'id_exogena_formato_concepto',
+        'id_exogena_formato_columna',
         'cuenta',
         'nombre',
         'auxiliar',
@@ -50,5 +53,20 @@ class PlanCuentas extends Model
 	public function tipos_cuenta()
     {
         return $this->hasMany(PlanCuentasTipo::class, "id_cuenta");
+    }
+
+    public function exogena_formato()
+    {
+        return $this->belongsTo(ExogenaFormato::class, 'id_exogena_formato');
+    }
+
+    public function exogena_concepto()
+    {
+        return $this->belongsTo(ExogenaFormatoConcepto::class, 'id_exogena_formato_concepto');
+    }
+
+    public function exogena_columna()
+    {
+        return $this->belongsTo(ExogenaFormatoColumna::class, 'id_exogena_formato_columna');
     }
 }

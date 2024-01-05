@@ -12,6 +12,9 @@
             <th>Dcto refe</th>
             <th>Concepto</th>
             <th>Centro costros</th>
+            <th>Formato</th>
+            <th>Concepto</th>
+            <th>Columna</th>
             <th>Creación registro</th>
             <th>Ultima actualización</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Acciones</th>

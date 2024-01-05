@@ -102,7 +102,14 @@ class PlanCuentaController extends Controller
                 $searchValue = $search_arr['value']; // Search value
         
                 $cuentas = PlanCuentas::orderBy($columnName,$columnSortOrder)
-                    ->with('tipos_cuenta', 'padre', 'impuesto')
+                    ->with(
+                        'tipos_cuenta',
+                        'padre',
+                        'impuesto',
+                        'exogena_formato',
+                        'exogena_concepto',
+                        'exogena_columna'
+                    )
                     ->where('nombre', 'like', '%' .$searchValue . '%')
                     ->orWhere('cuenta', 'like', $searchValue . '%')
                     ->select(
@@ -209,6 +216,9 @@ class PlanCuentaController extends Controller
                 'nombre' => $request->get('nombre'),
                 'auxiliar' => 1,
                 'id_impuesto' => $request->get('id_impuesto'),
+                'id_exogena_formato' => $request->get('id_exogena_formato'),
+                'id_exogena_formato_concepto' => $request->get('id_exogena_formato_concepto'),
+                'id_exogena_formato_columna' => $request->get('id_exogena_formato_columna'),
                 'exige_nit' => $request->get('exige_nit'),
                 'exige_documento_referencia' => $request->get('exige_documento_referencia'),
                 'exige_concepto' => $request->get('exige_concepto'),
@@ -319,6 +329,9 @@ class PlanCuentaController extends Controller
                     'exige_documento_referencia' => $request->get('exige_documento_referencia'),
                     'exige_concepto' => $request->get('exige_concepto'),
                     'exige_centro_costos' => $request->get('exige_centro_costos'),
+                    'id_exogena_formato' => $request->get('id_exogena_formato'),
+                    'id_exogena_formato_concepto' => $request->get('id_exogena_formato_concepto'),
+                    'id_exogena_formato_columna' => $request->get('id_exogena_formato_columna'),
                     'naturaleza_cuenta' => $request->get('naturaleza_cuenta'),
                     'naturaleza_ingresos' => $request->get('naturaleza_ingresos'),
                     'naturaleza_egresos' => $request->get('naturaleza_egresos'),

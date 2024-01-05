@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstaladorController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
+use App\Http\Controllers\Tablas\ExogenaController;
 use App\Http\Controllers\Tablas\BodegasController;
 use App\Http\Controllers\Tablas\FamiliasController;
 use App\Http\Controllers\Tablas\VariantesController;
@@ -213,6 +214,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::delete('vendedores', 'delete');
             Route::get('vendedores/combo', 'comboVendedores');
         });
+        //EXOGENA
+        Route::controller(ExogenaController::class)->group(function () {
+            Route::get('exogena/formato', 'comboFormato');
+            Route::get('exogena/columna', 'comboFormatoColumna');
+            Route::get('exogena/concepto', 'comboFormatoConcepto');
+        });
+        
         
         //CAPTURA GENERAL
         Route::controller(DocumentoGeneralController::class)->group(function () {
