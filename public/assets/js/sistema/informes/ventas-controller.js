@@ -300,10 +300,10 @@ $(document).on('click', '#generarInformeZ', function () {
         mensajeError+= errorCount+': La resolución es requerida <br/>';
     }
 
-    if ($('#fecha_manual_desde_ventas').val() != $('#fecha_manual_hasta_ventas').val()) {
-        errorCount++;
-        mensajeError+= errorCount+': La fecha debe estar en el rango de un día <br/>';
-    }
+    // if ($('#fecha_manual_desde_ventas').val() != $('#fecha_manual_hasta_ventas').val()) {
+    //     errorCount++;
+    //     mensajeError+= errorCount+': La fecha debe estar en el rango de un día <br/>';
+    // }
 
     if (errorCount) {
         agregarToast('warning', 'Informe Z', mensajeError, true);

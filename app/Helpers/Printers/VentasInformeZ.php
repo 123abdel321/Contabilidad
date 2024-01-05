@@ -14,6 +14,7 @@ use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacVentaPagos;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\FacVentaDetalles;
+use App\Models\Sistema\DocumentosGeneral;
 
 
 class VentasInformeZ extends AbstractPrinterPdf
@@ -104,21 +105,11 @@ class VentasInformeZ extends AbstractPrinterPdf
 			->groupBy('id_forma_pago')
 			->get();
 
-		$pagosTotalesSaldo = FacVentaPagos::with('forma_pago')
-			->whereHas('venta', function ($query) {
-				$query->where('id_bodega', $this->request['id_bodega'])
-					->where('fecha_manual', '<=', $this->request['fecha_hasta'])
-					->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL);
-			})
-			->whereIn('id_forma_pago', $formasPagoCaja->toArray());
+		$pagosTotalesSaldo = DocumentosGeneral::where('fecha_manual', '<=', $this->request['fecha_desde'])
+			->where('id_cuenta', $bodega->id_cuenta_cartera);
 
-		$pagosTotalesSaldoAnterior = FacVentaPagos::with('forma_pago')
-			->whereHas('venta', function ($query) {
-				$query->where('id_bodega', $this->request['id_bodega'])
-					->where('fecha_manual', '<', $this->request['fecha_hasta'])
-					->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL);
-			})
-			->whereIn('id_forma_pago', $formasPagoCaja->toArray());
+		$pagosTotalesSaldoAnterior = DocumentosGeneral::where('fecha_manual', '<', $this->request['fecha_desde'])
+			->where('id_cuenta', $bodega->id_cuenta_cartera);
 
 		$idsFormasPagoUsadas = [];
 		foreach ($pagosTotales as $pagosTotal) {
@@ -184,8 +175,8 @@ class VentasInformeZ extends AbstractPrinterPdf
 			'ventas' => $ventas,
 			'pagos_ingresos' => $pagosTotalesIngresos,
 			'pagos_egresos' => $pagosTotalesEgresos,
-			'saldo_total' => $pagosTotalesSaldo->sum('valor'),
-			'saldo_anterior_total' => $pagosTotalesSaldoAnterior->sum('valor'),
+			'saldo_total' => $pagosTotalesSaldo->sum('debito'),
+			'saldo_anterior_total' => $pagosTotalesSaldoAnterior->sum('debito'),
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 		];
     }

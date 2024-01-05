@@ -90,7 +90,10 @@
                     <b >INFORME DE CAJA</b>
                 </th></tr>
                 <tr><th class="font-12 center-item">
-                    Fecha {{ $fecha_hasta }}
+                    Fecha desde: {{ $fecha_desde }}
+                </th></tr>
+                tr><th class="font-12 center-item">
+                    Fecha hasta: {{ $fecha_hasta }}
                 </th></tr>
                 <tr><th class="font-12 center-item">
                     Bodega {{ $bodega->codigo }} {{ $bodega->nombre }}
