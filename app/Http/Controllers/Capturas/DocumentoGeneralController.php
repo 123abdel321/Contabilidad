@@ -115,6 +115,7 @@ class DocumentoGeneralController extends Controller
 					'id_comprobante' => $doc->id_comprobante,
 					'fecha_manual' => $doc->fecha_factura,
 					'consecutivo' => $doc->consecutivo_factura,
+					'token_factura' => $doc->token_factura,
 					'debito' => $doc->total,
 					'credito' => $doc->total,
 					'saldo_final' => 0,
@@ -182,6 +183,67 @@ class DocumentoGeneralController extends Controller
                 "message"=>$e->getMessage()
             ], 401);
         }
+	}
+
+	public function bulkDocumentosDelete(Request $request)
+	{
+		$rules = [
+			'documento' => 'array|required',
+			'documento.*.token' => 'required',
+        ];
+		
+		$validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 401);
+        }
+		try {
+			DB::connection('sam')->beginTransaction();
+
+			$documento = $request->get('documento');
+
+			foreach ($documento as $token) {
+
+				$factura = FacDocumentos::where('token_factura', $token)->first();
+
+				if ($factura) {
+					
+					$documento = DocumentosGeneral::where('relation_id', $factura->id)
+						->where('relation_type', 2)
+						->with('relation')->get();
+
+					$documento[0]->relation->anulado = 1;
+					$documento[0]->relation->save();
+	
+					foreach ($documento as $doc) {
+						$doc->anulado = 1;
+						$doc->concepto .= ' - Anulado desde maximoph';
+						$doc->save();
+					}
+				}	
+			}
+
+			DB::connection('sam')->commit();
+
+			return response()->json([
+				'success'=>	true,
+				'data' => [],
+				'message'=> 'Documentos anulados con exito!'
+			], 200);
+
+		} catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+			return response()->json([
+				"success"=>false,
+				'data' => [],
+				"message"=>$e->getMessage()
+			], 401);
+		}
 	}
 
     public function create(Request $request)
