@@ -135,10 +135,11 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $cuentaPadre = $this->getCuentaPadre($documento);
-
+                    
                     if ($this->hasCuentaData($cuentaPadre)) $this->sumCuentaData($cuentaPadre, $documento);
                     else $this->newCuentaTotal($cuentaPadre, $documento);
                     $this->newCuentaDetalle($cuentaPadre, $documento);
+                    
                 });
                 
             });
@@ -164,7 +165,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
     {
         $cuenta = '';
         $arrayGroup = explode(',', $this->request['agrupar']);
-
+        
         foreach ($arrayGroup as $nameValue) {
             $cuenta.= $documento->{$nameValue} ? $documento->{$nameValue} : '0';
             $cuenta.='-';
@@ -372,7 +373,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'nombre_cecos' => in_array('id_centro_costos', $this->agrupacion) ? $documento->nombre_cecos : null,
             'codigo_comprobante' => in_array('id_comprobante', $this->agrupacion) ? $documento->codigo_comprobante : null,
             'nombre_comprobante' => in_array('id_comprobante', $this->agrupacion) ? $documento->nombre_comprobante : null,
-            'documento_referencia' => null,
+            'documento_referencia' => in_array('documento_referencia', $this->agrupacion) ? $documento->documento_referencia : null,
             'consecutivo' => null,
             'concepto' => null,
             'fecha_manual' => null,
@@ -408,7 +409,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'nombre_cecos' => in_array('id_centro_costos', $agrupacionesTotales) ? $documento->nombre_cecos : null,
             'codigo_comprobante' => in_array('id_comprobante', $agrupacionesTotales) ? $documento->codigo_comprobante : null,
             'nombre_comprobante' => in_array('id_comprobante', $agrupacionesTotales) ? $documento->nombre_comprobante : null,
-            'documento_referencia' => null,
+            'documento_referencia' => in_array('documento_referencia', $agrupacionesTotales) ? $documento->documento_referencia : null,
             'consecutivo' => null,
             'concepto' => null,
             'fecha_manual' => null,
