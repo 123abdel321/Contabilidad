@@ -109,13 +109,15 @@ class DocumentoGeneralController extends Controller
 					->where('consecutivo', $doc->consecutivo_factura)
 					->where('fecha_manual', $doc->fecha_factura)
 					->delete();
+
+				$tokenFactura = $doc->token_factura ? $doc->token_factura : $this->generateTokenDocumento();
 				
 				$facDocumento = FacDocumentos::create([
 					'id_nit' => $doc->id_tercero_erp,
 					'id_comprobante' => $doc->id_comprobante,
 					'fecha_manual' => $doc->fecha_factura,
 					'consecutivo' => $doc->consecutivo_factura,
-					'token_factura' => $doc->token_factura,
+					'token_factura' => $tokenFactura,
 					'debito' => $doc->total,
 					'credito' => $doc->total,
 					'saldo_final' => 0,
@@ -335,6 +337,8 @@ class DocumentoGeneralController extends Controller
 
 			$facDocumento = null;
 
+			$tokenFactura = $request->get('token_factura') ? $request->get('token_factura') : $this->generateTokenDocumento();
+
 			if($request->get('editing_documento')) {
 				$facDocumento = FacDocumentos::where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
@@ -344,7 +348,7 @@ class DocumentoGeneralController extends Controller
 					'id_comprobante' => $request->get('id_comprobante'),
 					'fecha_manual' => $request->get('fecha_manual'),
 					'consecutivo' => $request->get('consecutivo'),
-					'token_factura' => $request->get('token_factura'),
+					'token_factura' => $tokenFactura,
 					'debito' => $debito,
 					'credito' => $credito,
 					'saldo_final' => $debito - $credito,
@@ -571,4 +575,16 @@ class DocumentoGeneralController extends Controller
 			'documento_referencia' => ''
 		];
 	}
+
+	public function generateTokenDocumento()
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < 64; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+
+        return $randomString;
+    }
 }
