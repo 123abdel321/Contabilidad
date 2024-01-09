@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Provisionada;
 
 use Illuminate\Database\Seeder;
 
-class PlanCuentasTableSeeder extends Seeder
+class PlanCuentasSeeder extends Seeder
 {
 
     /**
@@ -25,7 +25,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1',
                 'nombre' => 'ACTIVO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -52,7 +52,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '11',
                 'nombre' => 'EFECTIVO Y EQUIVALENTES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -79,7 +79,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1105',
                 'nombre' => 'CAJA',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -106,7 +106,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '110505',
                 'nombre' => 'CAJA GENERAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -133,7 +133,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '110510',
                 'nombre' => 'CAJAS MENORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -160,7 +160,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1110',
                 'nombre' => 'BANCOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -187,7 +187,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '111005',
                 'nombre' => 'MONEDA NACIONAL',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -214,7 +214,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1120',
                 'nombre' => 'CUENTAS DE AHORRO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -241,7 +241,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '112005',
                 'nombre' => 'BANCOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -268,7 +268,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '112010',
                 'nombre' => 'CORPORACIONES DE AHORRO Y VIVIENDA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -295,7 +295,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13',
                 'nombre' => 'CUENTAS POR COBRAR COMERCIALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -322,7 +322,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1305',
                 'nombre' => 'CUENTAS X COBRAR CLIENTES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -349,7 +349,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '130505',
                 'nombre' => 'CXC CLIENTES NACIONALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -376,7 +376,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1325',
                 'nombre' => 'CUENTAS POR COBRAR A SOCIOS Y ACCIONISTAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -403,7 +403,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '132505',
                 'nombre' => 'A SOCIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -430,7 +430,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '132510',
                 'nombre' => 'A ACCIONISTAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -457,7 +457,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1330',
                 'nombre' => 'ANTICIPOS Y AVANCES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -484,7 +484,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '133005',
                 'nombre' => 'A PROVEEDORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -511,7 +511,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '133010',
                 'nombre' => 'A CONTRATISTAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -538,7 +538,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '133015',
                 'nombre' => 'A TRABAJADORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -565,7 +565,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '133095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -592,7 +592,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1355',
                 'nombre' => 'ANTICIPO DE IMPUESTOS Y CONTRIBUCIONES O SALDOS A FAVOR',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -619,7 +619,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135505',
                 'nombre' => 'ANTICIPO DE IMPUESTOS DE RENTA Y COMPLEMENTARIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -646,7 +646,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135510',
                 'nombre' => 'ANTICIPO DE IMPUESTOS DE INDUSTRIA Y COMERCIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -673,7 +673,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135515',
                 'nombre' => 'RETENCION EN LA FUENTE',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -700,7 +700,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551501',
                 'nombre' => 'HONORARIOS PN 11%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -727,7 +727,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551502',
                 'nombre' => 'HONORARIOS PN 10%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -754,7 +754,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551503',
                 'nombre' => 'COMISIONES PJ O ASIMILIDA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -781,7 +781,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551504',
                 'nombre' => 'COMISIONES PN 11%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -808,7 +808,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551505',
                 'nombre' => 'COMISIONES PN 10%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -835,7 +835,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551506',
                 'nombre' => 'SERVICIOS ASEO Y VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -862,7 +862,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551510',
                 'nombre' => 'SERVICIOS GENERALES PJ Y PN OBLIG A DECALRAR RTA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -889,7 +889,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551511',
                 'nombre' => 'SERVICIOS GENERALES PN NO OBLIG A DECALRAR RTA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -916,7 +916,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551512',
                 'nombre' => 'SERVICIOS TEMPORALES DE EMPLEO 100%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -943,7 +943,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551515',
                 'nombre' => 'COMPRA DE COMBUSTUSTIBLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -970,7 +970,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551516',
                 'nombre' => 'COMPRAS Y OTROS INGRESOS DECLARANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -997,7 +997,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551517',
                 'nombre' => 'COMPRAS Y OTROS INGRESOS NO DECLARANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1024,7 +1024,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135550',
                 'nombre' => 'POR PAGOS AL EXTERIOR',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1051,7 +1051,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135555',
                 'nombre' => 'POR INGRESOS OBTENIDOS EN EL EXTERIOR',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1078,7 +1078,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135560',
                 'nombre' => 'ENAJENACION PROPIEDADES PLANTA Y EQUIPO PERSONAS NATURALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1105,7 +1105,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135565',
                 'nombre' => 'POR IMPUESTO DE TIMBRE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1132,7 +1132,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135570',
                 'nombre' => 'OTRAS RETENCIONES Y PATRIMONIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1159,7 +1159,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135575',
                 'nombre' => 'AUTORRETENCIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1186,7 +1186,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13557501',
                 'nombre' => 'AUTO RENTA 0.4',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1213,7 +1213,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13557502',
                 'nombre' => 'AUTO RENTA 0.8',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1240,7 +1240,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13557503',
                 'nombre' => 'AUTO RENTA 1.6',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1267,7 +1267,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135517',
                 'nombre' => 'RETENCION DE IVA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1294,7 +1294,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135520',
                 'nombre' => 'SOBRANTES EN LIQUIDACION PRIVADA DE IMPUESTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1321,7 +1321,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13552001',
                 'nombre' => 'SALDO A FAVOR RENTA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1348,7 +1348,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13552002',
                 'nombre' => 'SALDO A FAVOR IVA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1375,7 +1375,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13552003',
                 'nombre' => 'SALDO A FAVOR CREE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1402,7 +1402,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135525',
                 'nombre' => 'CONTRIBUCIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1429,7 +1429,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135530',
                 'nombre' => 'IMPUESTOS DESCONTABLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1456,7 +1456,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1483,7 +1483,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1360',
                 'nombre' => 'RECLAMACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1510,7 +1510,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1365',
                 'nombre' => 'CUENTAS POR COBRAR A TRABAJADORES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1537,7 +1537,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '136505',
                 'nombre' => 'VIVIENDA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1564,7 +1564,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '136510',
                 'nombre' => 'VEHICULOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1591,7 +1591,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '136515',
                 'nombre' => 'EDUCACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1618,7 +1618,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '136520',
                 'nombre' => 'MEDICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1645,7 +1645,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '136525',
                 'nombre' => 'CALAMIDAD DOMESTICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1672,7 +1672,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '136530',
                 'nombre' => 'RESPONSABILIDADES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1699,7 +1699,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '136595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1726,7 +1726,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13659501',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1753,7 +1753,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1380',
                 'nombre' => 'DEUDORES VARIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1780,7 +1780,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '138020',
                 'nombre' => 'CUENTAS POR COBRAR DE TERCEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1807,7 +1807,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '138025',
                 'nombre' => 'PAGOS POR CUENTA DE TERCEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1834,7 +1834,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '138095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1861,7 +1861,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1390',
                 'nombre' => 'DEUDAS DE DIFICIL COBRO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1888,7 +1888,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1399',
                 'nombre' => 'PROVISIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -1915,7 +1915,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '14',
                 'nombre' => 'INVENTARIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -1942,7 +1942,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1405',
                 'nombre' => 'MATERIAS PRIMAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -1969,7 +1969,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '140500',
                 'nombre' => 'INVENTARIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -1996,7 +1996,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '140501',
                 'nombre' => 'COMPRAS GRAVADAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2023,7 +2023,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '140502',
                 'nombre' => 'COMPRAS NO GRAVADAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2050,7 +2050,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '140595',
                 'nombre' => 'COSTO MATERIA PRIMA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2077,7 +2077,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '140598',
                 'nombre' => 'DEVOLUCION DE COMPRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2104,7 +2104,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '140599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2131,7 +2131,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1410',
                 'nombre' => 'PRODUCTOS EN PROCESO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2158,7 +2158,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '141001',
                 'nombre' => 'PRODUCTOS EN PROCESO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2185,7 +2185,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '141010',
                 'nombre' => 'PP MATERIA PRIMA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2212,7 +2212,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '141015',
                 'nombre' => 'PROD. PROCESO MOD',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2239,7 +2239,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '14101501',
                 'nombre' => 'PROD. PROCESO MOD',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2266,7 +2266,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '14101502',
                 'nombre' => 'C.M.V MOD',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2293,7 +2293,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '141020',
                 'nombre' => 'PROD. PROCESO CIF',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2320,7 +2320,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '14102001',
                 'nombre' => 'PROD. PROCESO CIF',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2347,7 +2347,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '14102002',
                 'nombre' => 'C.M.V CIF',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2374,7 +2374,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '141021',
                 'nombre' => 'PROD. PROCESO SVS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2401,7 +2401,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '14102101',
                 'nombre' => 'PROD. PROCESO SVS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2428,7 +2428,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '14102102',
                 'nombre' => 'C.M.V SVS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2455,7 +2455,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '141098',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2482,7 +2482,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '141099',
                 'nombre' => 'TRASLADO CTOS DE VTAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2509,7 +2509,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1430',
                 'nombre' => 'PRODUCTOS TERMINADOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2536,7 +2536,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '143005',
                 'nombre' => 'PRODUCTOS MANUFACTURADOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2563,7 +2563,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1435',
                 'nombre' => 'MERCANCIAS NO FABRICADAS POR LA EMPRESA',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2590,7 +2590,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '143501',
                 'nombre' => 'MATERIALES  E INSUMOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2617,7 +2617,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '143595',
                 'nombre' => 'INVENTARIO EN PRODUCCION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2644,7 +2644,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '143596',
                 'nombre' => 'INVENTARIO POR COMPRAS ***',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2671,7 +2671,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '15',
                 'nombre' => 'PROPIEDADES PLANTA Y EQUIPO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2698,7 +2698,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1504',
                 'nombre' => 'TERRENOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2725,7 +2725,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '150405',
                 'nombre' => 'URBANOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2752,7 +2752,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '150410',
                 'nombre' => 'RURALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2779,7 +2779,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '150499',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2806,7 +2806,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1516',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2833,7 +2833,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '151605',
                 'nombre' => 'EDIFICIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2860,7 +2860,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '151610',
                 'nombre' => 'OFICINAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2887,7 +2887,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '151680',
                 'nombre' => 'BODEGAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2914,7 +2914,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '151695',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2941,7 +2941,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '151699',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2968,7 +2968,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1524',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -2995,7 +2995,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '152405',
                 'nombre' => 'MUEBLES Y ENSERES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3022,7 +3022,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '152410',
                 'nombre' => 'EQUIPOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3049,7 +3049,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '152495',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3076,7 +3076,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '152499',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3103,7 +3103,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '18',
                 'nombre' => 'OTROS ACTIVOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3130,7 +3130,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1805',
                 'nombre' => 'BIENES DE ARTE Y CULTURA',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3157,7 +3157,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '180505',
                 'nombre' => 'OBRAS DE ARTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3184,7 +3184,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '180510',
                 'nombre' => 'BIBLIOTECAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3211,7 +3211,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '180595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3238,7 +3238,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '180599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3265,7 +3265,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1895',
                 'nombre' => 'DIVERSOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3292,7 +3292,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '189505',
                 'nombre' => 'MAQUINAS PORTEADORAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3319,7 +3319,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '189510',
                 'nombre' => 'BIENES ENTREGADOS EN COMODATO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3346,7 +3346,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '189515',
             'nombre' => 'AMORTIZACION ACUMULADA DE BIENES ENTREGADOS EN COMODATO (CR)',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3373,7 +3373,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '189520',
                 'nombre' => 'BIENES RECIBIDOS EN PAGO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3400,7 +3400,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '189525',
                 'nombre' => 'DERECHOS SUCESORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3427,7 +3427,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '189530',
                 'nombre' => 'ESTAMPILLAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3454,7 +3454,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '189595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3481,7 +3481,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '189599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3508,7 +3508,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1899',
                 'nombre' => 'PROVISIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3535,7 +3535,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '189905',
                 'nombre' => 'BIENES DE ARTE Y CULTURA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3562,7 +3562,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '189995',
                 'nombre' => 'DIVERSOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3589,7 +3589,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '19',
                 'nombre' => 'VALORIZACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3616,7 +3616,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1905',
                 'nombre' => 'DE INVERSIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3643,7 +3643,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '190505',
                 'nombre' => 'ACCIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3670,7 +3670,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '190510',
                 'nombre' => 'CUOTAS O PARTES DE INTERES SOCIAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3697,7 +3697,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '190515',
                 'nombre' => 'DERECHOS FIDUCIARIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3724,7 +3724,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1910',
                 'nombre' => 'DE PROPIEDADES PLANTA Y EQUIPO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3751,7 +3751,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191004',
                 'nombre' => 'TERRENOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3778,7 +3778,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191006',
                 'nombre' => 'MATERIALES PROYECTOS PETROLEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3805,7 +3805,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191008',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3832,7 +3832,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191012',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3859,7 +3859,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191016',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3886,7 +3886,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191020',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3913,7 +3913,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191024',
                 'nombre' => 'EQUIPO MEDICO CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3940,7 +3940,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191028',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3967,7 +3967,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191032',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -3994,7 +3994,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191036',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4021,7 +4021,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191040',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4048,7 +4048,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191044',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4075,7 +4075,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191048',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4102,7 +4102,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191052',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4129,7 +4129,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191056',
                 'nombre' => 'ENVASES Y EMPAQUES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4156,7 +4156,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191060',
                 'nombre' => 'PLANTACIONES AGRICOLAS Y FORESTALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4183,7 +4183,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191064',
                 'nombre' => 'VIAS DE COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4210,7 +4210,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191068',
                 'nombre' => 'MINAS Y CANTERAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4237,7 +4237,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191072',
                 'nombre' => 'POZOS ARTESIANOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4264,7 +4264,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191076',
                 'nombre' => 'YACIMIENTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4291,7 +4291,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '191080',
                 'nombre' => 'SEMOVIENTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4318,7 +4318,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '1995',
                 'nombre' => 'DE OTROS ACTIVOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4345,7 +4345,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '199505',
                 'nombre' => 'BIENES DE ARTE Y CULTURA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4372,7 +4372,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '199510',
                 'nombre' => 'BIENES ENTREGADOS EN COMODATO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4399,7 +4399,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '199515',
                 'nombre' => 'BIENES RECIBIDOS EN PAGO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4426,7 +4426,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '199520',
                 'nombre' => 'INVENTARIO DE SEMOVIENTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4453,7 +4453,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2',
                 'nombre' => 'PASIVO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4480,7 +4480,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '21',
                 'nombre' => 'OBLIGACIONES FINANCIERAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4507,7 +4507,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2195',
                 'nombre' => 'OTRAS OBLIGACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4534,7 +4534,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '219505',
                 'nombre' => 'PARTICULARES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4561,7 +4561,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '219510',
                 'nombre' => 'COMPAA`IAS VINCULADAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4588,7 +4588,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '219515',
                 'nombre' => 'CASA MATRIZ',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4615,7 +4615,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '219520',
                 'nombre' => 'SOCIOS O ACCIONISTAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4642,7 +4642,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '219525',
                 'nombre' => 'FONDOS Y COOPERATIVAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4669,7 +4669,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '219595',
                 'nombre' => 'OTRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4696,7 +4696,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '22',
                 'nombre' => 'CUENTAS POR PAGAR COMERCIALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -4723,7 +4723,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2205',
                 'nombre' => 'NACIONALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -4750,7 +4750,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '220505',
                 'nombre' => 'PROVEEDORES NACIONALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -4777,7 +4777,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '22050501',
                 'nombre' => 'PROVEEDORES NACIONALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -4804,7 +4804,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23',
                 'nombre' => 'CUENTAS POR PAGAR',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4831,7 +4831,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2335',
                 'nombre' => 'COSTOS Y GASTOS POR  PAGAR',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4858,7 +4858,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233505',
                 'nombre' => 'GASTOS FINANCIEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4885,7 +4885,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233510',
                 'nombre' => 'GASTOS LEGALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4912,7 +4912,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233520',
                 'nombre' => 'COMISIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4939,7 +4939,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233525',
                 'nombre' => 'HONORARIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4966,7 +4966,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233530',
                 'nombre' => 'SERVICIOS TECNICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -4993,7 +4993,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233535',
                 'nombre' => 'SERVICIOS DE MANTENIMIENTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5020,7 +5020,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233540',
                 'nombre' => 'ARRENDAMIENTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5047,7 +5047,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233545',
                 'nombre' => 'TRANSPORTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5074,7 +5074,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233550',
                 'nombre' => 'SERVICIOS PUBLICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5101,7 +5101,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233555',
                 'nombre' => 'SEGUROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5128,7 +5128,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233565',
                 'nombre' => 'GASTOS DE REPRESENTACION Y RELACIONES PUBLICAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5155,7 +5155,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '233595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5182,7 +5182,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23359501',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5209,7 +5209,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2355',
                 'nombre' => 'DEUDAS CON ACCIONISTAS O SOCIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5236,7 +5236,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '235505',
                 'nombre' => 'ACCIONISTAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5263,7 +5263,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '235510',
                 'nombre' => 'SOCIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5290,7 +5290,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2365',
                 'nombre' => 'RETENCION EN LA FUENTE',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5317,7 +5317,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236505',
                 'nombre' => 'SALARIOS Y PAGOS LABORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5344,7 +5344,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236515',
                 'nombre' => 'HONORARIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5371,7 +5371,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23651501',
                 'nombre' => 'HONORARIOS PJ O ASIMILIDA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5398,7 +5398,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23651502',
                 'nombre' => 'HONORARIOS PN 11%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5425,7 +5425,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23651503',
                 'nombre' => 'HONORARIOS PN 10%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5452,7 +5452,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236520',
                 'nombre' => 'COMISIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5479,7 +5479,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23652001',
                 'nombre' => 'COMISIONES PJ O ASIMILIDA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5506,7 +5506,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23652002',
                 'nombre' => 'COMISIONES PN 11%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5533,7 +5533,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23652003',
                 'nombre' => 'COMISIONES PN 10%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5560,7 +5560,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236525',
                 'nombre' => 'SERVICIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5587,7 +5587,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23652501',
                 'nombre' => 'SERVICIOS ASEO Y VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5614,7 +5614,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23652503',
                 'nombre' => 'SERVICIOS DE TRANSPORTE DE CARGA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5641,7 +5641,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23652504',
                 'nombre' => 'SERVICIOS DE TRANSPORTE NAL DE PASAJEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5668,7 +5668,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23652505',
                 'nombre' => 'SERVICIOS GENERALES PJ Y PN OBLIG A DECALRAR RTA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5695,7 +5695,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23652506',
                 'nombre' => 'SERVICIOS GENERALES PN NO OBLIG A DECALRAR RTA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5722,7 +5722,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23652507',
                 'nombre' => 'SERVICIOS TEMPORALES DE EMPLEO 100%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5749,7 +5749,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236530',
                 'nombre' => 'ARRENDAMIENTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5776,7 +5776,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23653001',
                 'nombre' => 'ARRENDAMIENTOS BIENES MUEBLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5803,7 +5803,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23653002',
                 'nombre' => 'ARRENDAMIENTOS BIENES INMUEBLES PARA DECLARANTES Y NO DECALR',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5830,7 +5830,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236535',
                 'nombre' => 'RENDIMIENTOS FINANCIEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5857,7 +5857,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236540',
                 'nombre' => 'COMPRAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5884,7 +5884,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23654001',
                 'nombre' => 'COMPRA DE COMBUSTUSTIBLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5911,7 +5911,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23654002',
                 'nombre' => 'COMPRAS Y OTROS INGRESOS NO DECLARANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5938,7 +5938,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236560',
                 'nombre' => 'ENAJENACION PROPIEDADES PLANTA Y EQUIPO PERSONAS NATURALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5965,7 +5965,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236565',
                 'nombre' => 'POR IMPUESTO DE TIMBRE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -5992,7 +5992,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236570',
                 'nombre' => 'OTRAS RETENCIONES Y PATRIMONIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6019,7 +6019,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236575',
                 'nombre' => 'AUTORRETENCIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6046,7 +6046,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23657501',
                 'nombre' => 'AUTO RENTA 0.4',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6073,7 +6073,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23657502',
                 'nombre' => 'AUTO RENTA 0.8',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6100,7 +6100,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23657503',
                 'nombre' => 'AUTO RENTA 1.6',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6127,7 +6127,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2367',
                 'nombre' => 'IMPUESTO A LAS VENTAS RETENIDO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6154,7 +6154,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236701',
                 'nombre' => 'IVA RETENIDO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6181,7 +6181,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2368',
                 'nombre' => 'IMPUESTO DE INDUSTRIA Y COMERCIO RETENDIO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6208,7 +6208,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236801',
                 'nombre' => 'ICA RETENIDO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6235,7 +6235,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2370',
                 'nombre' => 'RETENCIONES Y APORTES DE NOMINA',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6262,7 +6262,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '237005',
                 'nombre' => 'APORTES AL I.S.S.',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6289,7 +6289,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '237010',
                 'nombre' => 'APORTES AL I.C.B.F.',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6316,7 +6316,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '237015',
                 'nombre' => 'APORTES AL F.I.C.',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6343,7 +6343,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '237030',
                 'nombre' => 'LIBRANZAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6370,7 +6370,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '237035',
                 'nombre' => 'SINDICATOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6397,7 +6397,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '237040',
                 'nombre' => 'COOPERATIVAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6424,7 +6424,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '237045',
                 'nombre' => 'FONDOS DE PENSIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6451,7 +6451,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '237095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6478,7 +6478,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2380',
                 'nombre' => 'ACREEDORES VARIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6505,7 +6505,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '238095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -6532,7 +6532,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24',
                 'nombre' => 'IMPUESTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6559,7 +6559,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2404',
                 'nombre' => 'DE RENTA Y COMPLEMENTARIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6586,7 +6586,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '240405',
                 'nombre' => 'VIGENCIA FISCAL CORRIENTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6613,7 +6613,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '240410',
                 'nombre' => 'VIGENCIAS FISCALES ANTERIORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6640,7 +6640,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2408',
                 'nombre' => 'IMPUESTO SOBRE LAS VENTAS POR PAGAR',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6667,7 +6667,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '240805',
                 'nombre' => 'IMPUESTO SOBRE LAS VENTAS POR PAGAR',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6694,7 +6694,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080501',
                 'nombre' => 'IVA GENERADO EN VENTAS 16%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6721,7 +6721,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080502',
                 'nombre' => 'IVA GENERADO EN VENTAS 19%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6748,7 +6748,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080503',
                 'nombre' => 'IVA GENERADO EN VENTAS 5%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6775,7 +6775,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080504',
                 'nombre' => 'IVA GENERADO EN VENTAS AIU 19%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6802,7 +6802,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080511',
                 'nombre' => 'IVA GENERADO EN DEV. POR COMPRAS 16%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6829,7 +6829,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080512',
                 'nombre' => 'IVA GENERADO EN DEV. POR COMPRAS 19%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6856,7 +6856,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080513',
                 'nombre' => 'IVA GENERADO EN DEV. POR COMPRAS 5%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6883,7 +6883,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080521',
                 'nombre' => 'IVA GENERADO EN DCTO. POR COMPRAS 16%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6910,7 +6910,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080522',
                 'nombre' => 'IVA GENERADO EN DCTO. POR COMPRAS 19%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6937,7 +6937,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080523',
                 'nombre' => 'IVA GENERADO EN DCTO. POR COMPRAS 5%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6964,7 +6964,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080531',
                 'nombre' => 'IVA GENERADO EN DCTO O DEV . POR SERVICIOS  16%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -6991,7 +6991,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080532',
                 'nombre' => 'IVA GENERADO EN DCTO O DEV . POR SERVICIOS  19%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7018,7 +7018,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24080533',
                 'nombre' => 'IVA GENERADO EN DCTO O DEV . POR SERVICIOS  5%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7045,7 +7045,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '240810',
                 'nombre' => 'IMPUESTO SOBRE LAS VENTAS DESCONTABLE',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7072,7 +7072,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081001',
                 'nombre' => 'IVA DESCONTABLES POR COMPRAS DEL 16%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7099,7 +7099,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081002',
                 'nombre' => 'IVA DESCONTABLES POR COMPRAS DEL 19%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7126,7 +7126,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081003',
                 'nombre' => 'IVA DESCONTABLES POR COMPRAS DEL 5%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7153,7 +7153,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081011',
                 'nombre' => 'IVA DESCONTABLE POR DEV. EN VENTAS 16%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7180,7 +7180,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081012',
                 'nombre' => 'IVA DESCONTABLE POR DEV. EN VENTAS 19%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7207,7 +7207,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081013',
                 'nombre' => 'IVA DESCONTABLE POR DEV. EN VENTAS 5%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7234,7 +7234,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081021',
                 'nombre' => 'IVA DESCONTABLE EN DCTO.  VENTAS 16%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7261,7 +7261,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081022',
                 'nombre' => 'IVA DESCONTABLE EN DCTO. VENTAS  19%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7288,7 +7288,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081023',
                 'nombre' => 'IVA DESCONTABLE EN DCTO. VENTAS  5%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7315,7 +7315,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081031',
                 'nombre' => 'IVA DESCONTABLES POR SERVICIOS  DEL 16%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7342,7 +7342,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081032',
                 'nombre' => 'IVA DESCONTABLES POR SERVICIOS  DEL 19%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7369,7 +7369,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '24081033',
                 'nombre' => 'IVA DESCONTABLES POR SERVICIOS  DEL 5%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7396,7 +7396,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2412',
                 'nombre' => 'DE INDUSTRIA Y COMERCIO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7423,7 +7423,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '241205',
                 'nombre' => 'VIGENCIA FISCAL CORRIENTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7450,7 +7450,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '241210',
                 'nombre' => 'VIGENCIAS FISCALES ANTERIORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7477,7 +7477,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '25',
                 'nombre' => 'OBLIGACIONES LABORALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7504,7 +7504,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2505',
                 'nombre' => 'SALARIOS POR PAGAR',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7531,7 +7531,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '250501',
                 'nombre' => 'SALARIOS POR PAGAR',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7558,7 +7558,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2510',
                 'nombre' => 'CESANTIAS CONSOLIDADAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7585,7 +7585,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '251005',
                 'nombre' => 'LEY LABORAL ANTERIOR',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7612,7 +7612,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '251010',
                 'nombre' => 'LEY 50 DE 1990 Y NORMAS POSTERIORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7639,7 +7639,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2515',
                 'nombre' => 'INTERESES SOBRE CESANTIAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7666,7 +7666,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '251501',
                 'nombre' => 'INTERESES CONSOLIDADOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7693,7 +7693,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2520',
                 'nombre' => 'PRIMA DE SERVICIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7720,7 +7720,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '252001',
                 'nombre' => 'PRIMA DE SERVICIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7747,7 +7747,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2525',
                 'nombre' => 'VACACIONES CONSOLIDADAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7774,7 +7774,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '252501',
                 'nombre' => 'VACACIONES CONSILIDADAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7801,7 +7801,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2530',
                 'nombre' => 'PRESTACIONES EXTRALEGALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7828,7 +7828,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '253005',
                 'nombre' => 'PRIMAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7855,7 +7855,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '253010',
                 'nombre' => 'AUXILIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7882,7 +7882,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '253015',
                 'nombre' => 'DOTACION Y SUMINISTRO A TRABAJADORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7909,7 +7909,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '253020',
                 'nombre' => 'BONIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7936,7 +7936,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '253025',
                 'nombre' => 'SEGUROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7963,7 +7963,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '253095',
                 'nombre' => 'OTRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -7990,7 +7990,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '26',
                 'nombre' => 'PASIVOS ESTIMADOS Y PROVISIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8017,7 +8017,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2605',
                 'nombre' => 'PARA COSTOS Y GASTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8044,7 +8044,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '260505',
                 'nombre' => 'INTERESES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8071,7 +8071,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '260510',
                 'nombre' => 'COMISIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8098,7 +8098,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '260515',
                 'nombre' => 'HONORARIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8125,7 +8125,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '260520',
                 'nombre' => 'SERVICIOS TECNICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8152,7 +8152,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '260525',
                 'nombre' => 'TRANSPORTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8179,7 +8179,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '260530',
                 'nombre' => 'GASTOS DE VIAJE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8206,7 +8206,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '260535',
                 'nombre' => 'SERVICIOS PUBLICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8233,7 +8233,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '260540',
                 'nombre' => 'REGALIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8260,7 +8260,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '260545',
                 'nombre' => 'GARANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8287,7 +8287,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '260550',
                 'nombre' => 'MATERIALES Y REPUESTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8314,7 +8314,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '260595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8341,7 +8341,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2610',
                 'nombre' => 'PARA OBLIGACIONES LABORALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8368,7 +8368,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261005',
                 'nombre' => 'CESANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8395,7 +8395,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261010',
                 'nombre' => 'INTERESES SOBRE CESANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8422,7 +8422,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261015',
                 'nombre' => 'VACACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8449,7 +8449,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261020',
                 'nombre' => 'PRIMA DE SERVICIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8476,7 +8476,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261025',
                 'nombre' => 'PRESTACIONES EXTRALEGALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8503,7 +8503,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261030',
                 'nombre' => 'VIATICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8530,7 +8530,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261095',
                 'nombre' => 'OTRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8557,7 +8557,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2615',
                 'nombre' => 'PARA OBLIGACIONES FISCALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8584,7 +8584,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261505',
                 'nombre' => 'DE RENTA Y COMPLEMENTARIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8611,7 +8611,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261510',
                 'nombre' => 'DE INDUSTRIA Y COMERCIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8638,7 +8638,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261515',
                 'nombre' => 'TASA POR UTILIZACION DE PUERTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8665,7 +8665,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261520',
                 'nombre' => 'DE VEHICULOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8692,7 +8692,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261525',
                 'nombre' => 'DE HIDROCARBUROS Y MINAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8719,7 +8719,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '261595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8746,7 +8746,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2620',
                 'nombre' => 'PENSIONES DE JUBILACION',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8773,7 +8773,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '262005',
                 'nombre' => 'CALCULO ACTUARIAL PENSIONES DE JUBILACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8800,7 +8800,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '262010',
             'nombre' => 'PENSIONES DE JUBILACION POR AMORTIZAR (DB)',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8827,7 +8827,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2625',
                 'nombre' => 'PARA OBRAS DE URBANISMO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8854,7 +8854,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '262505',
                 'nombre' => 'ACUEDUCTO Y ALCANTARILLADO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8881,7 +8881,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '262510',
                 'nombre' => 'ENERGIA ELECTRICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8908,7 +8908,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '262515',
                 'nombre' => 'TELEFONOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8935,7 +8935,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '262595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8962,7 +8962,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2630',
                 'nombre' => 'PARA MANTENIMIENTO Y REPARACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -8989,7 +8989,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263005',
                 'nombre' => 'TERRENOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9016,7 +9016,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263010',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9043,7 +9043,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263015',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9070,7 +9070,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263020',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9097,7 +9097,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263025',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9124,7 +9124,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263030',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9151,7 +9151,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263035',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9178,7 +9178,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9205,7 +9205,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9232,7 +9232,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9259,7 +9259,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9286,7 +9286,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263060',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9313,7 +9313,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263065',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9340,7 +9340,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263070',
                 'nombre' => 'ENVASES Y EMPAQUES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9367,7 +9367,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263075',
                 'nombre' => 'PLANTACIONES AGRICOLAS Y FORESTALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9394,7 +9394,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263080',
                 'nombre' => 'VIAS DE CUMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9421,7 +9421,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263085',
                 'nombre' => 'POZOS ARTESIANOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9448,7 +9448,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9475,7 +9475,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2635',
                 'nombre' => 'PARA CONTINGENCIAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9502,7 +9502,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263505',
                 'nombre' => 'MULTAS Y SANCIONES AUTORIDADES ADMINISTRATIVAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9529,7 +9529,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263510',
                 'nombre' => 'INTERESES POR MULTAS Y SANCIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9556,7 +9556,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263515',
                 'nombre' => 'RECLAMOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9583,7 +9583,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263520',
                 'nombre' => 'LABORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9610,7 +9610,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263525',
                 'nombre' => 'CIVILES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9637,7 +9637,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263530',
                 'nombre' => 'PENALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9664,7 +9664,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263535',
                 'nombre' => 'ADMINISTRATIVOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9691,7 +9691,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263540',
                 'nombre' => 'COMERCIALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9718,7 +9718,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '263595',
                 'nombre' => 'OTRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9745,7 +9745,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2640',
                 'nombre' => 'PARA OBLIGACIONES DE GARANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9772,7 +9772,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2695',
                 'nombre' => 'PROVISIONES DIVERSAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9799,7 +9799,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '269505',
                 'nombre' => 'PARA BENEFICENCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9826,7 +9826,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '269510',
                 'nombre' => 'PARA COMUNICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9853,7 +9853,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '269515',
                 'nombre' => 'PARA PERDIDA EN TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9880,7 +9880,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '269520',
                 'nombre' => 'PARA OPERACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9907,7 +9907,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '269525',
                 'nombre' => 'PARA PROTECCION DE BIENES AGOTABLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9934,7 +9934,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '269530',
                 'nombre' => 'PARA AJUSTES EN REDENCION DE UNIDADES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9961,7 +9961,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '269535',
                 'nombre' => 'AUTOSEGURO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -9988,7 +9988,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '269540',
                 'nombre' => 'PLANES Y PROGRAMAS DE REFORESTACION Y ELECTRIFICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10015,7 +10015,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '269595',
                 'nombre' => 'OTRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10042,7 +10042,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '27',
                 'nombre' => 'DIFERIDOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10069,7 +10069,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2705',
                 'nombre' => 'INGRESOS RECIBIDOS POR ANTICIPADO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10096,7 +10096,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '270505',
                 'nombre' => 'INTERESES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10123,7 +10123,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '270510',
                 'nombre' => 'COMISIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10150,7 +10150,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '270515',
                 'nombre' => 'ARRENDAMIENTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10177,7 +10177,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '270520',
                 'nombre' => 'HONORARIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10204,7 +10204,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '270525',
                 'nombre' => 'SERVICIOS TECNICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10231,7 +10231,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '270530',
                 'nombre' => 'DE SUSCRIPTORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10258,7 +10258,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '270535',
                 'nombre' => 'TRANSPORTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10285,7 +10285,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '270540',
                 'nombre' => 'MERCANCIA EN TRANSITO YA VENDIDA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10312,7 +10312,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '270545',
                 'nombre' => 'MATRICULAS Y PENSIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10339,7 +10339,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '270550',
                 'nombre' => 'CUOTAS DE ADMINISTRACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10366,7 +10366,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '270595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10393,7 +10393,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2710',
                 'nombre' => 'ABONOS DIFERIDOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10420,7 +10420,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '271005',
                 'nombre' => 'REAJUSTE DEL SISTEMA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10447,7 +10447,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2715',
                 'nombre' => 'UTILIDAD DIFERIDA EN VENTAS A PLAZOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10474,7 +10474,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2720',
                 'nombre' => 'CREDITO POR CORRECCION MONETARIA DIFERIDA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10501,7 +10501,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2725',
                 'nombre' => 'IMPUESTOS DIFERIDOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10528,7 +10528,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '272505',
                 'nombre' => 'POR DEPRECIACION FLEXIBLE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10555,7 +10555,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '272595',
                 'nombre' => 'DIVERSOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10582,7 +10582,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '272599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10609,7 +10609,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '28',
                 'nombre' => 'OTROS PASIVOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10636,7 +10636,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2805',
                 'nombre' => 'ANTICIPOS Y AVANCES RECIBIDOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -10663,7 +10663,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '280505',
                 'nombre' => 'DE CLIENTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -10690,7 +10690,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '280510',
                 'nombre' => 'SOBRE CONTRATOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -10717,7 +10717,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '280515',
                 'nombre' => 'PARA OBRAS EN PROCESO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -10744,7 +10744,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '280595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -10771,7 +10771,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2810',
                 'nombre' => 'DEPOSITOS RECIBIDOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10798,7 +10798,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '281005',
                 'nombre' => 'PARA FUTURA SUSCRIPCION DE ACCIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10825,7 +10825,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '281010',
                 'nombre' => 'PARA FUTURO PAGO DE CUOTAS O DERECHOS SOCIALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10852,7 +10852,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '281015',
                 'nombre' => 'PARA GARANTIA EN LA PRESTACION DE SERVICIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10879,7 +10879,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '281020',
                 'nombre' => 'PARA GARANTIA DE CONTRATOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10906,7 +10906,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '281025',
                 'nombre' => 'DE LICITACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10933,7 +10933,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '281030',
                 'nombre' => 'DE MANEJO DE BIENES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10960,7 +10960,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '281035',
                 'nombre' => 'FONDO DE RESERVA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -10987,7 +10987,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '281095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11014,7 +11014,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2815',
                 'nombre' => 'INGRESOS RECIBIDOS PARA TERCEROS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11041,7 +11041,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '281505',
                 'nombre' => 'VALORES RECIBIDOS PARA TERCEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11068,7 +11068,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '281510',
                 'nombre' => 'VENTA POR CUENTA DE TERCEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11095,7 +11095,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2820',
                 'nombre' => 'CUENTAS DE OPERACION CONJUNTA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11122,7 +11122,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2825',
                 'nombre' => 'RETENCIONES A TERCEROS SOBRE CONTRATOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11149,7 +11149,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '282505',
                 'nombre' => 'CUMPLIMIENTO OBLIGACIONES LABORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11176,7 +11176,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '282510',
                 'nombre' => 'PARA ESTABILIDAD DE OBRA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11203,7 +11203,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '282515',
                 'nombre' => 'GARANTIA CUMPLIMIENTO DE CONTRATOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11230,7 +11230,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2830',
                 'nombre' => 'EMBARGOS JUDICIALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11257,7 +11257,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '283005',
                 'nombre' => 'INDEMNIZACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11284,7 +11284,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '283010',
                 'nombre' => 'DEPOSITOS JUDICIALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11311,7 +11311,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2835',
                 'nombre' => 'ACREEDORES DEL SISTEMA',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11338,7 +11338,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '283505',
                 'nombre' => 'CUOTAS NETAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11365,7 +11365,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '283510',
                 'nombre' => 'GRUPOS EN FORMACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11392,7 +11392,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2840',
                 'nombre' => 'CUENTAS EN PARTICIPACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11419,7 +11419,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '2895',
                 'nombre' => 'DIVERSOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11446,7 +11446,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '289505',
                 'nombre' => 'PRESTAMOS DE PRODUCTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11473,7 +11473,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '289510',
                 'nombre' => 'REEMBOLSO DE COSTOS EXPLORATORIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11500,7 +11500,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '289515',
                 'nombre' => 'PROGRAMA DE EXTENSION AGROPECUARIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11527,7 +11527,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3',
                 'nombre' => 'PATRIMONIO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11554,7 +11554,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '31',
                 'nombre' => 'CAPITAL SOCIAL',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11581,7 +11581,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3105',
                 'nombre' => 'CAPITAL SUSCRITO Y PAGADO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11608,7 +11608,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '310505',
                 'nombre' => 'CAPITAL AUTORIZADO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11635,7 +11635,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '310510',
             'nombre' => 'CAPITAL POR SUSCRIBIR (DB)',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11662,7 +11662,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '310515',
             'nombre' => 'CAPITAL SUSCRITO POR COBRAR (DB)',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11689,7 +11689,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3110',
                 'nombre' => 'ACCIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11716,7 +11716,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '311005',
             'nombre' => 'ACCIONES PROPIAS READQUIRIDAS (DB)',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11743,7 +11743,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '311010',
             'nombre' => 'CUOTAS O PARTES DE INTERES SOCIAL PROPIAS READQUIRIDAS (DB)',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11770,7 +11770,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3115',
                 'nombre' => 'APORTES SOCIALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11797,7 +11797,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '311505',
                 'nombre' => 'CUOTAS O PARTES DE INTERES SOCIAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11824,7 +11824,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '311510',
                 'nombre' => 'APORTES DE SOCIOS - FONDO MUTUO DE INVERSION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11851,7 +11851,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '311515',
                 'nombre' => 'CONTRIBUCION DE LA EMPRESA - FONDO MUTUO DE INVERSION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11878,7 +11878,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '311520',
                 'nombre' => 'SUSCRIPCIONES DEL PUBLICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11905,7 +11905,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3120',
                 'nombre' => 'CAPITAL ASIGNADO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11932,7 +11932,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3125',
                 'nombre' => 'INVERSION SUPLEMENTARIA AL CAPITAL ASIGNADO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11959,7 +11959,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3130',
                 'nombre' => 'CAPITAL DE PERSONAS NATURALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -11986,7 +11986,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3135',
                 'nombre' => 'APORTES DEL ESTADO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12013,7 +12013,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3140',
                 'nombre' => 'FONDO SOCIAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12040,7 +12040,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '32',
                 'nombre' => 'SUPERAVIT DE CAPITAL',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12067,7 +12067,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3205',
                 'nombre' => 'PRIMA EN COLOCACION DE ACCIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12094,7 +12094,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '320505',
                 'nombre' => 'PRIMA EN COLOCACION DE ACCIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12121,7 +12121,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '320510',
             'nombre' => 'PRIMA EN COLOCACION DE ACCIONES POR COBRAR (DB)',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12148,7 +12148,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '320515',
                 'nombre' => 'PRIMA EN COLOCACION DE CUOTAS O PARTES DE INTERES SOCIAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12175,7 +12175,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3210',
                 'nombre' => 'DONACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12202,7 +12202,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '321005',
                 'nombre' => 'EN DINERO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12229,7 +12229,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '321010',
                 'nombre' => 'EN VALORES MOBILIARIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12256,7 +12256,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '321015',
                 'nombre' => 'EN BIENES MUEBLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12283,7 +12283,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '321020',
                 'nombre' => 'EN BIENES INMUEBLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12310,7 +12310,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '321025',
                 'nombre' => 'EN INTANGIBLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12337,7 +12337,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3215',
                 'nombre' => 'CREDITO MERCANTIL',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12364,7 +12364,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '33',
                 'nombre' => 'RESERVAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12391,7 +12391,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3305',
                 'nombre' => 'RESERVAS OBLIGATORIAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12418,7 +12418,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '330505',
                 'nombre' => 'RESERVA LEGAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12445,7 +12445,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '330510',
                 'nombre' => 'RESERVAS POR DISPOSICIONES FISCALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12472,7 +12472,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '330515',
                 'nombre' => 'RESERVA PARA READQUISICION DE ACCIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12499,7 +12499,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '330517',
                 'nombre' => 'RESERVA PARA READQUISICION DE CUOTAS O PARTES DE INTERES SOC',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12526,7 +12526,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '330520',
                 'nombre' => 'RESERVA PARA EXTENSION AGROPECUARIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12553,7 +12553,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '330525',
                 'nombre' => 'RESERVA LEY 7a. DE 1990',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12580,7 +12580,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '330530',
                 'nombre' => 'RESERVA PARA REPOSICION DE SEMOVIENTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12607,7 +12607,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '330535',
                 'nombre' => 'RESERVA LEY 4a DE 1980',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12634,7 +12634,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '330595',
                 'nombre' => 'OTRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12661,7 +12661,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3310',
                 'nombre' => 'RESERVAS ESTATUTARIAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12688,7 +12688,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331005',
                 'nombre' => 'PARA FUTURAS CAPITALIZACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12715,7 +12715,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331010',
                 'nombre' => 'PARA REPOSICION DE ACTIVOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12742,7 +12742,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331015',
                 'nombre' => 'PARA FUTUROS ENSANCHES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12769,7 +12769,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331095',
                 'nombre' => 'OTRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12796,7 +12796,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3315',
                 'nombre' => 'RESERVAS OCASIONALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12823,7 +12823,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331505',
                 'nombre' => 'PARA BENEFICENCIA Y CIVISMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12850,7 +12850,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331510',
                 'nombre' => 'PARA FUTURAS CAPITALIZACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12877,7 +12877,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331515',
                 'nombre' => 'PARA FUTUROS ENSANCHES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12904,7 +12904,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331520',
                 'nombre' => 'PARA ADQUISICION O REPOSICION DE PROPIEDADES PLANTA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12931,7 +12931,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331525',
                 'nombre' => 'PARA INVESTIGACIONES Y DESARROLLO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12958,7 +12958,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331530',
                 'nombre' => 'PARA FOMENTO ECONOMICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -12985,7 +12985,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331535',
                 'nombre' => 'PARA CAPITAL DE TRABAJO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13012,7 +13012,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331540',
                 'nombre' => 'PARA ESTABILIZACION DE RENDIMIENTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13039,7 +13039,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331545',
                 'nombre' => 'A DISPOSICION DEL MAXIMO ORGANO SOCIAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13066,7 +13066,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '331595',
                 'nombre' => 'OTRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13093,7 +13093,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '34',
                 'nombre' => 'REVALORIZACION DEL PATRIMONIO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13120,7 +13120,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3405',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13147,7 +13147,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '340505',
                 'nombre' => 'DE CAPITAL SOCIAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13174,7 +13174,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '340510',
                 'nombre' => 'DE SUPERAVIT DE CAPITAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13201,7 +13201,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '340515',
                 'nombre' => 'DE RESERVAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13228,7 +13228,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '340520',
                 'nombre' => 'DE RESULTADOS DE EJERCICIOS ANTERIORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13255,7 +13255,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '340525',
                 'nombre' => 'DE ACTIVOS EN PERIODO IMPRODUCTIVO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13282,7 +13282,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3410',
                 'nombre' => 'SANEAMIENTO FISCAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13309,7 +13309,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3415',
                 'nombre' => 'AJUSTES POR INFLACION DECRETO 3019 DE 1989',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13336,7 +13336,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '35',
                 'nombre' => 'DIVIDENDOS O PARTICIPACIONES DECRETADOS EN ACCIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13363,7 +13363,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3505',
                 'nombre' => 'DIVIDENDOS DECRETADOS EN ACCIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13390,7 +13390,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3510',
                 'nombre' => 'PARTICIPACIONES DECRETADAS EN CUOTAS O PARTES DE INTERES SOC',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13417,7 +13417,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '36',
                 'nombre' => 'RESULTADOS DEL EJERCICIO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13444,7 +13444,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3605',
                 'nombre' => 'UTILIDAD DEL EJERCICIO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13471,7 +13471,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '360505',
                 'nombre' => 'UTILIDAD DEL EJERCICIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13498,7 +13498,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '360510',
                 'nombre' => 'UTILIDAD POR EXPOSICION A LA INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13527,7 +13527,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3610',
                 'nombre' => 'PERDIDA DEL EJERCICIO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13554,7 +13554,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '361005',
                 'nombre' => 'PERDIDA DEL EJERCICIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13581,7 +13581,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '361010',
                 'nombre' => 'PERDIDAS ACUMULADAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13608,7 +13608,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '37',
                 'nombre' => 'RESULTADOS DE EJERCICIOS ANTERIORES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13635,7 +13635,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3705',
                 'nombre' => 'UTILIDADES O EXCEDENTES ACUMULADOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13662,7 +13662,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '370501',
                 'nombre' => 'UTILIDADES ACUMULADAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13689,7 +13689,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3710',
                 'nombre' => 'PERDIDAS ACUMULADAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13716,7 +13716,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '371005',
                 'nombre' => 'PERDIDAS ACUMULADAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13743,7 +13743,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '38',
                 'nombre' => 'SUPERAVIT POR VALORIZACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13770,7 +13770,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3805',
                 'nombre' => 'DE INVERSIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13797,7 +13797,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '380505',
                 'nombre' => 'ACCIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13824,7 +13824,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '380510',
                 'nombre' => 'CUOTAS O PARTES DE INTERES SOCIAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13851,7 +13851,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '380515',
                 'nombre' => 'DERECHOS FIDUCIARIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13878,7 +13878,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3810',
                 'nombre' => 'DE PROPIEDADES PLANTA Y EQUIPO',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13905,7 +13905,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381004',
                 'nombre' => 'TERRENOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13932,7 +13932,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381006',
                 'nombre' => 'MATERIALES PROYECTOS PETROLEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13959,7 +13959,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381008',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -13986,7 +13986,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381012',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14013,7 +14013,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381016',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14040,7 +14040,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381020',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14067,7 +14067,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381024',
                 'nombre' => 'EQUIPO MEDICO CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14094,7 +14094,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381028',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14121,7 +14121,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381032',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14148,7 +14148,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381036',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14175,7 +14175,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381040',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14202,7 +14202,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381044',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14229,7 +14229,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381048',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14256,7 +14256,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381052',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14283,7 +14283,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381056',
                 'nombre' => 'ENVASES Y EMPAQUES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14310,7 +14310,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381060',
                 'nombre' => 'PLANTACIONES AGRICOLAS Y FORESTALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14337,7 +14337,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381064',
                 'nombre' => 'VIAS DE COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14364,7 +14364,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381068',
                 'nombre' => 'MINAS Y CANTERAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14391,7 +14391,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381072',
                 'nombre' => 'POZOS ARTESIANOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14418,7 +14418,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381076',
                 'nombre' => 'YACIMIENTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14445,7 +14445,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '381080',
                 'nombre' => 'SEMOVIENTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14472,7 +14472,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '3895',
                 'nombre' => 'DE OTROS ACTIVOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14499,7 +14499,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '389505',
                 'nombre' => 'BIENES DE ARTE Y CULTURA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14526,7 +14526,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '389510',
                 'nombre' => 'BIENES ENTREGADOS EN COMODATO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14553,7 +14553,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '389515',
                 'nombre' => 'BIENES RECIBIDOS EN PAGO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14580,7 +14580,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '389520',
                 'nombre' => 'INVENTARIO DE SEMOVIENTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14607,7 +14607,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '4',
                 'nombre' => 'INGRESOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14634,7 +14634,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '41',
                 'nombre' => 'INGRESOS OPERACIONALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14661,7 +14661,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5',
                 'nombre' => 'GASTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14688,7 +14688,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '51',
                 'nombre' => 'OPERACIONALES DE ADMINISTRACION',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14715,7 +14715,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5105',
                 'nombre' => 'GASTOS DE PERSONAL',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14742,7 +14742,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510503',
                 'nombre' => 'SALARIO INTEGRAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14769,7 +14769,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510506',
                 'nombre' => 'SUELDOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14796,7 +14796,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510512',
                 'nombre' => 'JORNALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14823,7 +14823,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510515',
                 'nombre' => 'HORAS EXTRAS Y RECARGOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14850,7 +14850,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510518',
                 'nombre' => 'COMISIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14877,7 +14877,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510521',
                 'nombre' => 'VIATICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14904,7 +14904,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510524',
                 'nombre' => 'INCAPACIDADES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14931,7 +14931,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510527',
                 'nombre' => 'AUXILIO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14958,7 +14958,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510530',
                 'nombre' => 'CESANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -14985,7 +14985,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510533',
                 'nombre' => 'INTERESES SOBRE CESANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15012,7 +15012,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510536',
                 'nombre' => 'PRIMA DE SERVICIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15039,7 +15039,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510539',
                 'nombre' => 'VACACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15066,7 +15066,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510542',
                 'nombre' => 'PRIMAS EXTRALEGALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15093,7 +15093,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510545',
                 'nombre' => 'AUXILIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15120,7 +15120,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510548',
                 'nombre' => 'BONIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15147,7 +15147,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510551',
                 'nombre' => 'DOTACION Y SUMINISTRO A TRABAJADORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15174,7 +15174,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510554',
                 'nombre' => 'SEGUROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15201,7 +15201,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510557',
                 'nombre' => 'CUOTAS PARTES PENSIONES DE JUBILACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15228,7 +15228,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510558',
                 'nombre' => 'AMORTIZACION CALCULO ACTUARIAL PENSIONES DE JUBILACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15255,7 +15255,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510559',
                 'nombre' => 'PENSIONES DE JUBILACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15282,7 +15282,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510560',
                 'nombre' => 'INDEMNIZACIONES LABORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15309,7 +15309,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510563',
                 'nombre' => 'CAPACITACION AL PERSONAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15336,7 +15336,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510566',
                 'nombre' => 'GASTOS DEPORTIVOS Y DE RECREACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15363,7 +15363,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510569',
                 'nombre' => 'APORTES A E.P.S.',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15390,7 +15390,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510572',
                 'nombre' => 'APORTES CAJAS DE COMPENSACION FAMILIAR',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15417,7 +15417,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510575',
                 'nombre' => 'APORTES I.C.B.F.',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15444,7 +15444,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510578',
                 'nombre' => 'SENA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15471,7 +15471,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510581',
                 'nombre' => 'APORTES SINDICALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15498,7 +15498,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510584',
                 'nombre' => 'GASTOS MEDICOS Y DROGAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15525,7 +15525,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15552,7 +15552,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15579,7 +15579,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5110',
                 'nombre' => 'HONORARIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15606,7 +15606,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511005',
                 'nombre' => 'JUNTA DIRECTIVA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15633,7 +15633,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511010',
                 'nombre' => 'REVISORIA FISCAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15660,7 +15660,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511015',
                 'nombre' => 'AUDITORIA EXTERNA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15687,7 +15687,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511020',
                 'nombre' => 'AVALUOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15714,7 +15714,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511025',
                 'nombre' => 'ASESORIA JURIDICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15741,7 +15741,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511030',
                 'nombre' => 'ASESORIA FINANCIERA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15768,7 +15768,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511035',
                 'nombre' => 'ASESORIA TECNICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15795,7 +15795,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15822,7 +15822,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15849,7 +15849,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5115',
                 'nombre' => 'IMPUESTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15876,7 +15876,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511505',
                 'nombre' => 'INDUSTRIA Y COMERCIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15903,7 +15903,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511510',
                 'nombre' => 'DE TIMBRES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15930,7 +15930,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511515',
                 'nombre' => 'A LA PROPIEDAD RAIZ',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15957,7 +15957,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511520',
                 'nombre' => 'DERECHOS SOBRE INSTRUMENTOS PUBLICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -15984,7 +15984,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511525',
                 'nombre' => 'DE VALORIZACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16011,7 +16011,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511530',
                 'nombre' => 'DE TURISMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16038,7 +16038,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511535',
                 'nombre' => 'TASA POR UTILIZACION DE PUERTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16065,7 +16065,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511540',
                 'nombre' => 'DE VEHICULOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16092,7 +16092,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511545',
                 'nombre' => 'DE ESPECTACULOS PUBLICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16119,7 +16119,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511550',
                 'nombre' => 'CUOTAS DE FOMENTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16146,7 +16146,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511570',
                 'nombre' => 'IVA DESCONTABLE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16173,7 +16173,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16200,7 +16200,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '511599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16227,7 +16227,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5120',
                 'nombre' => 'ARRENDAMIENTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16254,7 +16254,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512005',
                 'nombre' => 'TERRENOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16281,7 +16281,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512010',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16308,7 +16308,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512015',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16335,7 +16335,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512020',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16362,7 +16362,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512025',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16389,7 +16389,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512030',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16416,7 +16416,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512035',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16443,7 +16443,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16470,7 +16470,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16497,7 +16497,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16524,7 +16524,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16551,7 +16551,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512060',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16578,7 +16578,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512065',
                 'nombre' => 'AERODROMOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16605,7 +16605,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512070',
                 'nombre' => 'SEMOVIENTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16632,7 +16632,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16659,7 +16659,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16686,7 +16686,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5125',
                 'nombre' => 'CONTRIBUCIONES Y AFILIACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16713,7 +16713,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512505',
                 'nombre' => 'CONTRIBUCIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16740,7 +16740,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512510',
                 'nombre' => 'AFILIACIONES Y SOSTENIMIENTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16767,7 +16767,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '512599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16794,7 +16794,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5130',
                 'nombre' => 'SEGUROS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16821,7 +16821,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513005',
                 'nombre' => 'MANEJO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16848,7 +16848,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513010',
                 'nombre' => 'CUMPLIMIENTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16875,7 +16875,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513015',
                 'nombre' => 'CORRIENTE DEBIL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16902,7 +16902,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513020',
                 'nombre' => 'VIDA COLECTIVA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16929,7 +16929,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513025',
                 'nombre' => 'INCENDIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16956,7 +16956,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513030',
                 'nombre' => 'TERREMOTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -16983,7 +16983,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513035',
                 'nombre' => 'SUSTRACCION Y HURTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17010,7 +17010,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17037,7 +17037,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17064,7 +17064,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17091,7 +17091,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17118,7 +17118,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513060',
                 'nombre' => 'RESPONSABILIDAD CIVIL Y EXTRACONTRACTUAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17145,7 +17145,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513065',
                 'nombre' => 'VUELO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17172,7 +17172,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513070',
                 'nombre' => 'ROTURA DE MAQUINARIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17199,7 +17199,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513075',
                 'nombre' => 'OBLIGATORIO ACCIDENTE DE TRANSITO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17226,7 +17226,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513080',
                 'nombre' => 'LUCRO CESANTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17253,7 +17253,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17280,7 +17280,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17307,7 +17307,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5135',
                 'nombre' => 'SERVICIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17334,7 +17334,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513505',
                 'nombre' => 'ASEO Y VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17361,7 +17361,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513510',
                 'nombre' => 'TEMPORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17388,7 +17388,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513515',
                 'nombre' => 'ASISTENCIA TECNICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17415,7 +17415,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513520',
                 'nombre' => 'PROCESAMIENTO ELECTRONICO DE DATOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17442,7 +17442,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513525',
                 'nombre' => 'ACUEDUCTO Y ALCANTARILLADO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17469,7 +17469,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513530',
                 'nombre' => 'ENERGIA ELECTRICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17496,7 +17496,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513535',
                 'nombre' => 'TELEFONO E INERNET',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17523,7 +17523,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513540',
                 'nombre' => 'CORREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17550,7 +17550,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513545',
                 'nombre' => 'FAX Y TELEX',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17577,7 +17577,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513550',
                 'nombre' => 'TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17604,7 +17604,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513555',
                 'nombre' => 'GAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17631,7 +17631,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513595',
                 'nombre' => 'SERVICIOS ARTISTICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17658,7 +17658,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5140',
                 'nombre' => 'GASTOS LEGALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17685,7 +17685,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514005',
                 'nombre' => 'NOTARIALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17712,7 +17712,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514010',
                 'nombre' => 'REGISTRO MERCANTIL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17739,7 +17739,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514015',
                 'nombre' => 'TRAMITES Y LICENCIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17766,7 +17766,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514020',
                 'nombre' => 'ADUANEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17793,7 +17793,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514025',
                 'nombre' => 'CONSULARES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17820,7 +17820,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17847,7 +17847,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17874,7 +17874,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5145',
                 'nombre' => 'MANTENIMIENTO Y REPARACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17901,7 +17901,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514505',
                 'nombre' => 'TERRENOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17928,7 +17928,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514510',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17955,7 +17955,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514515',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -17982,7 +17982,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514520',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18009,7 +18009,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514525',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18036,7 +18036,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514530',
                 'nombre' => 'EQUIPO MEDICO-CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18063,7 +18063,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514535',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18090,7 +18090,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514540',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18117,7 +18117,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514545',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18144,7 +18144,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514550',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18171,7 +18171,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514555',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18198,7 +18198,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514560',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18225,7 +18225,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514565',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18252,7 +18252,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514570',
                 'nombre' => 'VIAS DE COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18279,7 +18279,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '514599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18306,7 +18306,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5150',
                 'nombre' => 'ADECUACION E INSTALACION',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18333,7 +18333,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515005',
                 'nombre' => 'INSTALACIONES ELECTRICAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18360,7 +18360,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515010',
                 'nombre' => 'ARREGLOS ORNAMENTALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18387,7 +18387,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515015',
                 'nombre' => 'REPARACIONES LOCATIVAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18414,7 +18414,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18441,7 +18441,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18468,7 +18468,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5155',
                 'nombre' => 'GASTOS DE VIAJE',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18495,7 +18495,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515505',
                 'nombre' => 'ALOJAMIENTO Y MANUTENCION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18522,7 +18522,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515510',
                 'nombre' => 'PASAJES FLUVIALES Y/O MARITIMOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18549,7 +18549,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515515',
                 'nombre' => 'PASAJES AEREOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18576,7 +18576,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515520',
                 'nombre' => 'PASAJES TERRESTRES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18603,7 +18603,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515525',
                 'nombre' => 'PASAJES FERREOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18630,7 +18630,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18657,7 +18657,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '515599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18684,7 +18684,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5160',
                 'nombre' => 'DEPRECIACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18711,7 +18711,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516005',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18738,7 +18738,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516010',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18765,7 +18765,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516015',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18792,7 +18792,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516020',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18819,7 +18819,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516025',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18846,7 +18846,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516030',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18873,7 +18873,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516035',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18900,7 +18900,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516040',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18927,7 +18927,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516045',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18954,7 +18954,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516050',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -18981,7 +18981,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516055',
                 'nombre' => 'ACUEDUCTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19008,7 +19008,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516060',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19035,7 +19035,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19062,7 +19062,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5165',
                 'nombre' => 'AMORTIZACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19089,7 +19089,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516505',
                 'nombre' => 'VIAS DE COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19116,7 +19116,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516510',
                 'nombre' => 'INTANGIBLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19143,7 +19143,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516515',
                 'nombre' => 'CARGOS DIFERIDOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19170,7 +19170,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516595',
                 'nombre' => 'OTRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19197,7 +19197,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '516599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19224,7 +19224,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5195',
                 'nombre' => 'DIVERSOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19251,7 +19251,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519505',
                 'nombre' => 'COMISIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19278,7 +19278,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519510',
                 'nombre' => 'LIBROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19305,7 +19305,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519515',
                 'nombre' => 'MUSICA AMBIENTAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19332,7 +19332,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519520',
                 'nombre' => 'GASTOS DE REPRESENTACION Y RELACIONES PUBLICAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19359,7 +19359,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519525',
                 'nombre' => 'ELEMENTOS DE ASEO Y CAFETERIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19386,7 +19386,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519530',
                 'nombre' => 'UTILES Y PAPELERIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19413,7 +19413,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519535',
                 'nombre' => 'COMBUSTIBLES Y LUBRICANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19440,7 +19440,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519540',
                 'nombre' => 'ENVASES Y EMPAQUES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19467,7 +19467,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519545',
                 'nombre' => 'TAXIS Y BUSES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19494,7 +19494,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519550',
                 'nombre' => 'ESTAMPILLAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19521,7 +19521,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519555',
                 'nombre' => 'MICROFILMACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19548,7 +19548,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519560',
                 'nombre' => 'CASINO Y RESTAURANTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19575,7 +19575,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519565',
                 'nombre' => 'PARQUEADEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19602,7 +19602,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519570',
                 'nombre' => 'INDEMNIZACION POR DAA`OS A TERCEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19629,7 +19629,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519575',
                 'nombre' => 'POLVORA Y SIMILARES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19656,7 +19656,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19683,7 +19683,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19710,7 +19710,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5199',
                 'nombre' => 'PROVISIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19737,7 +19737,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519905',
                 'nombre' => 'INVERSIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19764,7 +19764,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519910',
                 'nombre' => 'DEUDORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19791,7 +19791,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519915',
                 'nombre' => 'PROPIEDADES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19818,7 +19818,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519995',
                 'nombre' => 'OTROS ACTIVOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19845,7 +19845,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '519999',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19872,7 +19872,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '52',
                 'nombre' => 'OPERACIONALES DE VENTAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19899,7 +19899,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5205',
                 'nombre' => 'GASTOS DE PERSONAL',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19926,7 +19926,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520503',
                 'nombre' => 'SALARIO INTEGRAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19953,7 +19953,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520506',
                 'nombre' => 'SUELDOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -19980,7 +19980,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520512',
                 'nombre' => 'JORNALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20007,7 +20007,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520515',
                 'nombre' => 'HORAS EXTRAS Y RECARGOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20034,7 +20034,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520518',
                 'nombre' => 'COMISIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20061,7 +20061,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520521',
                 'nombre' => 'VIATICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20088,7 +20088,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520524',
                 'nombre' => 'INCAPACIDADES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20115,7 +20115,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520527',
                 'nombre' => 'AUXILIO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20142,7 +20142,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520530',
                 'nombre' => 'CESANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20169,7 +20169,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520533',
                 'nombre' => 'INTERESES SOBRE CESANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20196,7 +20196,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520536',
                 'nombre' => 'PRIMA DE SERVICIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20223,7 +20223,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520539',
                 'nombre' => 'VACACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20250,7 +20250,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520542',
                 'nombre' => 'PRIMAS EXTRALEGALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20277,7 +20277,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520545',
                 'nombre' => 'AUXILIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20304,7 +20304,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520548',
                 'nombre' => 'BONIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20331,7 +20331,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520551',
                 'nombre' => 'DOTACION Y SUMINISTRO A TRABAJADORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20358,7 +20358,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520554',
                 'nombre' => 'SEGUROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20385,7 +20385,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520557',
                 'nombre' => 'CUOTAS PARTES PENSIONES DE JUBILACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20412,7 +20412,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520558',
                 'nombre' => 'AMORTIZACION CALCULO ACTUARIAL PENSIONES DE JUBILACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20439,7 +20439,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520559',
                 'nombre' => 'PENSIONES DE JUBILACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20466,7 +20466,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520560',
                 'nombre' => 'INDEMNIZACIONES LABORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20493,7 +20493,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520563',
                 'nombre' => 'CAPACITACION AL PERSONAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20520,7 +20520,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520566',
                 'nombre' => 'GASTOS DEPORTIVOS Y DE RECREACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20547,7 +20547,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520569',
                 'nombre' => 'APORTES AL I.S.S',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20574,7 +20574,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520572',
                 'nombre' => 'APORTES CAJAS DE COMPENSACION FAMILIAR',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20601,7 +20601,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520575',
                 'nombre' => 'APORTES I.C.B.F.',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20628,7 +20628,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520578',
                 'nombre' => 'SENA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20655,7 +20655,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520581',
                 'nombre' => 'APORTES SINDICALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20682,7 +20682,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520584',
                 'nombre' => 'GASTOS MEDICOS Y DROGAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20709,7 +20709,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20736,7 +20736,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '520599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20763,7 +20763,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5210',
                 'nombre' => 'HONORARIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20790,7 +20790,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521005',
                 'nombre' => 'JUNTA DIRECTIVA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20817,7 +20817,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521010',
                 'nombre' => 'REVISORIA FISCAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20844,7 +20844,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521015',
                 'nombre' => 'AUDITORIA EXTERNA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20871,7 +20871,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521020',
                 'nombre' => 'AVALUOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20898,7 +20898,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521025',
                 'nombre' => 'ASESORIA JURIDICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20925,7 +20925,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521030',
                 'nombre' => 'ASESORIA FINANCIERA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20952,7 +20952,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521035',
                 'nombre' => 'ASESORIA TECNICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -20979,7 +20979,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21006,7 +21006,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21033,7 +21033,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5215',
                 'nombre' => 'IMPUESTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21060,7 +21060,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521505',
                 'nombre' => 'INDUSTRIA Y COMERCIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21087,7 +21087,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521510',
                 'nombre' => 'DE TIMBRES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21114,7 +21114,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521515',
                 'nombre' => 'A LA PROPIEDAD RAIZ',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21141,7 +21141,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521520',
                 'nombre' => 'DERECHOS SOBRE INSTRUMENTOS PUBLICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21168,7 +21168,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521525',
                 'nombre' => 'DE VALORIZACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21195,7 +21195,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521530',
                 'nombre' => 'DE TURISMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21222,7 +21222,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521535',
                 'nombre' => 'TASA POR UTILIZACION DE PUERTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21249,7 +21249,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521540',
                 'nombre' => 'DE VEHICULOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21276,7 +21276,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521545',
                 'nombre' => 'DE ESPECTACULOS PUBLICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21303,7 +21303,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521550',
                 'nombre' => 'CUOTAS DE FOMENTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21330,7 +21330,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521555',
                 'nombre' => 'LICORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21357,7 +21357,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521560',
                 'nombre' => 'CERVEZAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21384,7 +21384,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521565',
                 'nombre' => 'CIGARRILLOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21411,7 +21411,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521570',
                 'nombre' => 'IVA DESCONTABLE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21438,7 +21438,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21465,7 +21465,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '521599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21492,7 +21492,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5220',
                 'nombre' => 'ARRENDAMIENTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21519,7 +21519,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522005',
                 'nombre' => 'TERRENOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21546,7 +21546,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522010',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21573,7 +21573,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522015',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21600,7 +21600,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522020',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21627,7 +21627,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522025',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21654,7 +21654,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522030',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21681,7 +21681,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522035',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21708,7 +21708,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21735,7 +21735,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21762,7 +21762,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21789,7 +21789,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21816,7 +21816,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522060',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21843,7 +21843,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522065',
                 'nombre' => 'AERODROMOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21870,7 +21870,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522070',
                 'nombre' => 'SEMOVIENTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21897,7 +21897,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21924,7 +21924,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21951,7 +21951,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5225',
                 'nombre' => 'CONTRIBUCIONES Y AFILIACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -21978,7 +21978,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522505',
                 'nombre' => 'CONTRIBUCIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22005,7 +22005,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522510',
                 'nombre' => 'AFILIACIONES Y SOSTENIMIENTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22032,7 +22032,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '522599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22059,7 +22059,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5230',
                 'nombre' => 'SEGUROS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22086,7 +22086,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523005',
                 'nombre' => 'MANEJO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22113,7 +22113,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523010',
                 'nombre' => 'CUMPLIMIENTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22140,7 +22140,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523015',
                 'nombre' => 'CORRIENTE DEBIL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22167,7 +22167,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523020',
                 'nombre' => 'VIDA COLECTIVA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22194,7 +22194,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523025',
                 'nombre' => 'INCENDIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22221,7 +22221,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523030',
                 'nombre' => 'TERREMOTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22248,7 +22248,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523035',
                 'nombre' => 'SUSTRACCION Y HURTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22275,7 +22275,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22302,7 +22302,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22329,7 +22329,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22356,7 +22356,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22383,7 +22383,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523060',
                 'nombre' => 'RESPONSABILIDAD CIVIL Y EXTRACONTRACTUAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22410,7 +22410,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523065',
                 'nombre' => 'VUELO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22437,7 +22437,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523070',
                 'nombre' => 'ROTURA DE MAQUINARIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22464,7 +22464,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523075',
                 'nombre' => 'OBLIGATORIO ACCIDENTE DE TRANSITO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22491,7 +22491,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523080',
                 'nombre' => 'LUCRO CESANTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22518,7 +22518,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22545,7 +22545,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22572,7 +22572,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5235',
                 'nombre' => 'SERVICIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22599,7 +22599,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523505',
                 'nombre' => 'ASEO Y VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22626,7 +22626,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523510',
                 'nombre' => 'TEMPORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22653,7 +22653,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523515',
                 'nombre' => 'ASISTENCIA TECNICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22680,7 +22680,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523520',
                 'nombre' => 'PROCESAMIENTO ELECTRONICO DE DATOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22707,7 +22707,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523525',
                 'nombre' => 'ACUEDUCTO Y ALCANTARILLADO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22734,7 +22734,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523530',
                 'nombre' => 'ENERGIA ELECTRICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22761,7 +22761,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523535',
                 'nombre' => 'TELEFONO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22788,7 +22788,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523540',
                 'nombre' => 'CORREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22815,7 +22815,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523545',
                 'nombre' => 'FAX Y TELEX',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22842,7 +22842,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523550',
                 'nombre' => 'TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22869,7 +22869,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523555',
                 'nombre' => 'GAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22896,7 +22896,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523560',
                 'nombre' => 'PROPAGANDA Y PUBLICIDAD',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22923,7 +22923,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22950,7 +22950,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '523599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -22977,7 +22977,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5240',
                 'nombre' => 'GASTOS LEGALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23004,7 +23004,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524005',
                 'nombre' => 'NOTARIALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23031,7 +23031,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524010',
                 'nombre' => 'REGISTRO MERCANTIL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23058,7 +23058,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524015',
                 'nombre' => 'TRAMITES Y LICENCIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23085,7 +23085,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524020',
                 'nombre' => 'ADUANEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23112,7 +23112,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524025',
                 'nombre' => 'CONSULARES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23139,7 +23139,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23166,7 +23166,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23193,7 +23193,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5245',
                 'nombre' => 'MANTENIMIENTO Y REPARACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23220,7 +23220,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524505',
                 'nombre' => 'TERRENOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23247,7 +23247,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524510',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23274,7 +23274,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524515',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23301,7 +23301,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524520',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23328,7 +23328,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524525',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23355,7 +23355,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524530',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23382,7 +23382,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524535',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23409,7 +23409,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524540',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23436,7 +23436,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524545',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23463,7 +23463,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524550',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23490,7 +23490,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524555',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23517,7 +23517,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524560',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23544,7 +23544,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524565',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23571,7 +23571,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524570',
                 'nombre' => 'VIAS DE COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23598,7 +23598,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '524599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23625,7 +23625,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5250',
                 'nombre' => 'ADECUACION E INSTALACION',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23652,7 +23652,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525005',
                 'nombre' => 'INSTALACIONES ELECTRICAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23679,7 +23679,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525010',
                 'nombre' => 'ARREGLOS ORNAMENTALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23706,7 +23706,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525015',
                 'nombre' => 'REPARACIONES LOCATIVAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23733,7 +23733,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23760,7 +23760,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23787,7 +23787,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5255',
                 'nombre' => 'GASTOS DE VIAJE',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23814,7 +23814,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525505',
                 'nombre' => 'ALOJAMIENTO Y MANUTENCION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23841,7 +23841,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525510',
                 'nombre' => 'PASAJES FLUVIALES Y/O MARITIMOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23868,7 +23868,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525515',
                 'nombre' => 'PASAJES AEREOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23895,7 +23895,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525520',
                 'nombre' => 'PASAJES TERRESTRES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23922,7 +23922,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525525',
                 'nombre' => 'PASAJES FERREOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23949,7 +23949,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -23976,7 +23976,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '525599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24003,7 +24003,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5260',
                 'nombre' => 'DEPRECIACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24030,7 +24030,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526005',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24057,7 +24057,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526010',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24084,7 +24084,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526015',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24111,7 +24111,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526020',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24138,7 +24138,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526025',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24165,7 +24165,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526030',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24192,7 +24192,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526035',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24219,7 +24219,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526040',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24246,7 +24246,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526045',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24273,7 +24273,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526050',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24300,7 +24300,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526055',
                 'nombre' => 'ACUEDUCTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24327,7 +24327,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526060',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24354,7 +24354,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526065',
                 'nombre' => 'ENVASES Y EMPAQUES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24381,7 +24381,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24408,7 +24408,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5265',
                 'nombre' => 'AMORTIZACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24435,7 +24435,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526505',
                 'nombre' => 'VIAS DE COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24462,7 +24462,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526510',
                 'nombre' => 'INTANGIBLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24489,7 +24489,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526515',
                 'nombre' => 'CARGOS DIFERIDOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24516,7 +24516,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526595',
                 'nombre' => 'OTRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24543,7 +24543,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '526599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24570,7 +24570,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5270',
                 'nombre' => 'FINANCIEROS - REAJUSTE DEL SISTEMA',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24597,7 +24597,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '527001',
                 'nombre' => 'FINANCIEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24624,7 +24624,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '527099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24651,7 +24651,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5295',
                 'nombre' => 'DIVERSOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24678,7 +24678,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529505',
                 'nombre' => 'COMISIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24705,7 +24705,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529510',
                 'nombre' => 'LIBROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24732,7 +24732,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529515',
                 'nombre' => 'MUSICA AMBIENTAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24759,7 +24759,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529520',
                 'nombre' => 'GASTOS DE REPRESENTACION Y RELACIONES PUBLICAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24786,7 +24786,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529525',
                 'nombre' => 'ELEMENTOS DE ASEO Y CAFETERIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24813,7 +24813,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529530',
                 'nombre' => 'UTILES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24840,7 +24840,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529535',
                 'nombre' => 'COMBUSTIBLES Y LUBRICANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24867,7 +24867,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529540',
                 'nombre' => 'ENVASES Y EMPAQUES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24894,7 +24894,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529545',
                 'nombre' => 'TAXIS Y BUSES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24921,7 +24921,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529550',
                 'nombre' => 'ESTAMPILLAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24948,7 +24948,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529555',
                 'nombre' => 'MICROFILMACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -24975,7 +24975,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529560',
                 'nombre' => 'CASINO Y RESTAURANTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25002,7 +25002,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529565',
                 'nombre' => 'PARQUEADEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25029,7 +25029,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529570',
                 'nombre' => 'INDEMNIZACION POR DAA`OS A TERCEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25056,7 +25056,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529575',
                 'nombre' => 'POLVORA Y SIMILARES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25083,7 +25083,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25110,7 +25110,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25137,7 +25137,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5299',
                 'nombre' => 'PROVISIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25164,7 +25164,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529905',
                 'nombre' => 'INVERSIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25191,7 +25191,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529910',
                 'nombre' => 'DEUDORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25218,7 +25218,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529915',
                 'nombre' => 'INVENTARIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25245,7 +25245,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529920',
                 'nombre' => 'PROPIEDADES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25272,7 +25272,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529995',
                 'nombre' => 'OTROS ACTIVOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25299,7 +25299,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '529999',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25326,7 +25326,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '53',
                 'nombre' => 'GASTOS NO OPERACIONALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25353,7 +25353,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5305',
                 'nombre' => 'FINANCIEROS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25380,7 +25380,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '530505',
                 'nombre' => 'GASTOS BANCARIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25407,7 +25407,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '530510',
                 'nombre' => 'REAJUSTE MONETARIO - UPAC',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25434,7 +25434,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '530515',
                 'nombre' => 'COMISIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25461,7 +25461,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '530520',
                 'nombre' => 'INTERESES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25488,7 +25488,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '530525',
                 'nombre' => 'DIFERENCIA EN CAMBIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25515,7 +25515,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '530530',
                 'nombre' => 'GASTOS EN NEGOCIACION CERTIFICADOS DE CAMBIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25542,7 +25542,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '530535',
                 'nombre' => 'DESCUENTOS COMERCIALES CONDICIONADOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25569,7 +25569,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '530540',
                 'nombre' => 'GASTOS MANEJO Y EMISION DE BONOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25596,7 +25596,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '530545',
                 'nombre' => 'PRIMA AMORTIZADA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25623,7 +25623,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '530595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25650,7 +25650,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '530599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25677,7 +25677,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5310',
                 'nombre' => 'PERDIDA EN VENTA Y RETIRO DE BIENES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25704,7 +25704,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531005',
                 'nombre' => 'VENTA DE INVERSIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25731,7 +25731,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531010',
                 'nombre' => 'VENTA DE CARTERA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25758,7 +25758,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531015',
                 'nombre' => 'VENTA DE PROPIEDADES PLANTA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25785,7 +25785,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531020',
                 'nombre' => 'VENTA DE INTANGIBLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25812,7 +25812,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531025',
                 'nombre' => 'VENTA DE OTROS ACTIVOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25839,7 +25839,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531030',
                 'nombre' => 'RETIRO DE PROPIEDADES PLANTA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25866,7 +25866,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531035',
                 'nombre' => 'RETIRO DE OTROS ACTIVOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25893,7 +25893,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531040',
                 'nombre' => 'PERDIDAS POR SINIESTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25920,7 +25920,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25947,7 +25947,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -25974,7 +25974,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5315',
                 'nombre' => 'GASTOS EXTRAORDINARIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26001,7 +26001,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531505',
                 'nombre' => 'COSTAS Y PROCESOS JUDICIALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26028,7 +26028,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531510',
                 'nombre' => 'ACTIVIDADES CULTURALES Y CIVICAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26055,7 +26055,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531515',
                 'nombre' => 'COSTOS Y GASTOS DE EJERCICIOS ANTERIORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26082,7 +26082,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531520',
                 'nombre' => 'IMPUESTOS ASUMIDOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26109,7 +26109,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26136,7 +26136,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26163,7 +26163,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5395',
                 'nombre' => 'GASTOS DIVERSOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26190,7 +26190,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '539505',
                 'nombre' => 'DEMANDAS LABORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26217,7 +26217,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '539510',
                 'nombre' => 'DEMANDAS POR INCUMPLIMIENTO DE CONTRATOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26244,7 +26244,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '539515',
                 'nombre' => 'INDEMNIZACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26271,7 +26271,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '539520',
                 'nombre' => 'MULTAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26298,7 +26298,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '539525',
                 'nombre' => 'DONACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26325,7 +26325,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '539530',
                 'nombre' => 'CONSTITUCION DE GARANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26352,7 +26352,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '539535',
                 'nombre' => 'AMORTIZACION DE BIENES ENTREGADOS EN COMODATO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26379,7 +26379,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '539595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26406,7 +26406,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '539599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26433,7 +26433,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '54',
                 'nombre' => 'IMPUESTO DE RENTA Y COMPLEMENTARIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26460,7 +26460,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5405',
                 'nombre' => 'IMPUESTO DE RENTA Y COMPLEMENTARIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26487,7 +26487,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '540505',
                 'nombre' => 'IMPUESTO DE RENTA Y COMPLEMENTARIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26514,7 +26514,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '59',
                 'nombre' => 'GANANCIAS Y PERDIDAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26541,7 +26541,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '5905',
                 'nombre' => 'GANANCIAS Y PERDIDAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26568,7 +26568,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '590505',
                 'nombre' => 'GANANCIAS Y PERDIDAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26595,7 +26595,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '6',
                 'nombre' => 'COSTOS DE VENTAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26622,7 +26622,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '61',
                 'nombre' => 'COSTO DE VENTAS Y DE PRESTACION DE SERVICIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26649,7 +26649,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '6135',
                 'nombre' => 'COMERCIO AL POR MAYOR Y AL POR MENOR',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26676,7 +26676,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '62',
                 'nombre' => 'COMPRAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26703,7 +26703,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '6205',
                 'nombre' => 'DE MERCANCIAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26730,7 +26730,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '620501',
                 'nombre' => 'DE MERCANCIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26757,7 +26757,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '620599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26784,7 +26784,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '6210',
                 'nombre' => 'DE MATERIAS PRIMAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26811,7 +26811,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '621001',
                 'nombre' => 'DE MATERIAS PRIMAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26838,7 +26838,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '621099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26865,7 +26865,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '6215',
                 'nombre' => 'DE MATERIALES INDIRECTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26892,7 +26892,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '621599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26919,7 +26919,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '6220',
                 'nombre' => 'COMPRA DE ENERGIA',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26946,7 +26946,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '622099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -26973,7 +26973,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '6225',
             'nombre' => 'DEVOLUCIONES REBAJAS Y DESCUENTOS EN COMPRAS (CR)',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27000,7 +27000,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '622599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27029,7 +27029,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7',
                 'nombre' => 'COSTOS DE PRODUCCION O DE OPERACION',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27056,7 +27056,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '71',
                 'nombre' => 'MATERIA PRIMA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27083,7 +27083,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '72',
                 'nombre' => 'MANO DE OBRA DIRECTA',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27110,7 +27110,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7205',
                 'nombre' => 'GASTOS DE PERSONAL',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27137,7 +27137,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720503',
                 'nombre' => 'SALARIO INTEGRAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27164,7 +27164,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720506',
                 'nombre' => 'SUELDOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27191,7 +27191,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720722',
                 'nombre' => 'JORNALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27218,7 +27218,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720725',
                 'nombre' => 'HORAS EXTRAS Y RECARGOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27245,7 +27245,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720728',
                 'nombre' => 'COMISIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27272,7 +27272,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720521',
                 'nombre' => 'VIATICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27299,7 +27299,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720524',
                 'nombre' => 'INCAPACIDADES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27326,7 +27326,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720527',
                 'nombre' => 'AUXILIO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27353,7 +27353,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720530',
                 'nombre' => 'CESANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27380,7 +27380,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720533',
                 'nombre' => 'INTERESES SOBRE CESANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27407,7 +27407,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720536',
                 'nombre' => 'PRIMA DE SERVICIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27434,7 +27434,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720539',
                 'nombre' => 'VACACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27461,7 +27461,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720542',
                 'nombre' => 'PRIMAS EXTRALEGALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27488,7 +27488,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720545',
                 'nombre' => 'AUXILIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27515,7 +27515,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720548',
                 'nombre' => 'BONIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27542,7 +27542,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720551',
                 'nombre' => 'DOTACION Y SUMINISTRO A TRABAJADORES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27569,7 +27569,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720554',
                 'nombre' => 'SEGUROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27596,7 +27596,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720557',
                 'nombre' => 'CUOTAS PARTES PENSIONES DE JUBILACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27623,7 +27623,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720558',
                 'nombre' => 'AMORTIZACION CALCULO ACTUARIAL PENSIONES DE JUBILACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27650,7 +27650,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720559',
                 'nombre' => 'PENSIONES DE JUBILACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27677,7 +27677,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720560',
                 'nombre' => 'INDEMNIZACIONES LABORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27704,7 +27704,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720563',
                 'nombre' => 'CAPACITACION AL PERSONAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27731,7 +27731,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720566',
                 'nombre' => 'GASTOS DEPORTIVOS Y DE RECREACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27758,7 +27758,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720569',
                 'nombre' => 'APORTES AL I.S.S',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27785,7 +27785,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720572',
                 'nombre' => 'APORTES CAJAS DE COMPENSACION FAMILIAR',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27812,7 +27812,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720575',
                 'nombre' => 'APORTES I.C.B.F.',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27839,7 +27839,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720578',
                 'nombre' => 'SENA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27866,7 +27866,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720581',
                 'nombre' => 'APORTES SINDICALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27893,7 +27893,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720584',
                 'nombre' => 'GASTOS MEDICOS Y DROGAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27920,7 +27920,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '720595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27947,7 +27947,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '73',
                 'nombre' => 'COSTOS INDIRECTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -27974,7 +27974,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7310',
                 'nombre' => 'HONORARIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28001,7 +28001,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731005',
                 'nombre' => 'JUNTA DIRECTIVA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28028,7 +28028,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731010',
                 'nombre' => 'REVISORIA FISCAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28055,7 +28055,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731015',
                 'nombre' => 'AUDITORIA EXTERNA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28082,7 +28082,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731020',
                 'nombre' => 'AVALUOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28109,7 +28109,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731025',
                 'nombre' => 'ASESORIA JURIDICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28136,7 +28136,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731030',
                 'nombre' => 'ASESORIA FINANCIERA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28163,7 +28163,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731035',
                 'nombre' => 'ASESORIA TECNICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28190,7 +28190,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28217,7 +28217,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28244,7 +28244,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7315',
                 'nombre' => 'IMPUESTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28271,7 +28271,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731505',
                 'nombre' => 'INDUSTRIA Y COMERCIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28298,7 +28298,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731530',
                 'nombre' => 'DE TURISMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28325,7 +28325,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731535',
                 'nombre' => 'TASA POR UTILIZACION DE PUERTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28352,7 +28352,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731520',
                 'nombre' => 'DERECHOS SOBRE INSTRUMENTOS PUBLICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28379,7 +28379,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731525',
                 'nombre' => 'DE VALORIZACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28406,7 +28406,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731540',
                 'nombre' => 'DE VEHICULOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28433,7 +28433,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731545',
                 'nombre' => 'DE ESPECTACULOS PUBLICOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28460,7 +28460,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731550',
                 'nombre' => 'CUOTAS DE FOMENTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28487,7 +28487,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731570',
                 'nombre' => 'IVA DESCONTABLE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28514,7 +28514,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28541,7 +28541,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '731599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28568,7 +28568,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7320',
                 'nombre' => 'ARRENDAMIENTOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28595,7 +28595,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732005',
                 'nombre' => 'TERRENOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28622,7 +28622,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732010',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28649,7 +28649,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732015',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28676,7 +28676,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732020',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28703,7 +28703,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732025',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28730,7 +28730,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732030',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28757,7 +28757,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732035',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28784,7 +28784,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28811,7 +28811,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28838,7 +28838,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28865,7 +28865,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28892,7 +28892,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732060',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28919,7 +28919,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732065',
                 'nombre' => 'AERODROMOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28946,7 +28946,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732070',
                 'nombre' => 'SEMOVIENTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -28973,7 +28973,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29000,7 +29000,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29027,7 +29027,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7325',
                 'nombre' => 'CONTRIBUCIONES Y AFILIACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29054,7 +29054,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732505',
                 'nombre' => 'CONTRIBUCIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29081,7 +29081,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732730',
                 'nombre' => 'AFILIACIONES Y SOSTENIMIENTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29108,7 +29108,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '732599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29135,7 +29135,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7330',
                 'nombre' => 'SEGUROS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29162,7 +29162,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733005',
                 'nombre' => 'MANEJO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29189,7 +29189,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733010',
                 'nombre' => 'CUMPLIMIENTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29216,7 +29216,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733015',
                 'nombre' => 'CORRIENTE DEBIL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29243,7 +29243,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733020',
                 'nombre' => 'VIDA COLECTIVA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29270,7 +29270,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733025',
                 'nombre' => 'INCENDIO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29297,7 +29297,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733030',
                 'nombre' => 'TERREMOTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29324,7 +29324,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733035',
                 'nombre' => 'SUSTRACCION Y HURTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29351,7 +29351,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29378,7 +29378,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29405,7 +29405,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29432,7 +29432,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29459,7 +29459,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733060',
                 'nombre' => 'RESPONSABILIDAD CIVIL Y EXTRACONTRACTUAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29486,7 +29486,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733065',
                 'nombre' => 'VUELO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29513,7 +29513,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733070',
                 'nombre' => 'ROTURA DE MAQUINARIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29540,7 +29540,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733075',
                 'nombre' => 'OBLIGATORIO ACCIDENTE DE TRANSITO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29567,7 +29567,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733080',
                 'nombre' => 'LUCRO CESANTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29594,7 +29594,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29621,7 +29621,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29648,7 +29648,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7335',
                 'nombre' => 'SERVICIOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29675,7 +29675,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733505',
                 'nombre' => 'ASEO Y VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29702,7 +29702,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733730',
                 'nombre' => 'TEMPORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29729,7 +29729,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733735',
                 'nombre' => 'ASISTENCIA TECNICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29756,7 +29756,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733520',
                 'nombre' => 'PROCESAMIENTO ELECTRONICO DE DATOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29783,7 +29783,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733525',
                 'nombre' => 'ACUEDUCTO Y ALCANTARILLADO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29810,7 +29810,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733530',
                 'nombre' => 'ENERGIA ELECTRICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29837,7 +29837,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733535',
                 'nombre' => 'TELEFONO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29864,7 +29864,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733540',
                 'nombre' => 'CORREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29891,7 +29891,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733545',
                 'nombre' => 'FAX Y TELEX',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29918,7 +29918,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733550',
                 'nombre' => 'TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29945,7 +29945,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733555',
                 'nombre' => 'GAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29972,7 +29972,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -29999,7 +29999,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '733599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30026,7 +30026,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7340',
                 'nombre' => 'GASTOS LEGALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30053,7 +30053,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734005',
                 'nombre' => 'NOTARIALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30080,7 +30080,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734010',
                 'nombre' => 'REGISTRO MERCANTIL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30107,7 +30107,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734015',
                 'nombre' => 'TRAMITES Y LICENCIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30134,7 +30134,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734020',
                 'nombre' => 'ADUANEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30161,7 +30161,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734025',
                 'nombre' => 'CONSULARES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30188,7 +30188,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30215,7 +30215,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30242,7 +30242,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7345',
                 'nombre' => 'MANTENIMIENTO Y REPARACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30269,7 +30269,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734505',
                 'nombre' => 'TERRENOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30296,7 +30296,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734730',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30323,7 +30323,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734735',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30350,7 +30350,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734520',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30377,7 +30377,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734525',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30404,7 +30404,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734530',
                 'nombre' => 'EQUIPO MEDICO-CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30431,7 +30431,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734535',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30458,7 +30458,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734540',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30485,7 +30485,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734545',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30512,7 +30512,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734550',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30539,7 +30539,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734555',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30566,7 +30566,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734560',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30593,7 +30593,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734565',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30620,7 +30620,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734570',
                 'nombre' => 'VIAS DE COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30647,7 +30647,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '734599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30674,7 +30674,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7350',
                 'nombre' => 'ADECUACION E INSTALACION',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30701,7 +30701,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735005',
                 'nombre' => 'INSTALACIONES ELECTRICAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30728,7 +30728,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735010',
                 'nombre' => 'ARREGLOS ORNAMENTALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30755,7 +30755,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735015',
                 'nombre' => 'REPARACIONES LOCATIVAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30782,7 +30782,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735095',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30809,7 +30809,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30836,7 +30836,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7355',
                 'nombre' => 'GASTOS DE VIAJE',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30863,7 +30863,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735505',
                 'nombre' => 'ALOJAMIENTO Y MANUTENCION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30890,7 +30890,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735730',
                 'nombre' => 'PASAJES FLUVIALES Y/O MARITIMOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30917,7 +30917,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735735',
                 'nombre' => 'PASAJES AEREOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30944,7 +30944,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735520',
                 'nombre' => 'PASAJES TERRESTRES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30971,7 +30971,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735525',
                 'nombre' => 'PASAJES FERREOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -30998,7 +30998,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31025,7 +31025,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '735599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31052,7 +31052,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7360',
                 'nombre' => 'DEPRECIACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31079,7 +31079,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736005',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31106,7 +31106,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736010',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31133,7 +31133,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736015',
                 'nombre' => 'EQUIPO DE OFICINA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31160,7 +31160,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736020',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31187,7 +31187,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736025',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31214,7 +31214,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736030',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31241,7 +31241,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736035',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31268,7 +31268,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736040',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31295,7 +31295,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736045',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31322,7 +31322,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736050',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31349,7 +31349,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736055',
                 'nombre' => 'ACUEDUCTOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31376,7 +31376,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736060',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31403,7 +31403,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736099',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31430,7 +31430,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7365',
                 'nombre' => 'AMORTIZACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31457,7 +31457,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736505',
                 'nombre' => 'VIAS DE COMUNICACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31484,7 +31484,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736730',
                 'nombre' => 'INTANGIBLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31511,7 +31511,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736735',
                 'nombre' => 'CARGOS DIFERIDOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31538,7 +31538,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736595',
                 'nombre' => 'OTRAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31565,7 +31565,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '736599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31592,7 +31592,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7395',
                 'nombre' => 'DIVERSOS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31619,7 +31619,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739505',
                 'nombre' => 'COMISIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31646,7 +31646,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739730',
                 'nombre' => 'LIBROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31673,7 +31673,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739735',
                 'nombre' => 'MUSICA AMBIENTAL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31700,7 +31700,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739520',
                 'nombre' => 'GASTOS DE REPRESENTACION Y RELACIONES PUBLICAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31727,7 +31727,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739525',
                 'nombre' => 'ELEMENTOS DE ASEO Y CAFETERIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31754,7 +31754,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739530',
                 'nombre' => 'UTILES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31781,7 +31781,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739535',
                 'nombre' => 'COMBUSTIBLES Y LUBRICANTES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31808,7 +31808,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739540',
                 'nombre' => 'ENVASES Y EMPAQUES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31835,7 +31835,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739545',
                 'nombre' => 'TAXIS Y BUSES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31862,7 +31862,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739550',
                 'nombre' => 'ESTAMPILLAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31889,7 +31889,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739555',
                 'nombre' => 'MICROFILMACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31916,7 +31916,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739560',
                 'nombre' => 'CASINO Y RESTAURANTE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31943,7 +31943,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739565',
                 'nombre' => 'PARQUEADEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31970,7 +31970,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739570',
                 'nombre' => 'INDEMNIZACION POR DAA`OS A TERCEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -31997,7 +31997,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739575',
                 'nombre' => 'POLVORA Y SIMILARES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32024,7 +32024,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739595',
                 'nombre' => 'OTROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32051,7 +32051,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '739599',
                 'nombre' => 'AJUSTES POR INFLACION',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32078,7 +32078,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '74',
                 'nombre' => 'CONTRATOS DE SERVICIOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32105,7 +32105,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7207',
                 'nombre' => 'JORNALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32132,7 +32132,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7327',
                 'nombre' => 'AFILIACIONES Y SOSTENIMIENTO',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32159,7 +32159,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7337',
                 'nombre' => 'TEMPORALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32186,7 +32186,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7347',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32213,7 +32213,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7357',
                 'nombre' => 'PASAJES FLUVIALES Y/O MARITIMOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32240,7 +32240,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7367',
                 'nombre' => 'INTANGIBLES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32267,7 +32267,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '7397',
                 'nombre' => 'LIBROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32294,7 +32294,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '135518',
                 'nombre' => 'RETENCION ICA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -32321,7 +32321,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '321505',
                 'nombre' => 'CREDITO MERCANTIL',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32348,7 +32348,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '531521',
                 'nombre' => 'GRAVAMEN MOVIMIENTOS FINANCIEROS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32375,7 +32375,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510570',
                 'nombre' => 'APORTES A FONDOS DE PENSIONES Y/O CESANTIAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32402,7 +32402,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '510568',
                 'nombre' => 'APORTES A.R.L.',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32429,7 +32429,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '513560',
                 'nombre' => 'PUBLICIDAD Y PROPAGANDA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32456,7 +32456,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23652508',
                 'nombre' => 'SERVICIO DE LICENCIAMIENTO DE SOFTWARE',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32483,7 +32483,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '23654003',
                 'nombre' => 'COMPRAS 2.5%',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32510,7 +32510,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '236598',
                 'nombre' => 'RETEFUENTE POR PAGAR',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32537,7 +32537,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '4135',
                 'nombre' => 'COMERCIO AL POR MAYOR Y MENOR',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32564,7 +32564,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '11100501',
                 'nombre' => 'BANCOLOMBIA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32591,7 +32591,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '413501',
                 'nombre' => 'INGRESOS GENERALES',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32618,7 +32618,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '13551520',
                 'nombre' => 'RETENCIÓN VENTAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
                 'exige_concepto' => 1,
@@ -32645,7 +32645,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '4175',
                 'nombre' => 'DEVOLUCIÓN VENTAS',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32672,7 +32672,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '417501',
                 'nombre' => 'DEVOLUCIÓN VENTAS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32699,7 +32699,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '42',
                 'nombre' => 'NO OPERACIONALES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32726,7 +32726,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '4250',
                 'nombre' => 'RECUPERACIONES',
                 'auxiliar' => 0,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32753,7 +32753,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '425030',
                 'nombre' => 'DESCUENTOS CONCEDIDOS',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,
@@ -32780,7 +32780,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'cuenta' => '613501',
                 'nombre' => 'COSTO DE MERCANCIA VENDIDA',
                 'auxiliar' => 1,
-                'pasarela' => 0,
+                
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
                 'exige_concepto' => 1,

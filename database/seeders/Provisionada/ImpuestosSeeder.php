@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Provisionada;
 
 use Illuminate\Database\Seeder;
 
-class ImpuestosTableSeeder extends Seeder
+class ImpuestosSeeder extends Seeder
 {
 
     /**
