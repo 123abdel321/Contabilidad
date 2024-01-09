@@ -359,7 +359,7 @@ class DocumentoGeneralController extends Controller
 			$primerIdNit = null;
 			$documentoGeneral = new Documento($request->get('id_comprobante'), $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
 
-			if ($request->get('editing_documento')) $documentoGeneral->setCreatedAt($facDocumento->created_at);
+			// if ($request->get('editing_documento')) $documentoGeneral->setCreatedAt($facDocumento->created_at);
 
 			foreach ($documento as $doc) {
 				// dd($doc);
