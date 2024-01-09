@@ -49,7 +49,7 @@ class BodegasController extends Controller
         $searchValue = $search_arr['value']; // Search value
 
         $bodegas = FacBodegas::orderBy($columnName,$columnSortOrder)
-            ->with('cecos')
+            ->with('cecos', 'cuenta_cartera')
             ->where('nombre', 'like', '%' .$searchValue . '%')
             ->orWhere('codigo', 'like', '%' .$searchValue . '%')
             ->select(
@@ -81,7 +81,7 @@ class BodegasController extends Controller
         $rules = [
             'codigo' => 'required|min:1|max:60',
             'nombre' => 'required|min:1|max:200',
-            'ubicacion' => 'required|min:1|max:200',
+            'ubicacion' => 'nullable|min:1|max:200',
             'id_centro_costos' => 'nullable|exists:sam.centro_costos,id',
             // 'id_responsable' => 'nullable|exists:sam.centro_costos,id',
         ];
@@ -100,12 +100,12 @@ class BodegasController extends Controller
         DB::connection('sam')->beginTransaction();
 
         try {
-
             $bodega = FacBodegas::create([
                 'codigo' => $request->get('codigo'),
                 'nombre' => $request->get('nombre'),
                 'ubicacion' => $request->get('ubicacion'),
                 'id_centro_costos' => $request->get('id_centro_costos'),
+                'id_cuenta_cartera' => $request->get('id_cuenta_cartera'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
@@ -113,7 +113,8 @@ class BodegasController extends Controller
             $bodega->save();
 
             $bodega->load([
-                'cecos'
+                'cecos',
+                'cuenta_cartera'
             ]);
 
             DB::connection('sam')->commit();
@@ -140,7 +141,7 @@ class BodegasController extends Controller
             'id' => 'required|exists:sam.fac_bodegas,id',
             'codigo' => 'required|min:1|max:60',
             'nombre' => 'required|min:1|max:200',
-            'ubicacion' => 'required|min:1|max:200',
+            'ubicacion' => 'nullable|min:1|max:200',
             'id_centro_costos' => 'nullable|exists:sam.centro_costos,id',
             // 'id_responsable' => 'nullable|exists:sam.centro_costos,id',
         ];
@@ -166,6 +167,7 @@ class BodegasController extends Controller
                     'nombre' => $request->get('nombre'),
                     'ubicacion' => $request->get('ubicacion'),
                     'id_centro_costos' => $request->get('id_centro_costos'),
+                    'id_cuenta_cartera' => $request->get('id_cuenta_cartera'),
                     'updated_by' => request()->user()->id,
                 ]);
             
@@ -232,8 +234,8 @@ class BodegasController extends Controller
         $bodegasResponsable = explode(",", $usuarioPermisos->ids_bodegas_responsable);
 
         $bodega = FacBodegas::select(
-            \DB::raw('*'),
-            \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+            DB::raw('*'),
+            DB::raw("CONCAT(codigo, ' - ', nombre) as text")
         );
 
         if ($request->get("q")) {

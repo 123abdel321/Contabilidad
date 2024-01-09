@@ -9,7 +9,7 @@ function ventasInit() {
     $('#fecha_manual_hasta_ventas').val(fechaDesde);
 
     var newLenguaje = lenguajeDatatable;
-    newLenguaje.sInfo = "Ventas del _START_ al _END_ de un total de _TOTAL_ "
+    newLenguaje.sInfo = "Ventas del _START_ al _END_ de un total de _TOTAL_ ";
     
     ventas_table = $('#VentasInformeTable').DataTable({
         pageLength: 20,
@@ -29,7 +29,7 @@ function ventasInit() {
         },
         'rowCallback': function(row, data, index){
             if (data.detalle == '') {
-                $('td', row).css('background-color', 'rgb(180 215 244)');
+                $('td', row).css('background-color', 'rgb(214 231 246)');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'black');
                 return;
@@ -66,6 +66,7 @@ function ventasInit() {
             {"data": "total_descuento", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "total_rete_fuente", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "total_factura", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "nombre_vendedor"},
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
@@ -212,7 +213,6 @@ function ventasInit() {
 
     $('#id_producto_ventas').select2({
         theme: 'bootstrap-5',
-        dropdownCssClass: 'custom-venta_producto',
         delay: 250,
         allowClear: true,
         language: {
@@ -256,7 +256,6 @@ $(document).on('click', '.imprimir-venta', function () {
 });
 
 $(document).on('click', '#generarVentas', function () {
-
     $("#generarVentas").hide();
     $("#generarVentasLoading").show();
     ventas_table.ajax.reload(function () {
@@ -286,3 +285,44 @@ $('input[type=radio][name=detallar_venta]').change(function() {
         $("#generarVentasLoading").hide();
     });
 });
+
+$(document).on('click', '#generarInformeZ', function () {
+    var mensajeError = '';
+    var errorCount = 0
+    
+    if (!$('#id_bodega_ventas').val()) {
+        errorCount++;
+        mensajeError+= errorCount+': La bogeda es requerida <br/>';
+    }
+
+    if (!$('#id_resolucion_ventas').val()) {
+        errorCount++;
+        mensajeError+= errorCount+': La resolución es requerida <br/>';
+    }
+
+    // if ($('#fecha_manual_desde_ventas').val() != $('#fecha_manual_hasta_ventas').val()) {
+    //     errorCount++;
+    //     mensajeError+= errorCount+': La fecha debe estar en el rango de un día <br/>';
+    // }
+
+    if (errorCount) {
+        agregarToast('warning', 'Informe Z', mensajeError, true);
+        return;
+    }
+
+    var url = base_web + 'ventas-print-informez';
+    $('#fecha_manual_desde_ventas').val() ? url+= '?fecha_desde='+$('#fecha_manual_desde_ventas').val() : null;
+    $('#fecha_manual_hasta_ventas').val() ? url+= '&fecha_hasta='+$('#fecha_manual_hasta_ventas').val() : null;
+    $('#factura_ventas').val() ? url+= '&factura='+$('#factura_ventas').val() : null;
+    $('#factura_ventas').val() ? url+= '&id_resolucion='+$('#factura_ventas').val() : null;
+    $('#id_bodega_ventas').val() ? url+= '&id_bodega='+$('#id_bodega_ventas').val() : null;
+    $('#id_resolucion_ventas').val() ? url+= '&id_resolucion='+$('#id_resolucion_ventas').val() : null;
+    $('#id_producto').val() ? url+= '&id_producto='+$('#id_producto').val() : null;
+    $('#id_usuario').val() ? url+= '&id_usuario='+$('#id_usuario').val() : null;
+    url+= $("input[type='radio']#detallar_venta1").is(':checked') ? '&detallar_venta=1' : '&detallar_venta=0';
+
+    window.open(url,'_blank');
+});
+
+
+

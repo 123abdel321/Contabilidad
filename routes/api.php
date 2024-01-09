@@ -6,12 +6,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstaladorController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
+use App\Http\Controllers\Tablas\ExogenaController;
 use App\Http\Controllers\Tablas\BodegasController;
 use App\Http\Controllers\Tablas\FamiliasController;
 use App\Http\Controllers\Tablas\VariantesController;
 use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\ImpuestosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
+use App\Http\Controllers\Tablas\VendedoresController;
 use App\Http\Controllers\Tablas\FormasPagoController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
@@ -204,6 +206,21 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::delete('cargue-descargue', 'delete');
             Route::get('cargue-descargue/combo', 'comboCargueDescargue');
         });
+        //VENDEDORES
+        Route::controller(VendedoresController::class)->group(function () {
+            Route::get('vendedores', 'generate');
+            Route::post('vendedores', 'create');
+            Route::put('vendedores', 'update');
+            Route::delete('vendedores', 'delete');
+            Route::get('vendedores/combo', 'comboVendedores');
+        });
+        //EXOGENA
+        Route::controller(ExogenaController::class)->group(function () {
+            Route::get('exogena/formato', 'comboFormato');
+            Route::get('exogena/columna', 'comboFormatoColumna');
+            Route::get('exogena/concepto', 'comboFormatoConcepto');
+        });
+        
         
         //CAPTURA GENERAL
         Route::controller(DocumentoGeneralController::class)->group(function () {
@@ -212,6 +229,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('documentos', 'anular');
             Route::post('documentos', 'create');
             Route::post('bulk-documentos', 'bulkDocumentos');
+            Route::post('bulk-documentos-delete', 'bulkDocumentosDelete');
             Route::get('documento-vacio', 'vacio');
         });
         //CAPTURA COMPRA

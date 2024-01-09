@@ -23,6 +23,7 @@ use App\Http\Controllers\Tablas\FamiliasController;
 use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\FormasPagoController;
+use App\Http\Controllers\Tablas\VendedoresController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
@@ -39,6 +40,10 @@ use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
 //IMPORTADORES
 use App\Http\Controllers\Importador\ProductoImportadorController;
+
+// use App\Models\Sistema\PlanCuentas;
+// use App\Models\Sistema\ConPlanCuentas;
+
 
 
 /*
@@ -63,6 +68,11 @@ use App\Http\Controllers\Importador\ProductoImportadorController;
 // });
 
 Route::get('/', function () {
+
+	// foreach ($dataCuentas as $cuenta) {
+	// 	dd($cuenta);
+	// }
+	// dd(count($dataCuentas));
 	return redirect('/home');
 });
 
@@ -83,7 +93,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 	//EMPRESA
 	Route::get('/seleccionar-empresa', [ApiController::class, 'index'])->name('seleccionar-empresa');
+	
+	// Route::get('migrar-cuentas/', function () {
 
+	// 	// foreach ($dataCuentas as $cuenta) {
+	// 	// 	dd($cuenta);
+	// 	// }
+	// 	// dd(count($dataCuentas));
+	// 	dd(ConPlanCuentas::first());
+	// 	return redirect('/home');
+	// });
 	//SISTEMA
 	Route::group(['middleware' => ['clientconnectionweb']], function () {
 		// >> INFORMES <<
@@ -109,6 +128,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/venta', [VentaController::class, 'index'])->name('venta');
 		Route::get('/ventas', [VentaController::class, 'indexInforme'])->name('ventas');
 		Route::get('/ventas-print/{id}', [VentaController::class, 'showPdf'])->name('venta-pdf');
+		Route::get('/ventas-print-informez', [VentaController::class, 'showPdfZ']);
 		//NOTA CREDITO
 		Route::get('/notacredito', [NotaCreditoController::class, 'index']);
 		//NITS
@@ -119,6 +139,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/comprobante', [ComprobantesController::class, 'index'])->name('comprobante');
 		//COMPROBANTES
 		Route::get('/cecos', [CentroCostoController::class, 'index'])->name('cecos');
+		//COMPROBANTES
+		Route::get('/vendedores', [VendedoresController::class, 'index'])->name('vendedores');
 		//FAMILIAS
 		Route::get('/familias', [FamiliasController::class, 'index'])->name('familias');
 		//RESOLUCION

@@ -1,4 +1,5 @@
 var bodegas_table = null;
+var $comboCuentaCartera = null;
 var $comboBodegaCecos = null;
 
 function bodegasInit() {
@@ -35,6 +36,14 @@ function bodegasInit() {
                     return '';
                 }
             },
+            {
+                "data": function (row, type, set){
+                    if(row.cuenta_cartera){
+                        return row.cuenta_cartera.cuenta + ' - ' + row.cuenta_cartera.nombre;
+                    }
+                    return '';
+                }
+            },
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
@@ -64,6 +73,77 @@ function bodegasInit() {
     if (!editarBodegas && !eliminarBodegas) column.visible(false);
     else column.visible(true);
 
+    $comboBodegaCecos = $('#id_centro_costos_bodega').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#bodegasFormModal'),
+        delay: 250,
+        placeholder: "Seleccione un centro de costos",
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/centro-costos/combo-centro-costo',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboCuentaCartera = $('#id_cuenta_cartera_bodega').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#bodegasFormModal'),
+        delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    id_tipo_cuenta: [2]
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     if(bodegas_table) {
         //EDITAR BODEGAS
         bodegas_table.on('click', '.edit-bodegas', function() {
@@ -86,6 +166,16 @@ function bodegasInit() {
                 var newOption = new Option(dataCecos.text, dataCecos.id, false, false);
                 $comboBodegaCecos.append(newOption).trigger('change');
                 $comboBodegaCecos.val(dataCecos.id).trigger('change');
+            }
+
+            if(data.cuenta_cartera){
+                var dataCuenta = {
+                    id: data.cuenta_cartera.id,
+                    text: data.cuenta_cartera.cuenta + ' - ' + data.cuenta_cartera.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaCartera.append(newOption).trigger('change');
+                $comboCuentaCartera.val(dataCuenta.id).trigger('change');
             }
 
             $("#ubicacion_bodega").val(data.ubicacion);
@@ -136,29 +226,6 @@ function bodegasInit() {
         });
     }
 
-    $comboBodegaCecos = $('#id_centro_costos_bodega').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#bodegasFormModal'),
-        delay: 250,
-        ajax: {
-            url: 'api/centro-costos/combo-centro-costo',
-            headers: headers,
-            dataType: 'json',
-            data: function (params) {
-                var query = {
-                    search: params.term,
-                    id_tipo_cuenta: [6,9]
-                }
-                return query;
-            },
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
     $('.water').hide();
     bodegas_table.ajax.reload();
 }
@@ -188,6 +255,7 @@ function clearFormBodegas(){
     $("#nombre_bodega").val('');
     $("#codigo_bodega").val('');
     $("#id_centro_costos_bodega").val('');
+    $("#id_cuenta_cartera_bodega").val('');
 }
 
 $(document).on('click', '#saveBodegas', function () {
@@ -207,6 +275,7 @@ $(document).on('click', '#saveBodegas', function () {
         nombre: $('#nombre_bodega').val(),
         ubicacion: $('#ubicacion_bodega').val(),
         id_centro_costos: $('#id_centro_costos_bodega').val(),
+        id_cuenta_cartera: $("#id_cuenta_cartera_bodega").val(),
     };
 
     $.ajax({
@@ -258,6 +327,7 @@ $(document).on('click', '#updateBodegas', function () {
         nombre: $('#nombre_bodega').val(),
         ubicacion: $('#ubicacion_bodega').val(),
         id_centro_costos: $('#id_centro_costos_bodega').val(),
+        id_cuenta_cartera: $("#id_cuenta_cartera_bodega").val(),
     };
 
     $.ajax({

@@ -109,12 +109,15 @@ class DocumentoGeneralController extends Controller
 					->where('consecutivo', $doc->consecutivo_factura)
 					->where('fecha_manual', $doc->fecha_factura)
 					->delete();
+
+				$tokenFactura = $doc->token_factura ? $doc->token_factura : $this->generateTokenDocumento();
 				
 				$facDocumento = FacDocumentos::create([
 					'id_nit' => $doc->id_tercero_erp,
 					'id_comprobante' => $doc->id_comprobante,
 					'fecha_manual' => $doc->fecha_factura,
 					'consecutivo' => $doc->consecutivo_factura,
+					'token_factura' => $tokenFactura,
 					'debito' => $doc->total,
 					'credito' => $doc->total,
 					'saldo_final' => 0,
@@ -144,6 +147,7 @@ class DocumentoGeneralController extends Controller
 						$docGeneral['id_nit'] = $doc->id_tercero_erp;
 						$docGeneral['id_cuenta'] = $cuentaContable->id;
 						$docGeneral['id_centro_costos'] = $doc->id_centro_costos;
+						$docGeneral['documento_referencia'] = $doc->documento_referencia;
 						$docGeneral['consecutivo'] = $doc->consecutivo_factura;
 						$docGeneral['created_by'] = request()->user()->id;
 						$docGeneral['updated_by'] = request()->user()->id;
@@ -160,7 +164,7 @@ class DocumentoGeneralController extends Controller
 						'success'=>	false,
 						'data' => [],
 						'message'=> $documentoGeneral->getErrors()
-					], 200);
+					], 401);
 				}
 
 				$this->updateConsecutivo($doc->id_comprobante, $doc->consecutivo_factura);
@@ -184,6 +188,67 @@ class DocumentoGeneralController extends Controller
         }
 	}
 
+	public function bulkDocumentosDelete(Request $request)
+	{
+		$rules = [
+			'documento' => 'array|required',
+			'documento.*.token' => 'required',
+        ];
+		
+		$validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 401);
+        }
+		try {
+			DB::connection('sam')->beginTransaction();
+
+			$documento = $request->get('documento');
+
+			foreach ($documento as $token) {
+
+				$factura = FacDocumentos::where('token_factura', $token)->first();
+
+				if ($factura) {
+					
+					$documento = DocumentosGeneral::where('relation_id', $factura->id)
+						->where('relation_type', 2)
+						->with('relation')->get();
+
+					$documento[0]->relation->anulado = 1;
+					$documento[0]->relation->save();
+	
+					foreach ($documento as $doc) {
+						$doc->anulado = 1;
+						$doc->concepto .= ' - Anulado desde maximoph';
+						$doc->save();
+					}
+				}	
+			}
+
+			DB::connection('sam')->commit();
+
+			return response()->json([
+				'success'=>	true,
+				'data' => [],
+				'message'=> 'Documentos anulados con exito!'
+			], 200);
+
+		} catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+			return response()->json([
+				"success"=>false,
+				'data' => [],
+				"message"=>$e->getMessage()
+			], 401);
+		}
+	}
+
     public function create(Request $request)
     {
 		$rules = [
@@ -196,6 +261,7 @@ class DocumentoGeneralController extends Controller
 			'documento.*.credito' => 'numeric',
 			'documento.*.debito' => 'numeric',
 			'documento.*.documento_referencia' => 'nullable|string',
+			'documento.*.token_documento' => 'nullable|string',
 			'documento.*.id_centro_costos' => 'nullable|sometimes|exists:sam.centro_costos,id',
 			'documento.*.codigo_centro_costos' => 'nullable|sometimes|exists:sam.centro_costos,codigo',
 			'documento.*.id_cuenta' => 'exists:sam.plan_cuentas,id',
@@ -271,6 +337,8 @@ class DocumentoGeneralController extends Controller
 
 			$facDocumento = null;
 
+			$tokenFactura = $request->get('token_factura') ? $request->get('token_factura') : $this->generateTokenDocumento();
+
 			if($request->get('editing_documento')) {
 				$facDocumento = FacDocumentos::where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
@@ -280,6 +348,7 @@ class DocumentoGeneralController extends Controller
 					'id_comprobante' => $request->get('id_comprobante'),
 					'fecha_manual' => $request->get('fecha_manual'),
 					'consecutivo' => $request->get('consecutivo'),
+					'token_factura' => $tokenFactura,
 					'debito' => $debito,
 					'credito' => $credito,
 					'saldo_final' => $debito - $credito,
@@ -290,7 +359,7 @@ class DocumentoGeneralController extends Controller
 			$primerIdNit = null;
 			$documentoGeneral = new Documento($request->get('id_comprobante'), $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
 
-			if ($request->get('editing_documento')) $documentoGeneral->setCreatedAt($facDocumento->created_at);
+			// if ($request->get('editing_documento')) $documentoGeneral->setCreatedAt($facDocumento->created_at);
 
 			foreach ($documento as $doc) {
 				// dd($doc);
@@ -506,4 +575,16 @@ class DocumentoGeneralController extends Controller
 			'documento_referencia' => ''
 		];
 	}
+
+	public function generateTokenDocumento()
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < 64; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+
+        return $randomString;
+    }
 }

@@ -22,8 +22,13 @@ class FacVentaPagos extends Model
         'updated_by',
     ];
 
+    public function venta()
+	{
+		return $this->belongsTo(FacVentas::class, 'id_venta');
+	}
+
     public function forma_pago()
 	{
-		return $this->belongsTo('App\Models\Sistema\FacFormasPago', 'id_forma_pago');
+		return $this->belongsTo(FacFormasPago::class, 'id_forma_pago');
 	}
 }

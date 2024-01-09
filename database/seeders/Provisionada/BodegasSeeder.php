@@ -15,6 +15,7 @@ class BodegasSeeder extends Seeder
                 'id' => 1,
                 'codigo' => '01',
                 'nombre' => 'PRINCIPAL',
+                'ubicacion' => 'DIRECCIÓN',
                 'id_centro_costos' => 1
             ]
         ]);

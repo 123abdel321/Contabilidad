@@ -579,7 +579,6 @@ function totalValoresNotaCredito() {
 
             if (notaCredito.total_devolucion) {
                 var proporcion = notaCredito.total_devolucion / notaCredito.data.total;
-
                 totalDisponible+= parseFloat(notaCredito.data.total) - parseFloat(notaCredito.data.total_devuelto);
                 productos+= parseInt(notaCredito.cantidad_devuelta);
                 total+= notaCredito.total_devolucion;
@@ -596,8 +595,8 @@ function totalValoresNotaCredito() {
                 }
 
                 if (totalReteFuente) {
-                    var proporcionReteFuente = notaCredito.total_devolucion / totalFacturaNotaCredito;
-                    retencion+= totalReteFuente * proporcionReteFuente;
+                    retencion+= totalReteFuente * proporcion;
+                    total-= totalReteFuente * proporcion;
                 }
             }
         }

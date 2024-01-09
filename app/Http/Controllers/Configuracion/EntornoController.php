@@ -51,7 +51,8 @@ class EntornoController extends Controller
             $variablesEntorno = [
                 'iva_incluido',
                 'capturar_documento_descuadrado',
-                'valor_uvt'
+                'valor_uvt',
+                'vendedores_ventas'
             ];
 
             foreach ($variablesEntorno as $variable) {

@@ -111,6 +111,24 @@
                             <label class="custom-control-label" for="exige_nit">Exige centro costos</label>
                         </div>
 
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
+                            <label for="exampleFormControlSelect1">Formato</label>
+                            <select name="id_exogena_formato_nit" id="id_exogena_formato_nit" class="form-control form-control-sm">
+                            </select>
+                        </div>
+
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
+                            <label for="exampleFormControlSelect1">Concepto</label>
+                            <select name="id_exogena_formato_concepto_nit" id="id_exogena_formato_concepto_nit" class="form-control form-control-sm">
+                            </select>
+                        </div>
+
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
+                            <label for="exampleFormControlSelect1">Columna</label>
+                            <select name="id_exogena_formato_columna_nit" id="id_exogena_formato_columna_nit" class="form-control form-control-sm">
+                            </select>
+                        </div>
+
                     </div>  
                 </form>
             </div>

@@ -11,21 +11,35 @@
             <div class="accordion-body text-sm" style="padding: 0 !important;">
 
                 <form id="ventaFilterForm" class="needs-validation row" style="margin-top: 10px;" novalidate>
-
-                <div class="col-6 col-sm-4 col-md-4">
-                    <label>Cliente<span style="color: red">*</span></label>
-                    <div class="input-group">
-                        <select name="id_cliente_venta" id="id_cliente_venta" class="form-control form-control-sm" style="font-size: 13px;" required>
-                        </select>
-                        <span id="" href="javascript:void(0)" onclick="openModalNewNit()" class="btn badge bg-gradient-light" style="min-width: 40px; position: static; height: 30px; border-radius: 0px 5px 5px 0px; box-shadow: 0px 0px 0px 0px, 0px 0px 0px 0px;">
-                            <i class="fas fa-user-plus" style="font-size: 15px; margin-top: 2px;"></i>
-                        </span>
-                        <div class="invalid-feedback">
-                            El cliente es requerido
+                    @if ($vendedores_ventas)
+                        <div class="col-6 col-sm-4 col-md-2">
+                    @else
+                        <div class="col-6 col-sm-4 col-md-4">
+                    @endif
+                        <label>Cliente<span style="color: red">*</span></label>
+                        <div class="input-group">
+                            <select name="id_cliente_venta" id="id_cliente_venta" class="form-control form-control-sm" style="font-size: 13px;" required>
+                            </select>
+                            <span id="" href="javascript:void(0)" onclick="openModalNewNit()" class="btn badge bg-gradient-light" style="min-width: 40px; position: static; height: 30px; border-radius: 0px 5px 5px 0px; box-shadow: 0px 0px 0px 0px, 0px 0px 0px 0px;">
+                                <i class="fas fa-user-plus" style="font-size: 15px; margin-top: 2px;"></i>
+                            </span>
+                            <div class="invalid-feedback">
+                                El cliente es requerido
+                            </div>
                         </div>
                     </div>
-                    
-                </div>
+
+                    @if ($vendedores_ventas)
+                        <div class="form-group col-6 col-sm-4 col-md-2">
+                            <label>Vendedor<span style="color: red">*</span></label>
+                            <select name="id_vendedor_venta" id="id_vendedor_venta" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
+                            </select>
+                            
+                            <div class="invalid-feedback">
+                                El vendedor es requerido
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="form-group col-6 col-sm-4 col-md-2">
                         <label>Resolucion<span style="color: red">*</span></label>

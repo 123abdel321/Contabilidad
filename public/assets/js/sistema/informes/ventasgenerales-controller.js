@@ -303,7 +303,6 @@ function loadVentasGeneralesById(id_venta_general) {
     });
 }
 
-
 $(document).on('click', '#generarVentasGenerales', function () {
     generarVentasGenerales = false;
 
@@ -335,5 +334,3 @@ $(document).on('click', '#generarVentasGenerales', function () {
         }
     });
 });
-
-

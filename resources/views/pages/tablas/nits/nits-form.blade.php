@@ -118,11 +118,16 @@
                     <div class="form-group col-12 col-sm-6 col-md-6">
                         <label for="exampleFormControlSelect1" style=" width: 100%;">Ciudad</label>
                         <select class="form-control form-control-sm" name="id_ciudad" id="id_ciudad">
-                            <option value="">Ninguna</option>
                         </select>
                         <div class="invalid-feedback">
                             El campo es requerido
                         </div>
+                    </div>
+
+                    <div class="form-group col-12 col-sm-6 col-md-6">
+                        <label for="exampleFormControlSelect1" style=" width: 100%;">Vendedor</label>
+                        <select class="form-control form-control-sm" name="id_vendedor_nit" id="id_vendedor_nit">
+                        </select>
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6">

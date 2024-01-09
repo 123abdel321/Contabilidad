@@ -36,8 +36,18 @@ class FacVentaDetalles extends Model
         'updated_by',
     ];
 
+    public function venta()
+	{
+		return $this->belongsTo(FacVentas::class, 'id_venta');
+	}
+
     public function producto()
 	{
 		return $this->belongsTo(FacProductos::class, 'id_producto', 'id');
+	}
+
+    public function cuenta_iva()
+	{
+		return $this->belongsTo(PlanCuentas::class, 'id_cuenta_venta_iva', 'id');
 	}
 }

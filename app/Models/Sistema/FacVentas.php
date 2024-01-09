@@ -20,6 +20,7 @@ class FacVentas extends Model
         'id_centro_costos',
         'id_bodega',
         'id_factura',
+        'id_vendedor',
         'fecha_manual',
         'consecutivo',
         'documento_referencia',
@@ -43,48 +44,58 @@ class FacVentas extends Model
 
     public function documentos()
     {
-        return $this->morphMany('App\Models\Sistema\DocumentosGeneral', 'relation');
+        return $this->morphMany(DocumentosGeneral::class, 'relation');
 	}
 
     public function bodegas()
     {
-        return $this->morphMany('App\Models\Sistema\FacProductosBodegasMovimiento', 'relation');
+        return $this->morphMany(FacProductosBodegasMovimiento::class, 'relation');
 	}
 
     public function bodega()
     {
-        return $this->belongsTo('App\Models\Sistema\FacBodegas', 'id_bodega');
+        return $this->belongsTo(FacBodegas::class, 'id_bodega');
 	}
 
     public function centro_costo()
     {
-        return $this->belongsTo('App\Models\Sistema\CentroCostos', 'id_centro_costos');
+        return $this->belongsTo(CentroCostos::class, 'id_centro_costos');
 	}
 
     public function cliente()
     {
-        return $this->belongsTo('App\Models\Sistema\Nits', 'id_cliente');
+        return $this->belongsTo(Nits::class, 'id_cliente');
+	}
+
+    public function vendedor()
+    {
+        return $this->belongsTo(FacVendedores::class, 'id_vendedor');
 	}
 
     public function comprobante()
 	{
-		return $this->belongsTo('App\Models\Sistema\Comprobantes', 'id_comprobante');
+		return $this->belongsTo(Comprobantes::class, 'id_comprobante');
 	}
 
     public function detalles()
 	{
-		return $this->hasMany('App\Models\Sistema\FacVentaDetalles', 'id_venta');
+		return $this->hasMany(FacVentaDetalles::class, 'id_venta');
 	}
 
     public function pagos()
 	{
-		return $this->hasMany('App\Models\Sistema\FacVentaPagos', 'id_venta');
+		return $this->hasMany(FacVentaPagos::class, 'id_venta');
 	}
 
     public function resolucion()
 	{
-		return $this->belongsTo('App\Models\Sistema\FacResoluciones', 'id_resolucion');
+		return $this->belongsTo(FacResoluciones::class, 'id_resolucion');
 	}
+
+    public function factura()
+    {
+        return $this->belongsTo(FacVentas::class, 'id_factura');
+    }
 
     public function getDocumentoReferenciaAttribute()
 	{

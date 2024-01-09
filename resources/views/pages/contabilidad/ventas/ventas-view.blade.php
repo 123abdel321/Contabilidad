@@ -24,3 +24,5 @@
         </div>
     </div>
 </div>
+
+@include('pages.contabilidad.ventas.ventas-informeZ')

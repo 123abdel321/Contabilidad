@@ -1,6 +1,9 @@
 
 var $comboPadreCuenta = null;
 var $comboImpuesto = null;
+var $comboFormatoCuenta = null;
+var $comboConceptoCuenta = null;
+var $comboColumnaCuenta = null;
 var plan_cuentas_table = null;
 
 function plancuentaInit() {
@@ -139,6 +142,30 @@ function plancuentaInit() {
                     return 'No';
                 }
             },
+            {
+                "data": function (row, type, set){
+                    if(row.exogena_formato){
+                        return row.exogena_formato.formato;
+                    }
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
+                    if(row.exogena_concepto){
+                        return row.exogena_concepto.concepto;
+                    }
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
+                    if(row.exogena_columna){
+                        return row.exogena_columna.nombre;
+                    }
+                    return '';
+                }
+            },
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
@@ -199,6 +226,36 @@ function plancuentaInit() {
                 $comboImpuesto.val(dataImpuesto.id).trigger('change');
             } else {
                 $("#id_impuesto_cuenta").val('').change();
+            }
+
+            if (data.exogena_formato) {
+                var dataFormato = {
+                    id: data.exogena_formato.id,
+                    text: data.exogena_formato.formato
+                };
+                var newOption = new Option(dataFormato.text, dataFormato.id, false, false);
+                $comboFormatoCuenta.append(newOption).trigger('change');
+                $comboFormatoCuenta.val(dataFormato.id).trigger('change');
+            }
+
+            if (data.exogena_concepto) {
+                var dataConcepto = {
+                    id: data.exogena_concepto.id,
+                    text: data.exogena_concepto.concepto
+                };
+                var newOption = new Option(dataConcepto.text, dataConcepto.id, false, false);
+                $comboConceptoCuenta.append(newOption).trigger('change');
+                $comboConceptoCuenta.val(dataConcepto.id).trigger('change');
+            }
+
+            if (data.exogena_columna) {
+                var dataColumna = {
+                    id: data.exogena_columna.id,
+                    text: data.exogena_columna.nombre
+                };
+                var newOption = new Option(dataColumna.text, dataColumna.id, false, false);
+                $comboColumnaCuenta.append(newOption).trigger('change');
+                $comboColumnaCuenta.val(dataColumna.id).trigger('change');
             }
 
             var tipoCuenta = [];
@@ -292,6 +349,90 @@ function plancuentaInit() {
         }
     });
 
+    $comboFormatoCuenta = $('#id_exogena_formato_nit').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        dropdownParent: $('#planCuentaFormModal'),
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Debes ingresar más caracteres...";
+            }
+        },
+        ajax: {
+            url: 'api/exogena/formato',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboConceptoCuenta = $('#id_exogena_formato_concepto_nit').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        dropdownParent: $('#planCuentaFormModal'),
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Debes ingresar más caracteres...";
+            }
+        },
+        ajax: {
+            url: 'api/exogena/concepto',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboColumnaCuenta = $('#id_exogena_formato_columna_nit').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        dropdownParent: $('#planCuentaFormModal'),
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Debes ingresar más caracteres...";
+            }
+        },
+        ajax: {
+            url: 'api/exogena/columna',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     $('#id_tipo_cuenta').select2({
         theme: 'bootstrap-5',
         dropdownParent: $('#planCuentaFormModal'),
@@ -342,6 +483,9 @@ $(document).on('click', '#savePlanCuenta', function () {
         nombre: $("#nombre").val(),
         id_tipo_cuenta: $("#id_tipo_cuenta").val(),
         id_impuesto: $("#id_impuesto_cuenta").val(),
+        id_exogena_formato: $('#id_exogena_formato_nit').val(),
+        id_exogena_formato_concepto: $('#id_exogena_formato_concepto_nit').val(),
+        id_exogena_formato_columna: $('#id_exogena_formato_columna_nit').val(),
         naturaleza_cuenta: $("#naturaleza_cuenta").val(),
         naturaleza_ingresos: $("#naturaleza_ingresos").val(),
         naturaleza_egresos: $("#naturaleza_egresos").val(),
@@ -407,6 +551,10 @@ function clearFormPlanCuenta(){
     $("#id_tipo_cuenta").val('').change();
     $("#id_impuesto_cuenta").val('').change();
 
+    $('#id_exogena_formato_nit').val('').change();
+    $('#id_exogena_formato_concepto_nit').val('').change();
+    $('#id_exogena_formato_columna_nit').val('').change();
+
     $("#exige_nit").prop( "checked", false );
     $("#exige_documento_referencia").prop( "checked", false );
     $("#exige_concepto").prop( "checked", false );
@@ -432,6 +580,9 @@ $(document).on('click', '#updatePlanCuenta', function () {
         nombre: $("#nombre").val(),
         id_tipo_cuenta: $("#id_tipo_cuenta").val(),
         id_impuesto: $("#id_impuesto_cuenta").val(),
+        id_exogena_formato: $('#id_exogena_formato_nit').val(),
+        id_exogena_formato_concepto: $('#id_exogena_formato_concepto_nit').val(),
+        id_exogena_formato_columna: $('#id_exogena_formato_columna_nit').val(),
         naturaleza_cuenta: $("#naturaleza_cuenta").val(),
         naturaleza_ingresos: $("#naturaleza_ingresos").val(),
         naturaleza_egresos: $("#naturaleza_egresos").val(),

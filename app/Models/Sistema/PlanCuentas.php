@@ -20,9 +20,11 @@ class PlanCuentas extends Model
         'id_padre',
         'id_tipo_cuenta',
         'id_impuesto',
+        'id_exogena_formato',
+        'id_exogena_formato_concepto',
+        'id_exogena_formato_columna',
         'cuenta',
         'nombre',
-        'pasarela', // Check si es una cuenta usada para sacar el extracto de pasarela
         'auxiliar',
         'exige_nit',
         'exige_documento_referencia',
@@ -40,16 +42,31 @@ class PlanCuentas extends Model
 
     public function impuesto()
     {
-        return $this->belongsTo("App\Models\Sistema\Impuestos", "id_impuesto");
+        return $this->belongsTo(Impuestos::class, "id_impuesto");
     }
 
     public function padre()
     {
-        return $this->belongsTo("App\Models\Sistema\PlanCuentas", "id_padre");
+        return $this->belongsTo(PlanCuentas::class, "id_padre");
     }
 
 	public function tipos_cuenta()
     {
-        return $this->hasMany("App\Models\Sistema\PlanCuentasTipo", "id_cuenta");
+        return $this->hasMany(PlanCuentasTipo::class, "id_cuenta");
+    }
+
+    public function exogena_formato()
+    {
+        return $this->belongsTo(ExogenaFormato::class, 'id_exogena_formato');
+    }
+
+    public function exogena_concepto()
+    {
+        return $this->belongsTo(ExogenaFormatoConcepto::class, 'id_exogena_formato_concepto');
+    }
+
+    public function exogena_columna()
+    {
+        return $this->belongsTo(ExogenaFormatoColumna::class, 'id_exogena_formato_columna');
     }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('impuestos', function (Blueprint $table) {
             $table->integer('id', true);
             $table->integer('id_tipo_impuesto');
-            $table->string('nombre', 60);
+            $table->string('nombre', 100);
             $table->decimal('base', 10);
             $table->decimal('total_uvt', 10);
             $table->decimal('porcentaje', 6);

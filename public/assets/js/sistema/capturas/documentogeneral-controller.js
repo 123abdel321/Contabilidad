@@ -180,7 +180,7 @@ function documentogeneralInit() {
                         data: function (params) {
                             var query = {
                                 q: params.term,
-                                id_cuenta: $("#combo_cuenta_"+rowExtracto).val(),
+                                id_tipo_cuenta: 3,
                                 id_nit: $("#combo_nits_"+rowExtracto).val(),
                                 _type: 'query'
                             }
@@ -855,7 +855,7 @@ function buscarExtracto() {
             url: base_url + 'extracto',
             method: 'GET',
             data: {
-                id_cuenta: $('#combo_cuenta_'+rowExtracto).val(),
+                id_tipo_cuenta: 3,
                 id_nit: $('#combo_nits_'+rowExtracto).val(),
             },
             headers: headers,

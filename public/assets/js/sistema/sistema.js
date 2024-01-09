@@ -48,6 +48,7 @@ var moduloCreado = {
     'formapago': false,
     'bodegas': false,
     'productos': false,
+    'vendedores': false,
     'documentogeneral': false,
     'documentosgenerales': false,
     'auxiliar': false,
@@ -65,7 +66,7 @@ var moduloCreado = {
     'carguedescargue': false,
     'movimientoinventario': false,
     'notacredito': false,
-    'ventasgenestales': false
+    'ventasgenestales': false,
 };
 
 var moduloRoute = {
@@ -79,6 +80,7 @@ var moduloRoute = {
     'bodegas': 'tablas',
     'productos': 'tablas',
     'carguedescargue': 'tablas',
+    'vendedores': 'tablas',
     'documentogeneral': 'capturas',
     'auxiliar': 'informes',
     'balance': 'informes',

@@ -119,7 +119,7 @@
         <div class="card mb-4">
             <div class="card-body" style="padding: 0 !important;">
 
-                @include('pages.capturas.venta.venta-filter')
+                @include('pages.capturas.venta.venta-filter', ['vendedores_ventas' => $vendedores_ventas])
 
             </div>
         </div>
@@ -221,6 +221,7 @@
         var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');
         var primeraResolucionVenta = JSON.parse('<?php echo $resolucion; ?>');
         var ivaIncluidoVentas = '<?php echo $iva_incluido; ?>';
+        var vendedoresVentas = '<?php echo $vendedores_ventas; ?>';
     </script>
     
 </div>

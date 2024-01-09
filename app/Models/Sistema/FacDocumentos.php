@@ -18,6 +18,7 @@ class FacDocumentos extends Model
         'id_nit',
         'fecha_manual',
         'consecutivo',
+        'token_factura',
         'debito',
         'credito',
         'saldo_final',

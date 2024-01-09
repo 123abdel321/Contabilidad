@@ -40,8 +40,8 @@ function cecosInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editcecos_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-cecos" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
-                    html+= '<span id="deletececos_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-cecos" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    if (editarCecos) html+= '<span id="editcecos_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-cecos" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    if (eliminarCecos) html+= '<span id="deletececos_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-cecos" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }
             },

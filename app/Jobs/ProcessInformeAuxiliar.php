@@ -281,7 +281,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
-            ->where('DG.fecha_manual', '<=', $this->request['fecha_desde'])
+            ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
             ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
 				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
 			})

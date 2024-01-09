@@ -22,6 +22,6 @@ class FacVariantesOpciones extends Model
 
     public function variante()
     {
-        return $this->hasOne('App\Models\Sistema\FacVariantes', 'id', 'id_variante');
+        return $this->hasOne(FacVariantes::class, 'id', 'id_variante');
 	}
 }

@@ -239,7 +239,6 @@ class InstaladorController extends Controller
 		$rol = Role::where('id', 2)->first();
 
 		foreach ($permissions as $permissions) {
-
 			$permisos[] = $permissions->id;
 		}
 		
@@ -249,7 +248,9 @@ class InstaladorController extends Controller
 			'id_user' => $user->id,
 			'id_empresa' => $empresa->id
 		],[
-			'ids_permission' => implode(',', $permisos)
+			'ids_permission' => implode(',', $permisos),
+			'ids_bodegas_responsable' => '1',
+			'ids_resolucion_responsable' => '1'
 		]);
 
 		return;

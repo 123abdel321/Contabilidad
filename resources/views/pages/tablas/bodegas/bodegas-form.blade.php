@@ -12,7 +12,7 @@
                     <div class="row">
                         <input type="text" class="form-control" name="id_bodega" id="id_bodega" style="display: none;">
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-12 col-sm-6 col-md-4">
                             <label for="example-text-input" c|lass="form-control-label">Codigo</label>
                             <input type="text" class="form-control form-control-sm" name="codigo_bodega" id="codigo_bodega" placeholder="123" required>
                             <div class="invalid-feedback">
@@ -20,7 +20,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-12 col-sm-6 col-md-4">
                             <label for="example-text-input" class="form-control-label">Nombre</label>
                             <input type="text" class="form-control form-control-sm" name="nombre_bodega" id="nombre_bodega" placeholder="Principal" required>
                             <div class="invalid-feedback">
@@ -28,12 +28,18 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-12 col-sm-6 col-md-4">
                             <label for="example-text-input" class="form-control-label">Ubicación</label>
                             <input type="text" class="form-control form-control-sm" name="ubicacion_bodega" id="ubicacion_bodega">
                         </div>
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-12 col-sm-6 col-md-4">
+                            <label for="exampleFormControlSelect1">Cuenta cartera</label>
+                            <select name="id_cuenta_cartera_bodega" id="id_cuenta_cartera_bodega" class="form-control form-control-sm">
+                            </select>
+                        </div>
+
+                        <div class="form-group col-12 col-sm-6 col-md-4">
                             <label for="exampleFormControlSelect1">Centro de costos</label>
                             <select name="id_centro_costos_bodega" id="id_centro_costos_bodega" class="form-control form-control-sm">
                             </select>

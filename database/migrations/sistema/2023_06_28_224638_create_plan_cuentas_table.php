@@ -17,10 +17,12 @@ class CreatePlanCuentasTable extends Migration
             $table->integer('id', true);
             $table->integer('id_padre')->nullable()->index('id_padre');
             $table->integer('id_impuesto')->nullable();
+            $table->integer('id_exogena_formato')->nullable();
+            $table->integer('id_exogena_formato_concepto')->nullable();
+            $table->integer('id_exogena_formato_columna')->nullable();
             $table->string('cuenta', 15);
             $table->string('nombre', 100);
             $table->boolean('auxiliar')->nullable();
-            $table->boolean('pasarela')->default(0)->comment('check si es una cuenta usada para sacar extracto de pasarela');
             $table->boolean('exige_nit');
             $table->boolean('exige_documento_referencia');
             $table->boolean('exige_concepto');
