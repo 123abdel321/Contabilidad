@@ -85,7 +85,7 @@
                                 <option value="id_nit">Cedula/Nits</option>
                                 <option value="id_comprobante">Comprobante</option>
                                 <option value="id_centro_costos">Centro costos</option>
-                                <option value="documento_referencia">Documento referencia</option>
+                                <option value="consecutivo">Documento</option>
                             </select>
                         </div>
 
