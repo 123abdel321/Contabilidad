@@ -42,7 +42,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:38:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             1 => 
             array (
@@ -69,7 +69,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:38:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             2 => 
             array (
@@ -96,7 +96,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:38:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             3 => 
             array (
@@ -105,7 +105,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '110505',
                 'nombre' => 'CAJA GENERAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
@@ -123,7 +123,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:38:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             4 => 
             array (
@@ -132,7 +132,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '110510',
                 'nombre' => 'CAJAS MENORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
@@ -150,7 +150,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:38:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             5 => 
             array (
@@ -177,7 +177,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:38:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             6 => 
             array (
@@ -204,7 +204,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:38:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             7 => 
             array (
@@ -231,7 +231,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:38:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             8 => 
             array (
@@ -240,7 +240,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '112005',
                 'nombre' => 'BANCOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
@@ -258,7 +258,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:38:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             9 => 
             array (
@@ -267,7 +267,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '112010',
                 'nombre' => 'CORPORACIONES DE AHORRO Y VIVIENDA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
@@ -285,7 +285,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:38:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             10 => 
             array (
@@ -312,7 +312,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:10',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             11 => 
             array (
@@ -339,7 +339,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:42:10',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             12 => 
             array (
@@ -348,7 +348,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '130505',
                 'nombre' => 'CXC CLIENTES NACIONALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -366,7 +366,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:42:10',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             13 => 
             array (
@@ -393,7 +393,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:10',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             14 => 
             array (
@@ -402,7 +402,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '132505',
                 'nombre' => 'A SOCIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -420,7 +420,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:10',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             15 => 
             array (
@@ -429,7 +429,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '132510',
                 'nombre' => 'A ACCIONISTAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -447,7 +447,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:10',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             16 => 
             array (
@@ -474,7 +474,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:10',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             17 => 
             array (
@@ -483,7 +483,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '133005',
                 'nombre' => 'A PROVEEDORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -501,7 +501,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:10',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             18 => 
             array (
@@ -510,7 +510,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '133010',
                 'nombre' => 'A CONTRATISTAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -528,7 +528,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:10',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             19 => 
             array (
@@ -537,7 +537,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '133015',
                 'nombre' => 'A TRABAJADORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -555,7 +555,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:10',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             20 => 
             array (
@@ -564,7 +564,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '133095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -582,7 +582,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:11',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             21 => 
             array (
@@ -609,7 +609,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             22 => 
             array (
@@ -618,7 +618,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '135505',
                 'nombre' => 'ANTICIPO DE IMPUESTOS DE RENTA Y COMPLEMENTARIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -636,7 +636,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             23 => 
             array (
@@ -645,7 +645,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '135510',
                 'nombre' => 'ANTICIPO DE IMPUESTOS DE INDUSTRIA Y COMERCIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -663,7 +663,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             24 => 
             array (
@@ -690,7 +690,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             25 => 
             array (
@@ -699,7 +699,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 5,
                 'cuenta' => '13551501',
                 'nombre' => 'HONORARIOS PN 11%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -717,7 +717,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             26 => 
             array (
@@ -726,7 +726,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 6,
                 'cuenta' => '13551502',
                 'nombre' => 'HONORARIOS PN 10%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -744,7 +744,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             27 => 
             array (
@@ -753,7 +753,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 5,
                 'cuenta' => '13551503',
                 'nombre' => 'COMISIONES PJ O ASIMILIDA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -771,7 +771,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             28 => 
             array (
@@ -780,7 +780,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 5,
                 'cuenta' => '13551504',
                 'nombre' => 'COMISIONES PN 11%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -798,7 +798,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             29 => 
             array (
@@ -807,7 +807,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 6,
                 'cuenta' => '13551505',
                 'nombre' => 'COMISIONES PN 10%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -825,7 +825,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             30 => 
             array (
@@ -834,7 +834,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 7,
                 'cuenta' => '13551506',
                 'nombre' => 'SERVICIOS ASEO Y VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -852,7 +852,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             31 => 
             array (
@@ -861,7 +861,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 10,
                 'cuenta' => '13551510',
                 'nombre' => 'SERVICIOS GENERALES PJ Y PN OBLIG A DECALRAR RTA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -879,7 +879,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             32 => 
             array (
@@ -888,7 +888,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 11,
                 'cuenta' => '13551511',
                 'nombre' => 'SERVICIOS GENERALES PN NO OBLIG A DECALRAR RTA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -906,7 +906,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             33 => 
             array (
@@ -915,7 +915,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 8,
                 'cuenta' => '13551512',
                 'nombre' => 'SERVICIOS TEMPORALES DE EMPLEO 100%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -933,7 +933,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             34 => 
             array (
@@ -942,7 +942,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '13551515',
                 'nombre' => 'COMPRA DE COMBUSTUSTIBLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -960,7 +960,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             35 => 
             array (
@@ -969,7 +969,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 14,
                 'cuenta' => '13551516',
                 'nombre' => 'COMPRAS Y OTROS INGRESOS DECLARANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -987,7 +987,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             36 => 
             array (
@@ -996,7 +996,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 9,
                 'cuenta' => '13551517',
                 'nombre' => 'COMPRAS Y OTROS INGRESOS NO DECLARANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1014,7 +1014,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             37 => 
             array (
@@ -1023,7 +1023,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '135550',
                 'nombre' => 'POR PAGOS AL EXTERIOR',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1041,7 +1041,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             38 => 
             array (
@@ -1050,7 +1050,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '135555',
                 'nombre' => 'POR INGRESOS OBTENIDOS EN EL EXTERIOR',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1068,7 +1068,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             39 => 
             array (
@@ -1077,7 +1077,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '135560',
                 'nombre' => 'ENAJENACION PROPIEDADES PLANTA Y EQUIPO PERSONAS NATURALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1095,7 +1095,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             40 => 
             array (
@@ -1104,7 +1104,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '135565',
                 'nombre' => 'POR IMPUESTO DE TIMBRE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1122,7 +1122,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             41 => 
             array (
@@ -1131,7 +1131,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '135570',
                 'nombre' => 'OTRAS RETENCIONES Y PATRIMONIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1149,7 +1149,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             42 => 
             array (
@@ -1176,7 +1176,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             43 => 
             array (
@@ -1185,7 +1185,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '13557501',
                 'nombre' => 'AUTO RENTA 0.4',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1203,7 +1203,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             44 => 
             array (
@@ -1212,7 +1212,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '13557502',
                 'nombre' => 'AUTO RENTA 0.8',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1230,7 +1230,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             45 => 
             array (
@@ -1239,7 +1239,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '13557503',
                 'nombre' => 'AUTO RENTA 1.6',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1257,7 +1257,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             46 => 
             array (
@@ -1266,7 +1266,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '135517',
                 'nombre' => 'RETENCION DE IVA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1284,7 +1284,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             47 => 
             array (
@@ -1311,7 +1311,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             48 => 
             array (
@@ -1320,7 +1320,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '13552001',
                 'nombre' => 'SALDO A FAVOR RENTA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1338,7 +1338,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             49 => 
             array (
@@ -1347,7 +1347,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '13552002',
                 'nombre' => 'SALDO A FAVOR IVA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1365,7 +1365,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             50 => 
             array (
@@ -1374,7 +1374,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '13552003',
                 'nombre' => 'SALDO A FAVOR CREE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1392,7 +1392,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             51 => 
             array (
@@ -1401,7 +1401,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '135525',
                 'nombre' => 'CONTRIBUCIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1419,7 +1419,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             52 => 
             array (
@@ -1428,7 +1428,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '135530',
                 'nombre' => 'IMPUESTOS DESCONTABLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1446,7 +1446,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             53 => 
             array (
@@ -1455,7 +1455,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '135595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1473,7 +1473,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             54 => 
             array (
@@ -1482,7 +1482,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '1360',
                 'nombre' => 'RECLAMACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1500,7 +1500,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             55 => 
             array (
@@ -1527,7 +1527,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             56 => 
             array (
@@ -1536,7 +1536,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '136505',
                 'nombre' => 'VIVIENDA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1554,7 +1554,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             57 => 
             array (
@@ -1563,7 +1563,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '136510',
                 'nombre' => 'VEHICULOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1581,7 +1581,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             58 => 
             array (
@@ -1590,7 +1590,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '136515',
                 'nombre' => 'EDUCACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1608,7 +1608,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             59 => 
             array (
@@ -1617,7 +1617,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '136520',
                 'nombre' => 'MEDICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1635,7 +1635,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             60 => 
             array (
@@ -1644,7 +1644,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '136525',
                 'nombre' => 'CALAMIDAD DOMESTICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1662,7 +1662,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             61 => 
             array (
@@ -1671,7 +1671,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '136530',
                 'nombre' => 'RESPONSABILIDADES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1689,7 +1689,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             62 => 
             array (
@@ -1716,7 +1716,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             63 => 
             array (
@@ -1725,7 +1725,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '13659501',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1743,7 +1743,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             64 => 
             array (
@@ -1770,7 +1770,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             65 => 
             array (
@@ -1779,7 +1779,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '138020',
                 'nombre' => 'CUENTAS POR COBRAR DE TERCEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1797,7 +1797,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             66 => 
             array (
@@ -1806,7 +1806,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '138025',
                 'nombre' => 'PAGOS POR CUENTA DE TERCEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1824,7 +1824,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             67 => 
             array (
@@ -1833,7 +1833,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '138095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1851,7 +1851,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             68 => 
             array (
@@ -1860,7 +1860,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '1390',
                 'nombre' => 'DEUDAS DE DIFICIL COBRO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1878,7 +1878,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             69 => 
             array (
@@ -1887,7 +1887,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '1399',
                 'nombre' => 'PROVISIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -1905,7 +1905,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             70 => 
             array (
@@ -1932,7 +1932,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             71 => 
             array (
@@ -1959,7 +1959,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             72 => 
             array (
@@ -1968,7 +1968,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '140500',
                 'nombre' => 'INVENTARIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -1986,7 +1986,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:38',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             73 => 
             array (
@@ -1995,7 +1995,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '140501',
                 'nombre' => 'COMPRAS GRAVADAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2013,7 +2013,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             74 => 
             array (
@@ -2022,7 +2022,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '140502',
                 'nombre' => 'COMPRAS NO GRAVADAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2040,7 +2040,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             75 => 
             array (
@@ -2049,7 +2049,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '140595',
                 'nombre' => 'COSTO MATERIA PRIMA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2067,7 +2067,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             76 => 
             array (
@@ -2076,7 +2076,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '140598',
                 'nombre' => 'DEVOLUCION DE COMPRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2094,7 +2094,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             77 => 
             array (
@@ -2103,7 +2103,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '140599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2121,7 +2121,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             78 => 
             array (
@@ -2148,7 +2148,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             79 => 
             array (
@@ -2157,7 +2157,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '141001',
                 'nombre' => 'PRODUCTOS EN PROCESO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2175,7 +2175,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             80 => 
             array (
@@ -2184,7 +2184,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '141010',
                 'nombre' => 'PP MATERIA PRIMA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2202,7 +2202,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             81 => 
             array (
@@ -2229,7 +2229,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             82 => 
             array (
@@ -2238,7 +2238,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '14101501',
                 'nombre' => 'PROD. PROCESO MOD',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2256,7 +2256,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             83 => 
             array (
@@ -2265,7 +2265,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '14101502',
                 'nombre' => 'C.M.V MOD',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2283,7 +2283,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             84 => 
             array (
@@ -2310,7 +2310,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             85 => 
             array (
@@ -2319,7 +2319,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '14102001',
                 'nombre' => 'PROD. PROCESO CIF',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2337,7 +2337,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             86 => 
             array (
@@ -2346,7 +2346,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '14102002',
                 'nombre' => 'C.M.V CIF',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2364,7 +2364,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             87 => 
             array (
@@ -2391,7 +2391,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             88 => 
             array (
@@ -2400,7 +2400,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '14102101',
                 'nombre' => 'PROD. PROCESO SVS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2418,7 +2418,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             89 => 
             array (
@@ -2427,7 +2427,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '14102102',
                 'nombre' => 'C.M.V SVS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2445,7 +2445,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             90 => 
             array (
@@ -2454,7 +2454,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '141098',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2472,7 +2472,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             91 => 
             array (
@@ -2481,7 +2481,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '141099',
                 'nombre' => 'TRASLADO CTOS DE VTAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2499,7 +2499,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             92 => 
             array (
@@ -2526,7 +2526,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             93 => 
             array (
@@ -2535,7 +2535,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '143005',
                 'nombre' => 'PRODUCTOS MANUFACTURADOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2553,7 +2553,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             94 => 
             array (
@@ -2580,7 +2580,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             95 => 
             array (
@@ -2589,7 +2589,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '143501',
                 'nombre' => 'MATERIALES  E INSUMOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2607,7 +2607,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             96 => 
             array (
@@ -2616,7 +2616,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '143595',
                 'nombre' => 'INVENTARIO EN PRODUCCION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2634,7 +2634,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             97 => 
             array (
@@ -2643,7 +2643,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '143596',
                 'nombre' => 'INVENTARIO POR COMPRAS ***',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2661,7 +2661,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             98 => 
             array (
@@ -2688,7 +2688,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             99 => 
             array (
@@ -2715,7 +2715,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             100 => 
             array (
@@ -2724,7 +2724,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '150405',
                 'nombre' => 'URBANOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2742,7 +2742,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             101 => 
             array (
@@ -2751,7 +2751,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '150410',
                 'nombre' => 'RURALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2769,7 +2769,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             102 => 
             array (
@@ -2778,7 +2778,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '150499',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2796,7 +2796,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:42:39',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             103 => 
             array (
@@ -2823,7 +2823,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:22',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             104 => 
             array (
@@ -2832,7 +2832,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '151605',
                 'nombre' => 'EDIFICIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2850,7 +2850,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:22',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             105 => 
             array (
@@ -2859,7 +2859,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '151610',
                 'nombre' => 'OFICINAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2877,7 +2877,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:22',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             106 => 
             array (
@@ -2886,7 +2886,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '151680',
                 'nombre' => 'BODEGAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2904,7 +2904,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:22',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             107 => 
             array (
@@ -2913,7 +2913,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '151695',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2931,7 +2931,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:22',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             108 => 
             array (
@@ -2940,7 +2940,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '151699',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -2958,7 +2958,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:22',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             109 => 
             array (
@@ -2985,7 +2985,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:22',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             110 => 
             array (
@@ -2994,7 +2994,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '152405',
                 'nombre' => 'MUEBLES Y ENSERES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3012,7 +3012,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:22',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             111 => 
             array (
@@ -3021,7 +3021,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '152410',
                 'nombre' => 'EQUIPOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3039,7 +3039,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:22',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             112 => 
             array (
@@ -3048,7 +3048,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '152495',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3066,7 +3066,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:22',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             113 => 
             array (
@@ -3075,7 +3075,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '152499',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3093,7 +3093,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:22',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             114 => 
             array (
@@ -3120,7 +3120,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             115 => 
             array (
@@ -3147,7 +3147,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             116 => 
             array (
@@ -3156,7 +3156,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '180505',
                 'nombre' => 'OBRAS DE ARTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3174,7 +3174,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             117 => 
             array (
@@ -3183,7 +3183,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '180510',
                 'nombre' => 'BIBLIOTECAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3201,7 +3201,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             118 => 
             array (
@@ -3210,7 +3210,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '180595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3228,7 +3228,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             119 => 
             array (
@@ -3237,7 +3237,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '180599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3255,7 +3255,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             120 => 
             array (
@@ -3282,7 +3282,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             121 => 
             array (
@@ -3291,7 +3291,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '189505',
                 'nombre' => 'MAQUINAS PORTEADORAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3309,7 +3309,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             122 => 
             array (
@@ -3318,7 +3318,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '189510',
                 'nombre' => 'BIENES ENTREGADOS EN COMODATO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3336,7 +3336,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             123 => 
             array (
@@ -3345,7 +3345,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '189515',
             'nombre' => 'AMORTIZACION ACUMULADA DE BIENES ENTREGADOS EN COMODATO (CR)',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3363,7 +3363,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             124 => 
             array (
@@ -3372,7 +3372,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '189520',
                 'nombre' => 'BIENES RECIBIDOS EN PAGO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3390,7 +3390,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             125 => 
             array (
@@ -3399,7 +3399,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '189525',
                 'nombre' => 'DERECHOS SUCESORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3417,7 +3417,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             126 => 
             array (
@@ -3426,7 +3426,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '189530',
                 'nombre' => 'ESTAMPILLAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3444,7 +3444,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             127 => 
             array (
@@ -3453,7 +3453,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '189595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3471,7 +3471,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             128 => 
             array (
@@ -3480,7 +3480,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '189599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3498,7 +3498,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             129 => 
             array (
@@ -3525,7 +3525,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             130 => 
             array (
@@ -3534,7 +3534,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '189905',
                 'nombre' => 'BIENES DE ARTE Y CULTURA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3552,7 +3552,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             131 => 
             array (
@@ -3561,7 +3561,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '189995',
                 'nombre' => 'DIVERSOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3579,7 +3579,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             132 => 
             array (
@@ -3606,7 +3606,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             133 => 
             array (
@@ -3633,7 +3633,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             134 => 
             array (
@@ -3642,7 +3642,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '190505',
                 'nombre' => 'ACCIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3660,7 +3660,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             135 => 
             array (
@@ -3669,7 +3669,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '190510',
                 'nombre' => 'CUOTAS O PARTES DE INTERES SOCIAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3687,7 +3687,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             136 => 
             array (
@@ -3696,7 +3696,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '190515',
                 'nombre' => 'DERECHOS FIDUCIARIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3714,7 +3714,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             137 => 
             array (
@@ -3741,7 +3741,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             138 => 
             array (
@@ -3750,7 +3750,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191004',
                 'nombre' => 'TERRENOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3768,7 +3768,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             139 => 
             array (
@@ -3777,7 +3777,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191006',
                 'nombre' => 'MATERIALES PROYECTOS PETROLEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3795,7 +3795,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             140 => 
             array (
@@ -3804,7 +3804,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191008',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3822,7 +3822,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             141 => 
             array (
@@ -3831,7 +3831,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191012',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3849,7 +3849,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             142 => 
             array (
@@ -3858,7 +3858,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191016',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3876,7 +3876,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             143 => 
             array (
@@ -3885,7 +3885,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191020',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3903,7 +3903,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             144 => 
             array (
@@ -3912,7 +3912,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191024',
                 'nombre' => 'EQUIPO MEDICO CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3930,7 +3930,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             145 => 
             array (
@@ -3939,7 +3939,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191028',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3957,7 +3957,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             146 => 
             array (
@@ -3966,7 +3966,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191032',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -3984,7 +3984,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             147 => 
             array (
@@ -3993,7 +3993,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191036',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4011,7 +4011,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             148 => 
             array (
@@ -4020,7 +4020,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191040',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4038,7 +4038,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             149 => 
             array (
@@ -4047,7 +4047,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191044',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4065,7 +4065,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             150 => 
             array (
@@ -4074,7 +4074,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191048',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4092,7 +4092,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             151 => 
             array (
@@ -4101,7 +4101,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191052',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4119,7 +4119,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             152 => 
             array (
@@ -4128,7 +4128,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191056',
                 'nombre' => 'ENVASES Y EMPAQUES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4146,7 +4146,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             153 => 
             array (
@@ -4155,7 +4155,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191060',
                 'nombre' => 'PLANTACIONES AGRICOLAS Y FORESTALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4173,7 +4173,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             154 => 
             array (
@@ -4182,7 +4182,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191064',
                 'nombre' => 'VIAS DE COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4200,7 +4200,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             155 => 
             array (
@@ -4209,7 +4209,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191068',
                 'nombre' => 'MINAS Y CANTERAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4227,7 +4227,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             156 => 
             array (
@@ -4236,7 +4236,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191072',
                 'nombre' => 'POZOS ARTESIANOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4254,7 +4254,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             157 => 
             array (
@@ -4263,7 +4263,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191076',
                 'nombre' => 'YACIMIENTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4281,7 +4281,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             158 => 
             array (
@@ -4290,7 +4290,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '191080',
                 'nombre' => 'SEMOVIENTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4308,7 +4308,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             159 => 
             array (
@@ -4335,7 +4335,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             160 => 
             array (
@@ -4344,7 +4344,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '199505',
                 'nombre' => 'BIENES DE ARTE Y CULTURA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4362,7 +4362,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             161 => 
             array (
@@ -4371,7 +4371,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '199510',
                 'nombre' => 'BIENES ENTREGADOS EN COMODATO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4389,7 +4389,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             162 => 
             array (
@@ -4398,7 +4398,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '199515',
                 'nombre' => 'BIENES RECIBIDOS EN PAGO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4416,7 +4416,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             163 => 
             array (
@@ -4425,7 +4425,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '199520',
                 'nombre' => 'INVENTARIO DE SEMOVIENTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4443,7 +4443,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             164 => 
             array (
@@ -4470,7 +4470,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             165 => 
             array (
@@ -4497,7 +4497,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             166 => 
             array (
@@ -4524,7 +4524,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             167 => 
             array (
@@ -4533,7 +4533,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '219505',
                 'nombre' => 'PARTICULARES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4551,7 +4551,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             168 => 
             array (
@@ -4560,7 +4560,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '219510',
                 'nombre' => 'COMPAA`IAS VINCULADAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4578,7 +4578,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             169 => 
             array (
@@ -4587,7 +4587,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '219515',
                 'nombre' => 'CASA MATRIZ',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4605,7 +4605,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             170 => 
             array (
@@ -4614,7 +4614,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '219520',
                 'nombre' => 'SOCIOS O ACCIONISTAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4632,7 +4632,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             171 => 
             array (
@@ -4641,7 +4641,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '219525',
                 'nombre' => 'FONDOS Y COOPERATIVAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4659,7 +4659,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             172 => 
             array (
@@ -4668,7 +4668,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '219595',
                 'nombre' => 'OTRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4686,7 +4686,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             173 => 
             array (
@@ -4713,7 +4713,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             174 => 
             array (
@@ -4740,7 +4740,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:25',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             175 => 
             array (
@@ -4767,7 +4767,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:42',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             176 => 
             array (
@@ -4776,7 +4776,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '22050501',
                 'nombre' => 'PROVEEDORES NACIONALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -4794,7 +4794,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:42',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             177 => 
             array (
@@ -4821,7 +4821,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:42',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             178 => 
             array (
@@ -4848,7 +4848,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             179 => 
             array (
@@ -4857,7 +4857,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '233505',
                 'nombre' => 'GASTOS FINANCIEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4875,7 +4875,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             180 => 
             array (
@@ -4884,7 +4884,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '233510',
                 'nombre' => 'GASTOS LEGALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4902,7 +4902,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             181 => 
             array (
@@ -4911,7 +4911,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '233520',
                 'nombre' => 'COMISIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4929,7 +4929,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             182 => 
             array (
@@ -4938,7 +4938,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '233525',
                 'nombre' => 'HONORARIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4956,7 +4956,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             183 => 
             array (
@@ -4965,7 +4965,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '233530',
                 'nombre' => 'SERVICIOS TECNICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -4983,7 +4983,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             184 => 
             array (
@@ -4992,7 +4992,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '233535',
                 'nombre' => 'SERVICIOS DE MANTENIMIENTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5010,7 +5010,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             185 => 
             array (
@@ -5019,7 +5019,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '233540',
                 'nombre' => 'ARRENDAMIENTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5037,7 +5037,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             186 => 
             array (
@@ -5046,7 +5046,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '233545',
                 'nombre' => 'TRANSPORTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5064,7 +5064,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             187 => 
             array (
@@ -5073,7 +5073,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '233550',
                 'nombre' => 'SERVICIOS PUBLICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5091,7 +5091,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             188 => 
             array (
@@ -5100,7 +5100,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '233555',
                 'nombre' => 'SEGUROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5118,7 +5118,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             189 => 
             array (
@@ -5127,7 +5127,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '233565',
                 'nombre' => 'GASTOS DE REPRESENTACION Y RELACIONES PUBLICAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5145,7 +5145,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             190 => 
             array (
@@ -5172,7 +5172,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             191 => 
             array (
@@ -5181,7 +5181,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '23359501',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5199,7 +5199,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             192 => 
             array (
@@ -5226,7 +5226,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             193 => 
             array (
@@ -5235,7 +5235,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '235505',
                 'nombre' => 'ACCIONISTAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5253,7 +5253,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             194 => 
             array (
@@ -5262,7 +5262,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '235510',
                 'nombre' => 'SOCIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5280,7 +5280,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             195 => 
             array (
@@ -5307,7 +5307,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             196 => 
             array (
@@ -5316,7 +5316,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '236505',
                 'nombre' => 'SALARIOS Y PAGOS LABORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5334,7 +5334,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             197 => 
             array (
@@ -5361,7 +5361,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             198 => 
             array (
@@ -5370,7 +5370,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 5,
                 'cuenta' => '23651501',
                 'nombre' => 'HONORARIOS PJ O ASIMILIDA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5388,7 +5388,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             199 => 
             array (
@@ -5397,7 +5397,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 5,
                 'cuenta' => '23651502',
                 'nombre' => 'HONORARIOS PN 11%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5415,7 +5415,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             200 => 
             array (
@@ -5424,7 +5424,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 6,
                 'cuenta' => '23651503',
                 'nombre' => 'HONORARIOS PN 10%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5442,7 +5442,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             201 => 
             array (
@@ -5469,7 +5469,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             202 => 
             array (
@@ -5478,7 +5478,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 5,
                 'cuenta' => '23652001',
                 'nombre' => 'COMISIONES PJ O ASIMILIDA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5496,7 +5496,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             203 => 
             array (
@@ -5505,7 +5505,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 5,
                 'cuenta' => '23652002',
                 'nombre' => 'COMISIONES PN 11%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5523,7 +5523,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             204 => 
             array (
@@ -5532,7 +5532,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 6,
                 'cuenta' => '23652003',
                 'nombre' => 'COMISIONES PN 10%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5550,7 +5550,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             205 => 
             array (
@@ -5577,7 +5577,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             206 => 
             array (
@@ -5586,7 +5586,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 7,
                 'cuenta' => '23652501',
                 'nombre' => 'SERVICIOS ASEO Y VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5604,7 +5604,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             207 => 
             array (
@@ -5613,7 +5613,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 8,
                 'cuenta' => '23652503',
                 'nombre' => 'SERVICIOS DE TRANSPORTE DE CARGA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5631,7 +5631,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             208 => 
             array (
@@ -5640,7 +5640,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 9,
                 'cuenta' => '23652504',
                 'nombre' => 'SERVICIOS DE TRANSPORTE NAL DE PASAJEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5658,7 +5658,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             209 => 
             array (
@@ -5667,7 +5667,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 12,
                 'cuenta' => '23652505',
                 'nombre' => 'SERVICIOS GENERALES PJ Y PN OBLIG A DECALRAR RTA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5685,7 +5685,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             210 => 
             array (
@@ -5694,7 +5694,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 11,
                 'cuenta' => '23652506',
                 'nombre' => 'SERVICIOS GENERALES PN NO OBLIG A DECALRAR RTA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5712,7 +5712,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             211 => 
             array (
@@ -5721,7 +5721,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 8,
                 'cuenta' => '23652507',
                 'nombre' => 'SERVICIOS TEMPORALES DE EMPLEO 100%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5739,7 +5739,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             212 => 
             array (
@@ -5766,7 +5766,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             213 => 
             array (
@@ -5775,7 +5775,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 12,
                 'cuenta' => '23653001',
                 'nombre' => 'ARRENDAMIENTOS BIENES MUEBLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5793,7 +5793,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             214 => 
             array (
@@ -5802,7 +5802,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 9,
                 'cuenta' => '23653002',
                 'nombre' => 'ARRENDAMIENTOS BIENES INMUEBLES PARA DECLARANTES Y NO DECALR',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5820,7 +5820,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             215 => 
             array (
@@ -5829,7 +5829,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 20,
                 'cuenta' => '236535',
                 'nombre' => 'RENDIMIENTOS FINANCIEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5847,7 +5847,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             216 => 
             array (
@@ -5874,7 +5874,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             217 => 
             array (
@@ -5883,7 +5883,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '23654001',
                 'nombre' => 'COMPRA DE COMBUSTUSTIBLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5901,7 +5901,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             218 => 
             array (
@@ -5910,7 +5910,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 21,
                 'cuenta' => '23654002',
                 'nombre' => 'COMPRAS Y OTROS INGRESOS NO DECLARANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5928,7 +5928,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             219 => 
             array (
@@ -5937,7 +5937,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '236560',
                 'nombre' => 'ENAJENACION PROPIEDADES PLANTA Y EQUIPO PERSONAS NATURALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5955,7 +5955,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             220 => 
             array (
@@ -5964,7 +5964,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '236565',
                 'nombre' => 'POR IMPUESTO DE TIMBRE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -5982,7 +5982,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             221 => 
             array (
@@ -5991,7 +5991,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '236570',
                 'nombre' => 'OTRAS RETENCIONES Y PATRIMONIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6009,7 +6009,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             222 => 
             array (
@@ -6036,7 +6036,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             223 => 
             array (
@@ -6045,7 +6045,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '23657501',
                 'nombre' => 'AUTO RENTA 0.4',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6063,7 +6063,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             224 => 
             array (
@@ -6072,7 +6072,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '23657502',
                 'nombre' => 'AUTO RENTA 0.8',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6090,7 +6090,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             225 => 
             array (
@@ -6099,7 +6099,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '23657503',
                 'nombre' => 'AUTO RENTA 1.6',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6117,7 +6117,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             226 => 
             array (
@@ -6144,7 +6144,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             227 => 
             array (
@@ -6153,7 +6153,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '236701',
                 'nombre' => 'IVA RETENIDO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6171,7 +6171,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             228 => 
             array (
@@ -6198,7 +6198,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             229 => 
             array (
@@ -6207,7 +6207,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '236801',
                 'nombre' => 'ICA RETENIDO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6225,7 +6225,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             230 => 
             array (
@@ -6252,7 +6252,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             231 => 
             array (
@@ -6261,7 +6261,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '237005',
                 'nombre' => 'APORTES AL I.S.S.',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6279,7 +6279,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             232 => 
             array (
@@ -6288,7 +6288,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '237010',
                 'nombre' => 'APORTES AL I.C.B.F.',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6306,7 +6306,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             233 => 
             array (
@@ -6315,7 +6315,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '237015',
                 'nombre' => 'APORTES AL F.I.C.',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6333,7 +6333,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             234 => 
             array (
@@ -6342,7 +6342,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '237030',
                 'nombre' => 'LIBRANZAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6360,7 +6360,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             235 => 
             array (
@@ -6369,7 +6369,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '237035',
                 'nombre' => 'SINDICATOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6387,7 +6387,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:43',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             236 => 
             array (
@@ -6396,7 +6396,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '237040',
                 'nombre' => 'COOPERATIVAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6414,7 +6414,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             237 => 
             array (
@@ -6423,7 +6423,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '237045',
                 'nombre' => 'FONDOS DE PENSIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6441,7 +6441,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             238 => 
             array (
@@ -6450,7 +6450,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '237095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6468,7 +6468,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             239 => 
             array (
@@ -6495,7 +6495,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             240 => 
             array (
@@ -6504,7 +6504,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '238095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -6522,7 +6522,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             241 => 
             array (
@@ -6549,7 +6549,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             242 => 
             array (
@@ -6576,7 +6576,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             243 => 
             array (
@@ -6585,7 +6585,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '240405',
                 'nombre' => 'VIGENCIA FISCAL CORRIENTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6603,7 +6603,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             244 => 
             array (
@@ -6612,7 +6612,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '240410',
                 'nombre' => 'VIGENCIAS FISCALES ANTERIORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6630,7 +6630,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             245 => 
             array (
@@ -6657,7 +6657,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             246 => 
             array (
@@ -6684,7 +6684,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             247 => 
             array (
@@ -6693,7 +6693,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 1,
                 'cuenta' => '24080501',
                 'nombre' => 'IVA GENERADO EN VENTAS 16%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6711,7 +6711,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             248 => 
             array (
@@ -6720,7 +6720,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 2,
                 'cuenta' => '24080502',
                 'nombre' => 'IVA GENERADO EN VENTAS 19%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6738,7 +6738,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             249 => 
             array (
@@ -6747,7 +6747,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 3,
                 'cuenta' => '24080503',
                 'nombre' => 'IVA GENERADO EN VENTAS 5%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6765,7 +6765,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             250 => 
             array (
@@ -6774,7 +6774,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 2,
                 'cuenta' => '24080504',
                 'nombre' => 'IVA GENERADO EN VENTAS AIU 19%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6792,7 +6792,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             251 => 
             array (
@@ -6801,7 +6801,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 1,
                 'cuenta' => '24080511',
                 'nombre' => 'IVA GENERADO EN DEV. POR COMPRAS 16%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6819,7 +6819,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             252 => 
             array (
@@ -6828,7 +6828,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 2,
                 'cuenta' => '24080512',
                 'nombre' => 'IVA GENERADO EN DEV. POR COMPRAS 19%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6846,7 +6846,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             253 => 
             array (
@@ -6855,7 +6855,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 3,
                 'cuenta' => '24080513',
                 'nombre' => 'IVA GENERADO EN DEV. POR COMPRAS 5%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6873,7 +6873,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             254 => 
             array (
@@ -6882,7 +6882,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 1,
                 'cuenta' => '24080521',
                 'nombre' => 'IVA GENERADO EN DCTO. POR COMPRAS 16%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6900,7 +6900,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             255 => 
             array (
@@ -6909,7 +6909,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 2,
                 'cuenta' => '24080522',
                 'nombre' => 'IVA GENERADO EN DCTO. POR COMPRAS 19%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6927,7 +6927,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             256 => 
             array (
@@ -6936,7 +6936,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 3,
                 'cuenta' => '24080523',
                 'nombre' => 'IVA GENERADO EN DCTO. POR COMPRAS 5%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6954,7 +6954,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             257 => 
             array (
@@ -6963,7 +6963,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 1,
                 'cuenta' => '24080531',
                 'nombre' => 'IVA GENERADO EN DCTO O DEV . POR SERVICIOS  16%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -6981,7 +6981,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             258 => 
             array (
@@ -6990,7 +6990,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 2,
                 'cuenta' => '24080532',
                 'nombre' => 'IVA GENERADO EN DCTO O DEV . POR SERVICIOS  19%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7008,7 +7008,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             259 => 
             array (
@@ -7017,7 +7017,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 3,
                 'cuenta' => '24080533',
                 'nombre' => 'IVA GENERADO EN DCTO O DEV . POR SERVICIOS  5%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7035,7 +7035,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             260 => 
             array (
@@ -7062,7 +7062,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             261 => 
             array (
@@ -7071,7 +7071,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 1,
                 'cuenta' => '24081001',
                 'nombre' => 'IVA DESCONTABLES POR COMPRAS DEL 16%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7089,7 +7089,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             262 => 
             array (
@@ -7098,7 +7098,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 2,
                 'cuenta' => '24081002',
                 'nombre' => 'IVA DESCONTABLES POR COMPRAS DEL 19%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7116,7 +7116,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             263 => 
             array (
@@ -7125,7 +7125,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 3,
                 'cuenta' => '24081003',
                 'nombre' => 'IVA DESCONTABLES POR COMPRAS DEL 5%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7143,7 +7143,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             264 => 
             array (
@@ -7152,7 +7152,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 1,
                 'cuenta' => '24081011',
                 'nombre' => 'IVA DESCONTABLE POR DEV. EN VENTAS 16%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7170,7 +7170,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             265 => 
             array (
@@ -7179,7 +7179,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 2,
                 'cuenta' => '24081012',
                 'nombre' => 'IVA DESCONTABLE POR DEV. EN VENTAS 19%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7197,7 +7197,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             266 => 
             array (
@@ -7206,7 +7206,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 3,
                 'cuenta' => '24081013',
                 'nombre' => 'IVA DESCONTABLE POR DEV. EN VENTAS 5%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7224,7 +7224,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             267 => 
             array (
@@ -7233,7 +7233,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 1,
                 'cuenta' => '24081021',
                 'nombre' => 'IVA DESCONTABLE EN DCTO.  VENTAS 16%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7251,7 +7251,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             268 => 
             array (
@@ -7260,7 +7260,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 2,
                 'cuenta' => '24081022',
                 'nombre' => 'IVA DESCONTABLE EN DCTO. VENTAS  19%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7278,7 +7278,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             269 => 
             array (
@@ -7287,7 +7287,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 3,
                 'cuenta' => '24081023',
                 'nombre' => 'IVA DESCONTABLE EN DCTO. VENTAS  5%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7305,7 +7305,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             270 => 
             array (
@@ -7314,7 +7314,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 1,
                 'cuenta' => '24081031',
                 'nombre' => 'IVA DESCONTABLES POR SERVICIOS  DEL 16%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7332,7 +7332,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             271 => 
             array (
@@ -7341,7 +7341,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 2,
                 'cuenta' => '24081032',
                 'nombre' => 'IVA DESCONTABLES POR SERVICIOS  DEL 19%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7359,7 +7359,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             272 => 
             array (
@@ -7368,7 +7368,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 3,
                 'cuenta' => '24081033',
                 'nombre' => 'IVA DESCONTABLES POR SERVICIOS  DEL 5%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7386,7 +7386,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             273 => 
             array (
@@ -7413,7 +7413,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             274 => 
             array (
@@ -7422,7 +7422,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '241205',
                 'nombre' => 'VIGENCIA FISCAL CORRIENTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7440,7 +7440,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             275 => 
             array (
@@ -7449,7 +7449,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '241210',
                 'nombre' => 'VIGENCIAS FISCALES ANTERIORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7467,7 +7467,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             276 => 
             array (
@@ -7494,7 +7494,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             277 => 
             array (
@@ -7521,7 +7521,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             278 => 
             array (
@@ -7530,7 +7530,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '250501',
                 'nombre' => 'SALARIOS POR PAGAR',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7548,7 +7548,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             279 => 
             array (
@@ -7575,7 +7575,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             280 => 
             array (
@@ -7584,7 +7584,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '251005',
                 'nombre' => 'LEY LABORAL ANTERIOR',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7602,7 +7602,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             281 => 
             array (
@@ -7611,7 +7611,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '251010',
                 'nombre' => 'LEY 50 DE 1990 Y NORMAS POSTERIORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7629,7 +7629,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             282 => 
             array (
@@ -7656,7 +7656,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             283 => 
             array (
@@ -7665,7 +7665,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '251501',
                 'nombre' => 'INTERESES CONSOLIDADOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7683,7 +7683,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             284 => 
             array (
@@ -7710,7 +7710,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             285 => 
             array (
@@ -7719,7 +7719,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '252001',
                 'nombre' => 'PRIMA DE SERVICIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7737,7 +7737,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             286 => 
             array (
@@ -7764,7 +7764,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             287 => 
             array (
@@ -7773,7 +7773,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '252501',
                 'nombre' => 'VACACIONES CONSILIDADAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7791,7 +7791,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             288 => 
             array (
@@ -7818,7 +7818,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             289 => 
             array (
@@ -7827,7 +7827,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '253005',
                 'nombre' => 'PRIMAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7845,7 +7845,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             290 => 
             array (
@@ -7854,7 +7854,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '253010',
                 'nombre' => 'AUXILIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7872,7 +7872,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             291 => 
             array (
@@ -7881,7 +7881,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '253015',
                 'nombre' => 'DOTACION Y SUMINISTRO A TRABAJADORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7899,7 +7899,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             292 => 
             array (
@@ -7908,7 +7908,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '253020',
                 'nombre' => 'BONIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7926,7 +7926,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             293 => 
             array (
@@ -7935,7 +7935,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '253025',
                 'nombre' => 'SEGUROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7953,7 +7953,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             294 => 
             array (
@@ -7962,7 +7962,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '253095',
                 'nombre' => 'OTRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -7980,7 +7980,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             295 => 
             array (
@@ -8007,7 +8007,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             296 => 
             array (
@@ -8034,7 +8034,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             297 => 
             array (
@@ -8043,7 +8043,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '260505',
                 'nombre' => 'INTERESES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8061,7 +8061,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             298 => 
             array (
@@ -8070,7 +8070,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '260510',
                 'nombre' => 'COMISIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8088,7 +8088,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             299 => 
             array (
@@ -8097,7 +8097,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '260515',
                 'nombre' => 'HONORARIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8115,7 +8115,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             300 => 
             array (
@@ -8124,7 +8124,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '260520',
                 'nombre' => 'SERVICIOS TECNICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8142,7 +8142,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             301 => 
             array (
@@ -8151,7 +8151,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '260525',
                 'nombre' => 'TRANSPORTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8169,7 +8169,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             302 => 
             array (
@@ -8178,7 +8178,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '260530',
                 'nombre' => 'GASTOS DE VIAJE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8196,7 +8196,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             303 => 
             array (
@@ -8205,7 +8205,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '260535',
                 'nombre' => 'SERVICIOS PUBLICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8223,7 +8223,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             304 => 
             array (
@@ -8232,7 +8232,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '260540',
                 'nombre' => 'REGALIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8250,7 +8250,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             305 => 
             array (
@@ -8259,7 +8259,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '260545',
                 'nombre' => 'GARANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8277,7 +8277,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             306 => 
             array (
@@ -8286,7 +8286,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '260550',
                 'nombre' => 'MATERIALES Y REPUESTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8304,7 +8304,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             307 => 
             array (
@@ -8313,7 +8313,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '260595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8331,7 +8331,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             308 => 
             array (
@@ -8358,7 +8358,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             309 => 
             array (
@@ -8367,7 +8367,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261005',
                 'nombre' => 'CESANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8385,7 +8385,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             310 => 
             array (
@@ -8394,7 +8394,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261010',
                 'nombre' => 'INTERESES SOBRE CESANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8412,7 +8412,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:44',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             311 => 
             array (
@@ -8421,7 +8421,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261015',
                 'nombre' => 'VACACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8439,7 +8439,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             312 => 
             array (
@@ -8448,7 +8448,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261020',
                 'nombre' => 'PRIMA DE SERVICIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8466,7 +8466,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             313 => 
             array (
@@ -8475,7 +8475,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261025',
                 'nombre' => 'PRESTACIONES EXTRALEGALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8493,7 +8493,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             314 => 
             array (
@@ -8502,7 +8502,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261030',
                 'nombre' => 'VIATICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8520,7 +8520,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             315 => 
             array (
@@ -8529,7 +8529,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261095',
                 'nombre' => 'OTRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8547,7 +8547,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             316 => 
             array (
@@ -8574,7 +8574,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             317 => 
             array (
@@ -8583,7 +8583,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261505',
                 'nombre' => 'DE RENTA Y COMPLEMENTARIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8601,7 +8601,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             318 => 
             array (
@@ -8610,7 +8610,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261510',
                 'nombre' => 'DE INDUSTRIA Y COMERCIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8628,7 +8628,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             319 => 
             array (
@@ -8637,7 +8637,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261515',
                 'nombre' => 'TASA POR UTILIZACION DE PUERTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8655,7 +8655,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             320 => 
             array (
@@ -8664,7 +8664,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261520',
                 'nombre' => 'DE VEHICULOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8682,7 +8682,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             321 => 
             array (
@@ -8691,7 +8691,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261525',
                 'nombre' => 'DE HIDROCARBUROS Y MINAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8709,7 +8709,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             322 => 
             array (
@@ -8718,7 +8718,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '261595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8736,7 +8736,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             323 => 
             array (
@@ -8763,7 +8763,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             324 => 
             array (
@@ -8772,7 +8772,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '262005',
                 'nombre' => 'CALCULO ACTUARIAL PENSIONES DE JUBILACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8790,7 +8790,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             325 => 
             array (
@@ -8799,7 +8799,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '262010',
             'nombre' => 'PENSIONES DE JUBILACION POR AMORTIZAR (DB)',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8817,7 +8817,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             326 => 
             array (
@@ -8844,7 +8844,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             327 => 
             array (
@@ -8853,7 +8853,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '262505',
                 'nombre' => 'ACUEDUCTO Y ALCANTARILLADO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8871,7 +8871,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             328 => 
             array (
@@ -8880,7 +8880,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '262510',
                 'nombre' => 'ENERGIA ELECTRICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8898,7 +8898,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             329 => 
             array (
@@ -8907,7 +8907,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '262515',
                 'nombre' => 'TELEFONOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8925,7 +8925,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             330 => 
             array (
@@ -8934,7 +8934,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '262595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -8952,7 +8952,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             331 => 
             array (
@@ -8979,7 +8979,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             332 => 
             array (
@@ -8988,7 +8988,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263005',
                 'nombre' => 'TERRENOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9006,7 +9006,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             333 => 
             array (
@@ -9015,7 +9015,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263010',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9033,7 +9033,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             334 => 
             array (
@@ -9042,7 +9042,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263015',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9060,7 +9060,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             335 => 
             array (
@@ -9069,7 +9069,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263020',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9087,7 +9087,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             336 => 
             array (
@@ -9096,7 +9096,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263025',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9114,7 +9114,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             337 => 
             array (
@@ -9123,7 +9123,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263030',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9141,7 +9141,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             338 => 
             array (
@@ -9150,7 +9150,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263035',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9168,7 +9168,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:02',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             339 => 
             array (
@@ -9177,7 +9177,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9195,7 +9195,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             340 => 
             array (
@@ -9204,7 +9204,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9222,7 +9222,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             341 => 
             array (
@@ -9231,7 +9231,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9249,7 +9249,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             342 => 
             array (
@@ -9258,7 +9258,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9276,7 +9276,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             343 => 
             array (
@@ -9285,7 +9285,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263060',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9303,7 +9303,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             344 => 
             array (
@@ -9312,7 +9312,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263065',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9330,7 +9330,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             345 => 
             array (
@@ -9339,7 +9339,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263070',
                 'nombre' => 'ENVASES Y EMPAQUES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9357,7 +9357,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             346 => 
             array (
@@ -9366,7 +9366,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263075',
                 'nombre' => 'PLANTACIONES AGRICOLAS Y FORESTALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9384,7 +9384,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:55',
             ),
             347 => 
             array (
@@ -9393,7 +9393,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263080',
                 'nombre' => 'VIAS DE CUMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9411,7 +9411,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             348 => 
             array (
@@ -9420,7 +9420,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263085',
                 'nombre' => 'POZOS ARTESIANOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9438,7 +9438,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             349 => 
             array (
@@ -9447,7 +9447,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9465,7 +9465,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             350 => 
             array (
@@ -9492,7 +9492,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             351 => 
             array (
@@ -9501,7 +9501,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263505',
                 'nombre' => 'MULTAS Y SANCIONES AUTORIDADES ADMINISTRATIVAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9519,7 +9519,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             352 => 
             array (
@@ -9528,7 +9528,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263510',
                 'nombre' => 'INTERESES POR MULTAS Y SANCIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9546,7 +9546,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             353 => 
             array (
@@ -9555,7 +9555,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263515',
                 'nombre' => 'RECLAMOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9573,7 +9573,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             354 => 
             array (
@@ -9582,7 +9582,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263520',
                 'nombre' => 'LABORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9600,7 +9600,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             355 => 
             array (
@@ -9609,7 +9609,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263525',
                 'nombre' => 'CIVILES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9627,7 +9627,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             356 => 
             array (
@@ -9636,7 +9636,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263530',
                 'nombre' => 'PENALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9654,7 +9654,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             357 => 
             array (
@@ -9663,7 +9663,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263535',
                 'nombre' => 'ADMINISTRATIVOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9681,7 +9681,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             358 => 
             array (
@@ -9690,7 +9690,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263540',
                 'nombre' => 'COMERCIALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9708,7 +9708,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             359 => 
             array (
@@ -9717,7 +9717,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '263595',
                 'nombre' => 'OTRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9735,7 +9735,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             360 => 
             array (
@@ -9744,7 +9744,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '2640',
                 'nombre' => 'PARA OBLIGACIONES DE GARANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9762,7 +9762,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             361 => 
             array (
@@ -9789,7 +9789,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             362 => 
             array (
@@ -9798,7 +9798,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '269505',
                 'nombre' => 'PARA BENEFICENCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9816,7 +9816,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             363 => 
             array (
@@ -9825,7 +9825,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '269510',
                 'nombre' => 'PARA COMUNICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9843,7 +9843,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             364 => 
             array (
@@ -9852,7 +9852,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '269515',
                 'nombre' => 'PARA PERDIDA EN TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9870,7 +9870,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             365 => 
             array (
@@ -9879,7 +9879,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '269520',
                 'nombre' => 'PARA OPERACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9897,7 +9897,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             366 => 
             array (
@@ -9906,7 +9906,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '269525',
                 'nombre' => 'PARA PROTECCION DE BIENES AGOTABLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9924,7 +9924,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             367 => 
             array (
@@ -9933,7 +9933,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '269530',
                 'nombre' => 'PARA AJUSTES EN REDENCION DE UNIDADES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9951,7 +9951,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             368 => 
             array (
@@ -9960,7 +9960,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '269535',
                 'nombre' => 'AUTOSEGURO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -9978,7 +9978,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             369 => 
             array (
@@ -9987,7 +9987,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '269540',
                 'nombre' => 'PLANES Y PROGRAMAS DE REFORESTACION Y ELECTRIFICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10005,7 +10005,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             370 => 
             array (
@@ -10014,7 +10014,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '269595',
                 'nombre' => 'OTRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10032,7 +10032,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             371 => 
             array (
@@ -10059,7 +10059,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             372 => 
             array (
@@ -10086,7 +10086,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             373 => 
             array (
@@ -10095,7 +10095,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '270505',
                 'nombre' => 'INTERESES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10113,7 +10113,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             374 => 
             array (
@@ -10122,7 +10122,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '270510',
                 'nombre' => 'COMISIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10140,7 +10140,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             375 => 
             array (
@@ -10149,7 +10149,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '270515',
                 'nombre' => 'ARRENDAMIENTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10167,7 +10167,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             376 => 
             array (
@@ -10176,7 +10176,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '270520',
                 'nombre' => 'HONORARIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10194,7 +10194,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             377 => 
             array (
@@ -10203,7 +10203,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '270525',
                 'nombre' => 'SERVICIOS TECNICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10221,7 +10221,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             378 => 
             array (
@@ -10230,7 +10230,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '270530',
                 'nombre' => 'DE SUSCRIPTORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10248,7 +10248,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             379 => 
             array (
@@ -10257,7 +10257,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '270535',
                 'nombre' => 'TRANSPORTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10275,7 +10275,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             380 => 
             array (
@@ -10284,7 +10284,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '270540',
                 'nombre' => 'MERCANCIA EN TRANSITO YA VENDIDA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10302,7 +10302,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             381 => 
             array (
@@ -10311,7 +10311,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '270545',
                 'nombre' => 'MATRICULAS Y PENSIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10329,7 +10329,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             382 => 
             array (
@@ -10338,7 +10338,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '270550',
                 'nombre' => 'CUOTAS DE ADMINISTRACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10356,7 +10356,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             383 => 
             array (
@@ -10365,7 +10365,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '270595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10383,7 +10383,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             384 => 
             array (
@@ -10410,7 +10410,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             385 => 
             array (
@@ -10419,7 +10419,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '271005',
                 'nombre' => 'REAJUSTE DEL SISTEMA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10437,7 +10437,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             386 => 
             array (
@@ -10446,7 +10446,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '2715',
                 'nombre' => 'UTILIDAD DIFERIDA EN VENTAS A PLAZOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10464,7 +10464,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             387 => 
             array (
@@ -10473,7 +10473,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '2720',
                 'nombre' => 'CREDITO POR CORRECCION MONETARIA DIFERIDA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10491,7 +10491,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             388 => 
             array (
@@ -10518,7 +10518,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             389 => 
             array (
@@ -10527,7 +10527,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '272505',
                 'nombre' => 'POR DEPRECIACION FLEXIBLE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10545,7 +10545,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             390 => 
             array (
@@ -10554,7 +10554,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '272595',
                 'nombre' => 'DIVERSOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10572,7 +10572,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             391 => 
             array (
@@ -10581,7 +10581,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '272599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10599,7 +10599,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             392 => 
             array (
@@ -10626,7 +10626,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             393 => 
             array (
@@ -10653,7 +10653,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             394 => 
             array (
@@ -10662,7 +10662,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '280505',
                 'nombre' => 'DE CLIENTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -10680,7 +10680,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             395 => 
             array (
@@ -10689,7 +10689,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '280510',
                 'nombre' => 'SOBRE CONTRATOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -10707,7 +10707,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             396 => 
             array (
@@ -10716,7 +10716,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '280515',
                 'nombre' => 'PARA OBRAS EN PROCESO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -10734,7 +10734,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             397 => 
             array (
@@ -10743,7 +10743,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '280595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -10761,7 +10761,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             398 => 
             array (
@@ -10788,7 +10788,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             399 => 
             array (
@@ -10797,7 +10797,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '281005',
                 'nombre' => 'PARA FUTURA SUSCRIPCION DE ACCIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10815,7 +10815,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             400 => 
             array (
@@ -10824,7 +10824,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '281010',
                 'nombre' => 'PARA FUTURO PAGO DE CUOTAS O DERECHOS SOCIALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10842,7 +10842,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             401 => 
             array (
@@ -10851,7 +10851,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '281015',
                 'nombre' => 'PARA GARANTIA EN LA PRESTACION DE SERVICIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10869,7 +10869,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             402 => 
             array (
@@ -10878,7 +10878,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '281020',
                 'nombre' => 'PARA GARANTIA DE CONTRATOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10896,7 +10896,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             403 => 
             array (
@@ -10905,7 +10905,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '281025',
                 'nombre' => 'DE LICITACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10923,7 +10923,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             404 => 
             array (
@@ -10932,7 +10932,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '281030',
                 'nombre' => 'DE MANEJO DE BIENES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10950,7 +10950,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             405 => 
             array (
@@ -10959,7 +10959,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '281035',
                 'nombre' => 'FONDO DE RESERVA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -10977,7 +10977,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             406 => 
             array (
@@ -10986,7 +10986,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '281095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11004,7 +11004,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             407 => 
             array (
@@ -11031,7 +11031,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             408 => 
             array (
@@ -11040,7 +11040,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '281505',
                 'nombre' => 'VALORES RECIBIDOS PARA TERCEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11058,7 +11058,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             409 => 
             array (
@@ -11067,7 +11067,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '281510',
                 'nombre' => 'VENTA POR CUENTA DE TERCEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11085,7 +11085,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             410 => 
             array (
@@ -11094,7 +11094,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '2820',
                 'nombre' => 'CUENTAS DE OPERACION CONJUNTA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11112,7 +11112,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             411 => 
             array (
@@ -11139,7 +11139,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             412 => 
             array (
@@ -11148,7 +11148,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '282505',
                 'nombre' => 'CUMPLIMIENTO OBLIGACIONES LABORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11166,7 +11166,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             413 => 
             array (
@@ -11175,7 +11175,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '282510',
                 'nombre' => 'PARA ESTABILIDAD DE OBRA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11193,7 +11193,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             414 => 
             array (
@@ -11202,7 +11202,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '282515',
                 'nombre' => 'GARANTIA CUMPLIMIENTO DE CONTRATOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11220,7 +11220,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             415 => 
             array (
@@ -11247,7 +11247,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             416 => 
             array (
@@ -11256,7 +11256,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '283005',
                 'nombre' => 'INDEMNIZACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11274,7 +11274,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             417 => 
             array (
@@ -11283,7 +11283,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '283010',
                 'nombre' => 'DEPOSITOS JUDICIALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11301,7 +11301,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             418 => 
             array (
@@ -11328,7 +11328,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             419 => 
             array (
@@ -11337,7 +11337,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '283505',
                 'nombre' => 'CUOTAS NETAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11355,7 +11355,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             420 => 
             array (
@@ -11364,7 +11364,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '283510',
                 'nombre' => 'GRUPOS EN FORMACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11382,7 +11382,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             421 => 
             array (
@@ -11391,7 +11391,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '2840',
                 'nombre' => 'CUENTAS EN PARTICIPACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11409,7 +11409,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             422 => 
             array (
@@ -11436,7 +11436,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             423 => 
             array (
@@ -11445,7 +11445,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '289505',
                 'nombre' => 'PRESTAMOS DE PRODUCTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11463,7 +11463,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             424 => 
             array (
@@ -11472,7 +11472,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '289510',
                 'nombre' => 'REEMBOLSO DE COSTOS EXPLORATORIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11490,7 +11490,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             425 => 
             array (
@@ -11499,7 +11499,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '289515',
                 'nombre' => 'PROGRAMA DE EXTENSION AGROPECUARIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11517,7 +11517,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             426 => 
             array (
@@ -11544,7 +11544,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             427 => 
             array (
@@ -11571,7 +11571,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             428 => 
             array (
@@ -11598,7 +11598,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             429 => 
             array (
@@ -11607,7 +11607,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '310505',
                 'nombre' => 'CAPITAL AUTORIZADO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11625,7 +11625,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             430 => 
             array (
@@ -11634,7 +11634,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '310510',
             'nombre' => 'CAPITAL POR SUSCRIBIR (DB)',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11652,7 +11652,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             431 => 
             array (
@@ -11661,7 +11661,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '310515',
             'nombre' => 'CAPITAL SUSCRITO POR COBRAR (DB)',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11679,7 +11679,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             432 => 
             array (
@@ -11706,7 +11706,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             433 => 
             array (
@@ -11715,7 +11715,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '311005',
             'nombre' => 'ACCIONES PROPIAS READQUIRIDAS (DB)',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11733,7 +11733,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             434 => 
             array (
@@ -11742,7 +11742,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '311010',
             'nombre' => 'CUOTAS O PARTES DE INTERES SOCIAL PROPIAS READQUIRIDAS (DB)',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11760,7 +11760,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             435 => 
             array (
@@ -11787,7 +11787,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             436 => 
             array (
@@ -11796,7 +11796,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '311505',
                 'nombre' => 'CUOTAS O PARTES DE INTERES SOCIAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11814,7 +11814,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             437 => 
             array (
@@ -11823,7 +11823,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '311510',
                 'nombre' => 'APORTES DE SOCIOS - FONDO MUTUO DE INVERSION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11841,7 +11841,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             438 => 
             array (
@@ -11850,7 +11850,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '311515',
                 'nombre' => 'CONTRIBUCION DE LA EMPRESA - FONDO MUTUO DE INVERSION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11868,7 +11868,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             439 => 
             array (
@@ -11877,7 +11877,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '311520',
                 'nombre' => 'SUSCRIPCIONES DEL PUBLICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11895,7 +11895,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             440 => 
             array (
@@ -11904,7 +11904,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '3120',
                 'nombre' => 'CAPITAL ASIGNADO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11922,7 +11922,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             441 => 
             array (
@@ -11931,7 +11931,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '3125',
                 'nombre' => 'INVERSION SUPLEMENTARIA AL CAPITAL ASIGNADO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11949,7 +11949,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             442 => 
             array (
@@ -11958,7 +11958,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '3130',
                 'nombre' => 'CAPITAL DE PERSONAS NATURALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -11976,7 +11976,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             443 => 
             array (
@@ -11985,7 +11985,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '3135',
                 'nombre' => 'APORTES DEL ESTADO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12003,7 +12003,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             444 => 
             array (
@@ -12012,7 +12012,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '3140',
                 'nombre' => 'FONDO SOCIAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12030,7 +12030,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             445 => 
             array (
@@ -12057,7 +12057,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             446 => 
             array (
@@ -12084,7 +12084,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             447 => 
             array (
@@ -12093,7 +12093,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '320505',
                 'nombre' => 'PRIMA EN COLOCACION DE ACCIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12111,7 +12111,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             448 => 
             array (
@@ -12120,7 +12120,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '320510',
             'nombre' => 'PRIMA EN COLOCACION DE ACCIONES POR COBRAR (DB)',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12138,7 +12138,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             449 => 
             array (
@@ -12147,7 +12147,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '320515',
                 'nombre' => 'PRIMA EN COLOCACION DE CUOTAS O PARTES DE INTERES SOCIAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12165,7 +12165,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             450 => 
             array (
@@ -12192,7 +12192,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             451 => 
             array (
@@ -12201,7 +12201,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '321005',
                 'nombre' => 'EN DINERO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12219,7 +12219,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             452 => 
             array (
@@ -12228,7 +12228,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '321010',
                 'nombre' => 'EN VALORES MOBILIARIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12246,7 +12246,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             453 => 
             array (
@@ -12255,7 +12255,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '321015',
                 'nombre' => 'EN BIENES MUEBLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12273,7 +12273,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             454 => 
             array (
@@ -12282,7 +12282,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '321020',
                 'nombre' => 'EN BIENES INMUEBLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12300,7 +12300,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             455 => 
             array (
@@ -12309,7 +12309,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '321025',
                 'nombre' => 'EN INTANGIBLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12327,7 +12327,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             456 => 
             array (
@@ -12354,7 +12354,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             457 => 
             array (
@@ -12381,7 +12381,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             458 => 
             array (
@@ -12408,7 +12408,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             459 => 
             array (
@@ -12417,7 +12417,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '330505',
                 'nombre' => 'RESERVA LEGAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12435,7 +12435,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             460 => 
             array (
@@ -12444,7 +12444,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '330510',
                 'nombre' => 'RESERVAS POR DISPOSICIONES FISCALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12462,7 +12462,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             461 => 
             array (
@@ -12471,7 +12471,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '330515',
                 'nombre' => 'RESERVA PARA READQUISICION DE ACCIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12489,7 +12489,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             462 => 
             array (
@@ -12498,7 +12498,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '330517',
                 'nombre' => 'RESERVA PARA READQUISICION DE CUOTAS O PARTES DE INTERES SOC',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12516,7 +12516,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             463 => 
             array (
@@ -12525,7 +12525,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '330520',
                 'nombre' => 'RESERVA PARA EXTENSION AGROPECUARIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12543,7 +12543,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             464 => 
             array (
@@ -12552,7 +12552,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '330525',
                 'nombre' => 'RESERVA LEY 7a. DE 1990',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12570,7 +12570,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             465 => 
             array (
@@ -12579,7 +12579,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '330530',
                 'nombre' => 'RESERVA PARA REPOSICION DE SEMOVIENTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12597,7 +12597,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             466 => 
             array (
@@ -12606,7 +12606,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '330535',
                 'nombre' => 'RESERVA LEY 4a DE 1980',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12624,7 +12624,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             467 => 
             array (
@@ -12633,7 +12633,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '330595',
                 'nombre' => 'OTRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12651,7 +12651,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             468 => 
             array (
@@ -12678,7 +12678,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             469 => 
             array (
@@ -12687,7 +12687,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331005',
                 'nombre' => 'PARA FUTURAS CAPITALIZACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12705,7 +12705,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             470 => 
             array (
@@ -12714,7 +12714,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331010',
                 'nombre' => 'PARA REPOSICION DE ACTIVOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12732,7 +12732,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             471 => 
             array (
@@ -12741,7 +12741,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331015',
                 'nombre' => 'PARA FUTUROS ENSANCHES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12759,7 +12759,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             472 => 
             array (
@@ -12768,7 +12768,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331095',
                 'nombre' => 'OTRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12786,7 +12786,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             473 => 
             array (
@@ -12813,7 +12813,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             474 => 
             array (
@@ -12822,7 +12822,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331505',
                 'nombre' => 'PARA BENEFICENCIA Y CIVISMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12840,7 +12840,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             475 => 
             array (
@@ -12849,7 +12849,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331510',
                 'nombre' => 'PARA FUTURAS CAPITALIZACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12867,7 +12867,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             476 => 
             array (
@@ -12876,7 +12876,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331515',
                 'nombre' => 'PARA FUTUROS ENSANCHES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12894,7 +12894,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             477 => 
             array (
@@ -12903,7 +12903,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331520',
                 'nombre' => 'PARA ADQUISICION O REPOSICION DE PROPIEDADES PLANTA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12921,7 +12921,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             478 => 
             array (
@@ -12930,7 +12930,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331525',
                 'nombre' => 'PARA INVESTIGACIONES Y DESARROLLO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12948,7 +12948,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             479 => 
             array (
@@ -12957,7 +12957,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331530',
                 'nombre' => 'PARA FOMENTO ECONOMICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -12975,7 +12975,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             480 => 
             array (
@@ -12984,7 +12984,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331535',
                 'nombre' => 'PARA CAPITAL DE TRABAJO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13002,7 +13002,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             481 => 
             array (
@@ -13011,7 +13011,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331540',
                 'nombre' => 'PARA ESTABILIZACION DE RENDIMIENTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13029,7 +13029,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             482 => 
             array (
@@ -13038,7 +13038,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331545',
                 'nombre' => 'A DISPOSICION DEL MAXIMO ORGANO SOCIAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13056,7 +13056,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             483 => 
             array (
@@ -13065,7 +13065,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '331595',
                 'nombre' => 'OTRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13083,7 +13083,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             484 => 
             array (
@@ -13110,7 +13110,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             485 => 
             array (
@@ -13137,7 +13137,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             486 => 
             array (
@@ -13146,7 +13146,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '340505',
                 'nombre' => 'DE CAPITAL SOCIAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13164,7 +13164,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             487 => 
             array (
@@ -13173,7 +13173,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '340510',
                 'nombre' => 'DE SUPERAVIT DE CAPITAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13191,7 +13191,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             488 => 
             array (
@@ -13200,7 +13200,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '340515',
                 'nombre' => 'DE RESERVAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13218,7 +13218,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             489 => 
             array (
@@ -13227,7 +13227,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '340520',
                 'nombre' => 'DE RESULTADOS DE EJERCICIOS ANTERIORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13245,7 +13245,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             490 => 
             array (
@@ -13254,7 +13254,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '340525',
                 'nombre' => 'DE ACTIVOS EN PERIODO IMPRODUCTIVO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13272,7 +13272,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             491 => 
             array (
@@ -13281,7 +13281,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '3410',
                 'nombre' => 'SANEAMIENTO FISCAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13299,7 +13299,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             492 => 
             array (
@@ -13308,7 +13308,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '3415',
                 'nombre' => 'AJUSTES POR INFLACION DECRETO 3019 DE 1989',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13326,7 +13326,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             493 => 
             array (
@@ -13353,7 +13353,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             494 => 
             array (
@@ -13362,7 +13362,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '3505',
                 'nombre' => 'DIVIDENDOS DECRETADOS EN ACCIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13380,7 +13380,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             495 => 
             array (
@@ -13389,7 +13389,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '3510',
                 'nombre' => 'PARTICIPACIONES DECRETADAS EN CUOTAS O PARTES DE INTERES SOC',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13407,7 +13407,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             496 => 
             array (
@@ -13434,7 +13434,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             497 => 
             array (
@@ -13461,7 +13461,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             498 => 
             array (
@@ -13470,7 +13470,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '360505',
                 'nombre' => 'UTILIDAD DEL EJERCICIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13488,7 +13488,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             499 => 
             array (
@@ -13497,7 +13497,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '360510',
                 'nombre' => 'UTILIDAD POR EXPOSICION A LA INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13515,7 +13515,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:03',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
         ));
         \DB::table('plan_cuentas')->insert(array (
@@ -13544,7 +13544,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             1 => 
             array (
@@ -13553,7 +13553,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '361005',
                 'nombre' => 'PERDIDA DEL EJERCICIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13571,7 +13571,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             2 => 
             array (
@@ -13580,7 +13580,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '361010',
                 'nombre' => 'PERDIDAS ACUMULADAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13598,7 +13598,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             3 => 
             array (
@@ -13625,7 +13625,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             4 => 
             array (
@@ -13652,7 +13652,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             5 => 
             array (
@@ -13661,7 +13661,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '370501',
                 'nombre' => 'UTILIDADES ACUMULADAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13679,7 +13679,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             6 => 
             array (
@@ -13706,7 +13706,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             7 => 
             array (
@@ -13715,7 +13715,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '371005',
                 'nombre' => 'PERDIDAS ACUMULADAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13733,7 +13733,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:47:46',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             8 => 
             array (
@@ -13760,7 +13760,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             9 => 
             array (
@@ -13787,7 +13787,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             10 => 
             array (
@@ -13796,7 +13796,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '380505',
                 'nombre' => 'ACCIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13814,7 +13814,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             11 => 
             array (
@@ -13823,7 +13823,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '380510',
                 'nombre' => 'CUOTAS O PARTES DE INTERES SOCIAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13841,7 +13841,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             12 => 
             array (
@@ -13850,7 +13850,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '380515',
                 'nombre' => 'DERECHOS FIDUCIARIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13868,7 +13868,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             13 => 
             array (
@@ -13895,7 +13895,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             14 => 
             array (
@@ -13904,7 +13904,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381004',
                 'nombre' => 'TERRENOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13922,7 +13922,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             15 => 
             array (
@@ -13931,7 +13931,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381006',
                 'nombre' => 'MATERIALES PROYECTOS PETROLEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13949,7 +13949,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             16 => 
             array (
@@ -13958,7 +13958,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381008',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -13976,7 +13976,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             17 => 
             array (
@@ -13985,7 +13985,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381012',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14003,7 +14003,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             18 => 
             array (
@@ -14012,7 +14012,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381016',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14030,7 +14030,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             19 => 
             array (
@@ -14039,7 +14039,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381020',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14057,7 +14057,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             20 => 
             array (
@@ -14066,7 +14066,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381024',
                 'nombre' => 'EQUIPO MEDICO CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14084,7 +14084,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             21 => 
             array (
@@ -14093,7 +14093,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381028',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14111,7 +14111,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             22 => 
             array (
@@ -14120,7 +14120,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381032',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14138,7 +14138,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             23 => 
             array (
@@ -14147,7 +14147,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381036',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14165,7 +14165,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             24 => 
             array (
@@ -14174,7 +14174,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381040',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14192,7 +14192,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             25 => 
             array (
@@ -14201,7 +14201,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381044',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14219,7 +14219,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             26 => 
             array (
@@ -14228,7 +14228,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381048',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14246,7 +14246,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             27 => 
             array (
@@ -14255,7 +14255,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381052',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14273,7 +14273,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             28 => 
             array (
@@ -14282,7 +14282,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381056',
                 'nombre' => 'ENVASES Y EMPAQUES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14300,7 +14300,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             29 => 
             array (
@@ -14309,7 +14309,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381060',
                 'nombre' => 'PLANTACIONES AGRICOLAS Y FORESTALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14327,7 +14327,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             30 => 
             array (
@@ -14336,7 +14336,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381064',
                 'nombre' => 'VIAS DE COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14354,7 +14354,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             31 => 
             array (
@@ -14363,7 +14363,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381068',
                 'nombre' => 'MINAS Y CANTERAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14381,7 +14381,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             32 => 
             array (
@@ -14390,7 +14390,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381072',
                 'nombre' => 'POZOS ARTESIANOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14408,7 +14408,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             33 => 
             array (
@@ -14417,7 +14417,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381076',
                 'nombre' => 'YACIMIENTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14435,7 +14435,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             34 => 
             array (
@@ -14444,7 +14444,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '381080',
                 'nombre' => 'SEMOVIENTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14462,7 +14462,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             35 => 
             array (
@@ -14489,7 +14489,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             36 => 
             array (
@@ -14498,7 +14498,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '389505',
                 'nombre' => 'BIENES DE ARTE Y CULTURA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14516,7 +14516,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             37 => 
             array (
@@ -14525,7 +14525,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '389510',
                 'nombre' => 'BIENES ENTREGADOS EN COMODATO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14543,7 +14543,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             38 => 
             array (
@@ -14552,7 +14552,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '389515',
                 'nombre' => 'BIENES RECIBIDOS EN PAGO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14570,7 +14570,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             39 => 
             array (
@@ -14579,7 +14579,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '389520',
                 'nombre' => 'INVENTARIO DE SEMOVIENTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14597,7 +14597,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             40 => 
             array (
@@ -14624,7 +14624,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             41 => 
             array (
@@ -14651,7 +14651,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:05',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             42 => 
             array (
@@ -14678,7 +14678,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             43 => 
             array (
@@ -14705,7 +14705,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             44 => 
             array (
@@ -14732,7 +14732,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             45 => 
             array (
@@ -14741,7 +14741,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510503',
                 'nombre' => 'SALARIO INTEGRAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14759,7 +14759,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             46 => 
             array (
@@ -14768,7 +14768,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510506',
                 'nombre' => 'SUELDOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14786,7 +14786,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             47 => 
             array (
@@ -14795,7 +14795,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510512',
                 'nombre' => 'JORNALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14813,7 +14813,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             48 => 
             array (
@@ -14822,7 +14822,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510515',
                 'nombre' => 'HORAS EXTRAS Y RECARGOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14840,7 +14840,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             49 => 
             array (
@@ -14849,7 +14849,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510518',
                 'nombre' => 'COMISIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14867,7 +14867,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             50 => 
             array (
@@ -14876,7 +14876,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510521',
                 'nombre' => 'VIATICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14894,7 +14894,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             51 => 
             array (
@@ -14903,7 +14903,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510524',
                 'nombre' => 'INCAPACIDADES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14921,7 +14921,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             52 => 
             array (
@@ -14930,7 +14930,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510527',
                 'nombre' => 'AUXILIO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14948,7 +14948,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             53 => 
             array (
@@ -14957,7 +14957,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510530',
                 'nombre' => 'CESANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -14975,7 +14975,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             54 => 
             array (
@@ -14984,7 +14984,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510533',
                 'nombre' => 'INTERESES SOBRE CESANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15002,7 +15002,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             55 => 
             array (
@@ -15011,7 +15011,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510536',
                 'nombre' => 'PRIMA DE SERVICIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15029,7 +15029,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             56 => 
             array (
@@ -15038,7 +15038,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510539',
                 'nombre' => 'VACACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15056,7 +15056,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             57 => 
             array (
@@ -15065,7 +15065,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510542',
                 'nombre' => 'PRIMAS EXTRALEGALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15083,7 +15083,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             58 => 
             array (
@@ -15092,7 +15092,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510545',
                 'nombre' => 'AUXILIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15110,7 +15110,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             59 => 
             array (
@@ -15119,7 +15119,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510548',
                 'nombre' => 'BONIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15137,7 +15137,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             60 => 
             array (
@@ -15146,7 +15146,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510551',
                 'nombre' => 'DOTACION Y SUMINISTRO A TRABAJADORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15164,7 +15164,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             61 => 
             array (
@@ -15173,7 +15173,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510554',
                 'nombre' => 'SEGUROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15191,7 +15191,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             62 => 
             array (
@@ -15200,7 +15200,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510557',
                 'nombre' => 'CUOTAS PARTES PENSIONES DE JUBILACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15218,7 +15218,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             63 => 
             array (
@@ -15227,7 +15227,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510558',
                 'nombre' => 'AMORTIZACION CALCULO ACTUARIAL PENSIONES DE JUBILACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15245,7 +15245,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             64 => 
             array (
@@ -15254,7 +15254,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510559',
                 'nombre' => 'PENSIONES DE JUBILACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15272,7 +15272,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             65 => 
             array (
@@ -15281,7 +15281,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510560',
                 'nombre' => 'INDEMNIZACIONES LABORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15299,7 +15299,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             66 => 
             array (
@@ -15308,7 +15308,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510563',
                 'nombre' => 'CAPACITACION AL PERSONAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15326,7 +15326,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             67 => 
             array (
@@ -15335,7 +15335,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510566',
                 'nombre' => 'GASTOS DEPORTIVOS Y DE RECREACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15353,7 +15353,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             68 => 
             array (
@@ -15362,7 +15362,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510569',
                 'nombre' => 'APORTES A E.P.S.',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15380,7 +15380,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             69 => 
             array (
@@ -15389,7 +15389,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510572',
                 'nombre' => 'APORTES CAJAS DE COMPENSACION FAMILIAR',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15407,7 +15407,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             70 => 
             array (
@@ -15416,7 +15416,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510575',
                 'nombre' => 'APORTES I.C.B.F.',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15434,7 +15434,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             71 => 
             array (
@@ -15443,7 +15443,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510578',
                 'nombre' => 'SENA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15461,7 +15461,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             72 => 
             array (
@@ -15470,7 +15470,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510581',
                 'nombre' => 'APORTES SINDICALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15488,7 +15488,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             73 => 
             array (
@@ -15497,7 +15497,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510584',
                 'nombre' => 'GASTOS MEDICOS Y DROGAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15515,7 +15515,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             74 => 
             array (
@@ -15524,7 +15524,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15542,7 +15542,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             75 => 
             array (
@@ -15551,7 +15551,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15569,7 +15569,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             76 => 
             array (
@@ -15596,7 +15596,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             77 => 
             array (
@@ -15605,7 +15605,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511005',
                 'nombre' => 'JUNTA DIRECTIVA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15623,7 +15623,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             78 => 
             array (
@@ -15632,7 +15632,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511010',
                 'nombre' => 'REVISORIA FISCAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15650,7 +15650,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             79 => 
             array (
@@ -15659,7 +15659,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511015',
                 'nombre' => 'AUDITORIA EXTERNA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15677,7 +15677,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             80 => 
             array (
@@ -15686,7 +15686,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511020',
                 'nombre' => 'AVALUOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15704,7 +15704,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             81 => 
             array (
@@ -15713,7 +15713,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511025',
                 'nombre' => 'ASESORIA JURIDICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15731,7 +15731,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             82 => 
             array (
@@ -15740,7 +15740,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511030',
                 'nombre' => 'ASESORIA FINANCIERA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15758,7 +15758,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             83 => 
             array (
@@ -15767,7 +15767,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511035',
                 'nombre' => 'ASESORIA TECNICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15785,7 +15785,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             84 => 
             array (
@@ -15794,7 +15794,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15812,7 +15812,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             85 => 
             array (
@@ -15821,7 +15821,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15839,7 +15839,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             86 => 
             array (
@@ -15866,7 +15866,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             87 => 
             array (
@@ -15875,7 +15875,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511505',
                 'nombre' => 'INDUSTRIA Y COMERCIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15893,7 +15893,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             88 => 
             array (
@@ -15902,7 +15902,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511510',
                 'nombre' => 'DE TIMBRES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15920,7 +15920,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             89 => 
             array (
@@ -15929,7 +15929,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511515',
                 'nombre' => 'A LA PROPIEDAD RAIZ',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15947,7 +15947,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:24',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             90 => 
             array (
@@ -15956,7 +15956,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511520',
                 'nombre' => 'DERECHOS SOBRE INSTRUMENTOS PUBLICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -15974,7 +15974,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             91 => 
             array (
@@ -15983,7 +15983,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511525',
                 'nombre' => 'DE VALORIZACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16001,7 +16001,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             92 => 
             array (
@@ -16010,7 +16010,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511530',
                 'nombre' => 'DE TURISMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16028,7 +16028,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             93 => 
             array (
@@ -16037,7 +16037,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511535',
                 'nombre' => 'TASA POR UTILIZACION DE PUERTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16055,7 +16055,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             94 => 
             array (
@@ -16064,7 +16064,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511540',
                 'nombre' => 'DE VEHICULOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16082,7 +16082,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             95 => 
             array (
@@ -16091,7 +16091,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511545',
                 'nombre' => 'DE ESPECTACULOS PUBLICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16109,7 +16109,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             96 => 
             array (
@@ -16118,7 +16118,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511550',
                 'nombre' => 'CUOTAS DE FOMENTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16136,7 +16136,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             97 => 
             array (
@@ -16145,7 +16145,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511570',
                 'nombre' => 'IVA DESCONTABLE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16163,7 +16163,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             98 => 
             array (
@@ -16172,7 +16172,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16190,7 +16190,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             99 => 
             array (
@@ -16199,7 +16199,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '511599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16217,7 +16217,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             100 => 
             array (
@@ -16244,7 +16244,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             101 => 
             array (
@@ -16253,7 +16253,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512005',
                 'nombre' => 'TERRENOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16271,7 +16271,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             102 => 
             array (
@@ -16280,7 +16280,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512010',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16298,7 +16298,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             103 => 
             array (
@@ -16307,7 +16307,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512015',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16325,7 +16325,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             104 => 
             array (
@@ -16334,7 +16334,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512020',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16352,7 +16352,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             105 => 
             array (
@@ -16361,7 +16361,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512025',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16379,7 +16379,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             106 => 
             array (
@@ -16388,7 +16388,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512030',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16406,7 +16406,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             107 => 
             array (
@@ -16415,7 +16415,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512035',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16433,7 +16433,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             108 => 
             array (
@@ -16442,7 +16442,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16460,7 +16460,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             109 => 
             array (
@@ -16469,7 +16469,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16487,7 +16487,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             110 => 
             array (
@@ -16496,7 +16496,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16514,7 +16514,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             111 => 
             array (
@@ -16523,7 +16523,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16541,7 +16541,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             112 => 
             array (
@@ -16550,7 +16550,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512060',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16568,7 +16568,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             113 => 
             array (
@@ -16577,7 +16577,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512065',
                 'nombre' => 'AERODROMOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16595,7 +16595,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             114 => 
             array (
@@ -16604,7 +16604,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512070',
                 'nombre' => 'SEMOVIENTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16622,7 +16622,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             115 => 
             array (
@@ -16631,7 +16631,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16649,7 +16649,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             116 => 
             array (
@@ -16658,7 +16658,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16676,7 +16676,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             117 => 
             array (
@@ -16703,7 +16703,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             118 => 
             array (
@@ -16712,7 +16712,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512505',
                 'nombre' => 'CONTRIBUCIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16730,7 +16730,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             119 => 
             array (
@@ -16739,7 +16739,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512510',
                 'nombre' => 'AFILIACIONES Y SOSTENIMIENTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16757,7 +16757,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             120 => 
             array (
@@ -16766,7 +16766,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '512599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16784,7 +16784,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             121 => 
             array (
@@ -16811,7 +16811,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             122 => 
             array (
@@ -16820,7 +16820,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513005',
                 'nombre' => 'MANEJO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16838,7 +16838,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             123 => 
             array (
@@ -16847,7 +16847,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513010',
                 'nombre' => 'CUMPLIMIENTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16865,7 +16865,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             124 => 
             array (
@@ -16874,7 +16874,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513015',
                 'nombre' => 'CORRIENTE DEBIL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16892,7 +16892,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             125 => 
             array (
@@ -16901,7 +16901,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513020',
                 'nombre' => 'VIDA COLECTIVA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16919,7 +16919,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             126 => 
             array (
@@ -16928,7 +16928,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513025',
                 'nombre' => 'INCENDIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16946,7 +16946,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             127 => 
             array (
@@ -16955,7 +16955,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513030',
                 'nombre' => 'TERREMOTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -16973,7 +16973,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             128 => 
             array (
@@ -16982,7 +16982,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513035',
                 'nombre' => 'SUSTRACCION Y HURTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17000,7 +17000,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             129 => 
             array (
@@ -17009,7 +17009,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17027,7 +17027,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             130 => 
             array (
@@ -17036,7 +17036,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17054,7 +17054,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             131 => 
             array (
@@ -17063,7 +17063,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17081,7 +17081,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             132 => 
             array (
@@ -17090,7 +17090,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17108,7 +17108,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             133 => 
             array (
@@ -17117,7 +17117,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513060',
                 'nombre' => 'RESPONSABILIDAD CIVIL Y EXTRACONTRACTUAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17135,7 +17135,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             134 => 
             array (
@@ -17144,7 +17144,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513065',
                 'nombre' => 'VUELO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17162,7 +17162,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             135 => 
             array (
@@ -17171,7 +17171,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513070',
                 'nombre' => 'ROTURA DE MAQUINARIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17189,7 +17189,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             136 => 
             array (
@@ -17198,7 +17198,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513075',
                 'nombre' => 'OBLIGATORIO ACCIDENTE DE TRANSITO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17216,7 +17216,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             137 => 
             array (
@@ -17225,7 +17225,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513080',
                 'nombre' => 'LUCRO CESANTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17243,7 +17243,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             138 => 
             array (
@@ -17252,7 +17252,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17270,7 +17270,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             139 => 
             array (
@@ -17279,7 +17279,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17297,7 +17297,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             140 => 
             array (
@@ -17324,7 +17324,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             141 => 
             array (
@@ -17333,7 +17333,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513505',
                 'nombre' => 'ASEO Y VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17351,7 +17351,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             142 => 
             array (
@@ -17360,7 +17360,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513510',
                 'nombre' => 'TEMPORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17378,7 +17378,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             143 => 
             array (
@@ -17387,7 +17387,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513515',
                 'nombre' => 'ASISTENCIA TECNICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17405,7 +17405,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             144 => 
             array (
@@ -17414,7 +17414,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513520',
                 'nombre' => 'PROCESAMIENTO ELECTRONICO DE DATOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17432,7 +17432,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             145 => 
             array (
@@ -17441,7 +17441,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513525',
                 'nombre' => 'ACUEDUCTO Y ALCANTARILLADO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17459,7 +17459,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             146 => 
             array (
@@ -17468,7 +17468,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513530',
                 'nombre' => 'ENERGIA ELECTRICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17486,7 +17486,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             147 => 
             array (
@@ -17495,7 +17495,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513535',
                 'nombre' => 'TELEFONO E INERNET',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17513,7 +17513,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             148 => 
             array (
@@ -17522,7 +17522,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513540',
                 'nombre' => 'CORREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17540,7 +17540,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             149 => 
             array (
@@ -17549,7 +17549,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513545',
                 'nombre' => 'FAX Y TELEX',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17567,7 +17567,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             150 => 
             array (
@@ -17576,7 +17576,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513550',
                 'nombre' => 'TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17594,7 +17594,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             151 => 
             array (
@@ -17603,7 +17603,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513555',
                 'nombre' => 'GAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17621,7 +17621,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             152 => 
             array (
@@ -17630,7 +17630,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513595',
                 'nombre' => 'SERVICIOS ARTISTICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17648,7 +17648,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             153 => 
             array (
@@ -17675,7 +17675,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             154 => 
             array (
@@ -17684,7 +17684,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514005',
                 'nombre' => 'NOTARIALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17702,7 +17702,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             155 => 
             array (
@@ -17711,7 +17711,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514010',
                 'nombre' => 'REGISTRO MERCANTIL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17729,7 +17729,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             156 => 
             array (
@@ -17738,7 +17738,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514015',
                 'nombre' => 'TRAMITES Y LICENCIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17756,7 +17756,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:25',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             157 => 
             array (
@@ -17765,7 +17765,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514020',
                 'nombre' => 'ADUANEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17783,7 +17783,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             158 => 
             array (
@@ -17792,7 +17792,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514025',
                 'nombre' => 'CONSULARES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17810,7 +17810,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             159 => 
             array (
@@ -17819,7 +17819,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17837,7 +17837,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             160 => 
             array (
@@ -17846,7 +17846,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17864,7 +17864,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             161 => 
             array (
@@ -17891,7 +17891,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             162 => 
             array (
@@ -17900,7 +17900,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514505',
                 'nombre' => 'TERRENOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17918,7 +17918,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             163 => 
             array (
@@ -17927,7 +17927,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514510',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17945,7 +17945,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             164 => 
             array (
@@ -17954,7 +17954,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514515',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17972,7 +17972,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             165 => 
             array (
@@ -17981,7 +17981,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514520',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -17999,7 +17999,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             166 => 
             array (
@@ -18008,7 +18008,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514525',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18026,7 +18026,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             167 => 
             array (
@@ -18035,7 +18035,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514530',
                 'nombre' => 'EQUIPO MEDICO-CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18053,7 +18053,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             168 => 
             array (
@@ -18062,7 +18062,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514535',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18080,7 +18080,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             169 => 
             array (
@@ -18089,7 +18089,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514540',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18107,7 +18107,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             170 => 
             array (
@@ -18116,7 +18116,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514545',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18134,7 +18134,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             171 => 
             array (
@@ -18143,7 +18143,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514550',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18161,7 +18161,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             172 => 
             array (
@@ -18170,7 +18170,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514555',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18188,7 +18188,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             173 => 
             array (
@@ -18197,7 +18197,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514560',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18215,7 +18215,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             174 => 
             array (
@@ -18224,7 +18224,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514565',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18242,7 +18242,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             175 => 
             array (
@@ -18251,7 +18251,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514570',
                 'nombre' => 'VIAS DE COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18269,7 +18269,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             176 => 
             array (
@@ -18278,7 +18278,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '514599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18296,7 +18296,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             177 => 
             array (
@@ -18323,7 +18323,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             178 => 
             array (
@@ -18332,7 +18332,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515005',
                 'nombre' => 'INSTALACIONES ELECTRICAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18350,7 +18350,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             179 => 
             array (
@@ -18359,7 +18359,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515010',
                 'nombre' => 'ARREGLOS ORNAMENTALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18377,7 +18377,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             180 => 
             array (
@@ -18386,7 +18386,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515015',
                 'nombre' => 'REPARACIONES LOCATIVAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18404,7 +18404,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             181 => 
             array (
@@ -18413,7 +18413,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18431,7 +18431,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             182 => 
             array (
@@ -18440,7 +18440,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18458,7 +18458,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             183 => 
             array (
@@ -18485,7 +18485,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             184 => 
             array (
@@ -18494,7 +18494,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515505',
                 'nombre' => 'ALOJAMIENTO Y MANUTENCION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18512,7 +18512,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             185 => 
             array (
@@ -18521,7 +18521,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515510',
                 'nombre' => 'PASAJES FLUVIALES Y/O MARITIMOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18539,7 +18539,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             186 => 
             array (
@@ -18548,7 +18548,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515515',
                 'nombre' => 'PASAJES AEREOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18566,7 +18566,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             187 => 
             array (
@@ -18575,7 +18575,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515520',
                 'nombre' => 'PASAJES TERRESTRES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18593,7 +18593,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             188 => 
             array (
@@ -18602,7 +18602,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515525',
                 'nombre' => 'PASAJES FERREOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18620,7 +18620,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             189 => 
             array (
@@ -18629,7 +18629,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18647,7 +18647,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             190 => 
             array (
@@ -18656,7 +18656,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '515599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18674,7 +18674,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             191 => 
             array (
@@ -18701,7 +18701,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             192 => 
             array (
@@ -18710,7 +18710,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516005',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18728,7 +18728,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             193 => 
             array (
@@ -18737,7 +18737,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516010',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18755,7 +18755,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             194 => 
             array (
@@ -18764,7 +18764,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516015',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18782,7 +18782,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             195 => 
             array (
@@ -18791,7 +18791,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516020',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18809,7 +18809,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             196 => 
             array (
@@ -18818,7 +18818,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516025',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18836,7 +18836,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             197 => 
             array (
@@ -18845,7 +18845,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516030',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18863,7 +18863,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             198 => 
             array (
@@ -18872,7 +18872,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516035',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18890,7 +18890,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             199 => 
             array (
@@ -18899,7 +18899,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516040',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18917,7 +18917,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             200 => 
             array (
@@ -18926,7 +18926,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516045',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18944,7 +18944,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             201 => 
             array (
@@ -18953,7 +18953,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516050',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18971,7 +18971,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             202 => 
             array (
@@ -18980,7 +18980,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516055',
                 'nombre' => 'ACUEDUCTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -18998,7 +18998,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             203 => 
             array (
@@ -19007,7 +19007,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516060',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19025,7 +19025,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             204 => 
             array (
@@ -19034,7 +19034,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19052,7 +19052,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             205 => 
             array (
@@ -19079,7 +19079,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             206 => 
             array (
@@ -19088,7 +19088,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516505',
                 'nombre' => 'VIAS DE COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19106,7 +19106,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             207 => 
             array (
@@ -19115,7 +19115,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516510',
                 'nombre' => 'INTANGIBLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19133,7 +19133,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             208 => 
             array (
@@ -19142,7 +19142,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516515',
                 'nombre' => 'CARGOS DIFERIDOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19160,7 +19160,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:11',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             209 => 
             array (
@@ -19169,7 +19169,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516595',
                 'nombre' => 'OTRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19187,7 +19187,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             210 => 
             array (
@@ -19196,7 +19196,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '516599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19214,7 +19214,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             211 => 
             array (
@@ -19241,7 +19241,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             212 => 
             array (
@@ -19250,7 +19250,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519505',
                 'nombre' => 'COMISIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19268,7 +19268,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             213 => 
             array (
@@ -19277,7 +19277,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519510',
                 'nombre' => 'LIBROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19295,7 +19295,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             214 => 
             array (
@@ -19304,7 +19304,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519515',
                 'nombre' => 'MUSICA AMBIENTAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19322,7 +19322,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             215 => 
             array (
@@ -19331,7 +19331,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519520',
                 'nombre' => 'GASTOS DE REPRESENTACION Y RELACIONES PUBLICAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19349,7 +19349,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             216 => 
             array (
@@ -19358,7 +19358,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519525',
                 'nombre' => 'ELEMENTOS DE ASEO Y CAFETERIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19376,7 +19376,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             217 => 
             array (
@@ -19385,7 +19385,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519530',
                 'nombre' => 'UTILES Y PAPELERIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19403,7 +19403,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             218 => 
             array (
@@ -19412,7 +19412,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519535',
                 'nombre' => 'COMBUSTIBLES Y LUBRICANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19430,7 +19430,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             219 => 
             array (
@@ -19439,7 +19439,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519540',
                 'nombre' => 'ENVASES Y EMPAQUES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19457,7 +19457,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             220 => 
             array (
@@ -19466,7 +19466,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519545',
                 'nombre' => 'TAXIS Y BUSES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19484,7 +19484,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             221 => 
             array (
@@ -19493,7 +19493,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519550',
                 'nombre' => 'ESTAMPILLAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19511,7 +19511,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             222 => 
             array (
@@ -19520,7 +19520,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519555',
                 'nombre' => 'MICROFILMACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19538,7 +19538,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             223 => 
             array (
@@ -19547,7 +19547,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519560',
                 'nombre' => 'CASINO Y RESTAURANTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19565,7 +19565,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             224 => 
             array (
@@ -19574,7 +19574,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519565',
                 'nombre' => 'PARQUEADEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19592,7 +19592,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             225 => 
             array (
@@ -19601,7 +19601,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519570',
                 'nombre' => 'INDEMNIZACION POR DAA`OS A TERCEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19619,7 +19619,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:26',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             226 => 
             array (
@@ -19628,7 +19628,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519575',
                 'nombre' => 'POLVORA Y SIMILARES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19646,7 +19646,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             227 => 
             array (
@@ -19655,7 +19655,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19673,7 +19673,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             228 => 
             array (
@@ -19682,7 +19682,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19700,7 +19700,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             229 => 
             array (
@@ -19727,7 +19727,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             230 => 
             array (
@@ -19736,7 +19736,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519905',
                 'nombre' => 'INVERSIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19754,7 +19754,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             231 => 
             array (
@@ -19763,7 +19763,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519910',
                 'nombre' => 'DEUDORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19781,7 +19781,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             232 => 
             array (
@@ -19790,7 +19790,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519915',
                 'nombre' => 'PROPIEDADES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19808,7 +19808,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             233 => 
             array (
@@ -19817,7 +19817,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519995',
                 'nombre' => 'OTROS ACTIVOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19835,7 +19835,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             234 => 
             array (
@@ -19844,7 +19844,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '519999',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19862,7 +19862,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             235 => 
             array (
@@ -19889,7 +19889,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             236 => 
             array (
@@ -19916,7 +19916,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             237 => 
             array (
@@ -19925,7 +19925,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520503',
                 'nombre' => 'SALARIO INTEGRAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19943,7 +19943,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             238 => 
             array (
@@ -19952,7 +19952,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520506',
                 'nombre' => 'SUELDOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19970,7 +19970,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             239 => 
             array (
@@ -19979,7 +19979,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520512',
                 'nombre' => 'JORNALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -19997,7 +19997,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             240 => 
             array (
@@ -20006,7 +20006,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520515',
                 'nombre' => 'HORAS EXTRAS Y RECARGOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20024,7 +20024,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             241 => 
             array (
@@ -20033,7 +20033,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520518',
                 'nombre' => 'COMISIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20051,7 +20051,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             242 => 
             array (
@@ -20060,7 +20060,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520521',
                 'nombre' => 'VIATICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20078,7 +20078,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             243 => 
             array (
@@ -20087,7 +20087,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520524',
                 'nombre' => 'INCAPACIDADES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20105,7 +20105,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             244 => 
             array (
@@ -20114,7 +20114,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520527',
                 'nombre' => 'AUXILIO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20132,7 +20132,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             245 => 
             array (
@@ -20141,7 +20141,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520530',
                 'nombre' => 'CESANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20159,7 +20159,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             246 => 
             array (
@@ -20168,7 +20168,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520533',
                 'nombre' => 'INTERESES SOBRE CESANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20186,7 +20186,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             247 => 
             array (
@@ -20195,7 +20195,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520536',
                 'nombre' => 'PRIMA DE SERVICIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20213,7 +20213,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             248 => 
             array (
@@ -20222,7 +20222,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520539',
                 'nombre' => 'VACACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20240,7 +20240,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             249 => 
             array (
@@ -20249,7 +20249,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520542',
                 'nombre' => 'PRIMAS EXTRALEGALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20267,7 +20267,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             250 => 
             array (
@@ -20276,7 +20276,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520545',
                 'nombre' => 'AUXILIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20294,7 +20294,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             251 => 
             array (
@@ -20303,7 +20303,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520548',
                 'nombre' => 'BONIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20321,7 +20321,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             252 => 
             array (
@@ -20330,7 +20330,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520551',
                 'nombre' => 'DOTACION Y SUMINISTRO A TRABAJADORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20348,7 +20348,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             253 => 
             array (
@@ -20357,7 +20357,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520554',
                 'nombre' => 'SEGUROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20375,7 +20375,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             254 => 
             array (
@@ -20384,7 +20384,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520557',
                 'nombre' => 'CUOTAS PARTES PENSIONES DE JUBILACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20402,7 +20402,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             255 => 
             array (
@@ -20411,7 +20411,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520558',
                 'nombre' => 'AMORTIZACION CALCULO ACTUARIAL PENSIONES DE JUBILACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20429,7 +20429,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             256 => 
             array (
@@ -20438,7 +20438,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520559',
                 'nombre' => 'PENSIONES DE JUBILACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20456,7 +20456,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             257 => 
             array (
@@ -20465,7 +20465,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520560',
                 'nombre' => 'INDEMNIZACIONES LABORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20483,7 +20483,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             258 => 
             array (
@@ -20492,7 +20492,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520563',
                 'nombre' => 'CAPACITACION AL PERSONAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20510,7 +20510,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             259 => 
             array (
@@ -20519,7 +20519,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520566',
                 'nombre' => 'GASTOS DEPORTIVOS Y DE RECREACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20537,7 +20537,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             260 => 
             array (
@@ -20546,7 +20546,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520569',
                 'nombre' => 'APORTES AL I.S.S',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20564,7 +20564,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             261 => 
             array (
@@ -20573,7 +20573,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520572',
                 'nombre' => 'APORTES CAJAS DE COMPENSACION FAMILIAR',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20591,7 +20591,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             262 => 
             array (
@@ -20600,7 +20600,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520575',
                 'nombre' => 'APORTES I.C.B.F.',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20618,7 +20618,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             263 => 
             array (
@@ -20627,7 +20627,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520578',
                 'nombre' => 'SENA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20645,7 +20645,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             264 => 
             array (
@@ -20654,7 +20654,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520581',
                 'nombre' => 'APORTES SINDICALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20672,7 +20672,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             265 => 
             array (
@@ -20681,7 +20681,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520584',
                 'nombre' => 'GASTOS MEDICOS Y DROGAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20699,7 +20699,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             266 => 
             array (
@@ -20708,7 +20708,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20726,7 +20726,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             267 => 
             array (
@@ -20735,7 +20735,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '520599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20753,7 +20753,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             268 => 
             array (
@@ -20780,7 +20780,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             269 => 
             array (
@@ -20789,7 +20789,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521005',
                 'nombre' => 'JUNTA DIRECTIVA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20807,7 +20807,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             270 => 
             array (
@@ -20816,7 +20816,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521010',
                 'nombre' => 'REVISORIA FISCAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20834,7 +20834,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             271 => 
             array (
@@ -20843,7 +20843,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521015',
                 'nombre' => 'AUDITORIA EXTERNA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20861,7 +20861,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             272 => 
             array (
@@ -20870,7 +20870,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521020',
                 'nombre' => 'AVALUOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20888,7 +20888,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             273 => 
             array (
@@ -20897,7 +20897,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521025',
                 'nombre' => 'ASESORIA JURIDICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20915,7 +20915,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             274 => 
             array (
@@ -20924,7 +20924,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521030',
                 'nombre' => 'ASESORIA FINANCIERA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20942,7 +20942,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             275 => 
             array (
@@ -20951,7 +20951,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521035',
                 'nombre' => 'ASESORIA TECNICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20969,7 +20969,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             276 => 
             array (
@@ -20978,7 +20978,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -20996,7 +20996,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             277 => 
             array (
@@ -21005,7 +21005,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21023,7 +21023,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             278 => 
             array (
@@ -21050,7 +21050,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             279 => 
             array (
@@ -21059,7 +21059,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521505',
                 'nombre' => 'INDUSTRIA Y COMERCIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21077,7 +21077,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:56',
             ),
             280 => 
             array (
@@ -21086,7 +21086,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521510',
                 'nombre' => 'DE TIMBRES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21104,7 +21104,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             281 => 
             array (
@@ -21113,7 +21113,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521515',
                 'nombre' => 'A LA PROPIEDAD RAIZ',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21131,7 +21131,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             282 => 
             array (
@@ -21140,7 +21140,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521520',
                 'nombre' => 'DERECHOS SOBRE INSTRUMENTOS PUBLICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21158,7 +21158,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             283 => 
             array (
@@ -21167,7 +21167,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521525',
                 'nombre' => 'DE VALORIZACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21185,7 +21185,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             284 => 
             array (
@@ -21194,7 +21194,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521530',
                 'nombre' => 'DE TURISMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21212,7 +21212,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             285 => 
             array (
@@ -21221,7 +21221,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521535',
                 'nombre' => 'TASA POR UTILIZACION DE PUERTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21239,7 +21239,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             286 => 
             array (
@@ -21248,7 +21248,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521540',
                 'nombre' => 'DE VEHICULOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21266,7 +21266,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             287 => 
             array (
@@ -21275,7 +21275,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521545',
                 'nombre' => 'DE ESPECTACULOS PUBLICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21293,7 +21293,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             288 => 
             array (
@@ -21302,7 +21302,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521550',
                 'nombre' => 'CUOTAS DE FOMENTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21320,7 +21320,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             289 => 
             array (
@@ -21329,7 +21329,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521555',
                 'nombre' => 'LICORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21347,7 +21347,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             290 => 
             array (
@@ -21356,7 +21356,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521560',
                 'nombre' => 'CERVEZAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21374,7 +21374,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             291 => 
             array (
@@ -21383,7 +21383,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521565',
                 'nombre' => 'CIGARRILLOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21401,7 +21401,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             292 => 
             array (
@@ -21410,7 +21410,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521570',
                 'nombre' => 'IVA DESCONTABLE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21428,7 +21428,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             293 => 
             array (
@@ -21437,7 +21437,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21455,7 +21455,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             294 => 
             array (
@@ -21464,7 +21464,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '521599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21482,7 +21482,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             295 => 
             array (
@@ -21509,7 +21509,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             296 => 
             array (
@@ -21518,7 +21518,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522005',
                 'nombre' => 'TERRENOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21536,7 +21536,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             297 => 
             array (
@@ -21545,7 +21545,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522010',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21563,7 +21563,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:27',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             298 => 
             array (
@@ -21572,7 +21572,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522015',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21590,7 +21590,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             299 => 
             array (
@@ -21599,7 +21599,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522020',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21617,7 +21617,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             300 => 
             array (
@@ -21626,7 +21626,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522025',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21644,7 +21644,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             301 => 
             array (
@@ -21653,7 +21653,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522030',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21671,7 +21671,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             302 => 
             array (
@@ -21680,7 +21680,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522035',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21698,7 +21698,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             303 => 
             array (
@@ -21707,7 +21707,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21725,7 +21725,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             304 => 
             array (
@@ -21734,7 +21734,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21752,7 +21752,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             305 => 
             array (
@@ -21761,7 +21761,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21779,7 +21779,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             306 => 
             array (
@@ -21788,7 +21788,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21806,7 +21806,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             307 => 
             array (
@@ -21815,7 +21815,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522060',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21833,7 +21833,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             308 => 
             array (
@@ -21842,7 +21842,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522065',
                 'nombre' => 'AERODROMOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21860,7 +21860,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             309 => 
             array (
@@ -21869,7 +21869,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522070',
                 'nombre' => 'SEMOVIENTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21887,7 +21887,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             310 => 
             array (
@@ -21896,7 +21896,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21914,7 +21914,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             311 => 
             array (
@@ -21923,7 +21923,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21941,7 +21941,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             312 => 
             array (
@@ -21968,7 +21968,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             313 => 
             array (
@@ -21977,7 +21977,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522505',
                 'nombre' => 'CONTRIBUCIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -21995,7 +21995,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             314 => 
             array (
@@ -22004,7 +22004,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522510',
                 'nombre' => 'AFILIACIONES Y SOSTENIMIENTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22022,7 +22022,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             315 => 
             array (
@@ -22031,7 +22031,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '522599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22049,7 +22049,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             316 => 
             array (
@@ -22076,7 +22076,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             317 => 
             array (
@@ -22085,7 +22085,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523005',
                 'nombre' => 'MANEJO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22103,7 +22103,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             318 => 
             array (
@@ -22112,7 +22112,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523010',
                 'nombre' => 'CUMPLIMIENTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22130,7 +22130,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             319 => 
             array (
@@ -22139,7 +22139,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523015',
                 'nombre' => 'CORRIENTE DEBIL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22157,7 +22157,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             320 => 
             array (
@@ -22166,7 +22166,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523020',
                 'nombre' => 'VIDA COLECTIVA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22184,7 +22184,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             321 => 
             array (
@@ -22193,7 +22193,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523025',
                 'nombre' => 'INCENDIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22211,7 +22211,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             322 => 
             array (
@@ -22220,7 +22220,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523030',
                 'nombre' => 'TERREMOTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22238,7 +22238,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             323 => 
             array (
@@ -22247,7 +22247,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523035',
                 'nombre' => 'SUSTRACCION Y HURTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22265,7 +22265,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             324 => 
             array (
@@ -22274,7 +22274,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22292,7 +22292,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             325 => 
             array (
@@ -22301,7 +22301,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22319,7 +22319,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             326 => 
             array (
@@ -22328,7 +22328,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22346,7 +22346,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             327 => 
             array (
@@ -22355,7 +22355,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22373,7 +22373,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             328 => 
             array (
@@ -22382,7 +22382,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523060',
                 'nombre' => 'RESPONSABILIDAD CIVIL Y EXTRACONTRACTUAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22400,7 +22400,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             329 => 
             array (
@@ -22409,7 +22409,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523065',
                 'nombre' => 'VUELO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22427,7 +22427,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             330 => 
             array (
@@ -22436,7 +22436,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523070',
                 'nombre' => 'ROTURA DE MAQUINARIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22454,7 +22454,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             331 => 
             array (
@@ -22463,7 +22463,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523075',
                 'nombre' => 'OBLIGATORIO ACCIDENTE DE TRANSITO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22481,7 +22481,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             332 => 
             array (
@@ -22490,7 +22490,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523080',
                 'nombre' => 'LUCRO CESANTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22508,7 +22508,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             333 => 
             array (
@@ -22517,7 +22517,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22535,7 +22535,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             334 => 
             array (
@@ -22544,7 +22544,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22562,7 +22562,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:28',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             335 => 
             array (
@@ -22589,7 +22589,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             336 => 
             array (
@@ -22598,7 +22598,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523505',
                 'nombre' => 'ASEO Y VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22616,7 +22616,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             337 => 
             array (
@@ -22625,7 +22625,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523510',
                 'nombre' => 'TEMPORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22643,7 +22643,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             338 => 
             array (
@@ -22652,7 +22652,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523515',
                 'nombre' => 'ASISTENCIA TECNICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22670,7 +22670,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             339 => 
             array (
@@ -22679,7 +22679,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523520',
                 'nombre' => 'PROCESAMIENTO ELECTRONICO DE DATOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22697,7 +22697,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             340 => 
             array (
@@ -22706,7 +22706,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523525',
                 'nombre' => 'ACUEDUCTO Y ALCANTARILLADO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22724,7 +22724,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             341 => 
             array (
@@ -22733,7 +22733,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523530',
                 'nombre' => 'ENERGIA ELECTRICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22751,7 +22751,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             342 => 
             array (
@@ -22760,7 +22760,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523535',
                 'nombre' => 'TELEFONO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22778,7 +22778,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             343 => 
             array (
@@ -22787,7 +22787,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523540',
                 'nombre' => 'CORREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22805,7 +22805,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             344 => 
             array (
@@ -22814,7 +22814,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523545',
                 'nombre' => 'FAX Y TELEX',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22832,7 +22832,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             345 => 
             array (
@@ -22841,7 +22841,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523550',
                 'nombre' => 'TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22859,7 +22859,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             346 => 
             array (
@@ -22868,7 +22868,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523555',
                 'nombre' => 'GAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22886,7 +22886,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             347 => 
             array (
@@ -22895,7 +22895,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523560',
                 'nombre' => 'PROPAGANDA Y PUBLICIDAD',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22913,7 +22913,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             348 => 
             array (
@@ -22922,7 +22922,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22940,7 +22940,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             349 => 
             array (
@@ -22949,7 +22949,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '523599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -22967,7 +22967,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             350 => 
             array (
@@ -22994,7 +22994,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             351 => 
             array (
@@ -23003,7 +23003,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524005',
                 'nombre' => 'NOTARIALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23021,7 +23021,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             352 => 
             array (
@@ -23030,7 +23030,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524010',
                 'nombre' => 'REGISTRO MERCANTIL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23048,7 +23048,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             353 => 
             array (
@@ -23057,7 +23057,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524015',
                 'nombre' => 'TRAMITES Y LICENCIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23075,7 +23075,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             354 => 
             array (
@@ -23084,7 +23084,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524020',
                 'nombre' => 'ADUANEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23102,7 +23102,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             355 => 
             array (
@@ -23111,7 +23111,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524025',
                 'nombre' => 'CONSULARES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23129,7 +23129,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             356 => 
             array (
@@ -23138,7 +23138,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23156,7 +23156,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             357 => 
             array (
@@ -23165,7 +23165,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23183,7 +23183,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             358 => 
             array (
@@ -23210,7 +23210,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             359 => 
             array (
@@ -23219,7 +23219,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524505',
                 'nombre' => 'TERRENOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23237,7 +23237,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             360 => 
             array (
@@ -23246,7 +23246,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524510',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23264,7 +23264,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             361 => 
             array (
@@ -23273,7 +23273,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524515',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23291,7 +23291,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             362 => 
             array (
@@ -23300,7 +23300,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524520',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23318,7 +23318,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             363 => 
             array (
@@ -23327,7 +23327,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524525',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23345,7 +23345,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             364 => 
             array (
@@ -23354,7 +23354,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524530',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23372,7 +23372,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             365 => 
             array (
@@ -23381,7 +23381,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524535',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23399,7 +23399,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             366 => 
             array (
@@ -23408,7 +23408,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524540',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23426,7 +23426,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             367 => 
             array (
@@ -23435,7 +23435,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524545',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23453,7 +23453,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             368 => 
             array (
@@ -23462,7 +23462,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524550',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23480,7 +23480,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             369 => 
             array (
@@ -23489,7 +23489,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524555',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23507,7 +23507,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             370 => 
             array (
@@ -23516,7 +23516,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524560',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23534,7 +23534,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             371 => 
             array (
@@ -23543,7 +23543,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524565',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23561,7 +23561,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             372 => 
             array (
@@ -23570,7 +23570,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524570',
                 'nombre' => 'VIAS DE COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23588,7 +23588,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             373 => 
             array (
@@ -23597,7 +23597,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '524599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23615,7 +23615,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             374 => 
             array (
@@ -23642,7 +23642,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             375 => 
             array (
@@ -23651,7 +23651,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525005',
                 'nombre' => 'INSTALACIONES ELECTRICAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23669,7 +23669,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             376 => 
             array (
@@ -23678,7 +23678,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525010',
                 'nombre' => 'ARREGLOS ORNAMENTALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23696,7 +23696,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             377 => 
             array (
@@ -23705,7 +23705,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525015',
                 'nombre' => 'REPARACIONES LOCATIVAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23723,7 +23723,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             378 => 
             array (
@@ -23732,7 +23732,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23750,7 +23750,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             379 => 
             array (
@@ -23759,7 +23759,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23777,7 +23777,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             380 => 
             array (
@@ -23804,7 +23804,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             381 => 
             array (
@@ -23813,7 +23813,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525505',
                 'nombre' => 'ALOJAMIENTO Y MANUTENCION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23831,7 +23831,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             382 => 
             array (
@@ -23840,7 +23840,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525510',
                 'nombre' => 'PASAJES FLUVIALES Y/O MARITIMOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23858,7 +23858,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             383 => 
             array (
@@ -23867,7 +23867,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525515',
                 'nombre' => 'PASAJES AEREOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23885,7 +23885,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             384 => 
             array (
@@ -23894,7 +23894,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525520',
                 'nombre' => 'PASAJES TERRESTRES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23912,7 +23912,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             385 => 
             array (
@@ -23921,7 +23921,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525525',
                 'nombre' => 'PASAJES FERREOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23939,7 +23939,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             386 => 
             array (
@@ -23948,7 +23948,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23966,7 +23966,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             387 => 
             array (
@@ -23975,7 +23975,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '525599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -23993,7 +23993,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             388 => 
             array (
@@ -24020,7 +24020,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             389 => 
             array (
@@ -24029,7 +24029,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526005',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24047,7 +24047,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             390 => 
             array (
@@ -24056,7 +24056,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526010',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24074,7 +24074,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             391 => 
             array (
@@ -24083,7 +24083,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526015',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24101,7 +24101,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             392 => 
             array (
@@ -24110,7 +24110,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526020',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24128,7 +24128,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             393 => 
             array (
@@ -24137,7 +24137,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526025',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24155,7 +24155,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             394 => 
             array (
@@ -24164,7 +24164,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526030',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24182,7 +24182,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             395 => 
             array (
@@ -24191,7 +24191,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526035',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24209,7 +24209,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             396 => 
             array (
@@ -24218,7 +24218,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526040',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24236,7 +24236,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             397 => 
             array (
@@ -24245,7 +24245,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526045',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24263,7 +24263,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             398 => 
             array (
@@ -24272,7 +24272,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526050',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24290,7 +24290,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             399 => 
             array (
@@ -24299,7 +24299,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526055',
                 'nombre' => 'ACUEDUCTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24317,7 +24317,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             400 => 
             array (
@@ -24326,7 +24326,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526060',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24344,7 +24344,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:46',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             401 => 
             array (
@@ -24353,7 +24353,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526065',
                 'nombre' => 'ENVASES Y EMPAQUES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24371,7 +24371,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             402 => 
             array (
@@ -24380,7 +24380,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24398,7 +24398,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             403 => 
             array (
@@ -24425,7 +24425,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             404 => 
             array (
@@ -24434,7 +24434,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526505',
                 'nombre' => 'VIAS DE COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24452,7 +24452,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             405 => 
             array (
@@ -24461,7 +24461,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526510',
                 'nombre' => 'INTANGIBLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24479,7 +24479,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             406 => 
             array (
@@ -24488,7 +24488,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526515',
                 'nombre' => 'CARGOS DIFERIDOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24506,7 +24506,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             407 => 
             array (
@@ -24515,7 +24515,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526595',
                 'nombre' => 'OTRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24533,7 +24533,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             408 => 
             array (
@@ -24542,7 +24542,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '526599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24560,7 +24560,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             409 => 
             array (
@@ -24587,7 +24587,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             410 => 
             array (
@@ -24596,7 +24596,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '527001',
                 'nombre' => 'FINANCIEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24614,7 +24614,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             411 => 
             array (
@@ -24623,7 +24623,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '527099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24641,7 +24641,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             412 => 
             array (
@@ -24668,7 +24668,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             413 => 
             array (
@@ -24677,7 +24677,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529505',
                 'nombre' => 'COMISIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24695,7 +24695,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             414 => 
             array (
@@ -24704,7 +24704,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529510',
                 'nombre' => 'LIBROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24722,7 +24722,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             415 => 
             array (
@@ -24731,7 +24731,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529515',
                 'nombre' => 'MUSICA AMBIENTAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24749,7 +24749,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             416 => 
             array (
@@ -24758,7 +24758,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529520',
                 'nombre' => 'GASTOS DE REPRESENTACION Y RELACIONES PUBLICAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24776,7 +24776,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             417 => 
             array (
@@ -24785,7 +24785,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529525',
                 'nombre' => 'ELEMENTOS DE ASEO Y CAFETERIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24803,7 +24803,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             418 => 
             array (
@@ -24812,7 +24812,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529530',
                 'nombre' => 'UTILES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24830,7 +24830,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             419 => 
             array (
@@ -24839,7 +24839,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529535',
                 'nombre' => 'COMBUSTIBLES Y LUBRICANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24857,7 +24857,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             420 => 
             array (
@@ -24866,7 +24866,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529540',
                 'nombre' => 'ENVASES Y EMPAQUES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24884,7 +24884,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             421 => 
             array (
@@ -24893,7 +24893,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529545',
                 'nombre' => 'TAXIS Y BUSES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24911,7 +24911,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             422 => 
             array (
@@ -24920,7 +24920,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529550',
                 'nombre' => 'ESTAMPILLAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24938,7 +24938,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             423 => 
             array (
@@ -24947,7 +24947,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529555',
                 'nombre' => 'MICROFILMACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24965,7 +24965,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             424 => 
             array (
@@ -24974,7 +24974,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529560',
                 'nombre' => 'CASINO Y RESTAURANTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -24992,7 +24992,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             425 => 
             array (
@@ -25001,7 +25001,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529565',
                 'nombre' => 'PARQUEADEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25019,7 +25019,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             426 => 
             array (
@@ -25028,7 +25028,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529570',
                 'nombre' => 'INDEMNIZACION POR DAA`OS A TERCEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25046,7 +25046,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             427 => 
             array (
@@ -25055,7 +25055,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529575',
                 'nombre' => 'POLVORA Y SIMILARES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25073,7 +25073,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             428 => 
             array (
@@ -25082,7 +25082,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25100,7 +25100,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             429 => 
             array (
@@ -25109,7 +25109,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25127,7 +25127,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             430 => 
             array (
@@ -25154,7 +25154,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             431 => 
             array (
@@ -25163,7 +25163,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529905',
                 'nombre' => 'INVERSIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25181,7 +25181,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             432 => 
             array (
@@ -25190,7 +25190,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529910',
                 'nombre' => 'DEUDORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25208,7 +25208,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             433 => 
             array (
@@ -25217,7 +25217,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529915',
                 'nombre' => 'INVENTARIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25235,7 +25235,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             434 => 
             array (
@@ -25244,7 +25244,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529920',
                 'nombre' => 'PROPIEDADES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25262,7 +25262,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             435 => 
             array (
@@ -25271,7 +25271,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529995',
                 'nombre' => 'OTROS ACTIVOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25289,7 +25289,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             436 => 
             array (
@@ -25298,7 +25298,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '529999',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25316,7 +25316,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             437 => 
             array (
@@ -25343,7 +25343,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             438 => 
             array (
@@ -25370,7 +25370,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             439 => 
             array (
@@ -25379,7 +25379,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '530505',
                 'nombre' => 'GASTOS BANCARIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25397,7 +25397,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             440 => 
             array (
@@ -25406,7 +25406,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '530510',
                 'nombre' => 'REAJUSTE MONETARIO - UPAC',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25424,7 +25424,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             441 => 
             array (
@@ -25433,7 +25433,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '530515',
                 'nombre' => 'COMISIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25451,7 +25451,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             442 => 
             array (
@@ -25460,7 +25460,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '530520',
                 'nombre' => 'INTERESES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25478,7 +25478,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             443 => 
             array (
@@ -25487,7 +25487,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '530525',
                 'nombre' => 'DIFERENCIA EN CAMBIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25505,7 +25505,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             444 => 
             array (
@@ -25514,7 +25514,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '530530',
                 'nombre' => 'GASTOS EN NEGOCIACION CERTIFICADOS DE CAMBIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25532,7 +25532,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             445 => 
             array (
@@ -25541,7 +25541,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '530535',
                 'nombre' => 'DESCUENTOS COMERCIALES CONDICIONADOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25559,7 +25559,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             446 => 
             array (
@@ -25568,7 +25568,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '530540',
                 'nombre' => 'GASTOS MANEJO Y EMISION DE BONOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25586,7 +25586,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             447 => 
             array (
@@ -25595,7 +25595,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '530545',
                 'nombre' => 'PRIMA AMORTIZADA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25613,7 +25613,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             448 => 
             array (
@@ -25622,7 +25622,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '530595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25640,7 +25640,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             449 => 
             array (
@@ -25649,7 +25649,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '530599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25667,7 +25667,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             450 => 
             array (
@@ -25694,7 +25694,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             451 => 
             array (
@@ -25703,7 +25703,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531005',
                 'nombre' => 'VENTA DE INVERSIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25721,7 +25721,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             452 => 
             array (
@@ -25730,7 +25730,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531010',
                 'nombre' => 'VENTA DE CARTERA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25748,7 +25748,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             453 => 
             array (
@@ -25757,7 +25757,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531015',
                 'nombre' => 'VENTA DE PROPIEDADES PLANTA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25775,7 +25775,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             454 => 
             array (
@@ -25784,7 +25784,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531020',
                 'nombre' => 'VENTA DE INTANGIBLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25802,7 +25802,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             455 => 
             array (
@@ -25811,7 +25811,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531025',
                 'nombre' => 'VENTA DE OTROS ACTIVOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25829,7 +25829,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             456 => 
             array (
@@ -25838,7 +25838,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531030',
                 'nombre' => 'RETIRO DE PROPIEDADES PLANTA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25856,7 +25856,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             457 => 
             array (
@@ -25865,7 +25865,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531035',
                 'nombre' => 'RETIRO DE OTROS ACTIVOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25883,7 +25883,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             458 => 
             array (
@@ -25892,7 +25892,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531040',
                 'nombre' => 'PERDIDAS POR SINIESTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25910,7 +25910,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             459 => 
             array (
@@ -25919,7 +25919,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25937,7 +25937,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             460 => 
             array (
@@ -25946,7 +25946,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -25964,7 +25964,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             461 => 
             array (
@@ -25991,7 +25991,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             462 => 
             array (
@@ -26000,7 +26000,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531505',
                 'nombre' => 'COSTAS Y PROCESOS JUDICIALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26018,7 +26018,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             463 => 
             array (
@@ -26027,7 +26027,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531510',
                 'nombre' => 'ACTIVIDADES CULTURALES Y CIVICAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26045,7 +26045,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             464 => 
             array (
@@ -26054,7 +26054,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531515',
                 'nombre' => 'COSTOS Y GASTOS DE EJERCICIOS ANTERIORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26072,7 +26072,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             465 => 
             array (
@@ -26081,7 +26081,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531520',
                 'nombre' => 'IMPUESTOS ASUMIDOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26099,7 +26099,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             466 => 
             array (
@@ -26108,7 +26108,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26126,7 +26126,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             467 => 
             array (
@@ -26135,7 +26135,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26153,7 +26153,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             468 => 
             array (
@@ -26180,7 +26180,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             469 => 
             array (
@@ -26189,7 +26189,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '539505',
                 'nombre' => 'DEMANDAS LABORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26207,7 +26207,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             470 => 
             array (
@@ -26216,7 +26216,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '539510',
                 'nombre' => 'DEMANDAS POR INCUMPLIMIENTO DE CONTRATOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26234,7 +26234,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             471 => 
             array (
@@ -26243,7 +26243,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '539515',
                 'nombre' => 'INDEMNIZACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26261,7 +26261,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             472 => 
             array (
@@ -26270,7 +26270,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '539520',
                 'nombre' => 'MULTAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26288,7 +26288,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             473 => 
             array (
@@ -26297,7 +26297,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '539525',
                 'nombre' => 'DONACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26315,7 +26315,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:47',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             474 => 
             array (
@@ -26324,7 +26324,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '539530',
                 'nombre' => 'CONSTITUCION DE GARANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26342,7 +26342,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             475 => 
             array (
@@ -26351,7 +26351,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '539535',
                 'nombre' => 'AMORTIZACION DE BIENES ENTREGADOS EN COMODATO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26369,7 +26369,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             476 => 
             array (
@@ -26378,7 +26378,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '539595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26396,7 +26396,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             477 => 
             array (
@@ -26405,7 +26405,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '539599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26423,7 +26423,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             478 => 
             array (
@@ -26450,7 +26450,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             479 => 
             array (
@@ -26477,7 +26477,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             480 => 
             array (
@@ -26486,7 +26486,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '540505',
                 'nombre' => 'IMPUESTO DE RENTA Y COMPLEMENTARIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26504,7 +26504,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             481 => 
             array (
@@ -26531,7 +26531,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             482 => 
             array (
@@ -26558,7 +26558,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             483 => 
             array (
@@ -26567,7 +26567,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '590505',
                 'nombre' => 'GANANCIAS Y PERDIDAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26585,7 +26585,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             484 => 
             array (
@@ -26612,7 +26612,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             485 => 
             array (
@@ -26639,7 +26639,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:48',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             486 => 
             array (
@@ -26666,7 +26666,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:48:50',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             487 => 
             array (
@@ -26693,7 +26693,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             488 => 
             array (
@@ -26720,7 +26720,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             489 => 
             array (
@@ -26729,7 +26729,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '620501',
                 'nombre' => 'DE MERCANCIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26747,7 +26747,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             490 => 
             array (
@@ -26756,7 +26756,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '620599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26774,7 +26774,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             491 => 
             array (
@@ -26801,7 +26801,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             492 => 
             array (
@@ -26810,7 +26810,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '621001',
                 'nombre' => 'DE MATERIAS PRIMAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26828,7 +26828,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             493 => 
             array (
@@ -26837,7 +26837,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '621099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26855,7 +26855,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             494 => 
             array (
@@ -26882,7 +26882,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             495 => 
             array (
@@ -26891,7 +26891,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '621599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26909,7 +26909,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             496 => 
             array (
@@ -26936,7 +26936,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             497 => 
             array (
@@ -26945,7 +26945,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '622099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -26963,7 +26963,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             498 => 
             array (
@@ -26990,7 +26990,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             499 => 
             array (
@@ -26999,7 +26999,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '622599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27017,7 +27017,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:12',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
         ));
         \DB::table('plan_cuentas')->insert(array (
@@ -27046,7 +27046,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             1 => 
             array (
@@ -27055,7 +27055,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '71',
                 'nombre' => 'MATERIA PRIMA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27073,7 +27073,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             2 => 
             array (
@@ -27100,7 +27100,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:05',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             3 => 
             array (
@@ -27127,7 +27127,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             4 => 
             array (
@@ -27136,7 +27136,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720503',
                 'nombre' => 'SALARIO INTEGRAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27154,7 +27154,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             5 => 
             array (
@@ -27163,7 +27163,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720506',
                 'nombre' => 'SUELDOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27181,7 +27181,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             6 => 
             array (
@@ -27190,7 +27190,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720722',
                 'nombre' => 'JORNALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27208,7 +27208,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             7 => 
             array (
@@ -27217,7 +27217,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720725',
                 'nombre' => 'HORAS EXTRAS Y RECARGOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27235,7 +27235,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             8 => 
             array (
@@ -27244,7 +27244,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720728',
                 'nombre' => 'COMISIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27262,7 +27262,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             9 => 
             array (
@@ -27271,7 +27271,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720521',
                 'nombre' => 'VIATICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27289,7 +27289,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             10 => 
             array (
@@ -27298,7 +27298,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720524',
                 'nombre' => 'INCAPACIDADES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27316,7 +27316,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             11 => 
             array (
@@ -27325,7 +27325,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720527',
                 'nombre' => 'AUXILIO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27343,7 +27343,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             12 => 
             array (
@@ -27352,7 +27352,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720530',
                 'nombre' => 'CESANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27370,7 +27370,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             13 => 
             array (
@@ -27379,7 +27379,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720533',
                 'nombre' => 'INTERESES SOBRE CESANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27397,7 +27397,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             14 => 
             array (
@@ -27406,7 +27406,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720536',
                 'nombre' => 'PRIMA DE SERVICIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27424,7 +27424,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             15 => 
             array (
@@ -27433,7 +27433,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720539',
                 'nombre' => 'VACACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27451,7 +27451,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             16 => 
             array (
@@ -27460,7 +27460,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720542',
                 'nombre' => 'PRIMAS EXTRALEGALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27478,7 +27478,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:17',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             17 => 
             array (
@@ -27487,7 +27487,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720545',
                 'nombre' => 'AUXILIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27505,7 +27505,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             18 => 
             array (
@@ -27514,7 +27514,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720548',
                 'nombre' => 'BONIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27532,7 +27532,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             19 => 
             array (
@@ -27541,7 +27541,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720551',
                 'nombre' => 'DOTACION Y SUMINISTRO A TRABAJADORES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27559,7 +27559,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             20 => 
             array (
@@ -27568,7 +27568,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720554',
                 'nombre' => 'SEGUROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27586,7 +27586,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             21 => 
             array (
@@ -27595,7 +27595,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720557',
                 'nombre' => 'CUOTAS PARTES PENSIONES DE JUBILACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27613,7 +27613,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             22 => 
             array (
@@ -27622,7 +27622,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720558',
                 'nombre' => 'AMORTIZACION CALCULO ACTUARIAL PENSIONES DE JUBILACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27640,7 +27640,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             23 => 
             array (
@@ -27649,7 +27649,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720559',
                 'nombre' => 'PENSIONES DE JUBILACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27667,7 +27667,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             24 => 
             array (
@@ -27676,7 +27676,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720560',
                 'nombre' => 'INDEMNIZACIONES LABORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27694,7 +27694,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             25 => 
             array (
@@ -27703,7 +27703,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720563',
                 'nombre' => 'CAPACITACION AL PERSONAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27721,7 +27721,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             26 => 
             array (
@@ -27730,7 +27730,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720566',
                 'nombre' => 'GASTOS DEPORTIVOS Y DE RECREACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27748,7 +27748,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             27 => 
             array (
@@ -27757,7 +27757,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720569',
                 'nombre' => 'APORTES AL I.S.S',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27775,7 +27775,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             28 => 
             array (
@@ -27784,7 +27784,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720572',
                 'nombre' => 'APORTES CAJAS DE COMPENSACION FAMILIAR',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27802,7 +27802,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             29 => 
             array (
@@ -27811,7 +27811,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720575',
                 'nombre' => 'APORTES I.C.B.F.',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27829,7 +27829,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             30 => 
             array (
@@ -27838,7 +27838,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720578',
                 'nombre' => 'SENA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27856,7 +27856,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             31 => 
             array (
@@ -27865,7 +27865,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720581',
                 'nombre' => 'APORTES SINDICALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27883,7 +27883,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             32 => 
             array (
@@ -27892,7 +27892,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720584',
                 'nombre' => 'GASTOS MEDICOS Y DROGAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27910,7 +27910,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             33 => 
             array (
@@ -27919,7 +27919,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '720595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -27937,7 +27937,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             34 => 
             array (
@@ -27964,7 +27964,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             35 => 
             array (
@@ -27991,7 +27991,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             36 => 
             array (
@@ -28000,7 +28000,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731005',
                 'nombre' => 'JUNTA DIRECTIVA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28018,7 +28018,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             37 => 
             array (
@@ -28027,7 +28027,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731010',
                 'nombre' => 'REVISORIA FISCAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28045,7 +28045,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             38 => 
             array (
@@ -28054,7 +28054,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731015',
                 'nombre' => 'AUDITORIA EXTERNA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28072,7 +28072,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             39 => 
             array (
@@ -28081,7 +28081,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731020',
                 'nombre' => 'AVALUOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28099,7 +28099,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             40 => 
             array (
@@ -28108,7 +28108,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731025',
                 'nombre' => 'ASESORIA JURIDICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28126,7 +28126,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             41 => 
             array (
@@ -28135,7 +28135,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731030',
                 'nombre' => 'ASESORIA FINANCIERA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28153,7 +28153,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             42 => 
             array (
@@ -28162,7 +28162,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731035',
                 'nombre' => 'ASESORIA TECNICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28180,7 +28180,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             43 => 
             array (
@@ -28189,7 +28189,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28207,7 +28207,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             44 => 
             array (
@@ -28216,7 +28216,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28234,7 +28234,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             45 => 
             array (
@@ -28261,7 +28261,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             46 => 
             array (
@@ -28270,7 +28270,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731505',
                 'nombre' => 'INDUSTRIA Y COMERCIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28288,7 +28288,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             47 => 
             array (
@@ -28297,7 +28297,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731530',
                 'nombre' => 'DE TURISMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28315,7 +28315,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             48 => 
             array (
@@ -28324,7 +28324,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731535',
                 'nombre' => 'TASA POR UTILIZACION DE PUERTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28342,7 +28342,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             49 => 
             array (
@@ -28351,7 +28351,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731520',
                 'nombre' => 'DERECHOS SOBRE INSTRUMENTOS PUBLICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28369,7 +28369,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             50 => 
             array (
@@ -28378,7 +28378,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731525',
                 'nombre' => 'DE VALORIZACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28396,7 +28396,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             51 => 
             array (
@@ -28405,7 +28405,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731540',
                 'nombre' => 'DE VEHICULOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28423,7 +28423,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             52 => 
             array (
@@ -28432,7 +28432,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731545',
                 'nombre' => 'DE ESPECTACULOS PUBLICOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28450,7 +28450,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             53 => 
             array (
@@ -28459,7 +28459,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731550',
                 'nombre' => 'CUOTAS DE FOMENTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28477,7 +28477,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             54 => 
             array (
@@ -28486,7 +28486,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731570',
                 'nombre' => 'IVA DESCONTABLE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28504,7 +28504,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             55 => 
             array (
@@ -28513,7 +28513,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28531,7 +28531,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             56 => 
             array (
@@ -28540,7 +28540,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '731599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28558,7 +28558,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             57 => 
             array (
@@ -28585,7 +28585,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             58 => 
             array (
@@ -28594,7 +28594,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732005',
                 'nombre' => 'TERRENOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28612,7 +28612,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             59 => 
             array (
@@ -28621,7 +28621,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732010',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28639,7 +28639,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             60 => 
             array (
@@ -28648,7 +28648,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732015',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28666,7 +28666,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             61 => 
             array (
@@ -28675,7 +28675,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732020',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28693,7 +28693,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             62 => 
             array (
@@ -28702,7 +28702,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732025',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28720,7 +28720,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             63 => 
             array (
@@ -28729,7 +28729,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732030',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28747,7 +28747,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             64 => 
             array (
@@ -28756,7 +28756,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732035',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28774,7 +28774,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             65 => 
             array (
@@ -28783,7 +28783,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28801,7 +28801,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             66 => 
             array (
@@ -28810,7 +28810,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28828,7 +28828,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             67 => 
             array (
@@ -28837,7 +28837,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28855,7 +28855,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             68 => 
             array (
@@ -28864,7 +28864,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28882,7 +28882,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             69 => 
             array (
@@ -28891,7 +28891,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732060',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28909,7 +28909,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             70 => 
             array (
@@ -28918,7 +28918,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732065',
                 'nombre' => 'AERODROMOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28936,7 +28936,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             71 => 
             array (
@@ -28945,7 +28945,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732070',
                 'nombre' => 'SEMOVIENTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28963,7 +28963,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             72 => 
             array (
@@ -28972,7 +28972,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -28990,7 +28990,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             73 => 
             array (
@@ -28999,7 +28999,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29017,7 +29017,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             74 => 
             array (
@@ -29044,7 +29044,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             75 => 
             array (
@@ -29053,7 +29053,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732505',
                 'nombre' => 'CONTRIBUCIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29071,7 +29071,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             76 => 
             array (
@@ -29080,7 +29080,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732730',
                 'nombre' => 'AFILIACIONES Y SOSTENIMIENTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29098,7 +29098,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             77 => 
             array (
@@ -29107,7 +29107,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '732599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29125,7 +29125,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             78 => 
             array (
@@ -29152,7 +29152,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             79 => 
             array (
@@ -29161,7 +29161,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733005',
                 'nombre' => 'MANEJO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29179,7 +29179,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             80 => 
             array (
@@ -29188,7 +29188,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733010',
                 'nombre' => 'CUMPLIMIENTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29206,7 +29206,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             81 => 
             array (
@@ -29215,7 +29215,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733015',
                 'nombre' => 'CORRIENTE DEBIL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29233,7 +29233,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             82 => 
             array (
@@ -29242,7 +29242,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733020',
                 'nombre' => 'VIDA COLECTIVA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29260,7 +29260,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             83 => 
             array (
@@ -29269,7 +29269,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733025',
                 'nombre' => 'INCENDIO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29287,7 +29287,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             84 => 
             array (
@@ -29296,7 +29296,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733030',
                 'nombre' => 'TERREMOTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29314,7 +29314,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             85 => 
             array (
@@ -29323,7 +29323,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733035',
                 'nombre' => 'SUSTRACCION Y HURTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29341,7 +29341,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             86 => 
             array (
@@ -29350,7 +29350,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733040',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29368,7 +29368,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             87 => 
             array (
@@ -29377,7 +29377,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733045',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29395,7 +29395,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             88 => 
             array (
@@ -29404,7 +29404,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733050',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29422,7 +29422,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             89 => 
             array (
@@ -29431,7 +29431,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733055',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29449,7 +29449,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             90 => 
             array (
@@ -29458,7 +29458,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733060',
                 'nombre' => 'RESPONSABILIDAD CIVIL Y EXTRACONTRACTUAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29476,7 +29476,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             91 => 
             array (
@@ -29485,7 +29485,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733065',
                 'nombre' => 'VUELO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29503,7 +29503,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             92 => 
             array (
@@ -29512,7 +29512,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733070',
                 'nombre' => 'ROTURA DE MAQUINARIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29530,7 +29530,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             93 => 
             array (
@@ -29539,7 +29539,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733075',
                 'nombre' => 'OBLIGATORIO ACCIDENTE DE TRANSITO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29557,7 +29557,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             94 => 
             array (
@@ -29566,7 +29566,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733080',
                 'nombre' => 'LUCRO CESANTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29584,7 +29584,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             95 => 
             array (
@@ -29593,7 +29593,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29611,7 +29611,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             96 => 
             array (
@@ -29620,7 +29620,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29638,7 +29638,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             97 => 
             array (
@@ -29665,7 +29665,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             98 => 
             array (
@@ -29674,7 +29674,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733505',
                 'nombre' => 'ASEO Y VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29692,7 +29692,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             99 => 
             array (
@@ -29701,7 +29701,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733730',
                 'nombre' => 'TEMPORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29719,7 +29719,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             100 => 
             array (
@@ -29728,7 +29728,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733735',
                 'nombre' => 'ASISTENCIA TECNICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29746,7 +29746,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             101 => 
             array (
@@ -29755,7 +29755,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733520',
                 'nombre' => 'PROCESAMIENTO ELECTRONICO DE DATOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29773,7 +29773,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             102 => 
             array (
@@ -29782,7 +29782,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733525',
                 'nombre' => 'ACUEDUCTO Y ALCANTARILLADO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29800,7 +29800,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             103 => 
             array (
@@ -29809,7 +29809,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733530',
                 'nombre' => 'ENERGIA ELECTRICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29827,7 +29827,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             104 => 
             array (
@@ -29836,7 +29836,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733535',
                 'nombre' => 'TELEFONO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29854,7 +29854,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             105 => 
             array (
@@ -29863,7 +29863,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733540',
                 'nombre' => 'CORREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29881,7 +29881,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             106 => 
             array (
@@ -29890,7 +29890,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733545',
                 'nombre' => 'FAX Y TELEX',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29908,7 +29908,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             107 => 
             array (
@@ -29917,7 +29917,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733550',
                 'nombre' => 'TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29935,7 +29935,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             108 => 
             array (
@@ -29944,7 +29944,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733555',
                 'nombre' => 'GAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29962,7 +29962,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             109 => 
             array (
@@ -29971,7 +29971,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -29989,7 +29989,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             110 => 
             array (
@@ -29998,7 +29998,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '733599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30016,7 +30016,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             111 => 
             array (
@@ -30043,7 +30043,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             112 => 
             array (
@@ -30052,7 +30052,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734005',
                 'nombre' => 'NOTARIALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30070,7 +30070,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             113 => 
             array (
@@ -30079,7 +30079,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734010',
                 'nombre' => 'REGISTRO MERCANTIL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30097,7 +30097,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             114 => 
             array (
@@ -30106,7 +30106,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734015',
                 'nombre' => 'TRAMITES Y LICENCIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30124,7 +30124,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             115 => 
             array (
@@ -30133,7 +30133,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734020',
                 'nombre' => 'ADUANEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30151,7 +30151,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             116 => 
             array (
@@ -30160,7 +30160,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734025',
                 'nombre' => 'CONSULARES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30178,7 +30178,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             117 => 
             array (
@@ -30187,7 +30187,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30205,7 +30205,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             118 => 
             array (
@@ -30214,7 +30214,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30232,7 +30232,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             119 => 
             array (
@@ -30259,7 +30259,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             120 => 
             array (
@@ -30268,7 +30268,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734505',
                 'nombre' => 'TERRENOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30286,7 +30286,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             121 => 
             array (
@@ -30295,7 +30295,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734730',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30313,7 +30313,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             122 => 
             array (
@@ -30322,7 +30322,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734735',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30340,7 +30340,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             123 => 
             array (
@@ -30349,7 +30349,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734520',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30367,7 +30367,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             124 => 
             array (
@@ -30376,7 +30376,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734525',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30394,7 +30394,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             125 => 
             array (
@@ -30403,7 +30403,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734530',
                 'nombre' => 'EQUIPO MEDICO-CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30421,7 +30421,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             126 => 
             array (
@@ -30430,7 +30430,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734535',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30448,7 +30448,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             127 => 
             array (
@@ -30457,7 +30457,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734540',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30475,7 +30475,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             128 => 
             array (
@@ -30484,7 +30484,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734545',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30502,7 +30502,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             129 => 
             array (
@@ -30511,7 +30511,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734550',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30529,7 +30529,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             130 => 
             array (
@@ -30538,7 +30538,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734555',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30556,7 +30556,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             131 => 
             array (
@@ -30565,7 +30565,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734560',
                 'nombre' => 'ACUEDUCTOS PLANTAS Y REDES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30583,7 +30583,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             132 => 
             array (
@@ -30592,7 +30592,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734565',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30610,7 +30610,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             133 => 
             array (
@@ -30619,7 +30619,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734570',
                 'nombre' => 'VIAS DE COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30637,7 +30637,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             134 => 
             array (
@@ -30646,7 +30646,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '734599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30664,7 +30664,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             135 => 
             array (
@@ -30691,7 +30691,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             136 => 
             array (
@@ -30700,7 +30700,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735005',
                 'nombre' => 'INSTALACIONES ELECTRICAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30718,7 +30718,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             137 => 
             array (
@@ -30727,7 +30727,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735010',
                 'nombre' => 'ARREGLOS ORNAMENTALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30745,7 +30745,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             138 => 
             array (
@@ -30754,7 +30754,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735015',
                 'nombre' => 'REPARACIONES LOCATIVAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30772,7 +30772,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             139 => 
             array (
@@ -30781,7 +30781,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735095',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30799,7 +30799,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             140 => 
             array (
@@ -30808,7 +30808,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30826,7 +30826,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             141 => 
             array (
@@ -30853,7 +30853,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             142 => 
             array (
@@ -30862,7 +30862,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735505',
                 'nombre' => 'ALOJAMIENTO Y MANUTENCION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30880,7 +30880,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             143 => 
             array (
@@ -30889,7 +30889,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735730',
                 'nombre' => 'PASAJES FLUVIALES Y/O MARITIMOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30907,7 +30907,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             144 => 
             array (
@@ -30916,7 +30916,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735735',
                 'nombre' => 'PASAJES AEREOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30934,7 +30934,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             145 => 
             array (
@@ -30943,7 +30943,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735520',
                 'nombre' => 'PASAJES TERRESTRES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30961,7 +30961,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             146 => 
             array (
@@ -30970,7 +30970,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735525',
                 'nombre' => 'PASAJES FERREOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -30988,7 +30988,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             147 => 
             array (
@@ -30997,7 +30997,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31015,7 +31015,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             148 => 
             array (
@@ -31024,7 +31024,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '735599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31042,7 +31042,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             149 => 
             array (
@@ -31069,7 +31069,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             150 => 
             array (
@@ -31078,7 +31078,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736005',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31096,7 +31096,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             151 => 
             array (
@@ -31105,7 +31105,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736010',
                 'nombre' => 'MAQUINARIA Y EQUIPO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31123,7 +31123,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             152 => 
             array (
@@ -31132,7 +31132,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736015',
                 'nombre' => 'EQUIPO DE OFICINA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31150,7 +31150,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             153 => 
             array (
@@ -31159,7 +31159,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736020',
                 'nombre' => 'EQUIPO DE COMPUTACION Y COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31177,7 +31177,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             154 => 
             array (
@@ -31186,7 +31186,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736025',
                 'nombre' => 'EQUIPO MEDICO - CIENTIFICO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31204,7 +31204,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             155 => 
             array (
@@ -31213,7 +31213,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736030',
                 'nombre' => 'EQUIPO DE HOTELES Y RESTAURANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31231,7 +31231,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             156 => 
             array (
@@ -31240,7 +31240,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736035',
                 'nombre' => 'FLOTA Y EQUIPO DE TRANSPORTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31258,7 +31258,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             157 => 
             array (
@@ -31267,7 +31267,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736040',
                 'nombre' => 'FLOTA Y EQUIPO FLUVIAL Y/O MARITIMO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31285,7 +31285,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             158 => 
             array (
@@ -31294,7 +31294,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736045',
                 'nombre' => 'FLOTA Y EQUIPO AEREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31312,7 +31312,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             159 => 
             array (
@@ -31321,7 +31321,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736050',
                 'nombre' => 'FLOTA Y EQUIPO FERREO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31339,7 +31339,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             160 => 
             array (
@@ -31348,7 +31348,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736055',
                 'nombre' => 'ACUEDUCTOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31366,7 +31366,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             161 => 
             array (
@@ -31375,7 +31375,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736060',
                 'nombre' => 'ARMAMENTO DE VIGILANCIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31393,7 +31393,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             162 => 
             array (
@@ -31402,7 +31402,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736099',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31420,7 +31420,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             163 => 
             array (
@@ -31447,7 +31447,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             164 => 
             array (
@@ -31456,7 +31456,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736505',
                 'nombre' => 'VIAS DE COMUNICACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31474,7 +31474,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:07',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             165 => 
             array (
@@ -31483,7 +31483,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736730',
                 'nombre' => 'INTANGIBLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31501,7 +31501,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             166 => 
             array (
@@ -31510,7 +31510,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736735',
                 'nombre' => 'CARGOS DIFERIDOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31528,7 +31528,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             167 => 
             array (
@@ -31537,7 +31537,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736595',
                 'nombre' => 'OTRAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31555,7 +31555,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             168 => 
             array (
@@ -31564,7 +31564,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '736599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31582,7 +31582,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             169 => 
             array (
@@ -31609,7 +31609,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             170 => 
             array (
@@ -31618,7 +31618,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739505',
                 'nombre' => 'COMISIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31636,7 +31636,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             171 => 
             array (
@@ -31645,7 +31645,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739730',
                 'nombre' => 'LIBROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31663,7 +31663,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             172 => 
             array (
@@ -31672,7 +31672,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739735',
                 'nombre' => 'MUSICA AMBIENTAL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31690,7 +31690,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             173 => 
             array (
@@ -31699,7 +31699,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739520',
                 'nombre' => 'GASTOS DE REPRESENTACION Y RELACIONES PUBLICAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31717,7 +31717,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             174 => 
             array (
@@ -31726,7 +31726,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739525',
                 'nombre' => 'ELEMENTOS DE ASEO Y CAFETERIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31744,7 +31744,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             175 => 
             array (
@@ -31753,7 +31753,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739530',
                 'nombre' => 'UTILES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31771,7 +31771,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             176 => 
             array (
@@ -31780,7 +31780,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739535',
                 'nombre' => 'COMBUSTIBLES Y LUBRICANTES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31798,7 +31798,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             177 => 
             array (
@@ -31807,7 +31807,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739540',
                 'nombre' => 'ENVASES Y EMPAQUES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31825,7 +31825,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             178 => 
             array (
@@ -31834,7 +31834,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739545',
                 'nombre' => 'TAXIS Y BUSES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31852,7 +31852,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             179 => 
             array (
@@ -31861,7 +31861,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739550',
                 'nombre' => 'ESTAMPILLAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31879,7 +31879,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             180 => 
             array (
@@ -31888,7 +31888,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739555',
                 'nombre' => 'MICROFILMACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31906,7 +31906,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             181 => 
             array (
@@ -31915,7 +31915,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739560',
                 'nombre' => 'CASINO Y RESTAURANTE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31933,7 +31933,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             182 => 
             array (
@@ -31942,7 +31942,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739565',
                 'nombre' => 'PARQUEADEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31960,7 +31960,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             183 => 
             array (
@@ -31969,7 +31969,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739570',
                 'nombre' => 'INDEMNIZACION POR DAA`OS A TERCEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -31987,7 +31987,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             184 => 
             array (
@@ -31996,7 +31996,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739575',
                 'nombre' => 'POLVORA Y SIMILARES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32014,7 +32014,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             185 => 
             array (
@@ -32023,7 +32023,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739595',
                 'nombre' => 'OTROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32041,7 +32041,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             186 => 
             array (
@@ -32050,7 +32050,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '739599',
                 'nombre' => 'AJUSTES POR INFLACION',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32068,7 +32068,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             187 => 
             array (
@@ -32077,7 +32077,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '74',
                 'nombre' => 'CONTRATOS DE SERVICIOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32095,7 +32095,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:08',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             188 => 
             array (
@@ -32104,7 +32104,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '7207',
                 'nombre' => 'JORNALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32122,7 +32122,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             189 => 
             array (
@@ -32131,7 +32131,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '7327',
                 'nombre' => 'AFILIACIONES Y SOSTENIMIENTO',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32149,7 +32149,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             190 => 
             array (
@@ -32158,7 +32158,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '7337',
                 'nombre' => 'TEMPORALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32176,7 +32176,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             191 => 
             array (
@@ -32185,7 +32185,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '7347',
                 'nombre' => 'CONSTRUCCIONES Y EDIFICACIONES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32203,7 +32203,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             192 => 
             array (
@@ -32212,7 +32212,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '7357',
                 'nombre' => 'PASAJES FLUVIALES Y/O MARITIMOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32230,7 +32230,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             193 => 
             array (
@@ -32239,7 +32239,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '7367',
                 'nombre' => 'INTANGIBLES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32257,7 +32257,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:57',
             ),
             194 => 
             array (
@@ -32266,7 +32266,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '7397',
                 'nombre' => 'LIBROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32284,7 +32284,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             195 => 
             array (
@@ -32293,7 +32293,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '135518',
                 'nombre' => 'RETENCION ICA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -32311,7 +32311,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             196 => 
             array (
@@ -32320,7 +32320,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '321505',
                 'nombre' => 'CREDITO MERCANTIL',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32338,7 +32338,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => NULL,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             197 => 
             array (
@@ -32347,7 +32347,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '531521',
                 'nombre' => 'GRAVAMEN MOVIMIENTOS FINANCIEROS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32365,7 +32365,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             198 => 
             array (
@@ -32374,7 +32374,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510570',
                 'nombre' => 'APORTES A FONDOS DE PENSIONES Y/O CESANTIAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32392,7 +32392,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             199 => 
             array (
@@ -32401,7 +32401,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '510568',
                 'nombre' => 'APORTES A.R.L.',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32419,7 +32419,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             200 => 
             array (
@@ -32428,7 +32428,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '513560',
                 'nombre' => 'PUBLICIDAD Y PROPAGANDA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32446,7 +32446,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             201 => 
             array (
@@ -32455,7 +32455,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 9,
                 'cuenta' => '23652508',
                 'nombre' => 'SERVICIO DE LICENCIAMIENTO DE SOFTWARE',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32473,7 +32473,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             202 => 
             array (
@@ -32482,7 +32482,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 21,
                 'cuenta' => '23654003',
                 'nombre' => 'COMPRAS 2.5%',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32500,7 +32500,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 15,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             203 => 
             array (
@@ -32509,7 +32509,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 4,
                 'cuenta' => '236598',
                 'nombre' => 'RETEFUENTE POR PAGAR',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32527,7 +32527,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => NULL,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 10:50:09',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             204 => 
             array (
@@ -32554,7 +32554,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => 9,
                 'updated_by' => 9,
                 'created_at' => '2023-12-22 20:13:20',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             205 => 
             array (
@@ -32563,7 +32563,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '11100501',
                 'nombre' => 'BANCOLOMBIA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 0,
                 'exige_documento_referencia' => 0,
@@ -32581,7 +32581,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => 9,
                 'updated_by' => 15,
                 'created_at' => '2023-12-23 12:47:33',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             206 => 
             array (
@@ -32590,7 +32590,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '413501',
                 'nombre' => 'INGRESOS GENERALES',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32608,7 +32608,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => 15,
                 'updated_by' => 15,
                 'created_at' => '2023-12-31 09:43:06',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             207 => 
             array (
@@ -32617,7 +32617,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => 14,
                 'cuenta' => '13551520',
                 'nombre' => 'RETENCIÓN VENTAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 1,
@@ -32635,7 +32635,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => 15,
                 'updated_by' => 15,
                 'created_at' => '2023-12-31 10:31:18',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             208 => 
             array (
@@ -32662,7 +32662,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => 15,
                 'updated_by' => 15,
                 'created_at' => '2023-12-31 10:37:23',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             209 => 
             array (
@@ -32671,7 +32671,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '417501',
                 'nombre' => 'DEVOLUCIÓN VENTAS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32689,7 +32689,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => 15,
                 'updated_by' => 15,
                 'created_at' => '2023-12-31 10:37:43',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             210 => 
             array (
@@ -32716,7 +32716,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => 15,
                 'updated_by' => 15,
                 'created_at' => '2023-12-31 10:49:56',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             211 => 
             array (
@@ -32743,7 +32743,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => 15,
                 'updated_by' => 15,
                 'created_at' => '2023-12-31 10:50:38',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             212 => 
             array (
@@ -32752,7 +32752,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '425030',
                 'nombre' => 'DESCUENTOS CONCEDIDOS',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32770,7 +32770,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => 15,
                 'updated_by' => 15,
                 'created_at' => '2023-12-31 10:51:22',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
             213 => 
             array (
@@ -32779,7 +32779,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'id_impuesto' => NULL,
                 'cuenta' => '613501',
                 'nombre' => 'COSTO DE MERCANCIA VENDIDA',
-                'auxiliar' => 0,
+                'auxiliar' => 1,
                 'pasarela' => 0,
                 'exige_nit' => 1,
                 'exige_documento_referencia' => 0,
@@ -32797,7 +32797,7 @@ class PlanCuentasTableSeeder extends Seeder
                 'created_by' => 15,
                 'updated_by' => 15,
                 'created_at' => '2023-12-31 10:52:31',
-                'updated_at' => '2024-01-09 06:52:18',
+                'updated_at' => '2024-01-09 08:17:58',
             ),
         ));
         
