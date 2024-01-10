@@ -311,6 +311,8 @@ th.dtfc-fixed-right {
     gap: 15px;
     padding: 15px;
     z-index: 9;
+    overflow: auto;
+    max-height: 150px;
 }
 
 .toast .icono {

@@ -274,6 +274,13 @@ function productosInit() {
             $('.dtfh-floatingparent').hide();
         });
 
+        productos_table.on('dblclick', 'tr', function () {
+            var data = productos_table.row(this).data();
+            if (data) {
+                document.getElementById("editproducto_"+data.id).click();
+            }
+        });
+
         productos_table.on('click', '.drop-producto', function() {
             var id = this.id.split('_')[1];
             var trProducto = $(this).closest('tr');

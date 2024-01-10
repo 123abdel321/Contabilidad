@@ -56,7 +56,7 @@ function familiasInit() {
             {"data":'nombre'},
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_venta){
+                    if(row.cuenta_venta){
                         return row.cuenta_venta.cuenta + ' - ' + row.cuenta_venta.nombre;
                     }
                     return '';
@@ -64,7 +64,7 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_venta_retencion){
+                    if(row.cuenta_venta_retencion){
                         return row.cuenta_venta_retencion.cuenta + ' - ' + row.cuenta_venta_retencion.nombre;
                     }
                     return '';
@@ -72,7 +72,7 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_venta_devolucion){
+                    if(row.cuenta_venta_devolucion){
                         return row.cuenta_venta_devolucion.cuenta + ' - ' + row.cuenta_venta_devolucion.nombre;
                     }
                     return '';
@@ -80,7 +80,7 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_venta_iva){
+                    if(row.cuenta_venta_iva){
                         return row.cuenta_venta_iva.cuenta + ' - ' + row.cuenta_venta_iva.nombre;
                     }
                     return '';
@@ -88,7 +88,7 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_venta_descuento){
+                    if(row.cuenta_venta_descuento){
                         return row.cuenta_venta_descuento.cuenta + ' - ' + row.cuenta_venta_descuento.nombre;
                     }
                     return '';
@@ -96,7 +96,7 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_venta_devolucion_iva){
+                    if(row.cuenta_venta_devolucion_iva){
                         return row.cuenta_venta_devolucion_iva.cuenta + ' - ' + row.cuenta_venta_devolucion_iva.nombre;
                     }
                     return '';
@@ -104,7 +104,7 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_inventario){
+                    if(row.cuenta_inventario){
                         return row.cuenta_inventario.cuenta + ' - ' + row.cuenta_inventario.nombre;
                     }
                     return '';
@@ -112,17 +112,15 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_costos){
+                    if(row.cuenta_costos){
                         return row.cuenta_costos.cuenta + ' - ' + row.cuenta_costos.nombre;
                     }
                     return '';
                 }
             },
-
-
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_compra){
+                    if(row.cuenta_compra){
                         return row.cuenta_compra.cuenta + ' - ' + row.cuenta_compra.nombre;
                     }
                     return '';
@@ -130,7 +128,7 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_compra_retencion){
+                    if(row.cuenta_compra_retencion){
                         return row.cuenta_compra_retencion.cuenta + ' - ' + row.cuenta_compra_retencion.nombre;
                     }
                     return '';
@@ -138,7 +136,7 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_compra_devolucion){
+                    if(row.cuenta_compra_devolucion){
                         return row.cuenta_compra_devolucion.cuenta + ' - ' + row.cuenta_compra_devolucion.nombre;
                     }
                     return '';
@@ -146,7 +144,7 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_compra_iva){
+                    if(row.cuenta_compra_iva){
                         return row.cuenta_compra_iva.cuenta + ' - ' + row.cuenta_compra_iva.nombre;
                     }
                     return '';
@@ -154,7 +152,7 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_compra_descuento){
+                    if(row.cuenta_compra_descuento){
                         return row.cuenta_compra_descuento.cuenta + ' - ' + row.cuenta_compra_descuento.nombre;
                     }
                     return '';
@@ -162,7 +160,7 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
-                    if(row.id_cuenta_compra_devolucion_iva){
+                    if(row.cuenta_compra_devolucion_iva){
                         return row.cuenta_compra_devolucion_iva.cuenta + ' - ' + row.cuenta_compra_devolucion_iva.nombre;
                     }
                     return '';
@@ -371,6 +369,14 @@ function familiasInit() {
                 $('#codigo_familia').select();
             },50);
         });
+
+        familias_table.on('dblclick', 'tr', function () {
+            var data = familias_table.row(this).data();
+            if (data) {
+                document.getElementById("editfamilias_"+data.id).click();
+            }
+        });
+
         //ELIMIAR FAMILIAS
         familias_table.on('click', '.drop-familias', function() {
 

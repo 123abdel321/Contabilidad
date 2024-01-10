@@ -102,6 +102,13 @@ function formapagoInit() {
         
             $("#formasPagoFormModal").modal('show');
         });
+
+        formaspago_table.on('dblclick', 'tr', function () {
+            var data = formaspago_table.row(this).data();
+            if (data) {
+                document.getElementById("editformaspago_"+data.id).click();
+            }
+        });
         
         formaspago_table.on('click', '.drop-formaspago', function() {
 

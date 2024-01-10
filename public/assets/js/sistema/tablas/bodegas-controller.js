@@ -59,8 +59,8 @@ function bodegasInit() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span id="editcecos_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-bodegas" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
-                    html+= '<span id="deletececos_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-bodegas" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    html+= '<span id="editbodegas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-bodegas" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    html+= '<span id="deletebodegas_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-bodegas" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }
             },
@@ -186,6 +186,14 @@ function bodegasInit() {
             $("#bodegasFormModal").modal('show');
 
         });
+
+        bodegas_table.on('dblclick', 'tr', function () {
+            var data = bodegas_table.row(this).data();
+            if (data) {
+                document.getElementById("editbodegas_"+data.id).click();
+            }
+        });
+
         //BORRAR BODEGAS
         bodegas_table.on('click', '.drop-bodegas', function() {
 

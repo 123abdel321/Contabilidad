@@ -66,6 +66,13 @@ function cecosInit() {
         
             $("#cecosFormModal").modal('show');
         });
+
+        cecos_table.on('dblclick', 'tr', function () {
+            var data = cecos_table.row(this).data();
+            if (data) {
+                document.getElementById("editcecos_"+data.id).click();
+            }
+        });
         
         cecos_table.on('click', '.drop-cecos', function() {
             var trCecos = $(this).closest('tr');

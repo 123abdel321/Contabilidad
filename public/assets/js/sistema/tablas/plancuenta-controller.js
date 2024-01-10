@@ -35,23 +35,25 @@ function plancuentaInit() {
             right : 1,
         },
         'rowCallback': function(row, data, index){
-            if(data.cuenta.auxiliar){
-                $('td', row).css('font-weight', 'bold');
+            // console.log('data.cuenta: ',data);
+            if(data.auxiliar == 1){
                 return;
             }
             if(data.cuenta.length == 1){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 40%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.cuenta.length == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 25%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
-            if(data.cuenta.length == 4){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 10%)');
+            if(data.cuenta.length >= 4){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
-            $('td', row).css('font-weight', 'bold');
             return;
         },
         ajax:  {
@@ -278,6 +280,13 @@ function plancuentaInit() {
             $("#exige_centro_costos").prop( "checked", data.exige_centro_costos == 1 ? true : false );
         
             $("#planCuentaFormModal").modal('show');
+        });
+
+        plan_cuentas_table.on('dblclick', 'tr', function () {
+            var data = plan_cuentas_table.row(this).data();
+            if (data) {
+                document.getElementById("editplancuentas_"+data.id).click();
+            }
         });
     
         plan_cuentas_table.on('click', '.drop-plan-cuentas', function() {

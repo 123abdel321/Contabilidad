@@ -118,6 +118,13 @@ function resolucionInit() {
             $("#resolucionesFormModal").modal('show');
         });
 
+        resoluciones_table.on('dblclick', 'tr', function () {
+            var data = resoluciones_table.row(this).data();
+            if (data) {
+                document.getElementById("editresolucion_"+data.id).click();
+            }
+        });
+
         resoluciones_table.on('click', '.drop-resolucion', function() {
             var trNit = $(this).closest('tr');
             var id = this.id.split('_')[1];
