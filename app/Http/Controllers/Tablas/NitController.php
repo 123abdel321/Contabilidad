@@ -73,7 +73,10 @@ class NitController extends Controller
                         ->orWhere('otros_nombres', 'like', '%' .$searchValue . '%')
                         ->orWhere('email', 'like', '%' .$searchValue . '%')
                         ->orWhere('telefono_1', 'like', '%' .$searchValue . '%')
-                        ->orWhere('razon_social', 'like', '%' .$searchValue . '%');
+                        ->orWhere('razon_social', 'like', '%' .$searchValue . '%')
+                        ->orWhereHas('tipo_documento', function ($query) use($searchValue) {
+                            $query->where('nombre', 'like', '%' .$searchValue . '%');
+                        });
                 }
     
                 return response()->json([
@@ -114,23 +117,21 @@ class NitController extends Controller
 
     public function create (Request $request)
     {
-        $tipoDocumentoNit = TipoDocumentos::where('nombre', 'NIT')->first(['id']);
-		$idTipoDocumentoNit = $tipoDocumentoNit ? $tipoDocumentoNit->id : 0;
-
         $rules = [
 			'id_tipo_documento' => 'required|exists:sam.tipos_documentos,id',
-			// 'id_ciudad' => 'nullable|exists:clientes.ciudades,id',
+			'id_ciudad' => 'nullable|exists:clientes.ciudades,id',
 			'id_vendedor' => 'nullable|exists:sam.fac_vendedores,id',
             'observaciones' => 'nullable|string',
 			'id_actividad_econo' => 'nullable|exists:sam.actividades_economicas,id',
 			'numero_documento' => 'required|unique:sam.nits,numero_documento|max:30',
 			'digito_verificacion' => "nullable|between:0,9|numeric",
-			'tipo_contribuyente' => 'required|in:1,2',
+			// 'tipo_contribuyente' => 'required|in:1,2',
 			'primer_apellido' => 'nullable|string|max:60',
 			'segundo_apellido' => 'nullable|string|max:60',
 			'primer_nombre' => 'nullable|string|max:60|',
 			'otros_nombres' => 'nullable|string|max:60',
-			'razon_social' => 'nullable|string|max:120|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_JURIDICA, // Campo requerido si el tipo contribuyente es persona jurídica (id: 1)
+			// 'razon_social' => 'nullable|string|max:120|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_JURIDICA, // Campo requerido si el tipo contribuyente es persona jurídica (id: 1)
+			'razon_social' => 'nullable|string|max:60',
 			'nombre_comercial' => 'nullable|string|max:120',
 			'direccion' => 'nullable|min:3|max:100',
 			'email' => 'nullable|email|max:250',
@@ -163,7 +164,7 @@ class NitController extends Controller
                 'id_tipo_documento' => $request->get('id_tipo_documento'),
                 'id_vendedor' => $request->get('id_vendedor'),
                 'numero_documento' => $request->get('numero_documento'),
-                'tipo_contribuyente' => $request->get('tipo_contribuyente'),
+                'tipo_contribuyente' => $request->get('id_tipo_documento') == '6' ? 1 : 2,
                 'primer_apellido' => $request->get('primer_apellido'),
                 'segundo_apellido' => $request->get('segundo_apellido'),
                 'primer_nombre' => $request->get('primer_nombre'),
