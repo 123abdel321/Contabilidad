@@ -134,6 +134,13 @@ function comprobanteInit() {
         
             $("#comprobanteFormModal").modal('show');
         });
+
+        comprobante_table.on('dblclick', 'tr', function () {
+            var data = comprobante_table.row(this).data();
+            if (data) {
+                document.getElementById("editcomprobante_"+data.id).click();
+            }
+        });
         
         comprobante_table.on('click', '.drop-comprobante', function() {
             var trComprobante = $(this).closest('tr');

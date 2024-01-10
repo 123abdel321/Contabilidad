@@ -92,6 +92,13 @@ function vendedoresInit() {
         
             $("#vendedoresFormModal").modal('show');
         });
+
+        vendedores_table.on('dblclick', 'tr', function () {
+            var data = vendedores_table.row(this).data();
+            if (data) {
+                document.getElementById("editvendedores_"+data.id).click();
+            }
+        });
         
         vendedores_table.on('click', '.drop-vendedores', function() {
             var trVendedores = $(this).closest('tr');

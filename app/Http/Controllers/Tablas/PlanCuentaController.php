@@ -315,8 +315,8 @@ class PlanCuentaController extends Controller
             }
 
             $auxiliar = 1;
-            $auxiliarPadre = PlanCuentas::where('id_padre', $request->get('id'))->first();
-            if ($auxiliarPadre) $auxiliar = 0;
+            $auxiliarPadre = PlanCuentas::where('id_padre', $request->get('id'));
+            if ($auxiliarPadre->count()) $auxiliar = 0;
 
             PlanCuentas::where('id', $request->get('id'))
                 ->update([
@@ -332,20 +332,6 @@ class PlanCuentaController extends Controller
                     'id_exogena_formato' => $request->get('id_exogena_formato'),
                     'id_exogena_formato_concepto' => $request->get('id_exogena_formato_concepto'),
                     'id_exogena_formato_columna' => $request->get('id_exogena_formato_columna'),
-                    'naturaleza_cuenta' => $request->get('naturaleza_cuenta'),
-                    'naturaleza_ingresos' => $request->get('naturaleza_ingresos'),
-                    'naturaleza_egresos' => $request->get('naturaleza_egresos'),
-                    'naturaleza_compras' => $request->get('naturaleza_compras'),
-                    'naturaleza_ventas' => $request->get('naturaleza_ventas'),
-                    'updated_by' => request()->user()->id,
-                ]);
-
-            PlanCuentas::where('cuenta', 'LIKE', $cuentaPadre.$request->get('cuenta').'%')
-                ->update([
-                    'exige_nit' => $request->get('exige_nit'),
-                    'exige_documento_referencia' => $request->get('exige_documento_referencia'),
-                    'exige_concepto' => $request->get('exige_concepto'),
-                    'exige_centro_costos' => $request->get('exige_centro_costos'),
                     'naturaleza_cuenta' => $request->get('naturaleza_cuenta'),
                     'naturaleza_ingresos' => $request->get('naturaleza_ingresos'),
                     'naturaleza_egresos' => $request->get('naturaleza_egresos'),
@@ -402,9 +388,9 @@ class PlanCuentaController extends Controller
                 ]);
             }
 
-            $padre = PlanCuentas::where('id_padre', $request->get('id'));
+            $esPadrepadre = PlanCuentas::where('id_padre', $request->get('id'));
 
-            if($padre->count() > 0) {
+            if($esPadrepadre->count() > 0) {
                 return response()->json([
                     'success'=>	false,
                     'data' => '',
@@ -412,7 +398,15 @@ class PlanCuentaController extends Controller
                 ]);
             }
 
-            PlanCuentas::where('id', $request->get('id'))->delete();
+            $cuentaDeleta = PlanCuentas::where('id', $request->get('id'))->first();
+            $cuentaPadre = PlanCuentas::where('id', $cuentaDeleta->id_padre)->first();
+            $cuentaPadreHijos = PlanCuentas::where('id_padre', $cuentaPadre->id_padre);
+
+            if (!$cuentaPadreHijos->count() == 0) {
+                $cuentaPadre->auxiliar = 1;
+            }
+
+            $cuentaDeleta->delete();
 
             return response()->json([
                 'success'=>	true,

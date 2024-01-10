@@ -134,6 +134,13 @@ function carguedescargueInit() {
             $("#cargueDescargueFormModal").modal('show');
         });
 
+        cargue_descargue_table.on('dblclick', 'tr', function () {
+            var data = cargue_descargue_table.row(this).data();
+            if (data) {
+                document.getElementById("editcarguedescargue_"+data.id).click();
+            }
+        });
+
         cargue_descargue_table.on('click', '.drop-carguedescargue', function() {
 
             var id = this.id.split('_')[1];
