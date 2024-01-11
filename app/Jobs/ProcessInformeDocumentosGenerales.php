@@ -308,7 +308,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 "DG.anulado",
                 "debito",
                 "credito",
-                DB::raw("0 AS diferencia"),
+                DB::raw("debito - credito AS diferencia"),
                 DB::raw("1 AS total_columnas"),
                 DB::raw("IF(debito - credito < 0, (debito - credito) * -1, debito - credito) AS valor_total")
             ])
