@@ -426,7 +426,9 @@ function changeCuentaRow(idRow) {
                 if(dataDocumento.length > 0) {
                     var [debito, credito] = totalValores();
                     var rowBack = idRow-1;
-                    $("#debito_"+idRow).val(credito - debito);
+                    if (tipo_comprobante != 4) $("#debito_"+idRow).val(credito - debito);
+                    else $("#debito_"+idRow).val(0);
+                    
                     $("#concepto_"+idRow).val($("#concepto_"+rowBack).val());
                     setTimeout(function(){
                         $('#documentoReferenciaTable tr').find("#debito_"+idRow).focus();
@@ -616,8 +618,8 @@ function clearRows(data, idRow) {
         $("#combo_nits_"+idRow).val('').change();
         $("#documento_referencia_"+idRow).val('');
         $("#combo_cecos_"+idRow).val('').change();
-        $("#debito_"+idRow).val('');
-        $("#credito_"+idRow).val('');
+        $("#debito_"+idRow).val(0);
+        $("#credito_"+idRow).val(0);
         return;
     }
     if(!data.exige_centro_costos) {
@@ -707,13 +709,19 @@ function setDisabledRows(data, idRow) {
         $("#concepto_"+idRow).prop('disabled', true);
     }
 
-    if(data && data.naturaleza_cuenta == 1) {
-        $("#debito_"+idRow).prop('disabled', true);
-        $("#credito_"+idRow).prop('disabled', false);
+    if (tipo_comprobante != 4) {
+        if(data && data.naturaleza_cuenta == 1) {
+            $("#debito_"+idRow).prop('disabled', true);
+            $("#credito_"+idRow).prop('disabled', false);
+        } else {
+            $("#debito_"+idRow).prop('disabled', false);
+            $("#credito_"+idRow).prop('disabled', true);
+        }
     } else {
         $("#debito_"+idRow).prop('disabled', false);
-        $("#credito_"+idRow).prop('disabled', true);
+        $("#credito_"+idRow).prop('disabled', false);
     }
+    
 }
 
 function focusNextRow(Idcolumn, idRow) {
@@ -1454,15 +1462,18 @@ function getDocumentos(){
                 var nit = $('#combo_nits_'+idDocumento).val();
                 var cecos = $('#combo_cecos_'+idDocumento).val();
 
-                data.push({
-                    id_cuenta: cuenta ? parseInt(cuenta) : '',
-                    id_nit: nit ? parseInt(nit) : '',
-                    id_centro_costos: cecos ? parseInt(cecos) : '',
-                    documento_referencia: dctrf ? dctrf : '',
-                    debito: debito ? parseFloat(debito) : 0,
-                    credito: credito ? parseFloat(credito) : 0,
-                    concepto: concepto ? concepto : '',
-                });
+                if (id_cuenta && (debito + credito) > 0) {
+                    data.push({
+                        id_cuenta: cuenta ? parseInt(cuenta) : '',
+                        id_nit: nit ? parseInt(nit) : '',
+                        id_centro_costos: cecos ? parseInt(cecos) : '',
+                        documento_referencia: dctrf ? dctrf : '',
+                        debito: debito ? parseFloat(debito) : 0,
+                        credito: credito ? parseFloat(credito) : 0,
+                        concepto: concepto ? concepto : '',
+                    });
+                }
+
             }
         }
     }
