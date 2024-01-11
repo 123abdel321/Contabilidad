@@ -426,7 +426,8 @@ function changeCuentaRow(idRow) {
                 if(dataDocumento.length > 0) {
                     var [debito, credito] = totalValores();
                     var rowBack = idRow-1;
-                    if (tipo_comprobante != 4) $("#debito_"+idRow).val(credito - debito);
+                    var resta = credito - debito;
+                    if (tipo_comprobante != 4) $("#debito_"+idRow).val(resta < 0 ? resta * -1 : resta);
                     else $("#debito_"+idRow).val(0);
                     
                     $("#concepto_"+idRow).val($("#concepto_"+rowBack).val());
@@ -542,7 +543,7 @@ function changeCreditoRow(idRow, event) {
         var inputCreditoValue = parseInt($("#credito_"+idRow).val());
         if (inputCreditoValue > inputCreditoMax) {
             setTimeout(function(){
-                $("#credito_"+idRow).val(inputCreditoMax);
+                if (tipo_comprobante != 4) $("#credito_"+idRow).val(inputCreditoMax);
                 $("#credito_"+idRow).focus();
                 $("#credito_"+idRow).select();
             },10);
@@ -787,7 +788,7 @@ function focusNextRow(Idcolumn, idRow) {
                     var total = credito - debito;
                     if(total > 0) {
                         calcularCabeza = false;
-                        $(idInput).val(total);
+                        if (tipo_comprobante != 4) $(idInput).val(total);
                     }
                     setTimeout(function(){
                         $('#documentoReferenciaTable tr').find(idInput).select();
@@ -799,7 +800,7 @@ function focusNextRow(Idcolumn, idRow) {
                     var total = debito - credito;
                     if(total > 0) {
                         calcularCabeza = false;
-                        $(idInput).val(total);
+                        if (tipo_comprobante != 4) $(idInput).val(total);
                     }
                     setTimeout(function(){
                         $('#documentoReferenciaTable tr').find(idInput).select();
