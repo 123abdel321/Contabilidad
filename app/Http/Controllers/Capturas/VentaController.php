@@ -731,9 +731,7 @@ class VentaController extends Controller
                 }
             }
 
-            
-
-            if ($ivaIncluido) {
+            if ($ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
                 $costo = round((float)$producto->costo / (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 2);
             }
 
