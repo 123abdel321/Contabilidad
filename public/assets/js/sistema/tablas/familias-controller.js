@@ -577,8 +577,8 @@ function familiasInit() {
                 showInventario(false);
             }
 
-            $("#codigo_familia").val(data.codigo);
-            $("#nombre_familia").val(data.nombre);
+            $("#codigo_familia").val('');
+            $("#nombre_familia").val('');
             $("#id_familia_up").val('');
 
             $("#familiaFormModal").modal('show');

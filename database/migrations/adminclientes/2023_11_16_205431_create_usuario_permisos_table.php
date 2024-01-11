@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('id_user')->nullable();
             $table->string('id_empresa')->nullable();
-            $table->string('ids_permission')->nullable();
+            $table->string('ids_permission', 255)->nullable();
             $table->string('ids_bodegas_responsable')->nullable();
             $table->string('ids_resolucion_responsable')->nullable();
             $table->timestamps();
