@@ -132,8 +132,8 @@ class ProcessProvisionedDatabase implements ShouldQueue
 			'telefono_1' => $empresa->telefono,
 			// 'id_ciudad' => $request->get('id_ciudad'),
 			// 'observaciones' => $request->get('observaciones'),
-			'created_by' => request()->user()->id,
-			'updated_by' => request()->user()->id,
+			'created_by' => '',
+			'updated_by' => '',
 		]);
 	}
 
