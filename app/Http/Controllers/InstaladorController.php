@@ -96,7 +96,7 @@ class InstaladorController extends Controller
 
 			$user = $request->user();
 
-			info('Creando empresa'+ $request->razon_social+'...');
+			info('Creando empresa'. $request->razon_social. '...');
 
 			$empresa = Empresa::create([
 				'servidor' => 'sam',
