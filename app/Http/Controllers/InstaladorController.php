@@ -73,7 +73,7 @@ class InstaladorController extends Controller
 		DB::connection('sam')->beginTransaction();
 
 		try {
-
+			
 			$valid_exist_cliente = Empresa::where('nit',$request->get('nit'))->get();
 
 			foreach($valid_exist_cliente as $empresa){
@@ -95,6 +95,8 @@ class InstaladorController extends Controller
 			}
 
 			$user = $request->user();
+
+			info('Creando empresa'+ $request->razon_social+'...');
 
 			$empresa = Empresa::create([
 				'servidor' => 'sam',
@@ -159,6 +161,8 @@ class InstaladorController extends Controller
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
+
+			info('Empresa'+ $request->razon_social+' creada con exito!');
 
 			DB::connection('sam')->commit();
 
