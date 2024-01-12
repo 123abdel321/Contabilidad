@@ -490,12 +490,12 @@ class PlanCuentaController extends Controller
         }
 
         if ($request->get("search")) {
-            $planCuenta->where('cuenta', 'LIKE', '%' . $request->get("search") . '%')
+            $planCuenta->where('cuenta', 'LIKE', $request->get("search") . '%')
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("search") . '%');
         }
 
         if ($request->get("q")) {
-            $planCuenta->where('cuenta', 'LIKE', '%' . $request->get("q") . '%')
+            $planCuenta->where('cuenta', 'LIKE', $request->get("q") . '%')
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
 

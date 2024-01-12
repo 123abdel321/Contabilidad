@@ -9,7 +9,8 @@ var calcularCabeza = true;
 var askSaveDocumentos = true;
 var documento_general_table = null;
 var documento_extracto = null;
-var $comboComprobante = null
+var $comboComprobante = null;
+var guardarDocumentoGeneral = false;
 
 function documentogeneralInit() {
 
@@ -92,8 +93,9 @@ function documentogeneralInit() {
             $('#documentoReferenciaTable').on('draw.dt', function() {
                 $('.combo_cuenta').select2({
                     theme: 'bootstrap-5',
+                    dropdownCssClass: 'custom-documentogeneral_cuenta',
                     delay: 250,
-                    minimumInputLength: 1,
+                    minimumInputLength: 2,
                     ajax: {
                         url: 'api/plan-cuenta/combo-cuenta',
                         headers: headers,
@@ -120,7 +122,8 @@ function documentogeneralInit() {
                 $('.combo_nits').select2({
                     theme: 'bootstrap-5',
                     delay: 250,
-                    // minimumInputLength: 1,
+                    minimumInputLength: 1,
+                    dropdownCssClass: 'custom-documentogeneral_nit',
                     ajax: {
                         url: 'api/nit/combo-nit',
                         headers: headers,
@@ -163,7 +166,6 @@ function documentogeneralInit() {
                                     .html(data.results[0].text)
                                 ).val(data.results[0].id).trigger("change").select2("close");
                             }
-    
                             return {
                                 results: data.data
                             };
@@ -479,7 +481,7 @@ function changeConsecutivo(event) {
 function changeDctoRow(idRow, event, eso) {
 
     if(event.keyCode == 13){
-        if(!$('#concepto_'+idRow).val()){
+        if(!$('#concepto_'+idRow).val() && tipo_comprobante != 4){
             var nit = $('#combo_nits_'+idRow).select2('data');
             if(nit.length > 0) {
                 var factura = $('#documento_referencia_'+idRow).val();
@@ -638,12 +640,6 @@ function clearRows(data, idRow) {
     if(!data.exige_centro_costos) {
         $("#combo_cecos_"+idRow).val('').change();
     }
-
-    if(data && data.naturaleza_cuenta == 1) {
-        $("#debito_"+idRow).val('');
-    } else {
-        $("#credito_"+idRow).val('');
-    }
 }
 
 function validarFechaManualDocumentos() {
@@ -743,13 +739,14 @@ function focusNextRow(Idcolumn, idRow) {
 
         var idInput = inputsId[idNextColumn]+'_'+idRow;
         var isDisabled = $(idInput).is(":disabled");
+        var rowAnterior = idRow-1;
 
         if(!isDisabled) {
             //COMBOS
             if(inputsId[idNextColumn] == '#combo_nits' || inputsId[idNextColumn] == '#combo_cecos') {
                 //AGREGAR DATOS COMBOS NIT
                 if(inputsId[idNextColumn] == '#combo_nits' && !$(idInput).val() && idRow > 0 ) {
-                    var rowAnterior = idRow-1;
+                    
                     var dataNit = $('#combo_nits_'+rowAnterior).select2('data');
                     //SI LA COLUMNA ANTERIOR TIENE DATOS
                     if(dataNit && dataNit.length > 0) {
@@ -774,49 +771,140 @@ function focusNextRow(Idcolumn, idRow) {
                 }
             } else {
                 //BUSCAR EXTRACTO
+                var dataCuentaRow = $('#combo_cuenta_'+idRow).select2('data')[0];
                 if(inputsId[idNextColumn] == '#documento_referencia' && idRow === rowExtracto){
-                    var dataCuentaRow = $('#combo_cuenta_'+idRow).select2('data')[0];
                     
                     if (dataCuentaRow.naturaleza_cuenta != dataCuentaRow.naturaleza_origen) {
                         buscarExtracto();
                     };
                 }
+                if (tipo_comprobante == 4) {
+                    
+                    var valorCredito = parseInt($('#credito_'+idRow).val());
+                    var valorDebito = parseInt($('#debito_'+idRow).val());
+                    var campoCredito = inputsId[idNextColumn] == '#credito' ? true : false;
+                    var campoDebito = inputsId[idNextColumn] == '#debito' ? true : false;
+                    var campoDctoRefe = inputsId[idNextColumn] == '#documento_referencia' ? true : false;
+                    var campoConcepto = inputsId[idNextColumn] == '#concepto' ? true : false;
+                    var naturalezaCuenta = dataCuentaRow.naturaleza_cuenta == 1 ? 'credito' : 'debito';
 
-                //COMPLETAR VALORES
-                if(inputsId[idNextColumn] == '#debito') {
-                    var [debito, credito] = totalValores();
-                    var total = credito - debito;
-                    if(total > 0) {
-                        calcularCabeza = false;
-                        if (tipo_comprobante != 4) $(idInput).val(total);
+                    if (campoDebito && !valorDebito && naturalezaCuenta == 'credito') {//FOCUS CREDITO SI LA NATURALEZA ES CREDITO Y EL VALOR DEBITO ES 0
+                        buscar = false;
+                        document.getElementById("card-documento-general").scrollLeft = 910;
+                        setTimeout(function(){
+                            $('#documentoReferenciaTable tr').find('#credito_'+idRow).focus();
+                            $('#documentoReferenciaTable tr').find('#credito_'+idRow).select();
+                        },10);
+                    } else if (campoDebito && valorDebito && naturalezaCuenta == 'credito') {//FOCUS DEBITO SI LA NATURALEZA ES CREDITO Y EL VALOR DEBITO NO > 0
+                        buscar = false;
+                        document.getElementById("card-documento-general").scrollLeft = 800;
+                        setTimeout(function(){
+                            $('#documentoReferenciaTable tr').find('#debito_'+idRow).focus();
+                            $('#documentoReferenciaTable tr').find('#debito_'+idRow).select();
+                        },10);
+                    } else if (campoDebito && !campoCredito && naturalezaCuenta == 'debito') {
+                        buscar = false;
+                        document.getElementById("card-documento-general").scrollLeft = 800;
+                        setTimeout(function(){
+                            $('#documentoReferenciaTable tr').find('#debito_'+idRow).focus();
+                            $('#documentoReferenciaTable tr').find('#debito_'+idRow).select();
+                        },10);
+                    }else if (campoCredito && valorDebito) {//FOCUS CONCEPTO SI EL CAMPO ES CREDITO Y DEBITO ES > 0
+                        buscar = false;
+                        document.getElementById("card-documento-general").scrollLeft = 1200;
+                        setTimeout(function(){
+                            $('#documentoReferenciaTable tr').find('#concepto_'+idRow).focus();
+                            $('#documentoReferenciaTable tr').find('#concepto_'+idRow).select();
+                        },10);
+                    } else if (campoCredito && !valorDebito) {//FOCUS CREDITO SI EL CAMPO ES CREDITO Y DEBITO ES = 0
+                        buscar = false;
+                        document.getElementById("card-documento-general").scrollLeft = 910;
+                        setTimeout(function(){
+                            $('#documentoReferenciaTable tr').find('#credito_'+idRow).focus();
+                            $('#documentoReferenciaTable tr').find('#credito_'+idRow).select();
+                        },10);
+                    } else if (campoDctoRefe) {
+                        buscar = false;
+                        document.getElementById("card-documento-general").scrollLeft = 604;
+                        setTimeout(function(){
+                            $('#documentoReferenciaTable tr').find('#documento_referencia_'+idRow).focus();
+                        },10);
+                    } else if (campoConcepto) {
+                        buscar = false;
+                        document.getElementById("card-documento-general").scrollLeft = 1200;
+                        setTimeout(function(){
+                            $('#documentoReferenciaTable tr').find('#concepto_'+idRow).focus();
+                        },10);
+                    }
+                } else {
+                    //COMPLETAR VALORES
+                    if(inputsId[idNextColumn] == '#debito') {
+                        var [debito, credito] = totalValores();
+                        var total = credito - debito;
+                        if(total > 0) {
+                            calcularCabeza = false;
+                            if (tipo_comprobante != 4) $(idInput).val(total);
+                        }
+                        document.getElementById("card-documento-general").scrollLeft = 900;
+                    }
+                    if(inputsId[idNextColumn] == '#credito') {
+                        var [debito, credito] = totalValores();
+                        var total = debito - credito;
+                        if(total > 0) {
+                            calcularCabeza = false;
+                            if (tipo_comprobante != 4) $(idInput).val(total);
+                        }
+                        document.getElementById("card-documento-general").scrollLeft = 1000;
                     }
                     setTimeout(function(){
-                        $('#documentoReferenciaTable tr').find(idInput).select();
+                        $('#documentoReferenciaTable tr').find(idInput).focus();
                     },10);
-                    document.getElementById("card-documento-general").scrollLeft = 1000;
                 }
-                if(inputsId[idNextColumn] == '#credito') {
-                    var [debito, credito] = totalValores();
-                    var total = debito - credito;
-                    if(total > 0) {
-                        calcularCabeza = false;
-                        if (tipo_comprobante != 4) $(idInput).val(total);
-                    }
-                    setTimeout(function(){
-                        $('#documentoReferenciaTable tr').find(idInput).select();
-                    },10);
-                    document.getElementById("card-documento-general").scrollLeft = 1000;
-                }
-
-                setTimeout(function(){
-                    $('#documentoReferenciaTable tr').find(idInput).focus();
-                },10);
             }
             buscar = false;
         }
         idNextColumn++;
     }
 }
+
+$(document).on('keydown', '.custom-documentogeneral_nit .select2-search__field', function (event) {
+    var dataInputSearch = $('.select2-search__field').val();
+    var datainputSelect = $(this).attr( "aria-controls" );
+    
+    if (datainputSelect && datainputSelect.split('-').length == 3) {
+        datainputSelect = datainputSelect.split('-');
+
+        var inputNit = datainputSelect[1].split('_');
+        if (inputNit.length == 3) {
+            var dataNit = $('#combo_nits_'+inputNit[2]).select2('data');
+            if (event.keyCode == 13 && !dataInputSearch && dataNit && dataNit.length > 0) {
+                $('#combo_nits_'+inputNit[2]).select2('close');
+            }
+        }
+    }
+    
+});
+
+$(document).on('keydown', '.custom-documentogeneral_cuenta .select2-search__field', function (event) {
+    
+    var [debito, credito] = totalValores();
+
+    if (event.keyCode == 96) {
+        guardarDocumentoGeneral = true;
+    } else if (event.keyCode == 13){
+        if ((debito + credito) > 0) {
+            if (guardarDocumentoGeneral) {
+                guardarDocumentoGeneral = false;
+                $(".combo_cuenta").select2('close');
+                document.getElementById('crearCapturaDocumentos').click();
+            }
+        }
+    } else {
+        guardarDocumentoGeneral = false;
+    }
+});
+
+
 
 $(document).on('click', '#iniciarCapturaDocumentos', function () {
     searchCaptura();
@@ -832,8 +920,8 @@ $(document).on('click', '.select-documento', function () {
     let dataNit = $('#combo_nits_'+rowExtracto).select2('data')[0];
     
     $('#documento_referencia_'+rowExtracto).val(documentoReferencia);
-    $("#modalDocumentoExtracto").modal('hide');  
-    $('#concepto_'+rowExtracto).val(dataNit.text + ' - FACTURA: ' + documentoReferencia);
+    $("#modalDocumentoExtracto").modal('hide');
+    if (tipo_comprobante != 4) $('#concepto_'+rowExtracto).val(dataNit.text + ' - FACTURA: ' + documentoReferencia);
 
     if($('#debito_'+rowExtracto).is(":disabled")){
         $('#credito_'+rowExtracto).val(saldo);
@@ -870,7 +958,6 @@ function buscarExtracto() {
             headers: headers,
             dataType: 'json',
         }).done((res) => {
-            console.log('respuesta: ',res);
             var documentos = res.data;
             var dataRowDocumentos = documento_general_table.rows().data();
 
@@ -888,7 +975,7 @@ function buscarExtracto() {
 
 function calcularPagosEnCaptura (documento) {
     var dataRowDocumentos = documento_general_table.rows().data();
-    console.log('documento: ',documento);
+
     for (let index = 0; index < dataRowDocumentos.length; index++) {
         const dataRow = dataRowDocumentos[index];
         
@@ -899,7 +986,7 @@ function calcularPagosEnCaptura (documento) {
             var documento_referencia = $('#documento_referencia_'+dataRow.id).val();
 
             if (id_nit == documento.id_nit && id_cuenta == $('#combo_cuenta_'+rowExtracto).val() && documento_referencia == documento.documento_referencia ) {
-                console.log('igual: ',dataRow);
+                
                 var totalDebito = $('#debito_'+dataRow.id).val();
                 var totalCredito = $('#credito_'+dataRow.id).val();
                 totalDebito = totalDebito ? parseFloat(totalDebito) : 0;
@@ -918,8 +1005,16 @@ function calcularPagosEnCaptura (documento) {
 function setValueConcepto(Idcolumn) {
     let dataNit = $('#combo_nits_'+Idcolumn).select2('data')[0];
     let dataCuenta = $('#combo_cuenta_'+Idcolumn).select2('data')[0];
-
-    if (dataCuenta && dataCuenta.cuenta && dataCuenta.cuenta.slice(0, 2) == '11') {
+    
+    if (tipo_comprobante == 4) {
+        var rows = documento_general_table.rows().data();
+        var totalRows = rows.length;
+        var dataLast = rows[totalRows - 2];
+        if (dataLast) {
+            var conceptoLast = $('#concepto_'+dataLast.id).val();
+            $('#concepto_'+Idcolumn).val(conceptoLast);
+        }
+    } else if (dataCuenta && dataCuenta.cuenta && dataCuenta.cuenta.slice(0, 2) == '11') {
         var rows = documento_general_table.rows().data();
         var totalRows = rows.length;
         var dataLast = rows[totalRows - 2];
@@ -1394,6 +1489,7 @@ function saveDocumentos() {
         headers: headers,
         dataType: 'json',
     }).done((res) => {
+        guardarDocumentoGeneral = false;
         if(res.success){
             cargarNuevoConsecutivo();
             agregarToast('exito', 'Creación exitosa', 'Documentos creados con exito!', true);
@@ -1423,6 +1519,7 @@ function saveDocumentos() {
             agregarToast('error', 'Creación errada', errorsMsg);
         }
     }).fail((err) => {
+        guardarDocumentoGeneral = false;
         $("#agregarDocumentos").show();
         $("#crearCapturaDocumentos").show();
         $("#iniciarCapturaDocumentos").hide();
