@@ -72,17 +72,17 @@ function documentogeneralInit() {
             },
             {//DEBITO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm input_number debito_input" id="debito_${idDocumento}" onkeypress="changeDebitoRow(${idDocumento}, event)" onfocusout="mostrarValores()" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
+                    return `<input type="text" data-type="currency" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" class="form-control form-control-sm input_number debito_input" id="debito_${idDocumento}" onkeypress="changeDebitoRow(${idDocumento}, event)" onfocusout="mostrarValores()" onfocus="this.select();" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
                 }
             },
             {//CREDITO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm input_number credito_input" id="credito_${idDocumento}" onkeypress="changeCreditoRow(${idDocumento}, event)" onfocusout="mostrarValores()" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
+                    return `<input type="text" data-type="currency" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" class="form-control form-control-sm input_number credito_input" id="credito_${idDocumento}" onkeypress="changeCreditoRow(${idDocumento}, event)" onfocusout="mostrarValores()" onfocus="this.select();" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
                 }
             },
             {//CONCEPTO
                 "data": function (row, type, set, col){
-                    return '<input type="text" class="form-control form-control-sm" id="concepto_'+idDocumento+'" onkeypress="changeConceptoRow('+idDocumento+', event)" placeholder="SIN OBSERVACIÓN" style="width: 300px !important;" onfocus="setValueConcepto('+idDocumento+')" disabled>';
+                    return '<input type="text" class="form-control form-control-sm" id="concepto_'+idDocumento+'" onkeypress="changeConceptoRow('+idDocumento+', event)" placeholder="SIN OBSERVACIÓN" style="width: 300px !important;" onfocus="this.select();" onfocus="setValueConcepto('+idDocumento+')" disabled>';
                 }
             }
         ],
@@ -209,7 +209,17 @@ function documentogeneralInit() {
                 $('.combo_nits').on('select2:close', function(event) {
                     var id = this.id.split('_')[2];
                     changeNitRow(id);
-                });  
+                });
+                $("input[data-type='currency']").on({
+                    keyup: function(event) {
+                        if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+                            formatCurrency($(this));
+                        }
+                    },
+                    blur: function() {
+                        formatCurrency($(this), "blur");
+                    }
+                });
             });
         }
     });
@@ -568,14 +578,15 @@ function changeConceptoRow(idRow, event) {
 
                 var debito = 0;
                 var credito = 0;
+                
                 $("#crearCapturaDocumentos").show();
                 $("#crearCapturaDocumentosDisabled").hide();
                 
                 for (let index = 0; index < dataDocumento.length; index++) {
-                    var deb = $('#debito_'+index).val();
-                    var cre = $('#credito_'+index).val();
-                    debito+= parseInt(deb ? deb : 0);
-                    credito+= parseInt(cre ? cre : 0);
+                    var deb = stringToNumberFloat($('#debito_'+index).val());
+                    var cre = stringToNumberFloat($('#credito_'+index).val());
+                    debito+= deb ? deb : 0;
+                    credito+= cre ? cre : 0;
                 }
 
                 if(debito > 0 && credito > 0 && debito - credito == 0) {
@@ -780,8 +791,8 @@ function focusNextRow(Idcolumn, idRow) {
                 }
                 if (tipo_comprobante == 4) {
                     
-                    var valorCredito = parseInt($('#credito_'+idRow).val());
-                    var valorDebito = parseInt($('#debito_'+idRow).val());
+                    var valorCredito =stringToNumberFloat($('#credito_'+idRow).val());
+                    var valorDebito = stringToNumberFloat($('#debito_'+idRow).val());
                     var campoCredito = inputsId[idNextColumn] == '#credito' ? true : false;
                     var campoDebito = inputsId[idNextColumn] == '#debito' ? true : false;
                     var campoDctoRefe = inputsId[idNextColumn] == '#documento_referencia' ? true : false;
@@ -886,10 +897,10 @@ $(document).on('keydown', '.custom-documentogeneral_nit .select2-search__field',
 });
 
 $(document).on('keydown', '.custom-documentogeneral_cuenta .select2-search__field', function (event) {
-    
+    var dataInputSearch = $('.select2-search__field').val();
     var [debito, credito] = totalValores();
 
-    if (event.keyCode == 96) {
+    if (event.keyCode == 96 && dataInputSearch.length == 1) {
         guardarDocumentoGeneral = true;
     } else if (event.keyCode == 13){
         if ((debito + credito) > 0) {
@@ -987,10 +998,10 @@ function calcularPagosEnCaptura (documento) {
 
             if (id_nit == documento.id_nit && id_cuenta == $('#combo_cuenta_'+rowExtracto).val() && documento_referencia == documento.documento_referencia ) {
                 
-                var totalDebito = $('#debito_'+dataRow.id).val();
-                var totalCredito = $('#credito_'+dataRow.id).val();
-                totalDebito = totalDebito ? parseFloat(totalDebito) : 0;
-                totalCredito = totalCredito ? parseFloat(totalCredito) : 0;
+                var totalDebito = stringToNumberFloat($('#debito_'+dataRow.id).val());
+                var totalCredito = stringToNumberFloat($('#credito_'+dataRow.id).val());
+                totalDebito = totalDebito ? totalDebito : 0;
+                totalCredito = totalCredito ? totalCredito : 0;
                 documento.capturando = true;
 
                 documento.total_abono = parseFloat(documento.total_abono) + totalDebito + totalCredito;
@@ -1099,11 +1110,11 @@ function searchCaptura() {
                         }
 
                         if(parseInt(documento.debito)) {
-                            $('#debito_'+index).val(parseInt(documento.debito));
+                            $('#debito_'+index).val(documento.debito);
                         }
 
                         if(parseInt(documento.credito)) {
-                            $('#credito_'+index).val(parseInt(documento.credito));
+                            $('#credito_'+index).val(documento.credito);
                         }
 
                         var comprobante = $("#id_comprobante").select2('data')[0];
@@ -1408,11 +1419,11 @@ function totalValores() {
         
         for (let index = 0; index < dataDocumento.length; index++) {
             var id = dataDocumento[index].id;
-            var deb = $('#debito_'+id).val();
-            var cre = $('#credito_'+id).val();
+            var deb = stringToNumberFloat(stringToNumberFloat($('#debito_'+id).val()));
+            var cre = stringToNumberFloat(stringToNumberFloat($('#credito_'+id).val()));
 
-            debito+= parseInt(deb ? deb : 0);
-            credito+= parseInt(cre ? cre : 0);
+            debito+= deb ? deb : 0;
+            credito+= cre ? cre : 0;
         }
     } else {
         $("#crearCapturaDocumentos").hide();
@@ -1549,8 +1560,8 @@ function getDocumentos(){
         for (let index = 0; index < dataDocumento.length; index++) {
             var idDocumento = dataDocumento[index].id;
             
-            var debito = $('#debito_'+idDocumento).val();
-            var credito = $('#credito_'+idDocumento).val();
+            var debito = stringToNumberFloat($('#debito_'+idDocumento).val());
+            var credito = stringToNumberFloat($('#credito_'+idDocumento).val());
 
             if(debito || credito) {
 

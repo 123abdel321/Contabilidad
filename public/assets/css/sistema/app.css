@@ -696,3 +696,9 @@ td{
 .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__message {
     font-size: 11px !important;
 }
+
+.text-align-right {
+    padding-right: inherit !important;
+    text-align: right !important;
+    background-position: left 0.75rem center !important;
+}
