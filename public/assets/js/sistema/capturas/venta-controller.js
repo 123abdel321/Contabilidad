@@ -54,7 +54,7 @@ function ventaInit () {
                 "data": function (row, type, set, col){
                     return `
                         <div class="input-group" style="height: 30px;">
-                            <input type="number" class="form-control form-control-sm" style="min-width: 80px; border-right: solid 1px #b3b3b3; border-top-right-radius: 10px; border-bottom-right-radius: 10px; text-align: right;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="cantidadVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>
+                            <input type="number" class="form-control form-control-sm" style="min-width: 80px; border-right: solid 1px #b3b3b3; border-top-right-radius: 10px; border-bottom-right-radius: 10px; text-align: right;" id="venta_cantidad_${idVentaProducto}" min="1" value="1" onkeydown="cantidadVentakeyDown(${idVentaProducto}, event)" onfocus="focusCantidadVenta(${idVentaProducto})" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>
                             <i class="fa fa-spinner fa-spin fa-fw venta_producto_load" id="venta_producto_load_${idVentaProducto}" style="display: none;"></i>
                             <div id="venta_cantidad_text_${idVentaProducto}" style="position: absolute; margin-top: 30px; z-index: 9;" class="invalid-feedback">
                             </div>
@@ -64,33 +64,33 @@ function ventaInit () {
             },
             {//COSTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="venta_costo_${idVentaProducto}" value="0" onkeydown="CostoVentakeyDown(${idVentaProducto}, event)" style="min-width: 100px;" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right;" id="venta_costo_${idVentaProducto}" value="0" onkeydown="CostoVentakeyDown(${idVentaProducto}, event)" style="min-width: 100px;" onfocusout="calcularProductoVenta(${idVentaProducto})" onfocus="focusCostoVenta(${idVentaProducto})" disabled>`;
                 }
             },
             {//% DESCUENTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px;" id="venta_descuento_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idVentaProducto}, event)" maxlength="2" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="venta_descuento_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" onfocus="focusPDescuentoVenta(${idVentaProducto})" disabled>`;
                 }
             },
             {//VALOR DESCUENTO
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="venta_descuento_valor_${idVentaProducto}" value="0" onkeydown="DescuentoTotalVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" disabled>`;
+                    return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right;" id="venta_descuento_valor_${idVentaProducto}" value="0" onkeydown="DescuentoTotalVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})" onfocus="focusVDescuentoVenta(${idVentaProducto})" disabled>`;
                 }
             },
             {//VALOR IVA
                 "data": function (row, type, set, col){
                     return `<div class="form-group mb-3" style="min-width: 80px;">
-                        <div class="input-group input-group-sm" style="height: 18px; min-width: 100px;">
+                        <div class="input-group input-group-sm" style="height: 18px; min-width: 112px;">
                             <span id="venta_iva_porcentaje_text_${idVentaProducto}" class="input-group-text" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">0%</span>
-                            <input style="height: 30px; text-align: right;" type="text" class="form-control form-control-sm" value="0" id="venta_iva_valor_${idVentaProducto}" value="0" disabled>
+                            <input style="height: 30px; text-align: right; min-width: 80px;" type="text" class="form-control form-control-sm" value="0" id="venta_iva_valor_${idVentaProducto}" value="0" disabled>
                         </div>
                     </div>
-                    <input type="number" class="form-control form-control-sm" style="min-width: 110px; display: none;" id="venta_iva_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idVentaProducto}, event)" maxlength="2" onfocusout="calcularProductoVenta(${idVentaProducto})">`;
+                    <input type="number" class="form-control form-control-sm" style="min-width: 110px; display: none;" id="venta_iva_porcentaje_${idVentaProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idVentaProducto}, event)" onfocusout="calcularProductoVenta(${idVentaProducto})">`;
                 }
             },
             {//TOTAL
                 "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 90px; text-align: right;" id="venta_total_${idVentaProducto}" value="0" disabled>`;
+                    return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right;" id="venta_total_${idVentaProducto}" value="0" disabled>`;
                 }
             },
         ],
@@ -136,6 +136,17 @@ function ventaInit () {
                     },
                     templateResult: formatProducto,
                     templateSelection: formatRepoSelection
+                });
+                
+                $("input[data-type='currency']").on({
+                    keyup: function(event) {
+                        if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+                            formatCurrency($(this));
+                        }
+                    },
+                    blur: function() {
+                        formatCurrency($(this), "blur");
+                    }
                 });
             });
 
@@ -242,9 +253,23 @@ function ventaInit () {
                         }
                     }
                 }
-                return `<input type="number" class="form-control form-control-sm ${className}" style="text-align: right; font-size: larger;" value="0" onfocus="focusFormaPagoVenta(${row.id}, ${anticipos})" onfocusout="calcularVentaPagos(${row.id}, ${anticipos})" onkeypress="changeFormaPago(${row.id}, ${anticipos}, event)" id="venta_forma_pago_${row.id}">`;
+                return `<input type="text" data-type="currency" class="form-control form-control-sm ${className}" style="text-align: right; font-size: larger;" value="0" onfocus="focusFormaPagoVenta(${row.id}, ${anticipos})" onfocusout="calcularVentaPagos(${row.id}, ${anticipos})" onkeypress="changeFormaPago(${row.id}, ${anticipos}, event)" id="venta_forma_pago_${row.id}">`;
             }},
         ],
+        initComplete: function () {
+            $('#ventaFormaPago').on('draw.dt', function() {
+                $("input[data-type='currency']").on({
+                    keyup: function(event) {
+                        if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+                            formatCurrency($(this));
+                        }
+                    },
+                    blur: function() {
+                        formatCurrency($(this), "blur");
+                    }
+                });
+            });
+        }
     });
 
     $comboCliente = $('#id_cliente_venta').select2({
@@ -480,6 +505,30 @@ function ventaInit () {
     }
 }
 
+function focusCantidadVenta (idRow) {
+    setTimeout(function(){
+        $('#venta_cantidad_'+idRow).select();
+    },80);
+}
+
+function focusCostoVenta (idRow) {
+    setTimeout(function(){
+        $('#venta_costo_'+idRow).select();
+    },80);
+}
+
+function focusPDescuentoVenta (idRow) {
+    setTimeout(function(){
+        $('#venta_descuento_porcentaje_'+idRow).select();
+    },80);
+}
+
+function focusVDescuentoVenta (idRow) {
+    setTimeout(function(){
+        $('#venta_descuento_valor_'+idRow).select();
+    },80);
+}
+
 function loadAnticiposCliente() {
 
     totalAnticiposDisponibles = 0;
@@ -686,7 +735,7 @@ $(document).on('click', '#agregarVentaProducto', function () {
 });
 
 function calcularProductoVenta (idRow, validarCantidad = false) {
-    var costoProducto = $('#venta_costo_'+idRow).val();
+    var costoProducto = stringToNumberFloat($('#venta_costo_'+idRow).val());
     var cantidadProducto = $('#venta_cantidad_'+idRow).val();
     var ivaProducto = $('#venta_iva_porcentaje_'+idRow).val();
     var descuentoProducto = $('#venta_descuento_porcentaje_'+idRow).val();
@@ -703,7 +752,10 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
 
     if (descuentoProducto > 0) {
         totalDescuento = totalPorCantidad * descuentoProducto / 100;
-        $('#venta_descuento_valor_'+idRow).val(totalDescuento);
+        $('#venta_descuento_valor_'+idRow).val(formatCurrencyValue(totalDescuento));
+    } else {
+        $('#venta_descuento_porcentaje_'+idRow).val(formatCurrencyValue(0));
+        $('#venta_descuento_valor_'+idRow).val(formatCurrencyValue(0));
     }
 
     totalProducto = totalPorCantidad - totalDescuento;
@@ -716,10 +768,10 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
             totalIva + totalIva;
         }
         
-        $('#venta_iva_valor_'+idRow).val(parseFloat(totalIva.toFixed(2)));
+        $('#venta_iva_valor_'+idRow).val(formatCurrencyValue(totalIva));
     }
     
-    $('#venta_total_'+idRow).val(totalProducto);
+    $('#venta_total_'+idRow).val(formatCurrencyValue(totalProducto));
 
     mostrarValoresVentas ();
 }
@@ -882,23 +934,23 @@ function totalValoresVentas() {
             var producto = $('#venta_producto_'+dataVenta[index].id).val();
              
             if (producto) {
-                var cantidad = $('#venta_cantidad_'+dataVenta[index].id).val();
-                var costo = $('#venta_costo_'+dataVenta[index].id).val();
-                var ivaSum = $('#venta_iva_valor_'+dataVenta[index].id).val();
-                var totaSum = $('#venta_total_'+dataVenta[index].id).val();
-                var descSum = $('#venta_descuento_valor_'+dataVenta[index].id).val();
+                var cantidad = stringToNumberFloat($('#venta_cantidad_'+dataVenta[index].id).val());
+                var costo = stringToNumberFloat($('#venta_costo_'+dataVenta[index].id).val());
+                var ivaSum = stringToNumberFloat($('#venta_iva_valor_'+dataVenta[index].id).val());
+                var totaSum = stringToNumberFloat($('#venta_total_'+dataVenta[index].id).val());
+                var descSum = stringToNumberFloat($('#venta_descuento_valor_'+dataVenta[index].id).val());
     
-                descSum= parseFloat(descSum ? descSum : 0);
-                iva+= parseFloat(ivaSum ? ivaSum : 0);
-                descuento+= parseFloat(descSum ? descSum : 0);
-                total+= parseFloat(totaSum ? totaSum : 0);
+                descSum= descSum ? descSum : 0;
+                iva+= ivaSum ? ivaSum : 0;
+                descuento+= descSum ? descSum : 0;
+                total+= totaSum ? totaSum : 0;
                 valorBruto+= (cantidad*costo) - descSum;
             }
         }
 
         if (total >= topeRetencionVenta) {
             retencion = porcentajeRetencionVenta ? (valorBruto * porcentajeRetencionVenta) / 100 : 0;
-            retencion = parseFloat(retencion).toFixed(0);
+            retencion = retencion;
             total-= retencion;
         }
 
@@ -949,8 +1001,8 @@ function changeProductoVenta (idRow) {
 
     if (data.familia.cuenta_venta_iva && data.familia.cuenta_venta_iva.impuesto) {
         
-        $('#venta_iva_porcentaje_'+idRow).val(data.familia.cuenta_venta_iva.impuesto.porcentaje);
-        $('#venta_iva_porcentaje_text_'+idRow).text(parseInt(data.familia.cuenta_venta_iva.impuesto.porcentaje)+'%');
+        $('#venta_iva_porcentaje_'+idRow).val(stringToNumberFloat(data.familia.cuenta_venta_iva.impuesto.porcentaje));
+        $('#venta_iva_porcentaje_text_'+idRow).text(stringToNumberFloat(data.familia.cuenta_venta_iva.impuesto.porcentaje)+'%');
     }
 
     if (data.familia.cuenta_venta_retencion && data.familia.cuenta_venta_retencion.impuesto) {
@@ -970,7 +1022,7 @@ function changeProductoVenta (idRow) {
         $('#venta_descuento_porcentaje_'+idRow).prop('disabled', true);
     }
 
-    $('#venta_costo_'+idRow).val(parseFloat(data.precio));
+    $('#venta_costo_'+idRow).val(formatCurrencyValue(data.precio));
     $('#venta_producto_'+idRow).select2('open');
     $('#venta_cantidad_'+idRow).prop('disabled', false);
     $('#venta_costo_'+idRow).prop('disabled', false);
@@ -1012,12 +1064,12 @@ function DescuentoVentakeyDown (idRow, event) {
 
 function DescuentoTotalVentakeyDown (idRow, event) {
     if(event.keyCode == 13){
-        var descuentoProductoValor = $('#venta_descuento_valor_'+idRow).val();
-        var costoProducto = $('#venta_costo_'+idRow).val();
+        var descuentoProductoValor = stringToNumberFloat($('#venta_descuento_valor_'+idRow).val());
+        var costoProducto = stringToNumberFloat($('#venta_costo_'+idRow).val());
         var cantidadProducto = $('#venta_cantidad_'+idRow).val();
         var porcentajeDescuento = descuentoProductoValor * 100 / (costoProducto * cantidadProducto);
 
-        $('#venta_descuento_porcentaje_'+idRow).val(porcentajeDescuento);
+        $('#venta_descuento_porcentaje_'+idRow).val(formatCurrencyValue(porcentajeDescuento));
         
         calcularProductoVenta(idRow);
         setTimeout(function(){
@@ -1129,13 +1181,13 @@ function focusFormaPagoVenta(idFormaPago, anticipo = false) {
 
     if (anticipo) {
         if ((totalAnticiposDisponibles - totalAnticipos) < totalFactura) {
-            $('#venta_forma_pago_'+idFormaPago).val(totalAnticiposDisponibles - totalAnticipos);
+            $('#venta_forma_pago_'+idFormaPago).val(formatCurrencyValue(totalAnticiposDisponibles - totalAnticipos));
             $('#venta_forma_pago_'+idFormaPago).select();
             return;
         }
     }
 
-    $('#venta_forma_pago_'+idFormaPago).val(totalFactura);
+    $('#venta_forma_pago_'+idFormaPago).val(formatCurrencyValue(totalFactura));
     $('#venta_forma_pago_'+idFormaPago).select();
 }
 
@@ -1186,7 +1238,7 @@ function totalFormasPagoVentas(idFormaPago = null) {
     if(dataPagoVenta.length > 0) {
         for (let index = 0; index < dataPagoVenta.length; index++) {
             
-            var ventaPago = parseFloat($('#venta_forma_pago_'+dataPagoVenta[index].id).val());
+            var ventaPago = stringToNumberFloat($('#venta_forma_pago_'+dataPagoVenta[index].id).val());
             
             if (idFormaPago && idFormaPago == dataPagoVenta[index].id) continue;
 
@@ -1322,7 +1374,7 @@ function getVentasPagos() {
 
     for (let index = 0; index < dataVentaPagos.length; index++) {
         const dataPagoVenta = dataVentaPagos[index];
-        var pagoVenta = $('#venta_forma_pago_'+dataPagoVenta.id).val();
+        var pagoVenta = stringToNumberFloat($('#venta_forma_pago_'+dataPagoVenta.id).val());
         if (pagoVenta > 0) {
             data.push({
                 id: dataPagoVenta.id,
@@ -1348,13 +1400,13 @@ function getProductosVenta() {
         var cantidad = $('#venta_cantidad_'+id_row).val();
         
         if (id_producto && cantidad) {
-            var costo = $('#venta_costo_'+id_row).val();
-            var descuento_porcentaje = $('#venta_descuento_porcentaje_'+id_row).val();
-            var descuento_valor = $('#venta_descuento_valor_'+id_row).val();
-            var iva_porcentaje = $('#venta_iva_porcentaje_'+id_row).val();
-            var iva_valor = $('#venta_iva_valor_'+id_row).val();
-            var total = $('#venta_total_'+id_row).val();
-            var subtotal = parseInt(cantidad) * parseFloat(costo);
+            var costo = stringToNumberFloat($('#venta_costo_'+id_row).val());
+            var descuento_porcentaje = stringToNumberFloat($('#venta_descuento_porcentaje_'+id_row).val());
+            var descuento_valor = stringToNumberFloat($('#venta_descuento_valor_'+id_row).val());
+            var iva_porcentaje = stringToNumberFloat($('#venta_iva_porcentaje_'+id_row).val());
+            var iva_valor = stringToNumberFloat($('#venta_iva_valor_'+id_row).val());
+            var total = stringToNumberFloat($('#venta_total_'+id_row).val());
+            var subtotal = parseInt(cantidad) * costo;
 
             if(ivaIncluidoVentas) {
                 subtotal-= iva_valor;
@@ -1363,13 +1415,13 @@ function getProductosVenta() {
             data.push({
                 id_producto: parseInt(id_producto),
                 cantidad: parseInt(cantidad),
-                costo: costo ? parseFloat(costo) : 0,
+                costo: costo ? costo : 0,
                 subtotal: subtotal,
-                descuento_porcentaje: descuento_porcentaje ? parseFloat(descuento_porcentaje) : 0,
-                descuento_valor: descuento_valor ? parseFloat(descuento_valor) : 0,
-                iva_porcentaje: iva_porcentaje ? parseFloat(iva_porcentaje) : 0,
-                iva_valor: iva_valor ? parseFloat(iva_valor) : 0,
-                total: total ? parseFloat(total) : 0,
+                descuento_porcentaje: descuento_porcentaje ? descuento_porcentaje : 0,
+                descuento_valor: descuento_valor ? descuento_valor : 0,
+                iva_porcentaje: iva_porcentaje ? iva_porcentaje : 0,
+                iva_valor: iva_valor ? iva_valor : 0,
+                total: total ? total : 0,
             });
         }
     }

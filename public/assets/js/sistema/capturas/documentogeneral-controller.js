@@ -72,12 +72,12 @@ function documentogeneralInit() {
             },
             {//DEBITO
                 "data": function (row, type, set, col){
-                    return `<input type="text" data-type="currency" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" class="form-control form-control-sm input_number debito_input" id="debito_${idDocumento}" onkeypress="changeDebitoRow(${idDocumento}, event)" onfocusout="mostrarValores()" onfocus="this.select();" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
+                    return `<input type="text" data-type="currency" class="form-control form-control-sm input_number debito_input" id="debito_${idDocumento}" onkeypress="changeDebitoRow(${idDocumento}, event)" onfocusout="mostrarValores()" onfocus="this.select();" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
                 }
             },
             {//CREDITO
                 "data": function (row, type, set, col){
-                    return `<input type="text" data-type="currency" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" class="form-control form-control-sm input_number credito_input" id="credito_${idDocumento}" onkeypress="changeCreditoRow(${idDocumento}, event)" onfocusout="mostrarValores()" onfocus="this.select();" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
+                    return `<input type="text" data-type="currency" class="form-control form-control-sm input_number credito_input" id="credito_${idDocumento}" onkeypress="changeCreditoRow(${idDocumento}, event)" onfocusout="mostrarValores()" onfocus="this.select();" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
                 }
             },
             {//CONCEPTO
