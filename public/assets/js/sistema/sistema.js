@@ -720,7 +720,7 @@ function formatCurrencyValue (value) {
         
             return valorFormato;
         } else {
-            return formatNumber(value);
+            return formatNumber(value)+".00";
         }
 
     } else {
@@ -758,15 +758,18 @@ function formatCurrency(input, blur) {
         // validate right side
         right_side = formatNumber(right_side);
         // On blur make sure 2 numbers after decimal
-        //   if (blur === "blur") {
-        //     right_side += "00";
-        //   }
+        if (blur === "blur") {
+            right_side += "00";
+        }
         // Limit decimal to only 2 digits
         right_side = right_side.substring(0, 2);
 
         input_val = left_side + "." + right_side;
     } else {
         input_val = formatNumber(input_val);
+        if (blur === "blur") {
+            input_val += ".00";
+        }
         input_val = input_val;
     }
     
@@ -781,6 +784,6 @@ function formatCurrency(input, blur) {
 
 function stringToNumberFloat (value) {
     value = value+'';
-    if (value) value = parseFloat(parseFloat(value.replace(',', '')).toFixed(2));
+    if (value) value = parseFloat(parseFloat(value.replaceAll(',', '')).toFixed(2));
     return value ? value : 0;
 }
