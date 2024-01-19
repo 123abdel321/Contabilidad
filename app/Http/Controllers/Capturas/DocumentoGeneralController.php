@@ -100,60 +100,74 @@ class DocumentoGeneralController extends Controller
 			DB::connection('sam')->beginTransaction();
 
 			$documento = $request->get('documento');
+			$documentosGroup = [];
 
-			foreach ($documento as $doc) {
+			foreach($documento as $document) {
+				$document = (object)$document;
+				$documentosGroup[$document->token_factura][] = $document;
+			}
 
-				$doc = (object)$doc;
-				
-				DocumentosGeneral::where('id_comprobante', $doc->id_comprobante)
-					->where('consecutivo', $doc->consecutivo_factura)
-					->where('fecha_manual', $doc->fecha_factura)
+			foreach($documentosGroup as $docGroup) {
+
+				DocumentosGeneral::where('id_comprobante', $docGroup[0]->id_comprobante)
+					->where('consecutivo', $docGroup[0]->consecutivo_factura)
+					->where('fecha_manual', $docGroup[0]->fecha_factura)
 					->delete();
 
-				$tokenFactura = $doc->token_factura ? $doc->token_factura : $this->generateTokenDocumento();
-				
+				$tokenFactura = $docGroup[0]->token_factura ? $docGroup[0]->token_factura : $this->generateTokenDocumento();
+
 				$facDocumento = FacDocumentos::create([
-					'id_nit' => $doc->id_tercero_erp,
-					'id_comprobante' => $doc->id_comprobante,
-					'fecha_manual' => $doc->fecha_factura,
-					'consecutivo' => $doc->consecutivo_factura,
+					'id_nit' => $docGroup[0]->id_tercero_erp,
+					'id_comprobante' => $docGroup[0]->id_comprobante,
+					'fecha_manual' => $docGroup[0]->fecha_factura,
+					'consecutivo' => $docGroup[0]->consecutivo_factura,
 					'token_factura' => $tokenFactura,
-					'debito' => $doc->total,
-					'credito' => $doc->total,
+					'debito' => 0,
+					'credito' => 0,
 					'saldo_final' => 0,
 					'created_by' => request()->user()->id,
 					'updated_by' => request()->user()->id,
 				]);
 
-				$documentoGeneral = new Documento($doc->id_comprobante, $facDocumento, $doc->fecha_factura, $doc->consecutivo_factura);
+				$documentoGeneral = new Documento(
+					$docGroup[0]->id_comprobante,
+					$facDocumento,
+					$docGroup[0]->fecha_factura,
+					$docGroup[0]->consecutivo_factura
+				);
 
-				foreach ($this->cuentasDocumentos as $nombreCuenta => $nombreTotal) {
-					if (property_exists($doc, $nombreCuenta) && $doc->{$nombreCuenta} && property_exists($doc, $nombreTotal) && $doc->{$nombreTotal}) {
-						
-						$naturaleza = null;
-						$docGeneral = $this->newDocGeneral();
-						$cuentaContable = PlanCuentas::where('id', $doc->{$nombreCuenta})->first();
-	
-						$naturaleza = null;
-	
-						if ($cuentaContable->naturaleza_cuenta == PlanCuentas::DEBITO) {
-							$naturaleza = PlanCuentas::DEBITO;
-							$docGeneral['debito'] = $doc->{$nombreTotal};
-						} else {
-							$naturaleza = PlanCuentas::CREDITO;
-							$docGeneral['credito'] = $doc->{$nombreTotal};
+				foreach ($docGroup as $doc) {
+
+					foreach ($this->cuentasDocumentos as $nombreCuenta => $nombreTotal) {
+						if (property_exists($doc, $nombreCuenta) && $doc->{$nombreCuenta} && property_exists($doc, $nombreTotal) && $doc->{$nombreTotal}) {
+							
+							$naturaleza = null;
+							$docGeneral = $this->newDocGeneral();
+							$cuentaContable = PlanCuentas::where('id', $doc->{$nombreCuenta})->first();
+		
+							$naturaleza = null;
+		
+							if ($cuentaContable->naturaleza_cuenta == PlanCuentas::DEBITO) {
+								$naturaleza = PlanCuentas::DEBITO;
+								$docGeneral['debito'] = $doc->{$nombreTotal};
+							} else {
+								$naturaleza = PlanCuentas::CREDITO;
+								$docGeneral['credito'] = $doc->{$nombreTotal};
+							}
+		
+							$docGeneral['id_nit'] = $doc->id_tercero_erp;
+							$docGeneral['id_cuenta'] = $cuentaContable->id;
+							$docGeneral['id_centro_costos'] = $doc->id_centro_costos;
+							$docGeneral['documento_referencia'] = $doc->documento_referencia;
+							$docGeneral['concepto'] = $doc->nombre_concepto.' '.$doc->descripcion;
+							$docGeneral['consecutivo'] = $doc->consecutivo_factura;
+							$docGeneral['created_by'] = request()->user()->id;
+							$docGeneral['updated_by'] = request()->user()->id;
+							
+		
+							$docGeneral = new DocumentosGeneral($docGeneral);
+							$documentoGeneral->addRow($docGeneral, $naturaleza);
 						}
-	
-						$docGeneral['id_nit'] = $doc->id_tercero_erp;
-						$docGeneral['id_cuenta'] = $cuentaContable->id;
-						$docGeneral['id_centro_costos'] = $doc->id_centro_costos;
-						$docGeneral['documento_referencia'] = $doc->documento_referencia;
-						$docGeneral['consecutivo'] = $doc->consecutivo_factura;
-						$docGeneral['created_by'] = request()->user()->id;
-						$docGeneral['updated_by'] = request()->user()->id;
-	
-						$docGeneral = new DocumentosGeneral($docGeneral);
-						$documentoGeneral->addRow($docGeneral, $naturaleza);
 					}
 				}
 
@@ -167,7 +181,7 @@ class DocumentoGeneralController extends Controller
 					], 401);
 				}
 
-				$this->updateConsecutivo($doc->id_comprobante, $doc->consecutivo_factura);
+				$this->updateConsecutivo($docGroup[0]->id_comprobante, $docGroup[0]->consecutivo_factura);
 			}
 
 			DB::connection('sam')->commit();
