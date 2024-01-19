@@ -45,7 +45,7 @@ class NitController extends Controller
                 $columnName_arr = $request->get('columns');
                 $order_arr = $request->get('order');
                 $search_arr = $request->get('search');
-    
+
                 $columnIndex = $columnIndex_arr[0]['column']; // Column index
                 $columnName = $columnName_arr[$columnIndex]['data']; // Column name
                 $columnSortOrder = $order_arr[0]['dir']; // asc or desc
@@ -61,8 +61,25 @@ class NitController extends Controller
                         'nits.updated_by'
                     )
                     ->take($rowperpage);
-    
-                if($columnName){
+
+                if ($columnIndex == '1') {
+                    $nits->orderBy('razon_social',$columnSortOrder)
+                        ->orderBy('primer_apellido',$columnSortOrder)
+                        ->orderBy('otros_nombres',$columnSortOrder)
+                        ->orderBy('primer_apellido',$columnSortOrder)
+                        ->orderBy('segundo_apellido',$columnSortOrder);
+
+                } else if ($columnIndex == '6') {
+                    // $nits->orderBy('ciudad.nombre_completo');
+                } else if ($columnIndex == '8') {
+
+                } else if ($columnIndex == '9') {
+
+                } else if ($columnIndex == '10') {
+                    $nits->orderBy('created_at',$columnSortOrder);
+                } else if ($columnIndex == '11') {
+                    $nits->orderBy('updated_at',$columnSortOrder);
+                } else if ($columnName) {
                     $nits->orderBy($columnName,$columnSortOrder);
                 }
     
@@ -88,6 +105,7 @@ class NitController extends Controller
                     'perPage' => $rowperpage,
                     'message'=> 'Comprobante generado con exito!'
                 ]);
+
             } else {
                 $nits = Nits::whereNotNull('id');
 

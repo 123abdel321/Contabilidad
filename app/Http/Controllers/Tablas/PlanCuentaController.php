@@ -101,8 +101,7 @@ class PlanCuentaController extends Controller
                 $columnSortOrder = $order_arr[0]['dir']; // asc or desc
                 $searchValue = $search_arr['value']; // Search value
         
-                $cuentas = PlanCuentas::orderBy($columnName,$columnSortOrder)
-                    ->with(
+                $cuentas = PlanCuentas::with(
                         'tipos_cuenta',
                         'padre',
                         'impuesto',
@@ -119,6 +118,32 @@ class PlanCuentaController extends Controller
                         'created_by',
                         'updated_by'
                     );
+
+                if ($columnIndex == '2') {
+                    $cuentas->orderBy('naturaleza_cuenta',$columnSortOrder);
+                } else if ($columnIndex == '3') {
+                    $cuentas->orderBy('naturaleza_ingresos',$columnSortOrder);
+                } else if ($columnIndex == '4') {
+                    $cuentas->orderBy('naturaleza_egresos',$columnSortOrder);
+                } else if ($columnIndex == '5') {
+                    $cuentas->orderBy('naturaleza_compras',$columnSortOrder);
+                } else if ($columnIndex == '6') {
+                    $cuentas->orderBy('naturaleza_ventas',$columnSortOrder);
+                } else if ($columnIndex == '7') {
+                    $cuentas->orderBy('exige_nit',$columnSortOrder);
+                } else if ($columnIndex == '8') {
+                    $cuentas->orderBy('exige_documento_referencia',$columnSortOrder);
+                } else if ($columnIndex == '9') {
+                    $cuentas->orderBy('exige_concepto',$columnSortOrder);
+                } else if ($columnIndex == '10') {
+                    $cuentas->orderBy('exige_centro_costos',$columnSortOrder);
+                } else if ($columnIndex == '14') {
+                    $cuentas->orderBy('created_at',$columnSortOrder);
+                } else if ($columnIndex == '15') {
+                    $cuentas->orderBy('updated_at',$columnSortOrder);
+                } else if ($columnName) {
+                    $cuentas->orderBy($columnName,$columnSortOrder);
+                }
 
                 $totalCuentas = $cuentas->count();
                 

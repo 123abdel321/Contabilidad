@@ -98,6 +98,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
     private function documentosGeneralesAgruparNiveles()
     {
         $query = $this->DocumentosGeneralesQuery();
+        
         DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS documentosgeneralesdata"))
             ->mergeBindings($query)
@@ -138,7 +139,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                     
                     if ($this->hasCuentaData($cuentaPadre)) $this->sumCuentaData($cuentaPadre, $documento);
                     else $this->newCuentaTotal($cuentaPadre, $documento);
-                    $this->newCuentaDetalle($cuentaPadre, $documento);
+                    $this->newCuentaDetalle($cuentaPadre, $documento, false);
                     
                 });
                 
@@ -209,9 +210,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                         'fecha_manual' => $documento->fecha_manual,
                         'debito' => $documento->debito,
                         'credito' => $documento->credito,
-                        'diferencia' => $documento->diferencia,
+                        'diferencia' => 0,
                         'nivel' => 0,
-                        'total_columnas' => 1,
+                        'total_columnas' => '',
                         'fecha_creacion' => $documento->fecha_creacion,
                         'fecha_edicion' => $documento->fecha_edicion,
                         'created_by' => $documento->created_by,
@@ -425,7 +426,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
         ];
     }
 
-    private function newCuentaDetalle($cuenta, $documento)
+    private function newCuentaDetalle($cuenta, $documento, $detallar = true)
     {
         $this->documentosCollection[$cuenta.'A'.$documento->id] = [
             'id_documentos_generales' => $this->id_documentos_generales,
@@ -451,9 +452,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'fecha_manual' => $documento->fecha_manual,
             'debito' => $documento->debito,
             'credito' => $documento->credito,
-            'diferencia' => $documento->diferencia,
+            'diferencia' => $detallar ? $documento->diferencia : '',
             'nivel' => 0,
-            'total_columnas' => 1,
+            'total_columnas' => '',
             'fecha_creacion' => $documento->fecha_creacion,
             'fecha_edicion' => $documento->fecha_edicion,
             'created_by' => $documento->created_by,
@@ -471,5 +472,6 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
         $this->documentosCollection[$cuenta]['debito']+= number_format((float)$data->debito, 2, '.', '');
         $this->documentosCollection[$cuenta]['credito']+= number_format((float)$data->credito, 2, '.', '');
         $this->documentosCollection[$cuenta]['diferencia']+= number_format((float)$data->diferencia, 2, '.', '');
+        $this->documentosCollection[$cuenta]['total_columnas']+= number_format((float)$data->total_columnas, 2, '.', '');
     }
 }

@@ -14,7 +14,7 @@
             <th>Diferencia</th>
             <th>Fecha</th>
             <th>Concepto</th>
-            <th>Documentos</th>
+            <th>Registros</th>
             <th>Creación registro</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Ultima actualización</th>
         </tr>
