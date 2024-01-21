@@ -545,6 +545,10 @@ function buscarFactura(idRow, event) {
 
 function changeDebitoRow(idRow, event) {
     if(event.keyCode == 13){
+        if (tipo_comprobante == 4) {
+            var valorDebito = $('#debito_'+idRow).val();
+            if (valorDebito) $('#credito_'+idRow).val(0);
+        }
         focusNextRow(4, idRow);
     }
 }
@@ -560,6 +564,10 @@ function changeCreditoRow(idRow, event) {
                 $("#credito_"+idRow).select();
             },10);
             return;
+        }
+        if (tipo_comprobante == 4) {
+            var valorCredito = $('#credito_'+idRow).val();
+            if (valorCredito) $('#debito_'+idRow).val(0);
         }
         focusNextRow(5, idRow);
     }
@@ -1419,8 +1427,8 @@ function totalValores() {
         
         for (let index = 0; index < dataDocumento.length; index++) {
             var id = dataDocumento[index].id;
-            var deb = stringToNumberFloat(stringToNumberFloat($('#debito_'+id).val()));
-            var cre = stringToNumberFloat(stringToNumberFloat($('#credito_'+id).val()));
+            var deb = stringToNumberFloat($('#debito_'+id).val());
+            var cre = stringToNumberFloat($('#credito_'+id).val());
 
             debito+= deb ? deb : 0;
             credito+= cre ? cre : 0;
@@ -1430,7 +1438,7 @@ function totalValores() {
         $("#crearCapturaDocumentosDisabled").show();
     }
     
-    return [debito, credito];
+    return [debito.toFixed(2), credito.toFixed(2)];
 }
 
 // $(document).on('click', '#crearCapturaDocumentos', function () {
