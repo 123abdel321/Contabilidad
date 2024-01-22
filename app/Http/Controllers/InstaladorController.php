@@ -162,7 +162,7 @@ class InstaladorController extends Controller
                 'updated_by' => request()->user()->id,
             ]);
 
-			info('Empresa'+ $request->razon_social+' creada con exito!');
+			info('Empresa'. $request->razon_social.' creada con exito!');
 
 			DB::connection('sam')->commit();
 
