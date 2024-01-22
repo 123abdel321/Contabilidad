@@ -79,7 +79,7 @@ function ventaInit () {
             },
             {//VALOR IVA
                 "data": function (row, type, set, col){
-                    return `<div class="form-group mb-3" style="min-width: 80px;">
+                    return `<div class="form-group mb-3" style="min-width: 85px;">
                         <div class="input-group input-group-sm" style="height: 18px; min-width: 112px;">
                             <span id="venta_iva_porcentaje_text_${idVentaProducto}" class="input-group-text" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">0%</span>
                             <input style="height: 30px; text-align: right; min-width: 80px;" type="text" class="form-control form-control-sm" value="0" id="venta_iva_valor_${idVentaProducto}" value="0" disabled>
@@ -464,6 +464,7 @@ function ventaInit () {
         if(data.length){
             loadAnticiposCliente();
             clearFormasPagoVenta();
+            if (vendedoresVentas) loadVendedorCliente();
         }
     });
     
@@ -493,6 +494,16 @@ function ventaInit () {
         var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
         $comboCliente.append(newOption).trigger('change');
         $comboCliente.val(dataCliente.id).trigger('change');
+
+        if (primeraNit.vendedor) {
+            var dataVendedor = {
+                id: primeraNit.vendedor.nit.id,
+                text: primeraNit.vendedor.nit.numero_documento + ' - ' + primeraNit.vendedor.nit.nombre_completo
+            };
+            var newOption = new Option(dataVendedor.text, dataVendedor.id, false, false);
+            $comboVendedor.append(newOption).trigger('change');
+            $comboVendedor.val(dataVendedor.id).trigger('change');
+        }
 
         loadAnticiposCliente();
         
@@ -570,6 +581,36 @@ function loadAnticiposCliente() {
     });
 }
 
+function loadVendedorCliente() {
+    
+    let data = {
+        id: $('#id_cliente_venta').val(),
+    }
+
+    $.ajax({
+        url: base_url + 'nit',
+        method: 'GET',
+        data: data,
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        
+        if(res.success){
+            if (res.data[0].vendedor) {
+                var vendedor = res.data[0].vendedor.nit;
+                var dataVendedor = {
+                    id: vendedor.id,
+                    text: vendedor.numero_documento + ' - ' + vendedor.nombre_completo
+                };
+                var newOption = new Option(dataVendedor.text, dataVendedor.id, false, false);
+                $comboVendedor.append(newOption).trigger('change');
+                $comboVendedor.val(dataVendedor.id).trigger('change');
+            }
+        }
+    }).fail((err) => {
+    });
+}
+
 $(document).on('keydown', '.custom-venta_producto .select2-search__field', function (event) {
 
     if (guardandoVenta) {
@@ -577,8 +618,9 @@ $(document).on('keydown', '.custom-venta_producto .select2-search__field', funct
     }
 
     var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
+    var dataSearch = $('.select2-search__field').val();
     
-    if (event.keyCode == 96) {
+    if (event.keyCode == 96 && !dataSearch.length) {
         abrirFormasPagoVentas = true;
     } else if (event.keyCode == 13){
         if (total > 0) {

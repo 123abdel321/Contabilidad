@@ -107,7 +107,7 @@ class NitController extends Controller
                 ]);
 
             } else {
-                $nits = Nits::whereNotNull('id');
+                $nits = Nits::with('tipo_documento', 'ciudad', 'vendedor.nit')->whereNotNull('id');
 
                 if ($request->get("id")) {
                     $nits->where('id', $request->get("id"));

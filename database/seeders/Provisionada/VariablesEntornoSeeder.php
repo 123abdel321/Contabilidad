@@ -26,6 +26,11 @@ class BodegasSeeder extends Seeder
                 'nombre' => 'valor_uvt',
                 'valor' => '0',
             ],
+            [
+                'id' => 4,
+                'nombre' => 'vendedores_ventas',
+                'valor' => '',
+            ],
         ]);
     }
     
