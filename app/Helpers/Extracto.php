@@ -9,13 +9,15 @@ use App\Models\Sistema\DocumentosGeneral;
 class Extracto
 {
     public $id_nit;
+    public $id_cuenta;
     public $id_tipo_cuenta;
     public $documento_referencia;
     public $fecha;
 
-    public function __construct($id_nit = null, $id_tipo_cuenta = null, $documento_referencia = null, $fecha = null)
+    public function __construct($id_nit = null, $id_tipo_cuenta = null, $documento_referencia = null, $fecha = null, $id_cuenta = null)
     {
         $this->id_nit = $id_nit;
+        $this->id_cuenta = $id_cuenta;
         $this->id_tipo_cuenta = $id_tipo_cuenta;
         $this->documento_referencia = $documento_referencia;
         $this->fecha = $fecha;
@@ -70,7 +72,7 @@ class Extracto
                 'updated_by',
                 DB::raw('SUM(total_abono) AS total_abono'),
                 DB::raw('SUM(total_facturas) AS total_facturas'),
-                DB::raw('SUM(saldo) AS saldo'),
+                DB::raw('CASE WHEN (SUM(saldo)) < 0 THEN SUM(saldo) * -1 ELSE SUM(saldo) END AS saldo'),
             )
             ->groupByRaw('documento_referencia, id_cuenta, id_nit');
 
@@ -236,6 +238,9 @@ class Extracto
             ->where('anulado', 0)
             ->when($this->id_nit ? $this->id_nit : false, function ($query) {
 				$query->where('N.id', $this->id_nit);
+			})
+            ->when($this->id_cuenta ? $this->id_cuenta : false, function ($query) {
+				$query->where('PC.id', $this->id_cuenta);
 			})
             ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
 				$query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
