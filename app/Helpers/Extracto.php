@@ -250,7 +250,7 @@ class Extracto
 				$query->where('DG.fecha_manual', '<=', $this->fecha);
 			})
             ->when($this->documento_referencia ? false : true, function ($query) {
-                $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) > 0");
+                $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) != 0");
 			})
             ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
 

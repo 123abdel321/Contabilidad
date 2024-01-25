@@ -158,9 +158,9 @@ class DocumentoGeneralController extends Controller
 							$docGeneral['id_nit'] = $doc->id_tercero_erp;
 							$docGeneral['id_cuenta'] = $cuentaContable->id;
 							$docGeneral['id_centro_costos'] = $doc->id_centro_costos;
-							$docGeneral['documento_referencia'] = $doc->documento_referencia;
+							$docGeneral['documento_referencia'] = property_exists($doc, "documento_referencia") ? $doc->documento_referencia : '';
 							$docGeneral['concepto'] = $doc->nombre_concepto.' '.$doc->descripcion;
-							$docGeneral['consecutivo'] = $doc->consecutivo_factura;
+							$docGeneral['consecutivo'] = property_exists($doc, "consecutivo_factura") ? $doc->consecutivo_factura : '';
 							$docGeneral['created_by'] = request()->user()->id;
 							$docGeneral['updated_by'] = request()->user()->id;
 							

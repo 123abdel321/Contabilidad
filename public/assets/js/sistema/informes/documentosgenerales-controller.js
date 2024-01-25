@@ -74,8 +74,6 @@ function documentosgeneralesInit() {
                 if (row.id_cuenta) return row.cuenta + ' - ' +row.nombre_cuenta;
                 return '';
             }},
-            { data: "base_cuenta", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            { data: "porcentaje_cuenta", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){ //NIT
                 if(!row.numero_documento){
                     return '';
@@ -107,6 +105,8 @@ function documentosgeneralesInit() {
             { data: "diferencia", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: 'fecha_manual'},
             { data: 'concepto'},
+            { data: "base_cuenta", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            { data: "porcentaje_cuenta", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: 'total_columnas'},
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
