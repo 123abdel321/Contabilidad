@@ -32,7 +32,7 @@ function estadoactualInit() {
         },
         ajax:  {
             type: "GET",
-            url: base_url + 'auxiliares',
+            url: base_url + 'estado-actual',
             headers: headers,
             data: function ( d ) {
                 d.year = $('#year_estado_actual').val();
@@ -50,6 +50,10 @@ function estadoactualInit() {
             if (mes.split('TOTALES').length > 1) {
                 $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
                 $('td', row).css('font-weight', 'bold');
+                return;
+            }
+            if (data.errores) {
+                $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
                 return;
             }
         },

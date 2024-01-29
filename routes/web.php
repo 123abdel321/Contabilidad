@@ -16,6 +16,7 @@ use App\Http\Controllers\Informes\AuxiliarController;
 use App\Http\Controllers\Informes\DocumentoController;
 use App\Http\Controllers\Informes\EstadoActualController;
 use App\Http\Controllers\Informes\VentasGeneralesController;
+use App\Http\Controllers\Informes\EstadoComprobanteController;
 use App\Http\Controllers\Informes\DocumentosGeneralesController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
@@ -164,6 +165,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/ventasgenerales', [VentasGeneralesController::class, 'index']);
 		//ESTADO ACTUAL
 		Route::get('/estadoactual', [EstadoActualController::class, 'index']);
+		//ESTADO COMPROBANTE
+		Route::get('/estadocomprobante', [EstadoComprobanteController::class, 'index']);
+		
 		//USUARIOS
 		Route::get('/usuarios', [UsuariosController::class, 'index'])->name('usuarios');
 		//EMPRESA

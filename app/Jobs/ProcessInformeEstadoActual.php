@@ -175,9 +175,10 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 $query->where('id_comprobante', '=', $this->request['id_comprobante']);
             })
             ->orderBy('DG.id')
-            ->groupBy('DG.documento_referencia');
+            ->groupBy('DG.documento_referencia', 'DG.id_comprobante')
+            ->get();
 
-        return $query->count();
+        return count($query);
     }
 
     private function getComprobantes($inicioMes, $finMes)
@@ -196,9 +197,10 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 $query->where('id_comprobante', '=', $this->request['id_comprobante']);
             })
             ->orderBy('DG.id')
-            ->groupBy('id_comprobante');
+            ->groupBy('id_comprobante')
+            ->get();
 
-        return $query->count();
+        return count($query);
     }
 
     private function ordenarData()

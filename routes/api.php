@@ -21,6 +21,7 @@ use App\Http\Controllers\Tablas\ResolucionesController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
 //INFORMES
 use App\Http\Controllers\Informes\EstadoActualController;
+use App\Http\Controllers\Informes\EstadoComprobanteController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
@@ -109,6 +110,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('estado-actual', 'generate');
             Route::get('estado-actual-show', 'show');
             Route::get('estado-actual-find', 'find');
+        });
+        //INFORME ESTADO COMPROBANTE
+        Route::controller(EstadoComprobanteController::class)->group(function () {
+            Route::get('estado-comprobante', 'generate');
+            Route::get('estado-comprobante-show', 'show');
+            Route::get('estado-comprobante-find', 'find');
         });
 
         //USUARIOS

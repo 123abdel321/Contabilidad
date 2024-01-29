@@ -68,6 +68,7 @@ var moduloCreado = {
     'notacredito': false,
     'ventasgenestales': false,
     'estadoactual': false,
+    'estadocomprobante': false,
 };
 
 var moduloRoute = {
@@ -100,6 +101,7 @@ var moduloRoute = {
     'notacredito': 'capturas',
     'ventasgenerales': 'informes',
     'estadoactual': 'informes',
+    'estadocomprobante': 'informes',
 }
 
 $('.water').show();
