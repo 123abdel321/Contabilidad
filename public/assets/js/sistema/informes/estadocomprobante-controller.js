@@ -46,7 +46,7 @@ function estadocomprobanteInit() {
                 $('td', row).css('color', 'white');
                 return;
             }
-            if (parseInt(data.errores) > 1) {
+            if (parseInt(data.errores) >= 1) {
                 $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
                 return;
             }

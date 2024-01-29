@@ -52,7 +52,7 @@ function estadoactualInit() {
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
-            if (data.errores) {
+            if (parseInt(data.errores) >= 1) {
                 $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
                 return;
             }
