@@ -601,4 +601,16 @@ class DocumentoGeneralController extends Controller
 
         return $randomString;
     }
+
+	public function comboYear()
+	{
+		$years = DocumentosGeneral::where('anulado', 0)
+			->select(
+				DB::raw("DATE_FORMAT(fecha_manual, '%Y') id"),
+				DB::raw("DATE_FORMAT(fecha_manual, '%Y') text")
+			)
+			->groupBy(DB::raw("DATE_FORMAT(fecha_manual, '%Y')"));
+
+		return $years->paginate(40);
+	}
 }

@@ -67,6 +67,7 @@ var moduloCreado = {
     'movimientoinventario': false,
     'notacredito': false,
     'ventasgenestales': false,
+    'estadoactual': false,
 };
 
 var moduloRoute = {
@@ -98,6 +99,7 @@ var moduloRoute = {
     'movimientoinventario': 'capturas',
     'notacredito': 'capturas',
     'ventasgenerales': 'informes',
+    'estadoactual': 'informes',
 }
 
 $('.water').show();

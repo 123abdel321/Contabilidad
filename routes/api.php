@@ -19,6 +19,8 @@ use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
+//INFORMES
+use App\Http\Controllers\Informes\EstadoActualController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
@@ -102,6 +104,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //VENTAS GENERALES
         Route::get('ventas-generales', 'App\Http\Controllers\Informes\VentasGeneralesController@generate');
         Route::get('ventas-generales-show', 'App\Http\Controllers\Informes\VentasGeneralesController@show');
+        //INFORME ESTADO ACTUAL
+        Route::controller(EstadoActualController::class)->group(function () {
+            Route::get('estado-actual', 'generate');
+            Route::get('estado-actual-show', 'show');
+            Route::get('estado-actual-find', 'find');
+        });
 
         //USUARIOS
         Route::controller(UsuariosController::class)->group(function () {
@@ -221,7 +229,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('exogena/concepto', 'comboFormatoConcepto');
         });
         
-        
         //CAPTURA GENERAL
         Route::controller(DocumentoGeneralController::class)->group(function () {
             Route::get('consecutivo', 'getConsecutivo');
@@ -231,6 +238,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('bulk-documentos', 'bulkDocumentos');
             Route::post('bulk-documentos-delete', 'bulkDocumentosDelete');
             Route::get('documento-vacio', 'vacio');
+            Route::get('year-combo', 'comboYear');
         });
         //CAPTURA COMPRA
         Route::controller(CompraController::class)->group(function () {
