@@ -2,7 +2,7 @@
     <div class="accordion-item">
     <h5 class="accordion-header" id="headingOne">
               <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                Filtros de informe estado actual
+                Filtros de informe estadisticar generales
                 <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
                 <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
               </button>
@@ -13,12 +13,30 @@
                 <form id="estadoActualInformeForm" style="margin-top: 10px;">
                     <div class="row">
                         <input name="id_estado_actual_cargado" id="id_estado_actual_cargado" class="form-control form-control-sm" type="text" style="display: none;">
-                        <div class="form-group col-12 col-sm-6 col-md-6">
+                        <div class="form-group col-12 col-sm-6 col-md-3">
                             <label for="example-text-input" class="form-control-label">Año</label>
                             <select name="year_estado_actual" id="year_estado_actual" class="form-control form-control-sm">
                             </select>
                         </div>
-                        <div class="form-group col-12 col-sm-6 col-md-6">
+                        <div class="form-group col-12 col-sm-6 col-md-3">
+                            <label for="exampleFormControlSelect1" style=" width: 100%;">Mes</label>
+                            <select name="month_estado_actual" id="month_estado_actual" class="form-control form-control-sm">
+                                <option value="">Seleccione un mes</option>
+                                <option value="01">ENERO</option>
+                                <option value="02">FEBRERO</option>
+                                <option value="03">MARZO</option>
+                                <option value="04">ABRIL</option>
+                                <option value="05">MAYO</option>
+                                <option value="06">JUNIO</option>
+                                <option value="07">JULIO</option>
+                                <option value="08">AGOSTO</option>
+                                <option value="09">SEPTIEMBRE</option>
+                                <option value="10">OCTUBRE</option>
+                                <option value="11">NOVIEMBRE</option>
+                                <option value="12">DICIEMBRE</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-12 col-sm-6 col-md-3">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Comprobante</label>
                             <select name="id_comprobante_estado_actual" id="id_comprobante_estado_actual" class="form-control form-control-sm">
                             </select>

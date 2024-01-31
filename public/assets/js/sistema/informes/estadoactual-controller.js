@@ -36,12 +36,22 @@ function estadoactualInit() {
             headers: headers,
             data: function ( d ) {
                 d.year = $('#year_estado_actual').val();
+                d.month = $('#month_estado_actual').val();
                 d.id_comprobante = $('#id_comprobante_estado_actual').val();
             }
         },
         'rowCallback': function(row, data, index){
             var mes = data.mes;
-            if(mes == 'TOTALES'){
+            if(data.total == 3){
+                $('td', row).css('background-color', '#ff8f003b');
+                return;
+            }
+            if(data.total == 2){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 55%)');
+                $('td', row).css('font-weight', 'bold');
+                return;
+            }
+            if(data.total == 1){
                 $('td', row).css('background-color', 'rgb(28 69 135)');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
@@ -127,6 +137,7 @@ $(document).on('click', '#generarEstadoActual', function () {
 
     var url = base_url + 'estado-actual';
     url+= '?year='+$('#year_estado_actual').val();
+    url+= '?month='+$('#month_estado_actual').val();
     url+= '?id_comprobante='+$('#id_comprobante_estado_actual').val();
     url+= '&generar='+generarEstadoActual;
 

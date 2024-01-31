@@ -22,6 +22,8 @@ class ProcessInformeEstadoActual implements ShouldQueue
 
     public $request;
     public $errores;
+    public $faltantes;
+    public $consecutivoActual;
     public $id_usuario;
 	public $id_empresa;
     public $id_estado_actual;
@@ -45,7 +47,6 @@ class ProcessInformeEstadoActual implements ShouldQueue
         DB::connection('informes')->beginTransaction();
 
         try {
-
             $estadoActual = InfEstadoActual::create([
                 'id_empresa' => $this->id_empresa,
                 'year' => $this->request['year'],
@@ -58,7 +59,12 @@ class ProcessInformeEstadoActual implements ShouldQueue
 
             $collectionEstadoActual = $this->ordenarData();
 
-            DB::connection('informes')->table('inf_estado_actual_detalles')->insert($collectionEstadoActual);
+            foreach (array_chunk($collectionEstadoActual,233) as $estadoActualCollection){
+                // dd($estadoActualCollection);
+                DB::connection('informes')
+                    ->table('inf_estado_actual_detalles')
+                    ->insert($estadoActualCollection);
+            }
 
             DB::connection('informes')->commit();
 
@@ -81,58 +87,72 @@ class ProcessInformeEstadoActual implements ShouldQueue
     {
         DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
-                'fecha_manual',
-                DB::raw("DATE_FORMAT(fecha_manual, '%m') mes"),
-                DB::raw("DATE_FORMAT(fecha_manual, '%Y') year"),
+                'DG.fecha_manual',
+                'DG.id_comprobante',
+                DB::raw("0 AS documentos"),
+                DB::raw("CONCAT(CO.codigo, ' - ', CO.nombre) AS comprobantes"),
+                DB::raw("DATE_FORMAT(fecha_manual, '%m') AS mes"),
+                DB::raw("DATE_FORMAT(fecha_manual, '%Y') AS year"),
+                DB::raw("DATE_FORMAT(fecha_manual, '%m') AS meses"),
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
                 DB::raw('SUM(debito) - SUM(credito) AS diferencia'),
-                DB::raw("COUNT(id) registros")
+                DB::raw("COUNT(DG.id) registros")
             )
+            ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
             ->when($this->request['year'] ? $this->request['year'] : false, function ($query) {
                 $query->whereYear('fecha_manual', '=', $this->request['year']);
             })
-            ->when($this->request['id_comprobante'] ? $this->request['id_comprobante'] : false, function ($query) {
-                $query->where('id_comprobante', '=', $this->request['id_comprobante']);
+            ->when($this->request['month'] ? $this->request['month'] : false, function ($query) {
+                $query->whereMonth('DG.fecha_manual', '=', $this->request['month']);
             })
-            ->orderBy('fecha_manual', 'ASC')
+            ->when($this->request['id_comprobante'] ? $this->request['id_comprobante'] : false, function ($query) {
+                $query->where('DG.id_comprobante', '=', $this->request['id_comprobante']);
+            })
+            ->orderByRaw('DG.fecha_manual, CO.codigo, DG.consecutivo ASC')
             ->groupby(
                 DB::raw("DATE_FORMAT(fecha_manual, '%m')"),
-                DB::raw("DATE_FORMAT(fecha_manual, '%Y')")
+                DB::raw("DATE_FORMAT(fecha_manual, '%Y')"),
+                'id_comprobante'
             )
-            ->chunk(233, function ($documentos) {
+            ->chunk(987, function ($documentos) {
                 foreach ($documentos as $documento) {
 
                     $inicioMes = date('Y-m-01', strtotime($documento->fecha_manual));
 			        $finMes = date("Y-m-t", strtotime($documento->fecha_manual));
 
                     $documento->mes = $this->meses[intval($documento->mes)-1];
-                    $documento->errores = $this->getErrores($inicioMes, $finMes);
-                    $documento->documentos = $this->getDocumentos($inicioMes, $finMes);
-                    $documento->comprobantes = $this->getComprobantes($inicioMes, $finMes);
+                    $documento->errores = $this->getErrores($inicioMes, $finMes, $documento->id_comprobante);
+                    $documento->total = 2;
 
                     $this->estadoActualCollection[] = $documento;
+                    $this->documentosDetalle($documento->id_comprobante, $inicioMes, $finMes);
                 }
             });
     }
 
-    private function getErrores($inicioMes, $finMes)
+    private function getErrores($inicioMes = null, $finMes = null, $idComprobante = null, $consecutivo = null, $year = null)
     {
         $this->errores = 0;
 
         DB::connection('sam')->table('documentos_generals AS DG')
             ->join('plan_cuentas', 'DG.id_cuenta', 'plan_cuentas.id')
-                ->where(function ($query) use ($inicioMes, $finMes) {
+            ->where(function ($query) use ($inicioMes, $finMes, $year) {
+                if ($inicioMes && $finMes) {
                     $query->where('DG.fecha_manual', '>=', $inicioMes)
                         ->where('DG.fecha_manual', '<=', $finMes);
+                }
+                if ($year) {
+                    $query->whereYear('DG.fecha_manual', $year);
+                }
             })
             ->where('anulado', 0)
-            ->when($this->request['year'] ? $this->request['year'] : false, function ($query) {
-                $query->whereYear('DG.fecha_manual', '=', $this->request['year']);
+            ->when($idComprobante ? $idComprobante : false, function ($query) use ($idComprobante) {
+                $query->where('DG.id_comprobante', '=', $idComprobante);
             })
-            ->when($this->request['id_comprobante'] ? $this->request['id_comprobante'] : false, function ($query) {
-                $query->where('id_comprobante', '=', $this->request['id_comprobante']);
+            ->when($consecutivo ? $consecutivo : false, function ($query) use ($consecutivo) {
+                $query->where('DG.consecutivo', '=', $consecutivo);
             })
             ->orderBy('DG.id')
             ->chunk(233, function ($documentos) {
@@ -159,21 +179,19 @@ class ProcessInformeEstadoActual implements ShouldQueue
         return $this->errores;
     }
 
-    private function getDocumentos($inicioMes, $finMes)
+    private function getDocumentos($idComprobante, $inicioMes, $finMes)
     {
         $query = DB::connection('sam')->table('documentos_generals AS DG')
             ->join('plan_cuentas', 'DG.id_cuenta', 'plan_cuentas.id')
-                ->where(function ($query) use ($inicioMes, $finMes) {
-                    $query->where('DG.fecha_manual', '>=', $inicioMes)
-                        ->where('DG.fecha_manual', '<=', $finMes);
+            ->where(function ($query) use ($inicioMes, $finMes) {
+                $query->where('DG.fecha_manual', '>=', $inicioMes)
+                    ->where('DG.fecha_manual', '<=', $finMes);
             })
             ->where('anulado', 0)
             ->when($this->request['year'] ? $this->request['year'] : false, function ($query) {
                 $query->whereYear('fecha_manual', '=', $this->request['year']);
             })
-            ->when($this->request['id_comprobante'] ? $this->request['id_comprobante'] : false, function ($query) {
-                $query->where('id_comprobante', '=', $this->request['id_comprobante']);
-            })
+            ->where('id_comprobante', '=', $idComprobante)
             ->orderBy('DG.id')
             ->groupBy('DG.documento_referencia', 'DG.id_comprobante')
             ->get();
@@ -185,9 +203,9 @@ class ProcessInformeEstadoActual implements ShouldQueue
     {
         $query = DB::connection('sam')->table('documentos_generals AS DG')
             ->join('plan_cuentas', 'DG.id_cuenta', 'plan_cuentas.id')
-                ->where(function ($query) use ($inicioMes, $finMes) {
-                    $query->where('DG.fecha_manual', '>=', $inicioMes)
-                        ->where('DG.fecha_manual', '<=', $finMes);
+            ->where(function ($query) use ($inicioMes, $finMes) {
+                $query->where('DG.fecha_manual', '>=', $inicioMes)
+                    ->where('DG.fecha_manual', '<=', $finMes);
             })
             ->where('anulado', 0)
             ->when($this->request['year'] ? $this->request['year'] : false, function ($query) {
@@ -207,71 +225,51 @@ class ProcessInformeEstadoActual implements ShouldQueue
     {
         $agrupado = [];
 		$ordenado = [];
-        $totals2 = [
-			"id_estado_actual" => $this->id_estado_actual,
-			"mes" => 'TOTALES',
-			"year" => '',
-			"debito" => 0,
-			"credito" => 0,
-			"diferencia" => 0,
-			"registros" => 0,
-			"errores" => 0,
-			"documentos" => 0,
-			"comprobantes" => 0,
-			"total" => 2,
-		];
 
         foreach($this->estadoActualCollection as $estadoActual){
-			$agrupado[$estadoActual->year][] = $estadoActual;
+			$agrupado[$estadoActual->year][] = [
+                'id_estado_actual' => $this->id_estado_actual,
+                'documentos' => $estadoActual->documentos,
+                'comprobantes' => $estadoActual->comprobantes,
+                'mes' => $estadoActual->mes,
+                'year' => $estadoActual->year,
+                'debito' => $estadoActual->debito,
+                'credito' => $estadoActual->credito,
+                'diferencia' => $estadoActual->diferencia,
+                'registros' => $estadoActual->registros,
+                'errores' => $estadoActual->errores,
+                'total' => $estadoActual->total,
+            ];
 		}
 
         ksort($agrupado);
 
-        foreach ($agrupado as $year) {
-
-			$totals = [
-				"id_estado_actual" => $this->id_estado_actual,
-				"mes" => 'TOTALES '. $year[0]->year,
-				"year" => '',
-				"debito" => 0,
-				"credito" => 0,
-				"diferencia" => 0,
-				"registros" => 0,
-				"errores" => 0,
-				"documentos" => 0,
-				"comprobantes" => 0,
-				"total" => 1,
-			];
-
-			foreach ($year as $data) {
-				$totals['debito']+= $data->debito;
-				$totals['credito']+= $data->credito;
-				$totals['diferencia']+= $data->diferencia;
-				$totals['registros']+= $data->registros;
-				$totals['errores']+= $data->errores;
-				$totals['documentos']+= $data->documentos;
-				$totals['comprobantes']+= $data->comprobantes;
-
-				$totals2['debito']+= $data->debito;
-				$totals2['credito']+= $data->credito;
-				$totals2['diferencia']+= $data->diferencia;
-				$totals2['registros']+= $data->registros;
-				$totals2['errores']+= $data->errores;
-				$totals2['documentos']+= $data->documentos;
-				$totals2['comprobantes']+= $data->comprobantes;
-				array_push($ordenado, $this->dataEstadoActual($data));
-			}
-			if(!$this->request['year']){
-				array_push($ordenado, $totals);
-			}
+        foreach ($agrupado as $year => $agrup) {
+            foreach ($agrup as $data) {
+                $data = $data;
+                array_push($ordenado, $data);
+            }
+            $totales = $this->totalDocumentosFecha($year);
+            array_push($ordenado, [
+                'id_estado_actual' => $this->id_estado_actual,
+                'documentos' => $totales->documentos,
+                'comprobantes' => $totales->comprobantes,
+                'mes' => $totales->mes,
+                'year' => $totales->year,
+                'debito' => $totales->debito,
+                'credito' => $totales->credito,
+                'diferencia' => $totales->diferencia,
+                'registros' => $totales->registros,
+                'errores' => $totales->errores,
+                'total' => $totales->total,
+            ]);
 		}
-
-		array_push($ordenado, $totals2);
-
+        
 		return $ordenado;
     }
 
-    private function dataEstadoActual($data){
+    private function dataEstadoActual($data)
+    {
 		return [
 			'id_estado_actual' => $this->id_estado_actual,
 			'mes' => $data->mes,
@@ -286,5 +284,100 @@ class ProcessInformeEstadoActual implements ShouldQueue
 			'total' => 0
 		];
 	}
+
+    private function documentosDetalle($idComprobante, $inicioMes, $finMes)
+    {
+        $this->faltantes = 0;
+        $this->consecutivoActual = 0;
+
+        DB::connection('sam')->table('documentos_generals AS DG')
+            ->select(
+                'DG.fecha_manual',
+                'DG.id_comprobante',
+                'DG.consecutivo AS documentos',
+                DB::raw("'' AS comprobantes"),
+                DB::raw("'' AS mes"),
+                DB::raw("DATE_FORMAT(fecha_manual, '%Y') AS year"),
+                DB::raw("'' AS meses"),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(debito) - SUM(credito) AS diferencia'),
+                DB::raw("COUNT(DG.id) registros")
+            )
+            ->where(function ($query) use ($inicioMes, $finMes) {
+                $query->where('DG.fecha_manual', '>=', $inicioMes)
+                    ->where('DG.fecha_manual', '<=', $finMes);
+            })
+            ->where('anulado', 0)
+            ->where('id_comprobante', '=', $idComprobante)
+            ->orderBy('DG.consecutivo')
+            ->groupby(
+                'DG.consecutivo',
+                'DG.id_comprobante'
+            )
+            ->chunk(233, function ($documentos) {
+                
+                foreach ($documentos as $documento) {
+
+                    if ($this->consecutivoActual == 0) $this->consecutivoActual = intval($documento->documentos);
+                    else if ($this->consecutivoActual + 1 != intval($documento->documentos)){
+                        $diferencia = intval($documento->documentos) - $this->consecutivoActual;
+
+                        $this->estadoActualCollection[] = (object)[
+                            'id_comprobante' => '',
+                            'comprobantes' => '',
+                            'mes' => '',
+                            'year' => $documento->year,
+                            'meses' => '',
+                            'debito' => '',
+                            'credito' => '',
+                            'diferencia' => '',
+                            'registros' => '',
+                            'total' => '3',
+                            'mes' => '',
+                            'errores' => 0,
+                            'documentos' => 'Faltantes ('.$diferencia.')',
+                        ];
+                        $this->consecutivoActual = intval($documento->documentos);
+                    }
+
+                    $documento->errores = $this->getErrores(null, null, $documento->id_comprobante, $documento->documentos);
+                    $documento->total = 0;
+
+                    $this->estadoActualCollection[] = $documento;
+                }
+            });
+    }
+
+    private function totalDocumentosFecha($year)
+    {
+        $data = DB::connection('sam')->table('documentos_generals AS DG')
+            ->select(
+                'DG.id_comprobante',
+                DB::raw("0 AS documentos"),
+                DB::raw("'' AS comprobantes"),
+                DB::raw("'' AS mes"),
+                DB::raw("'' AS year"),
+                DB::raw("'' AS meses"),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(debito) - SUM(credito) AS diferencia'),
+                DB::raw("COUNT(DG.id) registros")
+            )
+            ->where(function ($query) use ($year) {
+                $query->whereYear('DG.fecha_manual', $year);
+            })
+            ->where('anulado', 0)
+            ->orderByRaw('DG.fecha_manual ASC')
+            ->groupby(
+                DB::raw("DATE_FORMAT(fecha_manual, '%Y')")
+            )
+            ->get();
+
+        $data[0]->mes = 'TOTALES '. $year;
+        $data[0]->errores = $this->getErrores(null, null, null, null, $data[0]->year);
+        $data[0]->total = 1;
+        return $data[0];
+    }
 
 }
