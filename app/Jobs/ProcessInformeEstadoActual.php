@@ -319,8 +319,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 
                 foreach ($documentos as $documento) {
 
-                    if ($this->consecutivoActual == 0) $this->consecutivoActual = intval($documento->documentos);
-                    else if ($this->consecutivoActual + 1 != intval($documento->documentos)){
+                    if ($this->consecutivoActual && $this->consecutivoActual + 1 != intval($documento->documentos)){
                         $diferencia = intval($documento->documentos) - $this->consecutivoActual;
 
                         $this->estadoActualCollection[] = (object)[
@@ -338,9 +337,9 @@ class ProcessInformeEstadoActual implements ShouldQueue
                             'errores' => 0,
                             'documentos' => 'Faltantes ('.$diferencia.')',
                         ];
-                        $this->consecutivoActual = intval($documento->documentos);
                     }
 
+                    $this->consecutivoActual = intval($documento->documentos);
                     $documento->errores = $this->getErrores(null, null, $documento->id_comprobante, $documento->documentos);
                     $documento->total = 0;
 
