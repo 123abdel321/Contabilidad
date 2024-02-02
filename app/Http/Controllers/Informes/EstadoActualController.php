@@ -27,6 +27,8 @@ class EstadoActualController extends Controller
 
         $estadoActual = InfEstadoActual::where('id_empresa', $empresa->id)
             ->where('year', $request->get('year', null))
+            ->where('month', $request->get('month', null))
+            ->where('detalle', $request->get('detalle', null))
             ->where('id_comprobante', $request->get('id_comprobante', null))
 			->first();
         

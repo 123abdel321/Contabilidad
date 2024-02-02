@@ -37,6 +37,7 @@ function estadoactualInit() {
             data: function ( d ) {
                 d.year = $('#year_estado_actual').val();
                 d.month = $('#month_estado_actual').val();
+                d.detalle = getDellarEstadoActual();
                 d.id_comprobante = $('#id_comprobante_estado_actual').val();
             }
         },
@@ -139,6 +140,7 @@ $(document).on('click', '#generarEstadoActual', function () {
     url+= '?year='+$('#year_estado_actual').val();
     url+= '?month='+$('#month_estado_actual').val();
     url+= '?id_comprobante='+$('#id_comprobante_estado_actual').val();
+    url+= '?detalle='+getDellarEstadoActual();
     url+= '&generar='+generarEstadoActual;
 
     estado_actual_table.ajax.url(url).load(function(res) {
@@ -157,4 +159,11 @@ function loadEstadoActualById(id_estado_actual) {
             agregarToast('exito', 'Estado actual cargados', res.mensaje, true);
         }
     });
+}
+
+function getDellarEstadoActual() {
+    if($("input[type='radio']#detalle_estado_actual0").is(':checked')) return '0';
+    if($("input[type='radio']#detalle_estado_actual1").is(':checked')) return '1';
+
+    return '0';
 }

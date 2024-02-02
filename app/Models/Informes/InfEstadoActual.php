@@ -17,5 +17,7 @@ class InfEstadoActual extends Model
         'id_empresa',
         'id_comprobante',
         'year',
+        'month',
+        'detalle'
     ];
 }

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->integer('id_empresa');
             $table->integer('id_comprobante')->nullable();
             $table->string('year', 20)->nullable();
+            $table->string('month', 20)->nullable();
+            $table->integer('detalle')->default(0)->nullable()->comment('0: No, 1: Si');
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

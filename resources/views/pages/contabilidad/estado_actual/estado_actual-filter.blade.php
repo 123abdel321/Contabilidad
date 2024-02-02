@@ -41,6 +41,21 @@
                             <select name="id_comprobante_estado_actual" id="id_comprobante_estado_actual" class="form-control form-control-sm">
                             </select>
                         </div>
+                        <div class="form-group col-6 col-sm-2 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                            <label for="example-text-input" class="form-control-label">Detallar</label>
+                            <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="detalle_estado_actual" id="detalle_estado_actual0" style="font-size: 11px;" checked>
+                                <label class="form-check-label" for="detalle_estado_actual0" style="font-size: 11px;">
+                                    No
+                                </label>
+                            </div>
+                            <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="detalle_estado_actual" id="detalle_estado_actual1" style="font-size: 11px;">
+                                <label class="form-check-label" for="detalle_estado_actual1" style="font-size: 11px;">
+                                    Si
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </form>
                 <div class="col-md normal-rem">

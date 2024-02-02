@@ -50,6 +50,8 @@ class ProcessInformeEstadoActual implements ShouldQueue
             $estadoActual = InfEstadoActual::create([
                 'id_empresa' => $this->id_empresa,
                 'year' => $this->request['year'],
+                'month' => $this->request['month'],
+                'detalle' => $this->request['detalle'],
                 'id_comprobante' => $this->request['id_comprobante']
             ]);
 
@@ -127,7 +129,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                     $documento->total = 2;
 
                     $this->estadoActualCollection[] = $documento;
-                    $this->documentosDetalle($documento->id_comprobante, $inicioMes, $finMes);
+                    if ($this->request['detalle']) $this->documentosDetalle($documento->id_comprobante, $inicioMes, $finMes);
                 }
             });
     }
@@ -231,7 +233,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 'id_estado_actual' => $this->id_estado_actual,
                 'documentos' => $estadoActual->documentos,
                 'comprobantes' => $estadoActual->comprobantes,
-                'mes' => $estadoActual->mes,
+                'mes' => $estadoActual->total == 2 ? $estadoActual->mes : '',
                 'year' => $estadoActual->year,
                 'debito' => $estadoActual->debito,
                 'credito' => $estadoActual->credito,
