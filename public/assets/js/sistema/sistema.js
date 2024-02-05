@@ -69,6 +69,7 @@ var moduloCreado = {
     'ventasgenestales': false,
     'estadoactual': false,
     'estadocomprobante': false,
+    'importnits': false,
 };
 
 var moduloRoute = {
@@ -102,6 +103,7 @@ var moduloRoute = {
     'ventasgenerales': 'informes',
     'estadoactual': 'informes',
     'estadocomprobante': 'informes',
+    'importnits': 'importador',
 }
 
 $('.water').show();

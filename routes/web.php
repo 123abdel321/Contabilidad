@@ -41,6 +41,7 @@ use App\Http\Controllers\Configuracion\EntornoController;
 use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
 //IMPORTADORES
+use App\Http\Controllers\Importador\NitsImportadorController;
 use App\Http\Controllers\Importador\ProductoImportadorController;
 
 // use App\Models\Sistema\PlanCuentas;
@@ -175,10 +176,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		//ENTORNO
 		Route::get('/entorno', [EntornoController::class, 'index'])->name('entorno');
 
-		//IMPORTADORES
-		Route::get('/productoprecios', [ProductoImportadorController::class, 'index'])->name('producto.precios');
-		Route::get('/productoprecios-exportar', [ProductoImportadorController::class, 'exportar'])->name('producto.exportar');
-		Route::post('/productoprecios-importar', [ProductoImportadorController::class, 'importar'])->name('producto.importar');
+		//IMPORTADORES PRODUCTOS
+		Route::get('/productoprecios', [ProductoImportadorController::class, 'index']);
+		Route::get('/productoprecios-exportar', [ProductoImportadorController::class, 'exportar']);
+		Route::post('/productoprecios-importar', [ProductoImportadorController::class, 'importar']);
+
+		//IMPORTADORES NITS
+		Route::get('/importnits', [NitsImportadorController::class, 'index']);
+		Route::get('/importnits-exportar', [NitsImportadorController::class, 'exportar']);
+		Route::post('/importnits-importar', [NitsImportadorController::class, 'importar']);
 	});
 
 	//ARGON

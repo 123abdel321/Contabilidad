@@ -37,7 +37,7 @@ label, .form-label {
 
 .fondo-sistema {
     height: 100% !important;
-    background-position: center;
+    background-position: top;
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;

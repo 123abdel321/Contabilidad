@@ -74,9 +74,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     
     //EMPRESA SELECCIONADA
     Route::group(['middleware' => ['clientconnection']], function() {
-        //IMPORTADORES
+        //IMPORTADORES PRECIO PRODUCTOS
         Route::get('producto-precio-cache-import', 'App\Http\Controllers\Importador\ProductoImportadorController@generate');
         Route::post('producto-precio-actualizar', 'App\Http\Controllers\Importador\ProductoImportadorController@actualizar');
+        //IMPORTADORES NITS
+        Route::get('nits-cache-import', 'App\Http\Controllers\Importador\NitsImportadorController@generate');
+        Route::post('nits-actualizar-import', 'App\Http\Controllers\Importador\NitsImportadorController@actualizar');
+
         //INFORMES
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
         Route::get('extracto-anticipos', 'App\Http\Controllers\Informes\ExtractoController@extractoActicipos');
