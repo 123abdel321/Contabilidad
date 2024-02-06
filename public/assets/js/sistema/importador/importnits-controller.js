@@ -101,6 +101,18 @@ $(document).on('click', '#reloadImportadorNits', function () {
     });
 });
 
+$(document).on('click', '#descargarPlantillaNits', function () {
+    $.ajax({
+        url: 'importnits-exportar',
+        method: 'GET',
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        window.open(res.url, "_blank");
+    }).fail((err) => {
+    });
+});
+
 btn.addEventListener('click', event => {
     event.preventDefault();
 
