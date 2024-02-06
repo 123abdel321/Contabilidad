@@ -110,6 +110,7 @@ class NitsImportadorController extends Controller
         if (count($dataNistValidar)) {
             foreach ($dataNistValidar as $dataNit) {
                 $this->rowErrors = 0;
+                $dataNit->id = $dataNit->id + 1;
                 $dataNit->erroes = $this->getErrores($dataNit);
                 $dataNit->tipo_documento = $this->tipoDocumento($dataNit->tipo_documento);
                 $dataNit->total_erroes = $this->rowErrors;
@@ -131,7 +132,7 @@ class NitsImportadorController extends Controller
     {
         return response()->json([
             'success'=>	true,
-            'url' => 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/import/importador_precio_productos.xlsx',
+            'url' => 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/import/importador_nits.xlsx',
             'message'=> 'Url generada con exito'
         ]);
         

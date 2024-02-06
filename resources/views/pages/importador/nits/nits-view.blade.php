@@ -1,3 +1,15 @@
+<style>
+    .table-import-nits thead {
+        padding: 0.3rem 1.2rem !important;
+    }
+    .table-import-nits > :not(caption) > * > * {
+        padding: 0.1rem 0.1rem;
+    }
+    .table-import-nits {
+        max-height: 320px;
+        overflow: auto;
+    }
+</style>
 <div class="container-fluid py-2">
     <div class="row">
 

@@ -27,6 +27,7 @@ function importnitsInit() {
             }
         },
         columns: [
+            {"data":'id'},
             {"data":'tipo_documento'},
             {"data":'numero_documento'},
             {"data":'digito_verificacion'},
@@ -101,12 +102,12 @@ $(document).on('click', '#reloadImportadorNits', function () {
 });
 
 btn.addEventListener('click', event => {
+    event.preventDefault();
 
     $('#cargarPlantillaNits').hide();
     $('#actualizarPlantillaNits').hide();
     $('#cargarPlantillaNitsLoagind').show();
 
-    event.preventDefault();
     $.ajax({
         method: 'POST',
         url: base_url + 'nits-actualizar-import',
