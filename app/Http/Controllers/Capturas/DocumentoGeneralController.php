@@ -233,13 +233,15 @@ class DocumentoGeneralController extends Controller
 						->where('relation_type', 2)
 						->with('relation')->get();
 
-					$documento[0]->relation->anulado = 1;
-					$documento[0]->relation->save();
-	
-					foreach ($documento as $doc) {
-						$doc->anulado = 1;
-						$doc->concepto .= ' - Anulado desde maximoph';
-						$doc->save();
+					if (count($documento)) {
+						$documento[0]->relation->anulado = 1;
+						$documento[0]->relation->save();
+		
+						foreach ($documento as $doc) {
+							$doc->anulado = 1;
+							$doc->concepto .= ' - Anulado desde maximoph';
+							$doc->save();
+						}
 					}
 				}	
 			}
