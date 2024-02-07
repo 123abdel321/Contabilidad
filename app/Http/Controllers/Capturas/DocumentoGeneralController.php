@@ -592,7 +592,7 @@ class DocumentoGeneralController extends Controller
 		];
 	}
 
-	public function generateTokenDocumento()
+	private function generateTokenDocumento()
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);

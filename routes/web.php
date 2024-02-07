@@ -43,6 +43,7 @@ use App\Http\Controllers\Configuracion\UsuariosController;
 //IMPORTADORES
 use App\Http\Controllers\Importador\NitsImportadorController;
 use App\Http\Controllers\Importador\ProductoImportadorController;
+use App\Http\Controllers\Importador\DocumentosImportadorController;
 
 // use App\Models\Sistema\PlanCuentas;
 // use App\Models\Sistema\ConPlanCuentas;
@@ -185,6 +186,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/importnits', [NitsImportadorController::class, 'index']);
 		Route::get('/importnits-exportar', [NitsImportadorController::class, 'exportar']);
 		Route::post('/importnits-importar', [NitsImportadorController::class, 'importar']);
+
+		//IMPORTADORES DOCUMENTOS
+		Route::get('/importdocumentos', [DocumentosImportadorController::class, 'index']);
+		Route::get('/importdocumentos-exportar', [DocumentosImportadorController::class, 'exportar']);
+		Route::post('/importdocumentos-importar', [DocumentosImportadorController::class, 'importar']);
 	});
 
 	//ARGON

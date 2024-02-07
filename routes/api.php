@@ -28,6 +28,10 @@ use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
+//IMPORTADORES
+use App\Http\Controllers\Importador\NitsImportadorController;
+use App\Http\Controllers\Importador\ProductoImportadorController;
+use App\Http\Controllers\Importador\DocumentosImportadorController;
 //SISTEMA
 use App\Http\Controllers\Sistema\UbicacionController;
 //CONFIGURACION
@@ -74,12 +78,23 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     
     //EMPRESA SELECCIONADA
     Route::group(['middleware' => ['clientconnection']], function() {
+
         //IMPORTADORES PRECIO PRODUCTOS
-        Route::get('producto-precio-cache-import', 'App\Http\Controllers\Importador\ProductoImportadorController@generate');
-        Route::post('producto-precio-actualizar', 'App\Http\Controllers\Importador\ProductoImportadorController@actualizar');
+        Route::controller(ProductoImportadorController::class)->group(function () {
+            Route::get('producto-precio-cache-import', 'generate');
+            Route::post('producto-precio-actualizar', 'actualizar');
+        });
         //IMPORTADORES NITS
-        Route::get('nits-cache-import', 'App\Http\Controllers\Importador\NitsImportadorController@generate');
-        Route::post('nits-actualizar-import', 'App\Http\Controllers\Importador\NitsImportadorController@actualizar');
+        Route::controller(NitsImportadorController::class)->group(function () {
+            Route::get('nits-cache-import', 'generate');
+            Route::post('nits-actualizar-import', 'actualizar');
+        });
+        //IMPORTADORES DOCUMENTOS
+        Route::controller(DocumentosImportadorController::class)->group(function () {
+            Route::get('documentos-cache-import', 'generate');
+            Route::post('documentos-actualizar-import', 'actualizar');
+            Route::post('documentos-validar-import', 'validar');
+        });
 
         //INFORMES
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
