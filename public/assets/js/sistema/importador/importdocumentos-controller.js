@@ -50,8 +50,8 @@ function importdocumentosInit() {
     });
 }
 
-$("#form-importador-documentos").submit(function(e) {
-    e.preventDefault();
+$("#form-importador-documentos").submit(function(event) {
+    event.preventDefault();
 
     $('#cargarPlantillaDocumentos').hide();
     $('#actualizarPlantillaDocumentos').hide();

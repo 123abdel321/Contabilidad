@@ -61,7 +61,7 @@ class DocumentosImportadorController extends Controller
             $import = new ImportDocumentos();
             $import->import($file);
 
-            // $this->agregarValidaciones();
+            $this->agregarValidaciones();
 
             return response()->json([
                 'success'=>	true,
@@ -119,7 +119,7 @@ class DocumentosImportadorController extends Controller
             'iTotalDisplayRecords' => $documentosImportadosTotals->count(),
             'data' => $cuentasPaginate->get(),
             'perPage' => $rowperpage,
-            'message'=> 'Nits excel generado con exito!'
+            'message'=> 'Documentos generado con exito!'
         ]);
     }
     
