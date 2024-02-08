@@ -70,6 +70,7 @@ var moduloCreado = {
     'estadoactual': false,
     'estadocomprobante': false,
     'importnits': false,
+    'importdocumentos': false,
 };
 
 var moduloRoute = {
@@ -104,6 +105,7 @@ var moduloRoute = {
     'estadoactual': 'informes',
     'estadocomprobante': 'informes',
     'importnits': 'importador',
+    'importdocumentos': 'importador',
 }
 
 $('.water').show();
