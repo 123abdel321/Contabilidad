@@ -387,8 +387,6 @@ class DocumentosImportadorController extends Controller
                     $errores.= 'El registro debe tener valores. <br/>';
                     $totalErrores++;
                 }
-                $errores.= 'La cuenta contable no existe. <br/>';
-                $totalErrores++;
     
                 $documentoImportado->errores = $errores;
                 $documentoImportado->total_errores = $totalErrores;
