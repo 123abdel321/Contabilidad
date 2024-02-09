@@ -331,67 +331,64 @@ class DocumentosImportadorController extends Controller
                 $documentoImportado->nombre_nit = $documentoImportado->documento_nit;
                 $documentoImportado->nombre_cecos = $documentoImportado->codigo_cecos;
                 $documentoImportado->nombre_comprobante = $documentoImportado->codigo_comprobante;
-                if ($cuentasContables) {
-                    //VALIDAR CUENTAS CONTABLES
-                    if ($documentoImportado->cuenta_contable) {
-                        if ($cuentasContables) {
-                            $documentoImportado->nombre_cuenta = $cuentasContables->cuenta. ' - '.$cuentasContables->nombre;
-                        } else {
-                            $errores.= 'La cuenta contable no existe. <br/>';
-                            $totalErrores++;
-                        }
+                //VALIDAR CUENTAS CONTABLES
+                if ($documentoImportado->cuenta_contable) {
+                    if ($cuentasContables) {
+                        $documentoImportado->nombre_cuenta = $cuentasContables->cuenta. ' - '.$cuentasContables->nombre;
                     } else {
-                        $errores.= 'La cuenta contable es requerida. <br/>';
-                        $totalErrores++;
-                    }
-                    //VALIDAR NIT
-                    if ($documentoImportado->documento_nit) {
-                        $existeNit = Nits::where('numero_documento', $documentoImportado->documento_nit)->first();
-                        if ($existeNit) {
-                            $documentoImportado->nombre_nit = $existeNit->numero_documento.' - '.$existeNit->nombre_completo;
-                        } else {
-                            $errores.= 'El documento nit no existe. <br/>';
-                            $totalErrores++;
-                        }
-                    } else if ($cuentasContables->exige_nit) {
-                        $errores.= 'La cuenta contable exige nit. <br/>';
-                        $totalErrores++;
-                    }
-                    //VALIDAR CENTRO DE COSTOS
-                    if ($documentoImportado->codigo_cecos) {
-                        $existeCecos = CentroCostos::where('codigo', $documentoImportado->codigo_cecos)->first();
-                        if ($existeCecos) {
-                            $documentoImportado->nombre_cecos = $existeCecos->codigo. ' - '.$existeCecos->nombre;
-                        } else {
-                            $errores.= 'El documento nit no existe. <br/>';
-                            $totalErrores++;
-                        }
-                    } else if ($cuentasContables->exige_centro_costos) {
-                        $errores.= 'La cuenta contable exige centro de costos. <br/>';
-                        $totalErrores++;
-                    }
-                    //VALIDAR COMPROBANTE
-                    if ($documentoImportado->codigo_comprobante) {
-                        $existeComprobante = Comprobantes::where('codigo', $documentoImportado->codigo_comprobante)->first();
-                        if ($existeComprobante) {
-                            $documentoImportado->nombre_comprobante = $existeComprobante->codigo. ' - '.$existeComprobante->nombre;
-                        } else {
-                            $errores.= 'El codigo comprobante no existe. <br/>';
-                            $totalErrores++;
-                        }
-                    } else {
-                        $errores.= 'El codigo comprobante es requerido. <br/>';
-                        $totalErrores++;
-                    }
-                    //VALIDAR CREDITO & DEBITO
-                    if (!$documentoImportado->debito && !$documentoImportado->credito) {
-                        $errores.= 'El registro debe tener valores. <br/>';
+                        $errores.= 'La cuenta contable no existe. <br/>';
                         $totalErrores++;
                     }
                 } else {
-                    $errores.= 'La cuenta contable no existe. <br/>';
+                    $errores.= 'La cuenta contable es requerida. <br/>';
                     $totalErrores++;
                 }
+                //VALIDAR NIT
+                if ($documentoImportado->documento_nit) {
+                    $existeNit = Nits::where('numero_documento', $documentoImportado->documento_nit)->first();
+                    if ($existeNit) {
+                        $documentoImportado->nombre_nit = $existeNit->numero_documento.' - '.$existeNit->nombre_completo;
+                    } else {
+                        $errores.= 'El documento nit no existe. <br/>';
+                        $totalErrores++;
+                    }
+                } else if ($cuentasContables && $cuentasContables->exige_nit) {
+                    $errores.= 'La cuenta contable exige nit. <br/>';
+                    $totalErrores++;
+                }
+                //VALIDAR CENTRO DE COSTOS
+                if ($documentoImportado->codigo_cecos) {
+                    $existeCecos = CentroCostos::where('codigo', $documentoImportado->codigo_cecos)->first();
+                    if ($existeCecos) {
+                        $documentoImportado->nombre_cecos = $existeCecos->codigo. ' - '.$existeCecos->nombre;
+                    } else {
+                        $errores.= 'El documento nit no existe. <br/>';
+                        $totalErrores++;
+                    }
+                } else if ($cuentasContables && $cuentasContables->exige_centro_costos) {
+                    $errores.= 'La cuenta contable exige centro de costos. <br/>';
+                    $totalErrores++;
+                }
+                //VALIDAR COMPROBANTE
+                if ($documentoImportado->codigo_comprobante) {
+                    $existeComprobante = Comprobantes::where('codigo', $documentoImportado->codigo_comprobante)->first();
+                    if ($existeComprobante) {
+                        $documentoImportado->nombre_comprobante = $existeComprobante->codigo. ' - '.$existeComprobante->nombre;
+                    } else {
+                        $errores.= 'El codigo comprobante no existe. <br/>';
+                        $totalErrores++;
+                    }
+                } else {
+                    $errores.= 'El codigo comprobante es requerido. <br/>';
+                    $totalErrores++;
+                }
+                //VALIDAR CREDITO & DEBITO
+                if (!$documentoImportado->debito && !$documentoImportado->credito) {
+                    $errores.= 'El registro debe tener valores. <br/>';
+                    $totalErrores++;
+                }
+                $errores.= 'La cuenta contable no existe. <br/>';
+                $totalErrores++;
     
                 $documentoImportado->errores = $errores;
                 $documentoImportado->total_errores = $totalErrores;
