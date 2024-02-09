@@ -115,13 +115,13 @@ class InstaladorController extends Controller
 			$this->associateUserToCompany($usuarioOwner, $empresa);
 			$tokenApiKey = $this->associateUserApiTokenToCompany($request, $empresa);
 
-			ProcessProvisionedDatabase::dispatch($empresa->id, 'propiedades_horizontales');
+			ProcessProvisionedDatabase::dispatch($empresa->id, 'propiedades_horizontales', $tokenApiKey);
 
 			DB::connection('sam')->commit();
 
 			return response()->json([
 				"success" => true,
-				'api_key_token' => $tokenApiKey,
+				'api_key_token' => 'Bearer '.$tokenApiKey,
 				"message" => 'La instalación se está procesando, verifique en 5 minutos.'
 			], 200);
 
@@ -324,7 +324,7 @@ class InstaladorController extends Controller
 
 			User::where('id', $user->id)->update([
 				'id_empresa' => $empresa->id,
-				'has_empresa' => $empresa->hash
+				'has_empresa' => $empresa->token_db
 			]);
 
 		if(!$usuarioEmpresa){
@@ -360,12 +360,12 @@ class InstaladorController extends Controller
 
 	private function associateUserApiTokenToCompany($request, $empresa)
 	{
+		$empresaSelect = Empresa::where('hash', $empresa)->first();
 		$email = str_replace(" ", "_", strtolower($request->razon_social));
 		$usuarioApiToken = User::create([
 			'firstname' => $empresa->razon_social,
 			'email' => 'api_token_'.$email.'@mail.com',
 			'id_empresa' => $empresa->id,
-			'has_empresa' => $empresa->token_db,
 			'telefono' => $empresa->telefono,
 			'password' => $request->password,
 		]);

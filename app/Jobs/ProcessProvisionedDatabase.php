@@ -14,6 +14,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Database\Seeders\PropiedadesHorizontalesSeeder;
 //MODELS
+use App\Models\User;
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Empresas\BaseDatosProvisionada;
@@ -27,16 +28,18 @@ class ProcessProvisionedDatabase implements ShouldQueue
 	public $connectionName = '';
 	public $idEmpresa;
 	public $tipoEmpresa;
+	public $tokenUsuario;
 
     /**
      * Create a new job instance.
 	 * 
 	 * @return void
      */
-    public function __construct($idEmpresa = null, $tipoEmpresa = 'empresas_generales')
+    public function __construct($idEmpresa = null, $tipoEmpresa = 'empresas_generales', $tokenUsuario = null)
     {
         $this->idEmpresa = $idEmpresa;
         $this->tipoEmpresa = $tipoEmpresa;
+        $this->tokenUsuario = $tokenUsuario;
 		$this->connectionName = 'provisionada';
     }
 
@@ -124,6 +127,14 @@ class ProcessProvisionedDatabase implements ShouldQueue
 		$empresa->token_db = $dbProvisionada->hash;
 		$empresa->estado = 1;
 		$empresa->save();
+
+		if ($this->tokenUsuario) {
+			$usuario = User::where('remember_token', $this->tokenUsuario)->first();
+			if ($usuario) {
+				$usuario->has_empresa = $empresa->token_db;
+				$usuario->save();
+			}
+		}
 
 		copyDBConnection($empresa->servidor ?: 'sam', 'sam');
 		setDBInConnection('sam', $empresa->token_db);
