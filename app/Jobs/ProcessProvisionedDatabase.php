@@ -6,12 +6,13 @@ use DB;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
-use Database\Seeders\ProvisionadaSeeder;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Artisan;
+use Database\Seeders\ProvisionadaSeeder;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Database\Seeders\PropiedadesHorizontalesSeeder;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
@@ -25,15 +26,17 @@ class ProcessProvisionedDatabase implements ShouldQueue
 	public $dbName = '';
 	public $connectionName = '';
 	public $idEmpresa;
+	public $tipoEmpresa;
 
     /**
      * Create a new job instance.
 	 * 
 	 * @return void
      */
-    public function __construct($idEmpresa = null)
+    public function __construct($idEmpresa = null, $tipoEmpresa = 'empresas_generales')
     {
         $this->idEmpresa = $idEmpresa;
+        $this->tipoEmpresa = $tipoEmpresa;
 		$this->connectionName = 'provisionada';
     }
 
@@ -78,11 +81,19 @@ class ProcessProvisionedDatabase implements ShouldQueue
 				'--database' => 'sam'
 			]);
 
-			Artisan::call('db:seed', [
-				'--force' => true,
-				'--class' => ProvisionadaSeeder::class,
-				'--database' => 'sam'
-			]);
+			if ($this->tipoEmpresa == 'empresas_generales') {
+				Artisan::call('db:seed', [
+					'--force' => true,
+					'--class' => ProvisionadaSeeder::class,
+					'--database' => 'sam'
+				]);
+			} else if ($this->tipoEmpresa == 'propiedades_horizontales') {
+				Artisan::call('db:seed', [
+					'--force' => true,
+					'--class' => PropiedadesHorizontalesSeeder::class,
+					'--database' => 'sam'
+				]);
+			}
 
 			$dbProvisionada->estado = 1;
 			$dbProvisionada->save();

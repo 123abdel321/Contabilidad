@@ -38,6 +38,102 @@ class InstaladorController extends Controller
             'date' => 'El campo :attribute debe ser una fecha válida.',
         ];
 	}
+
+	public function createEmpresaApiToken(Request $request)
+	{
+		$rules = [
+			'tipo_documento' => "required",
+			'numero_documento' => "required",
+			'razon_social' => "required",
+			'nombres' => "required",
+			'telefono' => "nullable|min:3|max:100",
+			'direccion' => "nullable|min:3|max:100",
+			'correo' => 'required|unique:clientes.users,email',
+			'password' => "required",
+			'ciudad' => "nullable",
+		];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+		try {
+			DB::connection('sam')->beginTransaction();
+
+			$valid_exist_cliente = Empresa::where('nit',$request->get('numero_documento'))->get();
+			
+			foreach($valid_exist_cliente as $empresa){
+				if($empresa->estado == 5) {
+					// $transaccion = CliTransacciones::where('id_empresa',$empresa->id)->where('estado',0)->first();
+
+					// if($transaccion){
+						return response()->json([
+							"success"=>false,
+							"errors"=>["La empresa ".$empresa->nombre." con nit ".$empresa->nit." tiene un proceso de pago pendiente. Por favor intenta más tarde"]
+						], Response::HTTP_UNPROCESSABLE_ENTITY);
+					// }
+				}else{
+					return response()->json([
+						"success"=>false,
+						"errors"=>["La empresa ".$empresa->nombre." con nit ".$empresa->nit." ya está registrada."]
+					], Response::HTTP_UNPROCESSABLE_ENTITY);
+				}
+			}
+
+			info('Creando empresa: '. $request->razon_social. '...');
+
+			$usuarioOwner = User::create([
+                'firstname' => $request->nombres,
+                'email' => $request->correo,
+                'telefono' => $request->telefono,
+                'password' => $request->password,
+				'address' => $request->direccion,
+            ]);
+
+			$empresa = Empresa::create([
+				'servidor' => 'sam',
+				'nombre' => $request->razon_social,
+				'tipo_contribuyente' => 1,
+				'razon_social' => $request->razon_social,
+				'nit' => $request->numero_documento,
+				'telefono' => $request->telefono,
+				'id_usuario_owner' => $usuarioOwner->id,
+				'estado' => 0
+			]);
+
+			$this->associateComponentsToCompany($empresa); 
+
+			$empresa->hash = Hash::make($empresa->id);
+			$empresa->save();
+
+			$this->associateUserToCompany($usuarioOwner, $empresa);
+			$tokenApiKey = $this->associateUserApiTokenToCompany($request, $empresa);
+
+			ProcessProvisionedDatabase::dispatch($empresa->id, 'propiedades_horizontales');
+
+			DB::connection('sam')->commit();
+
+			return response()->json([
+				"success" => true,
+				'api_key_token' => $tokenApiKey,
+				"message" => 'La instalación se está procesando, verifique en 5 minutos.'
+			], 200);
+
+		} catch (Exception $e) {
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+	}
     
     public function createEmpresa(Request $request)
     {
@@ -125,6 +221,8 @@ class InstaladorController extends Controller
 
 			if (!$dbProvisionada) {
 				ProcessProvisionedDatabase::dispatch($empresa->id);
+
+				DB::connection('sam')->commit();
 
 				return response()->json([
 					"success" => true,
@@ -260,4 +358,55 @@ class InstaladorController extends Controller
 		return;
 	}
 
+	private function associateUserApiTokenToCompany($request, $empresa)
+	{
+		$email = str_replace(" ", "_", strtolower($request->razon_social));
+		$usuarioApiToken = User::create([
+			'firstname' => $empresa->razon_social,
+			'email' => 'api_token_'.$email.'@mail.com',
+			'id_empresa' => $empresa->id,
+			'has_empresa' => $empresa->token_db,
+			'telefono' => $empresa->telefono,
+			'password' => $request->password,
+		]);
+
+		$token = $usuarioApiToken->createToken("api_token")->plainTextToken;
+		$usuarioApiToken->remember_token = $token;
+		$usuarioApiToken->save();
+
+		$usuarioEmpresa = UsuarioEmpresa::where('id_usuario', $usuarioApiToken->id)
+			->where('id_empresa', $empresa->id)
+			->first();
+
+		if(!$usuarioEmpresa){
+			UsuarioEmpresa::create([
+				'id_usuario' => $usuarioApiToken->id,
+				'id_empresa' => $empresa->id,
+				'id_rol' => 2, // default: 2
+				'estado' => 1, // default: 1 activo
+			]);
+		}
+
+		$permisos = [];
+		$permissions = Permission::all();
+		$rol = Role::where('id', 2)->first();
+
+		foreach ($permissions as $permissions) {
+			$permisos[] = $permissions->id;
+		}
+		
+		$usuarioApiToken->syncRoles($rol);
+		$usuarioApiToken->syncPermissions($permisos);
+
+		UsuarioPermisos::updateOrCreate([
+			'id_user' => $usuarioApiToken->id,
+			'id_empresa' => $empresa->id
+		],[
+			'ids_permission' => implode(',', $permisos),
+			'ids_bodegas_responsable' => '1',
+			'ids_resolucion_responsable' => '1'
+		]);
+
+		return $token;
+	}
 }

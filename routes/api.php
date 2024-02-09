@@ -50,6 +50,7 @@ use App\Http\Controllers\Configuracion\UsuariosController;
 
 Route::post('login', 'App\Http\Controllers\ApiController@login');
 Route::post('register', 'App\Http\Controllers\ApiController@register');
+Route::post('register-api-token', 'App\Http\Controllers\InstaladorController@createEmpresaApiToken');
 Route::post('public-event', function (Request $request) {
     event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
     return event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
