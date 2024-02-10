@@ -65,8 +65,6 @@ class ApiController extends Controller
         try {
             if($user){
                 if(Hash::check($data->password, $user->password)){
-                    
-                    // $tokenExist = $user->remember_token; //RECORDAR TOKEN
                     $tokenExist = null;
 
                     if($tokenExist) {

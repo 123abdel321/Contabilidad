@@ -75,13 +75,15 @@ class InstaladorController extends Controller
 					// if($transaccion){
 						return response()->json([
 							"success"=>false,
-							"errors"=>["La empresa ".$empresa->nombre." con nit ".$empresa->nit." tiene un proceso de pago pendiente. Por favor intenta más tarde"]
+							"errors"=>["La empresa ".$empresa->nombre." con nit ".$empresa->nit." tiene un proceso de pago pendiente. Por favor intenta más tarde"],
+							"message"=>["La empresa ".$empresa->nombre." con nit ".$empresa->nit." tiene un proceso de pago pendiente. Por favor intenta más tarde"]
 						], Response::HTTP_UNPROCESSABLE_ENTITY);
 					// }
 				}else{
 					return response()->json([
 						"success"=>false,
-						"errors"=>["La empresa ".$empresa->nombre." con nit ".$empresa->nit." ya está registrada."]
+						"errors"=>["La empresa ".$empresa->nombre." con nit ".$empresa->nit." ya está registrada."],
+						"message"=>["La empresa ".$empresa->nombre." con nit ".$empresa->nit." ya está registrada."]
 					], Response::HTTP_UNPROCESSABLE_ENTITY);
 				}
 			}
@@ -108,7 +110,8 @@ class InstaladorController extends Controller
 			]);
 
 			$this->associateComponentsToCompany($empresa); 
-
+			
+			$empresa->token_db = $this->generateUniqueNameDb($empresa);
 			$empresa->hash = Hash::make($empresa->id);
 			$empresa->save();
 
@@ -212,6 +215,7 @@ class InstaladorController extends Controller
 
 			$this->associateComponentsToCompany($empresa); 
 
+			$empresa->token_db = $this->generateUniqueNameDb($empresa);
 			$empresa->hash = Hash::make($empresa->id);
 			$empresa->save();
 
@@ -360,11 +364,10 @@ class InstaladorController extends Controller
 
 	private function associateUserApiTokenToCompany($request, $empresa)
 	{
-		$empresaSelect = Empresa::where('hash', $empresa)->first();
 		$email = str_replace(" ", "_", strtolower($request->razon_social));
 		$usuarioApiToken = User::create([
 			'firstname' => $empresa->razon_social,
-			'email' => 'api_token_'.$email.'@mail.com',
+			'email' => 'api_token_'.$empresa->id.'_'.$email.'@mail.com',
 			'id_empresa' => $empresa->id,
 			'telefono' => $empresa->telefono,
 			'password' => $request->password,
@@ -408,5 +411,11 @@ class InstaladorController extends Controller
 		]);
 
 		return $token;
+	}
+
+	private function generateUniqueNameDb($empresa)
+	{
+		$razonSocial = str_replace(" ", "_", strtolower($empresa->razon_social));
+		return 'portafolio_'.$razonSocial.'_'.$empresa->nit;
 	}
 }
