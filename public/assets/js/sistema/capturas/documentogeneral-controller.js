@@ -19,6 +19,7 @@ function documentogeneralInit() {
     $('#fecha_manual_documento').val(fecha);
 
     documento_general_table = $('#documentoReferenciaTable').DataTable({
+        pageLength: 300,
         dom: '',
         responsive: false,
         processing: true,
