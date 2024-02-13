@@ -61,6 +61,133 @@ class DocumentoGeneralController extends Controller
         return view('pages.capturas.documento_general.documento_general-view', $data);
     }
 
+	public function generarDocumentos(Request $request)
+	{
+		$rules = [
+			'documento' => 'array|required',
+			'documento.*.id_nit' => 'nullable|sometimes|exists:sam.nits,id',
+			'documento.*.id_cuenta_ingreso' => 'nullable|exists:sam.plan_cuentas,id',
+			'documento.*.id_cuenta_por_cobrar' => 'nullable|exists:sam.plan_cuentas,id',
+			'documento.*.id_comprobante' => 'sometimes|exists:sam.comprobantes,id',
+			'documento.*.id_centro_costos' => 'sometimes|exists:sam.centro_costos,id',
+			'documento.*.fecha_manual' => 'date|required',
+			'documento.*.documento_referencia' => 'nullable|string',
+			'documento.*.valor' => 'required',
+			'documento.*.concepto' => 'required',
+			'documento.*.token_factura' => 'nullable'
+        ];
+
+		$validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 401);
+        }
+
+		try {
+			DB::connection('sam')->beginTransaction();
+
+			$cuentasContables = [
+				'id_cuenta_por_cobrar',
+				'id_cuenta_ingreso'
+			];
+
+			$documento = $request->get('documento');
+			$documentosGroup = [];
+
+			foreach($documento as $document) {
+				$document = (object)$document;
+				$documentosGroup[$document->token_factura][] = $document;
+			}
+
+			foreach($documentosGroup as $docGroup) {
+
+				$consecutivo = $this->getNextConsecutive($docGroup[0]->id_comprobante, $docGroup[0]->fecha_manual);
+
+				$facDocumento = FacDocumentos::create([
+					'id_nit' => $docGroup[0]->id_nit,
+					'id_comprobante' => $docGroup[0]->id_comprobante,
+					'fecha_manual' => $docGroup[0]->fecha_manual,
+					'consecutivo' => $consecutivo,
+					'token_factura' => $docGroup[0]->token_factura,
+					'debito' => 0,
+					'credito' => 0,
+					'saldo_final' => 0,
+					'created_by' => request()->user()->id,
+					'updated_by' => request()->user()->id,
+				]);
+
+				$documentoGeneral = new Documento(
+					$docGroup[0]->id_comprobante,
+					$facDocumento,
+					$docGroup[0]->fecha_manual,
+					$consecutivo
+				);
+
+				foreach ($docGroup as $doc) {
+					foreach ($cuentasContables as $cuentaContable) {
+						$naturaleza = null;
+						$docGeneral = $this->newDocGeneral();
+						$cuentaContable = PlanCuentas::where('id', $doc->{$cuentaContable})->first();
+	
+						$naturaleza = null;
+	
+						if ($cuentaContable->naturaleza_cuenta == PlanCuentas::DEBITO) {
+							$naturaleza = PlanCuentas::DEBITO;
+							$docGeneral['debito'] = $doc->valor;
+						} else {
+							$naturaleza = PlanCuentas::CREDITO;
+							$docGeneral['credito'] = $doc->valor;
+						}
+
+						$docGeneral['id_nit'] = $doc->id_nit;
+						$docGeneral['id_cuenta'] = $cuentaContable->id;
+						$docGeneral['id_centro_costos'] = $doc->id_centro_costos;
+						$docGeneral['documento_referencia'] = $doc->documento_referencia;
+						$docGeneral['concepto'] = $doc->concepto;
+						$docGeneral['consecutivo'] = $consecutivo;
+						$docGeneral['created_by'] = request()->user()->id;
+						$docGeneral['updated_by'] = request()->user()->id;
+		
+						$docGeneral = new DocumentosGeneral($docGeneral);
+						$documentoGeneral->addRow($docGeneral, $naturaleza);
+					}
+				}
+				if (!$documentoGeneral->save()) {
+	
+					DB::connection('sam')->rollback();
+					return response()->json([
+						'success'=>	false,
+						'data' => [],
+						'message'=> $documentoGeneral->getErrors()
+					], 401);
+				}
+	
+				$this->updateConsecutivo($docGroup[0]->id_comprobante, $consecutivo);
+			}
+
+			DB::connection('sam')->commit();
+				
+			return response()->json([
+				'success'=>	true,
+				'data' => [],
+				'message'=> 'Documentos creados con exito!'
+			], 200);
+			
+		} catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 401);
+        }
+	}
+
 	public function bulkDocumentos(Request $request)
 	{
 		$rules = [
@@ -463,7 +590,6 @@ class DocumentoGeneralController extends Controller
 		$documento = DocumentosGeneral::with(['centro_costos', 'cuenta', 'nit'])
 			->where('id_comprobante', $request->get('id_comprobante'))
 			->where('consecutivo', $request->get('consecutivo'))
-			// ->where('fecha_manual', $request->get('fecha_manual'))
             ->get();
 
 		return response()->json([

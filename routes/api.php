@@ -263,6 +263,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('documentos', 'anular');
             Route::post('documentos', 'create');
             Route::post('bulk-documentos', 'bulkDocumentos');
+            Route::post('generar-documentos', 'generarDocumentos');
             Route::post('bulk-documentos-delete', 'bulkDocumentosDelete');
             Route::get('documento-vacio', 'vacio');
             Route::get('year-combo', 'comboYear');

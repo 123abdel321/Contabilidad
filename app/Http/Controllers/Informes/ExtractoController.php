@@ -40,6 +40,7 @@ class ExtractoController extends Controller
 			"id_nit" => "nullable|exists:sam.nits,id",
 			"numero_documento" => "nullable|exists:sam.nits,numero_documento",
 			"id_tipo_cuenta" => "nullable|exists:sam.tipo_cuentas,id",
+            "id_cuenta" => "nullable|exists:sam.plan_cuentas,id",
 		];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
