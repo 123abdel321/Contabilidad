@@ -362,7 +362,7 @@ class DocumentosImportadorController extends Controller
                     if ($existeCecos) {
                         $documentoImportado->nombre_cecos = $existeCecos->codigo. ' - '.$existeCecos->nombre;
                     } else {
-                        $errores.= 'El documento nit no existe. <br/>';
+                        $errores.= 'El centro de costos no existe. <br/>';
                         $totalErrores++;
                     }
                 } else if ($cuentasContables && $cuentasContables->exige_centro_costos) {

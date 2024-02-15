@@ -35,6 +35,7 @@ use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
+use App\Http\Controllers\Capturas\DocumentoEliminarController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
 //CONFIGURACION
 use App\Http\Controllers\Configuracion\EntornoController;
@@ -122,6 +123,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/cartera', [CarteraController::class, 'index'])->name('cartera');
 		//DOCUMENTO GENERAL
 		Route::get('/documentogeneral', [DocumentoGeneralController::class, 'index'])->name('documento-general');
+		//ELIMINAR DOCUMENTOS
+		Route::get('/eliminardocumentos', [DocumentoEliminarController::class, 'index'])->name('eliminar-documentos');
 		//MOVIMIENTO INVENTARIO
 		Route::get('/movimientoinventario', [MovimientoInventarioController::class, 'index']);
 		//COMPRAS
