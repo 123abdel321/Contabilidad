@@ -41,6 +41,10 @@ function eliminardocumentosInit() {
             headers: headers
         },
         rowCallback: function(row, data, index){
+            if (data.nivel != 99) {
+                $("#eliminarDocumentos").show();
+                $("#eliminarDocumentosDisabled").hide();
+            }
             if(data.nivel == 99){
                 $('td', row).css('background-color', 'rgb(28 69 135)');
                 $('td', row).css('font-weight', 'bold');
@@ -266,15 +270,14 @@ channel.bind('notificaciones', function(data) {
 });
 
 function loadEliminarDocumentosById(id_documento_general) {
+    $("#eliminarDocumentos").hide();
+    $("#eliminarDocumentosDisabled").show();
+    console.log('id_documento_general: ',id_documento_general);
     eliminar_documentos_table.ajax.url(base_url + 'documentos-generales-show?id='+id_documento_general).load(function(res) {
+        console.log('respuesta: ',res);
         if(res.success){
             $("#generarEliminarDocumentos").show();
             $("#generarEliminarDocumentosLoading").hide();
-            // $('#descargarExcelAuxiliar').prop('disabled', false);
-            // $("#descargarExcelAuxiliar").show();
-            // $("#descargarExcelAuxiliarDisabled").hide();
-            // $('#generarAuxiliarUltimo').hide();
-            // $('#generarAuxiliarUltimoLoading').hide();
             agregarToast('exito', 'Documentos generales cargados', 'Informe cargado con exito!', true);
         }
     });
@@ -332,4 +335,49 @@ $(document).on('click', '#generarEliminarDocumentos', function () {
             agregarToast('info', 'Generando documentos generales', 'En un momento se le notificará cuando el informe esté generado...', true );
         }
     });
+});
+
+$(document).on('click', '#eliminarDocumentos', function () {
+
+    Swal.fire({
+        title: "Esta seguro?",
+        text: "¡No podrás revertir esto!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, borar!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var data = {
+                fecha_desde: $('#fecha_desde_eliminar_documentos').val(),
+                fecha_hasta: $('#fecha_hasta_eliminar_documentos').val(),
+                precio_desde: $('#precio_desde_eliminar_documentos').val(),
+                precio_hasta: $('#precio_hasta_eliminar_documentos').val(),
+                id_nit: $('#id_nit_eliminar_documentos').val(),
+                id_comprobante: $('#id_comprobante_eliminar_documentos').val(),
+                id_centro_costos: $('#id_cecos_eliminar_documentos').val(),
+                id_cuenta: $('#id_cuenta_eliminar_documentos').val(),
+                id_usuario: $('#id_usuario_eliminar_documentos').val(),
+                documento_referencia: $('#factura_eliminar_documentos').val(),
+                consecutivo: $('#consecutivo_eliminar_documentos').val(),
+                concepto: $('#concepto_eliminar_documentos').val()
+            };
+        
+            $.ajax({
+                url: base_url + 'documentos-generales-delete',
+                method: 'POST',
+                data: JSON.stringify(data),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                if(res.success){
+                    document.getElementById('generarEliminarDocumentos').click();
+                    agregarToast('exito', 'Documentos eliminados!', 'Documentos eliminados con exito!', true);
+                }
+            }).fail((err) => {
+            });
+        }
+    });
+
 });

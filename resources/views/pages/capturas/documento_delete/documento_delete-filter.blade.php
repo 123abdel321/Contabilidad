@@ -2,7 +2,7 @@
     <div class="accordion-item">
         <h5 class="accordion-header">
             <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEliminarDocumentosInforme" aria-expanded="false" aria-controls="collapseEliminarDocumentosInforme">
-                Filtros Documentos generales
+                Filtros Documentos generales a eliminar
                 <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
                 <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
             </button>
@@ -109,13 +109,23 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="generarEliminarDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
+                    <span id="generarEliminarDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-info" style="min-width: 40px;">
                         <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">BUSCAR</b>
                     </span>
                     <span id="generarEliminarDocumentosLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">BUSCANDO</b>
+                    </span>
+                    <!-- BOTON ELIMINAR -->
+                    <span id="eliminarDocumentos" href="javascript:void(0)" class="btn badge bg-danger btn-bg-danger" style="min-width: 40px; display: none;">
+                        <i class="fas fa-trash" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">ELIMINAR DOCUMENTOS</b>
+                    </span>
+                    <span id="eliminarDocumentosDisabled" class="badge bg-danger" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                        <i class="fas fa-trash" style="font-size: 17px; color: #adadad;"></i>
+                        <b style="vertical-align: text-top;">ELIMINAR DOCUMENTOS</b>
+                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                 </div>
             </div>

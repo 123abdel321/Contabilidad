@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Informes;
 
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeDocumentosGenerales;
@@ -13,6 +14,8 @@ use App\Models\Informes\InfDocumentosGeneralesDetalle;
 
 class DocumentosGeneralesController extends Controller
 {
+    private $request;
+
     public function index ()
     {
         return view('pages.contabilidad.documentos_generales.documentos_generales-view');
@@ -96,7 +99,74 @@ class DocumentosGeneralesController extends Controller
             'iTotalDisplayRecords' => $informeTotals->count(),
             'data' => $informePaginate->get(),
             'perPage' => $rowperpage,
-            'message'=> 'Auxiliar generado con exito!'
+            'message'=> 'Documentos generado con exito!'
         ]);
     }
+
+    public function delete(Request $request)
+    {
+        $this->request = $request->all();
+        try {
+            DB::connection('sam')->beginTransaction();
+
+            DB::connection('sam')->table('documentos_generals AS DG')
+                ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
+                ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+                ->leftJoin('impuestos AS IM', 'PC.id_impuesto', 'IM.id')
+                ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
+                ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
+                ->where('anulado', 0)
+                ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
+                ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
+                ->where(function ($query) {
+                    $query->when(isset($this->request['precio_desde']), function ($query) {
+                        $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) >= ?', [$this->request['precio_desde']]);
+                    })->when(isset($this->request['precio_hasta']), function ($query) {
+                        $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) <= ?', [$this->request['precio_hasta']]);
+                    });
+                })
+                ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
+                    $query->where('DG.id_nit', $this->request['id_nit']);
+                })
+                ->when(isset($this->request['id_comprobante']) ? $this->request['id_comprobante'] : false, function ($query) {
+                    $query->where('DG.id_comprobante', $this->request['id_comprobante']);
+                })
+                ->when(isset($this->request['id_centro_costos']) ? $this->request['id_centro_costos'] : false, function ($query) {
+                    $query->where('DG.id_centro_costos', $this->request['id_centro_costos']);
+                })
+                ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
+                    $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+                })
+                ->when(isset($this->request['documento_referencia']) ? $this->request['documento_referencia'] : false, function ($query) {
+                    $query->where('DG.documento_referencia', $this->request['documento_referencia']);
+                })
+                ->when(isset($this->request['consecutivo']) ? $this->request['consecutivo'] : false, function ($query) {
+                    $query->where('DG.consecutivo', $this->request['consecutivo']);
+                })
+                ->when(isset($this->request['concepto']) ? $this->request['concepto'] : false, function ($query) {
+                    $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
+                })
+                ->when(isset($this->request['id_usuario']) ? $this->request['id_usuario'] : false, function ($query) {
+                    $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
+                })
+            ->delete();
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+				'success'=>	true,
+				'message'=> 'Documentos eliminados con exito!'
+			], 200);
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
 }
