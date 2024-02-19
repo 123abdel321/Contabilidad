@@ -151,7 +151,8 @@ function carteraInit() {
             data: function (params) {
                 var query = {
                     search: params.term,
-                    cartera: true
+                    total_cuentas: true,
+                    id_tipo_cuenta: [3,4]
                 }
                 return query;
             },
