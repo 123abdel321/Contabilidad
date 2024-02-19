@@ -64,7 +64,7 @@ function documentogeneralInit() {
                     html+= '        <i class="fa fa-spinner fa-spin fa-fw documento-load" id="documento_load_'+idDocumento+'" style="display: none;"></i>';
                     html+= '        <div class="valid-feedback info-factura">Nueva factura</div>';
                     html+= '        <div class="invalid-feedback info-factura">Factura existente</div>';
-                    html+= '        <div class="input-group-append button-group" id="conten_button_'+idDocumento+'"><span href="javascript:void(0)" class="btn badge bg-gradient-secondary btn-group btn-documento-extracto" style="min-width: 40px; margin-right: 3px; border-radius: 0px 7px 7px 0px; height: 33px;"><i class="fas fa-search" style="font-size: 17px; margin-top: 3px;"></i><b style="vertical-align: text-top;"></b></span></div></div>';
+                    html+= '        <div class="input-group-append button-group" id="conten_button_'+idDocumento+'"><span href="javascript:void(0)" id="button_extracto_'+idDocumento+'" class="btn badge bg-gradient-secondary btn-group btn-documento-extracto" style="min-width: 40px; margin-right: 3px; border-radius: 0px 7px 7px 0px; height: 33px;"><i class="fas fa-search" style="font-size: 17px; margin-top: 3px;"></i><b style="vertical-align: text-top;"></b></span></div></div>';
                     html+= '    </div>';
                     html+= '';
     
@@ -418,16 +418,27 @@ function changeCuentaRow(idRow) {
     if (!data) return;
 
     if(data.cuenta) {
-        if(data.cuenta.slice(0, 1) == '2' || data.cuenta.slice(0, 2) == '13') {
+        var id_tipo_cuenta = null;
+        
+        data.tipos_cuenta.forEach(tipo_cuenta => {
+            if (tipo_cuenta.id_tipo_cuenta == 3 || tipo_cuenta.id_tipo_cuenta == 4) {
+                id_tipo_cuenta = tipo_cuenta.id_tipo_cuenta;
+            }
+        });
+
+        if(id_tipo_cuenta == 3 || id_tipo_cuenta == 4) {
             if(data.naturaleza_cuenta != data.naturaleza_origen) {
-                rowExtracto = idRow;
                 $("#conten_button_"+idRow).show();
                 $("#documento_referencia_"+idRow).removeClass("normal_input");
                 $("#documento_referencia_"+idRow).prop("readonly", true)
-            } else {
-                $("#conten_button_"+idRow).hide();
-                $("#documento_referencia_"+idRow).addClass("normal_input");
-                $("#documento_referencia_"+idRow).prop("readonly", false);
+            //     rowExtracto = idRow;
+            //     $("#conten_button_"+idRow).show();
+            //     $("#documento_referencia_"+idRow).removeClass("normal_input");
+            //     $("#documento_referencia_"+idRow).prop("readonly", true)
+            // } else {
+            //     $("#conten_button_"+idRow).hide();
+            //     $("#documento_referencia_"+idRow).addClass("normal_input");
+            //     $("#documento_referencia_"+idRow).prop("readonly", false);
             }
         } else {
             $("#conten_button_"+idRow).hide();
@@ -792,11 +803,18 @@ function focusNextRow(Idcolumn, idRow) {
             } else {
                 //BUSCAR EXTRACTO
                 var dataCuentaRow = $('#combo_cuenta_'+idRow).select2('data')[0];
-                if(inputsId[idNextColumn] == '#documento_referencia' && idRow === rowExtracto){
-                    
-                    if (dataCuentaRow.naturaleza_cuenta != dataCuentaRow.naturaleza_origen) {
-                        buscarExtracto();
-                    };
+                if(inputsId[idNextColumn] == '#documento_referencia'){
+                    var id_tipo_cuenta = null;
+        
+                    dataCuentaRow.tipos_cuenta.forEach(tipo_cuenta => {
+                        if (tipo_cuenta.id_tipo_cuenta == 3 || tipo_cuenta.id_tipo_cuenta == 4) {
+                            id_tipo_cuenta = tipo_cuenta.id_tipo_cuenta;
+                        }
+                    });
+
+                    if (id_tipo_cuenta) {
+                        buscarExtracto(idRow);
+                    }
                 }
                 if (tipo_comprobante == 4) {
                     
@@ -931,11 +949,14 @@ $(document).on('click', '#iniciarCapturaDocumentos', function () {
 });
 
 $(document).on('click', '.btn-documento-extracto', function () {
-    buscarExtracto();
+    var idRow = this.id.split('_')[2];
+    buscarExtracto(idRow);
 });
 
 $(document).on('click', '.select-documento', function () {
-    var saldo = parseInt(this.id.split('_')[2]);
+    var totalLengh = this.id.split('_').length;
+    var saldo = totalLengh == 4 ? parseInt(this.id.split('_')[3]) : parseInt(this.id.split('_')[2]);
+
     var documentoReferencia = this.id.split('_')[1];
     let dataNit = $('#combo_nits_'+rowExtracto).select2('data')[0];
     
@@ -959,10 +980,22 @@ $(document).on('click', '.select-documento', function () {
     // focusNextRow(3, rowExtracto);
 });
 
-function buscarExtracto() {
+function buscarExtracto(idRow) {
+
     if (!documento_extracto) initDatatableExtracto();
-    if ($('#combo_nits_'+rowExtracto).val()) {
-        let dataNit = $('#combo_nits_'+rowExtracto).select2('data')[0];
+    if ($('#combo_nits_'+idRow).val()) {
+        let dataNit = $('#combo_nits_'+idRow).select2('data')[0];
+        let dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
+        rowExtracto = idRow;
+
+        var id_tipo_cuenta = null;
+        
+        dataCuenta.tipos_cuenta.forEach(tipo_cuenta => {
+            if (tipo_cuenta.id_tipo_cuenta == 3 || tipo_cuenta.id_tipo_cuenta == 4) {
+                id_tipo_cuenta = tipo_cuenta.id_tipo_cuenta;
+            }
+        });
+
         $('#modal-title-documento-extracto').html(dataNit.text);
         $("#modalDocumentoExtracto").modal('show');
 
@@ -972,15 +1005,15 @@ function buscarExtracto() {
             url: base_url + 'extracto',
             method: 'GET',
             data: {
-                id_tipo_cuenta: 3,
-                id_nit: $('#combo_nits_'+rowExtracto).val(),
+                id_tipo_cuenta: id_tipo_cuenta,
+                id_nit: $('#combo_nits_'+idRow).val(),
             },
             headers: headers,
             dataType: 'json',
         }).done((res) => {
             var documentos = res.data;
+            documento_extracto.rows().remove().draw();
             var dataRowDocumentos = documento_general_table.rows().data();
-
             for (let index = 0; index < documentos.length; index++) {
                 let documento = documentos[index];
                 if (dataRowDocumentos.length > 1 ) documento = calcularPagosEnCaptura(documento);
