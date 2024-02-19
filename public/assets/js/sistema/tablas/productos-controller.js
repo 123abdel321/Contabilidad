@@ -120,6 +120,30 @@ function productosInit() {
                 return '';
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){  
+                var inventarios = row.inventarios;
+                var totalUnidades = 0
+                if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
+                    inventarios.forEach(inventario => {
+                        totalUnidades+= parseInt(inventario.cantidad);
+                    });
+                    return totalUnidades * row.precio_inicial;
+                    
+                }
+                return '';
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){  
+                var inventarios = row.inventarios;
+                var totalUnidades = 0
+                if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
+                    inventarios.forEach(inventario => {
+                        totalUnidades+= parseInt(inventario.cantidad);
+                    });
+                    return totalUnidades * row.precio;
+                    
+                }
+                return '';
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
                 if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';

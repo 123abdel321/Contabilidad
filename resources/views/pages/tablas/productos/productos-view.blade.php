@@ -124,7 +124,7 @@
                 <div class="col-12 col-md-3 col-sm-6">
                     <div class="card">
                         <div class="card-body p-2">
-                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Prod. cantidad</p>
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Existencias</p>
                             <h5 id="total_productos_producto" class="font-weight-bolder">
                             </h5>
                             <div class="icon icon-shape bg-gradient-success shadow-primary text-center rounded-circle" style="width: 30px !important; height: 30px !important; margin-top: -45px; float: inline-end;">
@@ -137,7 +137,7 @@
                 <div class="col-12 col-md-3 col-sm-6">
                     <div class="card">
                         <div class="card-body p-2">
-                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Costo Prod.</p>
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Costo</p>
                             <h5 id="total_costo_producto" class="font-weight-bolder">
                             </h5>
                             <div class="icon icon-shape bg-gradient-warning shadow-primary text-center rounded-circle" style="width: 30px !important; height: 30px !important; margin-top: -45px; float: inline-end;">
@@ -150,7 +150,7 @@
                 <div class="col-12 col-md-3 col-sm-6">
                     <div class="card">
                         <div class="card-body p-2">
-                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Precios Prod.</p>
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Venta</p>
                             <h5 id="total_precio_producto" class="font-weight-bolder">
                             </h5>
                             <div class="icon icon-shape bg-gradient-danger shadow-primary text-center rounded-circle" style="width: 30px !important; height: 30px !important; margin-top: -45px; float: inline-end;">
