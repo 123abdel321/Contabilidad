@@ -338,7 +338,7 @@ $(document).on('click', '#generarEliminarDocumentos', function () {
 });
 
 $(document).on('click', '#eliminarDocumentos', function () {
-
+    $("#generarEliminarDocumentosLoading").show();
     Swal.fire({
         title: "Esta seguro?",
         text: "¡No podrás revertir esto!",
@@ -348,6 +348,7 @@ $(document).on('click', '#eliminarDocumentos', function () {
         cancelButtonColor: "#d33",
         confirmButtonText: "Si, borar!"
     }).then((result) => {
+        $("#generarEliminarDocumentosLoading").hide();
         if (result.isConfirmed) {
             var data = {
                 fecha_desde: $('#fecha_desde_eliminar_documentos').val(),
@@ -372,8 +373,8 @@ $(document).on('click', '#eliminarDocumentos', function () {
                 dataType: 'json',
             }).done((res) => {
                 if(res.success){
-                    document.getElementById('generarEliminarDocumentos').click();
                     agregarToast('exito', 'Documentos eliminados!', 'Documentos eliminados con exito!', true);
+                    document.getElementById('generarEliminarDocumentos').click();
                 }
             }).fail((err) => {
             });

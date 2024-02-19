@@ -537,7 +537,9 @@ function productosInit() {
     $("#add-products-view").hide();
 
     $('.water').hide();
-    productos_table.ajax.reload();
+    productos_table.ajax.reload(function(res) {
+        showTotalsProductos(res);
+    })
 }
 
 function asignarDatosInventario (dataProducto) {
@@ -691,7 +693,9 @@ $(document).on('click', '#createProducto', function () {
 });
 
 $(document).on('click', '#reloadProducto', function () {
-    productos_table.ajax.reload();
+    productos_table.ajax.reload(function(res) {
+        showTotalsProductos(res);
+    });
 });
 
 $(document).on('click', '#saveNewProducto', function () {
@@ -785,7 +789,9 @@ $(document).on('click', '#saveEditProducto', function () {
             $('#saveEditProducto').show();
             $('#cancelProducto').show();
             $('#saveNewProductoLoading').hide();
-            productos_table.ajax.reload();
+            productos_table.ajax.reload(function(res) {
+                showTotalsProductos(res);
+            });
             agregarToast('exito', 'Actualización exitosa', 'Producto actualizado con exito!', true);
             document.getElementById('cancelProducto').click();
         }
@@ -1993,6 +1999,16 @@ $("#searchInputProductos").on("input", function (e) {
     $('#productoTable').DataTable().search($("#searchInputProductos").val()).draw();
 });
 
+$('#productoTable').on('search.dt', function (res, data) {
+    if (data.json) {
+        var datos = data.json.totalesProductos;
+        $('#total_bodegas_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(datos.total_bodegas));
+        $('#total_productos_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(datos.total_productos));
+        $('#total_costo_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(datos.total_costo));
+        $('#total_precio_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(datos.total_precio));
+    }
+});
+
 function actualizarPrecio (id) {
     var value = stringToNumberFloat($('#prodvari-precio_'+id).val());
     nuevoProducto.productos_variantes[id].precio = value;
@@ -2071,6 +2087,18 @@ $("#id_familia_producto").on('change', function(e) {
         },10);
     }
 });
+
+function showTotalsProductos(res) {
+    if (res.success) {
+        $('#totales-products-view').show();
+        var totales = res.totalesProductos;
+        $('#total_bodegas_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.total_bodegas));
+        $('#total_productos_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.total_productos));
+        $('#total_costo_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.total_costo));
+        $('#total_precio_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.total_precio));
+        
+    }
+}
 
 function addPrecioMinimoProducto () {
     actualizarDatosProducto();

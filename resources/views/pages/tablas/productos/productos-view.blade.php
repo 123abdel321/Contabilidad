@@ -105,8 +105,64 @@
                 <input type="text" id="searchInputProductos" class="form-control form-control-sm search-table" placeholder="Buscar">
             </div>
         </div>
+        
+        <div id="totales-products-view" style="content-visibility: auto; overflow: auto; display: none;">
+            <div class="row ">
+                <div class="col-12 col-md-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-body p-2">
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total bodegas</p>
+                            <h5 id="total_bodegas_producto" class="font-weight-bolder">
+                            </h5>
+                            <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle" style="width: 30px !important; height: 30px !important; margin-top: -45px; float: inline-end;">
+                                <i class="ni ni-briefcase-24 text-lg opacity-10" style="top: 6px !important;" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <div id="table-products-view" class="card mb-4" style="content-visibility: auto; overflow: auto;">
+                <div class="col-12 col-md-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-body p-2">
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Prod. cantidad</p>
+                            <h5 id="total_productos_producto" class="font-weight-bolder">
+                            </h5>
+                            <div class="icon icon-shape bg-gradient-success shadow-primary text-center rounded-circle" style="width: 30px !important; height: 30px !important; margin-top: -45px; float: inline-end;">
+                                <i class="ni ni-box-2 text-lg opacity-10" style="top: 6px !important;" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-body p-2">
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Costo Prod.</p>
+                            <h5 id="total_costo_producto" class="font-weight-bolder">
+                            </h5>
+                            <div class="icon icon-shape bg-gradient-warning shadow-primary text-center rounded-circle" style="width: 30px !important; height: 30px !important; margin-top: -45px; float: inline-end;">
+                                <i class="ni ni-money-coins text-lg opacity-10" style="top: 8px !important;" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-body p-2">
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Precios Prod.</p>
+                            <h5 id="total_precio_producto" class="font-weight-bolder">
+                            </h5>
+                            <div class="icon icon-shape bg-gradient-danger shadow-primary text-center rounded-circle" style="width: 30px !important; height: 30px !important; margin-top: -45px; float: inline-end;">
+                                <i class="ni ni-money-coins text-lg opacity-10" style="top: 8px !important;" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="table-products-view" class="card mb-4" style="content-visibility: auto; overflow: auto; margin-top: 10px;">
             <div class="card-body">
 
                 @include('pages.tablas.productos.productos-table')
