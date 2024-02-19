@@ -508,7 +508,9 @@ class PlanCuentaController extends Controller
         }
         
         if ($request->has("id_tipo_cuenta")) {
-            $planCuenta->where('auxiliar', 1);
+            if (!$request->has("total_cuentas")) {
+                $planCuenta->where('auxiliar', 1);
+            }
             $planCuenta->whereHas('tipos_cuenta', function ($query) use($request) {
                 $query->whereIn('id_tipo_cuenta', $request->get('id_tipo_cuenta'));
             });
