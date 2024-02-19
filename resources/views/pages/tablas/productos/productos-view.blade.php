@@ -111,7 +111,7 @@
                 <div class="col-12 col-md-3 col-sm-6">
                     <div class="card">
                         <div class="card-body p-2">
-                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total bodegas</p>
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Productos</p>
                             <h5 id="total_bodegas_producto" class="font-weight-bolder">
                             </h5>
                             <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle" style="width: 30px !important; height: 30px !important; margin-top: -45px; float: inline-end;">

@@ -95,9 +95,9 @@ class ProductosController extends Controller
         }
 
         $totalesProductos = [
-            'total_bodegas' => count($this->queryTotalesProducto($searchValue)->groupBy('FB.id')->get()),
-            'total_costo' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FP.precio_inicial) AS precio_inicial"))->first()->precio_inicial,
-            'total_precio' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FP.precio) AS precio"))->first()->precio,
+            'cantidad_productos' => count($this->queryTotalesProducto($searchValue)->groupBy('FP.id')->get()),
+            'total_costo' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FP.precio_inicial * FPB.cantidad) AS precio_inicial"))->first()->precio_inicial,
+            'total_precio' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FP.precio * FPB.cantidad) AS precio"))->first()->precio,
             'total_productos' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FPB.cantidad) AS total_productos"))->first()->total_productos,
         ];
 
