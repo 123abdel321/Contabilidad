@@ -63,7 +63,7 @@ function productosInit() {
                     alt="${row.nombre}" />`;
                 }
                 return '';
-            }},
+            }, className: 'dt-body-center'},
             {"data": function (row, type, set){
                 return row.nombre;
             }},
