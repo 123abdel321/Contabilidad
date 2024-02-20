@@ -573,12 +573,18 @@ function hideFormNits(){
     if (tipoDocumento && tipoDocumento == '6') {
         nitsForm.forEach(form => {
             $("#div_"+form).show();
-            $("#"+form).prop('required',true);
+            if (form == 'otros_nombres' || form == 'segundo_apellido') {
+            } else {
+                $("#"+form).prop('required',true);
+            }
         });
     } else if (tipoDocumento) {
         noNitsForm.forEach(form => {
             $("#div_"+form).show();
-            $("#"+form).prop('required',true);
+            if (form == 'otros_nombres' || form == 'segundo_apellido') {
+            } else {
+                $("#"+form).prop('required',true);
+            }
         });
     }
 

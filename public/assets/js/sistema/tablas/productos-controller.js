@@ -209,6 +209,7 @@ function productosInit() {
             $("#searchInputProductos").hide();
             $('#producto-inventario').hide();
             $("#table-products-view").hide();
+            $("#totales-products-view").hide();
             $('#btn-modal-variantes').show();
             $("#add-products-view").show();
             $("#saveEditProducto").show();
@@ -558,6 +559,7 @@ function productosInit() {
     });
 
     $("#table-products-view").show();
+    $("#totales-products-view").show();
     $("#add-products-view").hide();
 
     $('.water').hide();
@@ -700,6 +702,7 @@ $(document).on('click', '#createProducto', function () {
     $('#input-iva-porcentaje').hide();
     $("#searchInputProductos").hide();
     $("#table-products-view").hide();
+    $("#totales-products-view").hide();
     $('#default_produc_img').show();
     $("#add-products-view").show();
     $('#input-iva-valor').hide();
@@ -844,6 +847,7 @@ $(document).on('click', '#cancelProducto', function () {
     clearFormProductos();
 
     $("#table-products-view").show();
+    $("#totales-products-view").show();
     $("#add-products-view").hide();
     $("#cancelProducto").hide();
     $("#saveEditProducto").hide();
