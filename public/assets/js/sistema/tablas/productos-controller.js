@@ -2030,10 +2030,18 @@ $("#searchInputProductos").on("input", function (e) {
 $('#productoTable').on('search.dt', function (res, data) {
     if (data.json) {
         var datos = data.json.totalesProductos;
-        $('#total_bodegas_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(datos.cantidad_productos));
-        $('#total_productos_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(datos.total_productos));
-        $('#total_costo_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(datos.total_costo));
-        $('#total_precio_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(datos.total_precio));
+
+        var countA = new CountUp('total_bodegas_producto', 0, datos.cantidad_productos);
+            countA.start();
+
+        var countB = new CountUp('total_productos_producto', 0, datos.total_productos);
+            countB.start();
+
+        var countC = new CountUp('total_costo_producto', 0, datos.total_costo);
+            countC.start();
+
+        var countD = new CountUp('total_precio_producto', 0, datos.total_precio);
+            countD.start();
     }
 });
 
@@ -2120,11 +2128,18 @@ function showTotalsProductos(res) {
     if (res.success) {
         $('#totales-products-view').show();
         var totales = res.totalesProductos;
-        $('#total_bodegas_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.cantidad_productos));
-        $('#total_productos_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.total_productos));
-        $('#total_costo_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.total_costo));
-        $('#total_precio_producto').html(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totales.total_precio));
-        
+
+        var countA = new CountUp('total_bodegas_producto', 0, totales.cantidad_productos);
+            countA.start();
+
+        var countB = new CountUp('total_productos_producto', 0, totales.total_productos);
+            countB.start();
+
+        var countC = new CountUp('total_costo_producto', 0, totales.total_costo);
+            countC.start();
+
+        var countD = new CountUp('total_precio_producto', 0, totales.total_precio);
+            countD.start();
     }
 }
 

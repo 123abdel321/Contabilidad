@@ -940,12 +940,23 @@ function mostrarValoresCompras () {
     if (total) disabledFormasPagoCompras(false);
     else disabledFormasPagoCompras();
 
-    $("#compra_total_iva").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(iva));
-    $("#compra_total_descuento").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(descuento));
-    $("#compra_total_retencion").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(retencion));
-    $("#compra_total_valor").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total));
-    $("#compra_sub_total").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valorBruto));
-    document.getElementById('total_faltante_compra').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+    var countA = new CountUp('compra_total_iva', 0, iva, 2, 0.5);
+        countA.start();
+
+    var countB = new CountUp('compra_total_descuento', 0, descuento, 2, 0.5);
+        countB.start();
+
+    var countC = new CountUp('compra_total_retencion', 0, retencion, 2, 0.5);
+        countC.start();
+
+    var countD = new CountUp('compra_total_valor', 0, total, 2, 0.5);
+        countD.start();
+
+    var countE = new CountUp('compra_sub_total', 0, valorBruto, 2, 0.5);
+        countE.start();
+
+    var countF = new CountUp('total_faltante_compra', 0, total, 2, 0.5);
+        countF.start();
 }
 
 function disabledFormasPagoCompras(estado = true) {

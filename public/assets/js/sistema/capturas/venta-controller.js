@@ -478,11 +478,11 @@ function ventaInit () {
     consecutivoSiguienteVenta();
     loadFormasPagoVenta();
 
-    if (!primeraBodegaVenta.length) {
+    if (!primeraBodegaVenta || !primeraBodegaVenta.length) {
         agregarToast('warning', 'Sin bodegas asignadas', '', true);
     }
 
-    if (!primeraResolucionVenta.length) {
+    if (!primeraResolucionVenta || !primeraResolucionVenta.length) {
         agregarToast('warning', 'Sin Resoluciones asigandas', '', true);
     }
 
@@ -957,12 +957,23 @@ function mostrarValoresVentas () {
     if (total) disabledFormasPagoVenta(false);
     else disabledFormasPagoVenta();
 
-    $("#venta_total_iva").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(iva));
-    $("#venta_total_descuento").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(descuento));
-    $("#venta_total_retencion").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(retencion));
-    $("#venta_total_valor").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total));
-    $("#venta_sub_total").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valorBruto));
-    document.getElementById('total_faltante_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+    var countA = new CountUp('venta_total_iva', 0, iva, 2, 0.5);
+        countA.start();
+
+    var countB = new CountUp('venta_total_descuento', 0, descuento, 2, 0.5);
+        countB.start();
+
+    var countC = new CountUp('venta_total_retencion', 0, retencion, 2, 0.5);
+        countC.start();
+
+    var countD = new CountUp('venta_total_valor', 0, total, 2, 0.5);
+        countD.start();
+        
+    var countE = new CountUp('venta_sub_total', 0, valorBruto, 2, 0.5);
+        countE.start();
+
+    var countF = new CountUp('total_faltante_venta', 0, total, 2, 0.5);
+        countF.start();
 }
 
 function totalValoresVentas() {
@@ -1266,8 +1277,11 @@ function calcularVentaPagos(idFormaPago) {
     var totalPagado = totalFaltante < 0 ? total : totalEfectivo + totalOtrosPagos + totalAnticipos;
     var totalFaltante = totalFaltante < 0 ? 0 : totalFaltante;
 
-    document.getElementById('total_pagado_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalPagado);
-    document.getElementById('total_faltante_venta').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalFaltante);
+    var countA = new CountUp('total_pagado_venta', 0, totalPagado, 2, 0.5);
+        countA.start();
+
+    var countB = new CountUp('total_faltante_venta', 0, totalFaltante, 2, 0.5);
+        countB.start();
 }
 
 function totalFormasPagoVentas(idFormaPago = null) {

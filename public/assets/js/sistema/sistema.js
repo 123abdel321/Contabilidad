@@ -18,6 +18,7 @@ const itemMenuActive = localStorage.getItem("item_active_menu");
 const dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
+
 $.ajaxSetup({
     'headers':{
         "Authorization": auth_token,
@@ -287,7 +288,7 @@ function toggleSidenavMaximoClose() {
 
 //PERSONAL TABLE LENGUAJE
 const lenguajeDatatable = {
-    "sProcessing":     "Cargando <span><i style='font-size: 15px' class='fa fa-spinner fa-spin'></i></span>",
+    "sProcessing":     "",
     "sLengthMenu":     "Mostrar _MENU_ registros",
     "sZeroRecords":    "No se encontraron resultados",
     "sEmptyTable":     "Ningún registro disponible",

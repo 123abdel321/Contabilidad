@@ -52,7 +52,6 @@
             @include('layouts.navbars.auth.topnav')
             <div id="contenerdores-views" class="tab-content clearfix" onclick="closeMenu()">
                 <main class="tab-pane main-content border-radius-lg change-view active" style="margin-left: 5px;" id="containner-dashboard">
-                    
                 </main>
             </div>
             <br/>
@@ -198,6 +197,8 @@
     <script src="assets/js/sistema/jquery.validate.min.js"></script>
     <!-- sweetalert2 -->
     <script src="assets/js/sistema/sweetalert2.all.min.js"></script>
+    <!-- countUp -->
+    <script src="assets/js/sistema/countUp.min.js"></script>
     <!-- PUSHER -->
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <!-- SISTEMA -->

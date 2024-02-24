@@ -55,7 +55,7 @@
     <hr class="horizontal dark mt-0">
 
     <div class="dropdown" style="text-align-last: center;">
-        <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="dropdownTiposMenu" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #2E34FF;">
+        <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="dropdownTiposMenu" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #1d2669;">
             Facturación
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownTiposMenu" style="margin-left: 40px;">
@@ -98,7 +98,7 @@
     </ul>
 </aside>
 
-<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl" id="sidenav-main-2" style="z-index: 99 !important; width: 11px; cursor: pointer; background-color: #18386d !important; border-radius: 0px 7px 7px 0px;">
+<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl" id="sidenav-main-2" style="z-index: 99 !important; width: 11px; cursor: pointer; background-color: #1e255b !important; border-radius: 0px 7px 7px 0px;">
     <span id="button-mostrar-lateral" class="nav-link-text ms-1" style="margin: 0; position: fixed; top: 50%; transform: translateY(-50%);">
         <i class="fas fa-caret-right" style="color: #FFF;"></i>
     </span>
