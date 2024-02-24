@@ -28,8 +28,8 @@
   --bs-gray-700: #495057;
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
-  --bs-primary: #1c4587 ;
-  --bs-primary-second: rgb(16, 38, 204) ;
+  --bs-primary: #1e255b ;
+  --bs-primary-second: #1c224e;
   --bs-secondary: #8392ab;
   --bs-success: #2dce89;
   --bs-info: #11cdef;
@@ -5290,6 +5290,7 @@ textarea.form-control-lg {
   display: flex;
   padding-left: 0;
   list-style: none;
+  margin-top: -25px !important;
 }
 
 .page-link {
@@ -6074,7 +6075,7 @@ textarea.form-control-lg {
   border-bottom: 1px solid #dee2e6;
   border-top-left-radius: calc(0.75rem - 1px);
   border-top-right-radius: calc(0.75rem - 1px);
-  background-color: #1c4587;
+  background-color: #1e255b;
 }
 .modal-header .btn-close {
   padding: 0.5rem 0.5rem;
@@ -9482,7 +9483,7 @@ textarea.form-control-lg {
 }
 
 .bg-dark {
-  background-color: #344767 !important;
+  background-color: #35395b !important;
 }
 
 .bg-white {
@@ -19223,8 +19224,8 @@ textarea.form-control-lg {
 
 .btn-primary:hover,
 .btn.bg-gradient-primary:hover {
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
+  background-color: var(--bs-primary-second);
+  border-color: var(--bs-primary-second);
 }
 .btn-primary .btn.bg-outline-primary,
 .btn.bg-gradient-primary .btn.bg-outline-primary {
