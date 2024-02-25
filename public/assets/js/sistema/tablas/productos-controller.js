@@ -86,6 +86,21 @@ function productosInit() {
                 }
                 return '';
             }},
+            {"data": function (row, type, set){  
+                var inventarios = row.inventarios;
+                var totalUnidades = 0
+                if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
+                    inventarios.forEach(inventario => {
+                        totalUnidades+= parseInt(inventario.cantidad);
+                    });
+                    if (totalUnidades > 0) {
+                        return totalUnidades;
+                    } else {
+                        return '<span class="badge rounded-pill bg-danger">Sin unidades</span>';
+                    }
+                }
+                return '';
+            }, className: 'dt-body-right'},
             {"data": "precio_inicial", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "precio", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
@@ -104,21 +119,6 @@ function productosInit() {
 
                 return '';
             }},
-            {"data": function (row, type, set){  
-                var inventarios = row.inventarios;
-                var totalUnidades = 0
-                if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
-                    inventarios.forEach(inventario => {
-                        totalUnidades+= parseInt(inventario.cantidad);
-                    });
-                    if (totalUnidades > 0) {
-                        return totalUnidades;
-                    } else {
-                        return '<span class="badge rounded-pill bg-danger">Sin unidades</span>';
-                    }
-                }
-                return '';
-            }, className: 'dt-body-right'},
             {"data": function (row, type, set){  
                 var inventarios = row.inventarios;
                 var totalUnidades = 0
