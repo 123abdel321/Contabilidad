@@ -225,6 +225,7 @@ class NotaCreditoController extends Controller
 
                 //AGREGAR DEVOLUCION
                 $cuentaDevolucion = $productoDb->familia->cuenta_venta_devolucion;
+                $cuentaOpuestoVenta = PlanCuentas::CREDITO == $cuentaDevolucion->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
                 $docDevolucion = new DocumentosGeneral([
                     "id_cuenta" => $cuentaDevolucion->id,
                     "id_nit" => $cuentaDevolucion->exige_nit ? $notaCredito->id_cliente : null,
@@ -236,7 +237,7 @@ class NotaCreditoController extends Controller
                     "created_by" => request()->user()->id,
                     "updated_by" => request()->user()->id
                 ]);
-                $documentoGeneral->addRow($docDevolucion, $cuentaDevolucion->naturaleza_ventas);
+                $documentoGeneral->addRow($docDevolucion, $cuentaOpuestoVenta);
 
                 //AGREGAR COSTO
                 if ($totalesProducto->subtotal) {
