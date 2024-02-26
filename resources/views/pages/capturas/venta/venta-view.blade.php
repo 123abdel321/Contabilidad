@@ -209,19 +209,18 @@
         </div>
     </div>
 
-    @include('pages.capturas.venta.venta-nits-form')
-
     <script>
         var ventaExistencias = '<?php echo auth()->user()->can("venta existencia"); ?>';
         var ventaDescuento = '<?php echo auth()->user()->can("venta descuento"); ?>';
         var ventaNegativa = '<?php echo auth()->user()->can("venta negativa"); ?>';
         var ventaRapida = '<?php echo auth()->user()->can("venta rapida"); ?>';
         
-        var primeraNit = JSON.parse('<?php echo $cliente; ?>');
         var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');
         var primeraResolucionVenta = JSON.parse('<?php echo $resolucion; ?>');
         var ivaIncluidoVentas = '<?php echo $iva_incluido; ?>';
         var vendedoresVentas = '<?php echo $vendedores_ventas; ?>';
+        var primeraNit = JSON.parse('<?php echo $cliente; ?>');
+
     </script>
     
 </div>

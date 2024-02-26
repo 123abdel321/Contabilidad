@@ -190,7 +190,7 @@ class DocumentosImportadorController extends Controller
                         $cecos = CentroCostos::where('codigo', $data->codigo_cecos)->first();
                         $nit = Nits::where('numero_documento', $data->documento_nit)->first();
                         $cuenta = PlanCuentas::where('cuenta', $data->cuenta_contable)->first();
-
+                        
                         $doc = [
                             'id_cuenta' => $cuenta->id,
                             'id_nit' => $nit ? $nit->id : '',
@@ -208,11 +208,9 @@ class DocumentosImportadorController extends Controller
 
                         $naturaleza = null;
 
-                        if (array_key_exists('debito', $doc) && $doc['debito']) {
+                        if ($doc['debito'] > 0) {
                             $naturaleza = PlanCuentas::DEBITO;
-                        }
-                        
-                        if (array_key_exists('credito', $doc) && $doc['credito']) {
+                        } else if ($doc['credito'] > 0) {
                             $naturaleza = PlanCuentas::CREDITO;
                         }
 
@@ -260,7 +258,6 @@ class DocumentosImportadorController extends Controller
                     $facDocumento->save();
 
                     $this->updateConsecutivo($comprobante->id, $documentoImportado[0]->consecutivo);
-
                 }
                 DocumentosImport::whereNotNull('id')->delete();
                 DB::connection('sam')->commit();
@@ -331,6 +328,7 @@ class DocumentosImportadorController extends Controller
                 $documentoImportado->nombre_nit = $documentoImportado->documento_nit;
                 $documentoImportado->nombre_cecos = $documentoImportado->codigo_cecos;
                 $documentoImportado->nombre_comprobante = $documentoImportado->codigo_comprobante;
+
                 //VALIDAR CUENTAS CONTABLES
                 if ($documentoImportado->cuenta_contable) {
                     if ($cuentasContables) {
@@ -343,6 +341,7 @@ class DocumentosImportadorController extends Controller
                     $errores.= 'La cuenta contable es requerida. <br/>';
                     $totalErrores++;
                 }
+
                 //VALIDAR NIT
                 if ($documentoImportado->documento_nit) {
                     $existeNit = Nits::where('numero_documento', $documentoImportado->documento_nit)->first();
