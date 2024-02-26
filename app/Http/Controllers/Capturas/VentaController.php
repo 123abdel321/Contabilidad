@@ -476,10 +476,8 @@ class VentaController extends Controller
         $dataVentas = $ventas->get();
         $totalData = $this->queryTotalesVentaCosto($request)->select(
             DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
-            DB::raw("SUM(FVD.subtotal) AS total_costo"),
-            DB::raw("SUM(FVD.total) AS total_venta"),
-            DB::raw("SUM(FVD.total- FVD.subtotal) AS total_utilidad"),
-            DB::raw("SUM(((FVD.total- FVD.subtotal) / FVD.subtotal) * 100) AS porcentaje_utilidad")
+            DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
+            DB::raw("SUM(FVD.total) AS total_venta")
         )->get();
 
         if ($request->get('detallar_venta') == 'si') {
@@ -807,14 +805,15 @@ class VentaController extends Controller
     {
         return DB::connection('sam')->table('fac_ventas AS FV')
             ->leftJoin('fac_venta_detalles AS FVD', 'FV.id', 'FVD.id_venta')
+            ->leftJoin('fac_productos AS FP', 'FVD.id_producto', 'FP.id')
             ->when($request->get('id_cliente') ? true : false, function ($query) use ($request) {
                 $query->where('FV.id_cliente', $request->get('id_cliente'));
             })
             ->when($request->get('fecha_desde') ? true : false, function ($query) use ($request) {
-                $query->where('FV.fecha_manual', '>=', $request->get('fecha_desde'));
+                $query->whereDate('FV.fecha_manual', '>=', $request->get('fecha_desde'));
             })
             ->when($request->get('fecha_hasta') ? true : false, function ($query) use ($request) {
-                $query->where('FV.fecha_manual', '>=', $request->get('fecha_hasta'));
+                $query->whereDate('FV.fecha_manual', '<=', $request->get('fecha_hasta'));
             })
             ->when($request->get('factura') ? true : false, function ($query) use ($request) {
                 $query->where('FV.documento_referencia', 'LIKE', '%'.$request->get('factura').'%');
