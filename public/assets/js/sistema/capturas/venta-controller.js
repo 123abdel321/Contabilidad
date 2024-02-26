@@ -812,6 +812,10 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
         
         $('#venta_iva_valor_'+idRow).val(formatCurrencyValue(totalIva));
     }
+
+    if (!ivaIncluidoVentas) {
+        totalProducto+= totalIva;
+    }
     
     $('#venta_total_'+idRow).val(formatCurrencyValue(totalProducto));
 
@@ -996,7 +1000,6 @@ function totalValoresVentas() {
                 descSum= descSum ? descSum : 0;
                 iva+= ivaSum ? ivaSum : 0;
                 descuento+= descSum ? descSum : 0;
-                total+= totaSum ? totaSum : 0;
                 valorBruto+= (cantidad*costo) - descSum;
             }
         }
@@ -1004,11 +1007,11 @@ function totalValoresVentas() {
         if (total >= topeRetencionVenta) {
             retencion = porcentajeRetencionVenta ? (valorBruto * porcentajeRetencionVenta) / 100 : 0;
             retencion = retencion;
-            total-= retencion;
         }
 
         if (ivaIncluidoVentas) valorBruto-= iva;
-        else total+= iva;
+
+        total = ivaIncluidoVentas ? valorBruto : valorBruto + iva;
 
         if (redondearFactura) {
             var totalParaRedondear =  parseFloat(total / 1000);
