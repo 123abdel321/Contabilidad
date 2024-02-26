@@ -401,7 +401,7 @@ function deleteRow(idRow) {
         let element = dataDocumento[row];
         if(element.id == idRow) {
             documento_general_table.row(row).remove().draw();
-            if(!documento_general_table.rows().data().lengt){
+            if(!documento_general_table.rows().data().length){
                 $("#crearCapturaDocumentos").prop('disabled', true);
             }
         }

@@ -34,7 +34,7 @@
                         </div>
 
                         <div class="form-group col-12 col-sm-6 col-md-4">
-                            <label for="exampleFormControlSelect1">Cuenta cartera</label>
+                            <label for="exampleFormControlSelect1">Cuenta de caja</label>
                             <select name="id_cuenta_cartera_bodega" id="id_cuenta_cartera_bodega" class="form-control form-control-sm">
                             </select>
                         </div>
