@@ -474,7 +474,12 @@ class VentaController extends Controller
         }
 
         $dataVentas = $ventas->get();
-        $totalData = $this->queryTotalesVentaCosto($request)->select(
+        $totalDataVenta = $this->queryTotalesVentaCosto($request)->select(
+            DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
+            DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
+            DB::raw("SUM(FVD.total) AS total_venta")
+        )->get();
+        $totalDataNotas = $this->queryTotalesVentaCosto($request, true)->select(
             DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
             DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
             DB::raw("SUM(FVD.total) AS total_venta")
@@ -489,7 +494,8 @@ class VentaController extends Controller
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
-            'totalesVenta' => $totalData,
+            'totalesVenta' => $totalDataVenta,
+            'totalesNotas' => $totalDataNotas,
             'iTotalRecords' => $ventas->count(),
             'iTotalDisplayRecords' => $ventas->count(),
             'data' => $this->ventaData,
@@ -801,11 +807,18 @@ class VentaController extends Controller
             ->first();
     }
 
-    private function queryTotalesVentaCosto($request)
+    private function queryTotalesVentaCosto($request, $notas = false)
     {
         return DB::connection('sam')->table('fac_ventas AS FV')
             ->leftJoin('fac_venta_detalles AS FVD', 'FV.id', 'FVD.id_venta')
             ->leftJoin('fac_productos AS FP', 'FVD.id_producto', 'FP.id')
+            ->when(true, function ($query) use ($notas) {
+                if ($notas) {
+                    $query->whereNotNull('id_factura');
+                } else {
+                    $query->whereNull('id_factura');
+                }
+            })
             ->when($request->get('id_cliente') ? true : false, function ($query) use ($request) {
                 $query->where('FV.id_cliente', $request->get('id_cliente'));
             })

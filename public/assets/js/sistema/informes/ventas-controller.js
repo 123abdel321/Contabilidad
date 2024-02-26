@@ -332,16 +332,20 @@ function showTotalsVentas(res) {
     if (!res.success) return;
 
     var totales = res.totalesVenta[0];
-    var total_utilidad = totales.total_venta - totales.total_costo;
+    var totalesNotas = res.totalesNotas[0];
+    var total_venta = totales.total_venta - totalesNotas.total_venta;
+    var total_costo = totales.total_costo - totalesNotas.total_costo;
+    var total_cantidad = totales.total_productos_cantidad - totalesNotas.total_productos_cantidad;
+    var total_utilidad = total_venta - total_costo;
     var porcentaje_utilidad = (total_utilidad / totales.total_costo) * 100;
 
-    var countA = new CountUp('total_productos_vendidos', 0, totales.total_productos_cantidad);
+    var countA = new CountUp('total_productos_vendidos', 0, total_cantidad);
         countA.start();
 
-    var countB = new CountUp('total_costo_ventas', 0, totales.total_costo);
+    var countB = new CountUp('total_costo_ventas', 0, total_costo);
         countB.start();
 
-    var countC = new CountUp('total_precio_ventas', 0, totales.total_venta);
+    var countC = new CountUp('total_precio_ventas', 0, total_venta);
         countC.start();
 
     var countD = new CountUp('total_utilidad_ventas', 0, total_utilidad);
