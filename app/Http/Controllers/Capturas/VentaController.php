@@ -465,7 +465,7 @@ class VentaController extends Controller
 
         if ($request->get('id_producto')) {
             $ventas->whereHas('detalles', function ($query) use($request) {
-                return $query->where('id_producto', '=', $request->get('id_producto'));
+                $query->where('id_producto', '=', $request->get('id_producto'));
             });
         }
 
@@ -474,6 +474,13 @@ class VentaController extends Controller
         }
 
         $dataVentas = $ventas->get();
+        $totalData = $this->queryTotalesVentaCosto($request)->select(
+            DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
+            DB::raw("SUM(FVD.subtotal) AS total_costo"),
+            DB::raw("SUM(FVD.total) AS total_venta"),
+            DB::raw("SUM(FVD.total- FVD.subtotal) AS total_utilidad"),
+            DB::raw("SUM(((FVD.total- FVD.subtotal) / FVD.subtotal) * 100) AS porcentaje_utilidad")
+        )->get();
 
         if ($request->get('detallar_venta') == 'si') {
             $this->generarVentaDetalles($dataVentas);
@@ -484,6 +491,7 @@ class VentaController extends Controller
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
+            'totalesVenta' => $totalData,
             'iTotalRecords' => $ventas->count(),
             'iTotalDisplayRecords' => $ventas->count(),
             'data' => $this->ventaData,
@@ -793,6 +801,33 @@ class VentaController extends Controller
                 'cuenta'
             )
             ->first();
+    }
+
+    private function queryTotalesVentaCosto($request)
+    {
+        return DB::connection('sam')->table('fac_ventas AS FV')
+            ->leftJoin('fac_venta_detalles AS FVD', 'FV.id', 'FVD.id_venta')
+            ->when($request->get('id_cliente') ? true : false, function ($query) use ($request) {
+                $query->where('FV.id_cliente', $request->get('id_cliente'));
+            })
+            ->when($request->get('fecha_desde') ? true : false, function ($query) use ($request) {
+                $query->where('FV.fecha_manual', '>=', $request->get('fecha_desde'));
+            })
+            ->when($request->get('fecha_hasta') ? true : false, function ($query) use ($request) {
+                $query->where('FV.fecha_manual', '>=', $request->get('fecha_hasta'));
+            })
+            ->when($request->get('factura') ? true : false, function ($query) use ($request) {
+                $query->where('FV.documento_referencia', 'LIKE', '%'.$request->get('factura').'%');
+            })
+            ->when($request->get('id_resolucion') ? true : false, function ($query) use ($request) {
+                $query->where('FV.id_resolucion', $request->get('id_resolucion'));
+            })
+            ->when($request->get('id_bodega') ? true : false, function ($query) use ($request) {
+                $query->where('FV.id_bodega', $request->get('id_bodega'));
+            })
+            ->when($request->get('id_usuario') ? true : false, function ($query) use ($request) {
+                $query->where('FV.created_by', $request->get('id_usuario'));
+            });
     }
 
 

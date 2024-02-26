@@ -2133,30 +2133,30 @@ $("#id_familia_producto").on('change', function(e) {
 });
 
 function showTotalsProductos(res) {
-    if (res.success) {
-        $('#totales-products-view').show();
-        var totales = res.totalesProductos;
-        var total_utilidad = totales.total_precio - totales.total_costo;
-        var porcentaje_utilidad = (total_utilidad / totales.total_costo) * 100;
+    if (!res.success) return;
 
-        var countA = new CountUp('total_bodegas_producto', 0, totales.cantidad_productos);
-            countA.start();
+    $('#totales-products-view').show();
+    var totales = res.totalesProductos;
+    var total_utilidad = totales.total_precio - totales.total_costo;
+    var porcentaje_utilidad = (total_utilidad / totales.total_costo) * 100;
 
-        var countB = new CountUp('total_productos_producto', 0, totales.total_productos);
-            countB.start();
+    var countA = new CountUp('total_bodegas_producto', 0, totales.cantidad_productos);
+        countA.start();
 
-        var countC = new CountUp('total_costo_producto', 0, totales.total_costo);
-            countC.start();
+    var countB = new CountUp('total_productos_producto', 0, totales.total_productos);
+        countB.start();
 
-        var countD = new CountUp('total_precio_producto', 0, totales.total_precio);
-            countD.start();
+    var countC = new CountUp('total_costo_producto', 0, totales.total_costo);
+        countC.start();
 
-        var countE = new CountUp('total_utilidad_producto', 0, total_utilidad);
-            countE.start();
+    var countD = new CountUp('total_precio_producto', 0, totales.total_precio);
+        countD.start();
 
-        var countF = new CountUp('total_porcentaje_producto', 0, porcentaje_utilidad);
-            countF.start();   
-    }
+    var countE = new CountUp('total_utilidad_producto', 0, total_utilidad);
+        countE.start();
+
+    var countF = new CountUp('total_porcentaje_producto', 0, porcentaje_utilidad);
+        countF.start(); 
 }
 
 function addPrecioMinimoProducto () {

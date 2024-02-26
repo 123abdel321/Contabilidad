@@ -247,7 +247,9 @@ function ventasInit() {
     });
 
     $('.water').hide();
-    ventas_table.ajax.reload();
+    ventas_table.ajax.reload(function (res) {
+        showTotalsVentas(res);
+    });
 }
 
 $(document).on('click', '.imprimir-venta', function () {
@@ -258,7 +260,8 @@ $(document).on('click', '.imprimir-venta', function () {
 $(document).on('click', '#generarVentas', function () {
     $("#generarVentas").hide();
     $("#generarVentasLoading").show();
-    ventas_table.ajax.reload(function () {
+    ventas_table.ajax.reload(function (res) {
+        showTotalsVentas(res);
         $("#generarVentas").show();
         $("#generarVentasLoading").hide();
     });
@@ -280,7 +283,8 @@ $('input[type=radio][name=detallar_venta]').change(function() {
         ventas_table.column(8).visible(false);
         ventas_table.column(10).visible(false);
     }
-    ventas_table.ajax.reload(function () {
+    ventas_table.ajax.reload(function (res) {
+        showTotalsVentas(res);
         $("#generarVentas").show();
         $("#generarVentasLoading").hide();
     });
@@ -323,6 +327,27 @@ $(document).on('click', '#generarInformeZ', function () {
 
     window.open(url,'_blank');
 });
+
+function showTotalsVentas(res) {
+    if (!res.success) return;
+
+    var totales = res.totalesVenta[0];
+    console.log('totales: ',totales);
+    var countA = new CountUp('total_productos_vendidos', 0, totales.total_productos_cantidad);
+        countA.start();
+
+    var countB = new CountUp('total_costo_ventas', 0, totales.total_costo);
+        countB.start();
+
+    var countC = new CountUp('total_precio_ventas', 0, totales.total_venta);
+        countC.start();
+
+    var countD = new CountUp('total_utilidad_ventas', 0, totales.total_utilidad);
+        countD.start();
+
+    var countE = new CountUp('total_porcentaje_ventas', 0, parseFloat(totales.porcentaje_utilidad).toFixed(2));
+        countE.start();
+}
 
 
 
