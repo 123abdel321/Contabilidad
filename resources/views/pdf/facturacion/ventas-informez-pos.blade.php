@@ -180,7 +180,6 @@
                         @else
                             <td class="font-13" style="width:55%;">NO IVA</td>
                         @endif
-
                         <td class="font-13" style="width:45%; text-align:right;"> {{ number_format($venta_iva->iva_valor) }} </td>
                     </tr>
                 @endforeach
