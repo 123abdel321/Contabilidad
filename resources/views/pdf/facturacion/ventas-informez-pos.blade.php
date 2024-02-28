@@ -175,7 +175,12 @@
             <tbody>
                 @foreach ($ventas_iva as $venta_iva)
                     <tr>
-                        <td class="font-13" style="width:55%;">{{ $venta_iva->cuenta_iva->impuesto->nombre }} {{ $venta_iva->cuenta_iva->impuesto->porcentaje }}%</td>
+                        @if($venta_iva->cuenta_iva)
+                            <td class="font-13" style="width:55%;">{{ $venta_iva->cuenta_iva->impuesto->nombre }} {{ $venta_iva->cuenta_iva->impuesto->porcentaje }}%</td>
+                        @else
+                            <td class="font-13" style="width:55%;">NO IVA</td>
+                        @endif
+
                         <td class="font-13" style="width:45%; text-align:right;"> {{ number_format($venta_iva->iva_valor) }} </td>
                     </tr>
                 @endforeach
