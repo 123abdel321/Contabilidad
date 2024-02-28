@@ -110,7 +110,7 @@ function usuariosInit() {
         dropdownParent: $('#usuariosFormModal'),
     });
 
-    if (componentesMenu.length > 0) {
+    if (componentesMenu && componentesMenu.length > 0) {
         for (let i = 0; i < componentesMenu.length; i++) {
             const componente = componentesMenu[i];
             for (let j = 0; j < componente.menus.length; j++) {
