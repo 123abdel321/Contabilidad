@@ -46,7 +46,7 @@ function reciboInit () {
                     var isValid = row.documento_referencia ? 'is-valid' : '';
                     return `
                         <div class="input-group">
-                            <input type="text" class="form-control ${isValid} form-control-sm" style="text-align: right; height: 25px; border-radius: 7px; padding: 5px;" id="recibo_documentorefe_${row.id}" onkeypress="changeDocumentoRefeReciboRow(${row.id}, event)" value="${row.documento_referencia}" style="min-width: 100px;">
+                            <input type="text" class="form-control ${isValid} form-control-sm" style="text-align: right; height: 25px; border-radius: 7px; padding: 5px;" id="recibo_documentorefe_${row.id}" onkeypress="changeDocumentoRefeReciboRow(${row.id}, event)" onfocusout="focusOutDocumentoReferencia(${row.id})" value="${row.documento_referencia}" style="min-width: 100px;">
                             <i class="fa fa-spinner fa-spin fa-fw documento-load" id="documentorecibo_load_${row.id}" style="display: none; position: absolute; color: #76b2b2; margin-left: 2px; margin-top: 5px; z-index: 99;"></i>
                             <div class="valid-feedback info-factura" style="margin-top: -5px;"></div>
                             <div class="invalid-feedback info-factura" style="margin-top: -5px;">Factura existente</div>
@@ -262,10 +262,12 @@ function saveRecibo() {
         dataType: 'json',
     }).done((res) => {
         cancelarRecibo();
+        consecutivoSiguienteRecibo();
         $('#iniciarCapturaRecibo').show();
         $('#iniciarCapturaReciboLoading').hide();
         agregarToast('exito', 'Creación exitosa', 'Recibo creado con exito!', true);
     }).fail((err) => {
+        consecutivoSiguienteRecibo();
         $('#iniciarCapturaRecibo').show();
         $('#cancelarCapturaRecibo').show();
         $('#crearCapturaRecibo').show();
@@ -605,6 +607,9 @@ function changeDocumentoRefeReciboRow(idRow, event) {
     var documentoReferencia = $('#recibo_documentorefe_'+idRow).val();
     var comprobante = $('#id_comprobante_recibo').val();
 
+    $('#recibo_documentorefe_'+idRow).removeClass("is-invalid");
+    $('#recibo_documentorefe_'+idRow).removeClass("is-valid");
+
     if (event.keyCode == 13 && documentoReferencia) {
         $('#documentorecibo_load_'+idRow).show();
         var data = getDataById(idRow, recibo_table);
@@ -626,13 +631,10 @@ function changeDocumentoRefeReciboRow(idRow, event) {
                 data.documento_referencia = documentoReferencia;
                 validarFacturaRecibo = null;
                 $('#documentorecibo_load_'+idRow).hide();
-                if(res.data == 0){
-                    $('#recibo_documentorefe_'+idRow).removeClass("is-invalid");
-                    $('#recibo_documentorefe_'+idRow).addClass("is-valid");
-                }else {
-                    $('#recibo_documentorefe_'+idRow).removeClass("is-valid");
-                    $('#recibo_documentorefe_'+idRow).addClass("is-invalid");
-                }
+
+                if(res.data == 0) $('#recibo_documentorefe_'+idRow).addClass("is-valid");
+                else $('#recibo_documentorefe_'+idRow).removeClass("is-valid");
+
                 setTimeout(function(){
                     $('#recibo_valor_'+idRow).focus();
                     $('#recibo_valor_'+idRow).select();
@@ -657,6 +659,60 @@ function changeDocumentoRefeReciboRow(idRow, event) {
         },300);
     }
 
+}
+
+function focusOutDocumentoReferencia(idRow) {
+    var data = getDataById(idRow, recibo_table);
+    var documentoReferencia = $('#recibo_documentorefe_'+idRow).val();
+    var comprobante = $('#id_comprobante_recibo').val();
+    $('#recibo_documentorefe_'+idRow).removeClass("is-invalid");
+    $('#recibo_documentorefe_'+idRow).removeClass("is-valid");
+        
+    if (!validarFacturaRecibo && documentoReferencia && comprobante) {
+        $('#documentorecibo_load_'+idRow).show();
+        setTimeout(function(){
+            validarFacturaRecibo = $.ajax({
+                url: base_url + 'existe-factura',
+                method: 'GET',
+                data: {
+                    id_comprobante: comprobante,
+                    documento_referencia: documentoReferencia
+                },
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                $('#documentorecibo_load_'+idRow).hide();
+                data.documento_referencia = documentoReferencia;
+                validarFacturaRecibo = null;
+                $('#documentorecibo_load_'+idRow).hide();
+                
+                if(res.data == 0) $('#recibo_documentorefe_'+idRow).addClass("is-valid");
+                else $('#recibo_documentorefe_'+idRow).removeClass("is-valid");
+
+                setTimeout(function(){
+                    $('#recibo_valor_'+idRow).focus();
+                    $('#recibo_valor_'+idRow).select();
+                },10);
+                recibo_table.row(idRow-1).data(data);
+                $("input[data-type='currency']").on({
+                    keyup: function(event) {
+                        if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+                            formatCurrency($(this));
+                        }
+                    },
+                    blur: function() {
+                        formatCurrency($(this), "blur");
+                    }
+                });
+            }).fail((err) => {
+                $('#documentorecibo_load_'+idRow).hide();
+                validarFacturaRecibo = null;
+                if(err.statusText != "abort") {
+                    $('#documentorecibo_load_'+idRow).hide();
+                }
+            });
+        },80);
+    }
 }
 
 function focusNextFormasPagoRecibos(idFormaPago) {
