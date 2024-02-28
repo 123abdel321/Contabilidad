@@ -211,6 +211,9 @@ function reciboInit () {
         $comboComprobanteRecibos.val(dataComprobante.id).trigger('change');
     }
 
+    if (reciboFecha) $('#fecha_manual_recibo').prop('disabled', false);
+    else $('#fecha_manual_recibo').prop('disabled', true);
+
     loadFormasPagoRecibos();
 }
 
@@ -855,11 +858,12 @@ function changeValorRecibidoReciboRow(idRow, event) {
 function consecutivoSiguienteRecibo() {
     var id_comprobante = $('#id_comprobante_recibo').val();
     var fecha_manual = $('#fecha_manual_recibo').val();
+    var fecha_manual_hoy = fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
     if(id_comprobante && fecha_manual) {
 
         let data = {
             id_comprobante: id_comprobante,
-            fecha_manual: fecha_manual
+            fecha_manual: reciboFecha ? fecha_manual : fecha_manual_hoy
         }
 
         $.ajax({

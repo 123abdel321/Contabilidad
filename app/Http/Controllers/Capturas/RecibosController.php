@@ -19,9 +19,8 @@ use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\ConReciboPagos;
-use App\Models\Sistema\ConReciboDetalles;
 use App\Models\Sistema\DocumentosGeneral;
-
+use App\Models\Sistema\ConReciboDetalles;
 
 class RecibosController extends Controller
 {
@@ -29,6 +28,7 @@ class RecibosController extends Controller
 
     protected $id_recibo = 0;
     protected $messages = null;
+    protected $fechaManual = null;
     protected $totalesFactura = [
         'total_abonado' => 0,
         'total_anticipo' => 0,
@@ -66,12 +66,14 @@ class RecibosController extends Controller
             ], 200);
 		}
 
+        $fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual', null) : Carbon::now();
+        
         try {
             $extractos = (new Extracto(
                 $request->get('id_nit'),
                 3,
                 null,
-                $request->get('fecha_manual', null)
+                $fechaManual
             ))->actual()->get();
 
             $cxcAnticipos = PlanCuentas::where('auxiliar', 1)
@@ -111,6 +113,8 @@ class RecibosController extends Controller
     {
         $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
+        $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual', null) : Carbon::now();
+
         if(!$comprobanteRecibo) {
             return response()->json([
                 "success"=>false,
@@ -118,7 +122,7 @@ class RecibosController extends Controller
                 "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
             ], 422);
         } else {
-            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
+            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
             $request->request->add([
                 'consecutivo' => $consecutivo
             ]);
@@ -149,9 +153,8 @@ class RecibosController extends Controller
 
         $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
 		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
-        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
 
-        if ($fechaManual <= $fechaCierre) {
+        if ($this->fechaManual <= $fechaCierre) {
 			return response()->json([
                 "success"=>false,
                 'data' => [],
@@ -322,7 +325,7 @@ class RecibosController extends Controller
         $recibo = ConRecibos::create([
             'id_nit' => $request->get('id_nit'),
             'id_comprobante' => $request->get('id_comprobante'),
-            'fecha_manual' => $request->get('fecha_manual'),
+            'fecha_manual' => $this->fechaManual,
             'consecutivo' => $request->get('consecutivo'),
             'total_abono' => $this->totalesFactura['total_abonado'],
             'total_anticipo' => $this->totalesFactura['total_anticipo'],

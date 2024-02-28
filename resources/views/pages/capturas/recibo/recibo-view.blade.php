@@ -179,6 +179,9 @@
     </div>
 
     <script>
+        var reciboFecha = '<?php echo auth()->user()->can("recibo fecha"); ?>';
+        var reciboTotales = '<?php echo auth()->user()->can("recibo totales"); ?>';
+
         var comprobantesRecibos = JSON.parse('<?php echo $comprobantes; ?>');
     </script>
     
