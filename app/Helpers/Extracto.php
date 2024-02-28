@@ -132,7 +132,8 @@ class Extracto
 			->where("anulado", 0)
 			->where("id_nit", $this->id_nit)
             ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
-				$query->where('PC.id_tipo_cuenta', $this->id_tipo_cuenta);
+                if (is_array($this->id_tipo_cuenta)) $query->whereIn('PC.id_tipo_cuenta', $this->id_tipo_cuenta);
+                else $query->where('PC.id_tipo_cuenta', $this->id_tipo_cuenta);
 			})
 			->when($this->documento_referencia, function ($query, $documento_referencia) {
 				$query->where('documento_referencia', $documento_referencia);
@@ -169,7 +170,8 @@ class Extracto
 				$query->where('DG.id_nit', $this->id_nit);
 			})
             ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
-				$query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
+                if (is_array($this->id_tipo_cuenta)) $query->whereIn('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
+                else $query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
 			});
     }
 
@@ -243,7 +245,8 @@ class Extracto
 				$query->where('PC.id', $this->id_cuenta);
 			})
             ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
-				$query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
+                if (is_array($this->id_tipo_cuenta)) $query->whereIn('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
+                else $query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
 			})
             ->when($this->documento_referencia ? $this->documento_referencia : false, function ($query) {
 				$query->where('DG.documento_referencia', $this->documento_referencia);
