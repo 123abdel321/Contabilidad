@@ -73,6 +73,7 @@ var moduloCreado = {
     'importnits': false,
     'importdocumentos': false,
     'eliminardocumentos': false,
+    'recibo': false,
 };
 
 var moduloRoute = {
@@ -109,6 +110,7 @@ var moduloRoute = {
     'importnits': 'importador',
     'importdocumentos': 'importador',
     'eliminardocumentos': 'capturas',
+    'recibo': 'capturas',
 }
 
 $('.water').show();

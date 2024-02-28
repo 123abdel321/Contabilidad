@@ -33,6 +33,7 @@ use App\Http\Controllers\Tablas\CargueDescargueController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
+use App\Http\Controllers\Capturas\RecibosController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\DocumentoEliminarController;
@@ -73,16 +74,10 @@ use App\Http\Controllers\Importador\DocumentosImportadorController;
 // });
 
 Route::get('/', function () {
-
-	// foreach ($dataCuentas as $cuenta) {
-	// 	dd($cuenta);
-	// }
-	// dd(count($dataCuentas));
 	return redirect('/home');
 });
 
 Auth::routes();
-
 
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
@@ -99,15 +94,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 	//EMPRESA
 	Route::get('/seleccionar-empresa', [ApiController::class, 'index'])->name('seleccionar-empresa');
 	
-	// Route::get('migrar-cuentas/', function () {
-
-	// 	// foreach ($dataCuentas as $cuenta) {
-	// 	// 	dd($cuenta);
-	// 	// }
-	// 	// dd(count($dataCuentas));
-	// 	dd(ConPlanCuentas::first());
-	// 	return redirect('/home');
-	// });
 	//SISTEMA
 	Route::group(['middleware' => ['clientconnectionweb']], function () {
 		// >> INFORMES <<
@@ -136,6 +122,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/ventas', [VentaController::class, 'indexInforme'])->name('ventas');
 		Route::get('/ventas-print/{id}', [VentaController::class, 'showPdf'])->name('venta-pdf');
 		Route::get('/ventas-print-informez', [VentaController::class, 'showPdfZ']);
+		//RECIBOS
+		Route::get('/recibo', [RecibosController::class, 'index'])->name('recibo');
 		//NOTA CREDITO
 		Route::get('/notacredito', [NotaCreditoController::class, 'index']);
 		//NITS

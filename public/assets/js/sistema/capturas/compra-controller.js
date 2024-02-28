@@ -864,37 +864,38 @@ function ocultarBotonesCabezaCompra () {
 
 function getProductosCompra(){
     var data = [];
-
     var dataDocumento = compra_table.rows().data();
-    if(dataDocumento.length > 0){
-        for (let index = 0; index < dataDocumento.length; index++) {
 
-            const id_row = dataDocumento[index].id;
-            var id_producto = $('#combo_producto_'+id_row).val();
-            var cantidad = $('#compra_cantidad_'+id_row).val();
-            
-            if (id_producto && cantidad) {
-                var costo = $('#compra_costo_'+id_row).val();
-                var descuento_porcentaje = $('#compra_descuento_porcentaje_'+id_row).val();
-                var descuento_valor = $('#compra_descuento_valor_'+id_row).val();
-                var iva_porcentaje = $('#compra_iva_porcentaje_'+id_row).val();
-                var iva_valor = $('#compra_iva_valor_'+id_row).val();
-                var total = $('#compra_total_'+id_row).val();
+    if (!dataDocumento.length) return data;
 
-                data.push({
-                    id_producto: parseInt(id_producto),
-                    cantidad: parseInt(cantidad),
-                    costo: costo ? parseFloat(costo) : 0,
-                    subtotal: parseInt(cantidad) * parseFloat(costo),
-                    descuento_porcentaje: descuento_porcentaje ? parseFloat(descuento_porcentaje) : 0,
-                    descuento_valor: descuento_valor ? parseFloat(descuento_valor) : 0,
-                    iva_porcentaje: iva_porcentaje ? parseFloat(iva_porcentaje) : 0,
-                    iva_valor: iva_valor ? parseFloat(iva_valor) : 0,
-                    total: total ? parseFloat(total) : 0,
-                });
-            }
+    for (let index = 0; index < dataDocumento.length; index++) {
+
+        const id_row = dataDocumento[index].id;
+        var id_producto = $('#combo_producto_'+id_row).val();
+        var cantidad = $('#compra_cantidad_'+id_row).val();
+        
+        if (id_producto && cantidad) {
+            var costo = $('#compra_costo_'+id_row).val();
+            var descuento_porcentaje = $('#compra_descuento_porcentaje_'+id_row).val();
+            var descuento_valor = $('#compra_descuento_valor_'+id_row).val();
+            var iva_porcentaje = $('#compra_iva_porcentaje_'+id_row).val();
+            var iva_valor = $('#compra_iva_valor_'+id_row).val();
+            var total = $('#compra_total_'+id_row).val();
+
+            data.push({
+                id_producto: parseInt(id_producto),
+                cantidad: parseInt(cantidad),
+                costo: costo ? parseFloat(costo) : 0,
+                subtotal: parseInt(cantidad) * parseFloat(costo),
+                descuento_porcentaje: descuento_porcentaje ? parseFloat(descuento_porcentaje) : 0,
+                descuento_valor: descuento_valor ? parseFloat(descuento_valor) : 0,
+                iva_porcentaje: iva_porcentaje ? parseFloat(iva_porcentaje) : 0,
+                iva_valor: iva_valor ? parseFloat(iva_valor) : 0,
+                total: total ? parseFloat(total) : 0,
+            });
         }
     }
+    
     return data;
 }
 
