@@ -83,8 +83,9 @@ function reciboInit () {
         ],
         'rowCallback': function(row, data, index){
             if (data.cuenta_recibo == 'sin_deuda') {
-                $('td', row).css('background-color', 'rgb(51 255 0 / 31%)');
+                $('td', row).css('background-color', '#2dce89');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(!data.cuenta_recibo) {
