@@ -172,6 +172,10 @@ class Extracto
             ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
                 if (is_array($this->id_tipo_cuenta)) $query->whereIn('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
                 else $query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
+			})
+            ->when($this->id_cuenta ? $this->id_cuenta : false, function ($query) {
+                if (is_array($this->id_cuenta)) $query->whereIn('PC.id', $this->id_cuenta);
+                else $query->where('PC.id', $this->id_cuenta);
 			});
     }
 
