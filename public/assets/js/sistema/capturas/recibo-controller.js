@@ -1,9 +1,10 @@
 var fecha = null;
 var recibo_table = null;
 var calculandoRow = false;
+var guardandoRecibo = false;
 var recibo_table_pagos = null;
 var validarFacturaRecibo = null;
-var guardandoRecibo = false;
+var totalAnticiposRecibo = 0;
 var $comboNitRecibos = null;
 var $comboComprobanteRecibos = null;
 
@@ -34,7 +35,14 @@ function reciboInit () {
         },
         columns: [
             {"data":'codigo_cuenta', className: 'dt-body-right'},
-            {"data":'nombre_cuenta', className: 'dt-body-left'},
+            {
+                "data": function (row, type, set, col){
+                    if (!row.cuenta_recibo) {
+                        return 'ANTICIPOS: '+row.nombre_cuenta;
+                    }
+                    return row.nombre_cuenta;
+                }, className: 'dt-body-left'
+            },
             {"data":'fecha_manual', className: 'dt-body-left'},
             {"data":'plazo', className: 'dt-body-right'},
             {"data":'dias_cumplidos', className: 'dt-body-right'},
@@ -54,27 +62,31 @@ function reciboInit () {
                     `;
                 }, className: 'dt-body-left'
             },
-            {
-                "data": function (row, type, set, col){
-                    if (row.cuenta_recibo) {
-                        return row.saldo;
-                    }
-                    return '';
-                }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'
-            },
+            {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {//VALOR RECIBIDO
                 "data": function (row, type, set, col){
+                    if (row.cuenta_recibo == 'sin_deuda') {
+                        return
+                    }
                     return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right; padding: 0.05rem 0.5rem !important;" id="recibo_valor_${row.id}" value="${new Intl.NumberFormat("ja-JP").format(row.valor_recibido)}" onkeypress="changeValorRecibidoReciboRow(${row.id}, event)" onfocusout="focusOutValorReciboRow(${row.id})" onfocus="focusValorRecibido(${row.id})" style="min-width: 100px;">`;
                 }
             },
             {"data":'nuevo_saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {//CONCEPTO
                 "data": function (row, type, set, col){
-                    return `<input type="text" class="form-control form-control-sm" id="recibo_concepto_${row.id}" placeholder="SIN OBSERVACIÓN" value="${row.concepto}" onkeypress="changeConceptoReciboRow(${row.id}, event)" style="width: 150px !important; padding: 0.05rem 0.5rem !important;" onfocus="this.select();" onfocus="setValueConcepto(${row.id})">`;
+                    if (row.cuenta_recibo == 'sin_deuda') {
+                        return
+                    }
+                    return `<input type="text" class="form-control form-control-sm" id="recibo_concepto_${row.id}" placeholder="SIN OBSERVACIÓN" value="${row.concepto}" onkeypress="changeConceptoReciboRow(${row.id}, event)" style="width: 150px !important; padding: 0.05rem 0.5rem !important;" onfocus="this.select();">`;
                 }
             }
         ],
         'rowCallback': function(row, data, index){
+            if (data.cuenta_recibo == 'sin_deuda') {
+                $('td', row).css('background-color', 'rgb(51 255 0 / 31%)');
+                $('td', row).css('font-weight', 'bold');
+                return;
+            }
             if(!data.cuenta_recibo) {
                 $('td', row).css('background-color', 'rgb(64 164 209 / 21%)');
                 return;
@@ -131,7 +143,7 @@ function reciboInit () {
                         }
                     }
                 }
-                return `<input type="text" data-type="currency" class="form-control form-control-sm ${className}" style="text-align: right; font-size: larger;" value="0" onfocus="focusFormaPagoRecibo(${row.id})" onfocusout="calcularRecibosPagos(${row.id}, ${anticipos})" onkeypress="changeFormaPagoRecibo(${row.id}, event)" id="recibo_forma_pago_${row.id}">`;
+                return `<input type="text" data-type="currency" class="form-control form-control-sm ${className}" style="text-align: right; font-size: larger;" value="0" onfocus="focusFormaPagoRecibo(${row.id}, ${anticipos})" onfocusout="calcularRecibosPagos(${row.id})" onkeypress="changeFormaPagoRecibo(${row.id}, event, ${anticipos})" id="recibo_forma_pago_${row.id}">`;
             }},
         ],
         initComplete: function () {
@@ -229,6 +241,7 @@ $(document).on('click', '#iniciarCapturaRecibo', function () {
         $('#cancelarCapturaRecibo').show();
         $('#crearCapturaReciboDisabled').show();
         $('#iniciarCapturaReciboLoading').hide();
+        loadAnticiposRecibo();
     });
 });
 
@@ -255,7 +268,7 @@ function saveRecibo() {
         consecutivo: $("#documento_referencia_recibo").val(),
     }
 
-    disabledFormasPagoRecibos();
+    disabledFormasPagoRecibo();
 
     $.ajax({
         url: base_url + 'recibos',
@@ -329,32 +342,34 @@ function getMovimientoRecibo() {
 function cancelarRecibo() {
     $comboNitRecibos.val(0).trigger('change');
     var totalRows = recibo_table.rows().data().length;
+    totalAnticiposRecibo = 0;
 
     if(recibo_table.rows().data().length){
         recibo_table.clear([]).draw();
-        for (let index = 0; index < totalRows; index++) {
-            recibo_table.row(0).remove().draw();
-            $("input[data-type='currency']").on({
-                keyup: function(event) {
-                    if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
-                        formatCurrency($(this));
-                    }
-                },
-                blur: function() {
-                    formatCurrency($(this), "blur");
-                }
-            });
-        }
+        recibo_table.row(0).remove().draw();
         mostrarValoresRecibos();
         var countE = new CountUp('total_faltante_recibo', 0, 0, 2, 0.5);
             countE.start();
     }
 
+    clearFormasPagoRecibo();
     $('#total_abono_recibo').val('0.00');
+    $('#saldo_anticipo_recibo').val('0');
     $('#crearCapturaRecibo').hide();
     $('#cancelarCapturaRecibo').hide();
+    $('#input_anticipos_recibo').hide();
     $('#crearCapturaReciboDisabled').hide();
-    
+}
+
+function clearFormasPagoRecibo() {
+    var dataFormasPago = recibo_table_pagos.rows().data();
+
+    if (dataFormasPago.length) {
+        for (let index = 0; index < dataFormasPago.length; index++) {
+            var formaPago = dataFormasPago[index];
+            $('#recibo_forma_pago_'+formaPago.id).val(0);
+        }
+    }
 }
 
 function changeTotalAbonoRecibo(event) {
@@ -400,6 +415,7 @@ function changeTotalAbonoRecibo(event) {
                 }
             });
         }
+        console.log('totalSaldo: ',totalSaldo);
         if (totalAbono) {
             $('#total_abono_recibo').val(new Intl.NumberFormat("ja-JP").format(totalSaldo));
         }
@@ -409,21 +425,23 @@ function changeTotalAbonoRecibo(event) {
 
 function changeConceptoReciboRow(idRow, event) {
     if (!idRow) return;
-    
-    var concepto = $("#recibo_concepto_"+idRow).val();
-    var data = getDataById(idRow, recibo_table);
-    data.concepto = concepto;
-    recibo_table.row(idRow-1).data(data);
-    $("input[data-type='currency']").on({
-        keyup: function(event) {
-            if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
-                formatCurrency($(this));
+
+    if (event.keyCode == 13) {
+        var concepto = $("#recibo_concepto_"+idRow).val();
+        var data = getDataById(idRow, recibo_table);
+        data.concepto = concepto;
+        recibo_table.row(idRow-1).data(data);
+        $("input[data-type='currency']").on({
+            keyup: function(event) {
+                if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+                    formatCurrency($(this));
+                }
+            },
+            blur: function() {
+                formatCurrency($(this), "blur");
             }
-        },
-        blur: function() {
-            formatCurrency($(this), "blur");
-        }
-    });
+        });
+    }
 }
 
 function mostrarValoresRecibos() {
@@ -436,10 +454,10 @@ function mostrarValoresRecibos() {
         $('#recibo_anticipo_view').hide();
     }
 
-    if ((totalAbonos+totalAnticipos)) disabledFormasPagoRecibos(false);
-    else disabledFormasPagoRecibos();
+    if ((totalAbonos+totalAnticipos)) disabledFormasPagoRecibo(false);
+    else disabledFormasPagoRecibo();
 
-    var totalPagos = totalFormasPagoRecibos();
+    var [totalPagos, totalCXP] = totalFormasPagoRecibos();
 
     var countA = new CountUp('recibo_abono', 0, totalAbonos, 2, 0.5);
         countA.start();
@@ -457,11 +475,11 @@ function mostrarValoresRecibos() {
         var countE = new CountUp('total_faltante_recibo', 0, 0, 2, 0.5);
             countE.start();
     } else {
-        var countE = new CountUp('total_faltante_recibo', 0, (totalAbonos + totalAnticipos) - totalPagos, 2, 0.5);
+        var countE = new CountUp('total_faltante_recibo', 0, (totalAbonos + totalAnticipos) - (totalPagos + totalCXP), 2, 0.5);
             countE.start();
     }
 
-    if (!((totalAbonos + totalAnticipos) - totalPagos)) {
+    if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP))) {
         $('#crearCapturaRecibo').show();
         $('#crearCapturaReciboDisabled').hide();
     } else {
@@ -485,11 +503,20 @@ function actualizarTotalAbono() {
     $('#total_abono_recibo').val(new Intl.NumberFormat("ja-JP").format(totalAbonos));
 }
 
-function focusFormaPagoRecibo(idFormaPago) {
+function focusFormaPagoRecibo(idFormaPago, anticipo = false) {
     var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresRecibos();
-    var totalPagos = totalFormasPagoRecibos(idFormaPago);
-    var totalFactura = (totalAbonos + totalAnticipos) - totalPagos;
+    var [totalPagos, totalCXP] = totalFormasPagoRecibos(idFormaPago);
+    var totalFactura = (totalAbonos + totalAnticipos) - (totalPagos + totalCXP);
     var saldoFormaPago = stringToNumberFloat($('#recibo_forma_pago_'+idFormaPago).val());
+
+    if (anticipo) {
+        if ((totalAnticiposRecibo - totalCXP) < totalFactura) {
+            $('#recibo_forma_pago_'+idFormaPago).val(formatCurrencyValue(totalAnticiposRecibo - totalCXP));
+            $('#recibo_forma_pago_'+idFormaPago).select();
+            return;
+        }
+    }
+
     if (!saldoFormaPago) {
         $('#recibo_forma_pago_'+idFormaPago).val(new Intl.NumberFormat("ja-JP").format(totalFactura < 0 ? 0 : totalFactura));
     }
@@ -507,7 +534,7 @@ function totalValoresRecibos() {
         var recibo = dataRecibos[index];
         if (!recibo.cuenta_recibo) {//ANTICIPOS
             totalAnticipos+= recibo.valor_recibido;
-        } else {//PAGOS
+        } else if (parseFloat(recibo.valor_recibido)){//PAGOS
             totalSaldo+= parseFloat(recibo.saldo);
             totalAbonos+= parseFloat(recibo.valor_recibido);
         }
@@ -519,6 +546,7 @@ function totalValoresRecibos() {
 function totalFormasPagoRecibos(idFormaPago = null) {
 
     var totalPagos = 0;
+    var totalAnticipos = 0;
     var dataPagoRecibo = recibo_table_pagos.rows().data();
 
     if(dataPagoRecibo.length > 0) {
@@ -527,11 +555,13 @@ function totalFormasPagoRecibos(idFormaPago = null) {
             var ventaPago = stringToNumberFloat($('#recibo_forma_pago_'+dataPagoRecibo[index].id).val());
 
             if (idFormaPago && idFormaPago == dataPagoRecibo[index].id) continue;
-            totalPagos+= ventaPago;
+
+            if ($('#recibo_forma_pago_'+dataPagoRecibo[index].id).hasClass("anticipos")) totalAnticipos+= ventaPago;
+            else totalPagos+= ventaPago;
         }
     }
 
-    return totalPagos;
+    return [totalPagos, totalAnticipos];
 }
 
 function calcularRecibosPagos(idFormaPago = null) {
@@ -544,12 +574,12 @@ function calcularRecibosPagos(idFormaPago = null) {
     }
 
     var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresRecibos();
-    var totalPagos = totalFormasPagoRecibos();
-    var totalFaltante = (totalAbonos + totalAnticipos)- totalPagos;
+    var [totalPagos, totalCXP] = totalFormasPagoRecibos();
+    var totalFaltante = (totalAbonos + totalAnticipos) - (totalPagos + totalCXP);
 
     if (idFormaPago && totalFaltante < 0) {
-        var totalPagoSinActual = totalFormasPagoRecibos(idFormaPago);
-        $('#recibo_forma_pago_'+idFormaPago).val(new Intl.NumberFormat("ja-JP").format(totalAbonos - totalPagoSinActual));
+        var [totalPagos, totalCXP] = totalFormasPagoRecibos(idFormaPago);
+        $('#recibo_forma_pago_'+idFormaPago).val(new Intl.NumberFormat("ja-JP").format(totalAbonos - (totalPagos + totalCXP)));
         $('#recibo_forma_pago_'+idFormaPago).select();
         return;
     }
@@ -568,14 +598,32 @@ function calcularRecibosPagos(idFormaPago = null) {
     }
 }
 
-function changeFormaPagoRecibo(idFormaPago, event) {
+function changeFormaPagoRecibo(idFormaPago, event, anticipo) {
     if(event.keyCode == 13){
 
         calcularRecibosPagos(idFormaPago);
 
-        var totalPagos = totalFormasPagoRecibos();
+        var [totalPagos, totalCXP] = totalFormasPagoRecibos();
         var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresRecibos();
-        var totalFaltante = (totalAbonos + totalAnticipos) - totalPagos;
+        var totalFaltante = (totalAbonos + totalAnticipos) - (totalPagos + totalCXP);
+
+        if (anticipo) {
+
+            if (totalCXP > totalAnticiposRecibo) {
+
+                var [totalPagos, totalCXP] = totalFormasPagoRecibos(idFormaPago);
+
+                $('#recibo_forma_pago_'+idFormaPago).val(totalAnticiposRecibo);
+                $('#recibo_forma_pago_'+idFormaPago).select();
+                calcularRecibosPagos();
+                return;
+            } else if (totalCXP > (totalFaltante + totalCXP)) {
+                $('#recibo_forma_pago_'+idFormaPago).val(totalFaltante);
+                $('#recibo_forma_pago_'+idFormaPago).select();
+                calcularRecibosPagos();
+                return;
+            }
+        }
 
         if (totalFaltante == 0) {
             validateSaveRecibos();
@@ -592,10 +640,10 @@ function validateSaveRecibos() {
 
     if (!guardandoRecibo) {
 
-        var totalPagos = totalFormasPagoRecibos();
+        var [totalPagos, totalCXP] = totalFormasPagoRecibos();
         var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresRecibos();
-
-        if (totalPagos >= (totalAbonos + totalAnticipos)) {
+        
+        if ((totalPagos + totalCXP) >= (totalAbonos + totalAnticipos)) {
             guardandoRecibo = true;
             saveRecibo();
         } else {
@@ -604,6 +652,41 @@ function validateSaveRecibos() {
             return;
         }
     }
+}
+
+function loadAnticiposRecibo() {
+    totalAnticiposRecibo = 0;
+    $('#input_anticipos_recibo').hide();
+    $('#saldo_anticipo_recibo').val(0);
+
+    if(!$('#id_nit_recibo').val()) return;
+    
+    let data = {
+        id_nit: $('#id_nit_recibo').val(),
+        id_tipo_cuenta: 8
+    }
+
+    $.ajax({
+        url: base_url + 'extracto-anticipos',
+        method: 'GET',
+        data: data,
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            var disabled = true;
+            if (res.data) {
+                var saldo = parseFloat(res.data.saldo);
+                if (saldo > 0) {
+                    disabled = false;
+                    $('#input_anticipos_recibo').show();
+                    totalAnticiposRecibo = saldo;
+                    $('#saldo_anticipo_recibo').val(new Intl.NumberFormat('ja-JP').format(saldo));
+                }
+            }
+        }
+    }).fail((err) => {
+    });
 }
 
 function changeDocumentoRefeReciboRow(idRow, event) {
@@ -737,21 +820,10 @@ function focusNextFormasPagoRecibos(idFormaPago) {
     focusFormaPagoRecibo(idFormaPagoFocus);
 }
 
-function disabledFormasPagoRecibos(estado = true) {
-    var dataFormasPago = recibo_table_pagos.rows().data();
-
-    if (dataFormasPago.length) {
-        for (let index = 0; index < dataFormasPago.length; index++) {
-            var formaPago = dataFormasPago[index];
-            $('#recibo_forma_pago_'+formaPago.id).prop('disabled', estado);
-        }
-    }
-}
-
 function focusValorRecibido(idRow) {
     var data = getDataById(idRow, recibo_table);
     var dataAbono = stringToNumberFloat($("#recibo_valor_"+idRow).val());
-    if (!dataAbono) {
+    if (!dataAbono && data.cuenta_recibo) {
         $('#recibo_valor_'+idRow).val(new Intl.NumberFormat("ja-JP").format(data.saldo));
     }
     setTimeout(function(){
@@ -762,6 +834,8 @@ function focusValorRecibido(idRow) {
 function focusOutValorReciboRow(idRow) {
     if (calculandoRow) return;
     var data = getDataById(idRow, recibo_table);
+    var valorRecibido = stringToNumberFloat($("#recibo_valor_"+idRow).val());
+    if (!valorRecibido) return;
 
     if (data.cuenta_recibo) {//ABONOS
         var valorRecibido = stringToNumberFloat($("#recibo_valor_"+idRow).val());
@@ -890,7 +964,7 @@ function loadFormasPagoRecibos() {
         }
     }
     recibo_table_pagos.ajax.reload(function(res) {
-        disabledFormasPagoRecibo();
+        disabledFormasPagoRecibo(true);
     });
 }
 
@@ -901,6 +975,16 @@ function disabledFormasPagoRecibo(estado = true) {
         for (let index = 0; index < dataFormasPago.length; index++) {
             var formaPago = dataFormasPago[index];
             $('#recibo_forma_pago_'+formaPago.id).prop('disabled', estado);
+        }
+    }
+
+    if (totalAnticiposRecibo <= 0) {
+        var pagosAnticipos = document.getElementsByClassName('anticipos');
+        if (pagosAnticipos) { //HIDE ELEMENTS
+            for (let index = 0; index < pagosAnticipos.length; index++) {
+                const element = pagosAnticipos[index];
+                element.disabled = true;
+            }
         }
     }
 }

@@ -84,12 +84,32 @@ class RecibosController extends Controller
             
             $dataRecibos = [];
 
-            foreach ($extractos as $extracto) {
-                $dataRecibos[] = $this->formatExtracto($extracto);
+            if (count($extractos)) {
+                foreach ($extractos as $extracto) {
+                    $dataRecibos[] = $this->formatExtracto($extracto);
+                }
+            } else {
+                $this->id_recibo++;
+                $dataRecibos[] = [
+                    'id' => $this->id_recibo,
+                    'id_cuenta' => '',
+                    'codigo_cuenta' => '',
+                    'nombre_cuenta' => 'SIN DEUDA',
+                    'fecha_manual' => '',
+                    'dias_cumplidos' => '',
+                    'plazo' => '',
+                    'documento_referencia' => '',
+                    'saldo' => '',
+                    'valor_recibido' => '',
+                    'nuevo_saldo' => '',
+                    'total_abono' => '',
+                    'concepto' => '',
+                    'cuenta_recibo' => 'sin_deuda',
+                ];
             }
 
             foreach ($cxcAnticipos as $cxcAnticipo) {
-                $dataRecibos[] = $this->formatCuentaAnticipo($cxcAnticipo);
+                $dataRecibos[] = $this->formatCuentaAnticipo($cxcAnticipo, $request->get('id_nit'));
             }
 
             return response()->json([
@@ -220,6 +240,7 @@ class RecibosController extends Controller
                 $pago = (object)$pago;
                 $totalRecibos-= $pago->valor;
                 $formaPago = $this->findFormaPago($pago->id);
+                $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $nit->id);
 
                 ConReciboPagos::create([
                     'id_recibo' => $recibo->id,
@@ -235,13 +256,13 @@ class RecibosController extends Controller
                     'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
                     'id_centro_costos' => null,
                     'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL RECIBO: '.$nit->nombre_nit.' - '.$recibo->consecutivo : null,
-                    'documento_referencia' => null,
+                    'documento_referencia' => $documentoReferenciaAnticipos,
                     'debito' => $pago->valor,
                     'credito' => $pago->valor,
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
-                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ingresos);
+                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
             }
 
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
@@ -296,9 +317,17 @@ class RecibosController extends Controller
         ];
     }
 
-    private function formatCuentaAnticipo($cuenta)
+    private function formatCuentaAnticipo($cuenta, $idNit)
     {
         $this->id_recibo++;
+        $anticipoCuenta = (new Extracto(
+            $idNit,
+            null,
+            null,
+            Carbon::now()->format('Y-m-d H:i:s'),
+            $cuenta->id
+        ))->anticipos()->first();
+
         return [
             'id' => $this->id_recibo,
             'id_cuenta' =>  $cuenta->id,
@@ -308,7 +337,7 @@ class RecibosController extends Controller
             'dias_cumplidos' => '',
             'plazo' => '',
             'documento_referencia' => '',
-            'saldo' => 0,
+            'saldo' => $anticipoCuenta ? $anticipoCuenta->saldo : 0,
             'valor_recibido' => 0,
             'nuevo_saldo' => 0,
             'total_abono' => 0,
@@ -375,9 +404,27 @@ class RecibosController extends Controller
     {
         return FacFormasPago::where('id', $id_forma_pago)
             ->with(
-                'cuenta'
+                'cuenta.tipos_cuenta'
             )
             ->first();
+    }
+
+    private function isAnticiposDocumentoRefe($formaPago, $idNit)
+    {
+        $tiposCuenta = $formaPago->cuenta->tipos_cuenta;
+        foreach ($tiposCuenta as $tipoCuenta) {
+            if ($tipoCuenta->id_tipo_cuenta == 4 || $tipoCuenta->id_tipo_cuenta == 8) {
+                $anticipoCuenta = (new Extracto(
+                    $idNit,
+                    null,
+                    null,
+                    Carbon::now()->format('Y-m-d H:i:s'),
+                    $formaPago->cuenta->id
+                ))->anticipos()->first();
+                return $anticipoCuenta ? $anticipoCuenta->documento_referencia : null;
+            }
+        }
+        return null;
     }
 
 }

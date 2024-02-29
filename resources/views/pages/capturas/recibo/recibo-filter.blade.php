@@ -50,6 +50,14 @@
                         <input type="text" class="form-control form-control-sm" name="documento_referencia_recibo" id="documento_referencia_recibo" disabled required>
                     </div>
 
+                    <div id="input_anticipos_recibo" class="form-group col-6 col-sm-4 col-md-2" style="display: none;">
+                        <label for="example-text-input" class="form-control-label">Anticipos <span style="color: red">*</span></label>
+                        <input name="saldo_anticipo_recibo" id="saldo_anticipo_recibo" class="form-control form-control-sm" type="text" disabled style="text-align: right;">
+                        <div class="invalid-feedback" id="error-anticipo-cliente-venta">
+                            Valor superado
+                        </div>
+                    </div>
+
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
