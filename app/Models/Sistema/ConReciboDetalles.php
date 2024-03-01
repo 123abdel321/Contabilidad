@@ -29,4 +29,9 @@ class ConReciboDetalles extends Model
         'created_by',
         'updated_by'
     ];
+
+    public function cuenta()
+    {
+        return $this->belongsTo(PlanCuentas::class, 'id_cuenta');
+    }
 }

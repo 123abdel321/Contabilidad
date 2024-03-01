@@ -87,6 +87,7 @@ Route::get('/reset-password', [ResetPassword::class, 'show'])->middleware('guest
 Route::post('/reset-password', [ResetPassword::class, 'send'])->middleware('guest')->name('reset.perform');
 Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('guest')->name('change-password');
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
+Route::get('/recibos-print', [RecibosController::class, 'showPdfPublic'])->name('recibos-pdf');
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -124,8 +125,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/ventas-print-informez', [VentaController::class, 'showPdfZ']);
 		//RECIBOS
 		Route::get('/recibo', [RecibosController::class, 'index'])->name('recibo');
+		Route::get('/recibo-print/{id}', [RecibosController::class, 'showPdf'])->name('recibo-pdf');
 		//NOTA CREDITO
 		Route::get('/notacredito', [NotaCreditoController::class, 'index']);
+		Route::get('/ventas-print/{id}', [VentaController::class, 'showPdf'])->name('venta-pdf');
 		//NITS
 		Route::get('/nit', [NitController::class, 'index'])->name('nit');
 		//PLAN CUENTAS

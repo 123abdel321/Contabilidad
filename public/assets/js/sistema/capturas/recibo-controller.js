@@ -283,6 +283,10 @@ function saveRecibo() {
         $('#iniciarCapturaRecibo').show();
         $('#iniciarCapturaReciboLoading').hide();
         agregarToast('exito', 'Creación exitosa', 'Recibo creado con exito!', true);
+
+        if(res.impresion) {
+            window.open("/recibo-print/"+res.impresion, '_blank');
+        }
     }).fail((err) => {
         consecutivoSiguienteRecibo();
         $('#iniciarCapturaRecibo').show();

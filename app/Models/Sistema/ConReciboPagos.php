@@ -21,4 +21,9 @@ class ConReciboPagos extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function forma_pago()
+	{
+		return $this->belongsTo(FacFormasPago::class, 'id_forma_pago');
+	}
 }

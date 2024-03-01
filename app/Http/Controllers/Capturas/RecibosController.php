@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Capturas;
 
 use DB;
+use Config;
 use Carbon\Carbon;
 use DateTimeImmutable;
 use App\Helpers\Extracto;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
+use App\Helpers\Printers\RecibosPdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
@@ -131,6 +133,12 @@ class RecibosController extends Controller
 
     public function create (Request $request)
     {
+        return response()->json([
+            'success'=>	true,
+            'data' => [],
+            'impresion' => 32,
+            'message'=> 'Recibo creado con exito!'
+        ], 200);
         $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
         $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual', null) : Carbon::now();
@@ -206,7 +214,7 @@ class RecibosController extends Controller
                     'id_cuenta' => $cuentaRecord->id,
                     'id_nit' => $recibo->id_nit,
                     'fecha_manual' => $recibo->fecha_manual,
-                    'documento_referencia' => '',
+                    'documento_referencia' => $movimiento->documento_referencia,
                     'consecutivo' => $recibo->consecutivo,
                     'concepto' => $movimiento->concepto,
                     'total_factura' => 0,
@@ -282,6 +290,7 @@ class RecibosController extends Controller
             return response()->json([
                 'success'=>	true,
                 'data' => $documentoGeneral->getRows(),
+                'impresion' => $comprobanteRecibo->imprimir_en_capturas ? $recibo->id : '',
                 'message'=> 'Recibo creado con exito!'
             ], 200);
 
@@ -294,6 +303,54 @@ class RecibosController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
+    }
+
+    public function showPdf(Request $request, $id)
+    {
+        $recibo = ConRecibos::whereId($id)
+            ->with('comprobante')
+            ->first();
+
+        if(!$recibo) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'El recibo no existe'
+            ], 422);
+        }
+
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        $data = (new RecibosPdf($empresa, $recibo))->buildPdf()->getData();
+ 
+        return (new RecibosPdf($empresa, $recibo))
+            ->buildPdf()
+            ->showPdf();
+    }
+
+    public function showPdfPublic(Request $request)
+    {
+        $token_db = base64_decode($request->get('token_db'));
+        $empresa = Empresa::where('token_db', $token_db)->first();
+
+		Config::set('database.connections.sam.database', $token_db);
+        
+        $recibo = ConRecibos::whereId($request->get('id'))
+            ->with('comprobante')
+            ->first();
+
+        if(!$recibo) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'El recibo no existe'
+            ], 422);
+        }
+
+        $data = (new RecibosPdf($empresa, $recibo))->buildPdf()->getData();
+ 
+        return (new RecibosPdf($empresa, $recibo))
+            ->buildPdf()
+            ->showPdf();
     }
 
     private function formatExtracto($extracto)
@@ -426,5 +483,4 @@ class RecibosController extends Controller
         }
         return null;
     }
-
 }
