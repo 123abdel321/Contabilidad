@@ -426,20 +426,11 @@ function changeCuentaRow(idRow) {
             }
         });
 
-        if(id_tipo_cuenta == 3 || id_tipo_cuenta == 4) {
-            if(data.naturaleza_cuenta != data.naturaleza_origen) {
-                $("#conten_button_"+idRow).show();
-                $("#documento_referencia_"+idRow).removeClass("normal_input");
-                $("#documento_referencia_"+idRow).prop("readonly", true)
-            //     rowExtracto = idRow;
-            //     $("#conten_button_"+idRow).show();
-            //     $("#documento_referencia_"+idRow).removeClass("normal_input");
-            //     $("#documento_referencia_"+idRow).prop("readonly", true)
-            // } else {
-            //     $("#conten_button_"+idRow).hide();
-            //     $("#documento_referencia_"+idRow).addClass("normal_input");
-            //     $("#documento_referencia_"+idRow).prop("readonly", false);
-            }
+        if(data.naturaleza_cuenta != data.naturaleza_origen && id_tipo_cuenta ) {
+            $("#conten_button_"+idRow).show();
+            $("#documento_referencia_"+idRow).removeClass("normal_input");
+            $("#documento_referencia_"+idRow).prop("readonly", true)
+
         } else {
             $("#conten_button_"+idRow).hide();
             $("#documento_referencia_"+idRow).addClass("normal_input");
@@ -807,14 +798,14 @@ function focusNextRow(Idcolumn, idRow) {
                     var id_tipo_cuenta = null;
         
                     dataCuentaRow.tipos_cuenta.forEach(tipo_cuenta => {
-                        if (tipo_cuenta.id_tipo_cuenta == 3 || tipo_cuenta.id_tipo_cuenta == 4) {
+                        if (tipo_cuenta.id_tipo_cuenta == 3 || tipo_cuenta.id_tipo_cuenta == 4 || tipo_cuenta.id_tipo_cuenta == 8) {
                             id_tipo_cuenta = tipo_cuenta.id_tipo_cuenta;
                         }
                     });
 
-                    if (id_tipo_cuenta) {
+                    if (dataCuentaRow.naturaleza_cuenta != dataCuentaRow.naturaleza_origen && id_tipo_cuenta) {
                         buscarExtracto(idRow);
-                    }
+                    };
                 }
                 if (tipo_comprobante == 4) {
                     
