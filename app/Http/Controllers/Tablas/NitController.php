@@ -336,14 +336,28 @@ class NitController extends Controller
 				END) AS text")
         );
 
-        if ($request->get("q")) {
-            $nits->where('primer_apellido', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('razon_social', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('email', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('numero_documento', 'LIKE', '%' . $request->get("q") . '%');
+        if ($request->get("id_nits")) {
+            $nits->whereIn('id', $request->get("id_nits"));
+        } else {
+            if ($request->get("q")) {
+                $nits->where('primer_apellido', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('razon_social', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('email', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('numero_documento', 'LIKE', '%' . $request->get("q") . '%');
+            }
+    
+            if ($request->get("search")) {
+                $nits->where('primer_apellido', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('razon_social', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('email', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('numero_documento', 'LIKE', '%' . $request->get("search") . '%');
+            }
         }
 
         return $nits->paginate($totalRows);
