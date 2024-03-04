@@ -1105,7 +1105,9 @@ function searchCaptura() {
                 $("#cancelarCapturaDocumentos").show();
                 $("#iniciarCapturaDocumentosLoading").hide();
                 $("#crearCapturaDocumentos").show();
+
                 if(data.length > 0){
+                    var fechaManual = data[0].fecha_manual;
                     editandoCaptura = true;
                     idDocumento = 0;
                     for (let index = 0; index < data.length; index++) {
@@ -1175,6 +1177,7 @@ function searchCaptura() {
                         
                         setDisabledRows(documento.cuenta, index);
                     }
+                    $('#fecha_manual_documento').val(fechaManual);
                     $("#editing_documento").val("1");
                     agregarToast('exito', 'Documentos encontrados', 'Documentos cargados con exito!', true );
                     mostrarValores();
@@ -1234,7 +1237,7 @@ function cargarNuevoConsecutivo() {
         }
         mostrarValores();
     }
-
+    $('#fecha_manual_documento').val(fecha);
     $("#iniciarCapturaDocumentos").show();
     $("#agregarDocumentos").hide();
     $("#cancelarCapturaDocumentos").hide();
