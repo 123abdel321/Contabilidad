@@ -133,12 +133,6 @@ class RecibosController extends Controller
 
     public function create (Request $request)
     {
-        return response()->json([
-            'success'=>	true,
-            'data' => [],
-            'impresion' => 32,
-            'message'=> 'Recibo creado con exito!'
-        ], 200);
         $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
         $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual', null) : Carbon::now();
