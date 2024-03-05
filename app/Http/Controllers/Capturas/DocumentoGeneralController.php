@@ -74,6 +74,7 @@ class DocumentoGeneralController extends Controller
 			'documento.*.documento_referencia' => 'nullable|string',
 			'documento.*.valor' => 'required',
 			'documento.*.concepto' => 'required',
+			'documento.*.naturaleza_opuesta' => 'nullable',
 			'documento.*.token_factura' => 'nullable'
         ];
 
@@ -134,13 +135,23 @@ class DocumentoGeneralController extends Controller
 						$cuentaContable = PlanCuentas::where('id', $doc->{$cuentaContable})->first();
 	
 						$naturaleza = null;
-	
-						if ($cuentaContable->naturaleza_cuenta == PlanCuentas::DEBITO) {
-							$naturaleza = PlanCuentas::DEBITO;
-							$docGeneral['debito'] = $doc->valor;
+
+						if ($doc->naturaleza_opuesta) {
+							if ($cuentaContable->naturaleza_cuenta == PlanCuentas::DEBITO) {
+								$naturaleza = PlanCuentas::CREDITO;
+								$docGeneral['credito'] = $doc->valor;
+							} else {
+								$naturaleza = PlanCuentas::DEBITO;
+								$docGeneral['debito'] = $doc->valor;
+							}
 						} else {
-							$naturaleza = PlanCuentas::CREDITO;
-							$docGeneral['credito'] = $doc->valor;
+							if ($cuentaContable->naturaleza_cuenta == PlanCuentas::DEBITO) {
+								$naturaleza = PlanCuentas::DEBITO;
+								$docGeneral['debito'] = $doc->valor;
+							} else {
+								$naturaleza = PlanCuentas::CREDITO;
+								$docGeneral['credito'] = $doc->valor;
+							}
 						}
 
 						$docGeneral['id_nit'] = $doc->id_nit;
