@@ -135,8 +135,10 @@ class DocumentoGeneralController extends Controller
 						$cuentaContable = PlanCuentas::where('id', $doc->{$cuentaContable})->first();
 	
 						$naturaleza = null;
+						$documentoReferencia = $doc->documento_referencia;
 
 						if ($doc->naturaleza_opuesta) {
+							if ($doc->documento_referencia_anticipo) $documentoReferencia = $doc->documento_referencia_anticipo;
 							if ($cuentaContable->naturaleza_cuenta == PlanCuentas::DEBITO) {
 								$naturaleza = PlanCuentas::CREDITO;
 								$docGeneral['credito'] = $doc->valor;
@@ -157,7 +159,7 @@ class DocumentoGeneralController extends Controller
 						$docGeneral['id_nit'] = $doc->id_nit;
 						$docGeneral['id_cuenta'] = $cuentaContable->id;
 						$docGeneral['id_centro_costos'] = $doc->id_centro_costos;
-						$docGeneral['documento_referencia'] = $doc->documento_referencia;
+						$docGeneral['documento_referencia'] = $documentoReferencia;
 						$docGeneral['concepto'] = $doc->concepto;
 						$docGeneral['consecutivo'] = $consecutivo;
 						$docGeneral['created_by'] = request()->user()->id;
