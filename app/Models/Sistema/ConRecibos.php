@@ -21,6 +21,7 @@ class ConRecibos extends Model
         'total_abono',
         'total_anticipo',
         'observacion',
+        'estado',
         'created_by',
         'updated_by'
     ];
@@ -28,6 +29,11 @@ class ConRecibos extends Model
     public function documentos()
     {
         return $this->morphMany(DocumentosGeneral::class, 'relation');
+	}
+
+    public function archivos()
+    {
+        return $this->morphMany(archivosGenerales::class, 'relation');
 	}
 
     public function nit()

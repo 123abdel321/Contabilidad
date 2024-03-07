@@ -11,6 +11,7 @@ use App\Helpers\Documento;
 use Illuminate\Http\Request;
 use App\Helpers\Printers\RecibosPdf;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 //MODELS
@@ -155,6 +156,7 @@ class RecibosController extends Controller
             'id_comprobante' => 'required|exists:sam.comprobantes,id',
             'fecha_manual' => 'required|date',
             'consecutivo' => 'required',
+            'file_comprobante' => 'nullable',
             'movimiento' => 'array|required',
             'movimiento.*.id_cuenta' => 'required|exists:sam.plan_cuentas,id',
             'movimiento.*.valor_recibido' => 'required',
@@ -224,7 +226,7 @@ class RecibosController extends Controller
                 $doc = new DocumentosGeneral([
                     "id_cuenta" => $cuentaRecord->id,
                     "id_nit" => $cuentaRecord->exige_nit ? $recibo->id_nit : null,
-                    "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $compra->id_centro_costos : null,
+                    "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $recibo->id_centro_costos : null,
                     "concepto" => $cuentaRecord->exige_concepto ? $movimiento->concepto : null,
                     "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $movimiento->documento_referencia : null,
                     "debito" => $movimiento->valor_recibido,
@@ -291,6 +293,292 @@ class RecibosController extends Controller
         } catch (Exception $e) {
 
 			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function createComprobante(Request $request)
+    {
+        $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+
+        $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual', null) : Carbon::now();
+
+        if(!$comprobanteRecibo) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
+            ], 422);
+        } else {
+            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
+            $request->request->add([
+                'consecutivo' => $consecutivo
+            ]);
+        }
+
+        $rules = [
+            'id_nit' => 'required|exists:sam.nits,id',
+            'id_comprobante' => 'required|exists:sam.comprobantes,id',
+            'numero_documento' => 'required|exists:sam.nits,numero_documento',
+            'fecha_pago' => 'nullable',
+            'valor_comprobante' => 'nullable',
+            'valor_pago' => 'nullable',
+            'comprobante' => 'nullable',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+        try {
+            DB::connection('sam')->beginTransaction();
+            //CREAR FACTURA RECIBO
+            $recibo = $this->createReciboComprobante($request);
+            $nit = $this->findNit($recibo->id_nit);
+            $formaPago = $this->findFormaPagoCuenta($request->get('id_cuenta_ingreso'));
+
+            //AGREGAR MOVIMIENTO PAGO
+            if (!$formaPago) {
+                DB::connection('sam')->rollback();
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=>'La forma de pago con el id_cuenta_ingreso: '.$request->get('id_cuenta_ingreso').' No existe!'
+                ], 422);
+            }
+
+            $valorPago = $request->get('valor_pago') ? $request->get('valor_pago') : $request->get('valor_comprobante');
+
+            //GUARDAR FORMA DE PAGO
+            $pagoRecibo = ConReciboPagos::create([
+                'id_recibo' => $recibo->id,
+                'id_forma_pago' => $formaPago->id,
+                'valor' => $valorPago,
+                'saldo' => 0,
+                'created_by' => request()->user()->id,
+                'updated_by' => request()->user()->id
+            ]);
+
+            if ($request->get('valor_comprobante')) {
+
+                DB::connection('sam')->commit();
+
+                return response()->json([
+                    "success"=>true,
+                    'data' => [],
+                    "message"=>'Comprobante enviado con exito'
+                ], 200);
+            }
+
+            $extractos = (new Extracto(
+                $nit->id,
+                3,
+                null,
+                $request->get('fecha_pago')
+            ))->actual()->get();
+
+            //GUARDAR DETALLE & MOVIMIENTO CONTABLE RECIBOS
+            $documentoGeneral = new Documento(
+                $request->get('id_comprobante'),
+                $recibo,
+                $request->get('fecha_manual'),
+                $request->get('consecutivo')
+            );
+
+            $valorPagado = $request->get('valor_pago');
+            
+            //RECORRER CUENTAS POR PAGAR
+            foreach ($extractos as $extracto) {
+                if (!$valorPagado) continue;
+                
+                $cuentaRecord = PlanCuentas::find($extracto->id_cuenta);
+                $totalAbonado = 0;
+                if ($extracto->saldo >= $valorPagado) {
+                    $totalAbonado = $valorPagado;
+                    $valorPagado = 0;
+                } else {
+                    $totalAbonado = $extracto->saldo;
+                    $valorPagado-= $extracto->saldo;
+                }
+                //CREAR RECIBO DETALLE
+                ConReciboDetalles::create([
+                    'id_recibo' => $recibo->id,
+                    'id_cuenta' => $cuentaRecord->id,
+                    'id_nit' => $recibo->id_nit,
+                    'fecha_manual' => $recibo->fecha_manual,
+                    'documento_referencia' => $extracto->documento_referencia,
+                    'consecutivo' => $recibo->consecutivo,
+                    'concepto' => 'PAGO PASARELA',
+                    'total_factura' => 0,
+                    'total_abono' => $totalAbonado,
+                    'total_saldo' => $extracto->saldo,
+                    'nuevo_saldo' => $extracto->saldo - $totalAbonado,
+                    'total_anticipo' => 0,
+                    'created_by' => request()->user()->id,
+                    'updated_by' => request()->user()->id
+                ]);
+
+                //AGREGAR MOVIMIENTO CONTABLE
+                $doc = new DocumentosGeneral([
+                    "id_cuenta" => $cuentaRecord->id,
+                    "id_nit" => $cuentaRecord->exige_nit ? $recibo->id_nit : null,
+                    "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $recibo->id_centro_costos : null,
+                    "concepto" => $cuentaRecord->exige_concepto ? $extracto->concepto : null,
+                    "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $extracto->documento_referencia : null,
+                    "debito" => $totalAbonado,
+                    "credito" => $totalAbonado,
+                    "created_by" => request()->user()->id,
+                    "updated_by" => request()->user()->id
+                ]);
+                
+                $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_ingresos);
+            }
+
+            //AGREGAR MOVIMIENTO CONTABLE PAGO
+            $doc = new DocumentosGeneral([
+                'id_cuenta' => $formaPago->cuenta->id,
+                'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
+                'id_centro_costos' => null,
+                'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$nit->nombre_nit.' - '.$recibo->consecutivo : null,
+                'documento_referencia' => null,
+                'debito' => $request->get('valor_pago'),
+                'credito' => $request->get('valor_pago'),
+                'created_by' => request()->user()->id,
+                'updated_by' => request()->user()->id
+            ]);
+            $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
+
+            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+
+            if (!$documentoGeneral->save()) {
+
+				DB::connection('sam')->rollback();
+				return response()->json([
+					'success'=>	false,
+					'data' => [],
+					'message'=> $documentoGeneral->getErrors()
+				], 422);
+			}
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => $documentoGeneral->getRows(),
+                'impresion' => $comprobanteRecibo->imprimir_en_capturas ? $recibo->id : '',
+                'message'=> 'Recibo creado con exito!'
+            ], 200);
+
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function updateComprobante(Request $request)
+    {
+        $rules = [
+            'id' => 'required|exists:sam.con_recibos,id',
+            'fecha_pago' => 'required',
+            'valor_comprobante' => 'required',
+            'comprobante' => 'nullable',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+        try {
+            DB::connection('sam')->beginTransaction();
+
+            ConRecibos::where('id', $request->get('id'))
+                ->where('estado', 2)
+                ->update([
+                    'total_abono' => $request->get('valor_comprobante')
+                ]);
+
+            ConReciboPagos::where('id_recibo', $request->get('id'))
+                ->update([
+                    'valor' => $request->get('valor_comprobante')
+                ]);
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => [],
+                'message'=> 'Recibo actualizado con exito!'
+            ], 200);
+            
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function deleteComprobante(Request $request)
+    {
+        $rules = [
+            'id' => 'required|exists:sam.con_recibos,id',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+        try {
+            DB::connection('sam')->beginTransaction();
+
+            ConRecibos::where('id', $request->get('id'))
+                ->where('estado', 2)
+                ->delete();
+
+            ConReciboPagos::where('id_recibo', $request->get('id'))
+                ->delete();
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => [],
+                'message'=> 'Inmueble eliminada con exito!'
+            ]);
+
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
             return response()->json([
                 "success"=>false,
                 'data' => [],
@@ -400,7 +688,7 @@ class RecibosController extends Controller
     private function createFacturaRecibo($request)
     {
         $this->calcularTotales($request->get('movimiento'));
-        $this->calcularFormasPago($request->get('pagos'));
+        $this->calcularFormasPago($request->get('pagos')); 
 
         $recibo = ConRecibos::create([
             'id_nit' => $request->get('id_nit'),
@@ -409,7 +697,27 @@ class RecibosController extends Controller
             'consecutivo' => $request->get('consecutivo'),
             'total_abono' => $this->totalesFactura['total_abonado'],
             'total_anticipo' => $this->totalesFactura['total_anticipo'],
-            'observacion' => $request->get(''),
+            'observacion' => '',
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        return $recibo;
+    }
+
+    private function createReciboComprobante($request)
+    {
+        $valorTotal = $request->get('valor_comprobante') ? $request->get('valor_comprobante') : $request->get('valor_pago');
+
+        $recibo = ConRecibos::create([
+            'id_nit' => $request->get('id_nit'),
+            'id_comprobante' => $request->get('id_comprobante'),
+            'fecha_manual' => $request->get('fecha_pago'),
+            'consecutivo' => $request->get('consecutivo'),
+            'total_abono' => $valorTotal,
+            'total_anticipo' => 0,
+            'observacion' => '',
+            'estado' => $request->get('valor_comprobante') ? 2 : 1,
             'created_by' => request()->user()->id,
             'updated_by' => request()->user()->id
         ]);
@@ -429,12 +737,17 @@ class RecibosController extends Controller
         }
     }
 
-    public function calcularFormasPago($pagos)
+    private function calcularFormasPago($pagos)
     {
         foreach ($pagos as $pago) {
             $pago = (object)$pago;
             $this->totalesFactura['total_pagado']+= floatval($pago->valor);
         }
+    }
+
+    private function crearImagenComprobante($file)
+    {
+        dd($file);
     }
 
     private function findNit ($id_nit)
@@ -458,6 +771,15 @@ class RecibosController extends Controller
                 'cuenta.tipos_cuenta'
             )
             ->first();
+    }
+
+    private function findFormaPagoCuenta ($idCuenta)
+    {
+        return FacFormasPago::where('id_cuenta', $idCuenta)
+        ->with(
+            'cuenta.tipos_cuenta'
+        )
+        ->first();
     }
 
     private function isAnticiposDocumentoRefe($formaPago, $idNit)

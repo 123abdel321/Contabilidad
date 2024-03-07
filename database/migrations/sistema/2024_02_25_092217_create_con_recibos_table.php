@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('total_abono', 15);
             $table->decimal('total_anticipo', 15);
             $table->mediumText('observacion')->nullable();
+            $table->integer('estado')->default(1)->comment('0:Rechazado, 1:Aprobado, 2:Pendiente')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();
