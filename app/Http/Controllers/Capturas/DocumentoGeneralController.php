@@ -132,13 +132,17 @@ class DocumentoGeneralController extends Controller
 					foreach ($cuentasContables as $cuentaContable) {
 						$naturaleza = null;
 						$docGeneral = $this->newDocGeneral();
-						$cuentaContable = PlanCuentas::where('id', $doc->{$cuentaContable})->first();
+						$cuentaContable = PlanCuentas::where('id', $doc->{$cuentaContable})
+							->with('tipos_cuenta')
+							->first();
 	
 						$naturaleza = null;
 						$documentoReferencia = $doc->documento_referencia;
 
 						if ($doc->naturaleza_opuesta) {
-							if ($doc->documento_referencia_anticipo) $documentoReferencia = $doc->documento_referencia_anticipo;
+
+							$documentoReferencia = $this->generarDocumentoReferenciaAnticipos($cuentaContable, $doc);
+
 							if ($cuentaContable->naturaleza_cuenta == PlanCuentas::DEBITO) {
 								$naturaleza = PlanCuentas::CREDITO;
 								$docGeneral['credito'] = $doc->valor;
@@ -753,5 +757,16 @@ class DocumentoGeneralController extends Controller
 			->groupBy(DB::raw("DATE_FORMAT(fecha_manual, '%Y')"));
 
 		return $years->paginate(40);
+	}
+
+	private function generarDocumentoReferenciaAnticipos($cuenta, $doc)
+	{
+		$tiposCuenta = $cuenta->tipos_cuenta;
+        foreach ($tiposCuenta as $tipoCuenta) {
+            if ($tipoCuenta->id_tipo_cuenta == 4 || $tipoCuenta->id_tipo_cuenta == 8) {
+                return $doc->documento_referencia_anticipo;
+            }
+        }
+		return $doc->documento_referencia;
 	}
 }
