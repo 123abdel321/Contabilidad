@@ -7,6 +7,8 @@ use DateTimeImmutable;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessBorrarDocumentos;
+use App\Jobs\ProcessGenerarDocumentos;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 //MODELS
@@ -89,104 +91,9 @@ class DocumentoGeneralController extends Controller
         }
 
 		try {
-			DB::connection('sam')->beginTransaction();
 
-			$cuentasContables = [
-				'id_cuenta_por_cobrar',
-				'id_cuenta_ingreso'
-			];
-
-			$documento = $request->get('documento');
-			$documentosGroup = [];
-
-			foreach($documento as $document) {
-				$document = (object)$document;
-				$documentosGroup[$document->token_factura][] = $document;
-			}
-
-			foreach($documentosGroup as $docGroup) {
-
-				$consecutivo = $this->getNextConsecutive($docGroup[0]->id_comprobante, $docGroup[0]->fecha_manual);
-
-				$facDocumento = FacDocumentos::create([
-					'id_nit' => $docGroup[0]->id_nit,
-					'id_comprobante' => $docGroup[0]->id_comprobante,
-					'fecha_manual' => $docGroup[0]->fecha_manual,
-					'consecutivo' => $consecutivo,
-					'token_factura' => $docGroup[0]->token_factura,
-					'debito' => 0,
-					'credito' => 0,
-					'saldo_final' => 0,
-					'created_by' => request()->user()->id,
-					'updated_by' => request()->user()->id,
-				]);
-
-				$documentoGeneral = new Documento(
-					$docGroup[0]->id_comprobante,
-					$facDocumento,
-					$docGroup[0]->fecha_manual,
-					$consecutivo
-				);
-
-				foreach ($docGroup as $doc) {
-					foreach ($cuentasContables as $cuentaContable) {
-						$naturaleza = null;
-						$docGeneral = $this->newDocGeneral();
-						$cuentaContable = PlanCuentas::where('id', $doc->{$cuentaContable})
-							->with('tipos_cuenta')
-							->first();
-	
-						$naturaleza = null;
-						$documentoReferencia = $doc->documento_referencia;
-
-						if ($doc->naturaleza_opuesta) {
-
-							$documentoReferencia = $this->generarDocumentoReferenciaAnticipos($cuentaContable, $doc);
-
-							if ($cuentaContable->naturaleza_cuenta == PlanCuentas::DEBITO) {
-								$naturaleza = PlanCuentas::CREDITO;
-								$docGeneral['credito'] = $doc->valor;
-							} else {
-								$naturaleza = PlanCuentas::DEBITO;
-								$docGeneral['debito'] = $doc->valor;
-							}
-						} else {
-							if ($cuentaContable->naturaleza_cuenta == PlanCuentas::DEBITO) {
-								$naturaleza = PlanCuentas::DEBITO;
-								$docGeneral['debito'] = $doc->valor;
-							} else {
-								$naturaleza = PlanCuentas::CREDITO;
-								$docGeneral['credito'] = $doc->valor;
-							}
-						}
-
-						$docGeneral['id_nit'] = $doc->id_nit;
-						$docGeneral['id_cuenta'] = $cuentaContable->id;
-						$docGeneral['id_centro_costos'] = $doc->id_centro_costos;
-						$docGeneral['documento_referencia'] = $documentoReferencia;
-						$docGeneral['concepto'] = $doc->concepto;
-						$docGeneral['consecutivo'] = $consecutivo;
-						$docGeneral['created_by'] = request()->user()->id;
-						$docGeneral['updated_by'] = request()->user()->id;
-		
-						$docGeneral = new DocumentosGeneral($docGeneral);
-						$documentoGeneral->addRow($docGeneral, $naturaleza);
-					}
-				}
-				if (!$documentoGeneral->save()) {
-	
-					DB::connection('sam')->rollback();
-					return response()->json([
-						'success'=>	false,
-						'data' => [],
-						'message'=> $documentoGeneral->getErrors()
-					], 401);
-				}
-	
-				$this->updateConsecutivo($docGroup[0]->id_comprobante, $consecutivo);
-			}
-
-			DB::connection('sam')->commit();
+			$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+			ProcessGenerarDocumentos::dispatch($request->all(), $request->user()->id, $empresa->id);
 				
 			return response()->json([
 				'success'=>	true,
@@ -363,39 +270,14 @@ class DocumentoGeneralController extends Controller
             ], 401);
         }
 		try {
-			DB::connection('sam')->beginTransaction();
-
-			$documento = $request->get('documento');
-
-			foreach ($documento as $token) {
-
-				$factura = FacDocumentos::where('token_factura', $token)->first();
-
-				if ($factura) {
-					
-					$documento = DocumentosGeneral::where('relation_id', $factura->id)
-						->where('relation_type', 2)
-						->with('relation')->get();
-
-					if (count($documento)) {
-						$documento[0]->relation->anulado = 1;
-						$documento[0]->relation->save();
-		
-						foreach ($documento as $doc) {
-							$doc->anulado = 1;
-							$doc->concepto .= ' - Anulado desde maximoph';
-							$doc->save();
-						}
-					}
-				}	
-			}
-
-			DB::connection('sam')->commit();
+			
+			$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+			ProcessBorrarDocumentos::dispatch($request->all(), $request->user()->id, $empresa->id);
 
 			return response()->json([
 				'success'=>	true,
 				'data' => [],
-				'message'=> 'Documentos anulados con exito!'
+				'message'=> 'Documentos eliminados con exito!'
 			], 200);
 
 		} catch (Exception $e) {
@@ -757,16 +639,5 @@ class DocumentoGeneralController extends Controller
 			->groupBy(DB::raw("DATE_FORMAT(fecha_manual, '%Y')"));
 
 		return $years->paginate(40);
-	}
-
-	private function generarDocumentoReferenciaAnticipos($cuenta, $doc)
-	{
-		$tiposCuenta = $cuenta->tipos_cuenta;
-        foreach ($tiposCuenta as $tipoCuenta) {
-            if ($tipoCuenta->id_tipo_cuenta == 4 || $tipoCuenta->id_tipo_cuenta == 8) {
-                return $doc->documento_referencia_anticipo;
-            }
-        }
-		return $doc->documento_referencia;
 	}
 }
