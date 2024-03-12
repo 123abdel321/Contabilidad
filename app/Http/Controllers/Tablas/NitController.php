@@ -51,16 +51,14 @@ class NitController extends Controller
                 $columnSortOrder = $order_arr[0]['dir']; // asc or desc
                 $searchValue = $search_arr['value']; // Search value
     
-                $nits = Nits::skip($start)
-                    ->with('tipo_documento', 'ciudad', 'vendedor.nit')
+                $nits = Nits::with('tipo_documento', 'ciudad', 'vendedor.nit')
                     ->select(
                         '*',
                         DB::raw("DATE_FORMAT(nits.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
                         DB::raw("DATE_FORMAT(nits.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
                         'nits.created_by',
                         'nits.updated_by'
-                    )
-                    ->take($rowperpage);
+                    );
 
                 if ($columnIndex == '1') {
                     $nits->orderBy('razon_social',$columnSortOrder)
@@ -95,15 +93,20 @@ class NitController extends Controller
                             $query->where('nombre', 'like', '%' .$searchValue . '%');
                         });
                 }
+
+                $totalNits = $nits->count();
+                
+                $nitsPaginate = $nits->skip($start)
+                    ->take($rowperpage);
     
                 return response()->json([
                     'success'=>	true,
                     'draw' => $draw,
-                    'iTotalRecords' => $nits->count(),
-                    'iTotalDisplayRecords' => $nits->count(),
-                    'data' => $nits->get(),
+                    'iTotalRecords' => $totalNits,
+                    'iTotalDisplayRecords' => $totalNits,
+                    'data' => $nitsPaginate->get(),
                     'perPage' => $rowperpage,
-                    'message'=> 'Comprobante generado con exito!'
+                    'message'=> 'Nits generados con exito!'
                 ]);
 
             } else {
