@@ -342,7 +342,7 @@ class DocumentoGeneralController extends Controller
 		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
         $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
 
-        if ($fechaManual <= $fechaCierre) {
+        if ($fechaManual < $fechaCierre) {
 			return response()->json([
                 "success"=>false,
                 'data' => [],

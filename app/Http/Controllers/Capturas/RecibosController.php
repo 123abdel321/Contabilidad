@@ -178,7 +178,7 @@ class RecibosController extends Controller
         $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
 		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
 
-        if ($this->fechaManual <= $fechaCierre) {
+        if ($this->fechaManual < $fechaCierre) {
 			return response()->json([
                 "success"=>false,
                 'data' => [],
