@@ -152,8 +152,8 @@ class ProcessInformeCartera implements ShouldQueue
             ->when($this->request['id_nit'] ? $this->request['id_nit'] : false, function ($query) {
 				$query->where('N.id', $this->request['id_nit']);
 			})
-            ->when($this->request['id_tipo_cuenta'] ? $this->request['id_tipo_cuenta'] : false, function ($query) {
-				$query->where('PC.id_tipo_cuenta', $this->request['id_tipo_cuenta']);
+            ->when($this->request['id_cuenta'] ? $this->request['id_cuenta'] : false, function ($query) {
+				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
 			})
             ->when($this->request['fecha_cartera'] ? $this->request['fecha_cartera'] : false, function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_cartera']);
@@ -240,8 +240,8 @@ class ProcessInformeCartera implements ShouldQueue
             ->when($this->request['id_nit'] ? $this->request['id_nit'] : false, function ($query) {
 				$query->where('N.id', $this->request['id_nit']);
 			})
-            ->when($this->request['id_tipo_cuenta'] ? $this->request['id_tipo_cuenta'] : false, function ($query) {
-				$query->where('PC.id_tipo_cuenta', $this->request['id_tipo_cuenta']);
+            ->when($this->request['id_cuenta'] ? $this->request['id_cuenta'] : false, function ($query) {
+				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
 			})
             ->when($this->request['fecha_cartera'] ? $this->request['fecha_cartera'] : false, function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_cartera']);
@@ -346,8 +346,8 @@ class ProcessInformeCartera implements ShouldQueue
             ->when($this->request['id_nit'] ? $this->request['id_nit'] : false, function ($query) {
 				$query->where('N.id', $this->request['id_nit']);
 			})
-            ->when($this->request['id_tipo_cuenta'] ? $this->request['id_tipo_cuenta'] : false, function ($query) {
-				$query->where('PC.id_tipo_cuenta', $this->request['id_tipo_cuenta']);
+            ->when($this->request['id_cuenta'] ? $this->request['id_cuenta'] : false, function ($query) {
+				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
 			})
             ->when($this->request['fecha_cartera'] ? $this->request['fecha_cartera'] : false, function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_cartera']);

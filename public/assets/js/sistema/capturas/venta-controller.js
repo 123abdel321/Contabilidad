@@ -746,7 +746,7 @@ function addRowProductoVenta () {
         "porcentaje_iva": 0,
         "valor_iva": 0,
         "valor_total": 0,
-    }).draw(false)
+    }).draw(false);
 
     $('#card-venta').focus();
     document.getElementById("card-venta").scrollLeft = 0;
