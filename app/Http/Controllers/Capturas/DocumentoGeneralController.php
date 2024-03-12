@@ -271,8 +271,25 @@ class DocumentoGeneralController extends Controller
         }
 		try {
 			
-			$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-			ProcessBorrarDocumentos::dispatch($request->all(), $request->user()->id, $empresa->id);
+			DB::connection('sam')->beginTransaction();
+
+			$documento = $request->get('documento');
+
+			foreach ($documento as $token) {
+
+				$factura = FacDocumentos::where('token_factura', $token)->first();
+
+				if ($factura) {
+					
+					$documento = DocumentosGeneral::where('relation_id', $factura->id)
+						->where('relation_type', 2)
+						->delete();
+						
+					$factura->delete();
+				}	
+			}
+
+			DB::connection('sam')->commit();
 
 			return response()->json([
 				'success'=>	true,
