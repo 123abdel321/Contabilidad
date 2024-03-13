@@ -540,8 +540,10 @@ function totalValoresRecibos() {
         if (!recibo.cuenta_recibo) {//ANTICIPOS
             totalAnticipos+= recibo.valor_recibido;
         } else if (parseFloat(recibo.valor_recibido)){//PAGOS
-            totalSaldo+= parseFloat(recibo.saldo);
             totalAbonos+= parseFloat(recibo.valor_recibido);
+        }
+        if (parseFloat(recibo.saldo)) {
+            totalSaldo+= parseFloat(recibo.saldo);
         }
     }
 
