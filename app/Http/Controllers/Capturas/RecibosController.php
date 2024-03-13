@@ -147,9 +147,8 @@ class RecibosController extends Controller
         $columnIndex = $columnIndex_arr[0]['column']; // Column index
         $columnName = $columnName_arr[$columnIndex]['data']; // Column name
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
 
-        $recibos = ConRecibos::orderBy($columnName,$columnSortOrder)
+        $recibos = ConRecibos::orderBy('id','DESC')
             ->with('nit', 'archivos', 'pagos')
             ->where('total_abono', '>', 0)
             ->select(
@@ -159,6 +158,25 @@ class RecibosController extends Controller
                 'created_by',
                 'updated_by'
             );
+
+        if ($request->get('estado') || $request->get('estado') == 0) {
+            if ($request->get('estado') != 'todos') {
+                $recibos->where('estado', $request->get('estado'));
+            }
+        }
+
+        if ($request->get('search')) {
+            $recibos->orWhereHas('nit', function ($query) use ($request){
+                $query->orWhere('primer_apellido', 'LIKE', '%' . $request->get("search") . '%')
+                ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("search") . '%')
+                ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("search") . '%')
+                ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("search") . '%')
+                ->orWhere('razon_social', 'LIKE', '%' . $request->get("search") . '%')
+                ->orWhere('email', 'LIKE', '%' . $request->get("search") . '%')
+                ->orWhere('numero_documento', 'LIKE', '%' . $request->get("search") . '%');
+            });
+            $recibos->where('total_abono', '>', 0);
+        }
 
         $recibosTotals = $recibos->get();
 
@@ -608,6 +626,14 @@ class RecibosController extends Controller
                 ->where('estado', 2)
                 ->first();
 
+            if (!$recibo) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=>'El recibo no se puede modificar'
+                ], 422);
+            }
+
             $nit = $this->findNit($recibo->id_nit);
 
             //GENERAR MOVIMINETO CONTABLE
@@ -728,6 +754,7 @@ class RecibosController extends Controller
             //GUARDAMOS RECIBO
             $recibo->consecutivo = $consecutivo;
             $recibo->estado = 1;
+            $recibo->observacion = $request->get('observacion');
             $recibo->save();
 
             DB::connection('sam')->commit();

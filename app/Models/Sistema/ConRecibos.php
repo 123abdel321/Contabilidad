@@ -33,7 +33,7 @@ class ConRecibos extends Model
 
     public function archivos()
     {
-        return $this->morphMany(archivosGenerales::class, 'relation');
+        return $this->morphMany(ArchivosGenerales::class, 'relation');
 	}
 
     public function nit()

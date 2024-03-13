@@ -285,6 +285,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(RecibosController::class)->group(function () {
             Route::get('recibos', 'generate');
             Route::post('recibos', 'create');
+            Route::get('recibos-comprobante', 'generateComprobante');
             Route::post('recibos-comprobante', 'createComprobante');
             Route::put('recibos-comprobante', 'updateComprobante');
             Route::delete('recibos-comprobante', 'deleteComprobante');
