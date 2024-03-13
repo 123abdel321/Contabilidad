@@ -75,7 +75,9 @@ class ApiController extends Controller
                         $user->save();
                     }
                     
-                    $empresaSelect = UsuarioEmpresa::where('id_usuario', $user->id_empresa)->first();
+                    $empresaSelect = UsuarioEmpresa::where('id_usuario', $user->id)
+                        ->where('id_empresa', $user->id_empresa)
+                        ->first();
                     
                     if (!$empresaSelect) {
                         return response()->json([
