@@ -84,7 +84,9 @@ class RecibosController extends Controller
                 ->where('exige_documento_referencia', 1)
                 ->whereHas('tipos_cuenta', function ($query) {
                     $query->whereIn('id_tipo_cuenta', [8]);
-                })->get();
+                })
+                ->orderBy('cuenta', 'ASC')
+                ->get();
             
             $dataRecibos = [];
 
