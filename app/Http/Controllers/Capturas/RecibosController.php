@@ -175,8 +175,12 @@ class RecibosController extends Controller
                 ->orWhere('email', 'LIKE', '%' . $request->get("search") . '%')
                 ->orWhere('numero_documento', 'LIKE', '%' . $request->get("search") . '%');
             });
-            $recibos->where('total_abono', '>', 0);
         }
+
+        $recibos ->when($request->get('fecha_desde') && $request->get('fecha_hasta'), function ($query) use($request) {
+                $query->whereBetween('fecha_manual', [$request->get('fecha_desde'), $request->get('fecha_hasta')]);
+            })
+            ->where('total_abono', '>', 0);
 
         $recibosTotals = $recibos->get();
 
