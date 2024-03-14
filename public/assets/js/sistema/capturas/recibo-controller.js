@@ -360,9 +360,11 @@ function cancelarRecibo() {
     clearFormasPagoRecibo();
     $('#total_abono_recibo').val('0.00');
     $('#saldo_anticipo_recibo').val('0');
+    $('#recibo_anticipo_disp').text('0');
     $('#crearCapturaRecibo').hide();
     $('#cancelarCapturaRecibo').hide();
     $('#input_anticipos_recibo').hide();
+    $('#recibo_anticipo_disp_view').hide();
     $('#crearCapturaReciboDisabled').hide();
 }
 
@@ -664,7 +666,10 @@ function validateSaveRecibos() {
 function loadAnticiposRecibo() {
     totalAnticiposRecibo = 0;
     $('#input_anticipos_recibo').hide();
+    $('#recibo_anticipo_disp_view').hide();
     $('#saldo_anticipo_recibo').val(0);
+    $('#recibo_anticipo_disp').text('0.00');
+    
 
     if(!$('#id_nit_recibo').val()) return;
     
@@ -686,9 +691,11 @@ function loadAnticiposRecibo() {
                 var saldo = parseFloat(res.data.saldo);
                 if (saldo > 0) {
                     disabled = false;
-                    $('#input_anticipos_recibo').show();
+                    $('#recibo_anticipo_disp_view').show();
+                    // $('#input_anticipos_recibo').show();
                     totalAnticiposRecibo = saldo;
                     $('#saldo_anticipo_recibo').val(new Intl.NumberFormat('ja-JP').format(saldo));
+                    $('#recibo_anticipo_disp').text(new Intl.NumberFormat('ja-JP').format(saldo));
                 }
             }
         }
