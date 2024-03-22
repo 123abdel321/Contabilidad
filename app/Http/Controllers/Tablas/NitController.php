@@ -349,6 +349,12 @@ class NitController extends Controller
                     ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("q") . '%')
                     ->orWhere('razon_social', 'LIKE', '%' . $request->get("q") . '%')
                     ->orWhere('email', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),'-',digito_verificacion,' - ',razon_social)"), "like", "%" . $request->get("q") . "%")
+                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),' - ',razon_social)"), "like", "%" . $request->get("q") . "%")
+                    ->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
+					->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
+                    ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
+					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
                     ->orWhere('numero_documento', 'LIKE', '%' . $request->get("q") . '%');
             }
     
@@ -359,6 +365,12 @@ class NitController extends Controller
                     ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('razon_social', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('email', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),'-',digito_verificacion,' - ',razon_social)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),' - ',razon_social)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
+					->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
+					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
                     ->orWhere('numero_documento', 'LIKE', '%' . $request->get("search") . '%');
             }
         }
