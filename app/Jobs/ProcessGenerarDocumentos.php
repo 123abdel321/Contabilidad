@@ -93,10 +93,10 @@ class ProcessGenerarDocumentos implements ShouldQueue
 				);
 
 				foreach ($docGroup as $doc) {
-					foreach ($cuentasContables as $cuentaContable) {
+					foreach ($cuentasContables as $cuentaContableI) {
 						$naturaleza = null;
 						$docGeneral = $this->newDocGeneral();
-						$cuentaContable = PlanCuentas::where('id', $doc->{$cuentaContable})
+						$cuentaContable = PlanCuentas::where('id', $doc->{$cuentaContableI})
 							->with('tipos_cuenta')
 							->first();
 	
