@@ -66,6 +66,14 @@ function plancuentaInit() {
             {"data":'nombre'},
             {
                 "data": function (row, type, set){
+                    if(row.tipos_cuenta.length){
+                        return row.tipos_cuenta[0].tipo.nombre;
+                    }
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
                     if(row.naturaleza_cuenta){
                         return 'Credito';
                     }

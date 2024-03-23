@@ -17,4 +17,9 @@ class PlanCuentasTipo extends Model
         'id_cuenta',
         'id_tipo_cuenta'
     ];
+
+    public function tipo()
+    {
+        return $this->belongsTo(TipoCuenta::class, "id_tipo_cuenta");
+    }
 }

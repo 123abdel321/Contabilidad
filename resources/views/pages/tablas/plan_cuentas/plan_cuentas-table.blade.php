@@ -3,6 +3,7 @@
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
             <th>Nombre</th>
+            <th>Tipo cuenta</th>
             <th>Naturaleza cuenta</th>
             <th>Ingresos</th>
             <th>Egresos</th>

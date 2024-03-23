@@ -74,6 +74,8 @@ var moduloCreado = {
     'importdocumentos': false,
     'eliminardocumentos': false,
     'recibo': false,
+    'recibos': false,
+    'conceptogastos': false,
 };
 
 var moduloRoute = {
@@ -111,6 +113,8 @@ var moduloRoute = {
     'importdocumentos': 'importador',
     'eliminardocumentos': 'capturas',
     'recibo': 'capturas',
+    'recibos': 'informes',
+    'conceptogastos': 'tablas',
 }
 
 $('.water').show();

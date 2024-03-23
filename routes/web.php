@@ -29,6 +29,7 @@ use App\Http\Controllers\Tablas\VendedoresController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
+use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
@@ -151,6 +152,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/productos', [ProductosController::class, 'index'])->name('productos');
 		//CARGUE DESCARGUE
 		Route::get('/carguedescargue', [CargueDescargueController::class, 'index']);
+		//CONCEPTO GASTOS
+		Route::get('/conceptogastos', [ConceptoGastosController::class, 'index']);
 		//DOCUMENTOS
 		Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos');
 		Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('documento-pdf');

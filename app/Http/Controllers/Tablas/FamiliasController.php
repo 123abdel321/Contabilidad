@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\FacFamilias;
+use App\Models\Sistema\FacProductos;
 
 class FamiliasController extends Controller
 {
@@ -279,15 +280,15 @@ class FamiliasController extends Controller
     {
         try {
 
-            // $documentos = DocumentosGeneral::where('id_cuenta', $request->get('id'));
+            $productos = FacProductos::where('id_familia', $request->get('id'));
 
-            // if($documentos->count() > 0) {
-            //     return response()->json([
-            //         'success'=>	false,
-            //         'data' => '',
-            //         'message'=> 'No se puede eliminar una cuenta usado por los documentos!'
-            //     ]);
-            // }
+            if($productos->count() > 0) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => '',
+                    'message'=> 'No se puede eliminar una familia usada por los productos!'
+                ]);
+            }
 
             FacFamilias::where('id', $request->get('id'))->delete();
 

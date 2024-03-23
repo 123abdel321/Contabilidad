@@ -102,7 +102,7 @@ class PlanCuentaController extends Controller
                 $searchValue = $search_arr['value']; // Search value
         
                 $cuentas = PlanCuentas::with(
-                        'tipos_cuenta',
+                        'tipos_cuenta.tipo',
                         'padre',
                         'impuesto',
                         'exogena_formato',

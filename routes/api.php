@@ -18,6 +18,7 @@ use App\Http\Controllers\Tablas\FormasPagoController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
+use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
 //INFORMES
 use App\Http\Controllers\Informes\EstadoActualController;
@@ -256,6 +257,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('exogena/formato', 'comboFormato');
             Route::get('exogena/columna', 'comboFormatoColumna');
             Route::get('exogena/concepto', 'comboFormatoConcepto');
+        });
+        //CONCEPTO GASTO
+        Route::controller(ConceptoGastosController::class)->group(function () {
+            Route::get('concepto-gasto', 'generate');
+            Route::post('concepto-gasto', 'create');
+            Route::put('concepto-gasto', 'update');
+            Route::delete('concepto-gasto', 'delete');
+            Route::get('concepto-gasto/combo', 'comboConceptoGasto');
         });
         
         //CAPTURA GENERAL
