@@ -443,6 +443,7 @@ $(document).on('click', '#saveConceptoGasto', function () {
         nombre: $('#nombre_concepto_gasto').val(),
         id_cuenta_gasto: $('#id_cuenta_concepto_gasto_gasto').val(),
         id_cuenta_retencion: $('#id_cuenta_concepto_gasto_retencion').val(),
+        id_cuenta_retencion_declarante: $('#id_cuenta_concepto_gasto_retencion_declarante').val(),
         id_cuenta_iva: $('#id_cuenta_concepto_gasto_iva').val(),
     };
 
@@ -499,6 +500,7 @@ $(document).on('click', '#updateConceptoGasto', function () {
         nombre: $('#nombre_concepto_gasto').val(),
         id_cuenta_gasto: $('#id_cuenta_concepto_gasto_gasto').val(),
         id_cuenta_retencion: $('#id_cuenta_concepto_gasto_retencion').val(),
+        id_cuenta_retencion_declarante: $('#id_cuenta_concepto_gasto_retencion_declarante').val(),
         id_cuenta_iva: $('#id_cuenta_concepto_gasto_iva').val(),
     };
 

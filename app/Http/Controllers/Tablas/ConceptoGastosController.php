@@ -87,6 +87,7 @@ class ConceptoGastosController extends Controller
 			'id_cuenta_gasto' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_iva' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_retencion' => 'nullable|exists:sam.plan_cuentas,id',
+            'id_cuenta_retencion_declarante' => 'nullable|exists:sam.plan_cuentas,id',
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -111,6 +112,7 @@ class ConceptoGastosController extends Controller
                 'id_cuenta_gasto' => $request->get('id_cuenta_gasto'),
                 'id_cuenta_iva' => $request->get('id_cuenta_iva'),
                 'id_cuenta_retencion' => $request->get('id_cuenta_retencion'),
+                'id_cuenta_retencion_declarante' => $request->get('id_cuenta_retencion_declarante'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
@@ -151,6 +153,7 @@ class ConceptoGastosController extends Controller
 			'id_cuenta_gasto' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_iva' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_retencion' => 'nullable|exists:sam.plan_cuentas,id',
+            'id_cuenta_retencion_declarante' => 'nullable|exists:sam.plan_cuentas,id',
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -175,6 +178,7 @@ class ConceptoGastosController extends Controller
                     'id_cuenta_gasto' => $request->get('id_cuenta_gasto'),
                     'id_cuenta_iva' => $request->get('id_cuenta_iva'),
                     'id_cuenta_retencion' => $request->get('id_cuenta_retencion'),
+                    'id_cuenta_retencion_declarante' => $request->get('id_cuenta_retencion_declarante'),
                     'updated_by' => request()->user()->id,
                 ]);
 

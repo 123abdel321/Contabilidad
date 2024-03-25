@@ -18,6 +18,7 @@ class ConConceptoGastos extends Model
         'codigo',
         'id_cuenta_gasto',
         'id_cuenta_iva',
+        'id_cuenta_retencion',
         'id_cuenta_retencion_declarante',
         'created_by',
         'updated_by',
