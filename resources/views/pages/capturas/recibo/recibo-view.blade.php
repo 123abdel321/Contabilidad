@@ -68,7 +68,7 @@
     }
 
     .table-captura-recibo > :not(caption) > * > * {
-        padding: 0.2rem 0.2rem;
+        padding: 0.1rem 0.1rem;
     }
 
     @media (min-width: 768px) {

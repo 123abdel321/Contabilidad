@@ -2,6 +2,7 @@ var conceptos_gastos_table = null;
 //CUENTAS
 var $comboCuentaGasto = null;
 var $comboCuentaGastoRetencion = null;
+var $comboCuentaGastoRetencionDeclarante = null;
 var $comboCuentaGastoIva = null;
 
 function conceptogastosInit() {
@@ -61,6 +62,14 @@ function conceptogastosInit() {
                 "data": function (row, type, set){
                     if(row.cuenta_retencion){
                         return row.cuenta_retencion.cuenta + ' - ' + row.cuenta_retencion.nombre;
+                    }
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
+                    if(row.cuenta_retencion_declarante){
+                        return row.cuenta_retencion_declarante.cuenta + ' - ' + row.cuenta_retencion_declarante.nombre;
                     }
                     return '';
                 }
@@ -127,6 +136,16 @@ function conceptogastosInit() {
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
                 $comboCuentaGastoRetencion.append(newOption).trigger('change');
                 $comboCuentaGastoRetencion.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_retencion_declarante){
+                var dataCuenta = {
+                    id: data.cuenta_retencion_declarante.id,
+                    text: data.cuenta_retencion_declarante.cuenta + ' - ' + data.cuenta_retencion_declarante.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaGastoRetencionDeclarante.append(newOption).trigger('change');
+                $comboCuentaGastoRetencionDeclarante.val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_iva){
@@ -229,6 +248,16 @@ function conceptogastosInit() {
                 $comboCuentaGastoRetencion.val(dataCuenta.id).trigger('change');
             }
 
+            if(data.cuenta_retencion_declarante){
+                var dataCuenta = {
+                    id: data.cuenta_retencion_declarante.id,
+                    text: data.cuenta_retencion_declarante.cuenta + ' - ' + data.cuenta_retencion_declarante.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaGastoRetencionDeclarante.append(newOption).trigger('change');
+                $comboCuentaGastoRetencionDeclarante.val(dataCuenta.id).trigger('change');
+            }
+
             if(data.cuenta_iva){
                 var dataCuenta = {
                     id: data.cuenta_iva.id,
@@ -288,6 +317,29 @@ function conceptogastosInit() {
     });
 
     $comboCuentaGastoRetencion = $('#id_cuenta_concepto_gasto_retencion').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#conceptoGastosFormModal'),
+        delay: 250,
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    id_tipo_cuenta: [12]
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboCuentaGastoRetencionDeclarante = $('#id_cuenta_concepto_gasto_retencion_declarante').select2({
         theme: 'bootstrap-5',
         dropdownParent: $('#conceptoGastosFormModal'),
         delay: 250,
@@ -370,6 +422,7 @@ function clearFormConceptoGastos(){
 
     $comboCuentaGasto.val('').trigger('change');
     $comboCuentaGastoRetencion.val('').trigger('change');
+    $comboCuentaGastoRetencionDeclarante.val('').trigger('change');
     $comboCuentaGastoIva.val('').trigger('change');
 }
 

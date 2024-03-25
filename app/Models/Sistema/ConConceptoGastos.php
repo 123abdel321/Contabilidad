@@ -18,23 +18,28 @@ class ConConceptoGastos extends Model
         'codigo',
         'id_cuenta_gasto',
         'id_cuenta_iva',
-        'id_cuenta_retencion',
+        'id_cuenta_retencion_declarante',
         'created_by',
         'updated_by',
     ];
 
     public function cuenta_gasto()
     {
-        return $this->belongsTo("App\Models\Sistema\PlanCuentas", "id_cuenta_gasto");
+        return $this->belongsTo(PlanCuentas::class, "id_cuenta_gasto");
     }
 
     public function cuenta_iva()
     {
-        return $this->belongsTo("App\Models\Sistema\PlanCuentas", "id_cuenta_iva");
+        return $this->belongsTo(PlanCuentas::class, "id_cuenta_iva");
     }
 
     public function cuenta_retencion()
     {
-        return $this->belongsTo("App\Models\Sistema\PlanCuentas", "id_cuenta_retencion");
+        return $this->belongsTo(PlanCuentas::class, "id_cuenta_retencion");
+    }
+
+    public function cuenta_retencion_declarante()
+    {
+        return $this->belongsTo(PlanCuentas::class, "id_cuenta_retencion_declarante");
     }
 }

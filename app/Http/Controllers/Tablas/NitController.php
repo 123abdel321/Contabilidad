@@ -166,6 +166,7 @@ class NitController extends Controller
 			'descuento' => 'nullable|numeric|min:0|max:100',
 			'no_calcular_iva' => 'nullable|boolean',
 			'inactivar' => 'nullable',
+            'declarante' => 'nullable'
 		];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -196,6 +197,7 @@ class NitController extends Controller
                 'telefono_1' => $request->get('telefono_1'),
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
+                'declarante' => $request->get('declarante'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
@@ -260,6 +262,7 @@ class NitController extends Controller
                 'telefono_1' => $request->get('telefono_1'),
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
+                'declarante' => $request->get('declarante'),
                 'updated_by' => request()->user()->id,
             ]);
 

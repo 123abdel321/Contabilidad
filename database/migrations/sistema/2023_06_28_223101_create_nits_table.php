@@ -46,6 +46,7 @@ class CreateNitsTable extends Migration
             $table->decimal('descuento', 15)->nullable();
             $table->boolean('no_calcular_iva')->default(false);
             $table->boolean('inactivar')->nullable();
+            $table->boolean('declarante')->nullable();
             $table->longText('observaciones')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();

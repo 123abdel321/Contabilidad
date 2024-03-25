@@ -50,7 +50,8 @@ class ConceptoGastosController extends Controller
             ->with(
                 'cuenta_gasto.impuesto',
                 'cuenta_iva.impuesto',
-                'cuenta_retencion.impuesto'
+                'cuenta_retencion.impuesto',
+                'cuenta_retencion_declarante.impuesto'
             )
             ->where('nombre', 'like', '%' .$searchValue . '%')
             ->orWhere('codigo', 'like', '%' .$searchValue . '%')
@@ -120,6 +121,7 @@ class ConceptoGastosController extends Controller
                 'cuenta_gasto',
                 'cuenta_iva',
                 'cuenta_retencion',
+                'cuenta_retencion_declarante',
             ]);
 
             DB::connection('sam')->commit();
@@ -183,6 +185,7 @@ class ConceptoGastosController extends Controller
                     'cuenta_gasto',
                     'cuenta_iva',
                     'cuenta_retencion',
+                    'cuenta_retencion_declarante',
                 )->first();
 
             return response()->json([
@@ -235,14 +238,15 @@ class ConceptoGastosController extends Controller
 
     public function comboConceptoGasto (Request $request)
     {
-        $conceptosGastos = FacFamilias::select(
+        $conceptosGastos = ConConceptoGastos::select(
                 \DB::raw('*'),
                 \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
             )
             ->with(
-                'cuenta_gasto',
-                'cuenta_iva',
-                'cuenta_retencion',
+                'cuenta_gasto.impuesto',
+                'cuenta_iva.impuesto',
+                'cuenta_retencion.impuesto',
+                'cuenta_retencion_declarante.impuesto',
             );
 
         if ($request->get("q")) {
