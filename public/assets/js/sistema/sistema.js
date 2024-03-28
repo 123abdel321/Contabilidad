@@ -76,6 +76,7 @@ var moduloCreado = {
     'recibo': false,
     'recibos': false,
     'conceptogastos': false,
+    'gasto': false,
 };
 
 var moduloRoute = {
@@ -115,6 +116,7 @@ var moduloRoute = {
     'recibo': 'capturas',
     'recibos': 'informes',
     'conceptogastos': 'tablas',
+    'gasto': 'capturas',
 }
 
 $('.water').show();
@@ -379,6 +381,17 @@ function getDataById(idData, tabla) {
         var element = data[index];
         if(element.id == idData){
             return element;
+        }
+    }
+    return false;
+}
+
+function getIndexById(idData, tabla) {
+    var data = tabla.rows().data();
+    for (let index = 0; index < data.length; index++) {
+        var element = data[index];
+        if(element.id == idData){
+            return index;
         }
     }
     return false;

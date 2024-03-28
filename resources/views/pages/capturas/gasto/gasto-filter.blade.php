@@ -12,8 +12,8 @@
 
                 <form id="gastoFilterForm" class="needs-validation row" style="margin-top: 5px;" novalidate>
 
-                    <div class="form-group col-12 col-sm-6 col-md-3">
-                        <label>Proveedor<span style="color: red">*</span></label>
+                    <div class="form-group col-12 col-sm-4 col-md-3">
+                        <label>Proveedor <span style="color: red">*</span></label>
                         <select name="id_nit_gasto" id="id_nit_gasto" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
                         
@@ -22,7 +22,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-6 col-md-3">
+                    <div class="form-group col-12 col-sm-4 col-md-3">
                         <label>Comprobante <span style="color: red">*</span></label>
                         <select name="id_comprobante_gasto" id="id_comprobante_gasto" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
@@ -32,7 +32,17 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-6 col-md-3">
+                    <div class="form-group col-12 col-sm-4 col-md-2">
+                        <label>Centro de costo <span style="color: red">*</span></label>
+                        <select name="id_centro_costos_gasto" id="id_centro_costos_gasto" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
+                        </select>
+                        
+                        <div class="invalid-feedback">
+                            El centro de costo es requerido
+                        </div>
+                    </div>
+
+                    <div class="form-group col-12 col-sm-4 col-md-2">
                         <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
                         <input name="fecha_manual_gasto" id="fecha_manual_gasto" class="form-control form-control-sm" type="date" required>
                         <div class="invalid-feedback">
@@ -40,7 +50,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-6 col-md-3">
+                    <div class="form-group col-12 col-sm-4 col-md-2">
                         <label for="example-text-input" class="form-control-label">Consecutivo</label>
                         <input type="text" class="form-control form-control-sm" name="documento_referencia_gasto" id="documento_referencia_gasto" disabled required>
                     </div>
@@ -52,7 +62,7 @@
                         <i class="fas fa-folder-open" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">INICIAR GASTO</b>
                     </span>
-                    <span id="iniciarCapturaGastoLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                    <span id="iniciarCapturaGastoLoading" class="badge bg-gradient-success" style="display:none; min-width: 40px; margin-bottom: 12px; float: inline-end;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>

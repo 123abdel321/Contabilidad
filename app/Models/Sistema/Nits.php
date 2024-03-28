@@ -50,6 +50,7 @@ class Nits extends Model
 		'inactivar',
 		'observaciones',
 		'logo_nit',
+		'declarante',
 		'created_by',
 		'updated_by',
 		'created_at',

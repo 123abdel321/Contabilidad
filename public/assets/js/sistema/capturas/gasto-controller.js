@@ -8,6 +8,7 @@ var totalAnticiposGasto = 0;
 var $comboNitGastos = null;
 var guardandoGasto = false;
 var retencionesGasto = [];
+var $comboCentroCostoGastos = null;
 var $comboComprobanteGastos = null;
 
 function gastoInit () {
@@ -209,7 +210,7 @@ function gastoInit () {
         }
     });
     
-    $comboComprobanteGastos= $('#id_comprobante_gasto').select2({
+    $comboComprobanteGastos = $('#id_comprobante_gasto').select2({
         theme: 'bootstrap-5',
         delay: 250,
         ajax: {
@@ -232,7 +233,28 @@ function gastoInit () {
         }
     });
 
-    if (comprobantesGastos && comprobantesGastos.length == 1) {
+    $comboCentroCostoGastos = $('#id_centro_costos_gasto').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        ajax: {
+            url: 'api/centro-costos/combo-centro-costo',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    if (comprobantesGastos && comprobantesGastos.length) {
         var dataComprobante = {
             id: comprobantesGastos[0].id,
             text: comprobantesGastos[0].codigo + ' - ' + comprobantesGastos[0].nombre
@@ -240,6 +262,16 @@ function gastoInit () {
         var newOption = new Option(dataComprobante.text, dataComprobante.id, false, false);
         $comboComprobanteGastos.append(newOption).trigger('change');
         $comboComprobanteGastos.val(dataComprobante.id).trigger('change');
+    }
+
+    if (centrosCostosGastos && centrosCostosGastos.length) {
+        var dataCecos = {
+            id: centrosCostosGastos[0].id,
+            text: centrosCostosGastos[0].codigo + ' - ' + centrosCostosGastos[0].nombre
+        };
+        var newOption = new Option(dataCecos.text, dataCecos.id, false, false);
+        $comboCentroCostoGastos.append(newOption).trigger('change');
+        $comboCentroCostoGastos.val(dataCecos.id).trigger('change');
     }
 
     dataGasto = [];
@@ -391,17 +423,6 @@ function changeConceptoGasto(idGasto) {
     var proveedor = $comboNitGastos.select2('data')[0];
     
     if (proveedor.declarante) {
-        if (data.cuenta_retencion && data.cuenta_retencion.impuesto) {
-            var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_iva.impuesto.id);
-            if (!existe || existe < 0) {
-                retencionesGasto.push({
-                    id_retencion: data.cuenta_retencion.impuesto.id,
-                    porcentaje: parseFloat(data.cuenta_retencion.impuesto.porcentaje),
-                    base: parseFloat(data.cuenta_retencion.impuesto.base),
-                });
-            }
-        }
-    } else {
         if (data.cuenta_retencion_declarante && data.cuenta_retencion_declarante.impuesto) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_iva.impuesto.id);
             if (!existe || existe < 0) {
@@ -409,6 +430,17 @@ function changeConceptoGasto(idGasto) {
                     id_retencion: data.cuenta_retencion_declarante.impuesto.id,
                     porcentaje: parseFloat(data.cuenta_retencion_declarante.impuesto.porcentaje),
                     base: parseFloat(data.cuenta_retencion_declarante.impuesto.base),
+                });
+            }
+        }
+    } else {
+        if (data.cuenta_retencion && data.cuenta_retencion.impuesto) {
+            var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_iva.impuesto.id);
+            if (!existe || existe < 0) {
+                retencionesGasto.push({
+                    id_retencion: data.cuenta_retencion.impuesto.id,
+                    porcentaje: parseFloat(data.cuenta_retencion.impuesto.porcentaje),
+                    base: parseFloat(data.cuenta_retencion.impuesto.base),
                 });
             }
         }
@@ -832,7 +864,9 @@ function validateSaveGastos() {
 
 function saveGasto () {
 
+    $("#agregarGasto").hide();
     $("#crearCapturaGasto").hide();
+    $("#cancelarCapturaGasto").hide();
     $("#crearCapturaGastoDisabled").hide();
     $("#iniciarCapturaGastoLoading").show();
 
@@ -840,8 +874,9 @@ function saveGasto () {
         gastos: dataGasto,
         pagos: getVentasPagos(),
         id_proveedor: $('#id_nit_gasto').val(),
-        id_comprobante: $("#id_resolucion_venta").val(),
-        fecha_manual: $("#id_comprobante_gasto").val(),
+        id_comprobante: $("#id_comprobante_gasto").val(),
+        id_centro_costos: $("#id_centro_costos_gasto").val(),
+        fecha_manual: $("#fecha_manual_gasto").val(),
         consecutivo: $("#documento_referencia_gasto").val(),
     }
 
@@ -921,8 +956,12 @@ function deleteGastoRow (idGasto) {
     gasto_table.row(indexTable).remove().draw();
     var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
     dataGasto.splice(indexGasto, 1);
+    
     clearFormasPagoGasto();
     mostrarValoresGastos();
+
+    $("#crearCapturaGasto").hide();
+    $("#crearCapturaGastoDisabled").show();
 }
 
 $(document).on('change', '#id_nit_gasto', function () {
@@ -949,10 +988,9 @@ $(document).on('click', '#agregarGasto', function () {
     addRowGastos();
 });
 
-// $(document).on('keydown', '.custom-gasto_conceptogasto .select2-search__field', function (event) {
-//     var dataInputSearch = $('.select2-search__field').val();
-//     console.log('dataInputSearch: ',dataInputSearch);
-// });
+$(document).on('click', '#crearCapturaGasto', function () {
+    validateSaveGastos();
+});
 
 $(document).on('click', '#cancelarCapturaGasto', function () {
     cancelarGasto();

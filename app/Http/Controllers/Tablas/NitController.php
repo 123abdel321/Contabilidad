@@ -334,6 +334,7 @@ class NitController extends Controller
             'primer_apellido',
             'segundo_apellido',
             'email',
+            'declarante',
             \DB::raw('telefono_1 AS telefono'),
             \DB::raw("(CASE
 					WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)

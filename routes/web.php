@@ -34,6 +34,7 @@ use App\Http\Controllers\Tablas\CargueDescargueController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
+use App\Http\Controllers\Capturas\GastosController;
 use App\Http\Controllers\Capturas\RecibosController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
@@ -127,6 +128,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		//RECIBOS
 		Route::get('/recibo', [RecibosController::class, 'index'])->name('recibo');
 		Route::get('/recibo-print/{id}', [RecibosController::class, 'showPdf'])->name('recibo-pdf');
+		//GASTOS
+		Route::get('/gasto', [GastosController::class, 'index']);
 		//NOTA CREDITO
 		Route::get('/notacredito', [NotaCreditoController::class, 'index']);
 		Route::get('/ventas-print/{id}', [VentaController::class, 'showPdf'])->name('venta-pdf');

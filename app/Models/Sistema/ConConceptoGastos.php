@@ -34,6 +34,11 @@ class ConConceptoGastos extends Model
         return $this->belongsTo(PlanCuentas::class, "id_cuenta_iva");
     }
 
+    public function cuenta_descento()
+    {
+        return $this->belongsTo(PlanCuentas::class, "id_cuenta_retencion");
+    }
+
     public function cuenta_retencion()
     {
         return $this->belongsTo(PlanCuentas::class, "id_cuenta_retencion");

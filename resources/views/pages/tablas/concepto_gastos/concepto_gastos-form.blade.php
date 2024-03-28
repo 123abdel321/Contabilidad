@@ -49,7 +49,7 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-6 col-md-6">
-                        <label for="exampleFormControlSelect1">Retención declarante</label>
+                        <label for="exampleFormControlSelect1">Retención no declarante</label>
                         <select name="id_cuenta_concepto_gasto_retencion_declarante" id="id_cuenta_concepto_gasto_retencion_declarante" class="form-control form-control-sm">
                         </select>
                     </div>

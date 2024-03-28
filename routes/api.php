@@ -26,6 +26,7 @@ use App\Http\Controllers\Informes\EstadoComprobanteController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
+use App\Http\Controllers\Capturas\GastosController;
 use App\Http\Controllers\Capturas\RecibosController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
@@ -290,6 +291,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('ventas', 'create');
             Route::get('facturas', 'read');
         });
+        //CAPTURA GASTO
+        Route::controller(GastosController::class)->group(function () {
+            Route::post('gastos', 'create');
+        });
         //CAPTURA RECIBO
         Route::controller(RecibosController::class)->group(function () {
             Route::get('recibos', 'generate');
@@ -299,7 +304,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('recibos-comprobante', 'updateComprobante');
             Route::delete('recibos-comprobante', 'deleteComprobante');
         });
-        
         //CAPTURA MOVIMIENTO INVENTARIO
         Route::controller(MovimientoInventarioController::class)->group(function () {
             Route::get('movimiento-inventario', 'generate');

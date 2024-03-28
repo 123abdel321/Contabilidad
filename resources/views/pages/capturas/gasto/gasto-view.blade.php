@@ -139,7 +139,7 @@
                 
                 <div class="mb-4 ml-auto">
                     <div class="row">
-                        <div class="col-6 col-sm-6 col-md-12" style="place-content: center;">
+                        <div class="col-12 col-sm-6 col-md-12" style="place-content: center;">
                             <table class="table table-bordered table-captura-totales" width="100%" style="margin-top: 9px;">
                                 <tbody>
                                     <tr>
@@ -166,7 +166,7 @@
                             </table>
                         </div>
     
-                        <div class="col-6 col-sm-6 col-md-12">
+                        <div class="col-12 col-sm-6 col-md-12">
                             <div style="overflow: auto;">
                                 <table id="gastoFormaPago" class="table table-bordered display responsive table-captura-gasto" width="100%">
                                     <thead>
@@ -197,6 +197,7 @@
     <script>
         var gastoDescuento = '<?php echo auth()->user()->can("gasto descuento"); ?>';
         var comprobantesGastos = JSON.parse('<?php echo $comprobantes; ?>');
+        var centrosCostosGastos = JSON.parse('<?php echo $centro_costos; ?>');
     </script>
     
 </div>

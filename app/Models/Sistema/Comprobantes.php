@@ -21,7 +21,8 @@ class Comprobantes extends Model
 	const TIPO_COMPRAS = 2;
 	const TIPO_VENTAS = 3;
 	const TIPO_OTROS = 4;
-	const TIPO_CIERRE = 5;
+	const TIPO_GASTOS = 5;
+	const TIPO_CIERRE = 6;
 
     public const TIPO_COMPROBANTE = [
 		'ingresos',
@@ -29,7 +30,8 @@ class Comprobantes extends Model
 		'compras',
 		'ventas',
 		'otros',
-		'cierre'
+		'gasto',
+		'cierre',
 	];
 
 	protected $fillable = [

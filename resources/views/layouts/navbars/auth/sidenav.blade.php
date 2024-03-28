@@ -59,9 +59,9 @@
             Facturación
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownTiposMenu" style="margin-left: 40px;">
-            <li id="dropdown-item-facturacion"><a onclick="selectMenu('facturacion')" class="dropdown-item">Facturación</a></li>
-            <li id="dropdown-item-contabilidad"><a onclick="selectMenu('contabilidad')" class="dropdown-item">Contabilidad</a></li>
-            <li id="dropdown-item-nomina"><a class="dropdown-item disabled" aria-disabled="true">Nomina</a></li>
+            <li id="dropdown-item-facturacion"><a onclick="selectMenu('facturacion')" class="dropdown-item" style="color: black;">Facturación</a></li>
+            <li id="dropdown-item-contabilidad"><a onclick="selectMenu('contabilidad')" class="dropdown-item" style="color: black;">Contabilidad</a></li>
+            <li id="dropdown-item-nomina"><a class="dropdown-item disabled" aria-disabled="true" >Nomina (Proxi...)</a></li>
         </ul>
     </div>
 
