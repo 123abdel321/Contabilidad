@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Capturas;
 use DB;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
+use App\Helpers\Printers\GastosPdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
@@ -70,6 +71,12 @@ class GastosController extends Controller
 
     public function create (Request $request)
     {
+        return response()->json([
+            'success'=>	true,
+            'data' => [],
+            'impresion' => 2,
+            'message'=> 'Gasto creada con exito!'
+        ], 200);
         $rules = [
             'id_proveedor' => 'required|exists:sam.nits,id',
             'fecha_manual' => 'required|date',
@@ -116,6 +123,9 @@ class GastosController extends Controller
                 $request->get('fecha_manual'),
                 $request->get('consecutivo')
             );
+
+            $comprobanteGasto = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+
             //AGREGAR MOVIMIENTO DE CUENTAS POR GASTO
             foreach ($request->get('gastos') as $movimiento) {
                 $movimiento = (object)$movimiento;
@@ -175,7 +185,6 @@ class GastosController extends Controller
                     $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_compras);
                 }
             }
-            
             //AGREGAR RETE FUENTE
             if ($this->totalesFactura['total_rete_fuente']) {
                 $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
@@ -250,7 +259,7 @@ class GastosController extends Controller
             return response()->json([
 				'success'=>	true,
 				'data' => $documentoGeneral->getRows(),
-				'impresion' => '',
+				'impresion' => $comprobanteGasto->imprimir_en_capturas ? $gasto->id : '',
 				'message'=> 'Gasto creada con exito!'
 			], 200);
         } catch (Exception $e) {
@@ -380,6 +389,28 @@ class GastosController extends Controller
             $pago = (object)$pago;
             $this->totalesFactura['total_pagado']+= floatval($pago->valor);
         }
+    }
+
+    public function showPdf(Request $request, $id)
+    {
+        $gasto = ConGastos::whereId($id)
+            ->with('comprobante')
+            ->first();
+
+        if(!$gasto) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'El gasto no existe'
+            ], 422);
+        }
+
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
+ 
+        return (new GastosPdf($empresa, $gasto))
+            ->buildPdf()
+            ->showPdf();
     }
 
 }

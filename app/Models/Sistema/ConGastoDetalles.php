@@ -32,4 +32,9 @@ class ConGastoDetalles extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function concepto()
+	{
+		return $this->belongsTo(ConConceptoGastos::class, 'id_concepto_gastos');
+	}
 }

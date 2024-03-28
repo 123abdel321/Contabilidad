@@ -890,8 +890,36 @@ function saveGasto () {
         dataType: 'json',
     }).done((res) => {
         guardandoGasto = false;
+        cancelarGasto();
+        consecutivoSiguienteGasto();
+        $("#agregarGasto").hide();
+        $("#crearCapturaGasto").hide();
+        $("#iniciarCapturaGasto").show();
+        $("#cancelarCapturaGasto").hide();
+        $("#crearCapturaGastoDisabled").hide();
+        $("#iniciarCapturaGastoLoading").hide();
+
+        dataGasto = [];
+        mostrarValoresGastos();
+
+        agregarToast('exito', 'Creación exitosa', 'Gasto creado con exito!', true);
+
+        if(res.impresion) {
+            window.open("/gasto-print/"+res.impresion, '_blank');
+        }
     }).fail((err) => {
+        consecutivoSiguienteGasto();
         guardandoGasto = false;
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = "";
+        for (field in mensaje) {
+            var errores = mensaje[field];
+            for (campo in errores) {
+                errorsMsg += field+": "+errores[campo]+" <br>";
+            }
+            
+        };
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 }
 
