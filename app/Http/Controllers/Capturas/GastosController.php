@@ -71,12 +71,6 @@ class GastosController extends Controller
 
     public function create (Request $request)
     {
-        return response()->json([
-            'success'=>	true,
-            'data' => [],
-            'impresion' => 2,
-            'message'=> 'Gasto creada con exito!'
-        ], 200);
         $rules = [
             'id_proveedor' => 'required|exists:sam.nits,id',
             'fecha_manual' => 'required|date',
