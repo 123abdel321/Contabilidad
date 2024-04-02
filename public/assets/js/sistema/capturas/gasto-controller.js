@@ -8,6 +8,7 @@ var totalAnticiposGasto = 0;
 var $comboNitGastos = null;
 var guardandoGasto = false;
 var retencionesGasto = [];
+var abrirFormasPagoGastos = false;
 var $comboCentroCostoGastos = null;
 var $comboComprobanteGastos = null;
 
@@ -92,6 +93,7 @@ function gastoInit () {
                     theme: 'bootstrap-5',
                     dropdownCssClass: 'custom-gasto_conceptogasto',
                     delay: 250,
+                    minimumInputLength: 2,
                     ajax: {
                         url: 'api/concepto-gasto/combo',
                         headers: headers,
@@ -562,7 +564,7 @@ function changeObservacionGasto (idGasto, event = null) {
     
     if(!event || event.keyCode == 13){
         var dataObservacion = $('#gastoobservacion_'+idGasto).val();
-
+        addRowGastos();
         if (!dataObservacion) return;
         if (!calculandoDatos) return
 
@@ -573,14 +575,15 @@ function changeObservacionGasto (idGasto, event = null) {
         dataGasto[indexGasto].observacion = dataObservacion;
 
         updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
-
-        setTimeout(function(){
-            calculandoDatos = true;
-        },50);
-        if (event) {
-            focusNextFormasPagoGastos();
-        }
+        addRowGastos();
     }
+}
+
+function ceroEnterGastos () {
+    setTimeout(function(){
+        calculandoDatos = true;
+    },50);
+    focusNextFormasPagoGastos();
 }
 
 function changePorcentajeDescuentoGasto (idGasto, event = null) {
@@ -1042,3 +1045,27 @@ function cancelarGasto() {
     $('#gasto_anticipo_disp_view').hide();
     $('#crearCapturaGastoDisabled').hide();
 }
+
+$(document).on('keydown', '.custom-gasto_conceptogasto .select2-search__field', function (event) {
+
+    if (guardandoGasto) {
+        return;
+    }
+
+    var [gasto_iva, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
+    var dataSearch = $('.select2-search__field').val();
+    
+    if (event.keyCode == 96 && !dataSearch.length) {
+        abrirFormasPagoGastos = true;
+    } else if (event.keyCode == 13){
+        if (gasto_sub_total > 0) {
+            if (abrirFormasPagoGastos) {
+                abrirFormasPagoGastos = false;
+                $(".combo_concepto_gasto").select2('close');
+                ceroEnterGastos();
+            }
+        }
+    } else {
+        abrirFormasPagoGastos = false;
+    }
+});

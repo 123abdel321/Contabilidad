@@ -27,7 +27,8 @@
                                 <option value="2">COMPRAS</option>
                                 <option value="3">VENTAS</option>
                                 <option value="4">OTROS</option>
-                                <option value="4">CIERRE</option>
+                                <option value="5">GASTOS</option>
+                                <option value="6">CIERRE</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">

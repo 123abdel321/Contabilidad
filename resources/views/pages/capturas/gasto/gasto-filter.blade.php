@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-4 col-md-2">
-                        <label>Centro de costo <span style="color: red">*</span></label>
+                        <label>Centro costo <span style="color: red">*</span></label>
                         <select name="id_centro_costos_gasto" id="id_centro_costos_gasto" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
                         
