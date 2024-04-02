@@ -23,6 +23,7 @@ use App\Http\Controllers\Tablas\CargueDescargueController;
 //INFORMES
 use App\Http\Controllers\Informes\EstadoActualController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
+use App\Http\Controllers\Informes\ResumenComprobantesController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\CompraController;
@@ -141,6 +142,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('estado-comprobante-show', 'show');
             Route::get('estado-comprobante-find', 'find');
         });
+        //INFORME RESUMEN COMPROBANTE
+        Route::controller(ResumenComprobantesController::class)->group(function () {
+            Route::get('resumen-comprobante', 'generate');
+            Route::get('resumen-comprobante-show', 'show');
+        });        
 
         //USUARIOS
         Route::controller(UsuariosController::class)->group(function () {

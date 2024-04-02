@@ -18,6 +18,7 @@ use App\Http\Controllers\Informes\EstadoActualController;
 use App\Http\Controllers\Informes\VentasGeneralesController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
 use App\Http\Controllers\Informes\DocumentosGeneralesController;
+use App\Http\Controllers\Informes\ResumenComprobantesController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\BodegasController;
@@ -110,6 +111,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/balance-excel', [BalanceController::class, 'exportExcel'])->name('balance-excel');
 		//CUENTAS POR COBRAR
 		Route::get('/cartera', [CarteraController::class, 'index'])->name('cartera');
+		//CUENTAS POR COBRAR
+		Route::get('/resumencomprobante', [ResumenComprobantesController::class, 'index'])->name('resumencomprobante');
 		//DOCUMENTO GENERAL
 		Route::get('/documentogeneral', [DocumentoGeneralController::class, 'index'])->name('documento-general');
 		//ELIMINAR DOCUMENTOS

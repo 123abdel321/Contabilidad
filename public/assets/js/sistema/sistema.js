@@ -77,6 +77,7 @@ var moduloCreado = {
     'recibos': false,
     'conceptogastos': false,
     'gasto': false,
+    'resumencomprobante': false,
 };
 
 var moduloRoute = {
@@ -117,6 +118,7 @@ var moduloRoute = {
     'recibos': 'informes',
     'conceptogastos': 'tablas',
     'gasto': 'capturas',
+    'resumencomprobante': 'informes',
 }
 
 $('.water').show();
