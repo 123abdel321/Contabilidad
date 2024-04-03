@@ -131,6 +131,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             )
             ->groupByRaw('id_cuenta, id_nit, documento_referencia')
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $this->auxiliares[] = (object)[
@@ -377,13 +378,13 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 $auxiliaresDetalle->each(function ($auxiliarDetalle) {
                     $cuentaNumero = 1;
                     $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                        $auxiliarDetalle->id_nit.'B'.
+                        $auxiliarDetalle->numero_documento.'B'.
                         $auxiliarDetalle->documento_referencia.'B'.
                         $cuentaNumero.'B';
                     while ($this->hasCuentaData($cuentaNueva)) {
                         $cuentaNumero++;
                         $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                            $auxiliarDetalle->id_nit.'B'.
+                            $auxiliarDetalle->numero_documento.'B'.
                             $auxiliarDetalle->documento_referencia.'B'.
                             $cuentaNumero.'B';
                     }
@@ -488,15 +489,16 @@ class ProcessInformeAuxiliar implements ShouldQueue
     private function addTotalNitsData($auxiliaresDetalle)
     {
         foreach ($auxiliaresDetalle as $auxiliarDetalle) {
+            if ($auxiliarDetalle->total_columnas < 2) continue;
             $cuentaNumero = 1;
             $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                $auxiliarDetalle->id_nit.'B'.
+                $auxiliarDetalle->numero_documento.'B'.
                 $auxiliarDetalle->documento_referencia.'B'.
                 $cuentaNumero.'A';
             while ($this->hasCuentaData($cuentaNueva)) {
                 $cuentaNumero++;
                 $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                    $auxiliarDetalle->id_nit.'B'.
+                    $auxiliarDetalle->numero_documento.'B'.
                     $auxiliarDetalle->documento_referencia.'B'.
                     $cuentaNumero.'A';
             }
@@ -628,7 +630,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
         foreach ($auxiliaresDetalle as $auxiliarDetalle) {
 
             $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                $auxiliarDetalle->id_nit.'A';
+                $auxiliarDetalle->numero_documento.'A';
 
             $collecionTotalNits[$cuentaNueva][] = [
                 'id_nit' => $auxiliarDetalle->id_nit,
@@ -663,7 +665,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
         }
 
         foreach ($collecionTotalNits as $key => $collecion) {
-            if(count($collecion) > 1) {
+            if(count($collecion)) {
                 $debito = 0;
                 $credito = 0;
                 $saldo_final = 0;
