@@ -575,7 +575,6 @@ function changeObservacionGasto (idGasto, event = null) {
         dataGasto[indexGasto].observacion = dataObservacion;
 
         updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
-        addRowGastos();
     }
 }
 
@@ -867,15 +866,9 @@ function validateSaveGastos() {
 
 function saveGasto () {
 
-    $("#agregarGasto").hide();
-    $("#crearCapturaGasto").hide();
-    $("#cancelarCapturaGasto").hide();
-    $("#crearCapturaGastoDisabled").hide();
-    $("#iniciarCapturaGastoLoading").show();
-
     let data = {
-        gastos: dataGasto,
-        pagos: getVentasPagos(),
+        gastos: getGastosData(),
+        pagos: getGastosPagos(),
         id_proveedor: $('#id_nit_gasto').val(),
         id_comprobante: $("#id_comprobante_gasto").val(),
         id_centro_costos: $("#id_centro_costos_gasto").val(),
@@ -885,6 +878,12 @@ function saveGasto () {
 
     disabledFormasPagoGasto();
 
+    $("#agregarGasto").hide();
+    $("#crearCapturaGasto").hide();
+    $("#cancelarCapturaGasto").hide();
+    $("#crearCapturaGastoDisabled").hide();
+    $("#iniciarCapturaGastoLoading").show();
+    
     $.ajax({
         url: base_url + 'gastos',
         method: 'POST',
@@ -926,7 +925,7 @@ function saveGasto () {
     });
 }
 
-function getVentasPagos() {
+function getGastosPagos() {
     var data = [];
 
     var dataGastoPagos = gasto_pagos_table.rows().data();
@@ -941,6 +940,19 @@ function getVentasPagos() {
                 id: datapagoGasto.id,
                 valor: pagoGasto
             });
+        }
+    }
+
+    return data;
+}
+
+function getGastosData() {
+    var data = [];
+
+    for (let index = 0; index < dataGasto.length; index++) {
+        const gasto = dataGasto[index];
+        if (gasto.valor_gasto) {
+            data.push(gasto);
         }
     }
 

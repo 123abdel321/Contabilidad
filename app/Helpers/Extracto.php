@@ -74,8 +74,8 @@ class Extracto
                 DB::raw('SUM(total_facturas) AS total_facturas'),
                 DB::raw('CASE WHEN (SUM(saldo)) < 0 THEN SUM(saldo) * -1 ELSE SUM(saldo) END AS saldo'),
             )
-            ->groupByRaw('documento_referencia, id_cuenta, id_nit')
-            ->orderBy('cuenta', 'ASC');
+            ->orderByRaw('cuenta, fecha_manual ASC')
+            ->groupByRaw('documento_referencia, id_cuenta, id_nit');
 
         return $extracto;
     }

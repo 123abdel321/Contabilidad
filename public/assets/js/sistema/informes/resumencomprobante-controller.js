@@ -220,6 +220,8 @@ function loadResumenComprobanteById(id_resumen_comprobante) {
                         tabla.column(3).visible(true);
                         break;
                     case 'consecutivo':
+                        tabla.column(2).visible(true);
+                        tabla.column(3).visible(true);
                         tabla.column(4).visible(true);
                         tabla.column(5).visible(false);
                         tabla.column(9).visible(false);

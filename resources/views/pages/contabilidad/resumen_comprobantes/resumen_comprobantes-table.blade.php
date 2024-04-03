@@ -3,9 +3,9 @@
         <tr>
             <th id="thead_cuenta_resumen_comprobante" style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
             <th>Nombre</th>
-            <th id="thead_numero_documento_resumen_comprobante" style="border-radius: 15px 0px 0px 0px !important;">Numero documento</th>
+            <th>Numero documento</th>
             <th>Nombre nit</th>
-            <th id="thead_documento_resumen_comprobante" style="border-radius: 15px 0px 0px 0px !important;">Documento</th>
+            <th>Documento</th>
             <th>Fecha</th>
             <th>Debito</th>
             <th>Credito</th>

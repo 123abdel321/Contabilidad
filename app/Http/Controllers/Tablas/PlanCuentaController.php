@@ -518,12 +518,18 @@ class PlanCuentaController extends Controller
 
         if ($request->get("search")) {
             $planCuenta->where('cuenta', 'LIKE', $request->get("search") . '%')
-                ->orWhere('nombre', 'LIKE', '%' . $request->get("search") . '%');
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("search") . '%')
+                ->whereHas('tipos_cuenta', function ($query) use($request) {
+                    $query->whereIn('id_tipo_cuenta', $request->get('id_tipo_cuenta'));
+                });
         }
 
         if ($request->get("q")) {
             $planCuenta->where('cuenta', 'LIKE', $request->get("q") . '%')
-                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%')
+                ->whereHas('tipos_cuenta', function ($query) use($request) {
+                    $query->whereIn('id_tipo_cuenta', $request->get('id_tipo_cuenta'));
+                });
         }
 
         return $planCuenta->orderBy('cuenta')->paginate($totalRows);
