@@ -41,6 +41,7 @@ class GastosController extends Controller
         'id_cuenta_rete_fuente' => null,
         'subtotal' => 0,
         'total_iva' => 0,
+        'total_no_iva' => 0,
         'total_rete_fuente' => 0,
         'total_descuento' => 0,
         'total_gasto' => 0,
@@ -154,7 +155,7 @@ class GastosController extends Controller
                     'descuento_valor' => $movimiento->descuento_gasto,
                     'rete_fuente_valor' => $retencionGasto,
                     'iva_porcentaje' => $porcentajeIva,
-                    'iva_valor' => $ivaGasto,
+                    'iva_valor' => $ivaGasto + $movimiento->no_valor_iva,
                     'total' => $totalGasto,
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
@@ -163,7 +164,8 @@ class GastosController extends Controller
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
                     $cuentaRecord = $conceptoGasto->{$cuentaKey};
                     $keyValorItem = $cuenta["valor"];
-
+                    if (!$cuentaRecord) continue;
+                    
                     $doc = new DocumentosGeneral([
                         "id_cuenta" => $cuentaRecord->id,
                         "id_nit" => $cuentaRecord->exige_nit ? $gasto->id_proveedor : null,
@@ -279,7 +281,7 @@ class GastosController extends Controller
             'fecha_manual' => $request->get('fecha_manual'),
             'consecutivo' => $request->get('consecutivo'),
             'subtotal' => $this->totalesFactura['subtotal'],
-            'total_iva' => $this->totalesFactura['total_iva'],
+            'total_iva' => $this->totalesFactura['total_iva'] + $this->totalesFactura['total_no_iva'],
             'total_descuento' => $this->totalesFactura['total_descuento'],
             'total_rete_fuente' => $this->totalesFactura['total_rete_fuente'],
             'id_cuenta_rete_fuente' => $this->totalesFactura['id_cuenta_rete_fuente'],
@@ -348,6 +350,7 @@ class GastosController extends Controller
 
             $this->totalesFactura['subtotal']+= $subtotalGasto;
             $this->totalesFactura['total_iva']+= $ivaGasto;
+            $this->totalesFactura['total_no_iva']+= $gasto->no_valor_iva;
             $this->totalesFactura['total_descuento']+= $gasto->descuento_gasto;
             $this->totalesFactura['total_rete_fuente']+= $retencionGasto;
             $this->totalesFactura['total_gasto']+= $totalGasto;

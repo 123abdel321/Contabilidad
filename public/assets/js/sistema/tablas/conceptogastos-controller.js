@@ -366,6 +366,16 @@ function conceptogastosInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#conceptoGastosFormModal'),
         delay: 250,
+        placeholder: "Seleccione una Cuenta",
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            }
+        },
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,

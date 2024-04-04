@@ -55,6 +55,9 @@ function gastoInit () {
             },
             {//VALOR IVA
                 "data": function (row, type, set, col){
+                    if (row.editar_iva) {
+                        return  `<input type="text" data-type="currency" class="form-control form-control-sm input_number" onkeypress="changeValorNoIvaGasto(${row.id}, event)" onfocus="this.select();" onfocusout="changeValorNoIvaGasto(${row.id})" style="width: 110px !important; text-align: right;" min="0" id="gasto_no_iva_valor_${row.id}" value="${new Intl.NumberFormat("ja-JP").format(row.no_valor_iva)}">`;
+                    }
                     return `<div class="form-group mb-3" style="min-width: 85px;">
                         <div class="input-group input-group-sm" style="height: 18px; min-width: 112px;">
                             <span id="gasto_iva_porcentaje_text_${row.id}" class="input-group-text" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">${row.porcentaje_iva}%</span>
@@ -387,10 +390,12 @@ function addRowGastos(openCuenta = true) {
     let data = {
         "id": idGastoTable,
         "id_concepto": null,
+        "editar_iva": false,
         "valor_gasto": 0,
         "descuento_gasto": 0,
         "porcentaje_descuento_gasto": 0,
         "valor_iva": 0,
+        "no_valor_iva": 0,
         "porcentaje_iva": 0,
         "valor_retencion": 0,
         "porcentaje_retencion": 0,
@@ -418,8 +423,11 @@ function changeConceptoGasto(idGasto) {
     dataGasto[indexGasto].id_concepto = parseInt(data.id);
 
     //IVA
-    if (data.cuenta_iva && data.cuenta_iva.impuesto) {
+    if (data.id_cuenta_iva && data.cuenta_iva.impuesto) {
         dataGasto[indexGasto].porcentaje_iva = parseFloat(data.cuenta_iva.impuesto.porcentaje);
+    }
+    if (!data.id_cuenta_iva && gastoIva) {
+        dataGasto[indexGasto].editar_iva = true;
     }
     //RETENCION
     var proveedor = $comboNitGastos.select2('data')[0];
@@ -560,13 +568,35 @@ function changeValorDescuentoGasto (idGasto, event = null) {
     }
 }
 
-function changeObservacionGasto (idGasto, event = null) {
-    
+function changeValorNoIvaGasto (idGasto, event = null) {
     if(!event || event.keyCode == 13){
+        if (!calculandoDatos) return;
+        calculandoDatos = false;
+        var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
+        var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
+        var valorNoiva = stringToNumberFloat($("#gasto_no_iva_valor_"+idGasto).val());
+        
+        dataGasto[indexGasto].no_valor_iva = valorNoiva;
+
+        updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
+
+        setTimeout(function(){
+            calculandoDatos = true;
+            setTimeout(function(){
+                $('#gastoTable tr').find('#gastoobservacion_'+idGasto).focus();
+                $('#gastoTable tr').find('#gastoobservacion_'+idGasto).select();
+            },10);
+        },50);
+    }
+}
+
+function changeObservacionGasto (idGasto, event = null) {
+    if(!event || event.keyCode == 13){
+        var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
         var dataObservacion = $('#gastoobservacion_'+idGasto).val();
-        addRowGastos();
+        if (dataGasto[indexGasto].observacion == dataObservacion && !event) return;
         if (!dataObservacion) return;
-        if (!calculandoDatos) return
+        if (!calculandoDatos) return;
 
         calculandoDatos = false;
         var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
@@ -575,6 +605,15 @@ function changeObservacionGasto (idGasto, event = null) {
         dataGasto[indexGasto].observacion = dataObservacion;
 
         updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
+
+        setTimeout(function(){
+            calculandoDatos = true;
+        },50);
+    }
+    if (event && event.keyCode == 13) {
+        setTimeout(function(){
+            addRowGastos();
+        },100);
     }
 }
 

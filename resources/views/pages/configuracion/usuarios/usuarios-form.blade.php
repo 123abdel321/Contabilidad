@@ -114,7 +114,7 @@
                                                     <h6>{{$menu->padre->nombre}} > {{$menu->nombre}}</h6>
                                                     @foreach ($menu->permisos as $permisos)
                                                         <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" name="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" id="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" style="height: 20px;">
+                                                            <input class="form-check-input" type="checkbox" name="permiso_{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" id="permiso_{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" style="height: 20px;">
                                                             <label class="form-check-label" for="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}">{{explode(' ', $permisos->name)[1]}}</label>
                                                         </div>
                                                     @endforeach

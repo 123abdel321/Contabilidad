@@ -93,7 +93,7 @@ function usuariosInit() {
             data.permissions.forEach(permiso => {
                 var nombrePermisoSplit = permiso.name.split(' ');
                 var nombrePermiso = nombrePermisoSplit[0]+'_'+nombrePermisoSplit[1];
-                $('#'+nombrePermiso).prop('checked', true);
+                $('#permiso_'+nombrePermiso).prop('checked', true);
             });
     
             $("#usuariosFormModal").modal('show');
@@ -341,7 +341,7 @@ $(document).on('click', '#updateUsuarios', function () {
 function getPermisos() {
     for (let index = 0; index < permisosUsuarios.length; index++) {
         const permiso = permisosUsuarios[index];
-        permiso.value = $("input[type='checkbox']#"+permiso.name).is(':checked') ? '1' : '';
+        permiso.value = $("input[type='checkbox']#permiso_"+permiso.name).is(':checked') ? '1' : '';
     }
 
     return permisosUsuarios;
@@ -354,6 +354,6 @@ function clearPermisos() {
     }
 
     permisosUsuarios.forEach(permiso => {
-        $('#'+permiso.name).prop('checked', false);
+        $('#permiso_'+permiso.name).prop('checked', false);
     });
 }

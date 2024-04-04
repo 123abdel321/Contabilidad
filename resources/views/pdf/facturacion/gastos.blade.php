@@ -220,13 +220,17 @@
 									<table>
 										<thead>
 											<tr>
-												<th colspan="2" class="header-total padding5">GASTO</th>
+												<th colspan="2" class="header-total padding3">GASTO</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr >
-												<td class="padding5">Fecha</td>
-												<td class="valor padding5">{{ $gasto->fecha_manual }}</td>
+												<td class="padding3">Fecha</td>
+												<td class="valor padding3">{{ $gasto->fecha_manual }}</td>
+											</tr>
+											<tr >
+												<td class="padding3">Centro de costos</td>
+												<td class="valor padding3">{{ $gasto->cecos->codigo }} - {{ $gasto->cecos->nombre }}</td>
 											</tr>
 										</tbody>
 									</table>

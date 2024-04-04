@@ -48,6 +48,7 @@ class GastosPdf extends AbstractPrinterPdf
     public function data()
     {
         $this->gasto->load([
+			'cecos',
             'proveedor',
             'detalles.concepto',
 			'pagos.forma_pago'
