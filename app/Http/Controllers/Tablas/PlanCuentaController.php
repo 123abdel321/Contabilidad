@@ -519,7 +519,7 @@ class PlanCuentaController extends Controller
         if ($request->get("search")) {
             $planCuenta->where('cuenta', 'LIKE', $request->get("search") . '%')
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("search") . '%')
-                ->when($request->get('id_tipo_cuenta') ? $request->get('id_tipo_cuenta') : false, function ($query) {
+                ->when($request->get('id_tipo_cuenta') ? $request->get('id_tipo_cuenta') : false, function ($query) use ($request) {
                     $query->whereHas('tipos_cuenta', function ($query) use($request) {
                         $query->whereIn('id_tipo_cuenta', $request->get('id_tipo_cuenta'));
                     });
