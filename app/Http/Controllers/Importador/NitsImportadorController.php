@@ -151,13 +151,13 @@ class NitsImportadorController extends Controller
 
                     $idTipoDocumento = TipoDocumentos::where('codigo', $nit->tipo_documento)->first();
                     $this->rowErrors = 0;
-                    $this->getErrores($nit);
+                    $errores = $this->getErrores($nit);
 
                     if ($this->rowErrors) {
                         DB::connection('sam')->rollback();
                         return response()->json([
                             "success"=>false,
-                            'data' => [],
+                            'data' => $errores,
                             "message"=>'Archivo con errores'
                         ], 422);
                     }
