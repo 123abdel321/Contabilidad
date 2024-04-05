@@ -223,7 +223,7 @@ class NitsImportadorController extends Controller
             $existe = Nits::where('numero_documento', $dataNit->numero_documento);
             if ($existe->count()) {
                 $this->rowErrors+= 1;
-                $errores.='El numero de documento debe ser unico <br/>';
+                $errores.='El numero de documento: '.$dataNit->numero_documento.' debe ser unico <br/>';
             }
         } else {
             $this->rowErrors+= 1;
@@ -234,7 +234,7 @@ class NitsImportadorController extends Controller
             $existe = Nits::where('email', $dataNit->email);
             if ($existe->count()) {
                 $this->rowErrors+= 1;
-                $errores.='El email debe ser unico <br/>';
+                $errores.='El email: '.$dataNit->email.' debe ser unico <br/>';
             }
         } else {
             $this->rowErrors+= 1;
