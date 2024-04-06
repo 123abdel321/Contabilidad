@@ -373,7 +373,7 @@ class RecibosController extends Controller
     {
         $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
-        $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual', null) : Carbon::now();
+        $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_pago', null) : Carbon::now();
 
         if(!$comprobanteRecibo) {
             return response()->json([
