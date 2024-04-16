@@ -309,7 +309,11 @@ class GastosController extends Controller
                 'cuenta_retencion_declarante.impuesto',
             )->find($gasto->id_concepto);
 
-            $id_retencion = $conceptoGasto->{$this->tipoRetencion}->id;
+            $id_retencion = null;
+
+            if ($conceptoGasto->{$this->tipoRetencion}) {
+                $id_retencion = $conceptoGasto->{$this->tipoRetencion}->id;
+            }
             
             if (!array_key_exists($id_retencion, $this->retenciones)) {
                 $this->retenciones[$id_retencion] = (object)[
