@@ -310,16 +310,23 @@ class GastosController extends Controller
             )->find($gasto->id_concepto);
 
             $id_retencion = null;
+            $base_retencion = null;
+            $porcentaje_retencion = null;
 
             if ($conceptoGasto->{$this->tipoRetencion}) {
                 $id_retencion = $conceptoGasto->{$this->tipoRetencion}->id;
+
+                if ($conceptoGasto->{$this->tipoRetencion}->impuesto) {
+                    $base_retencion = $conceptoGasto->{$this->tipoRetencion}->impuesto->base;
+                    $porcentaje_retencion = $conceptoGasto->{$this->tipoRetencion}->impuesto->porcentaje;
+                }
             }
             
             if (!array_key_exists($id_retencion, $this->retenciones)) {
                 $this->retenciones[$id_retencion] = (object)[
                     'id_retencion' => $id_retencion,
-                    'porcentaje' => $conceptoGasto->{$this->tipoRetencion}->impuesto->porcentaje,
-                    'base' => $conceptoGasto->{$this->tipoRetencion}->impuesto->base
+                    'porcentaje' => $porcentaje_retencion,
+                    'base' => $base_retencion
                 ];
             }
         }
