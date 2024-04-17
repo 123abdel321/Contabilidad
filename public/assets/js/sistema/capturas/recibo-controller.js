@@ -254,6 +254,13 @@ $(document).on('click', '#crearCapturaRecibo', function () {
     saveRecibo();
 });
 
+$(document).on('change', '#id_nit_recibo', function () {
+    let data = $('#id_nit_recibo').select2('data')[0];
+    if (data) {
+        document.getElementById('iniciarCapturaRecibo').click();
+    }
+});
+
 function saveRecibo() {
     $('#iniciarCapturaRecibo').hide();
     $('#cancelarCapturaRecibo').hide();
