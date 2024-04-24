@@ -154,6 +154,14 @@ function plancuentaInit() {
             },
             {
                 "data": function (row, type, set){
+                    if(row.impuesto){
+                        return row.impuesto.nombre+' - $'+row.impuesto.base+' - '+row.impuesto.porcentaje+'%';
+                    }
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
                     if(row.exogena_formato){
                         return row.exogena_formato.formato;
                     }

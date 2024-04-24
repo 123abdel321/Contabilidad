@@ -13,6 +13,7 @@
             <th>Dcto refe</th>
             <th>Concepto</th>
             <th>Centro costros</th>
+            <th>Impuesto</th>
             <th>Exo. Formato</th>
             <th>Exo. Concepto</th>
             <th>Exo. Columna</th>
