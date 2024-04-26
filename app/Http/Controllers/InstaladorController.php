@@ -375,6 +375,7 @@ class InstaladorController extends Controller
 
 		$token = $usuarioApiToken->createToken("api_token")->plainTextToken;
 		$usuarioApiToken->remember_token = $token;
+		$usuarioApiToken->has_empresa = $empresa->token_db;
 		$usuarioApiToken->save();
 
 		$usuarioEmpresa = UsuarioEmpresa::where('id_usuario', $usuarioApiToken->id)

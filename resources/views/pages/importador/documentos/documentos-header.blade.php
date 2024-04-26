@@ -12,7 +12,7 @@
                 <br>
                 <div>
                     <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" >
-                        <b>1.</b> Descarga la plantilla para cargar documentos. Cada plantilla contiene máximo 500 registros &nbsp;
+                        <b>1.</b> Descarga la plantilla para cargar documentos&nbsp;
                         <span id="descargarPlantillaDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; margin-right: 3px; margin-bottom: 0px !important;">
                             <i class="fas fa-download" style="font-size: 17px;"></i>
                             <b style="vertical-align: text-top;">Descargar plantilla</b>

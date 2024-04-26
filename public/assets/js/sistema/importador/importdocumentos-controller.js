@@ -1,6 +1,5 @@
-importDocumentos
 var import_documentos_table = null;
-var btn = document.getElementById('actualizarPlantillaDocumentos');
+var btnImportDocumento = document.getElementById('actualizarPlantillaDocumentos');
 
 function importdocumentosInit() {
     import_documentos_table = $('#importDocumentos').DataTable({
@@ -123,7 +122,7 @@ $(document).on('click', '#descargarPlantillaDocumentos', function () {
     });
 });
 
-btn.addEventListener('click', event => {
+btnImportDocumento.addEventListener('click', event => {
     event.preventDefault();
 
     $('#cargarPlantillaDocumentos').hide();
