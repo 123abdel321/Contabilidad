@@ -171,7 +171,7 @@ class GastosController extends Controller
                         "id_nit" => $cuentaRecord->exige_nit ? $gasto->id_proveedor : null,
                         "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $request->get('id_centro_costos') : null,
                         "concepto" => $cuentaRecord->exige_concepto ? 'GASTO: '.$movimiento->observacion : null,
-                        "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $gasto->consecutivo : null,
+                        "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $gasto->documento_referencia : null,
                         "debito" => $cuentaRecord->naturaleza_compras == PlanCuentas::DEBITO ? $detalleGasto->{$keyValorItem} : 0,
                         "credito" => $cuentaRecord->naturaleza_compras == PlanCuentas::CREDITO ? $detalleGasto->{$keyValorItem} : 0,
                         "created_by" => request()->user()->id,
@@ -191,7 +191,7 @@ class GastosController extends Controller
                         "id_nit" => $cuentaRetencion->exige_nit ? $gasto->id_proveedor : null,
                         "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $request->get('id_centro_costos') : null,
                         "concepto" => $cuentaRetencion->exige_concepto ? 'GASTO: RETENCIÓN' : null,
-                        "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $gasto->consecutivo : null,
+                        "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $gasto->documento_referencia : null,
                         "debito" => $this->totalesFactura['total_rete_fuente'],
                         "credito" => $this->totalesFactura['total_rete_fuente'],
                         "created_by" => request()->user()->id,
@@ -229,7 +229,7 @@ class GastosController extends Controller
                     'id_nit' => $formaPago->cuenta->exige_nit ? $gasto->id_proveedor : null,
                     'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $gasto->id_centro_costos : null,
                     'concepto' => $formaPago->cuenta->exige_concepto ? 'GASTO: PAGO' : null,
-                    'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $gasto->consecutivo : null,
+                    'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $gasto->documento_referencia : null,
                     'debito' => $formaPago->cuenta->naturaleza_compras == PlanCuentas::DEBITO ? $pago->valor : 0,
                     'credito' => $formaPago->cuenta->naturaleza_compras == PlanCuentas::CREDITO ? $pago->valor : 0,
                     'created_by' => request()->user()->id,
@@ -280,6 +280,7 @@ class GastosController extends Controller
             'id_centro_costos' => $request->get('id_centro_costos'),
             'fecha_manual' => $request->get('fecha_manual'),
             'consecutivo' => $request->get('consecutivo'),
+            'documento_referencia' => $request->get('documento_referencia'),
             'subtotal' => $this->totalesFactura['subtotal'],
             'total_iva' => $this->totalesFactura['total_iva'] + $this->totalesFactura['total_no_iva'],
             'total_descuento' => $this->totalesFactura['total_descuento'],
@@ -354,10 +355,10 @@ class GastosController extends Controller
             $porcentajeIva = $conceptoGasto->cuenta_iva ? floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje) : 0;
             $porcentajeRetencion = $this->totalesFactura['porcentaje_rete_fuente'];
 
-            $subtotalGasto = $gasto->valor_gasto - $gasto->descuento_gasto;
+            $subtotalGasto = $gasto->valor_gasto - ($gasto->descuento_gasto + $gasto->no_valor_iva);
             $ivaGasto = $porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0;
             $retencionGasto = $porcentajeRetencion ? $subtotalGasto * ($porcentajeRetencion / 100) : 0;
-            $totalGasto = ($subtotalGasto + $ivaGasto) - $retencionGasto;
+            $totalGasto = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - $retencionGasto;
 
             $this->totalesFactura['subtotal']+= $subtotalGasto;
             $this->totalesFactura['total_iva']+= $ivaGasto;

@@ -8,6 +8,7 @@ var totalAnticiposGasto = 0;
 var $comboNitGastos = null;
 var guardandoGasto = false;
 var retencionesGasto = [];
+var validarFacturaGastos = false;
 var abrirFormasPagoGastos = false;
 var $comboCentroCostoGastos = null;
 var $comboComprobanteGastos = null;
@@ -365,7 +366,7 @@ function consecutivoSiguienteGasto() {
             dataType: 'json',
         }).done((res) => {
             if(res.success){
-                $("#documento_referencia_gasto").val(res.data);
+                $("#consecutivo_gasto").val(res.data);
             }
         }).fail((err) => {
         });
@@ -413,7 +414,6 @@ function addRowGastos(openCuenta = true) {
 function changeConceptoGasto(idGasto) {
     let data = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
     if (!data) return;
-
     
     // var indexRetencion = retencionesGasto.findIndex(item => item.id_retencion == idGasto);
     // retencionesGasto
@@ -549,7 +549,7 @@ function changeValorDescuentoGasto (idGasto, event = null) {
         var valorGasto = dataGasto[indexGasto].valor_gasto;
         var valorDescuento = stringToNumberFloat($("#gastovalordescuento_"+idGasto).val());
         var valorPorcentajeDescuento = (valorDescuento / valorGasto) * 100;
-        var valorSubtotal = valorGasto - valorDescuento;
+        var valorSubtotal = valorGasto - (valorDescuento + dataGasto[indexGasto].no_valor_iva);
         var valorIva = valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100);
         var valorRetencion = valorSubtotal * (dataGasto[indexGasto].porcentaje_retencion / 100);
         var valorTotal = (valorSubtotal + valorIva) - valorRetencion;
@@ -560,7 +560,6 @@ function changeValorDescuentoGasto (idGasto, event = null) {
         dataGasto[indexGasto].valor_iva = valorIva;
 
         updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
-
         mostrarValoresGastos();
         setTimeout(function(){
             calculandoDatos = true;
@@ -574,12 +573,22 @@ function changeValorNoIvaGasto (idGasto, event = null) {
         calculandoDatos = false;
         var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
         var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
+        var valorGasto = dataGasto[indexGasto].valor_gasto;
+        var valorDescuento = stringToNumberFloat($("#gastovalordescuento_"+idGasto).val());
         var valorNoiva = stringToNumberFloat($("#gasto_no_iva_valor_"+idGasto).val());
-        
+        var valorPorcentajeDescuento = (valorDescuento / valorGasto) * 100;
+        var valorSubtotal = valorGasto - (valorDescuento + valorNoiva);
+        var valorRetencion = valorSubtotal * (dataGasto[indexGasto].porcentaje_retencion / 100);
+        var valorTotal = valorSubtotal - valorRetencion;
+
+        dataGasto[indexGasto].porcentaje_descuento_gasto = valorPorcentajeDescuento;
+        dataGasto[indexGasto].descuento_gasto = valorDescuento;
+        dataGasto[indexGasto].total_valor_gasto = valorTotal;
         dataGasto[indexGasto].no_valor_iva = valorNoiva;
+        dataGasto[indexGasto].valor_retencion = valorRetencion;
 
         updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
-
+        mostrarValoresGastos();
         setTimeout(function(){
             calculandoDatos = true;
             setTimeout(function(){
@@ -663,7 +672,7 @@ function changeValorGasto (idGasto, event = null) {
         var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
         
         var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
-        var valorSubtotal = valorGasto - dataGasto[indexGasto].descuento_gasto;
+        var valorSubtotal = valorGasto - (dataGasto[indexGasto].descuento_gasto + dataGasto[indexGasto].no_valor_iva);
         var valorIva = valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100);
         var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal);
         var valorTotal = (valorSubtotal + valorIva) - valorRetencion;
@@ -675,7 +684,6 @@ function changeValorGasto (idGasto, event = null) {
         dataGasto[indexGasto].valor_retencion = valorRetencion;
         
         updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
-        
         mostrarValoresGastos();
         setTimeout(function(){
             calculandoDatos = true;
@@ -749,13 +757,13 @@ function totalValoresGastos () {
     var porcentajeRetencion = false;
 
     dataGasto.forEach(gastoRow => {
-        subTotalGeneral+= (gastoRow.valor_gasto - gastoRow.descuento_gasto);
+        subTotalGeneral+= gastoRow.valor_gasto - (gastoRow.descuento_gasto + gastoRow.no_valor_iva);
     });
 
     [valorRetencion, porcentajeRetencion] = calcularRetencion(subTotalGeneral);
     if (valorRetencion) {
         for (let index = 0; index < dataGasto.length; index++) {
-            var subTotal = dataGasto[index].valor_gasto - dataGasto[index].descuento_gasto;
+            var subTotal = dataGasto[index].valor_gasto - (dataGasto[index].descuento_gasto + dataGasto[index].no_valor_iva);
             var totalRetencion = subTotal * (porcentajeRetencion / 100);
             if (totalRetencion != dataGasto[index].valor_retencion) {
                 var dataConceptoGasto = $('#combo_concepto_gasto_'+dataGasto[index].id).select2('data')[0];
@@ -807,10 +815,10 @@ function totalValoresGastos () {
     }
 
     dataGasto.forEach(gastoRow => {
-        gasto_sub_total+= gastoRow.valor_gasto;
-        gasto_iva+= gastoRow.valor_iva;
+        gasto_sub_total+= gastoRow.valor_gasto - (gastoRow.descuento_gasto + gastoRow.no_valor_iva);
+        gasto_iva+= (gastoRow.valor_iva + gastoRow.no_valor_iva);
         gasto_retencion+= gastoRow.valor_retencion;
-        gasto_total+= gastoRow.total_valor_gasto;
+        gasto_total+= (gastoRow.total_valor_gasto + gastoRow.no_valor_iva);
         gasto_descuento+= gastoRow.descuento_gasto;
     });
     
@@ -890,8 +898,14 @@ function focusNextFormasPagoGastos(idFormaPago = null) {
 }
 
 function validateSaveGastos() {
-
     if (!guardandoGasto) {
+
+        var documento_referencia = $("#documento_referencia_gasto").val();
+        if (!documento_referencia) {
+            $('#documento_referencia_gasto').addClass("is-invalid");
+            $('#documento_referencia_gasto').focus().select();
+            return;
+        }
 
         var [totalPagos, totalAnticipos] = totalFormasPagoGastos();
         var [gasto_iva, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
@@ -912,7 +926,8 @@ function saveGasto () {
         id_comprobante: $("#id_comprobante_gasto").val(),
         id_centro_costos: $("#id_centro_costos_gasto").val(),
         fecha_manual: $("#fecha_manual_gasto").val(),
-        consecutivo: $("#documento_referencia_gasto").val(),
+        documento_referencia: $("#documento_referencia_gasto").val(),
+        consecutivo: $("#consecutivo_gasto").val(),
     }
 
     disabledFormasPagoGasto();
@@ -1120,3 +1135,46 @@ $(document).on('keydown', '.custom-gasto_conceptogasto .select2-search__field', 
         abrirFormasPagoGastos = false;
     }
 });
+
+function buscarFacturaGasto(event) {
+    if (validarFacturaGastos) {
+        validarFacturaGastos.abort();
+    }
+
+    var botonPrecionado = event.key.length == 1 ? event.key : '';
+    var documento_referencia = $('#documento_referencia_gasto').val()+''+botonPrecionado;
+
+    if (event.key == 'Backspace') documento_referencia = documento_referencia.slice(0, -1);
+    if (!documento_referencia) return;
+    
+    $('#documento_referencia_gasto_loading').show();
+    
+    $('#documento_referencia_gasto').removeClass("is-invalid");
+    $('#documento_referencia_gasto').removeClass("is-valid");
+
+    setTimeout(function(){
+        validarFacturaGastos= $.ajax({
+            url: base_url + 'existe-factura',
+            method: 'GET',
+            data: {
+                id_comprobante: $("#id_comprobante_gasto").val(),
+                documento_referencia: documento_referencia
+            },
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            validarFacturaGastos= null;
+            $('#documento_referencia_gasto_loading').hide();
+            if(res.data == 0){
+                $('#documento_referencia_gasto').removeClass("is-invalid");
+                $('#documento_referencia_gasto').addClass("is-valid");
+            }else {
+                $('#documento_referencia_gasto').removeClass("is-valid");
+                $('#documento_referencia_gasto').addClass("is-invalid");
+                $("#error_documento_referencia_gasto").text('La factura No '+documento_referencia+' ya existe!');
+            }
+        }).fail((err) => {
+            $('#documento_referencia_gasto_loading').hide();
+        });
+    },100);
+}

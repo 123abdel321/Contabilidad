@@ -19,6 +19,7 @@ class ConGastos extends Model
         'id_centro_costos',
         'fecha_manual',
         'consecutivo',
+        'documento_referencia',
         'subtotal',
         'total_iva',
         'total_descuento',

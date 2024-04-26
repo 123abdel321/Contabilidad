@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('id_cuenta_rete_fuente')->nullable();
             $table->date('fecha_manual')->nullable();
             $table->string('consecutivo', 20);
+            $table->string('documento_referencia', 50);
             $table->decimal('subtotal', 15);
             $table->decimal('total_iva', 15);
             $table->decimal('total_descuento', 15);

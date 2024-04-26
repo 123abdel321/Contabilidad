@@ -63,6 +63,13 @@
         overflow: auto;
     }
 
+    .gasto-load {
+        margin-top: -21px;
+        float: right;
+        position: initial;
+        margin-right: 15px;
+    }
+
     .table-captura-gasto thead th {
         padding: 0.3rem 1.2rem !important;
     }

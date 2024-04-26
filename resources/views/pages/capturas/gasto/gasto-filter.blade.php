@@ -22,7 +22,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-4 col-md-3">
+                    <div class="form-group col-12 col-sm-4 col-md-2">
                         <label>Comprobante <span style="color: red">*</span></label>
                         <select name="id_comprobante_gasto" id="id_comprobante_gasto" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
@@ -51,8 +51,17 @@
                     </div>
 
                     <div class="form-group col-12 col-sm-4 col-md-2">
+                        <label for="example-text-input" class="form-control-label">No. factura <span style="color: red">*</span></label>
+                        <input type="text" class="form-control form-control-sm" name="documento_referencia_gasto" id="documento_referencia_gasto" onkeydown="buscarFacturaGasto(event)" style="background-position: right 0.75rem center !important;" required>
+                        <i class="fa fa-spinner fa-spin fa-fw gasto-load" id="documento_referencia_gasto_loading" style="display: none;"></i>
+                        <div class="invalid-feedback" id="error_documento_referencia_gasto">
+                            El No. factura requerido
+                        </div>
+                    </div>
+
+                    <div class="form-group col-12 col-sm-4 col-md-1">
                         <label for="example-text-input" class="form-control-label">Consecutivo</label>
-                        <input type="text" class="form-control form-control-sm" name="documento_referencia_gasto" id="documento_referencia_gasto" disabled required>
+                        <input type="text" class="form-control form-control-sm" name="consecutivo_gasto" id="consecutivo_gasto" disabled required>
                     </div>
 
                 </form>

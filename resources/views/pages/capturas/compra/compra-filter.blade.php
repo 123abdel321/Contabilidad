@@ -50,7 +50,7 @@
 
                     <div class="form-group col-6 col-sm-4 col-md-2">
                         <label for="example-text-input" class="form-control-label">No. factura <span style="color: red">*</span></label>
-                        <input type="text" class="form-control form-control-sm" name="documento_referencia_compra" id="documento_referencia_compra" onkeydown="buscarFacturaCompra(event)" required>
+                        <input type="text" class="form-control form-control-sm" name="documento_referencia_compra" id="documento_referencia_compra" onkeydown="buscarFacturaCompra(event)" style="background-position: right 0.75rem center !important;" required>
                         <i class="fa fa-spinner fa-spin fa-fw compra-load" id="documento_referencia_compra_loading" style="display: none;"></i>
                         <div class="invalid-feedback" id="error_documento_referencia_compra">
                             El No. factura requerido
