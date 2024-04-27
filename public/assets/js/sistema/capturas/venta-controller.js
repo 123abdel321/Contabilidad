@@ -578,6 +578,9 @@ function loadAnticiposCliente() {
             }
         }
     }).fail((err) => {
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 }
 
@@ -608,6 +611,9 @@ function loadVendedorCliente() {
             }
         }
     }).fail((err) => {
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 }
 
@@ -675,6 +681,9 @@ function consecutivoSiguienteVenta() {
                 $("#documento_referencia_venta").val(res.data);
             }
         }).fail((err) => {
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     }
 }
@@ -940,6 +949,9 @@ function consultarExistencias(idRow) {
             validarExistenciasProducto = null;
             if(err.statusText != "abort") {
             }
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     },300);
 }
@@ -1407,19 +1419,10 @@ function saveVenta() {
         guardandoVenta = false;
         $("#crearCapturaVenta").show();
         $("#crearCapturaVentaLoading").hide();
+        
         var mensaje = err.responseJSON.message;
-        var errorsMsg = "";
-        if (typeof mensaje === 'object') {
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += field+": "+errores[campo]+" <br>";
-                }
-                agregarToast('error', 'Creación errada', errorsMsg);
-            };
-        } else {
-            agregarToast('error', 'Creación errada', mensaje);
-        }
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 
 }
@@ -1620,18 +1623,9 @@ $(document).on('click', '#saveNitVenta', function () {
         }).fail((err) => {
             $('#saveNitVenta').show();
             $('#saveNitVentaLoading').hide();
-            var errorsMsg = "";
+            
             var mensaje = err.responseJSON.message;
-            if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-                for (field in mensaje) {
-                    var errores = mensaje[field];
-                    for (campo in errores) {
-                        errorsMsg += "- "+errores[campo]+" <br>";
-                    }
-                };
-            } else {
-                errorsMsg = mensaje
-            }
+            var errorsMsg = arreglarMensajeError(mensaje);
             agregarToast('error', 'Creación errada', errorsMsg);
         });
     } else {

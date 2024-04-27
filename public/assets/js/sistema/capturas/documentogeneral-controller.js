@@ -693,6 +693,9 @@ function validarFechaManualDocumentos() {
             $('#fecha_manual_documento-feedback').text('La Fecha se encuentra en un año cerrado');
         }
     }).fail((err) => {
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 
 }
@@ -1013,6 +1016,9 @@ function buscarExtracto(idRow) {
 
 
         }).fail((err) => {
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     }
 }
@@ -1317,6 +1323,9 @@ function consecutivoSiguiente() {
             $("#iniciarCapturaDocumentos").show();
             $("#iniciarCapturaDocumentosLoading").hide();
             $("#consecutivo").prop('disabled', false);
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     }
 }
@@ -1575,14 +1584,7 @@ function saveDocumentos() {
         $("#iniciarCapturaDocumentosLoading").hide();
 
         var mensaje = err.responseJSON.message;
-        var errorsMsg = "";
-        for (field in mensaje) {
-            var errores = mensaje[field];
-            for (campo in errores) {
-                errorsMsg += field+": "+errores[campo]+" <br>";
-            }
-            
-        };
+        var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Creación errada', errorsMsg);
     });
 }

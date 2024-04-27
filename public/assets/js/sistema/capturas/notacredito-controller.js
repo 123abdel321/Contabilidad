@@ -282,6 +282,10 @@ function notacreditoInit () {
                 $('#iniciarCapturaNotaCreditoLoading').hide();
                 $('#crearCapturaNotaCreditoDisabled').hide();
                 $('#iniciarCapturaNotaCredito').show();
+
+                var mensaje = err.responseJSON.message;
+                var errorsMsg = arreglarMensajeError(mensaje);
+                agregarToast('error', 'Creación errada', errorsMsg);
             });
         });
     }
@@ -433,6 +437,10 @@ function consecutivoSiguienteNotaCredito() {
             }
         }).fail((err) => {
             $('#consecutivo_nota_credito_loading').hide();
+
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     }
 }
@@ -848,18 +856,8 @@ function saveNotaCredito() {
         $("#crearCapturaNotaCreditoDisabled").hide();
         $("#iniciarCapturaNotaCreditoLoading").hide();
 
-        var errorsMsg = "";
         var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
-        }
+        var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Creación errada', errorsMsg);
     });
 }

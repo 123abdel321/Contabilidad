@@ -302,14 +302,7 @@ function saveRecibo() {
         $('#iniciarCapturaReciboLoading').hide();
 
         var mensaje = err.responseJSON.message;
-        var errorsMsg = "";
-        for (field in mensaje) {
-            var errores = mensaje[field];
-            for (campo in errores) {
-                errorsMsg += field+": "+errores[campo]+" <br>";
-            }
-            
-        };
+        var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Creación errada', errorsMsg);
     });
 }
@@ -707,6 +700,9 @@ function loadAnticiposRecibo() {
             }
         }
     }).fail((err) => {
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 }
 
@@ -972,6 +968,9 @@ function consecutivoSiguienteRecibo() {
                 $("#documento_referencia_recibo").val(res.data);
             }
         }).fail((err) => {
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     }
 }

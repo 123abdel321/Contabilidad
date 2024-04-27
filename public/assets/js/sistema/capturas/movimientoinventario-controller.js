@@ -495,6 +495,9 @@ function consecutivoSiguienteMovimientoInventario() {
                 $("#consecutivo_movimiento_inventario").val(res.data);
             }
         }).fail((err) => {
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     }
 }
@@ -691,8 +694,10 @@ function consultarExistenciasMovimientoInventario(idRow) {
         }).fail((err) => {
             $('#movimiento-inventario_producto_load_'+idRow).hide();
             validarExistenciasProductoMI = null;
-            if(err.statusText != "abort") {
-            }
+            
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     },300);
 }
@@ -782,18 +787,8 @@ function saveMovimientoInventario() {
         $("#iniciarCapturaMovimientoInventarioLoading").hide();
 
         var mensaje = err.responseJSON.message;
-        var errorsMsg = "";
-        if (typeof mensaje === 'object') {
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += field+": "+errores[campo]+" <br>";
-                }
-                agregarToast('error', 'Creación errada', errorsMsg);
-            };
-        } else {
-            agregarToast('error', 'Creación errada', mensaje);
-        }
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 
 }

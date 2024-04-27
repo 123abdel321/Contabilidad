@@ -819,3 +819,19 @@ function stringToNumberFloat (value) {
     if (value) value = parseFloat(parseFloat(value.replaceAll(',', '')).toFixed(2));
     return value ? value : 0;
 }
+
+function arreglarMensajeError(mensaje) {
+    var errorsMsg = '';
+    if (typeof mensaje === 'object') {
+        for (field in mensaje) {
+            var errores = mensaje[field];
+            for (campo in errores) {
+                errorsMsg += field+": "+errores[campo]+" <br>";
+            }
+        };
+    }
+    else if (typeof mensaje === 'string') {
+        errorsMsg = mensaje;
+    }
+    return errorsMsg;
+}
