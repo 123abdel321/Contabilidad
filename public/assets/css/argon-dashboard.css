@@ -28,8 +28,8 @@
   --bs-gray-700: #495057;
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
-  --bs-primary: #1e255b ;
-  --bs-primary-second: #1c224e;
+  --bs-primary: #003883 ;
+  --bs-primary-second: #002e6b;
   --bs-secondary: #8392ab;
   --bs-success: #2dce89;
   --bs-info: #11cdef;
@@ -5326,8 +5326,8 @@ textarea.form-control-lg {
 .page-item.active .page-link {
   z-index: 3;
   color: #fff;
-  background-color: #1e255b;
-  border-color: #1e255b;
+  background-color: #003883;
+  border-color: #003883;
 }
 .page-item.disabled .page-link {
   color: #6c757d;
@@ -6075,7 +6075,7 @@ textarea.form-control-lg {
   border-bottom: 1px solid #dee2e6;
   border-top-left-radius: calc(0.75rem - 1px);
   border-top-right-radius: calc(0.75rem - 1px);
-  background-color: #1e255b;
+  background-color: #003883;
 }
 .modal-header .btn-close {
   padding: 0.5rem 0.5rem;
@@ -9483,7 +9483,7 @@ textarea.form-control-lg {
 }
 
 .bg-dark {
-  background-color: #35395b !important;
+  background-color: #002e6b73 !important;
 }
 
 .bg-white {
