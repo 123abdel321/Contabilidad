@@ -963,6 +963,11 @@ function saveGasto () {
 
         agregarToast('exito', 'Creación exitosa', 'Gasto creado con exito!', true);
 
+        setTimeout(function(){
+            $('#id_nit_gasto').focus();
+            $comboNitGastos.select2("open");
+        },10);
+
         if(res.impresion) {
             window.open("/gasto-print/"+res.impresion, '_blank');
         }
