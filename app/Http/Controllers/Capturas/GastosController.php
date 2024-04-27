@@ -107,7 +107,7 @@ class GastosController extends Controller
             DB::connection('sam')->beginTransaction();
             
             $proveedor = $this->findProveedor($request->get('id_proveedor'));
-            if ($proveedor->declarante) $this->tipoRetencion = 'cuenta_retencion_declarante';
+            if (!$proveedor->declarante) $this->tipoRetencion = 'cuenta_retencion_declarante';
             //CREAR FACTURA GASTO
             $gasto = $this->createFacturaGasto($request);
 

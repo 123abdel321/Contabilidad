@@ -369,6 +369,9 @@ function consecutivoSiguienteGasto() {
                 $("#consecutivo_gasto").val(res.data);
             }
         }).fail((err) => {
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     }
 }
@@ -432,7 +435,7 @@ function changeConceptoGasto(idGasto) {
     //RETENCION
     var proveedor = $comboNitGastos.select2('data')[0];
     
-    if (proveedor.declarante) {
+    if (!proveedor.declarante) {
         if (data.cuenta_retencion_declarante && data.cuenta_retencion_declarante.impuesto) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_iva.impuesto.id);
             if (!existe || existe < 0) {
@@ -966,15 +969,14 @@ function saveGasto () {
     }).fail((err) => {
         consecutivoSiguienteGasto();
         guardandoGasto = false;
+
+        $("#agregarGasto").show();
+        $("#crearCapturaGasto").show();
+        $("#cancelarCapturaGasto").show();
+        $("#iniciarCapturaGastoLoading").hide();
+
         var mensaje = err.responseJSON.message;
-        var errorsMsg = "";
-        for (field in mensaje) {
-            var errores = mensaje[field];
-            for (campo in errores) {
-                errorsMsg += field+": "+errores[campo]+" <br>";
-            }
-            
-        };
+        var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Creación errada', errorsMsg);
     });
 }
@@ -1063,9 +1065,9 @@ function deleteGastoRow (idGasto) {
 
 $(document).on('change', '#id_nit_gasto', function () {
     let data = $('#id_nit_gasto').select2('data')[0];
-    if (data) {
-        document.getElementById('iniciarCapturaGasto').click();
-    }
+    setTimeout(function(){
+        $('#documento_referencia_gasto').focus().select();
+    },10);
 });
 
 $(document).on('change', '#id_comprobante_gasto', function () {
@@ -1110,6 +1112,7 @@ function cancelarGasto() {
     $('#input_anticipos_gasto').hide();
     $('#gasto_anticipo_disp_view').hide();
     $('#crearCapturaGastoDisabled').hide();
+    $('#documento_referencia_gasto').val('');
 }
 
 $(document).on('keydown', '.custom-gasto_conceptogasto .select2-search__field', function (event) {
@@ -1137,12 +1140,18 @@ $(document).on('keydown', '.custom-gasto_conceptogasto .select2-search__field', 
 });
 
 function buscarFacturaGasto(event) {
-    if (validarFacturaGastos) {
-        validarFacturaGastos.abort();
-    }
 
     var botonPrecionado = event.key.length == 1 ? event.key : '';
     var documento_referencia = $('#documento_referencia_gasto').val()+''+botonPrecionado;
+
+    if (event.keyCode == 13 && documento_referencia) {
+        document.getElementById('iniciarCapturaGasto').click();
+        return;
+    }
+
+    if (validarFacturaGastos) {
+        validarFacturaGastos.abort();
+    }
 
     if (event.key == 'Backspace') documento_referencia = documento_referencia.slice(0, -1);
     if (!documento_referencia) return;

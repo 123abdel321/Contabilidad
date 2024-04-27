@@ -125,7 +125,7 @@
 
                     <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6" id="div_declarante">
                         <input class="form-check-input" type="checkbox" name="declarante_nit" id="declarante_nit" style="height: 20px;" checked>
-                        <label class="form-check-label" for="declarante_nit">Declarante</label>
+                        <label class="form-check-label" for="declarante_nit">Declara Renta</label>
                     </div>
 
                 </form>
