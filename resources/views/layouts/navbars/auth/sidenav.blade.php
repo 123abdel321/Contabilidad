@@ -46,9 +46,9 @@
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 side-nav-maximo-close" id="sidenav-main" style="z-index: 99 !important; border-radius: 0px 10px 10px 0px;">
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" style="color: white !important;" aria-hidden="true" id="iconSidenav"></i>
-        <a class="navbar-brand m-0" href="{{ route('home') }}" target="_blank" style="text-align: -webkit-center;">
+        <a class="navbar-brand m-0" target="_blank" style="text-align: -webkit-center;">
             <img src="" id="side_main_logo" class="navbar-brand-img h-100" alt="main_logo"><br/>
-            <span class="ms-1 font-weight-bold" id="nombre-empresa" style="color: antiquewhite"></span>
+            <span class="ms-1 font-weight-bold" id="nombre-empresa" style="color: antiquewhite; text-wrap: balance;"></span>
         </a>
     </div>
     
@@ -98,7 +98,7 @@
     </ul>
 </aside>
 
-<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl" id="sidenav-main-2" style="z-index: 99 !important; width: 11px; cursor: pointer; background-color: #1e255b !important; border-radius: 0px 7px 7px 0px;">
+<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl" id="sidenav-main-2" style="z-index: 99 !important; width: 11px; cursor: pointer; background-color: #003883 !important; border-radius: 0px 7px 7px 0px;">
     <span id="button-mostrar-lateral" class="nav-link-text ms-1" style="margin: 0; position: fixed; top: 50%; transform: translateY(-50%);">
         <i class="fas fa-caret-right" style="color: #FFF;"></i>
     </span>
