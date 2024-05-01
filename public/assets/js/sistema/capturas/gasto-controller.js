@@ -301,6 +301,7 @@ function gastoInit () {
     },10);
 
     loadFormasPagoGastos();
+    consecutivoSiguienteGasto();
 }
 
 function loadFormasPagoGastos() {
