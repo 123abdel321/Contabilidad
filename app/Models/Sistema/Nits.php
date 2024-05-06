@@ -51,6 +51,7 @@ class Nits extends Model
 		'observaciones',
 		'logo_nit',
 		'declarante',
+		'porcentaje_aiu',
 		'created_by',
 		'updated_by',
 		'created_at',

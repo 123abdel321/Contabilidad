@@ -30,6 +30,7 @@ class GastosController extends Controller
     protected $tipoRetencion = 'cuenta_retencion';
     protected $retenciones = [];
     protected $messages = null;
+    protected $proveedor = null;
     protected $cuentasContables = [
         "cuenta_gasto" => ["valor" => "subtotal"],
         "cuenta_descento" => ["valor" => "descuento_valor"],
@@ -106,8 +107,8 @@ class GastosController extends Controller
         try {
             DB::connection('sam')->beginTransaction();
             
-            $proveedor = $this->findProveedor($request->get('id_proveedor'));
-            if (!$proveedor->declarante) $this->tipoRetencion = 'cuenta_retencion_declarante';
+            $this->proveedor = $this->findProveedor($request->get('id_proveedor'));
+            if (!$this->proveedor->declarante) $this->tipoRetencion = 'cuenta_retencion_declarante';
             //CREAR FACTURA GASTO
             $gasto = $this->createFacturaGasto($request);
 
@@ -135,11 +136,18 @@ class GastosController extends Controller
 
                 $porcentajeRetencion = $this->totalesFactura['porcentaje_rete_fuente'];
                 $porcentajeIva = $conceptoGasto->cuenta_iva ? floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje) : 0;
-                
                 $subtotalGasto = $movimiento->valor_gasto - $movimiento->descuento_gasto;
-                $ivaGasto = $porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0;
-                $retencionGasto = $porcentajeRetencion ? $subtotalGasto * ($porcentajeRetencion / 100) : 0;
-                $totalGasto = ($subtotalGasto + $ivaGasto) - $retencionGasto;
+                $baseAIU = 0;
+                if ($this->proveedor->porcentaje_aiu) {
+                    $baseAIU = $subtotalGasto * ($this->proveedor->porcentaje_aiu / 100);
+                    $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
+                    $retencionGasto = $porcentajeRetencion ? $baseAIU * ($porcentajeRetencion / 100) : 0;
+                    $totalGasto = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - $retencionGasto;
+                } else {
+                    $ivaGasto = $porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0;
+                    $retencionGasto = $porcentajeRetencion ? $subtotalGasto * ($porcentajeRetencion / 100) : 0;
+                    $totalGasto = ($subtotalGasto + $ivaGasto) - $retencionGasto;
+                }
 
                 $detalleGasto = ConGastoDetalles::create([
                     'id_gasto' => $gasto->id,
@@ -150,6 +158,8 @@ class GastosController extends Controller
                     'id_cuenta_retencion_declarante' => $conceptoGasto->id_cuenta_retencion_declarante,
                     'observacion' => $movimiento->observacion,
                     'subtotal' => $subtotalGasto,
+                    'aiu_porcentaje' => $this->proveedor->porcentaje_aiu,
+                    'aiu_valor' => $baseAIU,
                     'descuento_porcentaje' => $movimiento->porcentaje_descuento_gasto,
                     'rete_fuente_porcentaje' => $porcentajeRetencion,
                     'descuento_valor' => $movimiento->descuento_gasto,
@@ -172,8 +182,8 @@ class GastosController extends Controller
                         "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $request->get('id_centro_costos') : null,
                         "concepto" => $cuentaRecord->exige_concepto ? 'GASTO: '.$movimiento->observacion : null,
                         "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $gasto->documento_referencia : null,
-                        "debito" => $cuentaRecord->naturaleza_compras == PlanCuentas::DEBITO ? $detalleGasto->{$keyValorItem} : 0,
-                        "credito" => $cuentaRecord->naturaleza_compras == PlanCuentas::CREDITO ? $detalleGasto->{$keyValorItem} : 0,
+                        "debito" => $detalleGasto->{$keyValorItem},
+                        "credito" => $detalleGasto->{$keyValorItem},
                         "created_by" => request()->user()->id,
                         "updated_by" => request()->user()->id
                     ]);
@@ -185,7 +195,7 @@ class GastosController extends Controller
             if ($this->totalesFactura['total_rete_fuente']) {
                 $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
                 
-                if ($cuentaRetencion->naturaleza_egresos == PlanCuentas::DEBITO || $cuentaRetencion->naturaleza_egresos == PlanCuentas::CREDITO) {
+                if ($cuentaRetencion->naturaleza_compras == PlanCuentas::DEBITO || $cuentaRetencion->naturaleza_compras == PlanCuentas::CREDITO) {
                     $doc = new DocumentosGeneral([
                         "id_cuenta" => $cuentaRetencion->id,
                         "id_nit" => $cuentaRetencion->exige_nit ? $gasto->id_proveedor : null,
@@ -197,13 +207,13 @@ class GastosController extends Controller
                         "created_by" => request()->user()->id,
                         "updated_by" => request()->user()->id
                     ]);
-                    $documentoGeneral->addRow($doc, $cuentaRetencion->naturaleza_egresos);
+                    $documentoGeneral->addRow($doc, $cuentaRetencion->naturaleza_compras);
                 } else {
                     DB::connection('sam')->rollback();
                     return response()->json([
                         "success"=>false,
                         'data' => [],
-                        "message"=> ['Cuenta retención' => ['La cuenta '.$cuentaRetencion->cuenta. ' - ' .$cuentaRetencion->nombre. ' no tiene naturaleza en ventas']]
+                        "message"=> ['Cuenta retención' => ['La cuenta '.$cuentaRetencion->cuenta. ' - ' .$cuentaRetencion->nombre. ' no tiene naturaleza en compras']]
                     ], 422);
                 }
             }
@@ -230,8 +240,8 @@ class GastosController extends Controller
                     'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $gasto->id_centro_costos : null,
                     'concepto' => $formaPago->cuenta->exige_concepto ? 'GASTO: PAGO' : null,
                     'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $gasto->documento_referencia : null,
-                    'debito' => $formaPago->cuenta->naturaleza_compras == PlanCuentas::DEBITO ? $pago->valor : 0,
-                    'credito' => $formaPago->cuenta->naturaleza_compras == PlanCuentas::CREDITO ? $pago->valor : 0,
+                    'debito' => $pago->valor,
+                    'credito' => $pago->valor,
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
@@ -356,9 +366,17 @@ class GastosController extends Controller
             $porcentajeRetencion = $this->totalesFactura['porcentaje_rete_fuente'];
 
             $subtotalGasto = $gasto->valor_gasto - ($gasto->descuento_gasto + $gasto->no_valor_iva);
-            $ivaGasto = $porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0;
-            $retencionGasto = $porcentajeRetencion ? $subtotalGasto * ($porcentajeRetencion / 100) : 0;
-            $totalGasto = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - $retencionGasto;
+            
+            if ($this->proveedor->porcentaje_aiu) {
+                $baseAIU = $subtotalGasto * ($this->proveedor->porcentaje_aiu / 100);
+                $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
+                $retencionGasto = $porcentajeRetencion ? $baseAIU * ($porcentajeRetencion / 100) : 0;
+                $totalGasto = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - $retencionGasto;
+            } else {
+                $ivaGasto = $porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0;
+                $retencionGasto = $porcentajeRetencion ? $subtotalGasto * ($porcentajeRetencion / 100) : 0;
+                $totalGasto = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - $retencionGasto;
+            }
 
             $this->totalesFactura['subtotal']+= $subtotalGasto;
             $this->totalesFactura['total_iva']+= $ivaGasto;

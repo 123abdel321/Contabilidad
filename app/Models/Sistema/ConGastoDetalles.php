@@ -22,6 +22,8 @@ class ConGastoDetalles extends Model
         'id_cuenta_retencion_declarante',
         'observacion',
         'subtotal',
+        'aiu_porcentaje',
+        'aiu_valor',
         'descuento_porcentaje',
         'rete_fuente_porcentaje',
         'rete_fuente_valor',

@@ -8,6 +8,7 @@ var totalAnticiposGasto = 0;
 var $comboNitGastos = null;
 var guardandoGasto = false;
 var retencionesGasto = [];
+var porcentajeAIUGastos = 0;
 var validarFacturaGastos = false;
 var abrirFormasPagoGastos = false;
 var $comboCentroCostoGastos = null;
@@ -42,6 +43,16 @@ function gastoInit () {
             {//VALOR GASTO
                 "data": function (row, type, set, col){
                     return `<input type="text" data-type="currency" class="form-control form-control-sm input_number" id="gastovalor_${row.id}" onkeypress="changeValorGasto(${row.id}, event)" onfocus="this.select();" onfocusout="changeValorGasto(${row.id})" style="width: 110px !important; text-align: right;" min="0" value="${new Intl.NumberFormat("ja-JP").format(row.valor_gasto)}" disabled>`;
+                }
+            },
+            {//AIU
+                "data": function (row, type, set, col){
+                    return `<div class="form-group mb-3" style="min-width: 85px;">
+                        <div class="input-group input-group-sm" style="height: 18px; min-width: 112px;">
+                            <span id="gasto_aiu_porcentaje_text_${row.id}" class="input-group-text" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">${row.porcentaje_aiu}%</span>
+                            <input style="height: 30px; text-align: right; min-width: 80px;" type="text" class="form-control form-control-sm" id="gasto_base_aiu_${row.id}" value="${new Intl.NumberFormat("ja-JP").format(row.base_aiu)}" disabled>
+                        </div>
+                    </div>`;
                 }
             },
             {//PORCENTAJE DESCUENTO
@@ -282,18 +293,19 @@ function gastoInit () {
 
     dataGasto = [];
     retencionesGasto = [];
-    var column3 = gasto_table.column(3);//% Dscto
-    var column4 = gasto_table.column(4);//Dscto
-    var column6 = gasto_table.column(6);//Retencion
 
-    column6.visible(false);
+    var columnAIU = gasto_table.column(3);//AIU
+    var columnPorDescuento = gasto_table.column(4);//% Dscto
+    var columnValDescuento = gasto_table.column(5);//Val Dscto
+
+    columnAIU.visible(false);
 
     if (gastoDescuento) {
-        column3.visible(true);
-        column4.visible(true);
+        columnPorDescuento.visible(true);
+        columnValDescuento.visible(true);
     } else {
-        column3.visible(false);
-        column4.visible(false);
+        columnPorDescuento.visible(false);
+        columnValDescuento.visible(false);
     }
 
     setTimeout(function(){
@@ -397,6 +409,8 @@ function addRowGastos(openCuenta = true) {
         "id_concepto": null,
         "editar_iva": false,
         "valor_gasto": 0,
+        'porcentaje_aiu': porcentajeAIUGastos,
+        'base_aiu': 0,
         "descuento_gasto": 0,
         "porcentaje_descuento_gasto": 0,
         "valor_iva": 0,
@@ -433,6 +447,9 @@ function changeConceptoGasto(idGasto) {
     if (!data.id_cuenta_iva && gastoIva) {
         dataGasto[indexGasto].editar_iva = true;
     }
+
+
+
     //RETENCION
     var proveedor = $comboNitGastos.select2('data')[0];
     
@@ -494,12 +511,12 @@ function mostrarValoresGastos () {
     if (gasto_iva) $("#gasto_iva_disp_view").show();
     else $("#gasto_iva_disp_view").hide();
     
-    var column6 = gasto_table.column(6);//Retencion
+    var columnRetencion = gasto_table.column(7);//Retencion
     if (gasto_retencion) {
-        column6.visible(true);
+        columnRetencion.visible(true);
         $("#gasto_retencion_disp_view").show();
     } else {
-        column6.visible(false);
+        columnRetencion.visible(false);
         $("#gasto_retencion_disp_view").hide();
     }
 
@@ -526,7 +543,7 @@ function mostrarValoresGastos () {
 }
 
 function setDisabledGastosRow(data = null, idGasto) {
-
+    console.log('setDisabledGastosRow: ',data);
     if (data) {
         $("#gastovalor_"+idGasto).prop('disabled', false);
         $("#gastoobservacion_"+idGasto).prop('disabled', false);
@@ -541,6 +558,12 @@ function setDisabledGastosRow(data = null, idGasto) {
     } else {
         $("#gastoporcentajedescuento_"+idGasto).prop('disabled', true);
         $("#gastovalordescuento_"+idGasto).prop('disabled', true);
+    }
+
+    if (data && gastoAIU) {
+        $("#porcentajeaiu_"+idGasto).prop('disabled', false);
+    } else {
+        $("#porcentajeaiu_"+idGasto).prop('disabled', true);
     }
 }
 
@@ -677,12 +700,21 @@ function changeValorGasto (idGasto, event = null) {
         
         var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
         var valorSubtotal = valorGasto - (dataGasto[indexGasto].descuento_gasto + dataGasto[indexGasto].no_valor_iva);
-        var valorIva = valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100);
-        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal);
+        var valorIva = 0;
+        var baseAIU = 0;
+        if (porcentajeAIUGastos) {
+            baseAIU = valorSubtotal * (porcentajeAIUGastos / 100);
+            valorIva = baseAIU * (dataGasto[indexGasto].porcentaje_iva / 100);
+        } else {
+            valorIva = valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100);
+        }
+
+        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal, baseAIU);
         var valorTotal = (valorSubtotal + valorIva) - valorRetencion;
 
         dataGasto[indexGasto].valor_gasto = valorGasto;
         dataGasto[indexGasto].valor_iva = valorIva;
+        dataGasto[indexGasto].base_aiu = baseAIU;
         dataGasto[indexGasto].total_valor_gasto = valorTotal;
         dataGasto[indexGasto].porcentaje_retencion = porcentajeRetencion;
         dataGasto[indexGasto].valor_retencion = valorRetencion;
@@ -768,7 +800,13 @@ function totalValoresGastos () {
     if (valorRetencion) {
         for (let index = 0; index < dataGasto.length; index++) {
             var subTotal = dataGasto[index].valor_gasto - (dataGasto[index].descuento_gasto + dataGasto[index].no_valor_iva);
-            var totalRetencion = subTotal * (porcentajeRetencion / 100);
+            var totalRetencion = 0;
+            if (porcentajeAIUGastos) {
+                var baseAIU = subTotal * (porcentajeAIUGastos / 100);
+                totalRetencion = baseAIU * (porcentajeRetencion / 100);
+            } else {
+                totalRetencion = subTotal * (porcentajeRetencion / 100);
+            }
             if (totalRetencion != dataGasto[index].valor_retencion) {
                 var dataConceptoGasto = $('#combo_concepto_gasto_'+dataGasto[index].id).select2('data')[0];
                 if (dataConceptoGasto) {
@@ -829,7 +867,7 @@ function totalValoresGastos () {
     return [gasto_iva, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total];
 }
 
-function calcularRetencion (valorSubtotal = null, valorGastoRow) {
+function calcularRetencion (valorSubtotal = null, valorGastoRow, baseAIU = 0) {
     var calcularRow = false;
     var porcentaje = 0;
     var base = 0;
@@ -852,6 +890,10 @@ function calcularRetencion (valorSubtotal = null, valorGastoRow) {
             }
         }
     });
+
+    if (baseAIU) {
+        return [baseAIU * (porcentaje / 100), porcentaje];
+    }
 
     if (!calcularRow && porcentaje) return [valorSubtotal * (porcentaje / 100), porcentaje];
     if (calcularRow && porcentaje) return [valorGastoRow * (porcentaje / 100), porcentaje];
@@ -1071,6 +1113,9 @@ function deleteGastoRow (idGasto) {
 
 $(document).on('change', '#id_nit_gasto', function () {
     let data = $('#id_nit_gasto').select2('data')[0];
+    var columnAIU = gasto_table.column(3);//AIU
+    columnAIU.visible(false);
+    if (data && data.porcentaje_aiu) configurarAIU(data.porcentaje_aiu);
     setTimeout(function(){
         $('#documento_referencia_gasto').focus().select();
     },10);
@@ -1144,6 +1189,12 @@ $(document).on('keydown', '.custom-gasto_conceptogasto .select2-search__field', 
         abrirFormasPagoGastos = false;
     }
 });
+
+function configurarAIU(porcentaje) {
+    porcentajeAIUGastos = parseFloat(porcentaje);
+    var columnAIU = gasto_table.column(3);//AIU
+    columnAIU.visible(true);
+}
 
 function buscarFacturaGasto(event) {
 

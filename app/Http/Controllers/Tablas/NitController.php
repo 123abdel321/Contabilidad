@@ -165,6 +165,7 @@ class NitController extends Controller
 			'cupo' => 'nullable|numeric|min:0|digits_between:1,13',
 			'descuento' => 'nullable|numeric|min:0|max:100',
 			'no_calcular_iva' => 'nullable|boolean',
+            'porcentaje_aiu' => 'nullable|numeric',
 			'inactivar' => 'nullable',
             'declarante' => 'nullable'
 		];
@@ -195,6 +196,7 @@ class NitController extends Controller
                 'direccion' => $request->get('direccion'),
                 'email' => $request->get('email'),
                 'telefono_1' => $request->get('telefono_1'),
+                'porcentaje_aiu' => $request->get('porcentaje_aiu'),
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
                 'declarante' => $request->get('declarante'),
@@ -262,6 +264,7 @@ class NitController extends Controller
                 'telefono_1' => $request->get('telefono_1'),
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
+                'porcentaje_aiu' => $request->get('porcentaje_aiu'),
                 'declarante' => $request->get('declarante'),
                 'updated_by' => request()->user()->id,
             ]);
@@ -335,6 +338,7 @@ class NitController extends Controller
             'segundo_apellido',
             'email',
             'declarante',
+            'porcentaje_aiu',
             \DB::raw('telefono_1 AS telefono'),
             \DB::raw("(CASE
 					WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)

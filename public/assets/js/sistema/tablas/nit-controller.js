@@ -82,6 +82,7 @@ function nitInit() {
                     return 'NO';
                 }
             },
+            {"data":'porcentaje_aiu', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
@@ -168,6 +169,7 @@ function nitInit() {
             $("#email").val(data.email);
             $("#telefono_1").val(data.telefono_1);
             $("#observaciones").val(data.observaciones);
+            $("#porcentaje_aiu").val(data.porcentaje_aiu);
             
             if(data.logo_nit) {
                 $('#new_avatar').attr('src', 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/'+data.logo_nit);
@@ -403,6 +405,7 @@ $(document).on('click', '#updateNit', function () {
             id_ciudad: $("#id_ciudad").val(),
             observaciones: $("#observaciones").val(),
             id_vendedor: $('#id_vendedor_nit').val(),
+            porcentaje_aiu: $('#porcentaje_aiu').val(),
             declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
@@ -471,6 +474,7 @@ $(document).on('click', '#saveNit', function () {
             id_ciudad: $("#id_ciudad").val(),
             observaciones: $("#observaciones").val(),
             id_vendedor: $('#id_vendedor_nit').val(),
+            porcentaje_aiu: $('#porcentaje_aiu').val(),
             declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
@@ -532,6 +536,7 @@ function clearFormNits(){
     $("#telefono_1").val('');
     $("#direccion").val('');
     $("#email").val('');
+    $("#porcentaje_aiu").val('');
     $('#default_avatar').show();
     $('#new_avatar').hide();
 
@@ -552,6 +557,7 @@ function hideFormNits(){
         'otros_nombres',
         'razon_social',
         'telefono_1',
+        'porcentaje_aiu',
         'direccion',
         'email',
         'declarante'
@@ -564,6 +570,7 @@ function hideFormNits(){
         'numero_documento',
         'razon_social',
         'telefono_1',
+        'porcentaje_aiu',
         'direccion',
         'email',
         'declarante'
@@ -579,6 +586,7 @@ function hideFormNits(){
         'primer_nombre',
         'otros_nombres',
         'telefono_1',
+        'porcentaje_aiu',
         'direccion',
         'email',
         'declarante'

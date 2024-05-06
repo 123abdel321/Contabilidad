@@ -4,6 +4,7 @@
             <th style="border-radius: 15px 0px 0px 0px !important;"><i class="fas fa-sliders-h"></i></th>
             <th>Concepto</th>
             <th>Valor</th>
+            <th>AIU</th>
             <th>% Dscto</th>
             <th>Dscto</th>
             <th>Iva</th>

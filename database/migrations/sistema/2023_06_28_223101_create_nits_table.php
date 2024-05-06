@@ -44,6 +44,7 @@ class CreateNitsTable extends Migration
             $table->smallInteger('plazo')->nullable();
             $table->decimal('cupo', 15)->nullable();
             $table->decimal('descuento', 15)->nullable();
+            $table->decimal('porcentaje_aiu', 15)->nullable();
             $table->boolean('no_calcular_iva')->default(false);
             $table->boolean('inactivar')->nullable();
             $table->boolean('declarante')->nullable();

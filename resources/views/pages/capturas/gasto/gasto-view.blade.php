@@ -203,6 +203,7 @@
 
     <script>
         var gastoIva = '<?php echo auth()->user()->can("gasto iva"); ?>';
+        var gastoAIU = '<?php echo auth()->user()->can("gasto aiu"); ?>';
         var gastoDescuento = '<?php echo auth()->user()->can("gasto descuento"); ?>';
         var comprobantesGastos = JSON.parse('<?php echo $comprobantes; ?>');
         var centrosCostosGastos = JSON.parse('<?php echo $centro_costos; ?>');
