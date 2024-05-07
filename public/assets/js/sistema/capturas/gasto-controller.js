@@ -9,6 +9,7 @@ var $comboNitGastos = null;
 var guardandoGasto = false;
 var retencionesGasto = [];
 var porcentajeAIUGastos = 0;
+var validandoDatosIva = false;
 var validarFacturaGastos = false;
 var abrirFormasPagoGastos = false;
 var $comboCentroCostoGastos = null;
@@ -42,7 +43,7 @@ function gastoInit () {
             },
             {//VALOR GASTO
                 "data": function (row, type, set, col){
-                    return `<input type="text" data-type="currency" class="form-control form-control-sm input_number" id="gastovalor_${row.id}" onkeypress="changeValorGasto(${row.id}, event)" onfocus="this.select();" onfocusout="changeValorGasto(${row.id})" style="width: 110px !important; text-align: right;" min="0" value="${new Intl.NumberFormat("ja-JP").format(row.valor_gasto)}" disabled>`;
+                    return `<input type="text" data-type="currency" class="form-control form-control-sm input_number" id="gastovalor_${row.id}" onkeypress="changeValorGasto(${row.id}, event)" onfocus="this.select();" onfocusout="changeValorGasto(${row.id})" style="min-width: 110px !important; text-align: right;" min="0" value="${new Intl.NumberFormat("ja-JP").format(row.valor_gasto)}" disabled>`;
                 }
             },
             {//AIU
@@ -68,7 +69,7 @@ function gastoInit () {
             {//VALOR IVA
                 "data": function (row, type, set, col){
                     if (row.editar_iva) {
-                        return  `<input type="text" data-type="currency" class="form-control form-control-sm input_number" onkeypress="changeValorNoIvaGasto(${row.id}, event)" onfocus="this.select();" onfocusout="changeValorNoIvaGasto(${row.id})" style="width: 110px !important; text-align: right;" min="0" id="gasto_no_iva_valor_${row.id}" value="${new Intl.NumberFormat("ja-JP").format(row.no_valor_iva)}">`;
+                        return  `<input type="text" data-type="currency" class="form-control form-control-sm input_number" onkeypress="changeValorNoIvaGasto(${row.id}, event)" onfocus="validarDatosIva(${row.id})" onfocusout="changeValorNoIvaGasto(${row.id})" style="width: 110px !important; text-align: right;" min="0" id="gasto_no_iva_valor_${row.id}" value="${new Intl.NumberFormat("ja-JP").format(row.no_valor_iva)}">`;
                     }
                     return `<div class="form-group mb-3" style="min-width: 85px;">
                         <div class="input-group input-group-sm" style="height: 18px; min-width: 112px;">
@@ -443,30 +444,31 @@ function changeConceptoGasto(idGasto) {
     //IVA
     if (data.id_cuenta_iva && data.cuenta_iva.impuesto) {
         dataGasto[indexGasto].porcentaje_iva = parseFloat(data.cuenta_iva.impuesto.porcentaje);
-    }
-    if (!data.id_cuenta_iva && gastoIva) {
+    } else if (!data.id_cuenta_iva && porcentajeAIUGastos) {
+        dataGasto[indexGasto].porcentaje_iva = porcentajeIvaAIU;
+    } else if (!data.id_cuenta_iva && gastoIva && porcentajeAIUGastos) {
         dataGasto[indexGasto].editar_iva = true;
     }
-
-
 
     //RETENCION
     var proveedor = $comboNitGastos.select2('data')[0];
     
     if (!proveedor.declarante) {
         if (data.cuenta_retencion_declarante && data.cuenta_retencion_declarante.impuesto) {
-            var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_iva.impuesto.id);
-            if (!existe || existe < 0) {
-                retencionesGasto.push({
-                    id_retencion: data.cuenta_retencion_declarante.impuesto.id,
-                    porcentaje: parseFloat(data.cuenta_retencion_declarante.impuesto.porcentaje),
-                    base: parseFloat(data.cuenta_retencion_declarante.impuesto.base),
-                });
+            if (data.cuenta_iva) {
+                var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_iva.impuesto.id);
+                if (!existe || existe < 0) {
+                    retencionesGasto.push({
+                        id_retencion: data.cuenta_retencion_declarante.impuesto.id,
+                        porcentaje: parseFloat(data.cuenta_retencion_declarante.impuesto.porcentaje),
+                        base: parseFloat(data.cuenta_retencion_declarante.impuesto.base),
+                    });
+                }
             }
         }
     } else {
         if (data.cuenta_retencion && data.cuenta_retencion.impuesto) {
-            var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_iva.impuesto.id);
+            var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion.impuesto.id);
             if (!existe || existe < 0) {
                 retencionesGasto.push({
                     id_retencion: data.cuenta_retencion.impuesto.id,
@@ -479,10 +481,6 @@ function changeConceptoGasto(idGasto) {
 
     dataGasto[indexGasto].observacion = data.text.split(' - ')[1];
 
-    // if (data.cuenta_retencion && data.cuenta_retencion.impuesto) {
-    //     dataGasto[indexGasto].porcentaje_retencion = parseFloat(data.cuenta_retencion.impuesto.porcentaje);
-    // }
-    
     var dataConcepto = {
         id: data.id,
         text: data.text
@@ -598,6 +596,15 @@ function changeValorNoIvaGasto (idGasto, event = null) {
     if(!event || event.keyCode == 13){
         if (!calculandoDatos) return;
         calculandoDatos = false;
+
+        if ($('#gasto_no_iva_valor_'+idGasto).val() == '') {
+            calculandoDatos = true;
+            $('#gasto_no_iva_valor_1').addClass("is-invalid");
+            return;
+        }
+
+        $('#gasto_no_iva_valor_1').removeClass("is-invalid");
+
         var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
         var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
         var valorGasto = dataGasto[indexGasto].valor_gasto;
@@ -702,6 +709,7 @@ function changeValorGasto (idGasto, event = null) {
         var valorSubtotal = valorGasto - (dataGasto[indexGasto].descuento_gasto + dataGasto[indexGasto].no_valor_iva);
         var valorIva = 0;
         var baseAIU = 0;
+
         if (porcentajeAIUGastos) {
             baseAIU = valorSubtotal * (porcentajeAIUGastos / 100);
             valorIva = baseAIU * (dataGasto[indexGasto].porcentaje_iva / 100);
@@ -721,11 +729,16 @@ function changeValorGasto (idGasto, event = null) {
         
         updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
         mostrarValoresGastos();
+
+        var focusNext = '#gastoobservacion_';
+        
+        if (dataGasto[indexGasto].editar_iva)  focusNext = '#gasto_no_iva_valor_';
+
         setTimeout(function(){
             calculandoDatos = true;
             setTimeout(function(){
-                $('#gastoTable tr').find('#gastoobservacion_'+idGasto).focus();
-                $('#gastoTable tr').find('#gastoobservacion_'+idGasto).select();
+                $('#gastoTable tr').find(focusNext+idGasto).focus();
+                $('#gastoTable tr').find(focusNext+idGasto).select();
             },10);
         },50);
     }
@@ -1194,6 +1207,19 @@ function configurarAIU(porcentaje) {
     porcentajeAIUGastos = parseFloat(porcentaje);
     var columnAIU = gasto_table.column(3);//AIU
     columnAIU.visible(true);
+}
+
+function validarDatosIva(idGasto) {
+    if (!validandoDatosIva) {
+        validandoDatosIva = true;
+        var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
+        if (dataGasto[indexGasto].no_valor_iva == 0) {
+            $('#gasto_no_iva_valor_1').val('')
+        }
+        setTimeout(function(){
+            validandoDatosIva = false;
+        },50);
+    }
 }
 
 function buscarFacturaGasto(event) {

@@ -20,6 +20,7 @@ use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\ConGastoPagos;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\ConGastoDetalles;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\ConConceptoGastos;
 use App\Models\Sistema\DocumentosGeneral;
 
@@ -63,7 +64,10 @@ class GastosController extends Controller
 
     public function index ()
     {
+        $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
+
         $data = [
+            'porcentaje_iva_aiu' => $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0,
             'comprobantes' => Comprobantes::where('tipo_comprobante', Comprobantes::TIPO_GASTOS)->get(),
             'centro_costos' => CentroCostos::get(),
         ];
@@ -308,6 +312,7 @@ class GastosController extends Controller
     private function calcularTotales($gastos)
     {
         $subtotalGeneral = 0;
+        $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
         foreach ($gastos as $gasto) {
             $gasto = (object)$gasto;
             $subtotalGeneral+= $gasto->valor_gasto - $gasto->descuento_gasto;
@@ -368,8 +373,14 @@ class GastosController extends Controller
             $subtotalGasto = $gasto->valor_gasto - ($gasto->descuento_gasto + $gasto->no_valor_iva);
             
             if ($this->proveedor->porcentaje_aiu) {
+                
                 $baseAIU = $subtotalGasto * ($this->proveedor->porcentaje_aiu / 100);
-                $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
+                
+                if ($porcentaje_iva_aiu->valor) {
+                    $ivaGasto = $baseAIU * ($porcentaje_iva_aiu->valor / 100);
+                } else{ 
+                    $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
+                }
                 $retencionGasto = $porcentajeRetencion ? $baseAIU * ($porcentajeRetencion / 100) : 0;
                 $totalGasto = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - $retencionGasto;
             } else {

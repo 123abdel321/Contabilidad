@@ -207,6 +207,7 @@
         var gastoDescuento = '<?php echo auth()->user()->can("gasto descuento"); ?>';
         var comprobantesGastos = JSON.parse('<?php echo $comprobantes; ?>');
         var centrosCostosGastos = JSON.parse('<?php echo $centro_costos; ?>');
+        var porcentajeIvaAIU = JSON.parse('<?php echo $porcentaje_iva_aiu; ?>');
     </script>
     
 </div>
