@@ -394,7 +394,7 @@ class GastosController extends Controller
             $this->totalesFactura['total_no_iva']+= $gasto->no_valor_iva;
             $this->totalesFactura['total_descuento']+= $gasto->descuento_gasto;
             $this->totalesFactura['total_rete_fuente']+= $retencionGasto;
-            $this->totalesFactura['total_gasto']+= $totalGasto;
+            $this->totalesFactura['total_gasto']+= round($totalGasto, 2);
         }
     }
 

@@ -438,21 +438,20 @@ function changeConceptoGasto(idGasto) {
     // retencionesGasto
     var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
     var indexTable = getIndexById(idGasto, gasto_table);
+    var proveedor = $comboNitGastos.select2('data')[0];
     
     dataGasto[indexGasto].id_concepto = parseInt(data.id);
 
     //IVA
     if (data.id_cuenta_iva && data.cuenta_iva.impuesto) {
         dataGasto[indexGasto].porcentaje_iva = parseFloat(data.cuenta_iva.impuesto.porcentaje);
-    } else if (!data.id_cuenta_iva && porcentajeAIUGastos) {
+    } else if (!data.id_cuenta_iva && proveedor.porcentaje_aiu) {
         dataGasto[indexGasto].porcentaje_iva = porcentajeIvaAIU;
-    } else if (!data.id_cuenta_iva && gastoIva && porcentajeAIUGastos) {
+    } else if (!data.id_cuenta_iva && !proveedor.porcentaje_aiu) {
         dataGasto[indexGasto].editar_iva = true;
     }
 
     //RETENCION
-    var proveedor = $comboNitGastos.select2('data')[0];
-    
     if (!proveedor.declarante) {
         if (data.cuenta_retencion_declarante && data.cuenta_retencion_declarante.impuesto) {
             if (data.cuenta_iva) {
@@ -577,7 +576,7 @@ function changeValorDescuentoGasto (idGasto, event = null) {
         var valorSubtotal = valorGasto - (valorDescuento + dataGasto[indexGasto].no_valor_iva);
         var valorIva = valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100);
         var valorRetencion = valorSubtotal * (dataGasto[indexGasto].porcentaje_retencion / 100);
-        var valorTotal = (valorSubtotal + valorIva) - valorRetencion;
+        var valorTotal = parseFloat((valorSubtotal + valorIva) - valorRetencion).toFixed(2);
 
         dataGasto[indexGasto].porcentaje_descuento_gasto = valorPorcentajeDescuento;
         dataGasto[indexGasto].descuento_gasto = valorDescuento;
@@ -680,7 +679,7 @@ function changePorcentajeDescuentoGasto (idGasto, event = null) {
         var valorSubtotal = valorGasto - valorDescuento;
         var valorIva = valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100);
         var valorRetencion = valorSubtotal * (dataGasto[indexGasto].porcentaje_retencion / 100);
-        var valorTotal = (valorSubtotal + valorIva) - valorRetencion;
+        var valorTotal = parseFloat((valorSubtotal + valorIva) - valorRetencion).toFixed(2);
 
         dataGasto[indexGasto].porcentaje_descuento_gasto = valorPorcentajeDescuento;
         dataGasto[indexGasto].descuento_gasto = valorDescuento;
@@ -718,7 +717,7 @@ function changeValorGasto (idGasto, event = null) {
         }
 
         var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal, baseAIU);
-        var valorTotal = (valorSubtotal + valorIva) - valorRetencion;
+        var valorTotal = parseFloat((valorSubtotal + valorIva) - valorRetencion).toFixed(2);
 
         dataGasto[indexGasto].valor_gasto = valorGasto;
         dataGasto[indexGasto].valor_iva = valorIva;
@@ -826,7 +825,7 @@ function totalValoresGastos () {
                     var idConcepto = dataConceptoGasto.id;
                     dataGasto[index].porcentaje_retencion = porcentajeRetencion;
                     dataGasto[index].valor_retencion = totalRetencion;
-                    dataGasto[index].total_valor_gasto = (subTotal + dataGasto[index].valor_iva) - totalRetencion;
+                    dataGasto[index].total_valor_gasto = parseFloat((subTotal + dataGasto[index].valor_iva) - totalRetencion).toFixed(2);
 
                     var indexTable = getIndexById(dataGasto[index].id, gasto_table);
                     gasto_table.row(indexTable).data(dataGasto[index]).draw(false);
@@ -848,7 +847,7 @@ function totalValoresGastos () {
 
                 dataGasto[index].porcentaje_retencion = porcentajeRetencion;
                 dataGasto[index].valor_retencion = 0;
-                dataGasto[index].total_valor_gasto = (subTotal + dataGasto[index].valor_iva);
+                dataGasto[index].total_valor_gasto = parseFloat((subTotal + dataGasto[index].valor_iva)).toFixed(2);
 
                 var dataConceptoGasto = $('#combo_concepto_gasto_'+dataGasto[index].id).select2('data')[0];
                 if (dataConceptoGasto) {
