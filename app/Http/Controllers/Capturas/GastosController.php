@@ -107,6 +107,8 @@ class GastosController extends Controller
 
         $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
         $request->request->add(['consecutivo' => $consecutivo]);
+        $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
+        $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
 
         try {
             DB::connection('sam')->beginTransaction();
@@ -142,11 +144,22 @@ class GastosController extends Controller
                 $porcentajeIva = $conceptoGasto->cuenta_iva ? floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje) : 0;
                 $subtotalGasto = $movimiento->valor_gasto - $movimiento->descuento_gasto;
                 $baseAIU = 0;
+
                 if ($this->proveedor->porcentaje_aiu) {
+
+                    $ivaGasto = 0;
                     $baseAIU = $subtotalGasto * ($this->proveedor->porcentaje_aiu / 100);
-                    $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
+
+                    if ($porcentajeIva) {
+                        $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
+                    } else if ($porcentaje_iva_aiu) {
+                        $ivaGasto = $baseAIU * ($porcentaje_iva_aiu / 100);
+                    }
+
                     $retencionGasto = $porcentajeRetencion ? $baseAIU * ($porcentajeRetencion / 100) : 0;
                     $totalGasto = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - $retencionGasto;
+
+                    $subtotalGasto+= $ivaGasto;
                 } else {
                     $ivaGasto = $porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0;
                     $retencionGasto = $porcentajeRetencion ? $subtotalGasto * ($porcentajeRetencion / 100) : 0;
@@ -178,6 +191,7 @@ class GastosController extends Controller
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
                     $cuentaRecord = $conceptoGasto->{$cuentaKey};
                     $keyValorItem = $cuenta["valor"];
+                    
                     if (!$cuentaRecord) continue;
                     
                     $doc = new DocumentosGeneral([
@@ -253,7 +267,7 @@ class GastosController extends Controller
             }
 
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
-
+            
             if (!$documentoGeneral->save()) {
 
 				DB::connection('sam')->rollback();
@@ -373,7 +387,6 @@ class GastosController extends Controller
             $subtotalGasto = $gasto->valor_gasto - ($gasto->descuento_gasto + $gasto->no_valor_iva);
             
             if ($this->proveedor->porcentaje_aiu) {
-                
                 $baseAIU = $subtotalGasto * ($this->proveedor->porcentaje_aiu / 100);
                 
                 if ($porcentaje_iva_aiu->valor) {
