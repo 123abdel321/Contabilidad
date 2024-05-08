@@ -867,10 +867,10 @@ function totalValoresGastos () {
     }
 
     dataGasto.forEach(gastoRow => {
-        gasto_sub_total+= gastoRow.valor_gasto - (gastoRow.descuento_gasto + gastoRow.no_valor_iva);
-        gasto_iva+= (gastoRow.valor_iva + gastoRow.no_valor_iva);
-        gasto_retencion+= gastoRow.valor_retencion;
-        gasto_total+= (gastoRow.total_valor_gasto + gastoRow.no_valor_iva);
+        gasto_sub_total+= parseFloat(gastoRow.valor_gasto) - parseFloat(gastoRow.descuento_gasto) + parseFloat(gastoRow.no_valor_iva);
+        gasto_iva+= parseFloat(gastoRow.valor_iva) + parseFloat(gastoRow.no_valor_iva);
+        gasto_retencion+= parseFloat(gastoRow.valor_retencion);
+        gasto_total+= parseFloat(gastoRow.total_valor_gasto) + parseFloat(gastoRow.no_valor_iva);
         gasto_descuento+= gastoRow.descuento_gasto;
     });
     
