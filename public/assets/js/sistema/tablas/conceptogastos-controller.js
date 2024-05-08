@@ -324,6 +324,7 @@ function conceptogastosInit() {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
             dataType: 'json',
+            allowClear: true,
             data: function (params) {
                 var query = {
                     search: params.term,
@@ -343,6 +344,7 @@ function conceptogastosInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#conceptoGastosFormModal'),
         delay: 250,
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
