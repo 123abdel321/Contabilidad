@@ -169,6 +169,10 @@
     <!-- FOOTER -->
     @include('layouts.footers.footer')
 
+    <script>
+        var version_app = '<?php echo config('app.version'); ?>';
+    </script>
+
     <!--   Core JS Files   -->
     <script src="assets/js/core/popper.min.js"></script>
     <script src="assets/js/core/bootstrap.min.js"></script>
@@ -202,7 +206,7 @@
     <!-- PUSHER -->
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <!-- SISTEMA -->
-    <script src="assets/js/sistema/sistema.js" rel="stylesheet"></script>
+    <script src="assets/js/sistema/sistema.js?v={{ config('app.version') }}" rel="stylesheet"></script>
     <!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js" rel="stylesheet"></script> -->
     
     @stack('js')
