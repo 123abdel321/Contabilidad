@@ -598,11 +598,9 @@ function changeValorNoIvaGasto (idGasto, event = null) {
 
         if ($('#gasto_no_iva_valor_'+idGasto).val() == '') {
             calculandoDatos = true;
-            $('#gasto_no_iva_valor_1').addClass("is-invalid");
+            $('#gasto_no_iva_valor_'+idGasto).addClass("is-invalid");
             return;
         }
-
-        $('#gasto_no_iva_valor_1').removeClass("is-invalid");
 
         var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
         var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
@@ -824,7 +822,7 @@ function totalValoresGastos () {
                 if (dataConceptoGasto) {
                     var idConcepto = dataConceptoGasto.id;
                     dataGasto[index].porcentaje_retencion = porcentajeRetencion;
-                    dataGasto[index].valor_retencion = totalRetencion;
+                    dataGasto[index].valor_retencion = parseFloat(totalRetencion).toFixed(2);
                     dataGasto[index].total_valor_gasto = parseFloat((subTotal + dataGasto[index].valor_iva) - totalRetencion).toFixed(2);
 
                     var indexTable = getIndexById(dataGasto[index].id, gasto_table);
@@ -1125,6 +1123,19 @@ function deleteGastoRow (idGasto) {
 
 $(document).on('change', '#id_nit_gasto', function () {
     let data = $('#id_nit_gasto').select2('data')[0];
+    if(gasto_table.rows().data().length){
+        gasto_table.clear([]).draw();
+        gasto_table.row(0).remove().draw();
+        mostrarValoresGastos();
+        var countE = new CountUp('total_faltante_gasto', 0, 0, 2, 0.5);
+            countE.start();
+    }
+
+    clearFormasPagoGasto();
+    
+    $('#total_faltante_gasto').val('0.00');
+    $('#cancelarCapturaGasto').hide();
+    $('#input_anticipos_gasto').hide();
     var columnAIU = gasto_table.column(3);//AIU
     columnAIU.visible(false);
     if (data && data.porcentaje_aiu) configurarAIU(data.porcentaje_aiu);
@@ -1170,6 +1181,7 @@ function cancelarGasto() {
     }
 
     clearFormasPagoGasto();
+    
     $('#total_faltante_gasto').val('0.00');
     $('#cancelarCapturaGasto').hide();
     $('#input_anticipos_gasto').hide();
