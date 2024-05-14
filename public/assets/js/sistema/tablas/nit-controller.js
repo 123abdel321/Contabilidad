@@ -600,7 +600,7 @@ function hideFormNits(){
     if (tipoDocumento && tipoDocumento == '6') {
         nitsForm.forEach(form => {
             $("#div_"+form).show();
-            if (form == 'otros_nombres' || form == 'segundo_apellido') {
+            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu') {
             } else {
                 $("#"+form).prop('required',true);
             }
@@ -608,7 +608,7 @@ function hideFormNits(){
     } else if (tipoDocumento) {
         noNitsForm.forEach(form => {
             $("#div_"+form).show();
-            if (form == 'otros_nombres' || form == 'segundo_apellido') {
+            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu') {
             } else {
                 $("#"+form).prop('required',true);
             }

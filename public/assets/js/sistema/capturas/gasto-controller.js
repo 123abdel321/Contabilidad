@@ -445,9 +445,9 @@ function changeConceptoGasto(idGasto) {
     //IVA
     if (data.id_cuenta_iva && data.cuenta_iva.impuesto) {
         dataGasto[indexGasto].porcentaje_iva = parseFloat(data.cuenta_iva.impuesto.porcentaje);
-    } else if (!data.id_cuenta_iva && proveedor.porcentaje_aiu) {
+    } else if (!data.id_cuenta_iva && parseInt(proveedor.porcentaje_aiu)) {
         dataGasto[indexGasto].porcentaje_iva = porcentajeIvaAIU;
-    } else if (!data.id_cuenta_iva && !proveedor.porcentaje_aiu) {
+    } else if (!data.id_cuenta_iva && !parseInt(proveedor.porcentaje_aiu)) {
         dataGasto[indexGasto].editar_iva = true;
     }
 
@@ -1137,8 +1137,9 @@ $(document).on('change', '#id_nit_gasto', function () {
     $('#cancelarCapturaGasto').hide();
     $('#input_anticipos_gasto').hide();
     var columnAIU = gasto_table.column(3);//AIU
+    porcentajeAIUGastos = 0;
     columnAIU.visible(false);
-    if (data && data.porcentaje_aiu) configurarAIU(data.porcentaje_aiu);
+    if (data && data.porcentaje_aiu && data.porcentaje_aiu != 0) configurarAIU(data.porcentaje_aiu);
     setTimeout(function(){
         $('#documento_referencia_gasto').focus().select();
     },10);
