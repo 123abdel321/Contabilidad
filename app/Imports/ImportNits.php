@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\WithProgressBar;
 //MODELS
 use App\Models\Sistema\NitsImport;
 
+
 class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
 {
     use Importable;
@@ -29,7 +30,7 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
                 if (!$row['email']) {
                     $nuevoMail = '';
                     if ($row['primer_nombre'] && $row['primer_apellido']) {
-                        $nuevoMail= $row['primer_nombre'].'.'.$row['primer_apellido'];
+                        $nuevoMail= $row['primer_nombre'].'.'.$row['primer_apellido'].rand(1, 5000);
                     } else if ($row['primer_nombre']) {
                         $nuevoMail= $row['primer_nombre'].'_'.rand(1, 5000);
                     } else if ($row['primer_apellido']) {
