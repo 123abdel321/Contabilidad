@@ -344,6 +344,7 @@ function conceptogastosInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#conceptoGastosFormModal'),
         delay: 250,
+        placeholder: "Seleccione una Retención",
         allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',

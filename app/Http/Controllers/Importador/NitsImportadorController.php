@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\Nits;
+use App\Models\Empresas\Empresa;
 use App\Models\Sistema\NitsImport;
 use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\TipoDocumentos;
@@ -51,7 +52,9 @@ class NitsImportadorController extends Controller
 
             NitsImport::truncate();
 
-            $import = new ImportNits();
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+            $import = new ImportNits($empresa->razon_social);
             $import->import($file);
 
             return response()->json([

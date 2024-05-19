@@ -14,10 +14,37 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
 {
     use Importable;
 
+    protected $razon_social = null;
+
+    public function __construct(string $razon_social)
+    {
+        $this->razon_social = $razon_social;
+    }
+
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) {
-            if ($row['numero_documento'] && $row['email']) {
+            if ($row['numero_documento']) {
+                $nuevoMail = $row['email'];
+                if (!$row['email']) {
+                    $nuevoMail = '';
+                    if ($row['primer_nombre'] && $row['primer_apellido']) {
+                        $nuevoMail= $row['primer_nombre'].'.'.$row['primer_apellido'];
+                    } else if ($row['primer_nombre']) {
+                        $nuevoMail= $row['primer_nombre'].'_'.rand(1, 5000);
+                    } else if ($row['primer_apellido']) {
+                        $nuevoMail= $row['primer_apellido'].'_'.rand(1, 5000);
+                    } else if ($row['otros_nombres']) {
+                        $nuevoMail= $row['otros_nombres'].'_'.rand(1, 5000);
+                    } else if ($row['segundo_apellido']) {
+                        $nuevoMail= $row['segundo_apellido'].'_'.rand(1, 5000);
+                    }
+                }
+
+                $razon_social = explode(" ", $this->razon_social);
+
+                $nuevoMail.='@'.$razon_social[0].'.com';
+
                 NitsImport::create([
                     'tipo_documento' => $row['tipo_documento'],
                     'numero_documento' => $row['numero_documento'],
@@ -28,7 +55,7 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
                     'segundo_apellido' => $row['segundo_apellido'],
                     'razon_social' => $row['razon_social'],
                     'direccion' => $row['direccion'],
-                    'email' => $row['email'],
+                    'email' => $nuevoMail,
                     'telefono_1' => $row['telefono_1'],
                     'plazo' => $row['plazo'],
                     'cupo' => $row['cupo'],
