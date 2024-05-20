@@ -146,9 +146,15 @@ function auxiliarInit() {
             {"data": function (row, type, set){
                 var saldo_final = parseFloat(row.saldo_final);
                 if(row.naturaleza_cuenta == 0 && saldo_final < 0 && row.detalle_group == 'nits') {
-                    return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
+                    if (cuenta == '11') {
+                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    }
                 } else if(row.naturaleza_cuenta == 1 && saldo_final > 0 && row.detalle_group == 'nits') {
-                    return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
+                    if (cuenta == '11') {
+                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    }
                 } else if(row.naturaleza_cuenta == 1 && saldo_final < 0) {
                     return (saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
                 }
