@@ -41,22 +41,18 @@ function auxiliarInit() {
             if(data.naturaleza_cuenta == 0 && parseInt(data.saldo_final) < 0 && data.detalle_group == 'nits') {
                 if (data.cuenta.length > 2) {
                     var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
-                    if (cuenta == '11') {
-                        return;
+                    if (!cuenta == '11') {
+                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
                     }
-                } 
-                $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
-                return;
+                }
             }
             if(data.naturaleza_cuenta == 1 && parseInt(data.saldo_final) > 0 && data.detalle_group == 'nits') {
                 if (data.cuenta.length > 2) {
                     var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
-                    if (cuenta == '11') {
-                        return;
+                    if (!cuenta == '11') {
+                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
                     }
-                } 
-                $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
-                return;
+                }
             }
             if(data.detalle_group == 'nits-totales'){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 25%)');
