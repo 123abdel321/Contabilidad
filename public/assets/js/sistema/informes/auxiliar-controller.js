@@ -39,10 +39,22 @@ function auxiliarInit() {
         },
         'rowCallback': function(row, data, index){
             if(data.naturaleza_cuenta == 0 && parseInt(data.saldo_final) < 0 && data.detalle_group == 'nits') {
+                if (data.cuenta.length > 2) {
+                    var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
+                    if (cuenta == '11') {
+                        return;
+                    }
+                } 
                 $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
                 return;
             }
             if(data.naturaleza_cuenta == 1 && parseInt(data.saldo_final) > 0 && data.detalle_group == 'nits') {
+                if (data.cuenta.length > 2) {
+                    var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
+                    if (cuenta == '11') {
+                        return;
+                    }
+                } 
                 $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
                 return;
             }
