@@ -628,7 +628,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
     {
         $collecionTotalNits = [];
         foreach ($auxiliaresDetalle as $auxiliarDetalle) {
-            if ($auxiliarDetalle->debito != "0.00" && $auxiliarDetalle->credito != "0.00") {
+            if ($auxiliarDetalle->debito != "0.00" || $auxiliarDetalle->credito != "0.00") {
                 $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
                     $auxiliarDetalle->numero_documento.'A';
     
