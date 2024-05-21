@@ -628,40 +628,41 @@ class ProcessInformeAuxiliar implements ShouldQueue
     {
         $collecionTotalNits = [];
         foreach ($auxiliaresDetalle as $auxiliarDetalle) {
-
-            $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                $auxiliarDetalle->numero_documento.'A';
-
-            $collecionTotalNits[$cuentaNueva][] = [
-                'id_nit' => $auxiliarDetalle->id_nit,
-                'numero_documento' => $auxiliarDetalle->numero_documento,
-                'nombre_nit' => $auxiliarDetalle->nombre_nit,
-                'razon_social' => $auxiliarDetalle->razon_social,
-                'id_cuenta' => $auxiliarDetalle->id_cuenta,
-                'cuenta' => $auxiliarDetalle->cuenta,
-                'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
-                'documento_referencia' => '',
-                'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
-                'id_centro_costos' => '',
-                'id_comprobante' => '',
-                'codigo_comprobante' => '',
-                'nombre_comprobante' => '',
-                'codigo_cecos' => '',
-                'nombre_cecos' =>  '',
-                'consecutivo' => '',
-                'concepto' => '',
-                'fecha_manual' => '',
-                'fecha_creacion' => NULL,
-                'fecha_edicion' => NULL,
-                'created_by' => NULL,
-                'updated_by' => NULL,
-                // 'anulado' => '',
-                'debito' => $auxiliarDetalle->debito,
-                'credito' => $auxiliarDetalle->credito,
-                'saldo_final' => $auxiliarDetalle->saldo_final,
-                'detalle' => false,
-                'detalle_group' => 'nits-totales',
-            ];
+            if ($auxiliarDetalle->debito != "0.00" && $auxiliarDetalle->credito != "0.00") {
+                $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
+                    $auxiliarDetalle->numero_documento.'A';
+    
+                $collecionTotalNits[$cuentaNueva][] = [
+                    'id_nit' => $auxiliarDetalle->id_nit,
+                    'numero_documento' => $auxiliarDetalle->numero_documento,
+                    'nombre_nit' => $auxiliarDetalle->nombre_nit,
+                    'razon_social' => $auxiliarDetalle->razon_social,
+                    'id_cuenta' => $auxiliarDetalle->id_cuenta,
+                    'cuenta' => $auxiliarDetalle->cuenta,
+                    'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
+                    'documento_referencia' => '',
+                    'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
+                    'id_centro_costos' => '',
+                    'id_comprobante' => '',
+                    'codigo_comprobante' => '',
+                    'nombre_comprobante' => '',
+                    'codigo_cecos' => '',
+                    'nombre_cecos' =>  '',
+                    'consecutivo' => '',
+                    'concepto' => '',
+                    'fecha_manual' => '',
+                    'fecha_creacion' => NULL,
+                    'fecha_edicion' => NULL,
+                    'created_by' => NULL,
+                    'updated_by' => NULL,
+                    // 'anulado' => '',
+                    'debito' => $auxiliarDetalle->debito,
+                    'credito' => $auxiliarDetalle->credito,
+                    'saldo_final' => $auxiliarDetalle->saldo_final,
+                    'detalle' => false,
+                    'detalle_group' => 'nits-totales',
+                ];
+            }
         }
 
         foreach ($collecionTotalNits as $key => $collecion) {
