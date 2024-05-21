@@ -489,7 +489,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
     private function addTotalNitsData($auxiliaresDetalle)
     {
         foreach ($auxiliaresDetalle as $auxiliarDetalle) {
-            if ($auxiliarDetalle->total_columnas < 2) continue;
+            if (intval($auxiliarDetalle->total_columnas < 2)) continue;
             $cuentaNumero = 1;
             $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
                 $auxiliarDetalle->numero_documento.'B'.
@@ -628,7 +628,11 @@ class ProcessInformeAuxiliar implements ShouldQueue
     {
         $collecionTotalNits = [];
         foreach ($auxiliaresDetalle as $auxiliarDetalle) {
-            if ($auxiliarDetalle->debito != "0.00" || $auxiliarDetalle->credito != "0.00") {
+            $addItem = true;
+            if (substr($auxiliarDetalle->cuenta, 0, 2) == '11') {
+                if ($auxiliarDetalle->debito == "0.00" && $auxiliarDetalle->credito == "0.00") $addItem = false;
+            }
+            if ($addItem) {
                 $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
                     $auxiliarDetalle->numero_documento.'A';
     
