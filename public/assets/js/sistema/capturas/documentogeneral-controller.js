@@ -276,6 +276,7 @@ function documentogeneralInit() {
                 $('#fecha_manual_documento').select();
             },10);
             tipo_comprobante = data[0].tipo_comprobante;
+            if (tipo_comprobante == 5) tipo_comprobante = 2;
             consecutivoSiguiente();
         }
     });
@@ -435,8 +436,6 @@ function changeCuentaRow(idRow) {
             $("#conten_button_"+idRow).hide();
             $("#documento_referencia_"+idRow).addClass("normal_input");
             $("#documento_referencia_"+idRow).prop("readonly", false);
-            console.log('data: ',data);
-            console.log('tipo_comprobante: ',tipo_comprobante);
 
             if(data.cuenta.slice(0, 2) == '11' && idRow > 0 && data.naturaleza_cuenta == data.naturaleza_origen) {
                 var dataDocumento = documento_general_table.rows().data();
@@ -1186,7 +1185,7 @@ function searchCaptura() {
                             documento.cuenta.naturaleza_cuenta = documento.cuenta.naturaleza_egresos;
                         }
 
-                        if(tipo_comprobante == 2) {
+                        if(tipo_comprobante == 2 || tipo_comprobante == 5) {
                             documento.cuenta.naturaleza_cuenta = documento.cuenta.naturaleza_compras;
                         }
 
