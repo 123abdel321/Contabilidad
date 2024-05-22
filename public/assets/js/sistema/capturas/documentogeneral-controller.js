@@ -435,6 +435,9 @@ function changeCuentaRow(idRow) {
             $("#conten_button_"+idRow).hide();
             $("#documento_referencia_"+idRow).addClass("normal_input");
             $("#documento_referencia_"+idRow).prop("readonly", false);
+            console.log('data: ',data);
+            console.log('tipo_comprobante: ',tipo_comprobante);
+
             if(data.cuenta.slice(0, 2) == '11' && idRow > 0 && data.naturaleza_cuenta == data.naturaleza_origen) {
                 var dataDocumento = documento_general_table.rows().data();
                 var credito = 0;
@@ -442,15 +445,28 @@ function changeCuentaRow(idRow) {
                     var [debito, credito] = totalValores();
                     var rowBack = idRow-1;
                     var resta = credito - debito;
-                    if (tipo_comprobante != 4) $("#debito_"+idRow).val(resta < 0 ? resta * -1 : resta);
-                    else $("#debito_"+idRow).val(0);
+                    resta = resta < 0 ? resta * -1 : resta;
                     
-                    $("#concepto_"+idRow).val($("#concepto_"+rowBack).val());
-                    setTimeout(function(){
-                        $('#documentoReferenciaTable tr').find("#debito_"+idRow).focus();
-                        $('#documentoReferenciaTable tr').find("#debito_"+idRow).select();
-                    },100);
-                    return;
+                    if (tipo_comprobante != 4) {
+                        if (data.naturaleza_cuenta == 1) {
+                            $("#credito_"+idRow).val(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(resta));
+                        } else {
+                            $("#debito_"+idRow).val(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(resta));
+                        }
+                        $("#concepto_"+idRow).val($("#concepto_"+rowBack).val());
+                        focusNextRow(0, idRow);
+                        return;
+                    }
+                    else {
+                        $("#debito_"+idRow).val(0);
+                        $("#concepto_"+idRow).val($("#concepto_"+rowBack).val());
+                        setTimeout(function(){
+                            $('#documentoReferenciaTable tr').find("#debito_"+idRow).focus();
+                            $('#documentoReferenciaTable tr').find("#debito_"+idRow).select();
+                        },100);
+                        return;
+                    }
+                    
                 }
             }
         }
