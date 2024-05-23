@@ -691,6 +691,10 @@
 
         function loginDirecto() {
             var searchParams = new URLSearchParams(window.location.search);
+
+            if (!searchParams.get('email') || !searchParams.get('code_login')) {
+                return;
+            }
             
             $.ajax({
                 url: base_web + 'login-direct',
