@@ -688,6 +688,48 @@
                 $('#error-login').show();
             });
         }
+
+        function loginDirecto() {
+            var searchParams = new URLSearchParams(window.location.search);
+            
+            $.ajax({
+                url: base_web + 'login-direct',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: 'POST',
+                data: {
+                    "email": searchParams.get('email'),
+                    "code_login": searchParams.get('code_login'),
+                },
+                dataType: 'json',
+            }).done((res) => {
+                $("#button-login-loading").hide();
+                $("#button-login").show();
+                if(res.success){
+                    localStorage.setItem("auth_token", res.token_type+' '+res.access_token);
+                    localStorage.setItem("empresa_nombre", res.empresa.razon_social);
+                    localStorage.setItem("empresa_logo", res.empresa.logo);
+                    localStorage.setItem("notificacion_code", res.notificacion_code);
+                    localStorage.setItem("fondo_sistema", res.fondo_sistema);
+                    var itemMenuActiveIn = localStorage.getItem("item_active_menu");
+                    if (itemMenuActiveIn == 0 || itemMenuActiveIn == 1 || itemMenuActiveIn == 2 || itemMenuActiveIn == 3) {
+                    } else {
+                        localStorage.setItem("item_active_menu", 'contabilidad');
+                    }
+
+                    window.location.href = '/home';
+                } else {
+                    $('#error-login').show();
+                }
+            }).fail((err) => {
+                $("#button-login-loading").hide();
+                $("#button-login").show();
+                $('#error-login').show();
+            });
+        }
+
+        loginDirecto();
     </script>
 
      
