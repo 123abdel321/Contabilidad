@@ -483,7 +483,7 @@ class ProcessInformeCartera implements ShouldQueue
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
-            ->whereIn('PCT.id_tipo_cuenta', [3,4])
+            ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
             ->when($this->request['fecha_desde'] ? true : false, function ($query) {
 				$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde']);
 			})
@@ -545,7 +545,7 @@ class ProcessInformeCartera implements ShouldQueue
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
-            ->whereIn('PCT.id_tipo_cuenta', [3,4])
+            ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
             ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
 				$query->where('DG.fecha_manual', '<', $this->request['fecha_hasta']);
 			})
