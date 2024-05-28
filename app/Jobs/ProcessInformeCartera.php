@@ -546,8 +546,8 @@ class ProcessInformeCartera implements ShouldQueue
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
             ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
-            ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
-				$query->where('DG.fecha_manual', '<', $this->request['fecha_hasta']);
+            ->when($this->request['fecha_desde'] ? true : false, function ($query) {
+				$query->where('DG.fecha_manual', '<', $this->request['fecha_desde']);
 			})
             ->when($this->request['id_nit'] ? true : false, function ($query) {
 				$query->where('DG.id_nit', $this->request['id_nit']);
