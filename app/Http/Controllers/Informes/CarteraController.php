@@ -31,14 +31,16 @@ class CarteraController extends Controller
                 'message'=> 'Por favor ingresar un rango de fechas válido.'
             ]);
 		}
-
+        
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
 
         $cartera = InfCartera::where('id_empresa', $empresa->id)
-            ->where('fecha_hasta', $request->get('fecha_cartera'))
+            ->where('fecha_desde', $request->get('fecha_desde'))
+            ->where('fecha_hasta', $request->get('fecha_hasta'))
             ->where('id_nit', $request->get('id_nit', null))
             ->where('id_cuenta', $request->get('id_cuenta', null))
-            ->where('detallar_cartera', $request->get('detallar_cartera', null))
+            ->where('agrupar_cartera', $request->get('agrupar_cartera', null))
+            ->where('nivel', $request->get('nivel', null))
 			->first();
         
         if($cartera) {
@@ -95,10 +97,12 @@ class CarteraController extends Controller
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         
         $cartera = InfCartera::where('id_empresa', $empresa->id)
-            ->where('fecha_hasta', $request->get('fecha_cartera'))
+            ->where('fecha_desde', $request->get('fecha_desde'))
+            ->where('fecha_hasta', $request->get('fecha_hasta'))
             ->where('id_nit', $request->get('id_nit', null))
             ->where('id_cuenta', $request->get('id_cuenta', null))
-            ->where('detallar_cartera', $request->get('detallar_cartera', null))
+            ->where('agrupar_cartera', $request->get('agrupar_cartera', null))
+            ->where('nivel', $request->get('nivel', null))
 			->first();
             
         if ($cartera) {

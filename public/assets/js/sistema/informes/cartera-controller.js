@@ -9,8 +9,8 @@ function carteraInit() {
     generarCartera = false;
     carteraExistente = false;
 
-    $('#fecha_cartera').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-    $('#fecha_cartera').val(fechaDesde);
+    $('#fecha_desde_cartera').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
+    $('#fecha_hasta_cartera').val(fechaDesde);
 
     cartera_table = $('#CarteraInformeTable').DataTable({
         pageLength: 100,
@@ -38,43 +38,21 @@ function carteraInit() {
             headerOffset: 45
         },
         'rowCallback': function(row, data, index){
-            if(data.detalle_group == 'nits'){
-                if(!$("input[type='radio']#detallar_cartera1").is(':checked')) {
-                    return;
-                }
-                $('td', row).css('background-color', 'rgb(128 207 120 / 40%)');
-                $('td', row).css('font-weight', 'bold');
-                return;
-            }
-            if(data.cuenta == "TOTALES"){
+            if (data.nivel == 0) {
                 $('td', row).css('background-color', 'rgb(28 69 135)');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
             }
-            if(data.cuenta.length == 1){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
+            if(data.nivel == 1){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
-            if(data.cuenta.length == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
+            if(data.nivel == 2){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 40%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
-            }
-            if(data.cuenta.length == 4){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
-                $('td', row).css('font-weight', 'bold');
-                return;
-            }
-            if(data.detalle_group == '1' && data.detalle != '1'){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
-                $('td', row).css('font-weight', 'bold');
-                return;
-            }
-            if(data.detalle == '1'){
-                $('td', row).css('background-color', 'rgb(197 228 241 / 56%)');
-                $('td', row).css('font-weight', 'bold');
             }
         },
         ajax:  {
@@ -87,56 +65,55 @@ function carteraInit() {
         },
         "columns": [
             {"data": function (row, type, set){
-                if(!row.cuenta) {
-                    return '';
+                var agrupado = $('#agrupar_cartera').val();
+                if (agrupado == 'id_cuenta') {
+                    if (row.nivel == 1) {
+                        return row.cuenta;
+                    } else {
+                        return row.numero_documento;
+                    }
                 }
-                return row.cuenta + ' - ' +row.nombre_cuenta;
+                if (agrupado == 'id_nit') {
+                    if (row.nivel == 1) {
+                        return row.numero_documento;
+                    } else {
+                        return row.cuenta;
+                    }
+                }
+                return '';
             }},
             {"data": function (row, type, set){
-                if(!row.numero_documento){
-                    return '';
+                var agrupado = $('#agrupar_cartera').val();
+                if (agrupado == 'id_cuenta') {
+                    if (row.nivel == 1) {
+                        return row.nombre_cuenta;
+                    } else {
+                        return row.nombre_nit;
+                    }
                 }
-                if(row.razon_social){
-                    return row.numero_documento +' - '+ row.razon_social;
+                if (agrupado == 'id_nit') {
+                    if (row.nivel == 1) {
+                        return row.nombre_nit;
+                    } else {
+                        return row.nombre_cuenta;
+                    }
                 }
-                return row.numero_documento + ' - ' +row.nombre_nit;
-            }, responsivePriority: 1, targets: 0},
-            
+                return '';
+            }},
             {data: 'documento_referencia'},
+            {data: 'fecha_manual'},
+            {data: 'saldo_anterior', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 5, targets: -4},
             {data: 'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 4, targets: -3},
             {data: 'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 3, targets: -2},
             {data: 'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 2, targets: -1},
+            {data: 'dias_cumplidos', responsivePriority: 6, targets: -4},
+            {data: 'dias_cumplidos', responsivePriority: 7, targets: -5},
             {"data": function (row, type, set){
-                if(!row.codigo_comprobante){
-                    return '';
-                }
-                return row.codigo_comprobante + ' - ' +row.nombre_comprobante;
-            }, visible: false},
-            {data: 'fecha_manual'},
-            {data: 'dias_cumplidos', responsivePriority: 5, targets: -4},
-            {data: 'plazo'},
-            {"data": function (row, type, set){
-                if(row.plazo > 0){
-                    var mora = row.dias_cumplidos - row.plazo;
-                    if(mora <= 0) {
-                        return 0
+                if (row.nivel == 3) {
+                    if (row.codigo_comprobante) {
+                        return row.codigo_comprobante+' - '+row.nombre_comprobante;
                     }
-                    return mora;
                 }
-                return row.dias_cumplidos;
-            }},
-            {data: 'concepto'},
-            {"data": function (row, type, set){  
-                var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
-                if(!row.created_by && !row.fecha_creacion) return '';
-                if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
-                return html;
-            }},
-            {"data": function (row, type, set){
-                var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
-                if(!row.updated_by && !row.fecha_edicion) return '';
-                if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
-                return html;
             }},
         ]
     });
@@ -184,6 +161,7 @@ function carteraInit() {
     });
 
     findCartera();
+    actualizarColumnas();
 }
 
 $('input[type=radio][name=detallar_cartera]').change(function() {
@@ -192,6 +170,58 @@ $('input[type=radio][name=detallar_cartera]').change(function() {
     } else {
         cartera_table.column( 6 ).visible( true );
     }
+    document.getElementById("generarCartera").click();
+});
+
+function actualizarColumnas() {
+    var nivel = getNivelCartera();
+
+    var columnFactura = cartera_table.column(2);
+    var columnFecha = cartera_table.column(3);
+    var columnDias = cartera_table.column(8);
+    var columnMora = cartera_table.column(9);
+    var columnComprobante = cartera_table.column(10);
+
+    if (nivel == 1 || nivel == 2) {
+        columnFactura.visible(false);
+        columnFecha.visible(false);
+        columnDias.visible(false);
+        columnMora.visible(false);
+        columnComprobante.visible(false);
+    }
+    if (nivel == 3) {
+        columnFactura.visible(true);
+        columnFecha.visible(true);
+        columnDias.visible(true);
+        columnMora.visible(true);
+        columnComprobante.visible(true);
+    }
+}
+
+$("#nivel_cartera1").on('change', function(){
+    actualizarColumnas();
+    document.getElementById("generarCartera").click();
+});
+
+$("#nivel_cartera2").on('change', function(){
+    actualizarColumnas();
+    document.getElementById("generarCartera").click();
+});
+
+$("#nivel_cartera3").on('change', function(){
+    actualizarColumnas();
+    document.getElementById("generarCartera").click();
+});
+
+$(".agrupar_cartera").on('change', function(){
+    var agrupado = $("#agrupar_cartera").val();
+    if (agrupado == 'id_cuenta') {
+        $("#nombre_item_cartera").text("Cuenta");
+    }
+    if (agrupado == 'id_nit') {
+        $("#nombre_item_cartera").text("Documento");
+    }
+    actualizarColumnas();
     document.getElementById("generarCartera").click();
 });
 
@@ -240,8 +270,10 @@ $(document).on('click', '#generarCartera', function () {
     var url = base_url + 'cartera';
     url+= '?id_nit='+$('#id_nit_cartera').val();
     url+= '&id_cuenta='+$('#id_cuenta_cartera').val();
-    url+= '&fecha_cartera='+$('#fecha_cartera').val();
-    url+= '&detallar_cartera='+getDetalleCartera();
+    url+= '&fecha_desde='+$('#fecha_desde_cartera').val();
+    url+= '&fecha_hasta='+$('#fecha_hasta_cartera').val();
+    url+= '&agrupar_cartera='+$('#agrupar_cartera').val();
+    url+= '&nivel='+getNivelCartera();
 
     cartera_table.ajax.url(url).load(function(res) {
         if(res.success) {
@@ -274,13 +306,6 @@ $(document).on('click', '#generarCartera', function () {
 
 });
 
-function getDetalleCartera() {
-    if($("input[type='radio']#detallar_cartera1").is(':checked')) return 1;
-    if($("input[type='radio']#detallar_cartera2").is(':checked')) return '';
-
-    return '';
-}
-
 function findCartera() {
     carteraExistente = false;
     $('#generarCarteraUltimo').hide();
@@ -289,8 +314,9 @@ function findCartera() {
     var url = base_url + 'cartera-find';
     url+= '?id_nit='+$('#id_nit_cartera').val();
     url+= '&id_cuenta='+$('#id_cuenta_cartera').val();
-    url+= '&fecha_cartera='+$('#fecha_cartera').val();
-    url+= '&detallar_cartera='+getDetalleCartera();
+    url+= '&fecha_desde_cartera='+$('#fecha_desde_cartera').val();
+    url+= '&agrupar_cartera='+$('#agrupar_cartera').val();
+    url+= '&nivel='+getNivelCartera();
     
     $.ajax({
         url: url,
@@ -325,8 +351,10 @@ function GenerateCartera() {
     var url = base_url + 'cartera-find';
     url+= '?id_nit='+$('#id_nit_cartera').val();
     url+= '&id_cuenta='+$('#id_cuenta_cartera').val();
-    url+= '&fecha_cartera='+$('#fecha_cartera').val();
-    url+= '&detallar_cartera='+getDetalleCartera();
+    url+= '&fecha_desde='+$('#fecha_desde_cartera').val();
+    url+= '&fecha_hasta='+$('#fecha_hasta_cartera').val();
+    url+= '&agrupar='+$('#agrupar_cartera').val();
+    url+= '&nivel='+getNivelCartera();
     url+= '&generar='+generarCartera;
 
     cartera_table.ajax.url(url).load(function(res) {
@@ -366,7 +394,7 @@ $("#id_nit_cartera").on('change', function(){
     findCartera();
 });
 
-$("#fecha_cartera").on('change', function(){
+$("#fecha_desde_cartera").on('change', function(){
     clearCartera();
     findCartera();
 });
@@ -379,4 +407,12 @@ $(".detallar_cartera").on('change', function(){
 function clearCartera() {
     $("#descargarExcelCartera").hide();
     $("#descargarExcelCarteraDisabled").show();
+}
+
+function getNivelCartera() {
+    if($("input[type='radio']#nivel_cartera1").is(':checked')) return 1;
+    if($("input[type='radio']#nivel_cartera2").is(':checked')) return 2;
+    if($("input[type='radio']#nivel_cartera3").is(':checked')) return 3;
+
+    return false;
 }

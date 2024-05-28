@@ -218,7 +218,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 	{
 		$totalesResumen = $this->queryResumenComprobantes()->first();
 
-		$this->resumenComprobanteCollection[999999999] = [
+		$this->resumenComprobanteCollection['99999999999'] = [
 			'id_resumen_comprobante' => $this->id_resumen_comprobante,
 			'id_nit' => '',
 			'id_cuenta' => '',
