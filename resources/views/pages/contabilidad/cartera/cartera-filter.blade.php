@@ -48,19 +48,19 @@
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                 <input class="form-check-input" type="radio" name="nivel_cartera" id="nivel_cartera1" style="font-size: 11px;" checked>
                                 <label class="form-check-label" for="nivel_cartera1" style="font-size: 11px;">
-                                    Uno
+                                    Grupos
                                 </label>
                             </div>
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                 <input class="form-check-input" type="radio" name="nivel_cartera" id="nivel_cartera2" style="font-size: 11px;">
                                 <label class="form-check-label" for="nivel_cartera2" style="font-size: 11px;">
-                                    Dos
+                                    Sub-grupos
                                 </label>
                             </div>
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                 <input class="form-check-input" type="radio" name="nivel_cartera" id="nivel_cartera3" style="font-size: 11px;">
                                 <label class="form-check-label" for="nivel_cartera3" style="font-size: 11px;">
-                                    Tres
+                                    Detalle
                                 </label>
                             </div>
                         </div>

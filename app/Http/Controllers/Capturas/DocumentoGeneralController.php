@@ -471,6 +471,9 @@ class DocumentoGeneralController extends Controller
 			if(!$request->get('editing_documento')) {
 				$this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 			} else {
+				$facDocumento = FacDocumentos::where('id_comprobante', $request->get('id_comprobante'))
+					->where('consecutivo', $request->get('consecutivo'))
+					->first();
 				$facDocumento->fecha_manual = $request->get('fecha_manual');
 				$facDocumento->consecutivo = $request->get('consecutivo');
 				$facDocumento->debito = $debito;
