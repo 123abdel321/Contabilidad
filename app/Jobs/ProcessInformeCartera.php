@@ -430,10 +430,10 @@ class ProcessInformeCartera implements ShouldQueue
             'created_by' => '',
             'updated_by' => '',
             'dias_cumplidos' => '',
-            'saldo_anterior' => $total->saldo_anterior,
-            'total_abono' => $total->total_abono,
-            'total_facturas' => $total->total_facturas,
-            'saldo' => $total->saldo_final,
+            'saldo_anterior' => $total ? $total->saldo_anterior : 0,
+            'total_abono' => $total ? $total->total_abono : 0,
+            'total_facturas' => $total ? $total->total_facturas : 0,
+            'saldo' => $total ? $total->saldo_final : 0,
             'nivel' => 0,
         ];
     }
