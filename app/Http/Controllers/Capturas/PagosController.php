@@ -302,7 +302,7 @@ class PagosController extends Controller
                     "created_by" => request()->user()->id,
                     "updated_by" => request()->user()->id
                 ]);
-                $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_ingresos);
+                $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_egresos);
             }
 
             $totalPagos = $this->totalesFactura['total_pagado'];
@@ -334,7 +334,7 @@ class PagosController extends Controller
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
-                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_compras);
+                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_egresos);
             }
 
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
@@ -509,7 +509,7 @@ class PagosController extends Controller
                     "updated_by" => request()->user()->id
                 ]);
                 
-                $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_ingresos);
+                $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_egresos);
             }
 
             //AGREGAR MOVIMIENTO CONTABLE PAGO
@@ -697,7 +697,7 @@ class PagosController extends Controller
                     "updated_by" => request()->user()->id
                 ]);
                 
-                $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_ingresos);
+                $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_egresos);
             }
 
             //GUARDAMOS EL VALOR RESTANTE COMO ANTICIPO
@@ -724,7 +724,7 @@ class PagosController extends Controller
                     "updated_by" => request()->user()->id
                 ]);
 
-                $documentoGeneral->addRow($doc, $formaPagoAnticipos->cuenta->naturaleza_ingresos);
+                $documentoGeneral->addRow($doc, $formaPagoAnticipos->cuenta->naturaleza_egresos);
             }
 
             //AGREGAR MOVIMIENTO CONTABLE PAGO
@@ -743,7 +743,7 @@ class PagosController extends Controller
                 'updated_by' => request()->user()->id
             ]);
 
-            $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ingresos);
+            $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_egresos);
 
             $this->updateConsecutivo($pago->id_comprobante, $consecutivo);
 
