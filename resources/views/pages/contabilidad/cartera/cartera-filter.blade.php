@@ -13,6 +13,13 @@
                 <form id="carteraInformeForm" style="margin-top: 10px;">
                     <input name="id_cartera_cargado" id="id_cartera_cargado" class="form-control form-control-sm" type="text" style="display: none;">
                     <div class="row">
+                        <div class="form-group form-group col-12 col-sm-4 col-md-3">
+                            <label for="exampleFormControlSelect1">Tipo informe</label>
+                            <select class="form-control form-control-sm tipo_cartera" id="tipo_informe_cartera" name="tipo_informe_cartera">
+                                <option value="por_cobrar">Cuentas por cobrar</option>
+                                <option value="por_pagar">Cuentas por pagar</option>
+                            </select>
+                        </div>
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="exampleFormControlSelect1">Cuenta</label>
                             <select name="id_cuenta_cartera" id="id_cuenta_cartera" class="form-control form-control-sm">

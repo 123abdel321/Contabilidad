@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('fecha_desde')->nullable();
             $table->date('fecha_hasta')->nullable();
             $table->integer('detallar_cartera')->nullable();
+            $table->string('tipo_informe')->nullable();
             $table->integer('nivel')->nullable();
             $table->integer('exporta_excel')->nullable()->comment('1: Exportando, 2: Exportado');
             $table->string('archivo_excel')->nullable();

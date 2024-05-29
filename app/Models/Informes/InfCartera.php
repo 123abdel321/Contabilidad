@@ -23,6 +23,7 @@ class InfCartera extends Model
         'fecha_desde',
         'detallar_cartera',
         'nivel',
+        'tipo_informe',
         'exporta_excel',
         'archivo_excel',
         'created_by',

@@ -38,21 +38,43 @@ function carteraInit() {
             headerOffset: 45
         },
         'rowCallback': function(row, data, index){
-            if (data.nivel == 0) {
-                $('td', row).css('background-color', 'rgb(28 69 135)');
-                $('td', row).css('font-weight', 'bold');
-                $('td', row).css('color', 'white');
-                return;
-            }
-            if(data.nivel == 1){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
-                $('td', row).css('font-weight', 'bold');
-                return;
-            }
-            if(data.nivel == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 40%)');
-                $('td', row).css('font-weight', 'bold');
-                return;
+            var nivel = getNivelCartera();
+            if (nivel == 1) {
+                if (data.nivel == 0) {
+                    $('td', row).css('background-color', 'rgb(28 69 135)');
+                    $('td', row).css('font-weight', 'bold');
+                    $('td', row).css('color', 'white');
+                    return;
+                }
+            } else if (nivel == 2) {
+                if (data.nivel == 0) {
+                    $('td', row).css('background-color', 'rgb(28 69 135)');
+                    $('td', row).css('font-weight', 'bold');
+                    $('td', row).css('color', 'white');
+                    return;
+                }
+                if(data.nivel == 1){
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 40%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+            } else if (nivel == 3) {
+                if (data.nivel == 0) {
+                    $('td', row).css('background-color', 'rgb(28 69 135)');
+                    $('td', row).css('font-weight', 'bold');
+                    $('td', row).css('color', 'white');
+                    return;
+                }
+                if(data.nivel == 1){
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+                if(data.nivel == 2){
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 40%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
             }
         },
         ajax:  {
@@ -129,7 +151,7 @@ function carteraInit() {
                 var query = {
                     search: params.term,
                     total_cuentas: true,
-                    id_tipo_cuenta: [3,4]
+                    id_tipo_cuenta: $("#tipo_informe_cartera").val() == 'por_cobrar' ? [3,7] : [4,8]
                 }
                 return query;
             },
@@ -273,6 +295,7 @@ $(document).on('click', '#generarCartera', function () {
     url+= '&fecha_desde='+$('#fecha_desde_cartera').val();
     url+= '&fecha_hasta='+$('#fecha_hasta_cartera').val();
     url+= '&agrupar_cartera='+$('#agrupar_cartera').val();
+    url+= '&tipo_informe='+$("#tipo_informe_cartera").val();
     url+= '&nivel='+getNivelCartera();
 
     cartera_table.ajax.url(url).load(function(res) {
@@ -316,6 +339,7 @@ function findCartera() {
     url+= '&id_cuenta='+$('#id_cuenta_cartera').val();
     url+= '&fecha_desde_cartera='+$('#fecha_desde_cartera').val();
     url+= '&agrupar_cartera='+$('#agrupar_cartera').val();
+    url+= '&tipo_informe='+$("#tipo_informe_cartera").val();
     url+= '&nivel='+getNivelCartera();
     
     $.ajax({
@@ -354,6 +378,7 @@ function GenerateCartera() {
     url+= '&fecha_desde='+$('#fecha_desde_cartera').val();
     url+= '&fecha_hasta='+$('#fecha_hasta_cartera').val();
     url+= '&agrupar='+$('#agrupar_cartera').val();
+    url+= '&tipo_informe='+$("#tipo_informe_cartera").val();
     url+= '&nivel='+getNivelCartera();
     url+= '&generar='+generarCartera;
 

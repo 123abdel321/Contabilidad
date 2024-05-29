@@ -40,6 +40,7 @@ class CarteraController extends Controller
             ->where('id_nit', $request->get('id_nit', null))
             ->where('id_cuenta', $request->get('id_cuenta', null))
             ->where('agrupar_cartera', $request->get('agrupar_cartera', null))
+            ->where('tipo_informe', $request->get('tipo_informe', null))
             ->where('nivel', $request->get('nivel', null))
 			->first();
         

@@ -35,6 +35,10 @@ class ProcessInformeCartera implements ShouldQueue
         $this->request = $request;
 		$this->id_usuario = $id_usuario;
 		$this->id_empresa = $id_empresa;
+        if ($this->request['id_cuenta']) {
+            $cuenta = PlanCuentas::find($this->request['id_cuenta']);
+            $this->request['cuenta'] = $cuenta->cuenta;
+        }
     }
 
     public function handle()
@@ -483,10 +487,10 @@ class ProcessInformeCartera implements ShouldQueue
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
-            ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
+            ->whereIn('PCT.id_tipo_cuenta', $this->request['tipo_informe'] == 'por_cobrar' ? [3,7] : [4,8])
             ->when($this->request['fecha_desde'] ? true : false, function ($query) {
 				$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde']);
-			})
+			}) 
             ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
 			})
@@ -494,7 +498,7 @@ class ProcessInformeCartera implements ShouldQueue
 				$query->where('DG.id_nit', $this->request['id_nit']);
 			})
 			->when($this->request['id_cuenta'] ? true : false, function ($query) {
-				$query->where('DG.id_cuenta', $this->request['id_cuenta']);
+				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
 			});
 
         return $documentosQuery;
@@ -545,7 +549,7 @@ class ProcessInformeCartera implements ShouldQueue
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
-            ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
+            ->whereIn('PCT.id_tipo_cuenta', $this->request['tipo_informe'] == 'por_cobrar' ? [3,7] : [4,8])
             ->when($this->request['fecha_desde'] ? true : false, function ($query) {
 				$query->where('DG.fecha_manual', '<', $this->request['fecha_desde']);
 			})
@@ -553,7 +557,7 @@ class ProcessInformeCartera implements ShouldQueue
 				$query->where('DG.id_nit', $this->request['id_nit']);
 			})
 			->when($this->request['id_cuenta'] ? true : false, function ($query) {
-				$query->where('DG.id_cuenta', $this->request['id_cuenta']);
+				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
 			});
 
         return $anterioresQuery;
@@ -573,10 +577,10 @@ class ProcessInformeCartera implements ShouldQueue
 
         if ($nivel == 3) {
             if ($this->request['agrupar_cartera'] == 'id_nit') {
-                $groupBy = 'id_cuenta, id_nit, consecutivo';
+                $groupBy = 'id_cuenta, id_nit, documento_referencia';
             }
             if ($this->request['agrupar_cartera'] == 'id_cuenta') {
-                $groupBy = 'id_nit, id_cuenta, consecutivo';
+                $groupBy = 'id_nit, id_cuenta, documento_referencia';
             }
         }
 
