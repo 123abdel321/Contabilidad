@@ -125,7 +125,8 @@ function pagoInit () {
             type: "GET",
             headers: headers,
             data: {
-                type: 'ventas'
+
+                type: 'egresos'
             },
             url: base_url + 'forma-pago/combo-forma-pago',
         },
