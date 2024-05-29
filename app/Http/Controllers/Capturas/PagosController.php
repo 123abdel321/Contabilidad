@@ -327,7 +327,7 @@ class PagosController extends Controller
                     'id_cuenta' => $formaPago->cuenta->id,
                     'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
                     'id_centro_costos' => null,
-                    'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL RECIBO: '.$nit->nombre_nit.' - '.$pago->consecutivo : null,
+                    'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$nit->nombre_nit.' - '.$pago->consecutivo : null,
                     'documento_referencia' => $documentoReferenciaAnticipos,
                     'debito' => $pagoItem->valor,
                     'credito' => $pagoItem->valor,

@@ -137,6 +137,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/recibo-print/{id}', [RecibosController::class, 'showPdf'])->name('recibo-pdf');
 		//PAGOS
 		Route::get('/pago', [PagosController::class, 'index'])->name('pago');
+		Route::get('/pago-print/{id}', [PagosController::class, 'showPdf'])->name('pago-pdf');
 		//GASTOS
 		Route::get('/gasto', [GastosController::class, 'index']);
 		Route::get('/gasto-print/{id}', [GastosController::class, 'showPdf'])->name('gasto-pdf');

@@ -12,6 +12,7 @@ use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacCompras;
 use App\Models\Sistema\FacVentas;
 //MODELS CON
+use App\Models\Sistema\ConPagos;
 use App\Models\Sistema\ConGastos;
 use App\Models\Sistema\ConRecibos;
 
@@ -31,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
 			'5' => FacMovimientoInventarios::class,
             '6' => ConRecibos::class,
             '7' => ConGastos::class,
+            '8' => ConPagos::class,
 		]);
     }
 
