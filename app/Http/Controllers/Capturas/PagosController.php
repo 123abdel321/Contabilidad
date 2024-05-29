@@ -75,7 +75,7 @@ class PagosController extends Controller
         try {
             $extractos = (new Extracto(
                 $request->get('id_nit'),
-                4,
+                [4,8],
                 null,
                 $fechaManual
             ))->actual()->get();
