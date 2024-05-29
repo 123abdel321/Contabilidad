@@ -182,18 +182,65 @@ function carteraInit() {
         }
     });
 
+    $('input[type=radio][name=detallar_cartera]').change(function() {
+        if(!$("input[type='radio']#detallar_cartera1").is(':checked')){
+            cartera_table.column( 6 ).visible( false );
+        } else {
+            cartera_table.column( 6 ).visible( true );
+        }
+        document.getElementById("generarCartera").click();
+    });
+
+    $("#nivel_cartera1").on('change', function(){
+        actualizarColumnas();
+        document.getElementById("generarCartera").click();
+    });
+    
+    $("#nivel_cartera2").on('change', function(){
+        actualizarColumnas();
+        document.getElementById("generarCartera").click();
+    });
+    
+    $("#nivel_cartera3").on('change', function(){
+        actualizarColumnas();
+        document.getElementById("generarCartera").click();
+    });
+    
+    $(".agrupar_cartera").on('change', function(){
+        var agrupado = $("#agrupar_cartera").val();
+        if (agrupado == 'id_cuenta') {
+            $("#nombre_item_cartera").text("Cuenta");
+        }
+        if (agrupado == 'id_nit') {
+            $("#nombre_item_cartera").text("Documento");
+        }
+        actualizarColumnas();
+        document.getElementById("generarCartera").click();
+    });
+
+    $("#id_cuenta_cartera").on('change', function(){
+        clearCartera();
+        findCartera();
+    });
+    
+    $("#id_nit_cartera").on('change', function(){
+        clearCartera();
+        findCartera();
+    });
+    
+    $("#fecha_desde_cartera").on('change', function(){
+        clearCartera();
+        findCartera();
+    });
+    
+    $(".detallar_cartera").on('change', function(){
+        clearCartera();
+        findCartera();
+    });
+
     findCartera();
     actualizarColumnas();
 }
-
-$('input[type=radio][name=detallar_cartera]').change(function() {
-    if(!$("input[type='radio']#detallar_cartera1").is(':checked')){
-        cartera_table.column( 6 ).visible( false );
-    } else {
-        cartera_table.column( 6 ).visible( true );
-    }
-    document.getElementById("generarCartera").click();
-});
 
 function actualizarColumnas() {
     var nivel = getNivelCartera();
@@ -220,32 +267,7 @@ function actualizarColumnas() {
     }
 }
 
-$("#nivel_cartera1").on('change', function(){
-    actualizarColumnas();
-    document.getElementById("generarCartera").click();
-});
 
-$("#nivel_cartera2").on('change', function(){
-    actualizarColumnas();
-    document.getElementById("generarCartera").click();
-});
-
-$("#nivel_cartera3").on('change', function(){
-    actualizarColumnas();
-    document.getElementById("generarCartera").click();
-});
-
-$(".agrupar_cartera").on('change', function(){
-    var agrupado = $("#agrupar_cartera").val();
-    if (agrupado == 'id_cuenta') {
-        $("#nombre_item_cartera").text("Cuenta");
-    }
-    if (agrupado == 'id_nit') {
-        $("#nombre_item_cartera").text("Documento");
-    }
-    actualizarColumnas();
-    document.getElementById("generarCartera").click();
-});
 
 function loadCarteraById(id_cartera) {
     cartera_table.ajax.url(base_url + 'cartera-show?id='+id_cartera).load(function(res) {
@@ -407,26 +429,6 @@ channelCartera.bind('notificaciones', function(data) {
         loadCarteraById(data.id_cartera);
         return;
     }
-});
-
-$("#id_cuenta_cartera").on('change', function(){
-    clearCartera();
-    findCartera();
-});
-
-$("#id_nit_cartera").on('change', function(){
-    clearCartera();
-    findCartera();
-});
-
-$("#fecha_desde_cartera").on('change', function(){
-    clearCartera();
-    findCartera();
-});
-
-$(".detallar_cartera").on('change', function(){
-    clearCartera();
-    findCartera();
 });
 
 function clearCartera() {
