@@ -129,7 +129,7 @@ function carteraInit() {
             {data: 'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 3, targets: -2},
             {data: 'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 2, targets: -1},
             {data: 'dias_cumplidos', responsivePriority: 6, targets: -4},
-            {data: 'dias_cumplidos', responsivePriority: 7, targets: -5},
+            {data: 'mora', responsivePriority: 7, targets: -5},
             {"data": function (row, type, set){
                 if (row.nivel == 3) {
                     if (row.codigo_comprobante) {
@@ -270,8 +270,10 @@ function actualizarColumnas() {
 
 
 function loadCarteraById(id_cartera) {
-    cartera_table.ajax.url(base_url + 'cartera-show?id='+id_cartera).load(function(res) {
-        console.log('res: ',res, id_cartera);
+    var url = base_url + 'cartera-show?id='+id_cartera;
+
+    cartera_table.ajax.url(url).load(function(res) {
+        
         if(res.success){
             $("#generarCartera").show();
             $("#generarCarteraLoading").hide();
@@ -290,11 +292,10 @@ function loadCarteraById(id_cartera) {
 }
 
 function mostrarTotalesCartera(data) {
-    console.log('mostrarTotalesCartera: ',data);
     if(!data) {
         return;
     }
-
+    $("#cartera_facturas").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_anterior));
     $("#cartera_facturas").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.total_facturas));
     $("#cartera_abonos").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.total_abono));
     $("#cartera_diferencia").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo));

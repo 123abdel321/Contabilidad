@@ -69,7 +69,6 @@ class ProcessInformeCartera implements ShouldQueue
             $this->totalesCartera();
 
             ksort($this->carteraCollection, SORT_STRING | SORT_FLAG_CASE);
-
             foreach (array_chunk($this->carteraCollection,233) as $carteraCollection){
                 DB::connection('informes')
                     ->table('inf_cartera_detalles')
@@ -171,6 +170,7 @@ class ProcessInformeCartera implements ShouldQueue
                         'created_by' => $documento->created_by,
                         'updated_by' => $documento->updated_by,
                         'dias_cumplidos' => '',
+                        'mora' => '',
                         'saldo_anterior' => $documento->saldo_anterior,
                         'total_abono' => $documento->total_abono,
                         'total_facturas' => $documento->total_facturas,
@@ -215,6 +215,7 @@ class ProcessInformeCartera implements ShouldQueue
                 'created_by',
                 'updated_by',
                 'anulado',
+                'plazo',
                 DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
@@ -228,6 +229,7 @@ class ProcessInformeCartera implements ShouldQueue
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
             ->havingRaw('saldo_final != 0')
             ->chunk(233, function ($documentos) {
+                
                 $documentos->each(function ($documento) {
                     $key = '';
                     if ($this->request['agrupar_cartera'] == 'id_nit') {
@@ -237,7 +239,7 @@ class ProcessInformeCartera implements ShouldQueue
                         $nombreKey = str_replace(' ', '', $documento->nombre_nit);
                         $key = $documento->cuenta.'-A-'.$nombreKey;
                     }
-                    
+                    $mora = $documento->dias_cumplidos - $documento->plazo;
                     $this->carteraCollection[$key] = [
                         'id_cartera' => $this->id_cartera,
                         'id_nit' => $documento->id_nit,
@@ -262,6 +264,7 @@ class ProcessInformeCartera implements ShouldQueue
                         'created_by' => $documento->created_by,
                         'updated_by' => $documento->updated_by,
                         'dias_cumplidos' => $documento->dias_cumplidos,
+                        'mora' => $mora < 0 ? 0 : $mora,
                         'saldo_anterior' => $documento->saldo_anterior,
                         'total_abono' => $documento->total_abono,
                         'total_facturas' => $documento->total_facturas,
@@ -306,6 +309,7 @@ class ProcessInformeCartera implements ShouldQueue
                 'created_by',
                 'updated_by',
                 'anulado',
+                'plazo',
                 DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
@@ -329,6 +333,7 @@ class ProcessInformeCartera implements ShouldQueue
                         $nombreKey = str_replace(' ', '', $documento->nombre_nit);
                         $key = $documento->cuenta.'-A-'.$nombreKey.'-B-'.$this->contador;
                     }
+                    $mora = $documento->dias_cumplidos - $documento->plazo;
                     $this->carteraCollection[$key] = [
                         'id_cartera' => $this->id_cartera,
                         'id_nit' => $documento->id_nit,
@@ -353,6 +358,7 @@ class ProcessInformeCartera implements ShouldQueue
                         'created_by' => $documento->created_by,
                         'updated_by' => $documento->updated_by,
                         'dias_cumplidos' => $documento->dias_cumplidos,
+                        'mora' => $mora < 0 ? 0 : $mora,
                         'saldo_anterior' => $documento->saldo_anterior,
                         'total_abono' => $documento->total_abono,
                         'total_facturas' => $documento->total_facturas,
@@ -434,6 +440,7 @@ class ProcessInformeCartera implements ShouldQueue
             'created_by' => '',
             'updated_by' => '',
             'dias_cumplidos' => '',
+            'mora' => '',
             'saldo_anterior' => $total ? $total->saldo_anterior : 0,
             'total_abono' => $total ? $total->total_abono : 0,
             'total_facturas' => $total ? $total->total_facturas : 0,
@@ -454,6 +461,7 @@ class ProcessInformeCartera implements ShouldQueue
                     ELSE NULL
                 END) AS nombre_nit"),
                 "N.razon_social",
+                "N.plazo",
                 "PC.id AS id_cuenta",
                 "PC.cuenta",
                 "PC.naturaleza_cuenta",
@@ -516,6 +524,7 @@ class ProcessInformeCartera implements ShouldQueue
                     ELSE NULL
                 END) AS nombre_nit"),
                 "N.razon_social",
+                "N.plazo",
                 "PC.id AS id_cuenta",
                 "PC.cuenta",
                 "PC.naturaleza_cuenta",
