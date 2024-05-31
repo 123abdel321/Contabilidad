@@ -267,8 +267,6 @@ function actualizarColumnas() {
     }
 }
 
-
-
 function loadCarteraById(id_cartera) {
     var url = base_url + 'cartera-show?id='+id_cartera;
 
@@ -295,7 +293,7 @@ function mostrarTotalesCartera(data) {
     if(!data) {
         return;
     }
-    $("#cartera_facturas").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_anterior));
+    $("#cartera_anterior").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_anterior));
     $("#cartera_facturas").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.total_facturas));
     $("#cartera_abonos").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.total_abono));
     $("#cartera_diferencia").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo));
@@ -307,7 +305,8 @@ $(document).on('click', '#generarCartera', function () {
     $("#generarCarteraLoading").show();
     $('#descargarExcelCartera').prop('disabled', true);
     $("#descargarExcelCartera").hide();
-
+    
+    $("#cartera_anterior").text('$0');
     $("#cartera_facturas").text('$0');
     $("#cartera_abonos").text('$0');
     $("#cartera_diferencia").text('$0');
