@@ -213,7 +213,10 @@ function auxiliarInit() {
                     results: data.data
                 };
             }
-        }
+        },
+        templateResult: formatNit,
+        templateSelection: formatRepoSelection
+
     });
 
     $('#id_cuenta_auxiliar').select2({
@@ -473,4 +476,19 @@ $("#id_nit_auxiliar").on('change', function(){
 function clearAuxiliar() {
     $("#descargarExcelAuxiliar").hide();
     $("#descargarExcelAuxiliarDisabled").show();
+}
+
+function formatNit (nit) {
+    
+    if (nit.loading) return nit.text;
+
+    if (ubicacion_maximoph) {
+        if (nit.apartamentos) return nit.text+' - '+nit.apartamentos;
+        else return nit.text;
+    }
+    else return nit.text;
+}
+
+function formatRepoSelection (nit) {
+    return nit.full_name || nit.text;
 }

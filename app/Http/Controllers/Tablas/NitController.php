@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Sistema\TipoDocumentos;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
 
 class NitController extends Controller
@@ -327,6 +328,8 @@ class NitController extends Controller
 
     public function comboNit(Request $request)
     {
+        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
+        $ubicacion_maximoph ? $ubicacion_maximoph->valor : null;
         $totalRows = $request->has("totalRows") ? $request->get("totalRows") : 20;
         $nits = Nits::select(
             'id',
@@ -339,6 +342,7 @@ class NitController extends Controller
             'email',
             'declarante',
             'porcentaje_aiu',
+            'apartamentos',
             \DB::raw('telefono_1 AS telefono'),
             \DB::raw("(CASE
 					WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)
@@ -364,6 +368,10 @@ class NitController extends Controller
                     ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
 					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
                     ->orWhere('numero_documento', 'LIKE', '%' . $request->get("q") . '%');
+                
+                if ($ubicacion_maximoph) {
+                    $nits->orWhere('apartamentos', 'LIKE', '%' . $request->get("q") . '%');
+                }
             }
     
             if ($request->get("search")) {
@@ -380,6 +388,10 @@ class NitController extends Controller
                     ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
 					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
                     ->orWhere('numero_documento', 'LIKE', '%' . $request->get("search") . '%');
+
+                if ($ubicacion_maximoph) {
+                    $nits->orWhere('apartamentos', 'LIKE', '%' . $request->get("q") . '%');
+                }
             }
         }
 
