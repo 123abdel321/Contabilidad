@@ -11,6 +11,7 @@ use App\Jobs\ProcessInformeAuxiliar;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfAuxiliar;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Informes\InfAuxiliarDetalle;
 
 class AuxiliarController extends Controller
@@ -19,7 +20,13 @@ class AuxiliarController extends Controller
 
     public function index ()
     {
-        return view('pages.contabilidad.auxiliar.auxiliar-view');
+        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
+
+        $data = [
+            'ubicacion_maximoph' => $ubicacion_maximoph ? $ubicacion_maximoph->valor : '0',
+        ];
+
+        return view('pages.contabilidad.auxiliar.auxiliar-view', $data);
     }
 
     public function generate(Request $request)

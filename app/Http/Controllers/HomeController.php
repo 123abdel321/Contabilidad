@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 //MODELS
 use App\Models\Empresas\Empresa;
+use App\Models\Empresas\UsuarioEmpresa;
 use App\Models\Empresas\ComponentesMenu;
 
 class HomeController extends Controller
@@ -50,7 +51,10 @@ class HomeController extends Controller
         }
         
         $data = [
-            'menus' => $menus->groupBy('id_padre')
+            'menus' => $menus->groupBy('id_padre'),
+            'usuario_empresa' => UsuarioEmpresa::where('id_empresa', $request->user()['id_empresa'])
+                ->where('id_usuario', $request->user()['id'])
+                ->first()
         ];
 
         return view('layouts.app', $data);

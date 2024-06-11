@@ -56,5 +56,11 @@
             @include('pages.contabilidad.auxiliar.auxiliar-table')
         </div>
     </div>
+
+    <script>
+        
+        var ubicacion_maximoph = JSON.parse('<?php echo $ubicacion_maximoph; ?>');
+
+    </script>
     
 </div>

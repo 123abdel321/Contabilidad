@@ -63,9 +63,8 @@ class ProcessInformeAuxiliar implements ShouldQueue
             $this->addDetilsData($auxiliares);
             $this->addTotalNitsData($auxiliares);
             $this->addTotalsPadresData($auxiliares);
-            
-            ksort($this->auxiliarCollection, SORT_STRING | SORT_FLAG_CASE);
 
+            ksort($this->auxiliarCollection, SORT_STRING | SORT_FLAG_CASE);
             foreach (array_chunk($this->auxiliarCollection,233) as $auxiliarCollection){
                 DB::connection('informes')
                     ->table('inf_auxiliar_detalles')
@@ -102,6 +101,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 'numero_documento',
                 'nombre_nit',
                 'razon_social',
+                'apartamentos',
                 'id_cuenta',
                 'cuenta',
                 'naturaleza_cuenta',
@@ -133,6 +133,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
             ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
+
                 $documentos->each(function ($documento) {
                     $this->auxiliares[] = (object)[
                         'id_nit' => $documento->id_nit,
@@ -146,6 +147,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                         'nombre_cuenta' => $documento->nombre_cuenta,
                         'documento_referencia' => $documento->documento_referencia,
                         'id_centro_costos' => $documento->id_centro_costos,
+                        'apartamentos' => $documento->apartamentos,
                         'codigo_cecos' => $documento->codigo_cecos,
                         'nombre_cecos' => $documento->nombre_cecos,
                         'id_comprobante' => $documento->id_comprobante,
@@ -184,6 +186,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                     ELSE NULL
                 END) AS nombre_nit"),
                 "N.razon_social",
+                "N.apartamentos",
                 "PC.id AS id_cuenta",
                 "PC.cuenta",
                 "PC.naturaleza_cuenta",
@@ -250,6 +253,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                     ELSE NULL
                 END) AS nombre_nit"),
                 "N.razon_social",
+                "N.apartamentos",
                 "PC.id AS id_cuenta",
                 "PC.cuenta",
                 "PC.naturaleza_cuenta",
@@ -335,6 +339,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
         $this->auxiliarCollection['9999'] = [
             'id_auxiliar' => $this->id_auxiliar,
             'id_nit' => '',
+            'apartamento_nit' => '',
             'numero_documento' => '',
             'nombre_nit' => '',
             'razon_social' => '',
@@ -394,6 +399,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                         'id_nit' => $auxiliarDetalle->id_nit,
                         'numero_documento' => $auxiliarDetalle->numero_documento,
                         'nombre_nit' => $auxiliarDetalle->nombre_nit,
+                        'apartamento_nit' => $auxiliarDetalle->apartamentos,
                         'razon_social' => $auxiliarDetalle->razon_social,
                         'id_cuenta' => $auxiliarDetalle->id_cuenta,
                         'cuenta' => $auxiliarDetalle->cuenta,
@@ -512,6 +518,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                     'id_nit' => $detalle[0]->id_nit,
                     'numero_documento' => $detalle[0]->numero_documento,
                     'nombre_nit' => $detalle[0]->nombre_nit,
+                    'apartamento_nit' => $auxiliarDetalle->apartamentos,
                     'razon_social' => $detalle[0]->razon_social,
                     'id_cuenta' => $detalle[0]->id_cuenta,
                     'cuenta' => $detalle[0]->cuenta,
@@ -602,6 +609,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 'id_centro_costos',
                 'codigo_cecos',
                 'nombre_cecos',
+                'apartamentos',
                 'id_comprobante',
                 'codigo_comprobante',
                 'nombre_comprobante',
@@ -640,6 +648,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                     'id_nit' => $auxiliarDetalle->id_nit,
                     'numero_documento' => $auxiliarDetalle->numero_documento,
                     'nombre_nit' => $auxiliarDetalle->nombre_nit,
+                    'apartamentos' => $auxiliarDetalle->apartamentos,
                     'razon_social' => $auxiliarDetalle->razon_social,
                     'id_cuenta' => $auxiliarDetalle->id_cuenta,
                     'cuenta' => $auxiliarDetalle->cuenta,
@@ -687,6 +696,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                     'numero_documento' => $collecion[0]['numero_documento'],
                     'nombre_nit' => $collecion[0]['nombre_nit'],
                     'razon_social' => $collecion[0]['razon_social'],
+                    'apartamento_nit' => $collecion[0]['apartamentos'],
                     'id_cuenta' => $collecion[0]['id_cuenta'],
                     'cuenta' => $collecion[0]['cuenta'],
                     'naturaleza_cuenta' => '',
@@ -746,6 +756,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             'naturaleza_cuenta' => $cuentaData->naturaleza_cuenta,
             'auxiliar' => $cuentaData->auxiliar,
             'nombre_cuenta' => $cuentaData->nombre,
+            'apartamento_nit' => '',
             'id_centro_costos' => '',
             'codigo_cecos' => '',
             'nombre_cecos' =>  '',

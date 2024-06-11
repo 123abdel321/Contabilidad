@@ -16,13 +16,17 @@ class InfAuxiliarDetalle extends Model
     protected $fillable = [
         'id_auxiliar',
         'id_nit',
+        'id_cuenta',
         'id_centro_costos',
         'id_comprobante',
+        'naturaleza_cuenta',
+        'auxiliar',
         'numero_documento',
         'nombre_nit',
+        'nombre_cuenta',
+        'apartamento_nit',
         'razon_social',
         'cuenta',
-        'naturaleza_cuenta',
         'codigo_cecos',
         'nombre_cecos',
         'documento_referencia',
@@ -41,5 +45,7 @@ class InfAuxiliarDetalle extends Model
         'fecha_edicion',
         'created_by',
         'updated_by',
+        'created_at',
+        'updated_at',
     ];
 }

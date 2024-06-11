@@ -126,9 +126,8 @@ function auxiliarInit() {
                 
                 var html = '<div class="button-user" onclick="showNit('+row.id_nit+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
                 return html;
-    
-    
             }},
+            { data: 'apartamento_nit'},
             {"data": function (row, type, set){
                 if(!row.codigo_cecos){
                     return '';
@@ -194,6 +193,11 @@ function auxiliarInit() {
             }},
         ]
     });
+
+    var columnUbicacionMaximoPH = auxiliar_table.column(2);
+
+    if (ubicacion_maximoph) columnUbicacionMaximoPH.visible(true);
+    else columnUbicacionMaximoPH.visible(false);
 
     $('#id_nit_auxiliar').select2({
         theme: 'bootstrap-5',

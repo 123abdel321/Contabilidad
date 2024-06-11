@@ -52,7 +52,14 @@
                             <div class="form-check form-switch col-12 col-sm-6 col-md-4">
                                 <input class="form-check-input" type="checkbox" name="vendedores_ventas" id="vendedores_ventas" style="height: 20px;">
                                 <label class="form-check-label" for="vendedores_ventas">
-                                    Vendedores ventas
+                                    Vendedores captura ventas
+                                </label>
+                            </div>
+
+                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
+                                <input class="form-check-input" type="checkbox" name="ubicacion_maximoph" id="ubicacion_maximoph" style="height: 20px;">
+                                <label class="form-check-label" for="ubicacion_maximoph">
+                                    Ubicacion MaximoPh en informes
                                 </label>
                             </div>
 

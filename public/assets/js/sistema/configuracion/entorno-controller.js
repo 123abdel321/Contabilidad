@@ -7,7 +7,8 @@ function entornoInit() {
         var checksEntorno = [
             'iva_incluido',
             'capturar_documento_descuadrado',
-            'vendedores_ventas'
+            'vendedores_ventas',
+            'ubicacion_maximoph',
         ];
 
         checksEntorno.forEach(entorno => {
@@ -39,6 +40,7 @@ $(document).on('click', '#updateEntorno', function () {
         iva_incluido: $("input[type='checkbox']#iva_incluido").is(':checked') ? '1' : '',
         capturar_documento_descuadrado: $("input[type='checkbox']#capturar_documento_descuadrado_empresa").is(':checked') ? '1' : '',
         vendedores_ventas: $("input[type='checkbox']#vendedores_ventas").is(':checked') ? '1' : '',
+        ubicacion_maximoph: $("input[type='checkbox']#ubicacion_maximoph").is(':checked') ? '1' : '',
     };
 
     $.ajax({

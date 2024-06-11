@@ -3,6 +3,7 @@
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
             <th>Nit</th>
+            <th>Ubicación</th>
             <th>Centro costos</th>
             <th>Factura</th>
             <th>Saldo anterior</th>
