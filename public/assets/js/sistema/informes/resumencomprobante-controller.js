@@ -108,7 +108,9 @@ function resumencomprobanteInit() {
                     results: data.data
                 };
             }
-        }
+        },
+        templateResult: formatNitResumen,
+        templateSelection: formatRepoSelectionResumen
     });
 
     $comboCuentaResumen = $('#id_cuenta_comprobantes').select2({
@@ -162,14 +164,6 @@ function resumencomprobanteInit() {
             }
         }
     });
-
-    // resumen_comprobante_table.column(0).visible(false);// CODIGO CUENTA
-    // resumen_comprobante_table.column(1).visible(false);// NOMBRE CUENTA
-    // resumen_comprobante_table.column(2).visible(false);// DOCUMENTO NIT
-    // resumen_comprobante_table.column(3).visible(false);// NOMBRE  NIT
-
-    // resumen_comprobante_table.column(5).visible(false);// FECHA MANUAL
-    // resumen_comprobante_table.column(9).visible(false);// CONCEPTO
 }
 
 var channelResumenComprobante = pusher.subscribe('informe-resumen-comprobantes-'+localStorage.getItem("notificacion_code"));
@@ -285,3 +279,18 @@ function getDetallarResumen() {
     return '';
 }
 
+
+function formatNitResumen (nit) {
+    
+    if (nit.loading) return nit.text;
+
+    if (ubicacion_maximoph) {
+        if (nit.apartamentos) return nit.text+' - '+nit.apartamentos;
+        else return nit.text;
+    }
+    else return nit.text;
+}
+
+function formatRepoSelectionResumen (nit) {
+    return nit.full_name || nit.text;
+}
