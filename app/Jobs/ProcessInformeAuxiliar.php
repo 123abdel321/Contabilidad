@@ -63,7 +63,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             $this->addDetilsData($auxiliares);
             $this->addTotalNitsData($auxiliares);
             $this->addTotalsPadresData($auxiliares);
-
+            
             ksort($this->auxiliarCollection, SORT_STRING | SORT_FLAG_CASE);
             foreach (array_chunk($this->auxiliarCollection,233) as $auxiliarCollection){
                 DB::connection('informes')
@@ -556,6 +556,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                     'numero_documento' => $auxiliarDetalle->numero_documento,
                     'nombre_nit' => $auxiliarDetalle->nombre_nit,
                     'razon_social' => $auxiliarDetalle->razon_social,
+                    'apartamento_nit' => $auxiliarDetalle->apartamentos,
                     'id_cuenta' => $auxiliarDetalle->id_cuenta,
                     'cuenta' => $auxiliarDetalle->cuenta,
                     'naturaleza_cuenta' => $auxiliarDetalle->naturaleza_cuenta,
