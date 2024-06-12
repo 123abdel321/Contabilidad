@@ -214,8 +214,8 @@ function auxiliarInit() {
                 };
             }
         },
-        templateResult: formatNit,
-        templateSelection: formatRepoSelection
+        templateResult: formatNitAuxiliar,
+        templateSelection: formatRepoSelectionAuxiliar
 
     });
 
@@ -478,7 +478,7 @@ function clearAuxiliar() {
     $("#descargarExcelAuxiliarDisabled").show();
 }
 
-function formatNit (nit) {
+function formatNitAuxiliar (nit) {
     
     if (nit.loading) return nit.text;
 
@@ -489,6 +489,6 @@ function formatNit (nit) {
     else return nit.text;
 }
 
-function formatRepoSelection (nit) {
+function formatRepoSelectionAuxiliar (nit) {
     return nit.full_name || nit.text;
 }

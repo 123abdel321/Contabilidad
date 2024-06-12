@@ -122,6 +122,7 @@ function carteraInit() {
                 }
                 return '';
             }},
+            {data: 'apartamento_nit'},
             {data: 'documento_referencia'},
             {data: 'fecha_manual'},
             {data: 'saldo_anterior', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 5, targets: -4},
@@ -179,7 +180,9 @@ function carteraInit() {
                     results: data.data
                 };
             }
-        }
+        },
+        templateResult: formatNitCartera,
+        templateSelection: formatRepoCartera
     });
 
     $('input[type=radio][name=detallar_cartera]').change(function() {
@@ -244,12 +247,15 @@ function carteraInit() {
 
 function actualizarColumnas() {
     var nivel = getNivelCartera();
+    var agrupado = $("#agrupar_cartera").val();
 
-    var columnFactura = cartera_table.column(2);
-    var columnFecha = cartera_table.column(3);
-    var columnDias = cartera_table.column(8);
-    var columnMora = cartera_table.column(9);
-    var columnComprobante = cartera_table.column(10);
+    var columnUbicacionMaximoPH = cartera_table.column(2);
+    var columnFactura = cartera_table.column(3);
+    var columnFecha = cartera_table.column(4);
+    var columnDias = cartera_table.column(9);
+    var columnMora = cartera_table.column(10);
+    var columnComprobante = cartera_table.column(11);
+    
 
     if (nivel == 1 || nivel == 2) {
         columnFactura.visible(false);
@@ -265,6 +271,13 @@ function actualizarColumnas() {
         columnMora.visible(true);
         columnComprobante.visible(true);
     }
+
+    if (ubicacion_maximoph_cartera) {
+        if (nivel == 1) {
+            if (agrupado == 'id_nit') columnUbicacionMaximoPH.visible(true);
+            else columnUbicacionMaximoPH.visible(false);
+        } else columnUbicacionMaximoPH.visible(true);
+    } else columnUbicacionMaximoPH.visible(false);
 }
 
 function loadCarteraById(id_cartera) {
@@ -442,4 +455,19 @@ function getNivelCartera() {
     if($("input[type='radio']#nivel_cartera3").is(':checked')) return 3;
 
     return false;
+}
+
+function formatNitCartera (nit) {
+    
+    if (nit.loading) return nit.text;
+
+    if (ubicacion_maximoph_cartera) {
+        if (nit.apartamentos) return nit.text+' - '+nit.apartamentos;
+        else return nit.text;
+    }
+    else return nit.text;
+}
+
+function formatRepoCartera (nit) {
+    return nit.full_name || nit.text;
 }

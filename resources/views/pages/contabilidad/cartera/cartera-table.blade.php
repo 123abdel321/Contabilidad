@@ -3,6 +3,7 @@
         <tr>
             <th id="nombre_item_cartera" style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
             <th>Nombre</th>
+            <th>Ubicación</th>
             <th>Factura</th>
             <th>Fecha</th>
             <th>Saldo anterior</th>

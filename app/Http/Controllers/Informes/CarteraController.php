@@ -11,6 +11,7 @@ use App\Jobs\ProcessInformeCartera;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfCartera;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Informes\InfCarteraDetalle;
 
 class CarteraController extends Controller
@@ -19,7 +20,13 @@ class CarteraController extends Controller
 
     public function index ()
     {
-        return view('pages.contabilidad.cartera.cartera-view');
+        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
+
+        $data = [
+            'ubicacion_maximoph' => $ubicacion_maximoph ? $ubicacion_maximoph->valor : '0',
+        ];
+
+        return view('pages.contabilidad.cartera.cartera-view', $data);
     }
 
     public function generate(Request $request)

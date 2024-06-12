@@ -22,6 +22,7 @@ class InfCarteraDetalle extends Model
         "numero_documento",
         "nombre_nit",
         "razon_social",
+        "apartamento_nit",
         "documento_referencia",
         "total_facturas",
         "total_abono",

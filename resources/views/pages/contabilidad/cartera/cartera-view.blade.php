@@ -40,4 +40,12 @@
             @include('pages.contabilidad.cartera.cartera-table')
         </div>
     </div>
+
+    <script>
+        
+        var ubicacion_maximoph_cartera = JSON.parse('<?php echo $ubicacion_maximoph; ?>');
+
+    </script>
+
 </div>
+
