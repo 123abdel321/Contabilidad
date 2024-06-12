@@ -122,7 +122,24 @@ function carteraInit() {
                 }
                 return '';
             }},
-            {data: 'apartamento_nit'},
+            {"data": function (row, type, set){
+                var agrupado = $('#agrupar_cartera').val();
+                if (agrupado == 'id_cuenta') {
+                    if (row.nivel == 1) {
+                        return '';
+                    } else {
+                        return row.apartamento_nit;
+                    }
+                }
+                if (agrupado == 'id_nit') {
+                    if (row.nivel == 1) {
+                        return row.apartamento_nit;
+                    } else {
+                        return '';
+                    }
+                }
+                return '';
+            }},
             {data: 'documento_referencia'},
             {data: 'fecha_manual'},
             {data: 'saldo_anterior', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 5, targets: -4},

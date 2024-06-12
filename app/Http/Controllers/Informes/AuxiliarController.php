@@ -23,7 +23,7 @@ class AuxiliarController extends Controller
         $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
 
         $data = [
-            'ubicacion_maximoph' => $ubicacion_maximoph ? $ubicacion_maximoph->valor : '0',
+            'ubicacion_maximoph' => $ubicacion_maximoph && $ubicacion_maximoph->valor ? $ubicacion_maximoph->valor : '0',
         ];
 
         return view('pages.contabilidad.auxiliar.auxiliar-view', $data);

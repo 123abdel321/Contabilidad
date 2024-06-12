@@ -9,12 +9,19 @@ use App\Http\Controllers\Controller;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacDocumentos;
+use App\Models\Sistema\VariablesEntorno;
 
 class DocumentoController extends Controller
 {
     public function index ()
     {
-        return view('pages.contabilidad.documento.documento-view');
+        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
+
+        $data = [
+            'ubicacion_maximoph' => $ubicacion_maximoph && $ubicacion_maximoph->valor ? $ubicacion_maximoph->valor : '0',
+        ];
+        
+        return view('pages.contabilidad.documento.documento-view', $data);
     }
 
     public function generate (Request $request)
@@ -94,6 +101,28 @@ class DocumentoController extends Controller
         // $data = (new DocumentosPdf($empresa, $factura))->buildPdf()->getData();
         // return view('pdf.facturacion.documentos', $data);
  
+        return (new DocumentosPdf($empresa, $factura))
+            ->buildPdf()
+            ->showPdf();
+    }
+
+    public function showPdfPublic(Request $request)
+    {
+        $token_db = base64_decode($request->get('token_db'));
+        $empresa = Empresa::where('token_db', $token_db)->first();
+
+		Config::set('database.connections.sam.database', $token_db);
+        
+        $factura = FacDocumentos::whereId($id)->first();
+
+        if(!$factura) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'La factura no existe'
+            ]);
+        }
+
         return (new DocumentosPdf($empresa, $factura))
             ->buildPdf()
             ->showPdf();

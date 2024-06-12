@@ -37,4 +37,11 @@
             @include('pages.contabilidad.documento.documento-table')
         </div>
     </div>
+
+    <script>
+        
+        var ubicacion_maximoph_documentos = JSON.parse('<?php echo $ubicacion_maximoph; ?>');
+
+    </script>
+
 </div>
