@@ -445,6 +445,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                     ELSE NULL
                 END) AS nombre_nit"),
                 'N.razon_social',
+                'N.apartamentos',
                 'PC.id AS id_cuenta',
                 'PC.cuenta',
                 "PC.naturaleza_cuenta",
