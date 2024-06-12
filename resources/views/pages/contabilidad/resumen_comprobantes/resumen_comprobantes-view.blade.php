@@ -13,5 +13,11 @@
             </div>
         </div>
     </div>
+
+    <script>
+        
+        var ubicacion_maximoph_resumen = JSON.parse('<?php echo $ubicacion_maximoph; ?>');
+
+    </script>
     
 </div>

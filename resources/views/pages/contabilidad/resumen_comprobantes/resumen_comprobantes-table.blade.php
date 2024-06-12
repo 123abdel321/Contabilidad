@@ -5,6 +5,7 @@
             <th>Nombre</th>
             <th>Numero documento</th>
             <th>Nombre nit</th>
+            <th>Ubicacion</th>
             <th>Documento</th>
             <th>Fecha</th>
             <th>Debito</th>

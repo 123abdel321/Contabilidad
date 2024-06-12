@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeResumenComprobante;
 //MODELS
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Informes\InfResumenComprobante;
 use App\Models\Informes\InfResumenComprobanteDetalle;
 
@@ -14,7 +15,13 @@ class ResumenComprobantesController extends Controller
 {
     public function index ()
     {
-        return view('pages.contabilidad.resumen_comprobantes.resumen_comprobantes-view');
+        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
+
+        $data = [
+            'ubicacion_maximoph' => $ubicacion_maximoph && $ubicacion_maximoph->valor ? $ubicacion_maximoph->valor : '0',
+        ];
+
+        return view('pages.contabilidad.resumen_comprobantes.resumen_comprobantes-view', $data);
     }
 
     public function generate(Request $request)

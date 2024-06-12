@@ -25,6 +25,7 @@ class InfResumenComprobanteDetalle extends Model
         'numero_documento',
         'nombre_nit',
         'razon_social',
+        'apartamento_nit',
         'codigo_cecos',
         'nombre_cecos',
         'codigo_comprobante',

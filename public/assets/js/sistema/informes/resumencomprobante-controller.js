@@ -57,6 +57,7 @@ function resumencomprobanteInit() {
             { data: 'nombre_cuenta'},
             { data: 'numero_documento'},
             { data: 'nombre_nit'},
+            { data: 'apartamento_nit'},
             { data: 'consecutivo'},
             { data: 'fecha_manual'},
             { data: 'debito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
@@ -198,17 +199,19 @@ function loadResumenComprobanteById(id_resumen_comprobante) {
                 tabla.column(1).visible(true);// NOMBRE CUENTA
                 tabla.column(2).visible(true);// DOCUMENTO NIT
                 tabla.column(3).visible(true);// NOMBRE  NIT
-                tabla.column(4).visible(true);// CONSECUTIVO
-                tabla.column(5).visible(true);// FECHA MANUAL
-                tabla.column(9).visible(true);// CONCEPTO
+                tabla.column(4).visible(true);// UBICACION
+                tabla.column(5).visible(true);// CONSECUTIVO
+                tabla.column(6).visible(true);// FECHA MANUAL
+                tabla.column(10).visible(true);// CONCEPTO
             } else {
                 tabla.column(0).visible(false);// CODIGO CUENTA
                 tabla.column(1).visible(false);// NOMBRE CUENTA
                 tabla.column(2).visible(false);// DOCUMENTO NIT
                 tabla.column(3).visible(false);// NOMBRE  NIT
-                tabla.column(4).visible(false);// CONSECUTIVO
-                tabla.column(5).visible(false);// FECHA MANUAL
-                tabla.column(9).visible(false);// CONCEPTO
+                tabla.column(4).visible(true);// UBICACION
+                tabla.column(5).visible(false);// CONSECUTIVO
+                tabla.column(6).visible(false);// FECHA MANUAL
+                tabla.column(10).visible(false);// CONCEPTO
                 
                 switch (agrupado) {
                     case 'id_cuenta':
@@ -218,18 +221,27 @@ function loadResumenComprobanteById(id_resumen_comprobante) {
                     case 'id_nit':
                         tabla.column(2).visible(true);
                         tabla.column(3).visible(true);
+                        var columnUbicacionMaximoPH = tabla.column(4);
+                        if (ubicacion_maximoph_resumen) columnUbicacionMaximoPH.visible(true);
+                        else columnUbicacionMaximoPH.visible(false);
                         break;
                     case 'consecutivo':
                         tabla.column(2).visible(true);
                         tabla.column(3).visible(true);
-                        tabla.column(4).visible(true);
-                        tabla.column(5).visible(false);
-                        tabla.column(9).visible(false);
+                        var columnUbicacionMaximoPH = tabla.column(4);
+                        if (ubicacion_maximoph_resumen) columnUbicacionMaximoPH.visible(true);
+                        else columnUbicacionMaximoPH.visible(false);
+                        tabla.column(5).visible(true);
+                        tabla.column(6).visible(false);
+                        tabla.column(10).visible(false);
                         break;
                     default:
-                        tabla.column(4).visible(true);
-                        tabla.column(5).visible(false);
-                        tabla.column(9).visible(false);
+                        var columnUbicacionMaximoPH = tabla.column(4);
+                        if (ubicacion_maximoph_resumen) columnUbicacionMaximoPH.visible(true);
+                        else columnUbicacionMaximoPH.visible(false);
+                        tabla.column(5).visible(true);
+                        tabla.column(6).visible(false);
+                        tabla.column(10).visible(false);
                         break;
                 }
             }
