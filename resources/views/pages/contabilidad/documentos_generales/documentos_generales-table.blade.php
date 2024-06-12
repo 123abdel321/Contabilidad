@@ -2,7 +2,10 @@
     <thead>
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
+            <th>Nombre Cuenta</th>
+            <th>Documento</th>
             <th>Nit</th>
+            <th>Ubicacion</th>
             <th>Comprobante</th>
             <th>Consecutivo</th>
             <th>Centro costos</th>

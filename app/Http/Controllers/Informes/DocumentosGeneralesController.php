@@ -9,6 +9,7 @@ use App\Jobs\ProcessInformeDocumentosGenerales;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Informes\InfDocumentosGenerales;
 use App\Models\Informes\InfDocumentosGeneralesDetalle;
 
@@ -18,7 +19,13 @@ class DocumentosGeneralesController extends Controller
 
     public function index ()
     {
-        return view('pages.contabilidad.documentos_generales.documentos_generales-view');
+        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
+
+        $data = [
+            'ubicacion_maximoph' => $ubicacion_maximoph && $ubicacion_maximoph->valor ? $ubicacion_maximoph->valor : '0',
+        ];
+
+        return view('pages.contabilidad.documentos_generales.documentos_generales-view', $data);
     }
 
     public function generate (Request $request)

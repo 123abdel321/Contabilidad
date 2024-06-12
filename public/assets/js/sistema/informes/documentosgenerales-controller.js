@@ -71,20 +71,39 @@ function documentosgeneralesInit() {
         columns: [
             {"data": function (row, type, set){ //CUENTA
                 if (row.nivel == 99) return 'TOTALES'
-                if (row.id_cuenta) return row.cuenta + ' - ' +row.nombre_cuenta;
+                if (row.id_cuenta) return row.cuenta;
+                return '';
+            }},
+            {"data": function (row, type, set){ //CUENTA
+                if (row.nivel == 99) return 'TOTALES'
+                if (row.id_cuenta) return row.nombre_cuenta;
                 return '';
             }},
             {"data": function (row, type, set){ //NIT
                 if(!row.numero_documento){
                     return '';
                 }
-                var nombre = row.numero_documento + ' - ' +row.nombre_nit;
+                var nombre = row.numero_documento;
                 if(row.razon_social){
-                    nombre = row.numero_documento +' - '+ row.razon_social;
+                    nombre = row.numero_documento;
                 }
                 
                 var html = '<div class="button-user" onclick="showNit('+row.id_nit+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
                 return html;
+            }},
+            {"data": function (row, type, set){ //NIT
+                if(!row.numero_documento){
+                    return '';
+                }
+                var nombre = row.nombre_nit;
+                if(row.razon_social){
+                    nombre = row.razon_social;
+                }
+                
+                return nombre;
+            }},
+            {"data": function (row, type, set){ //UBICACION
+                return row.apartamento_nit;
             }},
             {"data": function (row, type, set){ //COMPROBANTE
                 if(!row.codigo_comprobante){
@@ -121,7 +140,12 @@ function documentosgeneralesInit() {
                 return html;
             }},
         ]
-    }); 
+    });
+
+    var columnUbicacionMaximoPH = documentos_generales_table.column(4);
+
+    if (ubicacion_maximoph_documentos_generales) columnUbicacionMaximoPH.visible(true);
+    else columnUbicacionMaximoPH.visible(false);
 
     $('#id_nit_documentos_generales').select2({
         theme: 'bootstrap-5',
@@ -137,7 +161,9 @@ function documentosgeneralesInit() {
                     results: data.data
                 };
             }
-        }
+        },
+        templateResult: formatNitDocumentosGenerales,
+        templateSelection: formatRepoSelectionDocumentosGenerales
     });
 
     $('#id_comprobante_documentos_generales').select2({
@@ -333,3 +359,18 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
         }
     });
 });
+
+function formatNitDocumentosGenerales (nit) {
+    
+    if (nit.loading) return nit.text;
+
+    if (ubicacion_maximoph_documentos_generales) {
+        if (nit.apartamentos) return nit.text+' - '+nit.apartamentos;
+        else return nit.text;
+    }
+    else return nit.text;
+}
+
+function formatRepoSelectionDocumentosGenerales (nit) {
+    return nit.full_name || nit.text;
+}
