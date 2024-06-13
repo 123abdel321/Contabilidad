@@ -67,7 +67,7 @@ class ProcessInformeCartera implements ShouldQueue
             if ($this->request['nivel'] != '1') $this->nivelDosCartera();
             if ($this->request['nivel'] == '3') $this->nivelTresCartera();
             $this->totalesCartera();
-
+            
             ksort($this->carteraCollection, SORT_STRING | SORT_FLAG_CASE);
             foreach (array_chunk($this->carteraCollection,233) as $carteraCollection){
                 DB::connection('informes')
@@ -427,7 +427,7 @@ class ProcessInformeCartera implements ShouldQueue
             'numero_documento' => '',
             'nombre_nit' => '',
             'razon_social' => '',
-            'apartamentos' => '',
+            'apartamento_nit' => '',
             'id_cuenta' => '',
             'cuenta' => 'TOTALES',
             'nombre_cuenta' => '',
