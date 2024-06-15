@@ -367,11 +367,8 @@ class NitController extends Controller
 					->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
                     ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
 					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
-                    ->orWhere('numero_documento', 'LIKE', '%' . $request->get("q") . '%');
-                
-                if ($ubicacion_maximoph) {
-                    $nits->orWhere('apartamentos', 'LIKE', '%' . $request->get("q") . '%');
-                }
+                    ->orWhere('numero_documento', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('apartamentos', 'LIKE', '%' . $request->get("q") . '%');
             }
     
             if ($request->get("search")) {
@@ -387,11 +384,8 @@ class NitController extends Controller
 					->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
                     ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
 					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
-                    ->orWhere('numero_documento', 'LIKE', '%' . $request->get("search") . '%');
-
-                if ($ubicacion_maximoph) {
-                    $nits->orWhere('apartamentos', 'LIKE', '%' . $request->get("q") . '%');
-                }
+                    ->orWhere('numero_documento', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('apartamentos', 'LIKE', '%' . $request->get("q") . '%');
             }
         }
 
