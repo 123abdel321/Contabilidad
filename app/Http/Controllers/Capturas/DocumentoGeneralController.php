@@ -473,16 +473,16 @@ class DocumentoGeneralController extends Controller
 			} else {
 				$facDocumento = FacDocumentos::where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
-					->first();
-				$facDocumento->fecha_manual = $request->get('fecha_manual');
-				$facDocumento->consecutivo = $request->get('consecutivo');
-				$facDocumento->debito = $debito;
-				$facDocumento->credito = $credito;
-				$facDocumento->saldo_final = $debito - $credito;
-				$facDocumento->updated_by = request()->user()->id;
+					->updateOrCreate([
+						'id_nit' => $primerIdNit,
+						'fecha_manual' => $request->get('fecha_manual'),
+						'consecutivo' => $request->get('consecutivo'),
+						'debito' => $debito,
+						'credito' => $credito,
+						'saldo_final' => $debito - $credito,
+						'updated_by' => request()->user()->id,
+					]);
 			}
-			$facDocumento->id_nit = $primerIdNit;
-			$facDocumento->save();
 
 			DB::connection('sam')->commit();
 			
