@@ -81,9 +81,10 @@ class NitController extends Controller
                 } else if ($columnName) {
                     $nits->orderBy($columnName,$columnSortOrder);
                 }
-    
+                
                 if($searchValue) {
-                    $nits->where('primer_apellido', 'like', '%' .$searchValue . '%')
+                    $nits->where('numero_documento', 'like', '%' .$searchValue . '%')
+                        ->orWhere('primer_apellido', 'like', '%' .$searchValue . '%')
                         ->orWhere('segundo_apellido', 'like', '%' .$searchValue . '%')
                         ->orWhere('primer_nombre', 'like', '%' .$searchValue . '%')
                         ->orWhere('otros_nombres', 'like', '%' .$searchValue . '%')
@@ -336,6 +337,7 @@ class NitController extends Controller
             'id_tipo_documento',
             'id_ciudad',
             'primer_nombre',
+            \DB::raw('numero_documento AS segundo_nombre'),
             'primer_apellido',
             'segundo_apellido',
             'email',
@@ -383,7 +385,7 @@ class NitController extends Controller
 					->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
                     ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
 					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
-                    ->orWhere('primer_apellido', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('apartamentos', 'LIKE', '%' . $request->get("search") . '%');
             }
         }
