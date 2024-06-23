@@ -229,6 +229,7 @@ class ProcessInformeCartera implements ShouldQueue
             )
             ->groupByRaw($this->groupString(2))
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 
                 $documentos->each(function ($documento) {
@@ -324,6 +325,7 @@ class ProcessInformeCartera implements ShouldQueue
             )
             ->groupByRaw($this->groupString(3))
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $this->contador++;
