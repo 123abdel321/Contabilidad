@@ -385,7 +385,7 @@ class NitController extends Controller
 					->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
                     ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
 					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
-                    ->orWhere('', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('primer_apellido', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('apartamentos', 'LIKE', '%' . $request->get("search") . '%');
             }
         }
