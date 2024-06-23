@@ -71,7 +71,7 @@ function carteraInit() {
                     return;
                 }
                 if(data.nivel == 2){
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 40%)');
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
                     $('td', row).css('font-weight', 'bold');
                     return;
                 }
