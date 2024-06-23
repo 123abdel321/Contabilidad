@@ -326,6 +326,7 @@ class ProcessInformeCartera implements ShouldQueue
             )
             ->groupByRaw($this->groupString(3))
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            ->havingRaw('saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $this->contador++;
@@ -418,7 +419,6 @@ class ProcessInformeCartera implements ShouldQueue
                 DB::raw('SUM(total_columnas) AS total_columnas')
             )
             ->orderByRaw('created_at')
-            ->havingRaw('saldo_final != 0')
             ->first();
 
         $this->carteraCollection['99999999999'] = [
