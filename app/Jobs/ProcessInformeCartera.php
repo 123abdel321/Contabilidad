@@ -501,7 +501,7 @@ class ProcessInformeCartera implements ShouldQueue
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
-            ->whereIn('PCT.id_tipo_cuenta', $this->request['tipo_informe'] == 'por_cobrar' ? [3,7] : [4,8])
+            ->whereIn('PCT.id_tipo_cuenta', $this->tipoCuentas())
             ->when($this->request['fecha_desde'] ? true : false, function ($query) {
 				$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde']);
 			}) 
@@ -565,7 +565,7 @@ class ProcessInformeCartera implements ShouldQueue
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
-            ->whereIn('PCT.id_tipo_cuenta', $this->request['tipo_informe'] == 'por_cobrar' ? [3,7] : [4,8])
+            ->whereIn('PCT.id_tipo_cuenta', $this->tipoCuentas())
             ->when($this->request['fecha_desde'] ? true : false, function ($query) {
 				$query->where('DG.fecha_manual', '<', $this->request['fecha_desde']);
 			})
@@ -601,5 +601,12 @@ class ProcessInformeCartera implements ShouldQueue
         }
 
         return $groupBy;
+    }
+
+    private function tipoCuentas ()
+    {
+        if ($this->request['tipo_informe'] == 'por_cobrar') return [3,7];
+        if ($this->request['tipo_informe'] == 'por_pagar') return [4,8];
+        return [3,7,4,8];
     }
 }

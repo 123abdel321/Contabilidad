@@ -16,6 +16,7 @@
                         <div class="form-group form-group col-12 col-sm-4 col-md-3">
                             <label for="exampleFormControlSelect1">Tipo informe</label>
                             <select class="form-control form-control-sm tipo_cartera" id="tipo_informe_cartera" name="tipo_informe_cartera">
+                                <option value="">Ambos</option>
                                 <option value="por_cobrar">Cuentas por cobrar</option>
                                 <option value="por_pagar">Cuentas por pagar</option>
                             </select>

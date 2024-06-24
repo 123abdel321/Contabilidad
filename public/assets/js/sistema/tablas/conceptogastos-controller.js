@@ -98,6 +98,112 @@ function conceptogastosInit() {
         ]
     });
 
+    $comboCuentaGasto = $('#id_cuenta_concepto_gasto_gasto').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#conceptoGastosFormModal'),
+        delay: 250,
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    id_tipo_cuenta: [1]
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboCuentaGastoRetencion = $('#id_cuenta_concepto_gasto_retencion').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#conceptoGastosFormModal'),
+        delay: 250,
+        allowClear: true,
+        placeholder: "Seleccione una Retención",
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    id_tipo_cuenta: [12]
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboCuentaGastoRetencionDeclarante = $('#id_cuenta_concepto_gasto_retencion_declarante').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#conceptoGastosFormModal'),
+        delay: 250,
+        allowClear: true,
+        placeholder: "Seleccione una Retención",
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    id_tipo_cuenta: [12]
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboCuentaGastoIva = $('#id_cuenta_concepto_gasto_iva').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#conceptoGastosFormModal'),
+        delay: 250,
+        allowClear: true,
+        placeholder: "Seleccione una Cuenta",
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            }
+        },
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    id_tipo_cuenta: [9]
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     let column = conceptos_gastos_table.column(7);
     
     if (!editarConceptoGastos && !eliminarConceptoGastos) column.visible(false);
@@ -290,111 +396,6 @@ function conceptogastosInit() {
                 $('#nombre_concepto_gasto').focus();
                 $('#nombre_concepto_gasto').select();
             },10);
-        }
-    });
-
-    $comboCuentaGasto = $('#id_cuenta_concepto_gasto_gasto').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#conceptoGastosFormModal'),
-        delay: 250,
-        ajax: {
-            url: 'api/plan-cuenta/combo-cuenta',
-            headers: headers,
-            dataType: 'json',
-            data: function (params) {
-                var query = {
-                    search: params.term,
-                    id_tipo_cuenta: [1]
-                }
-                return query;
-            },
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    $comboCuentaGastoRetencion = $('#id_cuenta_concepto_gasto_retencion').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#conceptoGastosFormModal'),
-        delay: 250,
-        ajax: {
-            url: 'api/plan-cuenta/combo-cuenta',
-            headers: headers,
-            dataType: 'json',
-            allowClear: true,
-            data: function (params) {
-                var query = {
-                    search: params.term,
-                    id_tipo_cuenta: [12]
-                }
-                return query;
-            },
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    $comboCuentaGastoRetencionDeclarante = $('#id_cuenta_concepto_gasto_retencion_declarante').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#conceptoGastosFormModal'),
-        delay: 250,
-        placeholder: "Seleccione una Retención",
-        allowClear: true,
-        ajax: {
-            url: 'api/plan-cuenta/combo-cuenta',
-            headers: headers,
-            dataType: 'json',
-            data: function (params) {
-                var query = {
-                    search: params.term,
-                    id_tipo_cuenta: [12]
-                }
-                return query;
-            },
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    $comboCuentaGastoIva = $('#id_cuenta_concepto_gasto_iva').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#conceptoGastosFormModal'),
-        delay: 250,
-        placeholder: "Seleccione una Cuenta",
-        allowClear: true,
-        language: {
-            noResults: function() {
-                return "No hay resultado";        
-            },
-            searching: function() {
-                return "Buscando..";
-            }
-        },
-        ajax: {
-            url: 'api/plan-cuenta/combo-cuenta',
-            headers: headers,
-            dataType: 'json',
-            data: function (params) {
-                var query = {
-                    search: params.term,
-                    id_tipo_cuenta: [9]
-                }
-                return query;
-            },
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
         }
     });
 
