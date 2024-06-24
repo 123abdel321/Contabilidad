@@ -243,6 +243,13 @@ $(document).on('click', '#iniciarCapturaRecibo', function () {
         $('#crearCapturaReciboDisabled').show();
         $('#iniciarCapturaReciboLoading').hide();
         loadAnticiposRecibo();
+        mostrarValoresRecibos();
+        var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresRecibos();
+        $("#total_abono_recibo").val(new Intl.NumberFormat("ja-JP").format(totalSaldo));
+        setTimeout(function(){
+            $("#total_abono_recibo").focus();
+            $("#total_abono_recibo").select();
+        },80);
     });
 });
 
@@ -290,7 +297,7 @@ function saveRecibo() {
         $('#iniciarCapturaRecibo').show();
         $('#iniciarCapturaReciboLoading').hide();
         agregarToast('exito', 'Creación exitosa', 'Recibo creado con exito!', true);
-
+        guardandoRecibo = false
         if(res.impresion) {
             window.open("/recibo-print/"+res.impresion, '_blank');
         }
@@ -383,12 +390,25 @@ function changeTotalAbonoRecibo(event) {
     var dataRecibos = recibo_table.rows().data();
     if(event.keyCode == 13 && dataRecibos.length) {
         var totalAbono = stringToNumberFloat($('#total_abono_recibo').val());
+        var dataAnticipo = {
+            'index': null,
+            'recibo': null
+        };
         var totalSaldo = 0;
 
         for (let index = 0; index < dataRecibos.length; index++) {
             var recibo = dataRecibos[index];
 
-            if (!recibo.cuenta_recibo) continue;
+            if (!recibo.cuenta_recibo) {
+                if (!dataAnticipo.recibo) {
+                    dataAnticipo.index = index;
+                    dataAnticipo.recibo = recibo;
+                }
+                continue;
+            }
+
+            if (recibo.cuenta_recibo == "sin_deuda") continue;
+
             if (totalAbono <= 0) {
                 recibo.valor_recibido = 0;
                 recibo.nuevo_saldo = recibo.saldo;
@@ -422,11 +442,34 @@ function changeTotalAbonoRecibo(event) {
                 }
             });
         }
-        console.log('totalSaldo: ',totalSaldo);
+        
         if (totalAbono) {
-            $('#total_abono_recibo').val(new Intl.NumberFormat("ja-JP").format(totalSaldo));
+            
+            dataAnticipo.recibo.nuevo_saldo = totalAbono;
+            dataAnticipo.recibo.valor_recibido = totalAbono;
+            dataAnticipo.recibo.documento_referencia = $('#documento_referencia_recibo').val();
+            dataAnticipo.recibo.concepto = "ANTICIPO RECIBO";
+            totalSaldo+= parseFloat(totalAbono);
+            totalAbono = 0;
+            recibo_table.row(dataAnticipo.index).data(dataAnticipo.recibo);
+            $("input[data-type='currency']").on({
+                keyup: function(event) {
+                    if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+                        formatCurrency($(this));
+                    }
+                },
+                blur: function() {
+                    formatCurrency($(this), "blur");
+                }
+            });
         }
+
         mostrarValoresRecibos();
+
+        var dataPagoRecibo = recibo_table_pagos.rows().data();
+        if(dataPagoRecibo.length) {
+            focusFormaPagoRecibo(dataPagoRecibo[0].id);
+        }
     }
 }
 
@@ -609,7 +652,7 @@ function calcularRecibosPagos(idFormaPago = null) {
 
 function changeFormaPagoRecibo(idFormaPago, event, anticipo) {
     if(event.keyCode == 13){
-
+        
         calcularRecibosPagos(idFormaPago);
 
         var [totalPagos, totalCXP] = totalFormasPagoRecibos();
@@ -619,9 +662,7 @@ function changeFormaPagoRecibo(idFormaPago, event, anticipo) {
         if (anticipo) {
 
             if (totalCXP > totalAnticiposRecibo) {
-
                 var [totalPagos, totalCXP] = totalFormasPagoRecibos(idFormaPago);
-
                 $('#recibo_forma_pago_'+idFormaPago).val(totalAnticiposRecibo);
                 $('#recibo_forma_pago_'+idFormaPago).select();
                 calcularRecibosPagos();
