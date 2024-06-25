@@ -33,6 +33,15 @@
                                 <option value="">Seleccionar</option>
                             </select>
                         </div>
+
+                        <div class="form-group form-group col-12 col-sm-4 col-md-3">
+                            <label for="exampleFormControlSelect1">Agrupar por:</label>
+                            <select class="form-control form-control-sm agrupar_cartera" id="agrupar_cartera" name="agrupar_cartera">
+                                <option value="id_cuenta">Cuenta</option>
+                                <option value="id_nit">Cedula/Nits</option>
+                            </select>
+                        </div>
+
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="example-text-input" class="form-control-label">Fecha desde</label>
                             <input name="fecha_desde_cartera" id="fecha_desde_cartera" class="form-control form-control-sm" type="date">
@@ -41,14 +50,6 @@
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="example-text-input" class="form-control-label">Fecha hasta</label>
                             <input name="fecha_hasta_cartera" id="fecha_hasta_cartera" class="form-control form-control-sm" type="date">
-                        </div>
-
-                        <div class="form-group form-group col-12 col-sm-4 col-md-3">
-                            <label for="exampleFormControlSelect1">Agrupar por:</label>
-                            <select class="form-control form-control-sm agrupar_cartera" id="agrupar_cartera" name="agrupar_cartera">
-                                <option value="id_cuenta">Cuenta</option>
-                                <option value="id_nit">Cedula/Nits</option>
-                            </select>
                         </div>
 
                         <div class="form-group col-12 col-sm-3 col-md-2 row" style="margin-bottom: 0.1rem !important;">

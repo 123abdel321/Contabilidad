@@ -10,9 +10,11 @@
             <th>Total factura</th>
             <th>Total abono</th>
             <th>Saldo final</th>
+            <th>Consecutivo</th>
             <th>Dias</th>
             <th>Mora</th>
-            <th style="border-radius: 0px 15px 0px 0px !important;">Comprobante</th>
+            <th>Comprobante</th>
+            <th style="border-radius: 0px 15px 0px 0px !important;">Concepto</th>
         </tr>
     </thead>
 </table>

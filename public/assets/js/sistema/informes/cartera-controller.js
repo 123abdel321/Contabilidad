@@ -146,6 +146,12 @@ function carteraInit() {
             {data: 'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 4, targets: -3},
             {data: 'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 3, targets: -2},
             {data: 'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 2, targets: -1},
+            {"data": function (row, type, set){
+                if (row.nivel == 3) {
+                    return row.consecutivo
+                }
+                return '';
+            }},
             {data: 'dias_cumplidos', responsivePriority: 6, targets: -4},
             {data: 'mora', responsivePriority: 7, targets: -5},
             {"data": function (row, type, set){
@@ -154,6 +160,12 @@ function carteraInit() {
                         return row.codigo_comprobante+' - '+row.nombre_comprobante;
                     }
                 }
+            }},
+            {"data": function (row, type, set){
+                if (row.nivel == 3) {
+                    return row.concepto
+                }
+                return '';
             }},
         ]
     });
@@ -269,24 +281,30 @@ function actualizarColumnas() {
     var columnUbicacionMaximoPH = cartera_table.column(2);
     var columnFactura = cartera_table.column(3);
     var columnFecha = cartera_table.column(4);
-    var columnDias = cartera_table.column(9);
-    var columnMora = cartera_table.column(10);
-    var columnComprobante = cartera_table.column(11);
+    var columnConcecutivo = cartera_table.column(9);
+    var columnDias = cartera_table.column(10);
+    var columnMora = cartera_table.column(11);
+    var columnComprobante = cartera_table.column(12);
+    var columnConcepto = cartera_table.column(13);
     
 
     if (nivel == 1 || nivel == 2) {
         columnFactura.visible(false);
         columnFecha.visible(false);
+        columnConcecutivo.visible(false);
         columnDias.visible(false);
         columnMora.visible(false);
         columnComprobante.visible(false);
+        columnConcepto.visible(false);
     }
     if (nivel == 3) {
         columnFactura.visible(true);
         columnFecha.visible(true);
+        columnConcecutivo.visible(true);
         columnDias.visible(true);
         columnMora.visible(true);
         columnComprobante.visible(true);
+        columnConcepto.visible(true);
     }
 
     if (ubicacion_maximoph_cartera) {
