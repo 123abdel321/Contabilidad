@@ -16,6 +16,7 @@ use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\VendedoresController;
 use App\Http\Controllers\Tablas\FormasPagoController;
 use App\Http\Controllers\Tablas\CentroCostoController;
+use App\Http\Controllers\Tablas\PresupuestoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
 use App\Http\Controllers\Tablas\ConceptoGastosController;
@@ -228,7 +229,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::delete('bodega', 'delete');
             Route::get('bodega/combo-bodega', 'comboBodega');
             Route::get('existencias-producto', 'existenciasProducto');
-            
         });
         //VARIANTES
         Route::controller(VariantesController::class)->group(function () {
@@ -273,6 +273,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('concepto-gasto', 'update');
             Route::delete('concepto-gasto', 'delete');
             Route::get('concepto-gasto/combo', 'comboConceptoGasto');
+        });
+        //PRESUPUESTO
+        Route::controller(PresupuestoController::class)->group(function () {
+            Route::get('presupuesto', 'generate');
+            Route::post('presupuesto', 'create');
+            Route::put('presupuesto', 'update');
         });
         
         //CAPTURA GENERAL
