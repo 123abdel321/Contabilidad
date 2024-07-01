@@ -2,6 +2,7 @@ let inputAction = null;
 let presupuesto_table = null;
 var searchValuePresupuesto = null;
 var dataPresupuestoRow = [];
+var actualizar_grupo = true;
 let mesesPresupuesto = [
     'enero',
     'febrero',
@@ -44,6 +45,10 @@ function presupuestoInit() {
             }
         },
         'rowCallback': function(row, data, index){
+            if (data.auxiliar && data.es_grupo) {
+                $('td', row).css('background-color', '#f4f4f4');
+                return;
+            }
             if (!data.auxiliar) {
                 $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
                 $('td', row).css('font-weight', 'bold');
@@ -55,70 +60,97 @@ function presupuestoInit() {
             }
         },
         columns: [
-            {"data":'cuenta', orderable: false},
+            {"data": function (row, type, set){
+                if (!row.id_padre) {
+                    return `
+                        <div style="display: flex; align-items: center;">
+                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
+                                <input class="form-check-input" type="checkbox" id="checkpresupuesto_${row.id}" style="height: 20px;" onchange="changeCheckGrupo(${row.id})" ${row.es_grupo ? 'checked' : ''}>
+                            </div>
+                            ${row.cuenta}
+                        </div>`;
+                }
+                return row.cuenta;
+            }},
             {"data":'nombre'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="presupuesto_${row.id}" ondblclick="focusPresupuesto(${row.id}, ${row.presupuesto})">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.presupuesto).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
-            {"data":'diferencia', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
+                return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.diferencia).toFixed(2));
+            }, className: 'dt-body-right'},
+            {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="enero_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.enero}, 0)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.enero).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="febrero_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.febrero}, 1)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.febrero).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="marzo_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.marzo}, 2)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.marzo).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="abril_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.abril}, 3)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.abril).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="mayo_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.mayo}, 4)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.mayo).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="junio_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.junio}, 5)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.junio).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="julio_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.julio}, 6)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.julio).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="agosto_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.agosto}, 7)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.agosto).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="septiembre_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.septiembre}, 8)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.septiembre).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="octubre_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.octubre}, 9)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.octubre).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="noviembre_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.noviembre}, 10)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="diciembre_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.diciembre}, 11)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.diciembre).toFixed(2))}
                 </div>`;
@@ -186,6 +218,12 @@ function reloadPresupuesto () {
 }
 
 function focusPresupuesto (id, valor) {
+    var dataPresupuestoCache = getDataById(id, presupuesto_table);
+
+    if ((!dataPresupuestoCache.auxiliar && !dataPresupuestoCache.es_grupo)) {
+        return;
+    }
+
     var input = document.createElement('input');
 
     input.setAttribute("type", "text");
@@ -193,7 +231,6 @@ function focusPresupuesto (id, valor) {
     input.setAttribute("id", "presupuesto_input_"+id);
     input.setAttribute("value", new Intl.NumberFormat("ja-JP").format(valor));
     input.setAttribute("style", "padding-right: 5px !important;");
-    input.setAttribute("onfocusout", "actualizarPresupuesto("+id+")");
 
     document.getElementById('presupuesto_'+id).innerHTML = "";
     document.getElementById('presupuesto_'+id).insertBefore(input, null);
@@ -204,9 +241,18 @@ function focusPresupuesto (id, valor) {
     },10);
 
     inputAction = document.getElementById("presupuesto_input_"+id);
-
     inputAction.addEventListener('keydown', function(event) {
-        console.log(event.keyCode);
+        if (event.keyCode == 13) {
+            inputAction = document.getElementById("presupuesto_input_"+id);
+            inputAction.removeEventListener('focusout', actualizarPresupuesto);
+            setTimeout(function(){
+                actualizarPresupuesto(id);
+            },100);
+            
+        }
+    });
+    inputAction.addEventListener('focusout', function() {
+        actualizarPresupuesto(id);
     });
     inputAction.addEventListener('keyup', function(event) {
         if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
@@ -217,10 +263,20 @@ function focusPresupuesto (id, valor) {
         formatCurrency($(this), "blur");
     });
 
-    dataPresupuestoRow = getDataById(id, presupuesto_table);
+    dataPresupuestoRow = dataPresupuestoCache;
 }
 
 function focusMesPresupuesto (id, valor, mes) {
+    var dataPresupuestoCache = getDataById(id, presupuesto_table);
+
+    if ((dataPresupuestoCache.auxiliar && dataPresupuestoCache.es_grupo)) {
+        return;
+    }
+
+    if ((!dataPresupuestoCache.auxiliar && !dataPresupuestoCache.es_grupo)) {
+        return;
+    }
+
     mesActual = mesesPresupuesto[mes];
     var idNewInput = mesActual+"_input_"+id;
 
@@ -240,8 +296,6 @@ function focusMesPresupuesto (id, valor, mes) {
         $('#'+idNewInput).select();
     },10);
 
-    dataPresupuestoRow = getDataById(id, presupuesto_table);
-
     inputAction = document.getElementById(idNewInput);
 
     inputAction.addEventListener('keyup', function(event) {
@@ -253,7 +307,6 @@ function focusMesPresupuesto (id, valor, mes) {
         formatCurrency($(this), "blur");
     });
     inputAction.addEventListener('focusout', function() {
-        formatCurrency($(this), "blur");
         actualizarMesActual(id);
     });
     inputAction.addEventListener('keydown', function(event) {
@@ -265,6 +318,8 @@ function focusMesPresupuesto (id, valor, mes) {
             //FOCUS HERE
         }
     });
+
+    dataPresupuestoRow = dataPresupuestoCache;
 }
 
 function actualizarMesActual (id) {
@@ -380,6 +435,53 @@ function actualizarColumna() {
     });
 }
 
+function changeCheckGrupo (id) {
+
+    if (!actualizar_grupo) {
+        actualizar_grupo = true;
+        return;
+    }
+    
+    dataPresupuestoRow = getDataById(id, presupuesto_table);
+
+    var checkInput = $("input[type='checkbox']#checkpresupuesto_"+id).is(':checked') ? true : false;
+    var title = 'Agrupar cuenta '+dataPresupuestoRow.cuenta+'?';
+    if (!checkInput) title = 'Desagrupar cuenta '+dataPresupuestoRow.cuenta+'?';
+    
+    dataPresupuestoRow.es_grupo = checkInput;
+
+    Swal.fire({
+        title: title,
+        type: 'warning',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Aceptar!',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.value){
+            $.ajax({
+                url: base_url + 'presupuesto-grupo',
+                method: 'PUT',
+                data: JSON.stringify(dataPresupuestoRow),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                reloadPresupuesto();
+            }).fail((res) => {
+                actualizar_grupo = false;
+                setTimeout(function(){
+                    actualizar_grupo = true;
+                },100);
+                agregarToast('error', 'Error al actualizar presupuesto', '');
+            });
+        } else {
+            $('#checkpresupuesto_'+id).prop('checked', !checkInput);
+        }
+    });
+}
+
 $(document).on('click', '#generarPresupuesto', function () {
     $("#generarPresupuesto").hide();
     $("#generarPresupuestoLoading").show();
@@ -408,4 +510,3 @@ $(document).on('click', '#generarPresupuesto', function () {
         $("#generarPresupuestoLoading").hide();
     });
 });
-

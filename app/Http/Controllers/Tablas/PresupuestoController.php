@@ -181,31 +181,81 @@ class PresupuestoController extends Controller
                     'diciembre' => $request->get('diciembre'),
                 ]);
 
-                if ($request->get('id_padre')) {
-                    $padre = PlanCuentas::find($request->get('id_padre'));
+            $data =  [
+                'presupuesto' => 0,
+                'diferencia' => 0,
+                'enero' => 0,
+                'febrero' => 0,
+                'marzo' => 0,
+                'abril' => 0,
+                'mayo' => 0,
+                'junio' => 0,
+                'julio' => 0,
+                'agosto' => 0,
+                'septiembre' => 0,
+                'octubre' => 0,
+                'noviembre' => 0,
+                'diciembre' => 0,
+            ];
 
-                    $totalesPadre = PresupuestoDetalle::where('id_padre', $request->get('id_padre'));
-                    PresupuestoDetalle::where('cuenta', $padre->cuenta)
-                        ->update([
-                            'presupuesto' => $totalesPadre->sum('presupuesto'),
-                            'diferencia' => $totalesPadre->sum('diferencia'),
-                            'enero' => $totalesPadre->sum('enero'),
-                            'febrero' => $totalesPadre->sum('febrero'),
-                            'marzo' => $totalesPadre->sum('marzo'),
-                            'abril' => $totalesPadre->sum('abril'),
-                            'mayo' => $totalesPadre->sum('mayo'),
-                            'junio' => $totalesPadre->sum('junio'),
-                            'julio' => $totalesPadre->sum('julio'),
-                            'agosto' => $totalesPadre->sum('agosto'),
-                            'septiembre' => $totalesPadre->sum('septiembre'),
-                            'octubre' => $totalesPadre->sum('octubre'),
-                            'noviembre' => $totalesPadre->sum('noviembre'),
-                            'diciembre' => $totalesPadre->sum('diciembre'),
-                        ]);
-                }
+            if ($request->get('id_padre')) {
+                $padre = PlanCuentas::find($request->get('id_padre'));
 
+                $totalesPadre = PresupuestoDetalle::where('id_padre', $request->get('id_padre'));
+                $data = [
+                    'presupuesto' => $totalesPadre->sum('presupuesto'),
+                    'diferencia' => $totalesPadre->sum('diferencia'),
+                    'enero' => $totalesPadre->sum('enero'),
+                    'febrero' => $totalesPadre->sum('febrero'),
+                    'marzo' => $totalesPadre->sum('marzo'),
+                    'abril' => $totalesPadre->sum('abril'),
+                    'mayo' => $totalesPadre->sum('mayo'),
+                    'junio' => $totalesPadre->sum('junio'),
+                    'julio' => $totalesPadre->sum('julio'),
+                    'agosto' => $totalesPadre->sum('agosto'),
+                    'septiembre' => $totalesPadre->sum('septiembre'),
+                    'octubre' => $totalesPadre->sum('octubre'),
+                    'noviembre' => $totalesPadre->sum('noviembre'),
+                    'diciembre' => $totalesPadre->sum('diciembre'),
+                ];
+
+                PresupuestoDetalle::where('cuenta', $padre->cuenta)
+                    ->update($data);
+                    
+            } else {
+                PresupuestoDetalle::where('cuenta', 'LIKE', $request->get('cuenta').'%')
+                    ->where('cuenta', '!=', $request->get('cuenta'))
+                    ->update($data);
+            }
 
             DB::connection('sam')->commit();
+            return response()->json([
+                'success'=>	true,
+                'data' => '',
+                'message'=> 'Presupuesto actualizado con exito!'
+            ]);
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function grupo (Request $request)
+    {
+        try {
+            DB::connection('sam')->beginTransaction();
+
+            PresupuestoDetalle::where('cuenta', 'LIKE', $request->get('cuenta').'%')
+                ->update([
+                    'es_grupo' => $request->get('es_grupo')
+                ]);
+
+            DB::connection('sam')->commit();
+
             return response()->json([
                 'success'=>	true,
                 'data' => '',

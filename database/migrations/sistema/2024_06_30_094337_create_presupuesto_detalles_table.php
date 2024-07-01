@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('id_presupuesto')->nullable();
             $table->integer('id_padre')->nullable();
-            $table->integer('id_grupo')->nullable();
+            $table->integer('es_grupo')->nullable();
             $table->string('cuenta', 60)->nullable();
             $table->string('nombre', 200)->nullable();
             $table->decimal('presupuesto', 15)->default(0);

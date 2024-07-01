@@ -279,6 +279,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('presupuesto', 'generate');
             Route::post('presupuesto', 'create');
             Route::put('presupuesto', 'update');
+            Route::put('presupuesto-grupo', 'grupo');
         });
         
         //CAPTURA GENERAL

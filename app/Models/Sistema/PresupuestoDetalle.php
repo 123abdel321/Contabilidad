@@ -17,7 +17,7 @@ class PresupuestoDetalle extends Model
         'id',
         'id_presupuesto',
         'id_padre',
-        'id_grupo',
+        'es_grupo',
         'cuenta',
         'nombre',
         'presupuesto',
