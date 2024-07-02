@@ -334,8 +334,7 @@ class PresupuestoController extends Controller
                 ->where('auxiliar', '2')
                 ->first();
 
-            $presupuesto = Presupuesto::with('total')
-                ->where('id', $request->get('id_presupuesto'))
+            $presupuesto = Presupuesto::where('id', $request->get('id_presupuesto'))
                 ->first();
 
             DB::connection('sam')->commit();
