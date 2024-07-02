@@ -45,6 +45,12 @@ function presupuestoInit() {
             }
         },
         'rowCallback': function(row, data, index){
+            if (data.auxiliar == '2') {
+                $('td', row).css('background-color', 'rgb(33 90 166)');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
+                return;
+            }
             if (data.auxiliar && data.es_grupo) {
                 $('td', row).css('background-color', '#f4f4f4');
                 return;
@@ -61,6 +67,7 @@ function presupuestoInit() {
         },
         columns: [
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return row.cuenta;
                 if (!row.id_padre) {
                     return `
                         <div style="display: flex; align-items: center;">
@@ -74,6 +81,7 @@ function presupuestoInit() {
             }},
             {"data":'nombre'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.presupuesto).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="presupuesto_${row.id}" ondblclick="focusPresupuesto(${row.id}, ${row.presupuesto})">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.presupuesto).toFixed(2))}
@@ -84,72 +92,84 @@ function presupuestoInit() {
                 return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.diferencia).toFixed(2));
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="enero_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.enero}, 0)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.enero).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="febrero_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.febrero}, 1)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.febrero).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="marzo_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.marzo}, 2)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.marzo).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="abril_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.abril}, 3)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.abril).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="mayo_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.mayo}, 4)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.mayo).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="junio_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.junio}, 5)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.junio).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="julio_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.julio}, 6)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.julio).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="agosto_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.agosto}, 7)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.agosto).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="septiembre_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.septiembre}, 8)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.septiembre).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="octubre_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.octubre}, 9)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.octubre).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="noviembre_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.noviembre}, 10)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2))}
                 </div>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){
+                if (row.auxiliar == '2') return new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.noviembre).toFixed(2));
                 if (row.auxiliar && row.es_grupo) return '';
                 return `<div id="diciembre_${row.id}" ondblclick="focusMesPresupuesto(${row.id}, ${row.diciembre}, 11)">
                     ${new Intl.NumberFormat("ja-JP", {minimumFractionDigits: 2}).format(parseFloat(row.diciembre).toFixed(2))}
@@ -159,10 +179,12 @@ function presupuestoInit() {
     });
 
     $("#periodo_presupuesto").on('change', function(){
+        $("#id_presupuesto_up").val("");
         reloadPresupuesto();
     });
 
     $("#tipo_presupuesto").on('change', function(){
+        $("#id_presupuesto_up").val("");
         reloadPresupuesto();
     });
 
@@ -171,6 +193,7 @@ function presupuestoInit() {
 
 function reloadPresupuesto () {
     $("#div-valor_presupuesto").hide();
+    $("#div-valor_diferencia").hide();
     
     $("#generarPresupuesto").hide();
     $("#generarPresupuestoLoading").show();
@@ -185,14 +208,30 @@ function reloadPresupuesto () {
             $("#generarPresupuestoLoading").hide();
         } else {
             $("#div-buscar_presupuesto").show();
+            $("#div-valor_presupuesto").show();
+            $("#div-valor_diferencia").show();
             $("#generarPresupuesto").hide();
             $("#generarPresupuestoLoading").hide();
         }
 
-        if (res.id_presupuesto) {
-            $("#id_presupuesto_up").val(res.id_presupuesto);
+        if (res.presupuesto) {
+            
+            var diferencia = res.presupuesto.presupuesto - res.data[0].presupuesto;
+            diferencia = diferencia < 0 ? diferencia * -1 : diferencia;
+            $("#id_presupuesto_up").val(res.presupuesto.id);
+            $("#valor_presupuesto").val(new Intl.NumberFormat("ja-JP").format(res.presupuesto.presupuesto));
+            $("#valor_diferencia").val(new Intl.NumberFormat("ja-JP").format(diferencia));
+
+            if (diferencia) {
+                $('#valor_diferencia').addClass("is-invalid");
+                $('#valor_diferencia').removeClass("is-valid");
+                $("#div-valor_diferencia").show();
+            } else {
+                $("#div-valor_diferencia").hide();
+            }
         } else {
             $("#id_presupuesto_up").val();
+            $("#valor_presupuesto").val('');
         }
 
         if (focusNextRow) {
@@ -247,8 +286,7 @@ function focusPresupuesto (id, valor) {
             inputAction.removeEventListener('focusout', actualizarPresupuesto);
             setTimeout(function(){
                 actualizarPresupuesto(id);
-            },100);
-            
+            },100);            
         }
     });
     inputAction.addEventListener('focusout', function() {
@@ -349,7 +387,7 @@ function actualizarMesActual (id) {
     inputAction.removeEventListener('focusout', actualizarMesActual);
     
     var clearInput = document.getElementById(mesActual+'_'+id);
-    console.log(mesActual+'_'+id);
+
     if (clearInput) clearInput.innerHTML = new Intl.NumberFormat("ja-JP").format(valorInput);
 
     actualizarColumna();
@@ -435,6 +473,49 @@ function actualizarColumna() {
     });
 }
 
+function enterActualizarValorPresupuesto(event) {
+    if (event.keyCode == 13) {        
+        setTimeout(function(){
+            $("#searchInputInmuebles").focus();
+        },10);
+    }
+}
+
+function actualizarValorPresupuesto() {
+
+    $("#generarPresupuestoLoading").show();
+    $.ajax({
+        url: base_url + 'presupuesto-valor',
+        method: 'PUT',
+        data: JSON.stringify({
+            id_presupuesto: $("#id_presupuesto_up").val(),
+            valor_presupuesto: stringToNumberFloat($("#valor_presupuesto").val()),
+        }),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        $("#generarPresupuestoLoading").hide();
+
+        var diferencia = parseFloat(res.presupuesto.presupuesto) - parseFloat(res.total_presupuesto);
+            diferencia = diferencia < 0 ? diferencia * -1 : diferencia;
+
+            $("#id_presupuesto_up").val(res.presupuesto.id);
+            $("#valor_presupuesto").val(new Intl.NumberFormat("ja-JP").format(res.presupuesto.presupuesto));
+            $("#valor_diferencia").val(new Intl.NumberFormat("ja-JP").format(diferencia));
+
+            if (diferencia) {
+                $('#valor_diferencia').addClass("is-invalid");
+                $('#valor_diferencia').removeClass("is-valid");
+                $("#div-valor_diferencia").show();
+            } else {
+                $("#div-valor_diferencia").hide();
+            }
+    }).fail((res) => {
+        $("#generarPresupuestoLoading").hide();
+        agregarToast('error', 'Error al actualizar presupuesto', '');
+    });
+}
+
 function changeCheckGrupo (id) {
 
     if (!actualizar_grupo) {
@@ -509,4 +590,15 @@ $(document).on('click', '#generarPresupuesto', function () {
         $("#generarPresupuesto").show();
         $("#generarPresupuestoLoading").hide();
     });
+});
+
+$("input[data-type='currency']").on({
+    keyup: function(event) {
+        if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+            formatCurrency($(this));
+        }
+    },
+    blur: function() {
+        formatCurrency($(this), "blur");
+    }
 });

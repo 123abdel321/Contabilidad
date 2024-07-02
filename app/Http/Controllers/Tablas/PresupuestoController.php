@@ -39,9 +39,16 @@ class PresupuestoController extends Controller
             $draw = $request->get('draw');
             $start = $request->get("start");
             $rowperpage = $request->get("length");
+            $presupuesto = null;
+
+            if ($request->get('search')) {
+                $presupuestoDetalle->where('cuenta', 'LIKE', '%'.$request->get('search').'%')
+                    ->orWhere('nombre', 'LIKE', '%'.$request->get('search').'%');
+            }
 
             if ($request->get("id_presupuesto")) {
                 $presupuestoDetalle->where('id_presupuesto', $request->get("id_presupuesto"));
+                $presupuesto = Presupuesto::find($request->get("id_presupuesto"));
             } else {
 
                 $presupuesto = Presupuesto::where('periodo', $request->get("periodo"))
@@ -51,17 +58,16 @@ class PresupuestoController extends Controller
                 if (!$presupuesto) {
                     return response()->json([
                         'success'=>	true,
+                        'draw' => $draw,
+                        'presupuesto' => null,
+                        'iTotalRecords' => 0,
+                        'iTotalDisplayRecords' => 0,
                         'data' => [],
-                        'id_presupuesto' => null,
-                        'message'=> 'Presupuesto cargado con exito!'
+                        'perPage' => 0,
+                        'message'=> 'Presupuesto generados con exito!'
                     ]);
                 }
                 $presupuestoDetalle->where('id_presupuesto', $presupuesto->id);
-            }
-
-            if ($request->get('search')) {
-                $presupuestoDetalle->where('cuenta', 'LIKE', '%'.$request->get('search').'%')
-                    ->orWhere('nombre', 'LIKE', '%'.$request->get('search').'%');
             }
 
             $presupuestoTotals = $presupuestoDetalle->get();
@@ -72,6 +78,7 @@ class PresupuestoController extends Controller
             return response()->json([
                 'success'=>	true,
                 'draw' => $draw,
+                'presupuesto' => $presupuesto,
                 'iTotalRecords' => $presupuestoTotals->count(),
                 'iTotalDisplayRecords' => $presupuestoTotals->count(),
                 'data' => $presupuestoPaginate->get(),
@@ -132,6 +139,35 @@ class PresupuestoController extends Controller
                 }
             }
 
+            $queryTotales = PresupuestoDetalle::where('auxiliar', '0');
+
+            $totalPresupuesto = [
+                'id_presupuesto' => $presupuesto->id,
+                'id_padre' => '',
+                'cuenta' => '',
+                'nombre' => 'TOTALES',
+                'presupuesto' => $queryTotales->sum('presupuesto'),
+                'diferencia' => $queryTotales->sum('diferencia'),
+                'enero' => $queryTotales->sum('enero'),
+                'febrero' => $queryTotales->sum('febrero'),
+                'marzo' => $queryTotales->sum('marzo'),
+                'abril' => $queryTotales->sum('abril'),
+                'mayo' => $queryTotales->sum('mayo'),
+                'junio' => $queryTotales->sum('junio'),
+                'julio' => $queryTotales->sum('julio'),
+                'agosto' => $queryTotales->sum('agosto'),
+                'septiembre' => $queryTotales->sum('septiembre'),
+                'octubre' => $queryTotales->sum('octubre'),
+                'noviembre' => $queryTotales->sum('noviembre'),
+                'diciembre' => $queryTotales->sum('diciembre'),
+                'auxiliar' => '2',
+                'created_by' => request()->user()->id,
+                'updated_by' => request()->user()->id
+            ];
+
+            $cuentasPresupuesto['1'] = $totalPresupuesto;
+            $cuentasPresupuesto['9'] = $totalPresupuesto;
+
             ksort($cuentasPresupuesto, SORT_STRING | SORT_FLAG_CASE);
 
             foreach (array_chunk($cuentasPresupuesto,233) as $cuentasPpts){
@@ -162,7 +198,8 @@ class PresupuestoController extends Controller
     {
         try {
             DB::connection('sam')->beginTransaction();
-
+            $presupuestoD = PresupuestoDetalle::where('id', $request->get('id'))->first();
+            $presupuesto = Presupuesto::where('id', $presupuestoD->id_presupuesto)->first();
             PresupuestoDetalle::where('id', $request->get('id'))
                 ->update([
                     'presupuesto' => $request->get('presupuesto'),
@@ -202,6 +239,7 @@ class PresupuestoController extends Controller
                 $padre = PlanCuentas::find($request->get('id_padre'));
 
                 $totalesPadre = PresupuestoDetalle::where('id_padre', $request->get('id_padre'));
+
                 $data = [
                     'presupuesto' => $totalesPadre->sum('presupuesto'),
                     'diferencia' => $totalesPadre->sum('diferencia'),
@@ -221,6 +259,28 @@ class PresupuestoController extends Controller
 
                 PresupuestoDetalle::where('cuenta', $padre->cuenta)
                     ->update($data);
+
+                $totalesGeneral = PresupuestoDetalle::where('auxiliar', '0');
+
+                $dataTotal = [
+                    'presupuesto' => $totalesGeneral->sum('presupuesto'),
+                    'diferencia' => $totalesGeneral->sum('diferencia'),
+                    'enero' => $totalesGeneral->sum('enero'),
+                    'febrero' => $totalesGeneral->sum('febrero'),
+                    'marzo' => $totalesGeneral->sum('marzo'),
+                    'abril' => $totalesGeneral->sum('abril'),
+                    'mayo' => $totalesGeneral->sum('mayo'),
+                    'junio' => $totalesGeneral->sum('junio'),
+                    'julio' => $totalesGeneral->sum('julio'),
+                    'agosto' => $totalesGeneral->sum('agosto'),
+                    'septiembre' => $totalesGeneral->sum('septiembre'),
+                    'octubre' => $totalesGeneral->sum('octubre'),
+                    'noviembre' => $totalesGeneral->sum('noviembre'),
+                    'diciembre' => $totalesGeneral->sum('diciembre'),
+                ];
+
+                PresupuestoDetalle::where('auxiliar', '2')
+                    ->update($dataTotal);
                     
             } else {
                 PresupuestoDetalle::where('cuenta', 'LIKE', $request->get('cuenta').'%')
@@ -232,6 +292,7 @@ class PresupuestoController extends Controller
             return response()->json([
                 'success'=>	true,
                 'data' => '',
+                'presupuesto' => $presupuesto,
                 'message'=> 'Presupuesto actualizado con exito!'
             ]);
         } catch (Exception $e) {
@@ -242,6 +303,59 @@ class PresupuestoController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
+    }
+
+    public function updateValor (Request $request)
+    {
+        $rules = [
+            'id_presupuesto' => 'required',
+            'valor_presupuesto' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+        try {
+            DB::connection('sam')->beginTransaction();
+            
+            Presupuesto::where('id', $request->get('id_presupuesto'))
+                ->update([
+                    'presupuesto' => $request->get('valor_presupuesto')
+                ]);
+
+            $presupuestoD = PresupuestoDetalle::where('id_presupuesto', $request->get('id_presupuesto'))
+                ->where('auxiliar', '2')
+                ->first();
+
+            $presupuesto = Presupuesto::with('total')
+                ->where('id', $request->get('id_presupuesto'))
+                ->first();
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => '',
+                'presupuesto' => $presupuesto,
+                'total_presupuesto' => $presupuestoD->presupuesto,
+                'message'=> 'Presupuesto actualizado con exitos!'
+            ]);
+
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        } 
     }
 
     public function grupo (Request $request)
@@ -293,6 +407,33 @@ class PresupuestoController extends Controller
             'noviembre' => '',
             'diciembre' => '',
             'auxiliar' => $planCuenta->auxiliar,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ];
+    }
+
+    private function generarEstructuraTotal($idPresupuesto)
+    {
+        return [
+            'id_presupuesto' => $idPresupuesto,
+            'id_padre' => '',
+            'cuenta' => '',
+            'nombre' => '',
+            'presupuesto' => '',
+            'diferencia' => '',
+            'enero' => '',
+            'febrero' => '',
+            'marzo' => '',
+            'abril' => '',
+            'mayo' => '',
+            'junio' => '',
+            'julio' => '',
+            'agosto' => '',
+            'septiembre' => '',
+            'octubre' => '',
+            'noviembre' => '',
+            'diciembre' => '',
+            'auxiliar' => '2',
             'created_by' => request()->user()->id,
             'updated_by' => request()->user()->id
         ];
