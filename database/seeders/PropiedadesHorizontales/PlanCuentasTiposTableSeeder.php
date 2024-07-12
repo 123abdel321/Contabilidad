@@ -4389,30 +4389,6 @@ class PlanCuentasTiposTableSeeder extends Seeder
                 'created_at' => '2023-12-22 10:47:45',
                 'updated_at' => '2023-12-22 10:47:45',
             ),
-            46 => 
-            array (
-                'id' => 575,
-                'id_cuenta' => 1082,
-                'id_tipo_cuenta' => 8,
-                'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2023-12-22 10:47:45',
-            ),
-            47 => 
-            array (
-                'id' => 576,
-                'id_cuenta' => 1083,
-                'id_tipo_cuenta' => 8,
-                'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2023-12-22 10:47:45',
-            ),
-            48 => 
-            array (
-                'id' => 577,
-                'id_cuenta' => 1084,
-                'id_tipo_cuenta' => 8,
-                'created_at' => '2023-12-22 10:47:45',
-                'updated_at' => '2023-12-22 10:47:45',
-            ),
             49 => 
             array (
                 'id' => 578,
