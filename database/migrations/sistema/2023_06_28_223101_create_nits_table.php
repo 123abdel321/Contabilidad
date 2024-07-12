@@ -35,6 +35,7 @@ class CreateNitsTable extends Migration
             $table->string('razon_social', 120)->nullable();
             $table->string('nombre_comercial', 120)->nullable()->default('');
             $table->string('direccion', 100)->nullable();
+            $table->string('apartamentos', 255)->nullable();
             $table->string('email', 250)->nullable();
             $table->string('email_recepcion_factura_electronica', 60)->nullable();
             $table->string('telefono_1', 30)->nullable();
