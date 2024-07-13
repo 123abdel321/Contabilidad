@@ -1181,7 +1181,11 @@ function cancelarGasto() {
             countE.start();
     }
 
+    dataGasto = [];
+    idGastoTable = 0;
+    retencionesGasto = [];
     clearFormasPagoGasto();
+    mostrarValoresGastos();
     
     $('#total_faltante_gasto').val('0.00');
     $('#cancelarCapturaGasto').hide();
