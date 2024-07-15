@@ -649,9 +649,12 @@
         }
         
         function sendDataLogin() {
-            if (localStorage.getItem("auth_token")){
-                window.location.href = '/home';
-            }
+            localStorage.setItem("auth_token", "");
+            localStorage.setItem("empresa_nombre", "");
+            localStorage.setItem("empresa_logo", "");
+            localStorage.setItem("notificacion_code", "");
+            localStorage.setItem("fondo_sistema", "");
+            
             $('#error-login').hide();
             $("#button-login-loading").show();
             $("#button-login").hide();
