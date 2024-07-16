@@ -40,7 +40,7 @@ class ProcessInformeCartera implements ShouldQueue
             $cuenta = PlanCuentas::find($this->request['id_cuenta']);
             $this->request['cuenta'] = $cuenta->cuenta;
         }
-        if ($this->request['notificacion']) {
+        if (array_key_exists('notificacion', $this->request)) {
             $this->id_notificacion = $this->request['notificacion'];
         }
     }
