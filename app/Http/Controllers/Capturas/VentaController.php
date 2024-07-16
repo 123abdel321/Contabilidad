@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Helpers\Printers\VentasInformeZ;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
+use App\Helpers\FacturaElectronica\VentaElectronicaSender;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
 //MODELS
 use App\Models\Sistema\Nits;
@@ -371,6 +372,11 @@ class VentaController extends Controller
             }
 
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+
+            // //FACTURAR ELECTRONICAMENTE
+            // if ($this->resolucion == FacResolucion::TIPO_FACTURA_ELECTRONICA) {
+            //     $ventaElectronica = (new VentaElectronicaSender($venta))->send();
+            // }
 
             if (!$documentoGeneral->save()) {
 
