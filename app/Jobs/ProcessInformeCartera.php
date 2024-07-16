@@ -29,6 +29,7 @@ class ProcessInformeCartera implements ShouldQueue
     public $carteras = [];
     public $id_cartera = 0;
     public $carteraCollection = [];
+    public $id_notificacion = null;
 
     public function __construct($request, $id_usuario, $id_empresa)
     {
@@ -38,6 +39,9 @@ class ProcessInformeCartera implements ShouldQueue
         if ($this->request['id_cuenta']) {
             $cuenta = PlanCuentas::find($this->request['id_cuenta']);
             $this->request['cuenta'] = $cuenta->cuenta;
+        }
+        if ($this->request['notificacion']) {
+            $this->id_notificacion = $this->request['notificacion'];
         }
     }
 
@@ -77,7 +81,12 @@ class ProcessInformeCartera implements ShouldQueue
 
             DB::connection('informes')->commit();
 
-            event(new PrivateMessageEvent('informe-cartera-'.$empresa->token_db.'_'.$this->id_usuario, [
+            $urlEventoNotificacion = $empresa->token_db.'_'.$this->id_usuario;
+            if ($this->id_notificacion) {
+                $urlEventoNotificacion = $this->id_notificacion;
+            }
+
+            event(new PrivateMessageEvent('informe-cartera-'.$urlEventoNotificacion, [
                 'tipo' => 'exito',
                 'mensaje' => 'Informe generado con exito!',
                 'titulo' => 'Cartera generada',
