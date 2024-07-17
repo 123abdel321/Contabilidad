@@ -522,8 +522,9 @@ class Documento
         if ($this->captura) {
             $isUnbalanced = $this->getTotals()->diferencia > 0;
             $capturarDocumentosDescuadrados = VariablesEntorno::where('nombre', 'capturar_documento_descuadrado')->first();
-            if ($isUnbalanced && $capturarDocumentosDescuadrados->valor == 0) {
-                $this->errors['documento'][] = 'Documento descuadrado';
+            if ($isUnbalanced) {
+                if (!$capturarDocumentosDescuadrados) $this->errors['documento'][] = 'Documento descuadrado';
+                else if ($capturarDocumentosDescuadrados && $capturarDocumentosDescuadrados->valor == 0) $this->errors['documento'][] = 'Documento descuadrado';
             }
         }
 
