@@ -1052,6 +1052,8 @@ function totalValoresVentas() {
         $("#crearCapturaVentaDisabled").show();
     }
 
+    if (ivaIncluidoVentas) total = total+= iva;
+
     return [iva, retencion, descuento, total, valorBruto, redondeo];
 }
 
