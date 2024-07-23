@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Permission;
 use App\Jobs\ProcessProvisionedDatabase;
 use Illuminate\Support\Facades\Validator;
@@ -106,7 +107,7 @@ class InstaladorController extends Controller
 				'nit' => $request->numero_documento,
 				'telefono' => $request->telefono,
 				'id_usuario_owner' => $usuarioOwner->id,
-				'estado' => 0
+				'estado' => 1
 			]);
 
 			$this->associateComponentsToCompany($empresa); 
@@ -282,6 +283,146 @@ class InstaladorController extends Controller
             ], 422);
         }
     }
+
+	public function instalar(Request $request)
+	{
+		$rules = [
+			'nit_empresa_nueva' => 'required|max:200',
+			'dv_empresa_nueva' => "between:0,9|numeric|required",
+			'razon_social_empresa_nueva' => 'nullable|string|max:120|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_JURIDICA, // Campo requerido si el tipo contribuyente es persona jurídica (id: 1)
+			'direccion_empresa_nueva' => 'nullable|min:3|max:100',
+			'email_empresa_nueva' => 'nullable|min:3|max:100',
+			'telefono_empresa_nueva' => 'nullable|numeric|digits_between:1,30',
+		];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+        if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+		DB::connection('sam')->beginTransaction();
+
+		try {
+			
+			$valid_exist_cliente = Empresa::where('nit',$request->get('nit_empresa_nueva'))->get();
+
+			foreach($valid_exist_cliente as $empresa){
+				if($empresa->estado == 5) {
+					// $transaccion = CliTransacciones::where('id_empresa',$empresa->id)->where('estado',0)->first();
+
+					// if($transaccion){
+						return response()->json([
+							"success"=>false,
+							"errors"=>["La empresa ".$empresa->nombre." con nit ".$empresa->nit." tiene un proceso de pago pendiente. Por favor intenta más tarde"]
+						], Response::HTTP_UNPROCESSABLE_ENTITY);
+					// }
+				}else{
+					return response()->json([
+						"success"=>false,
+						"errors"=>["La empresa ".$empresa->nombre." con nit ".$empresa->nit." ya está registrada."]
+					], Response::HTTP_UNPROCESSABLE_ENTITY);
+				}
+			}
+
+			$user = $request->user();
+
+			info('Creando empresa: '. $request->razon_social_empresa_nueva. '...');
+
+			$empresa = Empresa::create([
+				'servidor' => 'sam',
+				'nombre' => $request->razon_social_empresa_nueva,
+				'razon_social' => $request->razon_social_empresa_nueva,
+				'nit' => $request->nit_empresa_nueva,
+				'dv' => $request->dv_empresa_nueva,
+				'telefono' => $request->telefono_empresa_nueva,
+				'id_usuario_owner' => $user->id,
+				'estado' => 0
+			]);
+
+			$this->associateComponentsToCompany($empresa); 
+
+			$empresa->token_db = $this->generateUniqueNameDb($empresa);
+			$empresa->hash = Hash::make($empresa->id);
+			$empresa->estado = 1;
+
+			$file = $request->file('imagen_empresa_nueva');
+            if ($file) {
+                $empresa->logo = Storage::disk('do_spaces')->put('logos_empresas', $file, 'public');
+            }
+
+			$empresa->save();
+
+			$this->associateUserToCompany($user, $empresa);
+
+			$dbProvisionada = BaseDatosProvisionada::available()->first();
+
+			if (!$dbProvisionada) {
+				ProcessProvisionedDatabase::dispatch($empresa->id);
+
+				DB::connection('sam')->commit();
+
+				return response()->json([
+					"success" => true,
+					'data' => $empresa,
+					"message" => 'La instalación se está procesando, verifique en 5 minutos.'
+				], 200);
+			}
+
+			$dbProvisionada->ocupar();
+
+			$empresa->token_db = $dbProvisionada->hash;
+
+			$empresa->estado = 1;
+			$empresa->save();
+
+			copyDBConnection($empresa->servidor ?: 'sam', 'sam');
+			setDBInConnection('sam', $empresa->token_db);
+
+			Nits::create([
+                'id_tipo_documento' => 3,
+                'numero_documento' => $request->nit,
+				'digito_verificacion' => $request->dv,
+                'razon_social' => $request->razon_social,
+                // 'direccion' => $request->get('direccion'),
+                // 'email' => $request->get('email'),
+                'telefono_1' => $request->telefono,
+                // 'id_ciudad' => $request->get('id_ciudad'),
+                // 'observaciones' => $request->get('observaciones'),
+                'created_by' => request()->user()->id,
+                'updated_by' => request()->user()->id,
+            ]);
+
+			info('Empresa'. $request->razon_social.' creada con exito!');
+
+			DB::connection('sam')->commit();
+			DB::connection('clientes')->commit();
+
+			return response()->json([
+				"success" => true,
+				"data" => 'Instalación Finalizada. Hemos enviado a tu email el instructivo para continuar con el acceso.'
+			], 200);
+
+		} catch (Exception $e) {
+			DB::connection('sam')->rollback();
+			DB::connection('clientes')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+
+		return response()->json([
+			"success"=> true,
+			'data' => 'Instalar',
+			"message"=> ''
+		], 200);
+	}
 
 	private function associateComponentsToCompany($empresa)
 	{

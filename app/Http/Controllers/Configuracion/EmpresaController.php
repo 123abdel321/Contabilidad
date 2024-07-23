@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Configuracion;
 
 use DB;
+use Exception;
+use Smalot\PdfParser\Parser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -11,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
+use App\Models\Empresas\UsuarioEmpresa;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Empresas\ResponsabilidadesTributarias;
 
@@ -32,37 +35,156 @@ class EmpresaController extends Controller
 
     public function index(Request $request)
     {
-        $user = $request->user();
-        $user->permisos = [];
-		$empresasExternas = $user->empresasExternas->pluck("id_empresa");
-		$empresasExternas = $empresasExternas->toArray();
+        // $user = $request->user();
+        // $user->permisos = [];
+		// $empresasExternas = $user->empresasExternas->pluck("id_empresa");
+		// $empresasExternas = $empresasExternas->toArray();
 
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        $capturarDocumentosDescuadrados = VariablesEntorno::where('nombre', 'capturar_documento_descuadrado')->first();
-        $responsabilidades = ResponsabilidadesTributarias::get();
+        // $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        // $capturarDocumentosDescuadrados = VariablesEntorno::where('nombre', 'capturar_documento_descuadrado')->first();
+        // $responsabilidades = ResponsabilidadesTributarias::get();
 
-        if (!$capturarDocumentosDescuadrados) {
-            $capturarDocumentosDescuadrados = new VariablesEntorno;
-            $capturarDocumentosDescuadrados->nombre = 'capturar_documento_descuadrado';
-            $capturarDocumentosDescuadrados->valor = false;
-            $capturarDocumentosDescuadrados->save();
+        // if (!$capturarDocumentosDescuadrados) {
+        //     $capturarDocumentosDescuadrados = new VariablesEntorno;
+        //     $capturarDocumentosDescuadrados->nombre = 'capturar_documento_descuadrado';
+        //     $capturarDocumentosDescuadrados->valor = false;
+        //     $capturarDocumentosDescuadrados->save();
+        // }
+
+        // $query = Empresa::whereNotNull("id");
+
+        // $query->where(function($q) use($empresasExternas,$user){
+        //     $q->whereIn("id",$empresasExternas);
+        //     $q->orWhere("id_usuario_owner",$user->id);
+        // });
+
+        // $data = [
+        //     'empresa' => $empresa,
+        //     'empresas' => $query->get(),
+        //     'responsabilidades' => $responsabilidades,
+        //     'capturarDocumentosDescuadrados' => $capturarDocumentosDescuadrados,
+        // ];
+        
+        return view('pages.configuracion.empresa.empresa-view');
+    }
+
+    public function generate (Request $request)
+    {
+        try {
+            
+            $usuarioEmpresa = UsuarioEmpresa::where('id_usuario', request()->user()->id)
+                ->get();
+                
+            $draw = $request->get('draw');
+            $start = $request->get("start");
+            $rowperpage = $request->get("length");
+
+            $columnIndex_arr = $request->get('order');
+            $columnName_arr = $request->get('columns');
+            $order_arr = $request->get('order');
+            $search_arr = $request->get('search');
+
+            $columnIndex = $columnIndex_arr[0]['column']; // Column index
+            $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+            $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+            $searchValue = $search_arr['value']; // Search value
+
+            $empresas = Empresa::orderBy($columnName,$columnSortOrder)
+                ->with('usuario');
+
+            if (!request()->user()->rol_portafolio) {
+                $idEmpresas = [];
+                
+                foreach ($usuarioEmpresa as $key => $empresa) {
+                    array_push($idEmpresas, $empresa->id_empresa);
+                }
+                
+                $empresas->whereIn('id', $idEmpresas);
+            }
+
+            $empresasTotals = $empresas->get();
+
+            $empresasPaginate = $empresas->skip($start)
+                ->take($rowperpage);
+
+            return response()->json([
+                'success'=>	true,
+                'draw' => $draw,
+                'iTotalRecords' => $empresasTotals->count(),
+                'iTotalDisplayRecords' => $empresasTotals->count(),
+                'data' => $empresasPaginate->get(),
+                'perPage' => $rowperpage,
+                'message'=> 'Empresas generadas con exito!'
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function rut (Request $request)
+    {
+        $rules = [
+            'file_rut_empresa' => 'required|mimes:pdf|max:1024'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
         }
 
-        $query = Empresa::whereNotNull("id");
+        try {
 
-        $query->where(function($q) use($empresasExternas,$user){
-            $q->whereIn("id",$empresasExternas);
-            $q->orWhere("id_usuario_owner",$user->id);
-        });
+            $parser = new Parser;
+            $pdf = $parser->parseFile($request->file('file_rut_empresa'));
+            $pages = $pdf->getPages();
 
-        $data = [
-            'empresa' => $empresa,
-            'empresas' => $query->get(),
-            'responsabilidades' => $responsabilidades,
-            'capturarDocumentosDescuadrados' => $capturarDocumentosDescuadrados,
-        ];
-        
-        return view('pages.configuracion.empresa.empresa-view', $data);
+            $data = [
+                'dv' => null,
+                'nit' => null,
+                'email' => null,
+                'telefono' => null,
+                'direccion' => null,
+                'razon_social' => null,
+                'nombre_completo' => null,
+            ];
+
+            foreach ($pages as $page) {
+                $text = nl2br($page->getText());
+                $text = str_replace(["\n","\t"], " ", $text);
+                $dataPage = explode('<br />', $text);
+                $nitCompleto = $this->getNitCompleto($dataPage);
+                
+                $data['dv'] = substr($nitCompleto, -1);
+                $data['nit'] = substr($nitCompleto, 0, -1);
+                $data['email'] = $this->getEmail($dataPage);
+                $data['telefono'] = $this->getTelefono($dataPage);
+                $data['direccion'] = $this->getDireccion($dataPage);
+                $data['razon_social'] = $this->getRazonSocial($dataPage);
+                $data['nombre_completo'] = $this->getNombreCompleto($dataPage);
+
+                return response()->json([
+                    "success" => true,
+                    "data" => $data,
+                ]);
+            }            
+
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
     }
 
     public function updateEmpresa(Request $request)
@@ -171,5 +293,56 @@ class EmpresaController extends Controller
         }
 
         return $responsabilidades->paginate(40);
+    }
+
+    private function getNitCompleto($dataPage)
+    {
+        if (array_key_exists(85, $dataPage)) {
+            return str_replace(" ","",$dataPage[85]);
+        }
+        if (array_key_exists(86, $dataPage)) {
+            return str_replace(" ","",$dataPage[86]);
+        }
+        return null;
+    }
+
+    private function getDireccion($dataPage)
+    {
+        if (array_key_exists(94, $dataPage)) {
+            return str_replace("  ","",substr($dataPage[94], 1));
+        }
+        return null;
+    }
+
+    private function getEmail($dataPage)
+    {
+        if (array_key_exists(95, $dataPage)) {
+            return str_replace(" ","",$dataPage[95]);
+        }
+        return null;
+    }
+
+    private function getTelefono($dataPage)
+    {
+        if (array_key_exists(96, $dataPage)) {
+            return str_replace(" ","",$dataPage[96]);
+        }
+        return null;
+    }
+
+    private function getRazonSocial($dataPage)
+    {
+        if (array_key_exists(92, $dataPage)) {
+            return str_replace("  ","",substr($dataPage[92], 1));
+        }
+        return null;
+    }
+
+    private function getNombreCompleto($dataPage)
+    {
+        if (array_key_exists(90, $dataPage)) {
+            return str_replace("  ","",substr($dataPage[90], 1));
+        }
+        return null;
     }
 }

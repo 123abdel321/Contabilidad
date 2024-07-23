@@ -41,6 +41,7 @@ use App\Http\Controllers\Importador\DocumentosImportadorController;
 //SISTEMA
 use App\Http\Controllers\Sistema\UbicacionController;
 //CONFIGURACION
+use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
 
 /*
@@ -101,6 +102,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('documentos-cache-import', 'generate');
             Route::post('documentos-actualizar-import', 'actualizar');
             Route::post('documentos-validar-import', 'validar');
+        });
+        //EMPRESA
+        Route::controller(EmpresaController::class)->group(function () {
+            Route::get('empresas', 'generate');
         });
 
         //INFORMES

@@ -44,6 +44,7 @@ use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\DocumentoEliminarController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
 //CONFIGURACION
+use App\Http\Controllers\InstaladorController;
 use App\Http\Controllers\Configuracion\EntornoController;
 use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
@@ -188,6 +189,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/usuarios', [UsuariosController::class, 'index'])->name('usuarios');
 		//EMPRESA
 		Route::get('/empresa', [EmpresaController::class, 'index'])->name('empresa');
+		Route::post('/loadrut', [EmpresaController::class, 'rut']);
+		Route::post('/instalacionempresa', [InstaladorController::class, 'instalar']);
+
 		//ENTORNO
 		Route::get('/entorno', [EntornoController::class, 'index'])->name('entorno');
 
