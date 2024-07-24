@@ -340,6 +340,8 @@ class InstaladorController extends Controller
 				'nit' => $request->nit_empresa_nueva,
 				'dv' => $request->dv_empresa_nueva,
 				'telefono' => $request->telefono_empresa_nueva,
+				'direccion' => $request->direccion_empresa_nueva,
+				'email' => $request->email_empresa_nueva,
 				'id_usuario_owner' => $user->id,
 				'estado' => 0
 			]);
@@ -388,11 +390,7 @@ class InstaladorController extends Controller
                 'numero_documento' => $request->nit,
 				'digito_verificacion' => $request->dv,
                 'razon_social' => $request->razon_social,
-                // 'direccion' => $request->get('direccion'),
-                // 'email' => $request->get('email'),
                 'telefono_1' => $request->telefono,
-                // 'id_ciudad' => $request->get('id_ciudad'),
-                // 'observaciones' => $request->get('observaciones'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
@@ -400,7 +398,6 @@ class InstaladorController extends Controller
 			info('Empresa'. $request->razon_social.' creada con exito!');
 
 			DB::connection('sam')->commit();
-			DB::connection('clientes')->commit();
 
 			return response()->json([
 				"success" => true,
@@ -409,7 +406,6 @@ class InstaladorController extends Controller
 
 		} catch (Exception $e) {
 			DB::connection('sam')->rollback();
-			DB::connection('clientes')->rollback();
             return response()->json([
                 "success"=>false,
                 'data' => [],
@@ -422,6 +418,103 @@ class InstaladorController extends Controller
 			'data' => 'Instalar',
 			"message"=> ''
 		], 200);
+	}
+
+	public function actualizar(Request $request)
+	{
+		$rules = [
+			'id_empresa_up' => 'required',
+			'nit_empresa_edit' => 'required|max:200',
+			'dv_empresa_edit' => "between:0,9|numeric|required",
+			'razon_social_empresa_edit' => 'nullable|string|max:120|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_JURIDICA, // Campo requerido si el tipo contribuyente es persona jurídica (id: 1)
+			'direccion_empresa_edit' => 'nullable|min:3|max:100',
+			'email_empresa_edit' => 'nullable|min:3|max:100',
+			'telefono_empresa_edit' => 'nullable|numeric|digits_between:1,30',
+		];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+        if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+		try {
+
+			DB::connection('sam')->beginTransaction();
+
+			$empresa = Empresa::where('id', $request->get('id_empresa_up'));
+
+			$usuarioEmpresa = UsuarioEmpresa::where('id_usuario', request()->user()->id)
+				->where('id_empresa', $request->get('id_empresa_up'))
+				->first();
+
+			if (!request()->user()->rol_portafolio) {
+				if ($usuarioEmpresa) {
+					$empresa = Empresa::where('id', $request->id_empresa_up)
+						->update([
+							'nombre' => $request->razon_social_empresa_edit,
+							'razon_social' => $request->razon_social_empresa_edit,
+							'nit' => $request->nit_empresa_edit,
+							'dv' => $request->dv_empresa_edit,
+							'telefono' => $request->telefono_empresa_edit,
+							'direccion' => $request->direccion_empresa_edit,
+							'email' => $request->email_empresa_edit,
+						]);
+
+					$file = $request->file('imagen_empresa_edit');
+					if ($file) {
+						Storage::disk('do_spaces')->delete($empresa->logo);
+						$logo = Storage::disk('do_spaces')->put('logos_empresas', $file, 'public');
+						$empresa = Empresa::where('id', $request->id_empresa_up)
+							->update([
+								'logo' => $logo
+							]);
+					}
+				} else {
+					info('Usuario'. request()->user()->id.' Actualiza empresa sin permisos!');
+				}
+			} else {
+				$empresa = Empresa::where('id', $request->id_empresa_up)
+					->update([
+						'nombre' => $request->razon_social_empresa_edit,
+						'razon_social' => $request->razon_social_empresa_edit,
+						'nit' => $request->nit_empresa_edit,
+						'dv' => $request->dv_empresa_edit,
+						'telefono' => $request->telefono_empresa_edit,
+						'direccion' => $request->direccion_empresa_edit,
+						'email' => $request->email_empresa_edit,
+					]);
+
+				$file = $request->file('imagen_empresa_edit');
+				if ($file) {
+					Storage::disk('do_spaces')->delete($empresa->logo);
+					$logo = Storage::disk('do_spaces')->put('logos_empresas', $file, 'public');
+					$empresa = Empresa::where('id', $request->id_empresa_up)
+						->update([
+							'logo' => $logo
+						]);
+				}
+			}
+
+			DB::connection('sam')->commit();
+
+			return response()->json([
+				"success" => true,
+				"data" => 'Actualización exitosa.'
+			], 200);
+
+		} catch (Exception $e) {
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
 	}
 
 	private function associateComponentsToCompany($empresa)

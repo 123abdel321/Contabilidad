@@ -191,6 +191,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/empresa', [EmpresaController::class, 'index'])->name('empresa');
 		Route::post('/loadrut', [EmpresaController::class, 'rut']);
 		Route::post('/instalacionempresa', [InstaladorController::class, 'instalar']);
+		Route::post('/actualizarempresa', [InstaladorController::class, 'actualizar']);
 
 		//ENTORNO
 		Route::get('/entorno', [EntornoController::class, 'index'])->name('entorno');

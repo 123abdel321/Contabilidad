@@ -82,15 +82,22 @@ class EmpresaController extends Controller
             $columnIndex_arr = $request->get('order');
             $columnName_arr = $request->get('columns');
             $order_arr = $request->get('order');
-            $search_arr = $request->get('search');
 
             $columnIndex = $columnIndex_arr[0]['column']; // Column index
             $columnName = $columnName_arr[$columnIndex]['data']; // Column name
             $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-            $searchValue = $search_arr['value']; // Search value
 
             $empresas = Empresa::orderBy($columnName,$columnSortOrder)
                 ->with('usuario');
+
+            if ($request->get('search')) {
+                $empresas->where('razon_social', 'LIKE', '%'.$request->get('search').'%')
+                    ->orWhere('nit', 'LIKE', '%'.$request->get('search').'%')
+                    ->orWhere('email', 'LIKE', '%'.$request->get('search').'%')
+                    ->orWhere('nombre', 'LIKE', '%'.$request->get('search').'%')
+                    ->orWhere('telefono', 'LIKE', '%'.$request->get('search').'%')
+                    ->orWhere('direccion', 'LIKE', '%'.$request->get('search').'%');
+            }
 
             if (!request()->user()->rol_portafolio) {
                 $idEmpresas = [];

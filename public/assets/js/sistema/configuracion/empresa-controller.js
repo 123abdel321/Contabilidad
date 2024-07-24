@@ -23,6 +23,9 @@ function empresaInit() {
             type: "GET",
             headers: headers,
             url: base_url + 'empresas',
+            data: function ( d ) {
+                d.search = $("#searchInputEmpresa").val()
+            }
         },
         columns: [
             {"data": 'id',
@@ -66,6 +69,34 @@ function empresaInit() {
     });
 
     if (empresas_table) {
+
+        empresas_table.on('click', '.edit-empresa', function() {
+
+            var id = this.id.split('_')[1];
+            var data = getDataById(id, empresas_table);
+
+            clearFormularioEditEmpresa();
+
+            if (data.logo) {
+                $('#new_avatar_empresa_edit').attr('src', bucketUrl + data.logo);
+                $('#default_avatar_empresa_edit').hide();
+                $('#new_avatar_empresa_edit').show();
+            } else {
+                $('#default_avatar_empresa_edit').show();
+                $('#new_avatar_empresa_edit').hide();
+            }
+            
+            $("#id_empresa_up").val(data.id);
+            $("#razon_social_empresa_edit").val(data.razon_social);
+            $("#nit_empresa_edit").val(data.nit);
+            $("#dv_empresa_edit").val(data.dv);
+            $("#email_empresa_edit").val(data.email);
+            $("#telefono_empresa_edit").val(data.telefono);
+            $("#direccion_empresa_edit").val(data.direccion);
+
+            $("#empresaEditFormModal").modal('show');
+        });
+
         empresas_table.on('click', '.select-empresa', function() {
             var id = this.id.split('_')[1];
             var data = getDataById(id, empresas_table);
@@ -89,6 +120,8 @@ $(document).on('click', '#generateNuevaEmpresa', function () {
     $("#form-empresa-rut").show();
     $("#form-empresa-create").hide();
     $("#empresaFormModal").modal('show');
+
+    clearFormularioEmpresa();
 });
 
 $(document).on('click', '#omitirEmpresa', function () {
@@ -194,69 +227,40 @@ $("#form-empresa-create").submit(function(e) {
     };
 });
 
-$(document).on('click', '#updateEmpresa', function () {
+$("#form-empresa-update").submit(function(e) {
+    e.preventDefault();
 
-    var form = document.querySelector('#empresaForm');
+    var form = document.querySelector('#form-empresa-update');
 
-    if(!form.checkValidity()) {
+    if (!form.checkValidity()) {
         form.classList.add('was-validated');
         return;
     }
 
-    $("#updateEmpresaLoading").show();
-    $("#updateEmpresa").hide();
+    $('#updateEmpresa').hide();
+    $('#updateEmpresaLoading').show();
 
-    let data = {
-        nit: $('#nit_empresa').val(),
-        dv: $('#dv_empresa').val(),
-        direccion: $('#direccion_empresa').val(),
-        telefono: $('#telefono_empresa').val(),
-        tipo_contribuyente: $('#tipo_contribuyente_empresa').val(),
-        razon_social: $('#razon_social_empresa').val(),
-        primer_nombre: $('#primer_nombre_empresa').val(),
-        otros_nombres: $('#otros_nombres_empresa').val(),
-        primer_apellido: $('#primer_apellido_empresa').val(),
-        segundo_apellido: $('#segundo_apellido_empresa').val(),
-        fecha_ultimo_cierre: $('#fecha_ultimo_cierre').val(),
-        id_responsabilidades: $('#id_responsabilidades').val(),
-        fondo_imagen : fondoSistema,
-    }
+    var ajxForm = document.getElementById("form-empresa-update");
+    var data = new FormData(ajxForm);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "actualizarempresa");
+    xhr.send(data);
+    xhr.onload = function(res) {
+        var responseData = JSON.parse(res.currentTarget.response);
 
-    $.ajax({
-        url: base_url + 'empresa',
-        method: 'PUT',
-        data: JSON.stringify(data),
-        headers: headers,
-        dataType: 'json',
-    }).done((res) => {
-        if(res.success){
-            localStorage.setItem("fondo_sistema", res.fondo_sistema);
-            $("#updateEmpresaLoading").hide();
-            $("#updateEmpresa").show();
+        $('#updateEmpresa').show();
+        $('#updateEmpresaLoading').hide();
 
-            setTimeout(function(){
-                $(".fondo-sistema").css('background-image', 'url(' +bucketUrl + res.fondo_sistema+ ')');
-            },300);
-            agregarToast('exito', 'Actualización exitosa', 'Datos de empresa actualizados con exito!', true);
-        }
-    }).fail((err) => {
-        $("#updateEmpresaLoading").hide();
-            $("#updateEmpresa").show();
-        var errorsMsg = "";
-        var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
-        }
-        agregarToast('error', 'Actualización errada', errorsMsg);
-    });
-    
+        agregarToast('exito', 'Actualización completada', 'Actualización completada con exito!');
+        
+        $("#empresaEditFormModal").modal('hide');
+
+        empresas_table.ajax.reload();
+    };
+    xhr.onerror = function (res) {
+        var responseData = JSON.parse(res.currentTarget.response);
+        agregarToast('error', 'Carga errada', responseData.message);
+    };
 });
 
 function seleccionarEmpresa(hash) {
@@ -341,4 +345,36 @@ function readURLFonsoSistema(input) {
         $('#default_fondo_sistema').hide();
         $('#empresa_fondo_sistema').show();
     }
+}
+
+function clearFormularioEmpresa() {
+    $("#razon_social_empresa_nueva").val("");
+    $("#nit_empresa_nueva").val("");
+    $("#email_empresa_nueva").val("");
+    $("#telefono_empresa_nueva").val("");
+    $("#direccion_empresa_nueva").val("");
+
+    $('#new_avatar_empresa_nueva').hide();
+    $('#default_avatar_empresa_nueva').show();
+}
+
+function clearFormularioEditEmpresa() {
+    $("#id_empresa_up").val("");
+    $("#razon_social_empresa_edit").val("");
+    $("#nit_empresa_edit").val("");
+    $("#email_empresa_edit").val("");
+    $("#telefono_empresa_edit").val("");
+    $("#direccion_empresa_edit").val("");
+
+    $('#new_avatar_empresa_edit').hide();
+    $('#default_avatar_empresa_edit').show();
+}
+
+function searchEmpresas (event) {
+    if (event.keyCode == 20 || event.keyCode == 16 || event.keyCode == 17 || event.keyCode == 18) {
+        return;
+    }
+
+    empresas_table.context[0].jqXHR.abort();
+    empresas_table.ajax.reload();
 }

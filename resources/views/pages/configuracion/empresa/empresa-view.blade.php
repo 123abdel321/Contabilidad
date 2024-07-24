@@ -21,5 +21,6 @@
     </div>
 
     @include('pages.configuracion.empresa.empresa-form')
+    @include('pages.configuracion.empresa.empresa-form-edit')
 
 </div>
