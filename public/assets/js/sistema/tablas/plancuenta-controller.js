@@ -463,6 +463,11 @@ function plancuentaInit() {
         dropdownParent: $('#planCuentaFormModal'),
     });
 
+    $("#searchInputCuenta").on("input", function (e) {
+        plan_cuentas_table.context[0].jqXHR.abort();
+        $('#planCuentaTable').DataTable().search($("#searchInputCuenta").val()).draw();
+    });
+
     let column = plan_cuentas_table.column(13);
 
     if (!editarPlanCuenta && !eliminarPlanCuenta) column.visible(false);
@@ -483,11 +488,6 @@ $(document).on('click', '#createPlanCuenta', function () {
     $("#updatePlanCuenta").hide();
     $("#savePlanCuenta").show();
     $("#planCuentaFormModal").modal('show');
-});
-
-$("#searchInputCuenta").on("input", function (e) {
-    plan_cuentas_table.context[0].jqXHR.abort();
-    $('#planCuentaTable').DataTable().search($("#searchInputCuenta").val()).draw();
 });
 
 $(document).on('click', '#savePlanCuenta', function () {

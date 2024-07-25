@@ -1863,9 +1863,10 @@ function changeCostoCompra(event) {
 function calcularCostoCompra(focus = true) {
     var costoCompra = stringToNumberFloat($('#precio_inicial').val());
     var valorVenta = stringToNumberFloat($('#precio_producto').val());
+    var valorUtilidad = stringToNumberFloat($('#valor_utilidad').val());
     if (valorVenta) {
         
-        var porcentajeUtilidad = ((valorVenta - costoCompra) / costoCompra) * 100;
+        var porcentajeUtilidad = (valorUtilidad / costoCompra) * 100;
         if (!valorVenta && !costoCompra) porcentajeUtilidad = 0;
         else if (porcentajeUtilidad < 0) porcentajeUtilidad = 0;
 
@@ -1894,6 +1895,7 @@ function calcularPrecioProducto() {
     var costoCompra = stringToNumberFloat($('#precio_inicial').val());
     var valorVenta = stringToNumberFloat($('#precio_producto').val());
     var porcentajeIva = stringToNumberFloat($('#porcentaje_iva').val());
+    var valorUtilidad = stringToNumberFloat($('#valor_utilidad').val());
 
     if (valorVenta < costoCompra) {// VALOR VENTA NO PUEDE SER MENOR A COSTO DEL PRODUCTO
         $('#precio_producto').val(formatCurrencyValue(costoCompra));
@@ -1905,7 +1907,8 @@ function calcularPrecioProducto() {
         $('#valor_utilidad').val(formatCurrencyValue(valorVenta));
     } else {//CALCULAR % DE UTILIDAD
         var porcentajeUtilidad = parseFloat(valorVenta - costoCompra) / costoCompra;
-        var valorUtilidad = costoCompra * porcentajeUtilidad;
+        if (valorUtilidad) porcentajeUtilidad = parseFloat(valorUtilidad / costoCompra);
+        if (!valorUtilidad) valorUtilidad = costoCompra * porcentajeUtilidad;
 
         $('#porcentaje_utilidad').val(formatCurrencyValue(porcentajeUtilidad * 100));
         $('#valor_utilidad').val(formatCurrencyValue(valorUtilidad));
@@ -1949,15 +1952,14 @@ function calcularPorcentajeUtilidad() {
         var valorUtilidad = costoCompra * (porcentajeUtilidad / 100);
         var precioProducto = costoCompra * ((porcentajeUtilidad / 100) + 1);
         var valorIva = precioProducto * (porcentajeIva / 100);
-
-        if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
-            valorIva = valorVenta - (valorVenta / (1 + (porcentajeIva / 100)));
-        }
-        console.log('valorUtilidad: ',valorUtilidad);
+        // if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
+        //     valorIva = valorVenta - (valorVenta / (1 + (porcentajeIva / 100)));
+        // }
         $('#valor_iva').val(formatCurrencyValue(valorIva));
         $('#valor_utilidad').val(formatCurrencyValue(valorUtilidad));
         $('#precio_producto').val(formatCurrencyValue(precioProducto));
     }
+    calcularValorUtilidad();
 }
 
 function changeValorUtilidad(event) {
@@ -1984,10 +1986,8 @@ function calcularValorUtilidad() {
         var precioProducto = costoCompra + valorUtilidad;
         var valorIva = precioProducto * (porcentajeIva / 100);
         if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
-            
-            valorIva = precioProducto - (precioProducto / (1 + (porcentajeIva / 100)));
+            precioProducto+= valorIva;
         }
-
         $('#porcentaje_utilidad').val(formatCurrencyValue((valorUtilidad / costoCompra) * 100));
         $('#precio_producto').val(formatCurrencyValue(precioProducto));
         $('#valor_iva').val(formatCurrencyValue(valorIva));
@@ -1997,7 +1997,7 @@ function calcularValorUtilidad() {
         var precioProducto = costoCompra + valorUtilidad;
         var valorIva = precioProducto * (porcentajeIva / 100);
         if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
-            valorIva = precioProducto - (precioProducto / (1 + (porcentajeIva / 100)));
+            costoCompra+= valorIva;
         }
 
         $('#porcentaje_utilidad').val(formatCurrencyValue(0));
