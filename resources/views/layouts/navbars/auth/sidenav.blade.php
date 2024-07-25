@@ -70,15 +70,15 @@
             @foreach ($menus as $menu)
 
                 <li class="nav-item">
-                    <div data-bs-toggle="collapse" href="#collapse{{ $menu[0]->padre->nombre }}" class="nav-link collapsed" aria-controls="dashboardsExamples" role="button" aria-expanded="false" style="color: white;">
+                    <div id="nav_{{ $menu[0]->padre->id }}" data-bs-toggle="collapse" href="#collapse{{ $menu[0]->padre->id }}" class="nav-link collapsed nav-padre" aria-controls="dashboardsExamples" role="button" aria-expanded="false" style="color: white;"
+                        onclick="closeAnotherItems('{{ $menu[0]->padre->id }}' )">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            
                             <i class="{{ $menu[0]->padre->icon }} text-sm opacity-10" style="color: #0ce0ff !important;"></i>
                         </div>
                         <span class="nav-link-text ms-1">{{ $menu[0]->padre->nombre }}</span>
                     </div>
 
-                    <div class="collapse" id="collapse{{ $menu[0]->padre->nombre }}" >
+                    <div class="collapse" id="collapse{{ $menu[0]->padre->id }}" >
                         <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #0dd7f6; margin-left: 30px;">
 
                             @foreach ($menu as $item)
