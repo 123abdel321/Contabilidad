@@ -606,6 +606,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -629,6 +631,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -652,6 +656,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -675,6 +681,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -698,6 +706,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -721,6 +731,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -744,6 +756,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -767,6 +781,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -790,6 +806,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -813,6 +831,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -836,6 +856,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -859,6 +881,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -882,6 +906,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
@@ -905,6 +931,8 @@ function familiasInit() {
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
         delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             headers: headers,
