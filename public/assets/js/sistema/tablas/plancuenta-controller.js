@@ -67,7 +67,8 @@ function plancuentaInit() {
             {
                 "data": function (row, type, set){
                     if(row.tipos_cuenta.length){
-                        return row.tipos_cuenta[0].tipo.nombre;
+                        if (row.tipos_cuenta[0].tipo) return row.tipos_cuenta[0].tipo.nombre;
+                        else return '';
                     }
                     return '';
                 }
@@ -632,7 +633,8 @@ $(document).on('click', '#updatePlanCuenta', function () {
             $("#updatePlanCuenta").hide();
             $("#savePlanCuentaLoading").hide();
             $("#planCuentaFormModal").modal('hide');
-            plan_cuentas_table.row.add(res.data).draw();
+            
+            plan_cuentas_table.ajax.reload();
             agregarToast('exito', 'Actualización exitosa', 'Cuenta actualizada con exito!', true );
         }
     }).fail((err) => {
