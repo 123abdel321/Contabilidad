@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('id_centro_costos')->nullable();
             $table->integer('id_comprobante')->nullable();
             $table->integer('nivel')->nullable();
+            $table->integer('errores')->nullable();
             $table->string('cuenta', 10)->nullable();
             $table->string('nombre_cuenta', 100)->nullable();
             $table->string('numero_documento', 50)->nullable();

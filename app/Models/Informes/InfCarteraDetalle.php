@@ -27,6 +27,8 @@ class InfCarteraDetalle extends Model
         "total_facturas",
         "total_abono",
         "saldo",
+        "nivel",
+        "errores",
         "codigo_comprobante",
         "nombre_comprobante",
         "fecha_manual",

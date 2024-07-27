@@ -142,7 +142,12 @@ class ProcessInformeCartera implements ShouldQueue
                 DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
-                DB::raw('SUM(total_columnas) AS total_columnas')
+                DB::raw('SUM(total_columnas) AS total_columnas'),
+                DB::raw("(CASE
+					WHEN naturaleza_cuenta = 0 AND SUM(debito) < 0 THEN 1
+					WHEN naturaleza_cuenta = 1 AND SUM(credito) < 0 THEN 1
+					ELSE 0
+				END) AS error")
             )
             ->groupByRaw($this->request['agrupar_cartera'])
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
@@ -186,6 +191,7 @@ class ProcessInformeCartera implements ShouldQueue
                         'total_facturas' => $documento->total_facturas,
                         'saldo' => $documento->saldo_final,
                         'nivel' => 1,
+                        'errores' => $documento->error
                     ];
                 });
             });
@@ -234,7 +240,12 @@ class ProcessInformeCartera implements ShouldQueue
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
-                DB::raw('SUM(total_columnas) AS total_columnas')
+                DB::raw('SUM(total_columnas) AS total_columnas'),
+                DB::raw("(CASE
+					WHEN naturaleza_cuenta = 0 AND SUM(debito) < 0 THEN 1
+					WHEN naturaleza_cuenta = 1 AND SUM(credito) < 0 THEN 1
+					ELSE 0
+				END) AS error")
             )
             ->groupByRaw($this->groupString(2))
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
@@ -282,6 +293,7 @@ class ProcessInformeCartera implements ShouldQueue
                         'total_facturas' => $documento->total_facturas,
                         'saldo' => $documento->saldo_final,
                         'nivel' => 2,
+                        'errores' => $documento->error
                     ];
                 });
             });
@@ -330,7 +342,12 @@ class ProcessInformeCartera implements ShouldQueue
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
-                DB::raw('SUM(total_columnas) AS total_columnas')
+                DB::raw('SUM(total_columnas) AS total_columnas'),
+                DB::raw("(CASE
+					WHEN naturaleza_cuenta = 0 AND SUM(debito) < 0 THEN 1
+					WHEN naturaleza_cuenta = 1 AND SUM(credito) < 0 THEN 1
+					ELSE 0
+				END) AS error")
             )
             ->groupByRaw($this->groupString(3))
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
@@ -378,6 +395,7 @@ class ProcessInformeCartera implements ShouldQueue
                         'total_facturas' => $documento->total_facturas,
                         'saldo' => $documento->saldo_final,
                         'nivel' => 3,
+                        'errores' => $documento->error
                     ];
                 });
             });
@@ -460,6 +478,7 @@ class ProcessInformeCartera implements ShouldQueue
             'total_facturas' => $total ? $total->total_facturas : 0,
             'saldo' => $total ? $total->saldo_final : 0,
             'nivel' => 0,
+            'errores' => 0,
         ];
     }
 
