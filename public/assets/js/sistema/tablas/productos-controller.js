@@ -291,6 +291,24 @@ function productosInit() {
                 $('#input-iva-valor').hide();
             }
 
+            if (dataProducto.familia && dataProducto.familia.cuenta_venta_impuestos && dataProducto.familia.cuenta_venta_impuestos.impuesto) {
+                var porcentajeImpuestos = dataProducto.familia.cuenta_venta_impuestos.impuesto.porcentaje;
+                $('#input-impuestos-porcentaje').show();
+                $('#input-impuestos-valor').show();
+                $('#text_otros_impuestos_valor').text('Valor '+dataProducto.familia.cuenta_venta_impuestos.nombre);
+                $('#text_otros_impuestos_porcentaje').text('Porcentaje '+dataProducto.familia.cuenta_venta_impuestos.nombre);
+
+                $('#porcentaje_otros_impuestos').val(porcentajeIva);
+                var valorImpuestos = stringToNumberFloat(dataProducto.precio) * (stringToNumberFloat(porcentajeImpuestos) / 100);
+                if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
+                    valorImpuestos = stringToNumberFloat(dataProducto.precio) - (stringToNumberFloat(dataProducto.precio) / (1 + (stringToNumberFloat(porcentajeImpuestos) / 100)));
+                }
+                $('#valor_otros_impuestos').val(valorImpuestos);
+            } else {
+                $('#input-impuestos-porcentaje').hide();
+                $('#input-impuestos-valor').hide();
+            }            
+
             if (dataProducto.familia && dataProducto.familia.inventario && dataProducto.utilizado_captura == 0) {
                 $('#producto-inventario').show();
                 generarBodegas();
@@ -958,6 +976,7 @@ $('input[type=radio][name=producto_variantes]').change(function() {
         dataFamilia = [];
         $('#producto-variantes').show();
     } else {
+
         nuevoProducto.variante = false;
         $('#producto-variantes').hide();
     }
@@ -1864,6 +1883,7 @@ function calcularCostoCompra(focus = true) {
     var costoCompra = stringToNumberFloat($('#precio_inicial').val());
     var valorVenta = stringToNumberFloat($('#precio_producto').val());
     var valorUtilidad = stringToNumberFloat($('#valor_utilidad').val());
+    
     if (valorVenta) {
         
         var porcentajeUtilidad = (valorUtilidad / costoCompra) * 100;
@@ -1896,6 +1916,7 @@ function calcularPrecioProducto() {
     var valorVenta = stringToNumberFloat($('#precio_producto').val());
     var porcentajeIva = stringToNumberFloat($('#porcentaje_iva').val());
     var valorUtilidad = stringToNumberFloat($('#valor_utilidad').val());
+    var porcentajeImpuesto = stringToNumberFloat($('#porcentaje_otros_impuestos').val());
 
     if (valorVenta < costoCompra) {// VALOR VENTA NO PUEDE SER MENOR A COSTO DEL PRODUCTO
         $('#precio_producto').val(formatCurrencyValue(costoCompra));
@@ -1922,6 +1943,11 @@ function calcularPrecioProducto() {
         $('#valor_iva').val(formatCurrencyValue(totalIva));
     }
 
+    if (porcentajeImpuesto) {
+        var totalImpuesto = valorVenta * (porcentajeImpuesto / 100);
+        $('#valor_otros_impuestos').val(formatCurrencyValue(totalImpuesto));
+    }
+
 }
 
 function changePrecioMinimo(event) {
@@ -1944,6 +1970,7 @@ function calcularPorcentajeUtilidad() {
     var valorVenta = stringToNumberFloat($('#precio_producto').val());
     var porcentajeIva = stringToNumberFloat($('#porcentaje_iva').val());
     var porcentajeUtilidad = stringToNumberFloat($('#porcentaje_utilidad').val());
+    var porcentajeImpuesto = stringToNumberFloat($('#porcentaje_otros_impuestos').val());
 
     if (costoCompra == 0 && valorVenta > 0) {
         $('#porcentaje_utilidad').val(formatCurrencyValue(100));
@@ -1952,12 +1979,14 @@ function calcularPorcentajeUtilidad() {
         var valorUtilidad = costoCompra * (porcentajeUtilidad / 100);
         var precioProducto = costoCompra * ((porcentajeUtilidad / 100) + 1);
         var valorIva = precioProducto * (porcentajeIva / 100);
+        var valorImpuesto = precioProducto * (porcentajeImpuesto / 100);
         // if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
         //     valorIva = valorVenta - (valorVenta / (1 + (porcentajeIva / 100)));
         // }
         $('#valor_iva').val(formatCurrencyValue(valorIva));
         $('#valor_utilidad').val(formatCurrencyValue(valorUtilidad));
         $('#precio_producto').val(formatCurrencyValue(precioProducto));
+        $('#valor_otros_impuestos').val(formatCurrencyValue(valorImpuesto));
     }
     calcularValorUtilidad();
 }
@@ -2048,7 +2077,7 @@ $('#productoTable').on('search.dt', function (res, data) {
         var countE = new CountUp('total_utilidad_producto', 0, total_utilidad);
             countE.start();
 
-        var countF = new CountUp('total_porcentaje_producto', 0, porcentaje_utilidad);
+        var countF = new CountUp('total_porcentaje_producto', 0, porcentaje_utilidad ? porcentaje_utilidad : 0);
             countF.start();            
     }
 });
@@ -2122,6 +2151,17 @@ $("#id_familia_producto").on('change', function(e) {
             $('#input-iva-porcentaje').hide();
             $('#input-iva-valor').hide();
         }
+        console.log('familia: ',familia);
+        if (familia.cuenta_venta_impuestos && familia.cuenta_venta_impuestos.impuesto) {
+            $('#input-impuestos-porcentaje').show();
+            $('#input-impuestos-valor').show();
+            $('#porcentaje_otros_impuestos').val(familia.cuenta_venta_impuestos.impuesto.porcentaje);
+            $('#text_otros_impuestos_valor').text('Valor '+familia.cuenta_venta_impuestos.nombre);
+            $('#text_otros_impuestos_porcentaje').text('Porcentaje '+familia.cuenta_venta_impuestos.nombre);
+        } else {
+            $('#input-impuestos-porcentaje').hide();
+            $('#input-impuestos-valor').hide();
+        }
         nuevoProducto.id_familia = parseInt(familia.id);
         if (familia.inventario) $('#producto-inventario').show();
         else $('#producto-inventario').hide();
@@ -2155,7 +2195,7 @@ function showTotalsProductos(res) {
     var countE = new CountUp('total_utilidad_producto', 0, total_utilidad);
         countE.start();
 
-    var countF = new CountUp('total_porcentaje_producto', 0, porcentaje_utilidad);
+    var countF = new CountUp('total_porcentaje_producto', 0, porcentaje_utilidad ? porcentaje_utilidad : 0);
         countF.start(); 
 }
 

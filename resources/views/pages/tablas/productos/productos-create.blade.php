@@ -124,6 +124,16 @@
                         <input type="text" class="form-control form-control-sm" name="valor_iva" id="valor_iva" onfocus="this.select();" onfocusout="actualizarDatosProducto()" onkeypress="changePorcentajeUtilidad(event)" value="0" disabled>
                     </div>
 
+                    <div class="form-group col-6 col-sm-4 col-md-4" id="input-impuestos-porcentaje" style="display: none">
+                        <label for="example-text-input" class="form-control-label" id="text_otros_impuestos_porcentaje"></label>
+                        <input type="text" class="form-control form-control-sm" name="porcentaje_otros_impuestos" id="porcentaje_otros_impuestos" onfocus="this.select();" value="0" disabled>
+                    </div>
+
+                    <div class="form-group col-6 col-sm-4 col-md-4" id="input-impuestos-valor" style="display: none">
+                        <label for="example-text-input" class="form-control-label" id="text_otros_impuestos_valor"></label>
+                        <input type="text" class="form-control form-control-sm" name="valor_otros_impuestos" id="valor_otros_impuestos" onfocus="this.select();" value="0" disabled>
+                    </div>
+
                     <div class="form-group col-6 col-sm-4 col-md-4 row" style="margin-bottom: 0.1rem !important;" id="item-maneja-variante">
                         <label for="example-text-input" class="form-control-label">Maneja variantes</label>
                         <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 15px; cursor: pointer; text-align: left;">

@@ -4,6 +4,7 @@ var $comboCuentaVenta = null;
 var $comboCuentaVentaRetencion = null;
 var $comboCuentaVentaDevolucion = null;
 var $comboCuentaVentaIva = null;
+var $comboCuentaVentaImpuestos = null;
 var $comboCuentaVentaDescuento = null;
 var $comboCuentaVentaDevolucionIva = null;
 
@@ -11,6 +12,7 @@ var $comboCuentaCompra = null;
 var $comboCuentaCompraRetencion = null;
 var $comboCuentaCompraDevolucion = null;
 var $comboCuentaCompraIva = null;
+var $comboCuentaCompraImpuestos = null;
 var $comboCuentaCompraDescuento = null;
 var $comboCuentaCompraDevolucionIva = null;
 
@@ -88,6 +90,14 @@ function familiasInit() {
             },
             {
                 "data": function (row, type, set){
+                    if(row.cuenta_venta_impuestos){
+                        return row.cuenta_venta_impuestos.cuenta + ' - ' + row.cuenta_venta_impuestos.nombre;
+                    }
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
                     if(row.cuenta_venta_descuento){
                         return row.cuenta_venta_descuento.cuenta + ' - ' + row.cuenta_venta_descuento.nombre;
                     }
@@ -146,6 +156,14 @@ function familiasInit() {
                 "data": function (row, type, set){
                     if(row.cuenta_compra_iva){
                         return row.cuenta_compra_iva.cuenta + ' - ' + row.cuenta_compra_iva.nombre;
+                    }
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
+                    if(row.cuenta_compra_impuestos){
+                        return row.cuenta_compra_impuestos.cuenta + ' - ' + row.cuenta_compra_impuestos.nombre;
                     }
                     return '';
                 }
@@ -250,6 +268,16 @@ function familiasInit() {
                 $comboCuentaVentaIva.val(dataCuenta.id).trigger('change');
             }
 
+            if(data.cuenta_venta_impuestos){
+                var dataCuenta = {
+                    id: data.cuenta_venta_impuestos.id,
+                    text: data.cuenta_venta_impuestos.cuenta + ' - ' + data.cuenta_venta_impuestos.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaVentaImpuestos.append(newOption).trigger('change');
+                $comboCuentaVentaImpuestos.val(dataCuenta.id).trigger('change');
+            }
+
             if(data.cuenta_venta_descuento){
                 var dataCuenta = {
                     id: data.cuenta_venta_descuento.id,
@@ -308,6 +336,16 @@ function familiasInit() {
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
                 $comboCuentaCompraIva.append(newOption).trigger('change');
                 $comboCuentaCompraIva.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_compra_impuestos){
+                var dataCuenta = {
+                    id: data.cuenta_compra_impuestos.id,
+                    text: data.cuenta_compra_impuestos.cuenta + ' - ' + data.cuenta_compra_impuestos.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaCompraImpuestos.append(newOption).trigger('change');
+                $comboCuentaCompraImpuestos.val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_compra_descuento){
@@ -702,6 +740,31 @@ function familiasInit() {
         }
     });
 
+    $comboCuentaVentaImpuestos = $('#id_cuenta_impuestos_venta').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#familiaFormModal'),
+        delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    // id_tipo_cuenta: [16]
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     $comboCuentaVentaDescuento = $('#id_cuenta_venta_descuento').select2({
         theme: 'bootstrap-5',
         dropdownParent: $('#familiaFormModal'),
@@ -841,6 +904,31 @@ function familiasInit() {
                 var query = {
                     search: params.term,
                     id_tipo_cuenta: [9]
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboCuentaCompraImpuestos = $('#id_cuenta_impuestos_compra').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#familiaFormModal'),
+        delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    // id_tipo_cuenta: [9]
                 }
                 return query;
             },
@@ -1029,6 +1117,7 @@ $(document).on('click', '#saveFamilia', function () {
         id_cuenta_venta_retencion: $('#id_cuenta_venta_retencion').val(),
         id_cuenta_venta_devolucion: $('#id_cuenta_venta_devolucion').val(),
         id_cuenta_venta_iva: $('#id_cuenta_venta_iva').val(),
+        id_cuenta_venta_impuestos: $('#id_cuenta_impuestos_venta').val(),
         id_cuenta_venta_descuento: $('#id_cuenta_venta_descuento').val(),
         id_cuenta_venta_devolucion_iva: $('#id_cuenta_venta_devolucion_iva').val(),
         id_cuenta_inventario: $('#id_cuenta_inventario').val(),
@@ -1037,6 +1126,7 @@ $(document).on('click', '#saveFamilia', function () {
         id_cuenta_compra_retencion: $('#id_cuenta_compra_retencion').val(),
         id_cuenta_compra_devolucion: $('#id_cuenta_compra_devolucion').val(),
         id_cuenta_compra_iva: $('#id_cuenta_compra_iva').val(),
+        id_cuenta_compra_impuestos: $('#id_cuenta_impuestos_compra').val(),
         id_cuenta_compra_descuento: $('#id_cuenta_compra_descuento').val(),
         id_cuenta_compra_devolucion_iva: $('#id_cuenta_compra_devolucion_iva').val(),
     };
@@ -1093,6 +1183,7 @@ $(document).on('click', '#updateFamilia', function () {
         id_cuenta_venta_retencion: $('#id_cuenta_venta_retencion').val(),
         id_cuenta_venta_devolucion: $('#id_cuenta_venta_devolucion').val(),
         id_cuenta_venta_iva: $('#id_cuenta_venta_iva').val(),
+        id_cuenta_venta_impuestos: $('#id_cuenta_impuestos_venta').val(),
         id_cuenta_venta_descuento: $('#id_cuenta_venta_descuento').val(),
         id_cuenta_venta_devolucion_iva: $('#id_cuenta_venta_devolucion_iva').val(),
         id_cuenta_inventario: $('#id_cuenta_inventario').val(),
@@ -1101,6 +1192,7 @@ $(document).on('click', '#updateFamilia', function () {
         id_cuenta_compra_retencion: $('#id_cuenta_compra_retencion').val(),
         id_cuenta_compra_devolucion: $('#id_cuenta_compra_devolucion').val(),
         id_cuenta_compra_iva: $('#id_cuenta_compra_iva').val(),
+        id_cuenta_compra_impuestos: $('#id_cuenta_impuestos_compra').val(),
         id_cuenta_compra_descuento: $('#id_cuenta_compra_descuento').val(),
         id_cuenta_compra_devolucion_iva: $('#id_cuenta_compra_devolucion_iva').val(),
     };
