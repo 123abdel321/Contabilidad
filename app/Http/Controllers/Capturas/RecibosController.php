@@ -382,10 +382,10 @@ class RecibosController extends Controller
                 "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
             ], 422);
         } else {
-            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
-            $request->request->add([
-                'consecutivo' => $consecutivo
-            ]);
+            // $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
+            // $request->request->add([
+            //     'consecutivo' => $consecutivo
+            // ]);
         }
 
         $rules = [
@@ -436,6 +436,16 @@ class RecibosController extends Controller
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id
             ]);
+
+            DB::connection('sam')->commit();
+
+            //ACTIVAR SOLO COMPROBANTES
+            return response()->json([
+                "success"=>true,
+                'data' => [],
+                "message"=>'Comprobante enviado con exito'
+            ], 200);
+            //ACTIVAR SOLO COMPROBANTES
 
             if ($request->get('valor_comprobante')) {
 
@@ -644,7 +654,8 @@ class RecibosController extends Controller
 
             //GENERAR MOVIMINETO CONTABLE
             $consecutivo = $this->getNextConsecutive($recibo->id_comprobante, $recibo->fecha_manual);
-            
+            $recibo->consecutivo = $consecutivo;
+
             $documentoGeneral = new Documento(
                 $recibo->id_comprobante,
                 $recibo,
@@ -735,7 +746,7 @@ class RecibosController extends Controller
                 'id_cuenta' => $formaPago->cuenta->id,
                 'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
                 'id_centro_costos' => null,
-                'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$nit->nombre_nit.' - '.$consecutivo : null,
+                'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO COMPROBANTE: '.$nit->nombre_nit.' - '.$consecutivo : null,
                 'documento_referencia' => null,
                 'debito' => $reciboPagos->valor,
                 'credito' => $reciboPagos->valor,
@@ -952,7 +963,7 @@ class RecibosController extends Controller
             'id_nit' => $request->get('id_nit'),
             'id_comprobante' => $request->get('id_comprobante'),
             'fecha_manual' => $request->get('fecha_pago'),
-            'consecutivo' => $request->get('consecutivo'),
+            'consecutivo' => 0,
             'total_abono' => $valorTotal,
             'total_anticipo' => 0,
             'observacion' => '',
