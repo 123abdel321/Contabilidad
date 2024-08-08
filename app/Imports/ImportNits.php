@@ -40,11 +40,10 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
                     } else if ($row['segundo_apellido']) {
                         $nuevoMail= $row['segundo_apellido'].'_'.rand(1, 5000);
                     }
+                    $nuevoMail.='@'.$razon_social[0].'.com';
                 }
 
                 $razon_social = explode(" ", $this->razon_social);
-
-                $nuevoMail.='@'.$razon_social[0].'.com';
 
                 NitsImport::create([
                     'tipo_documento' => $row['tipo_documento'],
