@@ -50,6 +50,8 @@ class Nits extends Model
 		'no_calcular_iva',
 		'inactivar',
 		'observaciones',
+		'email_1',
+		'email_2',
 		'logo_nit',
 		'declarante',
 		'porcentaje_aiu',

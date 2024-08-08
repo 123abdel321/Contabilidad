@@ -50,6 +50,8 @@ class CreateNitsTable extends Migration
             $table->boolean('inactivar')->nullable();
             $table->boolean('declarante')->nullable();
             $table->longText('observaciones')->nullable();
+            $table->string('email_1', 250)->nullable();
+            $table->string('email_2', 250)->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();
