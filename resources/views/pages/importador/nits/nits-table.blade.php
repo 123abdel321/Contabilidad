@@ -16,6 +16,8 @@
             <th>Plazo</th>
             <th>Cupo</th>
             <th>Observación</th>
+            <th>Email 1</th>
+            <th>Email 2</th>
             <th>Errores</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Total errores</th>
         </tr>

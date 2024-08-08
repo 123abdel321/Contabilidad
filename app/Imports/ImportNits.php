@@ -40,10 +40,9 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
                     } else if ($row['segundo_apellido']) {
                         $nuevoMail= $row['segundo_apellido'].'_'.rand(1, 5000);
                     }
+                    $razon_social = explode(" ", $this->razon_social);
                     $nuevoMail.='@'.$razon_social[0].'.com';
                 }
-
-                $razon_social = explode(" ", $this->razon_social);
 
                 NitsImport::create([
                     'tipo_documento' => $row['tipo_documento'],
@@ -60,6 +59,8 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
                     'plazo' => $row['plazo'],
                     'cupo' => $row['cupo'],
                     'observaciones' => $row['observaciones'],
+                    'email_1' => $row['email_1'],
+                    'email_2' => $row['email_2'],
                 ]);
             }
         }
@@ -87,6 +88,8 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
             '11' => 'plazo',
             '12' => 'cupo',
             '13' => 'observaciones',
+            '14' => 'email_1',
+            '15' => 'email_2',
         ];
     }
 

@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('plazo', 100)->nullable();
             $table->string('cupo', 100)->nullable();
             $table->string('observaciones', 100)->nullable();
+            $table->string('email_1', 100)->nullable();
+            $table->string('email_2', 100)->nullable();
             $table->timestamps();
         });
     }

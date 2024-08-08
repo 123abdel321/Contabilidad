@@ -332,6 +332,18 @@ class NitController extends Controller
         $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
         $ubicacion_maximoph ? $ubicacion_maximoph->valor : null;
         $totalRows = $request->has("totalRows") ? $request->get("totalRows") : 20;
+        $text = \DB::raw("(CASE
+                WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)
+                WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( numero_documento, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
+                ELSE NULL
+            END) AS text");
+        if ($ubicacion_maximoph) {
+            $text = \DB::raw("(CASE
+                WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(apartamentos, ' - ', razon_social)
+                WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( apartamentos, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
+                ELSE NULL
+            END) AS text");
+        }
         $nits = Nits::select(
             'id',
             'id_tipo_documento',
@@ -345,11 +357,7 @@ class NitController extends Controller
             'porcentaje_aiu',
             'apartamentos',
             \DB::raw('telefono_1 AS telefono'),
-            \DB::raw("(CASE
-					WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)
-					WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( numero_documento, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
-					ELSE NULL
-				END) AS text")
+            $text
         );
 
         if ($request->get("id_nits")) {

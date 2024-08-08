@@ -42,6 +42,8 @@ function importnitsInit() {
             {"data":'plazo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data":'cupo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data":'observaciones'},
+            {"data":'email_1'},
+            {"data":'email_2'},
             {"data":'erroes'},
             {"data":'total_erroes'}
         ]

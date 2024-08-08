@@ -28,5 +28,7 @@ class NitsImport extends Model
         'plazo',
         'cupo',
         'observaciones',
+        'email_1',
+        'email_2',
     ];
 }

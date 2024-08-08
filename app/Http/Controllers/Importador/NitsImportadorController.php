@@ -179,6 +179,8 @@ class NitsImportadorController extends Controller
                         'email' => $nit->email,
                         'telefono_1' => $nit->telefono_1,
                         'observaciones' => $nit->observaciones,
+                        'email_1' => $nit->email_1,
+                        'email_2' => $nit->email_2,
                         'plazo' => $nit->plazo,
                         'cupo' => $nit->cupo,
                         'created_by' => request()->user()->id,
