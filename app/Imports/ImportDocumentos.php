@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use Illuminate\Support\Collection;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -18,6 +19,8 @@ class ImportDocumentos implements ToCollection, WithHeadingRow, WithProgressBar
     {
         foreach ($rows as $row) {
             if ($row['debito'] || $row['credito']) {
+                $fecha_manual = $row['fecha_manual'] ? Date::excelToDateTimeObject($row['fecha_manual']) : '';
+                
                 DocumentosImport::create([
                     'documento_nit' => $row['documento_nit'],
                     'cuenta_contable' => $row['cuenta_contable'],
@@ -25,7 +28,7 @@ class ImportDocumentos implements ToCollection, WithHeadingRow, WithProgressBar
                     'codigo_comprobante' => $row['codigo_comprobante'],
                     'consecutivo' => $row['consecutivo'],
                     'documento_referencia' => $row['documento_referencia'],
-                    'fecha_manual' => $row['fecha_manual'],
+                    'fecha_manual' => $fecha_manual,
                     'debito' => $row['debito'],
                     'credito' => $row['credito'],
                     'concepto' => $row['concepto'],
