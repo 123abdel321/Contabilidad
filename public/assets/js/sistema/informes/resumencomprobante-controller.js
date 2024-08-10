@@ -108,9 +108,7 @@ function resumencomprobanteInit() {
                     results: data.data
                 };
             }
-        },
-        templateResult: formatNitResumen,
-        templateSelection: formatRepoSelectionResumen
+        }
     });
 
     $comboCuentaResumen = $('#id_cuenta_comprobantes').select2({
