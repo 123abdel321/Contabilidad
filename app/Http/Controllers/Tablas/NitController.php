@@ -339,8 +339,10 @@ class NitController extends Controller
             END) AS text");
         if ($ubicacion_maximoph) {
             $text = \DB::raw("(CASE
-                WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(apartamentos, ' - ', razon_social)
-                WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( apartamentos, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
+                WHEN apartamentos IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(apartamentos, ' - ', razon_social)
+                WHEN apartamentos IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( apartamentos, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
+                WHEN apartamentos IS NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
+                WHEN apartamentos IS NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(razon_social)
                 ELSE NULL
             END) AS text");
         }
