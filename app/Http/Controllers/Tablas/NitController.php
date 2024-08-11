@@ -341,8 +341,8 @@ class NitController extends Controller
             $text = \DB::raw("(CASE
                 WHEN apartamentos IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(apartamentos, ' - ', razon_social)
                 WHEN apartamentos IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( apartamentos, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
-                WHEN apartamentos IS NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
-                WHEN apartamentos IS NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(razon_social)
+                WHEN apartamentos IS NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( numero_documento, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
+                WHEN apartamentos IS NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)
                 ELSE NULL
             END) AS text");
         }
