@@ -212,9 +212,7 @@ function carteraInit() {
                     results: data.data
                 };
             }
-        },
-        templateResult: formatNitCartera,
-        templateSelection: formatRepoCartera
+        }
     });
 
     $('input[type=radio][name=detallar_cartera]').change(function() {

@@ -161,9 +161,7 @@ function documentosgeneralesInit() {
                     results: data.data
                 };
             }
-        },
-        templateResult: formatNitDocumentosGenerales,
-        templateSelection: formatRepoSelectionDocumentosGenerales
+        }
     });
 
     $('#id_comprobante_documentos_generales').select2({

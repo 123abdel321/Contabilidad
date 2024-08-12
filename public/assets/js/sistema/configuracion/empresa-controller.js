@@ -93,7 +93,7 @@ function empresaInit() {
             $("#email_empresa_edit").val(data.email);
             $("#telefono_empresa_edit").val(data.telefono);
             $("#direccion_empresa_edit").val(data.direccion);
-
+            $("#correo_empresa_edit").val(data.correo);
             $("#empresaEditFormModal").modal('show');
         });
 
@@ -362,9 +362,9 @@ function clearFormularioEditEmpresa() {
     $("#id_empresa_up").val("");
     $("#razon_social_empresa_edit").val("");
     $("#nit_empresa_edit").val("");
-    $("#email_empresa_edit").val("");
     $("#telefono_empresa_edit").val("");
     $("#direccion_empresa_edit").val("");
+    $("#correo_empresa_edit").val("");
 
     $('#new_avatar_empresa_edit').hide();
     $('#default_avatar_empresa_edit').show();

@@ -213,9 +213,7 @@ function auxiliarInit() {
                     results: data.data
                 };
             }
-        },
-        templateResult: formatNitAuxiliar,
-        templateSelection: formatRepoSelectionAuxiliar
+        }
 
     });
 
