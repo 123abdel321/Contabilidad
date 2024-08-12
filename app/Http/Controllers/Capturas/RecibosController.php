@@ -20,6 +20,7 @@ use App\Models\Empresas\Empresa;
 use App\Models\Sistema\ConRecibos;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\Comprobantes;
+use App\Models\Sistema\CentroCostos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\ConReciboPagos;
 use App\Models\Sistema\DocumentosGeneral;
