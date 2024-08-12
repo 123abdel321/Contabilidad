@@ -259,6 +259,7 @@ class RecibosController extends Controller
             //CREAR FACTURA RECIBO
             $recibo = $this->createFacturaRecibo($request);
             $nit = $this->findNit($recibo->id_nit);
+            $centro_costos = CentroCostos::first();
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE RECIBOS
             $documentoGeneral = new Documento(
@@ -294,7 +295,7 @@ class RecibosController extends Controller
                 $doc = new DocumentosGeneral([
                     "id_cuenta" => $cuentaRecord->id,
                     "id_nit" => $cuentaRecord->exige_nit ? $recibo->id_nit : null,
-                    "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $recibo->id_centro_costos : null,
+                    "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $centro_costos->id : null,
                     "concepto" => $cuentaRecord->exige_concepto ? $movimiento->concepto : null,
                     "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $movimiento->documento_referencia : null,
                     "debito" => $movimiento->valor_recibido,
@@ -474,6 +475,7 @@ class RecibosController extends Controller
             );
 
             $valorPagado = $request->get('valor_pago');
+            $centro_costos = CentroCostos::first();
             
             //BUSCAMOS CUENTAS POR COBRAR
             foreach ($extractos as $extracto) {
@@ -510,7 +512,7 @@ class RecibosController extends Controller
                 $doc = new DocumentosGeneral([
                     "id_cuenta" => $cuentaRecord->id,
                     "id_nit" => $cuentaRecord->exige_nit ? $recibo->id_nit : null,
-                    "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $recibo->id_centro_costos : null,
+                    "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $centro_costos->id : null,
                     "concepto" => $cuentaRecord->exige_concepto ? $extracto->concepto : null,
                     "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $extracto->documento_referencia : null,
                     "debito" => $totalAbonado,
