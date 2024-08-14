@@ -19,6 +19,7 @@ function compraInit () {
 
     compra_table = $('#compraTable').DataTable({
         dom: '',
+        pageLength: 200,
         responsive: false,
         processing: true,
         serverSide: false,
@@ -80,6 +81,7 @@ function compraInit () {
                 }
             },
         ],
+
         columnDefs: [{
             'orderable': false
         }],
