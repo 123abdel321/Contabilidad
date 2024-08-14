@@ -21,6 +21,7 @@
                                 <option value="por_pagar">Cuentas por pagar</option>
                             </select>
                         </div>
+                        
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="exampleFormControlSelect1">Cuenta</label>
                             <select name="id_cuenta_cartera" id="id_cuenta_cartera" class="form-control form-control-sm">

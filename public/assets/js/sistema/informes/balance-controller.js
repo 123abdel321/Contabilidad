@@ -66,6 +66,11 @@ function balanceInit() {
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
+            if (!data.auxiliar) {
+                $('td', row).css('background-color', 'rgb(64 164 209 / 10%)');
+                $('td', row).css('font-weight', 'bold');
+                return;
+            }
         },
         ajax:  {
             type: "GET",
@@ -79,7 +84,13 @@ function balanceInit() {
         },
         "columns": [
             {"data": function (row, type, set){
-                if(row.cuenta){
+                if(row.cuenta && row.auxiliar != 5){
+                    return row.cuenta +' - '+ row.nombre_cuenta;
+                }
+                return '';
+            }},
+            {"data": function (row, type, set){
+                if(row.cuenta && row.auxiliar == 5){
                     return row.cuenta +' - '+ row.nombre_cuenta;
                 }
                 return '';
@@ -106,8 +117,8 @@ function balanceInit() {
             },
         ]
     });
-
-    var $comboPadre = $('#id_cuenta_balance').select2({
+    balance_table.column(1).visible(false);
+    $('#id_cuenta_balance').select2({
         theme: 'bootstrap-5',
         delay: 250,
         placeholder: "Seleccione una Cuenta",
@@ -122,6 +133,13 @@ function balanceInit() {
                 };
             }
         }
+    });
+
+    $("#tipo_informe_balance").on('change', function(){
+        console.log('123')
+        var data = $("#tipo_informe_balance").val();
+        if (data == '2') balance_table.column(1).visible(true);
+        else balance_table.column(1).visible(false);
     });
 
     findBalance();
@@ -145,6 +163,7 @@ $(document).on('click', '#generarBalance', function () {
     url+= '?fecha_desde='+$('#fecha_desde_balance').val();
     url+= '&fecha_hasta='+$('#fecha_hasta_balance').val();
     url+= '&id_cuenta='+$('#id_cuenta_balance').val();
+    url+= '&tipo='+$('#tipo_informe_balance').val();
     url+= '&nivel='+getNivel();
     url+= '&generar='+generarBalance;
 
@@ -260,6 +279,7 @@ function GenerateBalance() {
     url+= '?fecha_desde='+$('#fecha_desde_balance').val();
     url+= '&fecha_hasta='+$('#fecha_hasta_balance').val();
     url+= '&id_cuenta='+$('#id_cuenta_balance').val();
+    url+= '&tipo='+$('#tipo_informe_balance').val();
     url+= '&nivel='+getNivel();
     url+= '&generar='+generarBalance;
 
