@@ -163,7 +163,7 @@ function impuestosInit() {
                 var query = {
                     search: params.term,
                     total_cuentas: true,
-                    id_tipo_cuenta: $("#tipo_informe_impuestos").val() == 'por_cobrar' ? [3,7] : [4,8]
+                    id_tipo_cuenta: $("#tipo_informe_impuestos").val() == 'iva' ? [9,16] : [12,13]
                 }
                 return query;
             },
