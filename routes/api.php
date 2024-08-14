@@ -9,9 +9,9 @@ use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\ExogenaController;
 use App\Http\Controllers\Tablas\BodegasController;
 use App\Http\Controllers\Tablas\FamiliasController;
+use App\Http\Controllers\Tablas\ImpuestoController;
 use App\Http\Controllers\Tablas\VariantesController;
 use App\Http\Controllers\Tablas\ProductosController;
-use App\Http\Controllers\Tablas\ImpuestosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\VendedoresController;
 use App\Http\Controllers\Tablas\FormasPagoController;
@@ -130,6 +130,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('cartera-show', 'App\Http\Controllers\Informes\CarteraController@show');
         Route::get('cartera-find', 'App\Http\Controllers\Informes\CarteraController@find');
         Route::post('cartera-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
+        //CARTERA
+        Route::get('impuestos', 'App\Http\Controllers\Informes\ImpuestosController@generate');
+        Route::get('impuestos-show', 'App\Http\Controllers\Informes\ImpuestosController@show');
+        Route::get('impuestos-find', 'App\Http\Controllers\Informes\ImpuestosController@find');
+        // Route::post('impuestos-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
         //DOCUMENTOS GENERALES
         Route::get('documentos-generales', 'App\Http\Controllers\Informes\DocumentosGeneralesController@generate');
         Route::get('documentos-generales-show', 'App\Http\Controllers\Informes\DocumentosGeneralesController@show');
@@ -163,7 +168,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('usuarios/combo', 'comboUsuario');
         });
         //IMPUESTOS
-        Route::controller(ImpuestosController::class)->group(function () {
+        Route::controller(ImpuestoController::class)->group(function () {
             Route::get('impuesto/combo-impuesto', 'comboImpuesto');
         });
         //PLAN DE CUENTAS
