@@ -153,7 +153,7 @@ class ProcessInformeBalance implements ShouldQueue
                 DB::raw('SUM(documentos_totales) AS documentos_totales')
             )
             ->groupByRaw('cuenta, id_nit')
-            ->orderByRaw('cuenta')
+            ->orderByRaw('nombre_nit')
             ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 foreach ($documentos as $nit) {
