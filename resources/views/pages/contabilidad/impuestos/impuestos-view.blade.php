@@ -23,12 +23,12 @@
                     <h6 id="impuestos_anterior" style="margin-top: -15px; color: #0002ff">$0</h6>
                 </div>
                 <div class="col-3 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">TOTAL FACTURAS</p>
-                    <h6 id="impuestos_facturas" style="margin-top: -15px; color: #0002ff">$0</h6>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">TOTAL DEBITO</p>
+                    <h6 id="impuestos_debito" style="margin-top: -15px; color: #0002ff">$0</h6>
                 </div>
                 <div class="col-3 col-md-3 col-sm-3" style="border-right: solid 1px #787878;">
-                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">TOTAL ABONOS</p>
-                    <h6 id="impuestos_abonos" style="margin-top: -15px; color: #0002ff">$0</h6>
+                    <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">TOTAL CREDITO</p>
+                    <h6 id="impuestos_credito" style="margin-top: -15px; color: #0002ff">$0</h6>
                 </div>
                 <div class="col-3 col-md-3 col-sm-3">
                     <p style="font-size: 13px; margin-top: 5px; color: black; font-weight: bold;">SALDO FINAL</p>
