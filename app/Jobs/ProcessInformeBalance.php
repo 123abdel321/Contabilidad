@@ -180,6 +180,7 @@ class ProcessInformeBalance implements ShouldQueue
             ->orderByRaw('cuenta')
             ->get();
 
+        $total = $totales[0]->saldo_anterior + $totales[0]->debito - $totales[0]->credito;
         $this->balanceCollection['9999'] = [
             'id_balance' => $this->id_balance,
             'id_cuenta' => '',
@@ -189,7 +190,7 @@ class ProcessInformeBalance implements ShouldQueue
             'saldo_anterior' => number_format((float)$totales[0]->saldo_anterior, 2, '.', ''),
             'debito' => number_format((float)$totales[0]->debito, 2, '.', ''),
             'credito' => number_format((float)$totales[0]->credito, 2, '.', ''),
-            'saldo_final' => number_format((float)$totales[0]->saldo_final, 2, '.', ''),
+            'saldo_final' => number_format((float)$total, 2, '.', ''),
             'documentos_totales' => $totales[0]->documentos_totales,
         ];
     }
