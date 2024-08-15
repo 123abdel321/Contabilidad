@@ -42,6 +42,9 @@ function balanceInit() {
                 $('td', row).css('color', 'white');
                 return;
             }
+            if (data.auxiliar == 5) {
+                return;
+            }
             if(data.balance){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 10%)');
                 return;
