@@ -656,6 +656,7 @@ class RecibosController extends Controller
             $nit = $this->findNit($recibo->id_nit);
 
             //GENERAR MOVIMINETO CONTABLE
+            $centro_costos = CentroCostos::first();
             $consecutivo = $this->getNextConsecutive($recibo->id_comprobante, $recibo->fecha_manual);
             $recibo->consecutivo = $consecutivo;
 
@@ -697,12 +698,13 @@ class RecibosController extends Controller
                     $totalAbonado = $extracto->saldo;
                     $valorPagado-= $extracto->saldo;
                 }
+                
 
                 //AGREGAR MOVIMIENTO CONTABLE
                 $doc = new DocumentosGeneral([
                     "id_cuenta" => $cuentaRecord->id,
                     "id_nit" => $cuentaRecord->exige_nit ? $recibo->id_nit : null,
-                    "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $recibo->id_centro_costos : null,
+                    "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $centro_costos->id : null,
                     "concepto" => $cuentaRecord->exige_concepto ? $extracto->concepto : null,
                     "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $extracto->documento_referencia : null,
                     "debito" => $totalAbonado,
