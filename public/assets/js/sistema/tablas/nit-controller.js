@@ -318,20 +318,20 @@ function nitInit() {
     nits_table.ajax.reload();
 }
 
-$('.only-lyrics').keypress(function (e) {
-    var txt = String.fromCharCode(e.which);
-    if (!txt.match(/[A-Za-z&. ]/)) {
-        return false;
-    }
-});
+// $('.only-lyrics').keypress(function (e) {
+//     var txt = String.fromCharCode(e.which);
+//     if (!txt.match(/[A-Za-z&. ]/)) {
+//         return false;
+//     }
+// });
   
-$('.only-lyrics').bind('paste', function() {
-    setTimeout(function() { 
-        var value = $(this).val();
-        var updated = value.replace(/[^A-Za-z&. ]/g, '');
-        $(this).val(updated);
-    });
-});
+// $('.only-lyrics').bind('paste', function() {
+//     setTimeout(function() { 
+//         var value = $(this).val();
+//         var updated = value.replace(/[^A-Za-z&. ]/g, '');
+//         $(this).val(updated);
+//     });
+// });
 
 $('.only-numbers').keypress(function (e) {
     var txt = String.fromCharCode(e.which);
