@@ -43,11 +43,11 @@ class ConPagos extends Model
 
     public function detalles()
 	{
-		return $this->hasMany(ConpagoDetalles::class, 'id_pago');
+		return $this->hasMany(ConPagoDetalles::class, 'id_pago');
 	}
 
     public function pagos()
 	{
-		return $this->hasMany(ConpagoPagos::class, 'id_pago');
+		return $this->hasMany(ConPagoPagos::class, 'id_pago');
 	}
 }
