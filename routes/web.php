@@ -15,6 +15,7 @@ use App\Http\Controllers\Informes\BalanceController;
 use App\Http\Controllers\Informes\AuxiliarController;
 use App\Http\Controllers\Informes\ImpuestosController;
 use App\Http\Controllers\Informes\DocumentoController;
+use App\Http\Controllers\Informes\ResultadosController;
 use App\Http\Controllers\Informes\EstadoActualController;
 use App\Http\Controllers\Informes\VentasGeneralesController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
@@ -122,6 +123,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/impuestos', [ImpuestosController::class, 'index'])->name('impuestos');		
 		//CUENTAS POR COBRAR
 		Route::get('/resumencomprobante', [ResumenComprobantesController::class, 'index'])->name('resumencomprobante');
+		//CUENTAS POR COBRAR
+		Route::get('/resultados', [ResultadosController::class, 'index']);
 		//DOCUMENTO GENERAL
 		Route::get('/documentogeneral', [DocumentoGeneralController::class, 'index'])->name('documento-general');
 		//ELIMINAR DOCUMENTOS

@@ -50,23 +50,23 @@ function balanceInit() {
                 return;
             }
             if(data.cuenta.length == 1){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
+                $('td', row).css('font-weight', '700');
                 return;
             }
             if(data.cuenta.length == 2){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.cuenta.length == 4){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.cuenta.length == 6){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if (!data.auxiliar) {

@@ -81,6 +81,7 @@ var moduloCreado = {
     'resumencomprobante': false,
     'presupuesto': false,
     'impuestos': false,
+    'resultados': false,
 };
 
 var moduloRoute = {
@@ -125,6 +126,7 @@ var moduloRoute = {
     'resumencomprobante': 'informes',
     'presupuesto': 'tablas',
     'impuestos': 'informes',
+    'resultados': 'informes',
 }
 
 $('.water').show();

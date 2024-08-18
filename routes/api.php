@@ -22,6 +22,7 @@ use App\Http\Controllers\Tablas\ResolucionesController;
 use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
 //INFORMES
+use App\Http\Controllers\Informes\ResultadosController;
 use App\Http\Controllers\Informes\EstadoActualController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
 use App\Http\Controllers\Informes\ResumenComprobantesController;
@@ -158,7 +159,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(ResumenComprobantesController::class)->group(function () {
             Route::get('resumen-comprobante', 'generate');
             Route::get('resumen-comprobante-show', 'show');
-        });        
+        });
+        //INFORME RESULTADOS
+        Route::controller(ResultadosController::class)->group(function () {
+            Route::get('resultados', 'generate');
+            Route::get('resultados-show', 'show');
+        });
 
         //USUARIOS
         Route::controller(UsuariosController::class)->group(function () {
