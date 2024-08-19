@@ -93,17 +93,23 @@ class ProcessGenerarDocumentos implements ShouldQueue
 				);
 
 				foreach ($docGroup as $doc) {
+					
 					foreach ($cuentasContables as $cuentaContableI) {
 						$naturaleza = null;
 						$docGeneral = $this->newDocGeneral();
 						$cuentaContable = PlanCuentas::where('id', $doc->{$cuentaContableI})
 							->with('tipos_cuenta')
 							->first();
-	
+
+						$tipoNumeroCuenta = mb_substr($cuentaContable->cuenta, 0, 1);
+
 						$naturaleza = null;
 						$documentoReferencia = $doc->documento_referencia;
 
-						if ($doc->naturaleza_opuesta) {
+						if ($tipoNumeroCuenta == '5') {
+							$naturaleza = PlanCuentas::DEBITO;
+							$docGeneral['debito'] = $doc->valor;
+						} else if ($doc->naturaleza_opuesta) {
 
 							$documentoReferencia = $this->generarDocumentoReferenciaAnticipos($cuentaContable, $doc);
 
