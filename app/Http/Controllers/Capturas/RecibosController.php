@@ -439,26 +439,17 @@ class RecibosController extends Controller
                 'updated_by' => request()->user()->id
             ]);
 
-            DB::connection('sam')->commit();
-
-            //ACTIVAR SOLO COMPROBANTES
-            return response()->json([
-                "success"=>true,
-                'data' => [],
-                "message"=>'Comprobante enviado con exito'
-            ], 200);
-            //ACTIVAR SOLO COMPROBANTES
-
             if ($request->get('valor_comprobante')) {
-
                 DB::connection('sam')->commit();
-
+                // //ACTIVAR SOLO COMPROBANTES
                 return response()->json([
                     "success"=>true,
                     'data' => [],
                     "message"=>'Comprobante enviado con exito'
                 ], 200);
             }
+
+            $consecutivo = $this->getNextConsecutive($recibo->id_comprobante, $recibo->fecha_manual);
 
             $extractos = (new Extracto(
                 $nit->id,
@@ -540,7 +531,7 @@ class RecibosController extends Controller
 
             $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
 
-            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+            $this->updateConsecutivo($recibo->id_comprobante, $consecutivo);
 
             if (!$documentoGeneral->save()) {
 
@@ -551,6 +542,12 @@ class RecibosController extends Controller
 					'message'=> $documentoGeneral->getErrors()
 				], 422);
 			}
+
+            //GUARDAMOS RECIBO
+            $recibo->consecutivo = $consecutivo;
+            $recibo->estado = 1;
+            $recibo->observacion = $request->get('observacion');
+            $recibo->save();
 
             DB::connection('sam')->commit();
 
