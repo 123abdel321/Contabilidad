@@ -579,8 +579,7 @@ class VentaController extends Controller
                 'comprobante',
                 'centro_costo',
             )
-            ->orderBy('id', 'DESC')
-            ->paginate(15);
+            ->orderBy('id', 'DESC');
 
         if ($request->get('consecutivo')) {
             $facturas->where('consecutivo', $request->get('consecutivo'));
@@ -602,7 +601,7 @@ class VentaController extends Controller
 
         return response()->json([
             'success'=>	true,
-            'data' => $facturas->get(),
+            'data' => $facturas->paginate(15),
             'message'=> ''
         ]);
     }
