@@ -573,13 +573,34 @@ class VentaController extends Controller
 
     public function read(Request $request)
     {
-        $facturas = FacVentas::with(
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length");
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+        $facturas = FacVentas::orderBy('id', 'DESC')
+            ->with(
                 'bodega',
                 'cliente',
                 'comprobante',
                 'centro_costo',
             )
-            ->orderBy('id', 'DESC');
+            ->select(
+                '*',
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                'created_by',
+                'updated_by'
+            );
 
         if ($request->get('consecutivo')) {
             $facturas->where('consecutivo', $request->get('consecutivo'));
@@ -599,10 +620,19 @@ class VentaController extends Controller
 
         $facturas->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL);
 
+        $facturasTotals = $facturas->get();
+
+        $facturasPaginate = $facturas->skip($start)
+            ->take(10);
+
         return response()->json([
             'success'=>	true,
-            'data' => $facturas->paginate(15),
-            'message'=> ''
+            'draw' => $draw,
+            'iTotalRecords' => $facturasTotals->count(),
+            'iTotalDisplayRecords' => $facturasTotals->count(),
+            'data' => $facturasPaginate->get(),
+            'perPage' => 10,
+            'message'=> 'Facturas generados con exito!'
         ]);
     }
 
