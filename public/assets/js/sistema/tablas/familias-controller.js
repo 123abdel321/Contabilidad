@@ -778,7 +778,7 @@ function familiasInit() {
             data: function (params) {
                 var query = {
                     search: params.term,
-                    id_tipo_cuenta: [11]
+                    // id_tipo_cuenta: [11]
                 }
                 return query;
             },
@@ -803,7 +803,7 @@ function familiasInit() {
             data: function (params) {
                 var query = {
                     search: params.term,
-                    id_tipo_cuenta: [6]
+                    // id_tipo_cuenta: [6]
                 }
                 return query;
             },
@@ -1003,7 +1003,7 @@ function familiasInit() {
             data: function (params) {
                 var query = {
                     search: params.term,
-                    id_tipo_cuenta: [10]
+                    // id_tipo_cuenta: [10]
                 }
                 return query;
             },
@@ -1028,7 +1028,7 @@ function familiasInit() {
             data: function (params) {
                 var query = {
                     search: params.term,
-                    id_tipo_cuenta: [10]
+                    // id_tipo_cuenta: [10]
                 }
                 return query;
             },

@@ -580,7 +580,7 @@ class VentaController extends Controller
                 'centro_costo',
             )
             ->orderBy('id', 'DESC')
-            ->take(10);
+            ->paginate(15);
 
         if ($request->get('consecutivo')) {
             $facturas->where('consecutivo', $request->get('consecutivo'));

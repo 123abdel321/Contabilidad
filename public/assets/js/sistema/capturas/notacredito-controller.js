@@ -131,7 +131,7 @@ function notacreditoInit () {
 
     nota_credito_table_facturas = $('#facturaDevolucionTable').DataTable({
         pageLength: 15,
-        dom: '',
+        dom: 'Brtip',
         paging: true,
         responsive: false,
         processing: true,
