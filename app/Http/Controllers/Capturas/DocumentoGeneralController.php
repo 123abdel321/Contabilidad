@@ -389,20 +389,29 @@ class DocumentoGeneralController extends Controller
 				}
 			}
 
-			DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
-				->where('consecutivo', $request->get('consecutivo'))
-				->where('fecha_manual', $request->get('fecha_manual'))
-				->delete();
-
 			$facDocumento = null;
 
 			$tokenFactura = $request->get('token_factura') ? $request->get('token_factura') : $this->generateTokenDocumento();
 
 			if($request->get('editing_documento')) {
-				$facDocumento = FacDocumentos::where('id_comprobante', $request->get('id_comprobante'))
+				$facDocumento = DocumentosGeneral::with('relation')
+					->where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
+					->where('fecha_manual', $request->get('fecha_manual'))
 					->first();
+					
+				$facDocumento = $facDocumento->relation;
+
+				DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
+					->where('consecutivo', $request->get('consecutivo'))
+					->where('fecha_manual', $request->get('fecha_manual'))
+					->delete();
 			} else {
+				DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
+					->where('consecutivo', $request->get('consecutivo'))
+					->where('fecha_manual', $request->get('fecha_manual'))
+					->delete();
+
 				$facDocumento = FacDocumentos::create([
 					'id_comprobante' => $request->get('id_comprobante'),
 					'fecha_manual' => $request->get('fecha_manual'),
@@ -416,7 +425,7 @@ class DocumentoGeneralController extends Controller
 				]);
 			}
 			$primerIdNit = null;
-			$documentoGeneral = new Documento($request->get('id_comprobante'), $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
+			$documentoGeneral = new Documento($facDocumento->id_comprobante, $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
 
 			// if ($request->get('editing_documento')) $documentoGeneral->setCreatedAt($facDocumento->created_at);
 
