@@ -177,127 +177,126 @@ function movimientoinventarioInit() {
         }
     });
 
+    $comboNitMI = $('#id_nit_movimiento_inventario').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Debes ingresar más caracteres...";
+            }
+        },
+        ajax: {
+            url: 'api/nit/combo-nit',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+    
+    $comboBodegaOrigenMI = $('#id_bodega_origen_movimiento_inventario').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/bodega/combo-bodega',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+    
+    $comboBodegaDestinoMI = $('#id_bodega_destino_movimiento_inventario').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/bodega/combo-bodega',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    with_out: $('#id_bodega_origen_movimiento_inventario').val(),
+                    _type: 'query'
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+    
+    $comboCargueDescargueMi = $('#id_cargue_descargue_movimiento_inventario').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Debes ingresar más caracteres...";
+            }
+        },
+        ajax: {
+            url: 'api/cargue-descargue/combo',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo: $('#tipo_movimiento_inventario').val(),
+                    _type: 'query'
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
 }
-
-$comboNitMI = $('#id_nit_movimiento_inventario').select2({
-    theme: 'bootstrap-5',
-    delay: 250,
-    language: {
-        noResults: function() {
-            return "No hay resultado";        
-        },
-        searching: function() {
-            return "Buscando..";
-        },
-        inputTooShort: function () {
-            return "Debes ingresar más caracteres...";
-        }
-    },
-    ajax: {
-        url: 'api/nit/combo-nit',
-        headers: headers,
-        dataType: 'json',
-        processResults: function (data) {
-            return {
-                results: data.data
-            };
-        }
-    }
-});
-
-$comboBodegaOrigenMI = $('#id_bodega_origen_movimiento_inventario').select2({
-    theme: 'bootstrap-5',
-    delay: 250,
-    language: {
-        noResults: function() {
-            return "No hay resultado";        
-        },
-        searching: function() {
-            return "Buscando..";
-        },
-        inputTooShort: function () {
-            return "Por favor introduce 1 o más caracteres";
-        }
-    },
-    ajax: {
-        url: 'api/bodega/combo-bodega',
-        headers: headers,
-        dataType: 'json',
-        processResults: function (data) {
-            return {
-                results: data.data
-            };
-        }
-    }
-});
-
-$comboBodegaDestinoMI = $('#id_bodega_destino_movimiento_inventario').select2({
-    theme: 'bootstrap-5',
-    delay: 250,
-    language: {
-        noResults: function() {
-            return "No hay resultado";        
-        },
-        searching: function() {
-            return "Buscando..";
-        },
-        inputTooShort: function () {
-            return "Por favor introduce 1 o más caracteres";
-        }
-    },
-    ajax: {
-        url: 'api/bodega/combo-bodega',
-        headers: headers,
-        dataType: 'json',
-        data: function (params) {
-            var query = {
-                q: params.term,
-                with_out: $('#id_bodega_origen_movimiento_inventario').val(),
-                _type: 'query'
-            }
-            return query;
-        },
-        processResults: function (data) {
-            return {
-                results: data.data
-            };
-        }
-    }
-});
-
-$comboCargueDescargueMi = $('#id_cargue_descargue_movimiento_inventario').select2({
-    theme: 'bootstrap-5',
-    delay: 250,
-    language: {
-        noResults: function() {
-            return "No hay resultado";        
-        },
-        searching: function() {
-            return "Buscando..";
-        },
-        inputTooShort: function () {
-            return "Debes ingresar más caracteres...";
-        }
-    },
-    ajax: {
-        url: 'api/cargue-descargue/combo',
-        headers: headers,
-        dataType: 'json',
-        data: function (params) {
-            var query = {
-                q: params.term,
-                tipo: $('#tipo_movimiento_inventario').val(),
-                _type: 'query'
-            }
-            return query;
-        },
-        processResults: function (data) {
-            return {
-                results: data.data
-            };
-        }
-    }
-});
 
 $(document).on('click', '#iniciarCapturaMovimientoInventario', function () {
     var form = document.querySelector('#movimientoInventarioFilterForm');
@@ -496,6 +495,9 @@ function consecutivoSiguienteMovimientoInventario() {
                 $("#consecutivo_movimiento_inventario").val(res.data);
             }
         }).fail((err) => {
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     }
 }
@@ -692,8 +694,10 @@ function consultarExistenciasMovimientoInventario(idRow) {
         }).fail((err) => {
             $('#movimiento-inventario_producto_load_'+idRow).hide();
             validarExistenciasProductoMI = null;
-            if(err.statusText != "abort") {
-            }
+            
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     },300);
 }
@@ -783,18 +787,8 @@ function saveMovimientoInventario() {
         $("#iniciarCapturaMovimientoInventarioLoading").hide();
 
         var mensaje = err.responseJSON.message;
-        var errorsMsg = "";
-        if (typeof mensaje === 'object') {
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += field+": "+errores[campo]+" <br>";
-                }
-                agregarToast('error', 'Creación errada', errorsMsg);
-            };
-        } else {
-            agregarToast('error', 'Creación errada', mensaje);
-        }
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 
 }

@@ -201,6 +201,7 @@
     @include('pages.capturas.nota_credito.nota_credito-facturas')
 
     <script>
+        var ivaIncluidoNotaCredito = '<?php echo $iva_incluido; ?>';
     </script>
     
 </div>

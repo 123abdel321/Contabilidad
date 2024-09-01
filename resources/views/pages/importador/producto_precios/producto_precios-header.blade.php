@@ -27,7 +27,7 @@
                     <form id="form-producto-precios" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="mb-3 col-6">
-                            <input class="form-control form-control-sm" id="file" name="file" type="file" style="box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 2px 2px 2px rgb(0 0 0 / 57%);">
+                            <input class="form-control form-control-sm" id="file" name="file" type="file" style="box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 2px 2px 2px rgb(0 0 0 / 57%); font-size: 15px; color: black; font-weight: bold;">
                         </div>
                         <div class="col-6">
                             <button id="cargarPlantilla" href="javascript:void(0)" class="btn btn-sm badge bg-gradient-success">

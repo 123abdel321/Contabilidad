@@ -9,8 +9,8 @@ function carteraInit() {
     generarCartera = false;
     carteraExistente = false;
 
-    $('#fecha_cartera').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-    $('#fecha_cartera').val(fechaDesde);
+    $('#fecha_desde_cartera').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
+    $('#fecha_hasta_cartera').val(fechaDesde);
 
     cartera_table = $('#CarteraInformeTable').DataTable({
         pageLength: 100,
@@ -38,43 +38,46 @@ function carteraInit() {
             headerOffset: 45
         },
         'rowCallback': function(row, data, index){
-            if(data.detalle_group == 'nits'){
-                if(!$("input[type='radio']#detallar_cartera1").is(':checked')) {
+            var nivel = getNivelCartera();
+            if (nivel == 1) {
+                if (data.nivel == 0) {
+                    $('td', row).css('background-color', 'rgb(28 69 135)');
+                    $('td', row).css('font-weight', 'bold');
+                    $('td', row).css('color', 'white');
                     return;
                 }
-                $('td', row).css('background-color', 'rgb(128 207 120 / 40%)');
-                $('td', row).css('font-weight', 'bold');
-                return;
-            }
-            if(data.cuenta == "TOTALES"){
-                $('td', row).css('background-color', 'rgb(28 69 135)');
-                $('td', row).css('font-weight', 'bold');
-                $('td', row).css('color', 'white');
-                return;
-            }
-            if(data.cuenta.length == 1){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
-                $('td', row).css('font-weight', 'bold');
-                return;
-            }
-            if(data.cuenta.length == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
-                $('td', row).css('font-weight', 'bold');
-                return;
-            }
-            if(data.cuenta.length == 4){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
-                $('td', row).css('font-weight', 'bold');
-                return;
-            }
-            if(data.detalle_group == '1' && data.detalle != '1'){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
-                $('td', row).css('font-weight', 'bold');
-                return;
-            }
-            if(data.detalle == '1'){
-                $('td', row).css('background-color', 'rgb(197 228 241 / 56%)');
-                $('td', row).css('font-weight', 'bold');
+                if (data.errores) $('td', row).css('background-color', 'rgb(209 64 64 / 40%)');
+            } else if (nivel == 2) {
+                if (data.nivel == 0) {
+                    $('td', row).css('background-color', 'rgb(28 69 135)');
+                    $('td', row).css('font-weight', 'bold');
+                    $('td', row).css('color', 'white');
+                    return;
+                }
+                if(data.nivel == 1){
+                    if (data.errores) $('td', row).css('background-color', 'rgb(209 64 64 / 40%)');
+                    else $('td', row).css('background-color', 'rgb(64 164 209 / 40%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+            } else if (nivel == 3) {
+                if (data.nivel == 0) {
+                    $('td', row).css('background-color', 'rgb(28 69 135)');
+                    $('td', row).css('font-weight', 'bold');
+                    $('td', row).css('color', 'white');
+                    return;
+                }
+                if(data.nivel == 1){
+                    if (data.errores) $('td', row).css('background-color', 'rgb(209 64 64 / 40%)');
+                    else $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
+                if(data.nivel == 2){
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
+                    $('td', row).css('font-weight', 'bold');
+                    return;
+                }
             }
         },
         ajax:  {
@@ -87,56 +90,85 @@ function carteraInit() {
         },
         "columns": [
             {"data": function (row, type, set){
-                if(!row.cuenta) {
-                    return '';
+                var agrupado = $('#agrupar_cartera').val();
+                if (agrupado == 'id_cuenta') {
+                    if (row.nivel == 1) {
+                        return row.cuenta;
+                    } else {
+                        return row.numero_documento;
+                    }
                 }
-                return row.cuenta + ' - ' +row.nombre_cuenta;
+                if (agrupado == 'id_nit') {
+                    if (row.nivel == 1) {
+                        return row.numero_documento;
+                    } else {
+                        return row.cuenta;
+                    }
+                }
+                return '';
             }},
             {"data": function (row, type, set){
-                if(!row.numero_documento){
-                    return '';
+                var agrupado = $('#agrupar_cartera').val();
+                if (agrupado == 'id_cuenta') {
+                    if (row.nivel == 1) {
+                        return row.nombre_cuenta;
+                    } else {
+                        return row.nombre_nit;
+                    }
                 }
-                if(row.razon_social){
-                    return row.numero_documento +' - '+ row.razon_social;
+                if (agrupado == 'id_nit') {
+                    if (row.nivel == 1) {
+                        return row.nombre_nit;
+                    } else {
+                        return row.nombre_cuenta;
+                    }
                 }
-                return row.numero_documento + ' - ' +row.nombre_nit;
-            }, responsivePriority: 1, targets: 0},
-            
+                return '';
+            }},
+            {"data": function (row, type, set){
+                var agrupado = $('#agrupar_cartera').val();
+                if (agrupado == 'id_cuenta') {
+                    if (row.nivel == 1) {
+                        return '';
+                    } else {
+                        return row.apartamento_nit;
+                    }
+                }
+                if (agrupado == 'id_nit') {
+                    if (row.nivel == 1) {
+                        return row.apartamento_nit;
+                    } else {
+                        return '';
+                    }
+                }
+                return '';
+            }},
             {data: 'documento_referencia'},
+            {data: 'fecha_manual'},
+            {data: 'saldo_anterior', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 5, targets: -4},
             {data: 'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 4, targets: -3},
             {data: 'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 3, targets: -2},
             {data: 'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 2, targets: -1},
             {"data": function (row, type, set){
-                if(!row.codigo_comprobante){
-                    return '';
+                if (row.nivel == 3) {
+                    return row.consecutivo
                 }
-                return row.codigo_comprobante + ' - ' +row.nombre_comprobante;
-            }, visible: false},
-            {data: 'fecha_manual'},
-            {data: 'dias_cumplidos', responsivePriority: 5, targets: -4},
-            {data: 'plazo'},
+                return '';
+            }},
+            {data: 'dias_cumplidos', responsivePriority: 6, targets: -4},
+            {data: 'mora', responsivePriority: 7, targets: -5},
             {"data": function (row, type, set){
-                if(row.plazo > 0){
-                    var mora = row.dias_cumplidos - row.plazo;
-                    if(mora <= 0) {
-                        return 0
+                if (row.nivel == 3) {
+                    if (row.codigo_comprobante) {
+                        return row.codigo_comprobante+' - '+row.nombre_comprobante;
                     }
-                    return mora;
                 }
-                return row.dias_cumplidos;
-            }},
-            {data: 'concepto'},
-            {"data": function (row, type, set){  
-                var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
-                if(!row.created_by && !row.fecha_creacion) return '';
-                if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
-                return html;
             }},
             {"data": function (row, type, set){
-                var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
-                if(!row.updated_by && !row.fecha_edicion) return '';
-                if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
-                return html;
+                if (row.nivel == 3) {
+                    return row.concepto
+                }
+                return '';
             }},
         ]
     });
@@ -151,7 +183,8 @@ function carteraInit() {
             data: function (params) {
                 var query = {
                     search: params.term,
-                    cartera: true
+                    total_cuentas: true,
+                    id_tipo_cuenta: $("#tipo_informe_cartera").val() == 'por_cobrar' ? [3,7] : [4,8]
                 }
                 return query;
             },
@@ -182,21 +215,112 @@ function carteraInit() {
         }
     });
 
+    $('input[type=radio][name=detallar_cartera]').change(function() {
+        if(!$("input[type='radio']#detallar_cartera1").is(':checked')){
+            cartera_table.column( 6 ).visible( false );
+        } else {
+            cartera_table.column( 6 ).visible( true );
+        }
+        document.getElementById("generarCartera").click();
+    });
+
+    $("#nivel_cartera1").on('change', function(){
+        actualizarColumnas();
+        document.getElementById("generarCartera").click();
+    });
+    
+    $("#nivel_cartera2").on('change', function(){
+        actualizarColumnas();
+        document.getElementById("generarCartera").click();
+    });
+    
+    $("#nivel_cartera3").on('change', function(){
+        actualizarColumnas();
+        document.getElementById("generarCartera").click();
+    });
+    
+    $(".agrupar_cartera").on('change', function(){
+        var agrupado = $("#agrupar_cartera").val();
+        if (agrupado == 'id_cuenta') {
+            $("#nombre_item_cartera").text("Cuenta");
+        }
+        if (agrupado == 'id_nit') {
+            $("#nombre_item_cartera").text("Documento");
+        }
+        actualizarColumnas();
+        document.getElementById("generarCartera").click();
+    });
+
+    $("#id_cuenta_cartera").on('change', function(){
+        clearCartera();
+        findCartera();
+    });
+    
+    $("#id_nit_cartera").on('change', function(){
+        clearCartera();
+        findCartera();
+    });
+    
+    $("#fecha_desde_cartera").on('change', function(){
+        clearCartera();
+        findCartera();
+    });
+    
+    $(".detallar_cartera").on('change', function(){
+        clearCartera();
+        findCartera();
+    });
+
     findCartera();
+    actualizarColumnas();
 }
 
-$('input[type=radio][name=detallar_cartera]').change(function() {
-    if(!$("input[type='radio']#detallar_cartera1").is(':checked')){
-        cartera_table.column( 6 ).visible( false );
-    } else {
-        cartera_table.column( 6 ).visible( true );
+function actualizarColumnas() {
+    var nivel = getNivelCartera();
+    var agrupado = $("#agrupar_cartera").val();
+
+    var columnUbicacionMaximoPH = cartera_table.column(2);
+    var columnFactura = cartera_table.column(3);
+    var columnFecha = cartera_table.column(4);
+    var columnConcecutivo = cartera_table.column(9);
+    var columnDias = cartera_table.column(10);
+    var columnMora = cartera_table.column(11);
+    var columnComprobante = cartera_table.column(12);
+    var columnConcepto = cartera_table.column(13);
+    
+
+    if (nivel == 1 || nivel == 2) {
+        columnFactura.visible(false);
+        columnFecha.visible(false);
+        columnConcecutivo.visible(false);
+        columnDias.visible(false);
+        columnMora.visible(false);
+        columnComprobante.visible(false);
+        columnConcepto.visible(false);
     }
-    document.getElementById("generarCartera").click();
-});
+    if (nivel == 3) {
+        columnFactura.visible(true);
+        columnFecha.visible(true);
+        columnConcecutivo.visible(true);
+        columnDias.visible(true);
+        columnMora.visible(true);
+        columnComprobante.visible(true);
+        columnConcepto.visible(true);
+    }
+
+    if (ubicacion_maximoph_cartera) {
+        if (nivel == 1) {
+            if (agrupado == 'id_nit') columnUbicacionMaximoPH.visible(true);
+            else columnUbicacionMaximoPH.visible(false);
+        } else columnUbicacionMaximoPH.visible(true);
+    } else columnUbicacionMaximoPH.visible(false);
+}
 
 function loadCarteraById(id_cartera) {
-    cartera_table.ajax.url(base_url + 'cartera-show?id='+id_cartera).load(function(res) {
-        console.log('res: ',res, id_cartera);
+    var url = base_url + 'cartera-show?id='+id_cartera;
+
+    cartera_table.ajax.url(url).load(function(res) {
+        
         if(res.success){
             $("#generarCartera").show();
             $("#generarCarteraLoading").hide();
@@ -215,11 +339,10 @@ function loadCarteraById(id_cartera) {
 }
 
 function mostrarTotalesCartera(data) {
-    console.log('mostrarTotalesCartera: ',data);
     if(!data) {
         return;
     }
-
+    $("#cartera_anterior").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_anterior));
     $("#cartera_facturas").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.total_facturas));
     $("#cartera_abonos").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.total_abono));
     $("#cartera_diferencia").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo));
@@ -231,7 +354,8 @@ $(document).on('click', '#generarCartera', function () {
     $("#generarCarteraLoading").show();
     $('#descargarExcelCartera').prop('disabled', true);
     $("#descargarExcelCartera").hide();
-
+    
+    $("#cartera_anterior").text('$0');
     $("#cartera_facturas").text('$0');
     $("#cartera_abonos").text('$0');
     $("#cartera_diferencia").text('$0');
@@ -239,8 +363,11 @@ $(document).on('click', '#generarCartera', function () {
     var url = base_url + 'cartera';
     url+= '?id_nit='+$('#id_nit_cartera').val();
     url+= '&id_cuenta='+$('#id_cuenta_cartera').val();
-    url+= '&fecha_cartera='+$('#fecha_cartera').val();
-    url+= '&detallar_cartera='+getDetalleCartera();
+    url+= '&fecha_desde='+$('#fecha_desde_cartera').val();
+    url+= '&fecha_hasta='+$('#fecha_hasta_cartera').val();
+    url+= '&agrupar_cartera='+$('#agrupar_cartera').val();
+    url+= '&tipo_informe='+$("#tipo_informe_cartera").val();
+    url+= '&nivel='+getNivelCartera();
 
     cartera_table.ajax.url(url).load(function(res) {
         if(res.success) {
@@ -273,13 +400,6 @@ $(document).on('click', '#generarCartera', function () {
 
 });
 
-function getDetalleCartera() {
-    if($("input[type='radio']#detallar_cartera1").is(':checked')) return 1;
-    if($("input[type='radio']#detallar_cartera2").is(':checked')) return '';
-
-    return '';
-}
-
 function findCartera() {
     carteraExistente = false;
     $('#generarCarteraUltimo').hide();
@@ -288,8 +408,10 @@ function findCartera() {
     var url = base_url + 'cartera-find';
     url+= '?id_nit='+$('#id_nit_cartera').val();
     url+= '&id_cuenta='+$('#id_cuenta_cartera').val();
-    url+= '&fecha_cartera='+$('#fecha_cartera').val();
-    url+= '&detallar_cartera='+getDetalleCartera();
+    url+= '&fecha_desde_cartera='+$('#fecha_desde_cartera').val();
+    url+= '&agrupar_cartera='+$('#agrupar_cartera').val();
+    url+= '&tipo_informe='+$("#tipo_informe_cartera").val();
+    url+= '&nivel='+getNivelCartera();
     
     $.ajax({
         url: url,
@@ -324,8 +446,11 @@ function GenerateCartera() {
     var url = base_url + 'cartera-find';
     url+= '?id_nit='+$('#id_nit_cartera').val();
     url+= '&id_cuenta='+$('#id_cuenta_cartera').val();
-    url+= '&fecha_cartera='+$('#fecha_cartera').val();
-    url+= '&detallar_cartera='+getDetalleCartera();
+    url+= '&fecha_desde='+$('#fecha_desde_cartera').val();
+    url+= '&fecha_hasta='+$('#fecha_hasta_cartera').val();
+    url+= '&agrupar='+$('#agrupar_cartera').val();
+    url+= '&tipo_informe='+$("#tipo_informe_cartera").val();
+    url+= '&nivel='+getNivelCartera();
     url+= '&generar='+generarCartera;
 
     cartera_table.ajax.url(url).load(function(res) {
@@ -355,27 +480,30 @@ channelCartera.bind('notificaciones', function(data) {
     }
 });
 
-$("#id_cuenta_cartera").on('change', function(){
-    clearCartera();
-    findCartera();
-});
-
-$("#id_nit_cartera").on('change', function(){
-    clearCartera();
-    findCartera();
-});
-
-$("#fecha_cartera").on('change', function(){
-    clearCartera();
-    findCartera();
-});
-
-$(".detallar_cartera").on('change', function(){
-    clearCartera();
-    findCartera();
-});
-
 function clearCartera() {
     $("#descargarExcelCartera").hide();
     $("#descargarExcelCarteraDisabled").show();
+}
+
+function getNivelCartera() {
+    if($("input[type='radio']#nivel_cartera1").is(':checked')) return 1;
+    if($("input[type='radio']#nivel_cartera2").is(':checked')) return 2;
+    if($("input[type='radio']#nivel_cartera3").is(':checked')) return 3;
+
+    return false;
+}
+
+function formatNitCartera (nit) {
+    
+    if (nit.loading) return nit.text;
+
+    if (ubicacion_maximoph_cartera) {
+        if (nit.apartamentos) return nit.text+' - '+nit.apartamentos;
+        else return nit.text;
+    }
+    else return nit.text;
+}
+
+function formatRepoCartera (nit) {
+    return nit.full_name || nit.text;
 }

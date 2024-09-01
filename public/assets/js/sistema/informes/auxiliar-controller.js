@@ -39,12 +39,20 @@ function auxiliarInit() {
         },
         'rowCallback': function(row, data, index){
             if(data.naturaleza_cuenta == 0 && parseInt(data.saldo_final) < 0 && data.detalle_group == 'nits') {
-                $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
-                return;
+                if (data.cuenta.length > 2) {
+                    var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
+                    if (!cuenta == '11') {
+                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    }
+                }
             }
             if(data.naturaleza_cuenta == 1 && parseInt(data.saldo_final) > 0 && data.detalle_group == 'nits') {
-                $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
-                return;
+                if (data.cuenta.length > 2) {
+                    var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
+                    if (!cuenta == '11') {
+                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    }
+                }
             }
             if(data.detalle_group == 'nits-totales'){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 25%)');
@@ -118,9 +126,8 @@ function auxiliarInit() {
                 
                 var html = '<div class="button-user" onclick="showNit('+row.id_nit+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
                 return html;
-    
-    
             }},
+            { data: 'apartamento_nit'},
             {"data": function (row, type, set){
                 if(!row.codigo_cecos){
                     return '';
@@ -134,9 +141,15 @@ function auxiliarInit() {
             {"data": function (row, type, set){
                 var saldo_final = parseFloat(row.saldo_final);
                 if(row.naturaleza_cuenta == 0 && saldo_final < 0 && row.detalle_group == 'nits') {
-                    return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
+                    if (!cuenta == '11') {
+                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    }
                 } else if(row.naturaleza_cuenta == 1 && saldo_final > 0 && row.detalle_group == 'nits') {
-                    return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
+                    if (!cuenta == '11') {
+                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    }
                 } else if(row.naturaleza_cuenta == 1 && saldo_final < 0) {
                     return (saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
                 }
@@ -181,6 +194,11 @@ function auxiliarInit() {
         ]
     });
 
+    var columnUbicacionMaximoPH = auxiliar_table.column(2);
+
+    if (ubicacion_maximoph) columnUbicacionMaximoPH.visible(true);
+    else columnUbicacionMaximoPH.visible(false);
+
     $('#id_nit_auxiliar').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -196,6 +214,7 @@ function auxiliarInit() {
                 };
             }
         }
+
     });
 
     $('#id_cuenta_auxiliar').select2({
@@ -455,4 +474,19 @@ $("#id_nit_auxiliar").on('change', function(){
 function clearAuxiliar() {
     $("#descargarExcelAuxiliar").hide();
     $("#descargarExcelAuxiliarDisabled").show();
+}
+
+function formatNitAuxiliar (nit) {
+    
+    if (nit.loading) return nit.text;
+
+    if (ubicacion_maximoph) {
+        if (nit.apartamentos) return nit.text+' - '+nit.apartamentos;
+        else return nit.text;
+    }
+    else return nit.text;
+}
+
+function formatRepoSelectionAuxiliar (nit) {
+    return nit.full_name || nit.text;
 }

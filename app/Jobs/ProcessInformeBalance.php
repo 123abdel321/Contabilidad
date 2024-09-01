@@ -50,13 +50,17 @@ class ProcessInformeBalance implements ShouldQueue
 				'fecha_desde' => $this->request['fecha_desde'],
 				'fecha_hasta' => $this->request['fecha_hasta'],
 				'id_cuenta' => $this->request['id_cuenta'],
+				'tipo' => $this->request['tipo'],
 				'nivel' => $this->request['nivel'],
 			]);
 
             $this->id_balance = $balance->id;
 
             $this->documentosBalance();
+            if ($this->request['tipo'] == '2') $this->tercerosBalance();
+            
             $this->totalesDocumentosBalance();
+            ksort($this->balanceCollection, SORT_STRING | SORT_FLAG_CASE);
 
             foreach (array_chunk($this->balanceCollection,233) as $balanceCollection){
                 DB::connection('informes')
@@ -124,6 +128,40 @@ class ProcessInformeBalance implements ShouldQueue
             });
     }
 
+    private function tercerosBalance()
+    {
+        $query = $this->balanceDocumentosQuery();
+        $query->unionAll($this->balanceAnteriorQuery());
+
+        DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS balance"))
+            ->mergeBindings($query)
+            ->select(
+                'id_nit',
+                'numero_documento',
+                'nombre_nit',
+                'id_cuenta',
+                'cuenta',
+                'nombre_cuenta',
+                'created_by',
+                'updated_by',
+                'fecha_manual',
+                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
+                DB::raw('SUM(documentos_totales) AS documentos_totales')
+            )
+            ->groupByRaw('cuenta, id_nit')
+            ->orderByRaw('nombre_nit')
+            ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
+            ->chunk(233, function ($documentos) {
+                foreach ($documentos as $nit) {
+                    $this->newNitData($nit);
+                }
+            });
+    }
+
     private function totalesDocumentosBalance()
     {
         $query = $this->balanceDocumentosQuery();
@@ -142,6 +180,7 @@ class ProcessInformeBalance implements ShouldQueue
             ->orderByRaw('cuenta')
             ->get();
 
+        $total = $totales[0]->saldo_anterior + $totales[0]->debito - $totales[0]->credito;
         $this->balanceCollection['9999'] = [
             'id_balance' => $this->id_balance,
             'id_cuenta' => '',
@@ -151,7 +190,7 @@ class ProcessInformeBalance implements ShouldQueue
             'saldo_anterior' => number_format((float)$totales[0]->saldo_anterior, 2, '.', ''),
             'debito' => number_format((float)$totales[0]->debito, 2, '.', ''),
             'credito' => number_format((float)$totales[0]->credito, 2, '.', ''),
-            'saldo_final' => number_format((float)$totales[0]->saldo_final, 2, '.', ''),
+            'saldo_final' => number_format((float)$total, 2, '.', ''),
             'documentos_totales' => $totales[0]->documentos_totales,
         ];
     }
@@ -160,6 +199,13 @@ class ProcessInformeBalance implements ShouldQueue
     {
         $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
+                'N.id AS id_nit',
+                'N.numero_documento',
+                DB::raw("(CASE
+                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    ELSE NULL
+                END) AS nombre_nit"),
                 "DG.id_cuenta",
                 "PC.cuenta",
                 "PC.nombre AS nombre_cuenta",
@@ -167,19 +213,19 @@ class ProcessInformeBalance implements ShouldQueue
                 "DG.updated_by",
                 "DG.fecha_manual",
                 DB::raw("0 AS saldo_anterior"),
-                DB::raw("SUM(DG.debito) AS debito"),
-                DB::raw("SUM(DG.credito) AS credito"),
-                DB::raw("SUM(DG.debito) - SUM(DG.credito) AS saldo_final"),
-                DB::raw("COUNT(DG.id) AS documentos_totales")
+                DB::raw("DG.debito AS debito"),
+                DB::raw("DG.credito AS credito"),
+                DB::raw("DG.debito - DG.credito AS saldo_final"),
+                DB::raw("1 AS documentos_totales")
             )
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
             ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
 				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
-			})
-            ->groupByRaw('DG.id_cuenta');
+			});
 
         return $documentosQuery;
     }
@@ -188,25 +234,32 @@ class ProcessInformeBalance implements ShouldQueue
     {
         $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
+                'N.id AS id_nit',
+                'N.numero_documento',
+                DB::raw("(CASE
+                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    ELSE NULL
+                END) AS nombre_nit"),
                 "DG.id_cuenta",
                 "PC.cuenta",
                 "PC.nombre AS nombre_cuenta",
                 "DG.created_by",
                 "DG.updated_by",
                 "DG.fecha_manual",
-                DB::raw("SUM(debito) - SUM(credito) AS saldo_anterior"),
+                DB::raw("debito - credito AS saldo_anterior"),
                 DB::raw("0 AS debito"),
                 DB::raw("0 AS credito"),
                 DB::raw("0 AS saldo_final"),
-                DB::raw("COUNT(DG.id) AS documentos_totales")
+                DB::raw("1 AS documentos_totales")
             )
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
             ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
                 $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
-            })
-            ->groupByRaw('DG.id_cuenta');
+            });
 
         return $documentosQuery;
     }
@@ -265,12 +318,28 @@ class ProcessInformeBalance implements ShouldQueue
             'id_cuenta' => $cuentaData->id,
             'cuenta' => $cuentaData->cuenta,
             'nombre_cuenta' => $cuentaData->nombre,
-            'auxiliar' => $cuentaData->auxiliar,
+            'auxiliar' => $this->request['tipo'] == '2' ? 0 : $cuentaData->auxiliar,
             'saldo_anterior' => number_format((float)$balance->saldo_anterior, 2, '.', ''),
             'debito' => number_format((float)$balance->debito, 2, '.', ''),
             'credito' => number_format((float)$balance->credito, 2, '.', ''),
             'saldo_final' => number_format((float)$balance->saldo_final, 2, '.', ''),
             'documentos_totales' => $balance->documentos_totales
+        ];
+    }
+
+    private function newNitData($data)
+    {
+        $this->balanceCollection[$data->cuenta.$data->numero_documento] = [
+            'id_balance' => $this->id_balance,
+            'id_cuenta' => $data->cuenta,
+            'cuenta' => $data->numero_documento,
+            'nombre_cuenta' => $data->nombre_nit,
+            'auxiliar' => 5,
+            'saldo_anterior' => number_format((float)$data->saldo_anterior, 2, '.', ''),
+            'debito' => number_format((float)$data->debito, 2, '.', ''),
+            'credito' => number_format((float)$data->credito, 2, '.', ''),
+            'saldo_final' => number_format((float)$data->saldo_final, 2, '.', ''),
+            'documentos_totales' => $data->documentos_totales
         ];
     }
 

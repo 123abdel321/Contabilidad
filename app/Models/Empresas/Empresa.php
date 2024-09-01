@@ -32,12 +32,17 @@ class Empresa extends Model
         'logo',
         'fecha_retiro',
         'direccion',
+        'email',
         'telefono',
         'hash',
         'id_empresa_referido',
         'id_usuario_owner',
         'fecha_ultimo_cierre'
 	];
+
+    public function usuario () {
+		return $this->hasOne("App\Models\User", "id", "id_usuario_owner");
+	}
 
     public function suscripciones () {
 		return $this->hasMany("App\Models\Empresas\EmpresaSuscripcion", "id_empresa");

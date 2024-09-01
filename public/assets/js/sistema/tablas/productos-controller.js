@@ -63,7 +63,7 @@ function productosInit() {
                     alt="${row.nombre}" />`;
                 }
                 return '';
-            }},
+            }, className: 'dt-body-center'},
             {"data": function (row, type, set){
                 return row.nombre;
             }},
@@ -86,6 +86,21 @@ function productosInit() {
                 }
                 return '';
             }},
+            {"data": function (row, type, set){  
+                var inventarios = row.inventarios;
+                var totalUnidades = 0
+                if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
+                    inventarios.forEach(inventario => {
+                        totalUnidades+= parseInt(inventario.cantidad);
+                    });
+                    if (totalUnidades > 0) {
+                        return totalUnidades;
+                    } else {
+                        return '<span class="badge rounded-pill bg-danger">Sin unidades</span>';
+                    }
+                }
+                return '';
+            }, className: 'dt-body-right'},
             {"data": "precio_inicial", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "precio", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
@@ -111,14 +126,23 @@ function productosInit() {
                     inventarios.forEach(inventario => {
                         totalUnidades+= parseInt(inventario.cantidad);
                     });
-                    if (totalUnidades > 0) {
-                        return totalUnidades;
-                    } else {
-                        return '<span class="badge rounded-pill bg-danger">Sin unidades</span>';
-                    }
+                    return totalUnidades * row.precio_inicial;
+                    
                 }
                 return '';
-            }, className: 'dt-body-right'},
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){  
+                var inventarios = row.inventarios;
+                var totalUnidades = 0
+                if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
+                    inventarios.forEach(inventario => {
+                        totalUnidades+= parseInt(inventario.cantidad);
+                    });
+                    return totalUnidades * row.precio;
+                    
+                }
+                return '';
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
@@ -159,12 +183,12 @@ function productosInit() {
                 nombre: dataProducto.nombre,
                 codigo: dataProducto.codigo,
                 id_familia: dataProducto.familia.id,
-                precio: parseFloat(dataProducto.precio),
+                precio: stringToNumberFloat(dataProducto.precio),
                 tipo_producto: dataProducto.tipo_producto,
-                precio_minimo: parseFloat(dataProducto.precio_minimo),
-                precio_inicial: parseFloat(dataProducto.precio_inicial),
-                porcentaje_utilidad: parseFloat(dataProducto.porcentaje_utilidad),
-                valor_utilidad: parseFloat(dataProducto.valor_utilidad),
+                precio_minimo: stringToNumberFloat(dataProducto.precio_minimo),
+                precio_inicial: stringToNumberFloat(dataProducto.precio_inicial),
+                porcentaje_utilidad: stringToNumberFloat(dataProducto.porcentaje_utilidad),
+                valor_utilidad: stringToNumberFloat(dataProducto.valor_utilidad),
                 inventarios: asignarDatosInventario(dataProducto),
                 variante: isVariante(dataProducto),
                 variantes: asignarDatosVariantes(dataProducto),
@@ -185,6 +209,7 @@ function productosInit() {
             $("#searchInputProductos").hide();
             $('#producto-inventario').hide();
             $("#table-products-view").hide();
+            $("#totales-products-view").hide();
             $('#btn-modal-variantes').show();
             $("#add-products-view").show();
             $("#saveEditProducto").show();
@@ -196,11 +221,11 @@ function productosInit() {
             $('#id_producto_edit').val(dataProducto.id);
             $("#nombre_producto").val(dataProducto.nombre);
             $("#codigo_producto").val(dataProducto.codigo);
-            $("#precio_producto").val(parseInt(dataProducto.precio));
-            $("#precio_minimo").val(parseInt(dataProducto.precio_minimo));
-            $("#precio_inicial").val(parseInt(dataProducto.precio_inicial));
-            $("#porcentaje_utilidad").val(dataProducto.porcentaje_utilidad);
-            $("#valor_utilidad").val(parseInt(dataProducto.valor_utilidad));
+            $("#precio_producto").val(stringToNumberFloat(dataProducto.precio));
+            $("#precio_minimo").val(stringToNumberFloat(dataProducto.precio_minimo));
+            $("#precio_inicial").val(stringToNumberFloat(dataProducto.precio_inicial));
+            $("#porcentaje_utilidad").val(stringToNumberFloat(dataProducto.porcentaje_utilidad));
+            $("#valor_utilidad").val(stringToNumberFloat(dataProducto.valor_utilidad));
 
             document.getElementById("id_bodega_producto").disabled = true;
             document.getElementById("producto_variantes1").disabled = false;
@@ -256,15 +281,33 @@ function productosInit() {
                 $('#input-iva-porcentaje').show();
                 $('#input-iva-valor').show();
                 $('#porcentaje_iva').val(porcentajeIva);
-                var valorIva = parseFloat(dataProducto.precio) * (parseFloat(porcentajeIva) / 100);
+                var valorIva = stringToNumberFloat(dataProducto.precio) * (stringToNumberFloat(porcentajeIva) / 100);
                 if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
-                    valorIva = parseFloat(dataProducto.precio) - (parseFloat(dataProducto.precio) / (1 + (parseFloat(porcentajeIva) / 100)));
+                    valorIva = stringToNumberFloat(dataProducto.precio) - (stringToNumberFloat(dataProducto.precio) / (1 + (stringToNumberFloat(porcentajeIva) / 100)));
                 }
                 $('#valor_iva').val(valorIva);
             } else {
                 $('#input-iva-porcentaje').hide();
                 $('#input-iva-valor').hide();
             }
+
+            if (dataProducto.familia && dataProducto.familia.cuenta_venta_impuestos && dataProducto.familia.cuenta_venta_impuestos.impuesto) {
+                var porcentajeImpuestos = dataProducto.familia.cuenta_venta_impuestos.impuesto.porcentaje;
+                $('#input-impuestos-porcentaje').show();
+                $('#input-impuestos-valor').show();
+                $('#text_otros_impuestos_valor').text('Valor '+dataProducto.familia.cuenta_venta_impuestos.nombre);
+                $('#text_otros_impuestos_porcentaje').text('Porcentaje '+dataProducto.familia.cuenta_venta_impuestos.nombre);
+
+                $('#porcentaje_otros_impuestos').val(porcentajeIva);
+                var valorImpuestos = stringToNumberFloat(dataProducto.precio) * (stringToNumberFloat(porcentajeImpuestos) / 100);
+                if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
+                    valorImpuestos = stringToNumberFloat(dataProducto.precio) - (stringToNumberFloat(dataProducto.precio) / (1 + (stringToNumberFloat(porcentajeImpuestos) / 100)));
+                }
+                $('#valor_otros_impuestos').val(valorImpuestos);
+            } else {
+                $('#input-impuestos-porcentaje').hide();
+                $('#input-impuestos-valor').hide();
+            }            
 
             if (dataProducto.familia && dataProducto.familia.inventario && dataProducto.utilizado_captura == 0) {
                 $('#producto-inventario').show();
@@ -522,11 +565,25 @@ function productosInit() {
         }
     });
 
+    $("input[data-type='currency']").on({
+        keyup: function(event) {
+            if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+                formatCurrency($(this));
+            }
+        },
+        blur: function() {
+            formatCurrency($(this), "blur");
+        }
+    });
+
     $("#table-products-view").show();
+    $("#totales-products-view").show();
     $("#add-products-view").hide();
 
     $('.water').hide();
-    productos_table.ajax.reload();
+    productos_table.ajax.reload(function(res) {
+        showTotalsProductos(res);
+    })
 }
 
 function asignarDatosInventario (dataProducto) {
@@ -605,9 +662,9 @@ function asingnarDatosProductosVariantes (dataProducto) {
                 estado: true,
                 inventario: productoHijo.inventarios.length > 0 ? true : false,
                 inventarios: asignarDatosInventario(productoHijo),
-                precio: parseFloat(productoHijo.precio),
-                precio_inicial: parseFloat(productoHijo.precio_inicial),
-                precio_minimo: parseFloat(productoHijo.precio_minimo),
+                precio: stringToNumberFloat(productoHijo.precio),
+                precio_inicial: stringToNumberFloat(productoHijo.precio_inicial),
+                precio_minimo: stringToNumberFloat(productoHijo.precio_minimo),
                 variantes: asignarOpciones(productoHijo),
             });
         });
@@ -663,6 +720,7 @@ $(document).on('click', '#createProducto', function () {
     $('#input-iva-porcentaje').hide();
     $("#searchInputProductos").hide();
     $("#table-products-view").hide();
+    $("#totales-products-view").hide();
     $('#default_produc_img').show();
     $("#add-products-view").show();
     $('#input-iva-valor').hide();
@@ -680,7 +738,9 @@ $(document).on('click', '#createProducto', function () {
 });
 
 $(document).on('click', '#reloadProducto', function () {
-    productos_table.ajax.reload();
+    productos_table.ajax.reload(function(res) {
+        showTotalsProductos(res);
+    });
 });
 
 $(document).on('click', '#saveNewProducto', function () {
@@ -774,7 +834,9 @@ $(document).on('click', '#saveEditProducto', function () {
             $('#saveEditProducto').show();
             $('#cancelProducto').show();
             $('#saveNewProductoLoading').hide();
-            productos_table.ajax.reload();
+            productos_table.ajax.reload(function(res) {
+                showTotalsProductos(res);
+            });
             agregarToast('exito', 'Actualización exitosa', 'Producto actualizado con exito!', true);
             document.getElementById('cancelProducto').click();
         }
@@ -803,6 +865,7 @@ $(document).on('click', '#cancelProducto', function () {
     clearFormProductos();
 
     $("#table-products-view").show();
+    $("#totales-products-view").show();
     $("#add-products-view").hide();
     $("#cancelProducto").hide();
     $("#saveEditProducto").hide();
@@ -913,6 +976,7 @@ $('input[type=radio][name=producto_variantes]').change(function() {
         dataFamilia = [];
         $('#producto-variantes').show();
     } else {
+
         nuevoProducto.variante = false;
         $('#producto-variantes').hide();
     }
@@ -1811,24 +1875,29 @@ function changeCostoCompra(event) {
         setTimeout(function(){
             $('#porcentaje_utilidad').focus();
             $('#porcentaje_utilidad').select();
-        },10);
+        },100);
     }
 }
 
 function calcularCostoCompra(focus = true) {
-    var costoCommpra = parseFloat($('#precio_inicial').val());
-    var valorVenta = parseFloat($('#precio_producto').val());
-
+    var costoCompra = stringToNumberFloat($('#precio_inicial').val());
+    var valorVenta = stringToNumberFloat($('#precio_producto').val());
+    var valorUtilidad = stringToNumberFloat($('#valor_utilidad').val());
+    
     if (valorVenta) {
-        var porcentajeUtilidad = ((valorVenta - costoCommpra) / costoCommpra) * 100;
-        if (!valorVenta && !costoCommpra) porcentajeUtilidad = 0;
+        
+        var porcentajeUtilidad = (valorUtilidad / costoCompra) * 100;
+        if (!valorVenta && !costoCompra) porcentajeUtilidad = 0;
+        else if (porcentajeUtilidad < 0) porcentajeUtilidad = 0;
 
-        $('#precio_minimo').val(costoCommpra);
-        $('#porcentaje_utilidad').val(porcentajeUtilidad);
-        $('#valor_utilidad').val(costoCommpra * (porcentajeUtilidad / 100));
+        $('#precio_minimo').val(formatCurrencyValue(costoCompra));
+        $('#porcentaje_utilidad').val(formatCurrencyValue(porcentajeUtilidad));
+        $('#valor_utilidad').val(formatCurrencyValue(costoCompra * (porcentajeUtilidad / 100)));
+        $('#precio_producto').val(formatCurrencyValue(valorVenta));
     } else {
         $('#porcentaje_utilidad').val(0);
-        $('#precio_producto').val(costoCommpra);
+        $('#precio_minimo').val(formatCurrencyValue(costoCompra));
+        $('#precio_producto').val(formatCurrencyValue(costoCompra));
     }
 }
 
@@ -1838,29 +1907,32 @@ function changeValorVenta(event) {
         setTimeout(function(){
             $('#precio_minimo').focus();
             $('#precio_minimo').select();
-        },10);
+        },100);
     }
 }
 
 function calcularPrecioProducto() {
-    var costoCommpra = parseFloat($('#precio_inicial').val());
-    var valorVenta = parseFloat($('#precio_producto').val());
-    var porcentajeIva = parseFloat($('#porcentaje_iva').val());
+    var costoCompra = stringToNumberFloat($('#precio_inicial').val());
+    var valorVenta = stringToNumberFloat($('#precio_producto').val());
+    var porcentajeIva = stringToNumberFloat($('#porcentaje_iva').val());
+    var valorUtilidad = stringToNumberFloat($('#valor_utilidad').val());
+    var porcentajeImpuesto = stringToNumberFloat($('#porcentaje_otros_impuestos').val());
 
-    if (valorVenta < costoCommpra) {// VALOR VENTA NO PUEDE SER MENOR A COSTO DEL PRODUCTO
-        $('#precio_producto').val(costoCommpra);
+    if (valorVenta < costoCompra) {// VALOR VENTA NO PUEDE SER MENOR A COSTO DEL PRODUCTO
+        $('#precio_producto').val(formatCurrencyValue(costoCompra));
         return;
     }
 
-    if (costoCommpra == 0) {//SI EL COSTO ES 0 LA UTILIDAD ES 100%
+    if (costoCompra == 0) {//SI EL COSTO ES 0 LA UTILIDAD ES 100%
         $('#porcentaje_utilidad').val(100);
-        $('#valor_utilidad').val(valorVenta);
+        $('#valor_utilidad').val(formatCurrencyValue(valorVenta));
     } else {//CALCULAR % DE UTILIDAD
-        var porcentajeUtilidad = parseFloat(valorVenta - costoCommpra) / costoCommpra;
-        var valorUtilidad = costoCommpra * porcentajeUtilidad;
+        var porcentajeUtilidad = parseFloat(valorVenta - costoCompra) / costoCompra;
+        if (valorUtilidad) porcentajeUtilidad = parseFloat(valorUtilidad / costoCompra);
+        if (!valorUtilidad) valorUtilidad = costoCompra * porcentajeUtilidad;
 
-        $('#porcentaje_utilidad').val(porcentajeUtilidad * 100);
-        $('#valor_utilidad').val(valorUtilidad);
+        $('#porcentaje_utilidad').val(formatCurrencyValue(porcentajeUtilidad * 100));
+        $('#valor_utilidad').val(formatCurrencyValue(valorUtilidad));
     }
 
     if (porcentajeIva) {
@@ -1868,17 +1940,18 @@ function calcularPrecioProducto() {
         if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
             totalIva = valorVenta - (valorVenta / (1 + (porcentajeIva / 100)));
         }
-        $('#valor_iva').val(totalIva);
+        $('#valor_iva').val(formatCurrencyValue(totalIva));
+    }
+
+    if (porcentajeImpuesto) {
+        var totalImpuesto = valorVenta * (porcentajeImpuesto / 100);
+        $('#valor_otros_impuestos').val(formatCurrencyValue(totalImpuesto));
     }
 
 }
 
 function changePrecioMinimo(event) {
     if(event.keyCode == 13) {
-        setTimeout(function(){
-            $('#porcentaje_utilidad').focus();
-            $('#porcentaje_utilidad').select();
-        },10);
     }
 }
 
@@ -1888,30 +1961,34 @@ function changePorcentajeUtilidad(event) {
         setTimeout(function(){
             $('#valor_utilidad').focus();
             $('#valor_utilidad').select();
-        },10);
+        },100);
     }
 }
 
 function calcularPorcentajeUtilidad() {
-    var costoCommpra = parseFloat($('#precio_inicial').val());
-    var valorVenta = parseFloat($('#precio_producto').val());
-    var porcentajeIva = parseFloat($('#porcentaje_iva').val());
-    var porcentajeUtilidad = parseFloat($('#porcentaje_utilidad').val());
+    var costoCompra = stringToNumberFloat($('#precio_inicial').val());
+    var valorVenta = stringToNumberFloat($('#precio_producto').val());
+    var porcentajeIva = stringToNumberFloat($('#porcentaje_iva').val());
+    var porcentajeUtilidad = stringToNumberFloat($('#porcentaje_utilidad').val());
+    var porcentajeImpuesto = stringToNumberFloat($('#porcentaje_otros_impuestos').val());
 
-    if (costoCommpra == 0 && valorVenta > 0) {
-        $('#porcentaje_utilidad').val(100);
-        $('#valor_utilidad').val(valorVenta);
+    if (costoCompra == 0 && valorVenta > 0) {
+        $('#porcentaje_utilidad').val(formatCurrencyValue(100));
+        $('#valor_utilidad').val(formatCurrencyValue(valorVenta));
     } else {
-        var valorUtilidad = costoCommpra * (porcentajeUtilidad / 100);
-        var precioProducto = costoCommpra * ((porcentajeUtilidad / 100) + 1);
+        var valorUtilidad = costoCompra * (porcentajeUtilidad / 100);
+        var precioProducto = costoCompra * ((porcentajeUtilidad / 100) + 1);
         var valorIva = precioProducto * (porcentajeIva / 100);
-        if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
-            valorIva = valorVenta - (valorVenta / (1 + (porcentajeIva / 100)));
-        }
-        $('#valor_iva').val(valorIva);
-        $('#valor_utilidad').val(valorUtilidad);
-        $('#precio_producto').val(precioProducto);
+        var valorImpuesto = precioProducto * (porcentajeImpuesto / 100);
+        // if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
+        //     valorIva = valorVenta - (valorVenta / (1 + (porcentajeIva / 100)));
+        // }
+        $('#valor_iva').val(formatCurrencyValue(valorIva));
+        $('#valor_utilidad').val(formatCurrencyValue(valorUtilidad));
+        $('#precio_producto').val(formatCurrencyValue(precioProducto));
+        $('#valor_otros_impuestos').val(formatCurrencyValue(valorImpuesto));
     }
+    calcularValorUtilidad();
 }
 
 function changeValorUtilidad(event) {
@@ -1920,31 +1997,41 @@ function changeValorUtilidad(event) {
         setTimeout(function(){
             $('#precio_producto').focus();
             $('#precio_producto').select();
-        },10);
+        },100);
     }
 }
 
 function calcularValorUtilidad() {
-    var costoCommpra = parseFloat($('#precio_inicial').val());
-    var valorProducto = parseFloat($('#precio_producto').val());
-    var valorUtilidad = parseFloat($('#valor_utilidad').val());
+    var costoCompra = stringToNumberFloat($('#precio_inicial').val());
+    var valorProducto = stringToNumberFloat($('#precio_producto').val());
+    var valorUtilidad = stringToNumberFloat($('#valor_utilidad').val());
 
-    if (costoCommpra == 0 && valorProducto > 0) {
+    if (costoCompra == 0 && valorProducto > 0) {
         $('#porcentaje_utilidad').val(100);
         $('#valor_utilidad').val(valorProducto);
 
     } else if (valorUtilidad > 0) {
-        var porcentajeIva = parseFloat($('#porcentaje_iva').val());
-        var precioProducto = costoCommpra + valorUtilidad;
+        var porcentajeIva = stringToNumberFloat($('#porcentaje_iva').val());
+        var precioProducto = costoCompra + valorUtilidad;
         var valorIva = precioProducto * (porcentajeIva / 100);
         if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
-            
-            valorIva = precioProducto - (precioProducto / (1 + (porcentajeIva / 100)));
+            precioProducto+= valorIva;
+        }
+        $('#porcentaje_utilidad').val(formatCurrencyValue((valorUtilidad / costoCompra) * 100));
+        $('#precio_producto').val(formatCurrencyValue(precioProducto));
+        $('#valor_iva').val(formatCurrencyValue(valorIva));
+
+    } else {
+        var porcentajeIva = stringToNumberFloat($('#porcentaje_iva').val());
+        var precioProducto = costoCompra + valorUtilidad;
+        var valorIva = precioProducto * (porcentajeIva / 100);
+        if(ivaIncluidoProductos) {//CALCULAR IVA INCLUIDO
+            costoCompra+= valorIva;
         }
 
-        $('#porcentaje_utilidad').val( parseFloat((valorUtilidad / costoCommpra) * 100) );
-        $('#precio_producto').val(precioProducto);
-        $('#valor_iva').val(valorIva);
+        $('#porcentaje_utilidad').val(formatCurrencyValue(0));
+        $('#precio_producto').val(formatCurrencyValue(costoCompra));
+        $('#valor_iva').val(formatCurrencyValue(valorIva));
     }
 }
 
@@ -1969,18 +2056,44 @@ $("#searchInputProductos").on("input", function (e) {
     $('#productoTable').DataTable().search($("#searchInputProductos").val()).draw();
 });
 
+$('#productoTable').on('search.dt', function (res, data) {
+    if (data.json) {
+        var datos = data.json.totalesProductos;
+        var total_utilidad = datos.total_precio - datos.total_costo;
+        var porcentaje_utilidad = (total_utilidad / datos.total_costo) * 100;
+
+        var countA = new CountUp('total_bodegas_producto', 0, datos.cantidad_productos);
+            countA.start();
+
+        var countB = new CountUp('total_productos_producto', 0, datos.total_productos);
+            countB.start();
+
+        var countC = new CountUp('total_costo_producto', 0, datos.total_costo);
+            countC.start();
+
+        var countD = new CountUp('total_precio_producto', 0, datos.total_precio);
+            countD.start();
+
+        var countE = new CountUp('total_utilidad_producto', 0, total_utilidad);
+            countE.start();
+
+        var countF = new CountUp('total_porcentaje_producto', 0, porcentaje_utilidad ? porcentaje_utilidad : 0);
+            countF.start();            
+    }
+});
+
 function actualizarPrecio (id) {
-    var value = $('#prodvari-precio_'+id).val();
+    var value = stringToNumberFloat($('#prodvari-precio_'+id).val());
     nuevoProducto.productos_variantes[id].precio = value;
 }
 
 function actualizarPrecioMaximo (id) {
-    var value = $('#prodvari-preciomaximo_'+id).val();
+    var value = stringToNumberFloat($('#prodvari-preciomaximo_'+id).val());
     nuevoProducto.productos_variantes[id].precio_minimo = value;
 }
 
 function actualizarPrecioInicial (id) {
-    var value = $('#prodvari-precioinicial_'+id).val();
+    var value = stringToNumberFloat($('#prodvari-precioinicial_'+id).val());
     nuevoProducto.productos_variantes[id].precio_inicial = value;
 }
 
@@ -2038,6 +2151,17 @@ $("#id_familia_producto").on('change', function(e) {
             $('#input-iva-porcentaje').hide();
             $('#input-iva-valor').hide();
         }
+        console.log('familia: ',familia);
+        if (familia.cuenta_venta_impuestos && familia.cuenta_venta_impuestos.impuesto) {
+            $('#input-impuestos-porcentaje').show();
+            $('#input-impuestos-valor').show();
+            $('#porcentaje_otros_impuestos').val(familia.cuenta_venta_impuestos.impuesto.porcentaje);
+            $('#text_otros_impuestos_valor').text('Valor '+familia.cuenta_venta_impuestos.nombre);
+            $('#text_otros_impuestos_porcentaje').text('Porcentaje '+familia.cuenta_venta_impuestos.nombre);
+        } else {
+            $('#input-impuestos-porcentaje').hide();
+            $('#input-impuestos-valor').hide();
+        }
         nuevoProducto.id_familia = parseInt(familia.id);
         if (familia.inventario) $('#producto-inventario').show();
         else $('#producto-inventario').hide();
@@ -2047,6 +2171,33 @@ $("#id_familia_producto").on('change', function(e) {
         },10);
     }
 });
+
+function showTotalsProductos(res) {
+    if (!res.success) return;
+
+    $('#totales-products-view').show();
+    var totales = res.totalesProductos;
+    var total_utilidad = totales.total_precio - totales.total_costo;
+    var porcentaje_utilidad = (total_utilidad / totales.total_costo) * 100;
+
+    var countA = new CountUp('total_bodegas_producto', 0, totales.cantidad_productos);
+        countA.start();
+
+    var countB = new CountUp('total_productos_producto', 0, totales.total_productos);
+        countB.start();
+
+    var countC = new CountUp('total_costo_producto', 0, totales.total_costo);
+        countC.start();
+
+    var countD = new CountUp('total_precio_producto', 0, totales.total_precio);
+        countD.start();
+
+    var countE = new CountUp('total_utilidad_producto', 0, total_utilidad);
+        countE.start();
+
+    var countF = new CountUp('total_porcentaje_producto', 0, porcentaje_utilidad ? porcentaje_utilidad : 0);
+        countF.start(); 
+}
 
 function addPrecioMinimoProducto () {
     actualizarDatosProducto();
@@ -2073,9 +2224,9 @@ function addValorUtilidadProducto () {
 }
 
 function actualizarDatosProducto () {
-    nuevoProducto.precio = $('#precio_producto').val();
-    nuevoProducto.precio_minimo = $('#precio_minimo').val();
-    nuevoProducto.precio_inicial = $('#precio_inicial').val();
-    nuevoProducto.porcentaje_utilidad = parseFloat($('#porcentaje_utilidad').val());
-    nuevoProducto.valor_utilidad = $('#valor_utilidad').val();
+    nuevoProducto.precio = stringToNumberFloat($('#precio_producto').val());
+    nuevoProducto.precio_minimo = stringToNumberFloat($('#precio_minimo').val());
+    nuevoProducto.precio_inicial = stringToNumberFloat($('#precio_inicial').val());
+    nuevoProducto.porcentaje_utilidad = stringToNumberFloat($('#porcentaje_utilidad').val());
+    nuevoProducto.valor_utilidad = stringToNumberFloat($('#valor_utilidad').val());
 }

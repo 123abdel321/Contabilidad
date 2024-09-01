@@ -58,7 +58,19 @@ function documentosInit() {
                 if(!row.nit){
                     return '';
                 }
-                return row.nit.numero_documento + ' - ' +row.nit.nombre_completo;
+                return row.nit.numero_documento;
+            }},
+            {"data": function (row, type, set){
+                if(!row.nit){
+                    return '';
+                }
+                return row.nit.nombre_completo;
+            }},
+            {"data": function (row, type, set){
+                if(!row.nit){
+                    return '';
+                }
+                return row.nit.apartamentos;
             }},
             {"data": function (row, type, set){
                 if(!row.consecutivo){
@@ -119,6 +131,12 @@ function documentosInit() {
             }
         ]
     });
+
+    var columnUbicacionMaximoPH = documento_table.column(3);
+
+    if (ubicacion_maximoph_documentos) columnUbicacionMaximoPH.visible(true);
+    else columnUbicacionMaximoPH.visible(false);
+    
 
     $('#id_comprobante_documento').select2({
         theme: 'bootstrap-5',

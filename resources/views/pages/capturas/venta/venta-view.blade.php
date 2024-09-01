@@ -178,18 +178,18 @@
 
                     <div class="row">
                         <div class="col-6">
-                            <h6 style="margin-bottom: 0px; font-weight: bold; margin-left: 4px;">PAGADO: </h6>
+                            <h6 style="margin-bottom: 0px; font-weight: bold; margin-left: 4px; text-wrap: nowrap;">PAGADO: </h6>
                         </div>
-                        <div class="col-6" style="text-align: end;">
+                        <div class="col-6" style="text-align: end; text-wrap: nowrap;">
                             <h6 id="total_pagado_venta" style="margin-bottom: 0px; font-weight: bold; margin-right: 25px;">0,00</h6>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-6">
-                            <h6 id="total_faltante_venta_text" style="margin-bottom: 0px; font-weight: bold; margin-left: 4px;">FALTANTE: </h6>
+                            <h6 id="total_faltante_venta_text" style="margin-bottom: 0px; font-weight: bold; margin-left: 4px; text-wrap: nowrap;">FALTANTE: </h6>
                         </div>
-                        <div class="col-6" style="text-align: end;">
+                        <div class="col-6" style="text-align: end; text-wrap: nowrap;">
                             <h6 id="total_faltante_venta" style="margin-bottom: 0px; font-weight: bold; margin-right: 25px;">0,00</h6>
                         </div>
                     </div>
@@ -209,19 +209,18 @@
         </div>
     </div>
 
-    @include('pages.capturas.venta.venta-nits-form')
-
     <script>
         var ventaExistencias = '<?php echo auth()->user()->can("venta existencia"); ?>';
         var ventaDescuento = '<?php echo auth()->user()->can("venta descuento"); ?>';
         var ventaNegativa = '<?php echo auth()->user()->can("venta negativa"); ?>';
         var ventaRapida = '<?php echo auth()->user()->can("venta rapida"); ?>';
         
-        var primeraNit = JSON.parse('<?php echo $cliente; ?>');
         var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');
         var primeraResolucionVenta = JSON.parse('<?php echo $resolucion; ?>');
         var ivaIncluidoVentas = '<?php echo $iva_incluido; ?>';
         var vendedoresVentas = '<?php echo $vendedores_ventas; ?>';
+        var primeraNit = JSON.parse('<?php echo $cliente; ?>');
+
     </script>
     
 </div>

@@ -26,24 +26,11 @@ class CodigoDocumentoDianTypes
 		self::DOCUMENTO_SOPORTE => 11
 	];
 
-	/**
-	 * Retora un array asociativo donde la key es el id document type
-	 * y el value es el codigo tipo documento dian
-	 *
-	 * @return array
-	 */
 	static function getTipoDocumentosDian(): array
 	{
 		return array_flip(self::ID_TIPOS_DOCUMENTO_DIAN);
 	}
 
-/**
- * @param string $codigoTipoDocumentoDian
- *
- * Devuelve el id document type pasando por parámetro el código tipo deocumento dian
- *
- * @return int
- */
 	static function getIdTipoDocumentoDian(string $codigoTipoDocumentoDian): int
 	{
 		return Arr::get(self::ID_TIPOS_DOCUMENTO_DIAN, $codigoTipoDocumentoDian);

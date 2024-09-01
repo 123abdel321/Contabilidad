@@ -67,7 +67,6 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             ]);
 
             $this->id_documentos_generales = $documentosGenerales->id;
-
             if ($this->request['agrupar'] && $this->request['agrupado']) $this->documentosGeneralesAgruparNiveles();
             else if (!$this->request['agrupar']) $this->documentosGeneralesSinAgrupar();
             else if ($this->request['agrupar']) $this->documentosGeneralesAgruparNormal();
@@ -98,6 +97,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
     private function documentosGeneralesAgruparNiveles()
     {
         $query = $this->DocumentosGeneralesQuery();
+        
         DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS documentosgeneralesdata"))
             ->mergeBindings($query)
@@ -138,12 +138,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                     
                     if ($this->hasCuentaData($cuentaPadre)) $this->sumCuentaData($cuentaPadre, $documento);
                     else $this->newCuentaTotal($cuentaPadre, $documento);
-                    $this->newCuentaDetalle($cuentaPadre, $documento);
-                    
+                    $this->newCuentaDetalle($cuentaPadre, $documento, false);
                 });
-                
             });
-
             
         ksort($this->documentosCollection, SORT_STRING | SORT_FLAG_CASE);
         $this->addTotalData($query);
@@ -199,6 +196,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                         'porcentaje_cuenta' => $documento->porcentaje_cuenta,
                         'nombre_nit' => $documento->nombre_nit,
                         'razon_social' => $documento->razon_social,
+                        'apartamento_nit' => $documento->apartamentos,
                         'codigo_cecos' => $documento->codigo_cecos,
                         'nombre_cecos' => $documento->nombre_cecos,
                         'codigo_comprobante' => $documento->codigo_comprobante,
@@ -209,9 +207,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                         'fecha_manual' => $documento->fecha_manual,
                         'debito' => $documento->debito,
                         'credito' => $documento->credito,
-                        'diferencia' => $documento->diferencia,
+                        'diferencia' => 0,
                         'nivel' => 0,
-                        'total_columnas' => 1,
+                        'total_columnas' => '',
                         'fecha_creacion' => $documento->fecha_creacion,
                         'fecha_edicion' => $documento->fecha_edicion,
                         'created_by' => $documento->created_by,
@@ -250,6 +248,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'numero_documento' => null,
             'nombre_nit' => null,
             'razon_social' => null,
+            'apartamento_nit' => null,
             'codigo_cecos' => null,
             'nombre_cecos' => null,
             'codigo_comprobante' => null,
@@ -283,6 +282,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                     ELSE NULL
                 END) AS nombre_nit"),
                 "N.razon_social",
+                "N.apartamentos",
                 "PC.id AS id_cuenta",
                 "PC.cuenta",
                 "PC.naturaleza_cuenta",
@@ -369,6 +369,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'numero_documento' => in_array('id_nit', $this->agrupacion) ? $documento->numero_documento : null,
             'nombre_nit' => in_array('id_nit', $this->agrupacion) ? $documento->nombre_nit : null,
             'razon_social' => in_array('id_nit', $this->agrupacion) ? $documento->razon_social : null,
+            'apartamento_nit' => in_array('id_nit', $this->agrupacion) ? $documento->apartamentos : null,
             'codigo_cecos' => in_array('id_centro_costos', $this->agrupacion) ? $documento->codigo_cecos : null,
             'nombre_cecos' => in_array('id_centro_costos', $this->agrupacion) ? $documento->nombre_cecos : null,
             'codigo_comprobante' => in_array('id_comprobante', $this->agrupacion) ? $documento->codigo_comprobante : null,
@@ -404,6 +405,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'porcentaje_cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->porcentaje_cuenta : null,
             'numero_documento' => in_array('id_nit', $agrupacionesTotales) ? $documento->numero_documento : null,
             'nombre_nit' => in_array('id_nit', $agrupacionesTotales) ? $documento->nombre_nit : null,
+            'apartamento_nit' => in_array('id_nit', $agrupacionesTotales) ? $documento->nombre_nit : null,
             'razon_social' => in_array('id_nit', $agrupacionesTotales) ? $documento->razon_social : null,
             'codigo_cecos' => in_array('id_centro_costos', $agrupacionesTotales) ? $documento->codigo_cecos : null,
             'nombre_cecos' => in_array('id_centro_costos', $agrupacionesTotales) ? $documento->nombre_cecos : null,
@@ -425,7 +427,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
         ];
     }
 
-    private function newCuentaDetalle($cuenta, $documento)
+    private function newCuentaDetalle($cuenta, $documento, $detallar = true)
     {
         $this->documentosCollection[$cuenta.'A'.$documento->id] = [
             'id_documentos_generales' => $this->id_documentos_generales,
@@ -440,6 +442,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'porcentaje_cuenta' =>$documento->porcentaje_cuenta,
             'numero_documento' => $documento->numero_documento,
             'nombre_nit' => $documento->nombre_nit,
+            'apartamento_nit' => $documento->apartamentos,
             'razon_social' => $documento->razon_social,
             'codigo_cecos' => $documento->codigo_cecos,
             'nombre_cecos' => $documento->nombre_cecos,
@@ -451,9 +454,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'fecha_manual' => $documento->fecha_manual,
             'debito' => $documento->debito,
             'credito' => $documento->credito,
-            'diferencia' => $documento->diferencia,
+            'diferencia' => $detallar ? $documento->diferencia : '',
             'nivel' => 0,
-            'total_columnas' => 1,
+            'total_columnas' => '',
             'fecha_creacion' => $documento->fecha_creacion,
             'fecha_edicion' => $documento->fecha_edicion,
             'created_by' => $documento->created_by,
@@ -471,5 +474,6 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
         $this->documentosCollection[$cuenta]['debito']+= number_format((float)$data->debito, 2, '.', '');
         $this->documentosCollection[$cuenta]['credito']+= number_format((float)$data->credito, 2, '.', '');
         $this->documentosCollection[$cuenta]['diferencia']+= number_format((float)$data->diferencia, 2, '.', '');
+        $this->documentosCollection[$cuenta]['total_columnas']+= number_format((float)$data->total_columnas, 2, '.', '');
     }
 }

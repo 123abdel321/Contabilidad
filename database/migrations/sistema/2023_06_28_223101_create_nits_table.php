@@ -35,6 +35,7 @@ class CreateNitsTable extends Migration
             $table->string('razon_social', 120)->nullable();
             $table->string('nombre_comercial', 120)->nullable()->default('');
             $table->string('direccion', 100)->nullable();
+            $table->string('apartamentos', 255)->nullable();
             $table->string('email', 250)->nullable();
             $table->string('email_recepcion_factura_electronica', 60)->nullable();
             $table->string('telefono_1', 30)->nullable();
@@ -44,9 +45,13 @@ class CreateNitsTable extends Migration
             $table->smallInteger('plazo')->nullable();
             $table->decimal('cupo', 15)->nullable();
             $table->decimal('descuento', 15)->nullable();
+            $table->decimal('porcentaje_aiu', 15)->nullable();
             $table->boolean('no_calcular_iva')->default(false);
             $table->boolean('inactivar')->nullable();
+            $table->boolean('declarante')->nullable();
             $table->longText('observaciones')->nullable();
+            $table->string('email_1', 250)->nullable();
+            $table->string('email_2', 250)->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

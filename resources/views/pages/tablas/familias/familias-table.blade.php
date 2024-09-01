@@ -7,6 +7,7 @@
             <th>Cta. venta retención</th>
             <th>Cta. venta devolución venta</th>
             <th>Cta. venta iva</th>
+            <th>Cta. venta impuestos</th>
             <th>Cta. venta descuento</th>
             <th>Cta. venta devolución iva</th>
             <th>Cta. inventario</th>
@@ -15,6 +16,7 @@
             <th>Cta. compra retención</th>
             <th>Cta. compra devolución venta</th>
             <th>Cta. compra iva</th>
+            <th>Cta. compra impuestos</th>
             <th>Cta. compra descuento</th>
             <th>Cta. compra devolución iva</th>
             <th>Creación registro</th>

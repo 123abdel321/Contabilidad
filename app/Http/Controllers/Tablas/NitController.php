@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Sistema\TipoDocumentos;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
 
 class NitController extends Controller
@@ -45,29 +46,45 @@ class NitController extends Controller
                 $columnName_arr = $request->get('columns');
                 $order_arr = $request->get('order');
                 $search_arr = $request->get('search');
-    
+
                 $columnIndex = $columnIndex_arr[0]['column']; // Column index
                 $columnName = $columnName_arr[$columnIndex]['data']; // Column name
                 $columnSortOrder = $order_arr[0]['dir']; // asc or desc
                 $searchValue = $search_arr['value']; // Search value
     
-                $nits = Nits::skip($start)
-                    ->with('tipo_documento', 'ciudad', 'vendedor.nit')
+                $nits = Nits::with('tipo_documento', 'ciudad', 'vendedor.nit')
                     ->select(
                         '*',
                         DB::raw("DATE_FORMAT(nits.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
                         DB::raw("DATE_FORMAT(nits.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
                         'nits.created_by',
                         'nits.updated_by'
-                    )
-                    ->take($rowperpage);
-    
-                if($columnName){
+                    );
+
+                if ($columnIndex == '1') {
+                    $nits->orderBy('razon_social',$columnSortOrder)
+                        ->orderBy('primer_apellido',$columnSortOrder)
+                        ->orderBy('otros_nombres',$columnSortOrder)
+                        ->orderBy('primer_apellido',$columnSortOrder)
+                        ->orderBy('segundo_apellido',$columnSortOrder);
+
+                } else if ($columnIndex == '6') {
+                    // $nits->orderBy('ciudad.nombre_completo');
+                } else if ($columnIndex == '8') {
+
+                } else if ($columnIndex == '9') {
+
+                } else if ($columnIndex == '10') {
+                    $nits->orderBy('created_at',$columnSortOrder);
+                } else if ($columnIndex == '11') {
+                    $nits->orderBy('updated_at',$columnSortOrder);
+                } else if ($columnName) {
                     $nits->orderBy($columnName,$columnSortOrder);
                 }
-    
+                
                 if($searchValue) {
-                    $nits->where('primer_apellido', 'like', '%' .$searchValue . '%')
+                    $nits->where('numero_documento', 'like', '%' .$searchValue . '%')
+                        ->orWhere('primer_apellido', 'like', '%' .$searchValue . '%')
                         ->orWhere('segundo_apellido', 'like', '%' .$searchValue . '%')
                         ->orWhere('primer_nombre', 'like', '%' .$searchValue . '%')
                         ->orWhere('otros_nombres', 'like', '%' .$searchValue . '%')
@@ -78,18 +95,24 @@ class NitController extends Controller
                             $query->where('nombre', 'like', '%' .$searchValue . '%');
                         });
                 }
+
+                $totalNits = $nits->count();
+                
+                $nitsPaginate = $nits->skip($start)
+                    ->take($rowperpage);
     
                 return response()->json([
                     'success'=>	true,
                     'draw' => $draw,
-                    'iTotalRecords' => $nits->count(),
-                    'iTotalDisplayRecords' => $nits->count(),
-                    'data' => $nits->get(),
+                    'iTotalRecords' => $totalNits,
+                    'iTotalDisplayRecords' => $totalNits,
+                    'data' => $nitsPaginate->get(),
                     'perPage' => $rowperpage,
-                    'message'=> 'Comprobante generado con exito!'
+                    'message'=> 'Nits generados con exito!'
                 ]);
+
             } else {
-                $nits = Nits::whereNotNull('id');
+                $nits = Nits::with('tipo_documento', 'ciudad', 'vendedor.nit')->whereNotNull('id');
 
                 if ($request->get("id")) {
                     $nits->where('id', $request->get("id"));
@@ -144,7 +167,9 @@ class NitController extends Controller
 			'cupo' => 'nullable|numeric|min:0|digits_between:1,13',
 			'descuento' => 'nullable|numeric|min:0|max:100',
 			'no_calcular_iva' => 'nullable|boolean',
+            'porcentaje_aiu' => 'nullable|numeric',
 			'inactivar' => 'nullable',
+            'declarante' => 'nullable'
 		];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -173,8 +198,10 @@ class NitController extends Controller
                 'direccion' => $request->get('direccion'),
                 'email' => $request->get('email'),
                 'telefono_1' => $request->get('telefono_1'),
+                'porcentaje_aiu' => $request->get('porcentaje_aiu'),
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
+                'declarante' => $request->get('declarante'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
@@ -239,6 +266,8 @@ class NitController extends Controller
                 'telefono_1' => $request->get('telefono_1'),
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
+                'porcentaje_aiu' => $request->get('porcentaje_aiu'),
+                'declarante' => $request->get('declarante'),
                 'updated_by' => request()->user()->id,
             ]);
 
@@ -300,7 +329,23 @@ class NitController extends Controller
 
     public function comboNit(Request $request)
     {
+        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
+        $ubicacion_maximoph ? $ubicacion_maximoph->valor : null;
         $totalRows = $request->has("totalRows") ? $request->get("totalRows") : 20;
+        $text = \DB::raw("(CASE
+                WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)
+                WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( numero_documento, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
+                ELSE NULL
+            END) AS text");
+        if ($ubicacion_maximoph) {
+            $text = \DB::raw("(CASE
+                WHEN apartamentos IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(razon_social, ' - ', apartamentos)
+                WHEN apartamentos IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido), ' - ', apartamentos  )
+                WHEN apartamentos IS NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( numero_documento, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
+                WHEN apartamentos IS NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)
+                ELSE NULL
+            END) AS text");
+        }
         $nits = Nits::select(
             'id',
             'id_tipo_documento',
@@ -310,22 +355,49 @@ class NitController extends Controller
             'primer_apellido',
             'segundo_apellido',
             'email',
+            'declarante',
+            'porcentaje_aiu',
+            'apartamentos',
             \DB::raw('telefono_1 AS telefono'),
-            \DB::raw("(CASE
-					WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)
-					WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( numero_documento, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
-					ELSE NULL
-				END) AS text")
+            $text
         );
 
-        if ($request->get("q")) {
-            $nits->where('primer_apellido', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('razon_social', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('email', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('numero_documento', 'LIKE', '%' . $request->get("q") . '%');
+        if ($request->get("id_nits")) {
+            $nits->whereIn('id', $request->get("id_nits"));
+        } else {
+            if ($request->get("q")) {
+                $nits->where('numero_documento', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('razon_social', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('email', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),'-',digito_verificacion,' - ',razon_social)"), "like", "%" . $request->get("q") . "%")
+                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),' - ',razon_social)"), "like", "%" . $request->get("q") . "%")
+                    ->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
+					->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
+                    ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
+					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
+                    ->orWhere('primer_apellido', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('apartamentos', 'LIKE', '%' . $request->get("q") . '%');
+            }
+    
+            if ($request->get("search")) {
+                $nits->where('numero_documento', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('razon_social', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('email', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),'-',digito_verificacion,' - ',razon_social)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),' - ',razon_social)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
+					->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
+					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere('primer_apellido', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('apartamentos', 'LIKE', '%' . $request->get("search") . '%');
+            }
         }
 
         return $nits->paginate($totalRows);

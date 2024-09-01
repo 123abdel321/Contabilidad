@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('id', true);
             $table->string('codigo', 10)->unique();
             $table->string('nombre', 200);
-            $table->integer('tipo_comprobante')->comment('0:ingresos, 1:egresos, 2:compras, 3:ventas, 4:otros, 5:cierre')->default('0');
+            $table->integer('tipo_comprobante')->comment('0:ingresos, 1:egresos, 2:compras, 3:ventas, 4:otros, 5:gastos, 6:gastos')->default('0');
             $table->integer('tipo_consecutivo')->comment('0:normal, 1:mensual')->default('0');
             $table->string('consecutivo_siguiente', 11)->default('1');
             $table->boolean('imprimir_en_capturas')->nullable();

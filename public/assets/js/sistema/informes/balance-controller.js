@@ -42,27 +42,35 @@ function balanceInit() {
                 $('td', row).css('color', 'white');
                 return;
             }
+            if (data.auxiliar == 5) {
+                return;
+            }
             if(data.balance){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 10%)');
                 return;
             }
             if(data.cuenta.length == 1){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
+                $('td', row).css('font-weight', '700');
                 return;
             }
             if(data.cuenta.length == 2){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.cuenta.length == 4){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.cuenta.length == 6){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
+                $('td', row).css('font-weight', '600');
+                return;
+            }
+            if (!data.auxiliar) {
+                $('td', row).css('background-color', 'rgb(64 164 209 / 10%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
@@ -79,7 +87,13 @@ function balanceInit() {
         },
         "columns": [
             {"data": function (row, type, set){
-                if(row.cuenta){
+                if(row.cuenta && row.auxiliar != 5){
+                    return row.cuenta +' - '+ row.nombre_cuenta;
+                }
+                return '';
+            }},
+            {"data": function (row, type, set){
+                if(row.cuenta && row.auxiliar == 5){
                     return row.cuenta +' - '+ row.nombre_cuenta;
                 }
                 return '';
@@ -106,26 +120,33 @@ function balanceInit() {
             },
         ]
     });
+    balance_table.column(1).visible(false);
+    $('#id_cuenta_balance').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione una Cuenta",
+        allowClear: true,
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $("#tipo_informe_balance").on('change', function(){
+        console.log('123')
+        var data = $("#tipo_informe_balance").val();
+        if (data == '2') balance_table.column(1).visible(true);
+        else balance_table.column(1).visible(false);
+    });
 
     findBalance();
 }
-
-var $comboPadre = $('#id_cuenta_balance').select2({
-    theme: 'bootstrap-5',
-    delay: 250,
-    placeholder: "Seleccione una Cuenta",
-    allowClear: true,
-    ajax: {
-        url: 'api/plan-cuenta/combo-cuenta',
-        headers: headers,
-        dataType: 'json',
-        processResults: function (data) {
-            return {
-                results: data.data
-            };
-        }
-    }
-});
 
 $(document).on('click', '#generarBalance', function () {
     generarBalance = false;
@@ -145,6 +166,7 @@ $(document).on('click', '#generarBalance', function () {
     url+= '?fecha_desde='+$('#fecha_desde_balance').val();
     url+= '&fecha_hasta='+$('#fecha_hasta_balance').val();
     url+= '&id_cuenta='+$('#id_cuenta_balance').val();
+    url+= '&tipo='+$('#tipo_informe_balance').val();
     url+= '&nivel='+getNivel();
     url+= '&generar='+generarBalance;
 
@@ -260,6 +282,7 @@ function GenerateBalance() {
     url+= '?fecha_desde='+$('#fecha_desde_balance').val();
     url+= '&fecha_hasta='+$('#fecha_hasta_balance').val();
     url+= '&id_cuenta='+$('#id_cuenta_balance').val();
+    url+= '&tipo='+$('#tipo_informe_balance').val();
     url+= '&nivel='+getNivel();
     url+= '&generar='+generarBalance;
 

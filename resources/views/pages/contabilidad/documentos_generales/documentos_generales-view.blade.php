@@ -23,4 +23,11 @@
             </div>
         </div>
     </div>
+
+    <script>
+        
+        var ubicacion_maximoph_documentos_generales = JSON.parse('<?php echo $ubicacion_maximoph; ?>');
+
+    </script>
+
 </div>

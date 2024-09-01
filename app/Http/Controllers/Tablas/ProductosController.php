@@ -39,7 +39,7 @@ class ProductosController extends Controller
 
     public function index ()
     {
-        $totalBodegas = FacBodegas::count();
+        $productoTotales = FacBodegas::count();
         $data = [
             'familias' => FacFamilias::all(),
             'bodegas' => FacBodegas::get()
@@ -85,8 +85,21 @@ class ProductosController extends Controller
 
         if($searchValue) {
             $productos->where('nombre', 'like', '%' .$searchValue . '%')
-                ->orWhere('codigo', 'like', '%' .$searchValue . '%');
+                ->orWhere('codigo', 'like', '%' .$searchValue . '%')
+                ->orWhereHas('inventarios', function ($query) use($searchValue) {
+                    $query->whereHas('bodega', function ($q) use($searchValue) {
+                        $q->where('nombre', 'like', '%' .$searchValue . '%')
+                            ->orWhere('codigo', 'like', '%' .$searchValue . '%');
+                    });
+                });
         }
+
+        $totalesProductos = [
+            'cantidad_productos' => count($this->queryTotalesProducto($searchValue)->groupBy('FP.id')->get()),
+            'total_costo' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FP.precio_inicial * FPB.cantidad) AS precio_inicial"))->first()->precio_inicial,
+            'total_precio' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FP.precio * FPB.cantidad) AS precio"))->first()->precio,
+            'total_productos' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FPB.cantidad) AS total_productos"))->first()->total_productos,
+        ];
 
         $productosPaginate = $productos->skip($start)
             ->take($rowperpage);
@@ -94,12 +107,26 @@ class ProductosController extends Controller
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
+            'totalesProductos' => $totalesProductos,
             'iTotalRecords' => $productos->count(),
             'iTotalDisplayRecords' => $productos->count(),
             'data' => $productosPaginate->get(),
             'perPage' => $rowperpage,
             'message'=> 'Productos cargados con exito!'
         ]);
+    }
+
+    private function queryTotalesProducto($searchValue)
+    {
+        return DB::connection('sam')->table('fac_productos AS FP')
+            ->leftJoin('fac_productos_bodegas AS FPB', 'FP.id', 'FPB.id_producto')
+            ->leftJoin('fac_bodegas AS FB', 'FPB.id_bodega', 'FB.id')
+            ->when($searchValue ? true : false, function ($query) use ($searchValue){
+				$query->where('FB.nombre', 'like', '%' .$searchValue. '%')
+				    ->orWhere('FB.codigo', 'like', '%' .$searchValue. '%')
+                    ->orWhere('FP.nombre', 'like', '%' .$searchValue. '%')
+				    ->orWhere('FP.codigo', 'like', '%' .$searchValue. '%');
+			});
     }
 
     public function create (Request $request)

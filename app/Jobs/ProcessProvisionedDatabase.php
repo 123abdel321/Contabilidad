@@ -6,16 +6,17 @@ use DB;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
-use Database\Seeders\ProvisionadaSeeder;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Artisan;
+use Database\Seeders\ProvisionadaSeeder;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Database\Seeders\PropiedadesHorizontalesSeeder;
 //MODELS
+use App\Models\User;
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
-use App\Models\Empresas\BaseDatosProvisionada;
 
 class ProcessProvisionedDatabase implements ShouldQueue
 {
@@ -25,15 +26,19 @@ class ProcessProvisionedDatabase implements ShouldQueue
 	public $dbName = '';
 	public $connectionName = '';
 	public $idEmpresa;
+	public $tipoEmpresa;
+	public $tokenUsuario;
 
     /**
      * Create a new job instance.
 	 * 
 	 * @return void
      */
-    public function __construct($idEmpresa = null)
+    public function __construct($idEmpresa = null, $tipoEmpresa = 'empresas_generales', $tokenUsuario = null)
     {
         $this->idEmpresa = $idEmpresa;
+        $this->tipoEmpresa = $tipoEmpresa;
+        $this->tokenUsuario = $tokenUsuario;
 		$this->connectionName = 'provisionada';
     }
 
@@ -44,20 +49,10 @@ class ProcessProvisionedDatabase implements ShouldQueue
      */
     public function handle()
     {
-		$this->dbName = $this->generateUniqueHash();
-
-        try {
-			$countDbPending = BaseDatosProvisionada::where('estado', 0)->count();
-			
-			if ($countDbPending > config('db-provisioned.quantity', 10)) {
-				Log::error("Se ha excedido el límite de bases de datos provisionadas en proceso. Bases de datos en proces: $countDbPending");
-				return;
-			}
-
-			$dbProvisionada = (new BaseDatosProvisionada())->setConnection('clientes')->create([
-				'hash' => $this->dbName,
-				'estado' => 0
-			]);
+		
+		try {
+			$empresa = Empresa::find($this->idEmpresa);
+			$this->dbName = $empresa->token_db;
 
 			createDatabase($this->dbName);
 
@@ -78,14 +73,22 @@ class ProcessProvisionedDatabase implements ShouldQueue
 				'--database' => 'sam'
 			]);
 
-			Artisan::call('db:seed', [
-				'--force' => true,
-				'--class' => ProvisionadaSeeder::class,
-				'--database' => 'sam'
-			]);
+			if ($this->tipoEmpresa == 'empresas_generales') {
+				Artisan::call('db:seed', [
+					'--force' => true,
+					'--class' => ProvisionadaSeeder::class,
+					'--database' => 'sam'
+				]);
+			} else if ($this->tipoEmpresa == 'propiedades_horizontales') {
+				Artisan::call('db:seed', [
+					'--force' => true,
+					'--class' => PropiedadesHorizontalesSeeder::class,
+					'--database' => 'sam'
+				]);
+			}
 
-			$dbProvisionada->estado = 1;
-			$dbProvisionada->save();
+			// $dbProvisionada->estado = 1;
+			// $dbProvisionada->save();
 
 			info('Base de datos generada: ' . $this->dbName);
 
@@ -95,7 +98,7 @@ class ProcessProvisionedDatabase implements ShouldQueue
 			
 			return $this->dbName;
 		} catch (Exception $exception) {
-			Log::error('Error al generar base de datos provisionada', ['message' => $exception->getMessage()]);
+			Log::error('Error al generar base de datos', ['message' => $exception]);
 
 			$this->dropDb($this->dbName);
 		}
@@ -107,12 +110,16 @@ class ProcessProvisionedDatabase implements ShouldQueue
 
 		if ($empresa->token_db) return;
 
-		$dbProvisionada = BaseDatosProvisionada::available()->first();
-		$dbProvisionada->ocupar();
-
-		$empresa->token_db = $dbProvisionada->hash;
 		$empresa->estado = 1;
 		$empresa->save();
+
+		if ($this->tokenUsuario) {
+			$usuario = User::where('remember_token', $this->tokenUsuario)->first();
+			if ($usuario) {
+				$usuario->has_empresa = $empresa->token_db;
+				$usuario->save();
+			}
+		}
 
 		copyDBConnection($empresa->servidor ?: 'sam', 'sam');
 		setDBInConnection('sam', $empresa->token_db);

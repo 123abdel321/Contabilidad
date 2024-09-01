@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Helpers\Printers\VentasInformeZ;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
+use App\Helpers\FacturaElectronica\VentaElectronicaSender;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
 //MODELS
 use App\Models\Sistema\Nits;
@@ -83,7 +84,7 @@ class VentaController extends Controller
         $resoluciones = explode(",", $usuarioPermisos->ids_resolucion_responsable);
 
         $data = [
-            'cliente' => Nits::where('numero_documento', '222222222222')->first(),
+            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', '222222222222')->first(),
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
             'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get(),
             'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : '',
@@ -372,6 +373,11 @@ class VentaController extends Controller
 
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 
+            // //FACTURAR ELECTRONICAMENTE
+            // if ($this->resolucion == FacResolucion::TIPO_FACTURA_ELECTRONICA) {
+            //     $ventaElectronica = (new VentaElectronicaSender($venta))->send();
+            // }
+
             if (!$documentoGeneral->save()) {
 
 				DB::connection('sam')->rollback();
@@ -465,7 +471,7 @@ class VentaController extends Controller
 
         if ($request->get('id_producto')) {
             $ventas->whereHas('detalles', function ($query) use($request) {
-                return $query->where('id_producto', '=', $request->get('id_producto'));
+                $query->where('id_producto', '=', $request->get('id_producto'));
             });
         }
 
@@ -474,6 +480,16 @@ class VentaController extends Controller
         }
 
         $dataVentas = $ventas->get();
+        $totalDataVenta = $this->queryTotalesVentaCosto($request)->select(
+            DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
+            DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
+            DB::raw("SUM(FVD.total) AS total_venta")
+        )->get();
+        $totalDataNotas = $this->queryTotalesVentaCosto($request, true)->select(
+            DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
+            DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
+            DB::raw("SUM(FVD.total) AS total_venta")
+        )->get();
 
         if ($request->get('detallar_venta') == 'si') {
             $this->generarVentaDetalles($dataVentas);
@@ -484,6 +500,8 @@ class VentaController extends Controller
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
+            'totalesVenta' => $totalDataVenta,
+            'totalesNotas' => $totalDataNotas,
             'iTotalRecords' => $ventas->count(),
             'iTotalDisplayRecords' => $ventas->count(),
             'data' => $this->ventaData,
@@ -555,14 +573,34 @@ class VentaController extends Controller
 
     public function read(Request $request)
     {
-        $facturas = FacVentas::with(
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length");
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+        $facturas = FacVentas::orderBy('id', 'DESC')
+            ->with(
                 'bodega',
                 'cliente',
                 'comprobante',
                 'centro_costo',
             )
-            ->orderBy('id', 'DESC')
-            ->take(10);
+            ->select(
+                '*',
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                'created_by',
+                'updated_by'
+            );
 
         if ($request->get('consecutivo')) {
             $facturas->where('consecutivo', $request->get('consecutivo'));
@@ -582,10 +620,19 @@ class VentaController extends Controller
 
         $facturas->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL);
 
+        $facturasTotals = $facturas->get();
+
+        $facturasPaginate = $facturas->skip($start)
+            ->take(10);
+
         return response()->json([
             'success'=>	true,
-            'data' => $facturas->get(),
-            'message'=> ''
+            'draw' => $draw,
+            'iTotalRecords' => $facturasTotals->count(),
+            'iTotalDisplayRecords' => $facturasTotals->count(),
+            'data' => $facturasPaginate->get(),
+            'perPage' => 10,
+            'message'=> 'Facturas generados con exito!'
         ]);
     }
 
@@ -793,6 +840,41 @@ class VentaController extends Controller
                 'cuenta'
             )
             ->first();
+    }
+
+    private function queryTotalesVentaCosto($request, $notas = false)
+    {
+        return DB::connection('sam')->table('fac_ventas AS FV')
+            ->leftJoin('fac_venta_detalles AS FVD', 'FV.id', 'FVD.id_venta')
+            ->leftJoin('fac_productos AS FP', 'FVD.id_producto', 'FP.id')
+            ->when(true, function ($query) use ($notas) {
+                if ($notas) {
+                    $query->whereNotNull('id_factura');
+                } else {
+                    $query->whereNull('id_factura');
+                }
+            })
+            ->when($request->get('id_cliente') ? true : false, function ($query) use ($request) {
+                $query->where('FV.id_cliente', $request->get('id_cliente'));
+            })
+            ->when($request->get('fecha_desde') ? true : false, function ($query) use ($request) {
+                $query->whereDate('FV.fecha_manual', '>=', $request->get('fecha_desde'));
+            })
+            ->when($request->get('fecha_hasta') ? true : false, function ($query) use ($request) {
+                $query->whereDate('FV.fecha_manual', '<=', $request->get('fecha_hasta'));
+            })
+            ->when($request->get('factura') ? true : false, function ($query) use ($request) {
+                $query->where('FV.documento_referencia', 'LIKE', '%'.$request->get('factura').'%');
+            })
+            ->when($request->get('id_resolucion') ? true : false, function ($query) use ($request) {
+                $query->where('FV.id_resolucion', $request->get('id_resolucion'));
+            })
+            ->when($request->get('id_bodega') ? true : false, function ($query) use ($request) {
+                $query->where('FV.id_bodega', $request->get('id_bodega'));
+            })
+            ->when($request->get('id_usuario') ? true : false, function ($query) use ($request) {
+                $query->where('FV.created_by', $request->get('id_usuario'));
+            });
     }
 
 

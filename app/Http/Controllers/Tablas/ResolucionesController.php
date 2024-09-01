@@ -42,6 +42,7 @@ class ResolucionesController extends Controller
 
     public function generate (Request $request)
     {
+        
         $draw = $request->get('draw');
         $start = $request->get("start");
         $rowperpage = $request->get("length");
@@ -55,6 +56,14 @@ class ResolucionesController extends Controller
         $columnName = $columnName_arr[$columnIndex]['data']; // Column name
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
+
+        if ($columnIndex == "2") {
+            $columnName = 'id_comprobante';
+        }
+
+        if ($columnIndex == "5") {
+            $columnName = 'tipo_resolucion';
+        }
         
         $resolucion = FacResoluciones::orderBy($columnName,$columnSortOrder)
             ->with('comprobante')

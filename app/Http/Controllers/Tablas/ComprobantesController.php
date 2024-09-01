@@ -245,7 +245,7 @@ class ComprobantesController extends Controller
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
 
-        if ($request->get("tipo_comprobante")) {
+        if ($request->has("tipo_comprobante")) {
             $comprobantes->where('tipo_comprobante', $request->get("tipo_comprobante"));
         }
 

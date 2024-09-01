@@ -5,7 +5,7 @@
             <th>Nombre</th>
             <th>Ubicación</th>
             <th>Centro de costos</th>
-            <th>Cuenta cartera</th>
+            <th>Cuenta de caja</th>
             <th>Creación registro</th>
             <th>Ultima actualización</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Acciones</th>

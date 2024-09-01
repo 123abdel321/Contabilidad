@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 //MODELS
 use App\Models\Sistema\Impuestos;
 
-class ImpuestosController extends Controller
+class ImpuestoController extends Controller
 {
     public function comboImpuesto (Request $request)
     {

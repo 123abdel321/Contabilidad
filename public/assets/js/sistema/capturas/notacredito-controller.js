@@ -131,7 +131,7 @@ function notacreditoInit () {
 
     nota_credito_table_facturas = $('#facturaDevolucionTable').DataTable({
         pageLength: 15,
-        dom: '',
+        dom: 'Brtip',
         paging: true,
         responsive: false,
         processing: true,
@@ -253,7 +253,7 @@ function notacreditoInit () {
                     for (let index = 0; index < facturaDetalle.length; index++) {
 
                         const detalleVenta = facturaDetalle[index];
-
+                        
                         var data = {
                             data: detalleVenta,
                             id_factura_detalle: detalleVenta.id,
@@ -282,6 +282,10 @@ function notacreditoInit () {
                 $('#iniciarCapturaNotaCreditoLoading').hide();
                 $('#crearCapturaNotaCreditoDisabled').hide();
                 $('#iniciarCapturaNotaCredito').show();
+
+                var mensaje = err.responseJSON.message;
+                var errorsMsg = arreglarMensajeError(mensaje);
+                agregarToast('error', 'Creación errada', errorsMsg);
             });
         });
     }
@@ -433,6 +437,10 @@ function consecutivoSiguienteNotaCredito() {
             }
         }).fail((err) => {
             $('#consecutivo_nota_credito_loading').hide();
+
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     }
 }
@@ -486,14 +494,18 @@ function calcularNotaCreditoPorCantidad (idDetalle) {
         dataRow.valor_iva = dataDetalle.iva_valor - iva;
     }
 
-    var subtotal = costoCantidad - iva;
+    var subtotal = costoCantidad;
+
+    if (ivaIncluidoNotaCredito) {
+        subtotal-= iva;
+    }
 
     dataRow.cantidad_devuelta = cantidadDevolucion;
     dataRow.cantidad = cantidadDisponible - cantidadDevolucion,
-    dataRow.devolucion_total = subtotal + iva;
-    dataRow.total_devolucion = subtotal + iva;
-    dataRow.total_disponible = ((dataDetalle.total - dataDetalle.total_devuelto) - (subtotal + iva));
-
+    dataRow.devolucion_total = subtotal;
+    dataRow.total_devolucion = subtotal;
+    dataRow.total_disponible = ((dataDetalle.total - dataDetalle.total_devuelto) - (subtotal));
+    console.log('dataRow:',dataRow);
     nota_credito_table.row(keyRow).data(dataRow).draw();
 
     mostrarValoresNotaCredito();
@@ -590,8 +602,11 @@ function totalValoresNotaCredito() {
                 }
     
                 if (notaCredito.data.iva_porcentaje > 0) {
+                    console.log(notaCredito.data.iva_valor);
                     iva+= notaCredito.data.iva_valor * proporcion;
-                    valorBruto-= notaCredito.data.iva_valor * proporcion;
+                    if (ivaIncluidoNotaCredito){
+                        valorBruto-= notaCredito.data.iva_valor * proporcion;
+                    }
                 }
 
                 if (totalReteFuente) {
@@ -841,18 +856,8 @@ function saveNotaCredito() {
         $("#crearCapturaNotaCreditoDisabled").hide();
         $("#iniciarCapturaNotaCreditoLoading").hide();
 
-        var errorsMsg = "";
         var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
-        }
+        var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Creación errada', errorsMsg);
     });
 }

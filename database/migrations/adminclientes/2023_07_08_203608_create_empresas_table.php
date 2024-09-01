@@ -36,7 +36,9 @@ return new class extends Migration
             $table->date('fecha_retiro')->nullable();
             $table->date('fecha_ultimo_cierre')->nullable();
             // $table->string('ciudad', 100)->comment('info');
-            $table->string('direccion', 200);
+            $table->string('direccion', 200)->nullable();
+            $table->string('correo', 200)->nullable();
+            $table->string('email', 200)->nullable();
             // $table->string('geo_locations', 500)->comment('Array JSON {lat, lng}');
             $table->string('telefono', 50);
             $table->string('hash', 100);

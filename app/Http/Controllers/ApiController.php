@@ -65,8 +65,6 @@ class ApiController extends Controller
         try {
             if($user){
                 if(Hash::check($data->password, $user->password)){
-                    
-                    // $tokenExist = $user->remember_token; //RECORDAR TOKEN
                     $tokenExist = null;
 
                     if($tokenExist) {
@@ -77,7 +75,9 @@ class ApiController extends Controller
                         $user->save();
                     }
                     
-                    $empresaSelect = UsuarioEmpresa::where('id_usuario', $user->id_empresa)->first();
+                    $empresaSelect = UsuarioEmpresa::where('id_usuario', $user->id)
+                        ->where('id_empresa', $user->id_empresa)
+                        ->first();
                     
                     if (!$empresaSelect) {
                         return response()->json([
@@ -181,11 +181,24 @@ class ApiController extends Controller
 
     public function setEmpresa(Request $request)
     {
-        $empresa = $request->get("empresa");
-		$check = $request->user()->checkRelacionEmpresa($empresa); // Verificamos que el usuario si pueda trabajar en este cliente
+        $empresaSelect = Empresa::where('hash', $request->get("empresa"))->first();
+		$check = $request->user()->checkRelacionEmpresa($request->get("empresa"));
+
+        if($request->user()->rol_portafolio && !$check){
+            $usuarioPermisosEmpresa = UsuarioPermisos::updateOrCreate([
+                'id_user' => $request->user()->id,
+                'id_empresa' => $empresaSelect->id
+            ],[
+                'ids_permission' => UsuarioPermisos::where('id_empresa', $empresaSelect->id)->first()->ids_permission,
+                'ids_bodegas_responsable' => '1',
+                'ids_resolucion_responsable' => '1'
+            ]);
+
+            $check = true;
+        }
         
 		if($check){
-            $empresaSelect = Empresa::where('hash', $empresa)->first();
+            
             $user = $request->user();
             $user->id_empresa = $empresaSelect->id;
             $user->has_empresa = $empresaSelect->token_db;

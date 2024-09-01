@@ -9,25 +9,40 @@ use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\ExogenaController;
 use App\Http\Controllers\Tablas\BodegasController;
 use App\Http\Controllers\Tablas\FamiliasController;
+use App\Http\Controllers\Tablas\ImpuestoController;
 use App\Http\Controllers\Tablas\VariantesController;
 use App\Http\Controllers\Tablas\ProductosController;
-use App\Http\Controllers\Tablas\ImpuestosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\VendedoresController;
 use App\Http\Controllers\Tablas\FormasPagoController;
 use App\Http\Controllers\Tablas\CentroCostoController;
+use App\Http\Controllers\Tablas\PresupuestoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
+use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
+//INFORMES
+use App\Http\Controllers\Informes\ResultadosController;
+use App\Http\Controllers\Informes\EstadoActualController;
+use App\Http\Controllers\Informes\EstadoComprobanteController;
+use App\Http\Controllers\Informes\ResumenComprobantesController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
+use App\Http\Controllers\Capturas\PagosController;
 use App\Http\Controllers\Capturas\CompraController;
+use App\Http\Controllers\Capturas\GastosController;
+use App\Http\Controllers\Capturas\RecibosController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
+//IMPORTADORES
+use App\Http\Controllers\Importador\NitsImportadorController;
+use App\Http\Controllers\Importador\ProductoImportadorController;
+use App\Http\Controllers\Importador\DocumentosImportadorController;
 //SISTEMA
 use App\Http\Controllers\Sistema\UbicacionController;
 //CONFIGURACION
+use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
 
 /*
@@ -43,6 +58,7 @@ use App\Http\Controllers\Configuracion\UsuariosController;
 
 Route::post('login', 'App\Http\Controllers\ApiController@login');
 Route::post('register', 'App\Http\Controllers\ApiController@register');
+Route::post('register-api-token', 'App\Http\Controllers\InstaladorController@createEmpresaApiToken');
 Route::post('public-event', function (Request $request) {
     event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
     return event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
@@ -71,9 +87,28 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     
     //EMPRESA SELECCIONADA
     Route::group(['middleware' => ['clientconnection']], function() {
-        //IMPORTADORES
-        Route::get('producto-precio-cache-import', 'App\Http\Controllers\Importador\ProductoImportadorController@generate');
-        Route::post('producto-precio-actualizar', 'App\Http\Controllers\Importador\ProductoImportadorController@actualizar');
+
+        //IMPORTADORES PRECIO PRODUCTOS
+        Route::controller(ProductoImportadorController::class)->group(function () {
+            Route::get('producto-precio-cache-import', 'generate');
+            Route::post('producto-precio-actualizar', 'actualizar');
+        });
+        //IMPORTADORES NITS
+        Route::controller(NitsImportadorController::class)->group(function () {
+            Route::get('nits-cache-import', 'generate');
+            Route::post('nits-actualizar-import', 'actualizar');
+        });
+        //IMPORTADORES DOCUMENTOS
+        Route::controller(DocumentosImportadorController::class)->group(function () {
+            Route::get('documentos-cache-import', 'generate');
+            Route::post('documentos-actualizar-import', 'actualizar');
+            Route::post('documentos-validar-import', 'validar');
+        });
+        //EMPRESA
+        Route::controller(EmpresaController::class)->group(function () {
+            Route::get('empresas', 'generate');
+        });
+
         //INFORMES
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
         Route::get('extracto-anticipos', 'App\Http\Controllers\Informes\ExtractoController@extractoActicipos');
@@ -96,12 +131,40 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('cartera-show', 'App\Http\Controllers\Informes\CarteraController@show');
         Route::get('cartera-find', 'App\Http\Controllers\Informes\CarteraController@find');
         Route::post('cartera-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
+        //CARTERA
+        Route::get('impuestos', 'App\Http\Controllers\Informes\ImpuestosController@generate');
+        Route::get('impuestos-show', 'App\Http\Controllers\Informes\ImpuestosController@show');
+        Route::get('impuestos-find', 'App\Http\Controllers\Informes\ImpuestosController@find');
+        // Route::post('impuestos-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
         //DOCUMENTOS GENERALES
         Route::get('documentos-generales', 'App\Http\Controllers\Informes\DocumentosGeneralesController@generate');
         Route::get('documentos-generales-show', 'App\Http\Controllers\Informes\DocumentosGeneralesController@show');
+        Route::post('documentos-generales-delete', 'App\Http\Controllers\Informes\DocumentosGeneralesController@delete');
         //VENTAS GENERALES
         Route::get('ventas-generales', 'App\Http\Controllers\Informes\VentasGeneralesController@generate');
         Route::get('ventas-generales-show', 'App\Http\Controllers\Informes\VentasGeneralesController@show');
+        //INFORME ESTADO ACTUAL
+        Route::controller(EstadoActualController::class)->group(function () {
+            Route::get('estado-actual', 'generate');
+            Route::get('estado-actual-show', 'show');
+            Route::get('estado-actual-find', 'find');
+        });
+        //INFORME ESTADO COMPROBANTE
+        Route::controller(EstadoComprobanteController::class)->group(function () {
+            Route::get('estado-comprobante', 'generate');
+            Route::get('estado-comprobante-show', 'show');
+            Route::get('estado-comprobante-find', 'find');
+        });
+        //INFORME RESUMEN COMPROBANTE
+        Route::controller(ResumenComprobantesController::class)->group(function () {
+            Route::get('resumen-comprobante', 'generate');
+            Route::get('resumen-comprobante-show', 'show');
+        });
+        //INFORME RESULTADOS
+        Route::controller(ResultadosController::class)->group(function () {
+            Route::get('resultados', 'generate');
+            Route::get('resultados-show', 'show');
+        });
 
         //USUARIOS
         Route::controller(UsuariosController::class)->group(function () {
@@ -111,7 +174,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('usuarios/combo', 'comboUsuario');
         });
         //IMPUESTOS
-        Route::controller(ImpuestosController::class)->group(function () {
+        Route::controller(ImpuestoController::class)->group(function () {
             Route::get('impuesto/combo-impuesto', 'comboImpuesto');
         });
         //PLAN DE CUENTAS
@@ -182,7 +245,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::delete('bodega', 'delete');
             Route::get('bodega/combo-bodega', 'comboBodega');
             Route::get('existencias-producto', 'existenciasProducto');
-            
         });
         //VARIANTES
         Route::controller(VariantesController::class)->group(function () {
@@ -220,7 +282,22 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('exogena/columna', 'comboFormatoColumna');
             Route::get('exogena/concepto', 'comboFormatoConcepto');
         });
-        
+        //CONCEPTO GASTO
+        Route::controller(ConceptoGastosController::class)->group(function () {
+            Route::get('concepto-gasto', 'generate');
+            Route::post('concepto-gasto', 'create');
+            Route::put('concepto-gasto', 'update');
+            Route::delete('concepto-gasto', 'delete');
+            Route::get('concepto-gasto/combo', 'comboConceptoGasto');
+        });
+        //PRESUPUESTO
+        Route::controller(PresupuestoController::class)->group(function () {
+            Route::get('presupuesto', 'generate');
+            Route::post('presupuesto', 'create');
+            Route::put('presupuesto', 'update');
+            Route::put('presupuesto-valor', 'updateValor');
+            Route::put('presupuesto-grupo', 'grupo');
+        });
         
         //CAPTURA GENERAL
         Route::controller(DocumentoGeneralController::class)->group(function () {
@@ -229,8 +306,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('documentos', 'anular');
             Route::post('documentos', 'create');
             Route::post('bulk-documentos', 'bulkDocumentos');
+            Route::post('generar-documentos', 'generarDocumentos');
             Route::post('bulk-documentos-delete', 'bulkDocumentosDelete');
             Route::get('documento-vacio', 'vacio');
+            Route::get('year-combo', 'comboYear');
         });
         //CAPTURA COMPRA
         Route::controller(CompraController::class)->group(function () {
@@ -243,6 +322,25 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('ventas', 'create');
             Route::get('facturas', 'read');
         });
+        //CAPTURA GASTO
+        Route::controller(GastosController::class)->group(function () {
+            Route::post('gastos', 'create');
+        });
+        //CAPTURA RECIBO
+        Route::controller(RecibosController::class)->group(function () {
+            Route::get('recibos', 'generate');
+            Route::post('recibos', 'create');
+            Route::get('recibos-comprobante', 'generateComprobante');
+            Route::post('recibos-comprobante', 'createComprobante');
+            Route::put('recibos-comprobante', 'updateComprobante');
+            Route::delete('recibos-comprobante', 'deleteComprobante');
+        });
+        //CAPTURA DE PAGOS
+        Route::controller(PagosController::class)->group(function () {
+            Route::get('pagos', 'generate');
+            Route::post('pagos', 'create');
+        });
+        
         //CAPTURA MOVIMIENTO INVENTARIO
         Route::controller(MovimientoInventarioController::class)->group(function () {
             Route::get('movimiento-inventario', 'generate');

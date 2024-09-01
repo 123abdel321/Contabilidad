@@ -74,6 +74,15 @@ function nitInit() {
                     return '';
                 }
             },
+            {
+                "data": function (row, type, set){
+                    if(row.declarante){
+                        return 'SI';
+                    }
+                    return 'NO';
+                }
+            },
+            {"data":'porcentaje_aiu', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
@@ -139,6 +148,12 @@ function nitInit() {
                 $comboCiudad.append(newOption).trigger('change');
                 $comboCiudad.val(dataCiudad.id).trigger('change');
             }
+        
+            if (data.declarante) {
+                $('#declarante_nit').prop('checked', true);
+            } else {
+                $('#declarante_nit').prop('checked', false);
+            }
 
             hideFormNits();
         
@@ -154,6 +169,7 @@ function nitInit() {
             $("#email").val(data.email);
             $("#telefono_1").val(data.telefono_1);
             $("#observaciones").val(data.observaciones);
+            $("#porcentaje_aiu").val(data.porcentaje_aiu);
             
             if(data.logo_nit) {
                 $('#new_avatar').attr('src', 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/'+data.logo_nit);
@@ -302,20 +318,20 @@ function nitInit() {
     nits_table.ajax.reload();
 }
 
-$('.only-lyrics').keypress(function (e) {
-    var txt = String.fromCharCode(e.which);
-    if (!txt.match(/[A-Za-z&. ]/)) {
-        return false;
-    }
-});
+// $('.only-lyrics').keypress(function (e) {
+//     var txt = String.fromCharCode(e.which);
+//     if (!txt.match(/[A-Za-z&. ]/)) {
+//         return false;
+//     }
+// });
   
-$('.only-lyrics').bind('paste', function() {
-    setTimeout(function() { 
-        var value = $(this).val();
-        var updated = value.replace(/[^A-Za-z&. ]/g, '');
-        $(this).val(updated);
-    });
-});
+// $('.only-lyrics').bind('paste', function() {
+//     setTimeout(function() { 
+//         var value = $(this).val();
+//         var updated = value.replace(/[^A-Za-z&. ]/g, '');
+//         $(this).val(updated);
+//     });
+// });
 
 $('.only-numbers').keypress(function (e) {
     var txt = String.fromCharCode(e.which);
@@ -389,6 +405,8 @@ $(document).on('click', '#updateNit', function () {
             id_ciudad: $("#id_ciudad").val(),
             observaciones: $("#observaciones").val(),
             id_vendedor: $('#id_vendedor_nit').val(),
+            porcentaje_aiu: $('#porcentaje_aiu').val(),
+            declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
 
@@ -456,6 +474,8 @@ $(document).on('click', '#saveNit', function () {
             id_ciudad: $("#id_ciudad").val(),
             observaciones: $("#observaciones").val(),
             id_vendedor: $('#id_vendedor_nit').val(),
+            porcentaje_aiu: $('#porcentaje_aiu').val(),
+            declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
 
@@ -516,6 +536,7 @@ function clearFormNits(){
     $("#telefono_1").val('');
     $("#direccion").val('');
     $("#email").val('');
+    $("#porcentaje_aiu").val('');
     $('#default_avatar').show();
     $('#new_avatar').hide();
 
@@ -536,8 +557,10 @@ function hideFormNits(){
         'otros_nombres',
         'razon_social',
         'telefono_1',
+        'porcentaje_aiu',
         'direccion',
         'email',
+        'declarante'
     ];
 
     var nitsForm = [
@@ -547,8 +570,10 @@ function hideFormNits(){
         'numero_documento',
         'razon_social',
         'telefono_1',
+        'porcentaje_aiu',
         'direccion',
         'email',
+        'declarante'
     ];
 
     var noNitsForm = [
@@ -561,8 +586,10 @@ function hideFormNits(){
         'primer_nombre',
         'otros_nombres',
         'telefono_1',
+        'porcentaje_aiu',
         'direccion',
         'email',
+        'declarante'
     ];
 
     divsForm.forEach(form => {
@@ -573,12 +600,18 @@ function hideFormNits(){
     if (tipoDocumento && tipoDocumento == '6') {
         nitsForm.forEach(form => {
             $("#div_"+form).show();
-            $("#"+form).prop('required',true);
+            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu') {
+            } else {
+                $("#"+form).prop('required',true);
+            }
         });
     } else if (tipoDocumento) {
         noNitsForm.forEach(form => {
             $("#div_"+form).show();
-            $("#"+form).prop('required',true);
+            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu') {
+            } else {
+                $("#"+form).prop('required',true);
+            }
         });
     }
 

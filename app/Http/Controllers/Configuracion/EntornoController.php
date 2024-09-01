@@ -52,12 +52,17 @@ class EntornoController extends Controller
                 'iva_incluido',
                 'capturar_documento_descuadrado',
                 'valor_uvt',
-                'vendedores_ventas'
+                'vendedores_ventas',
+                'porcentaje_iva_aiu',
+                'ubicacion_maximoph',
             ];
-
+            
             foreach ($variablesEntorno as $variable) {
-                VariablesEntorno::where('nombre', $variable)->update([
-                    'valor' => $request->get($variable)
+                VariablesEntorno::updateOrCreate([
+                    'nombre' => $variable,
+                ],[
+                    'nombre' => $variable,
+                    'valor' => $request->get($variable) ? $request->get($variable) : '',
                 ]);
 
                 if ($variable == 'valor_uvt') {

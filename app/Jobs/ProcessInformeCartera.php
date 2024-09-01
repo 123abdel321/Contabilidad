@@ -25,15 +25,24 @@ class ProcessInformeCartera implements ShouldQueue
     public $request;
     public $id_usuario;
 	public $id_empresa;
-    public $id_cartera = 1;
+    public $contador = 10000;
     public $carteras = [];
+    public $id_cartera = 0;
     public $carteraCollection = [];
+    public $id_notificacion = null;
 
     public function __construct($request, $id_usuario, $id_empresa)
     {
         $this->request = $request;
 		$this->id_usuario = $id_usuario;
 		$this->id_empresa = $id_empresa;
+        if ($this->request['id_cuenta']) {
+            $cuenta = PlanCuentas::find($this->request['id_cuenta']);
+            $this->request['cuenta'] = $cuenta->cuenta;
+        }
+        if (array_key_exists('notificacion', $this->request)) {
+            $this->id_notificacion = $this->request['notificacion'];
+        }
     }
 
     public function handle()
@@ -48,22 +57,22 @@ class ProcessInformeCartera implements ShouldQueue
         try {
             $cartera = InfCartera::create([
 				'id_empresa' => $this->id_empresa,
-				'id_cuenta' => $this->request['id_cuenta'],
 				'id_nit' => $this->request['id_nit'],
-				'fecha_hasta' => $this->request['fecha_cartera'],
-				'detallar_cartera' => $this->request['detallar_cartera'],
+				'id_cuenta' => $this->request['id_cuenta'],
+				'fecha_desde' => $this->request['fecha_desde'],
+				'fecha_hasta' => $this->request['fecha_hasta'],
+				'agrupar_cartera' => $this->request['agrupar_cartera'],
+				'nivel' => $this->request['nivel'],
 			]);
 
             $this->id_cartera = $cartera->id;
 
-            $this->documentosCartera();
-            $this->documentosTotal();
-            if($this->request['detallar_cartera'] == '1') {
-                $this->documentosCarteraDetalle();
-            }
-
+            $this->nivelUnoCartera();
+            if ($this->request['nivel'] != '1') $this->nivelDosCartera();
+            if ($this->request['nivel'] == '3') $this->nivelTresCartera();
+            $this->totalesCartera();
+            
             ksort($this->carteraCollection, SORT_STRING | SORT_FLAG_CASE);
-
             foreach (array_chunk($this->carteraCollection,233) as $carteraCollection){
                 DB::connection('informes')
                     ->table('inf_cartera_detalles')
@@ -72,7 +81,12 @@ class ProcessInformeCartera implements ShouldQueue
 
             DB::connection('informes')->commit();
 
-            event(new PrivateMessageEvent('informe-cartera-'.$empresa->token_db.'_'.$this->id_usuario, [
+            $urlEventoNotificacion = $empresa->token_db.'_'.$this->id_usuario;
+            if ($this->id_notificacion) {
+                $urlEventoNotificacion = $this->id_notificacion;
+            }
+
+            event(new PrivateMessageEvent('informe-cartera-'.$urlEventoNotificacion, [
                 'tipo' => 'exito',
                 'mensaje' => 'Informe generado con exito!',
                 'titulo' => 'Cartera generada',
@@ -87,461 +101,540 @@ class ProcessInformeCartera implements ShouldQueue
         }
     }
 
-    private function documentosCartera()
+    private function nivelUnoCartera()
     {
-        $fecha = Carbon::now();
+        $query = $this->carteraDocumentosQuery();
+        $query->unionAll($this->carteraAnteriorQuery());
 
-        DB::connection('sam')->table('documentos_generals AS DG')
+        return DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS cartera"))
+            ->mergeBindings($query)
             ->select(
-                "N.id AS id_nit",
-                "TD.nombre AS tipo_documento",
-                "N.numero_documento",
-                "N.id_ciudad",
+                'id_nit',
+                'numero_documento',
+                'nombre_nit',
+                'razon_social',
+                'apartamentos',
+                'id_cuenta',
+                'cuenta',
+                'naturaleza_cuenta',
+                'auxiliar',
+                'nombre_cuenta',
+                'documento_referencia',
+                'id_centro_costos',
+                'codigo_cecos',
+                'nombre_cecos',
+                'id_comprobante',
+                'codigo_comprobante',
+                'nombre_comprobante',
+                'consecutivo',
+                'concepto',
+                'fecha_manual',
+                'created_at',
+                'fecha_creacion',
+                'fecha_edicion',
+                'created_by',
+                'updated_by',
+                'anulado',
+                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
+                DB::raw('SUM(total_columnas) AS total_columnas'),
                 DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
-                    ELSE NULL
-                END) AS nombre_nit"),
-                "N.razon_social",
-                "N.telefono_1",
-                "N.telefono_2",
-                "N.email",
-                "N.direccion",
-                "N.plazo",
-                "PC.id AS id_cuenta",
-                "PC.cuenta",
-                "PC.nombre AS nombre_cuenta",
-                "DG.documento_referencia",
-                "DG.id_centro_costos",
-                "CC.codigo AS codigo_cecos",
-                "CC.nombre AS nombre_cecos",
-                "DG.id_comprobante AS id_comprobante",
-                "CO.codigo AS codigo_comprobante",
-                "CO.nombre AS nombre_comprobante",
-                "CO.tipo_comprobante",
-                "DG.consecutivo",
-                "DG.concepto",
-                "DG.fecha_manual",
-                "DG.created_at",
-                "PC.naturaleza_ingresos",
-                "PC.naturaleza_egresos",
-                "PC.naturaleza_compras",
-                "PC.naturaleza_ventas",
-                "PC.naturaleza_cuenta",
-                DB::raw("SUM(DG.debito) AS debito"),
-                DB::raw("SUM(DG.credito) AS credito"),
-                DB::raw("DATEDIFF('$fecha', DG.fecha_manual) AS dias_cumplidos"),
-                DB::raw("DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                "DG.created_by",
-                "DG.updated_by",
-                DB::raw("IF(PC.naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
-                DB::raw("IF(PC.naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
-                DB::raw("IF(
-                    PC.naturaleza_cuenta = 0,
-                    SUM(DG.debito - DG.credito),
-                    SUM(DG.credito - DG.debito)
-                ) AS saldo")
+					WHEN naturaleza_cuenta = 0 AND SUM(debito) < 0 THEN 1
+					WHEN naturaleza_cuenta = 1 AND SUM(credito) < 0 THEN 1
+					ELSE 0
+				END) AS error")
             )
-            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
-            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-            ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
-            ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
-            ->leftJoin('tipos_documentos AS TD', 'N.id_tipo_documento', 'TD.id')
-            ->where('anulado', 0)
-            ->when($this->request['id_nit'] ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('N.id', $this->request['id_nit']);
-			})
-            ->when($this->request['id_tipo_cuenta'] ? $this->request['id_tipo_cuenta'] : false, function ($query) {
-				$query->where('PC.id_tipo_cuenta', $this->request['id_tipo_cuenta']);
-			})
-            ->when($this->request['fecha_cartera'] ? $this->request['fecha_cartera'] : false, function ($query) {
-				$query->where('DG.fecha_manual', '<=', $this->request['fecha_cartera']);
-			})
-            ->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) != 0")
-            ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia')
-            ->orderByRaw('DG.fecha_manual')
+            ->groupByRaw($this->request['agrupar_cartera'])
+            ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
             ->chunk(233, function ($documentos) {
-                // dd($documentos);
-                foreach ($documentos as $documento) {
-                    //AGREGAR DETALLE DE CUENTAS PADRE
-                    if($this->request['detallar_cartera'] == '1') {
-                        $this->addTotalsPadresData($documento);
+                $documentos->each(function ($documento) {
+                    $key = '';
+                    if ($this->request['agrupar_cartera'] == 'id_nit') {
+                        $key = $documento->numero_documento;
                     }
-                    //AGREGAR DOCUMENTOS POR NIT
-                    $this->addTotalNitsData($documento);
-                }
-            });
-    }
-
-    private function documentosCarteraDetalle()
-    {
-        $fecha = Carbon::now();
-
-        DB::connection('sam')->table('documentos_generals AS DG')
-            ->select(
-                "N.id AS id_nit",
-                "TD.nombre AS tipo_documento",
-                "N.numero_documento",
-                "N.id_ciudad",
-                DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
-                    ELSE NULL
-                END) AS nombre_nit"),
-                "N.razon_social",
-                "N.telefono_1",
-                "N.telefono_2",
-                "N.email",
-                "N.direccion",
-                "N.plazo",
-                "PC.id AS id_cuenta",
-                "PC.cuenta",
-                "PC.nombre AS nombre_cuenta",
-                "DG.documento_referencia",
-                "DG.id_centro_costos",
-                "CC.codigo AS codigo_cecos",
-                "CC.nombre AS nombre_cecos",
-                "DG.id_comprobante AS id_comprobante",
-                "CO.codigo AS codigo_comprobante",
-                "CO.nombre AS nombre_comprobante",
-                "CO.tipo_comprobante",
-                "DG.consecutivo",
-                "DG.concepto",
-                "DG.fecha_manual",
-                "DG.created_at",
-                "PC.naturaleza_ingresos",
-                "PC.naturaleza_egresos",
-                "PC.naturaleza_compras",
-                "PC.naturaleza_ventas",
-                "PC.naturaleza_cuenta",
-                "debito",
-                "credito",
-                DB::raw("DATEDIFF('$fecha', DG.fecha_manual) AS dias_cumplidos"),
-                // "'detalle' AS detalle",
-                DB::raw("DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                "DG.created_by",
-                "DG.updated_by",
-                DB::raw("IF(PC.naturaleza_cuenta = 0, credito, debito) AS total_abono"),
-                DB::raw("IF(PC.naturaleza_cuenta = 0, debito, credito) AS total_facturas"),
-                DB::raw("IF(
-                    PC.naturaleza_cuenta = 0,
-                    DG.debito - DG.credito,
-                    DG.credito - DG.debito
-                ) AS saldo")
-            )
-            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
-            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-            ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
-            ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
-            ->leftJoin('tipos_documentos AS TD', 'N.id_tipo_documento', 'TD.id')
-            ->where('anulado', 0)
-            ->when($this->request['id_nit'] ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('N.id', $this->request['id_nit']);
-			})
-            ->when($this->request['id_tipo_cuenta'] ? $this->request['id_tipo_cuenta'] : false, function ($query) {
-				$query->where('PC.id_tipo_cuenta', $this->request['id_tipo_cuenta']);
-			})
-            ->when($this->request['fecha_cartera'] ? $this->request['fecha_cartera'] : false, function ($query) {
-				$query->where('DG.fecha_manual', '<=', $this->request['fecha_cartera']);
-			})
-            ->orderByRaw('DG.fecha_manual')
-            ->chunk(233, function ($documentosDetalle) {
-                foreach ($documentosDetalle as $documentoDetalle) {
-                    $cuentaNumero = 1;
-                    $cuentaNueva = $this->nuevaCuentaDetalle($documentoDetalle, $cuentaNumero);
-                    while ($this->hasCuentaData($cuentaNueva)) {
-                        $cuentaNumero++;
-                        $cuentaNueva = $this->nuevaCuentaDetalle($documentoDetalle, $cuentaNumero);
+                    if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                        $key = $documento->cuenta;
                     }
-                    //DETALLE DOCUMENTOS
-                    $this->carteraCollection[$cuentaNueva] = [
+                    $this->carteraCollection[$key] = [
                         'id_cartera' => $this->id_cartera,
-                        'id_nit' => $documentoDetalle->id_nit,
-                        'numero_documento' => '',
-                        'nombre_nit' => '',
-                        'razon_social' => '',
-                        'plazo' => $documentoDetalle->plazo,
-                        'id_cuenta' => $documentoDetalle->id_cuenta,
-                        'cuenta' => '',
-                        'nombre_cuenta' => '',
+                        'id_nit' => $documento->id_nit,
+                        'numero_documento' => $documento->numero_documento,
+                        'nombre_nit' => $documento->nombre_nit,
+                        'razon_social' => $documento->razon_social,
+                        'apartamento_nit' => $documento->apartamentos,
+                        'id_cuenta' => $documento->id_cuenta,
+                        'cuenta' => $documento->cuenta,
+                        'nombre_cuenta' => $documento->nombre_cuenta,
                         'documento_referencia' => '',
-                        'codigo_comprobante' => $documentoDetalle->codigo_comprobante,
-                        'nombre_comprobante' => $documentoDetalle->nombre_comprobante,
-                        'concepto' => $documentoDetalle->concepto,
-                        'fecha_manual' => $documentoDetalle->fecha_manual,
-                        'dias_cumplidos' => $documentoDetalle->dias_cumplidos,
-                        'fecha_creacion' => $documentoDetalle->fecha_creacion,
-                        'fecha_edicion' => $documentoDetalle->fecha_edicion,
-                        'created_by' => $documentoDetalle->created_by,
-                        'updated_by' => $documentoDetalle->updated_by,
-                        'total_abono' => $documentoDetalle->total_abono,
-                        'total_facturas' => $documentoDetalle->total_facturas,
-                        'saldo' => $documentoDetalle->saldo,
-                        'detalle' => false,
-                        'detalle_group' => false,
+                        'id_centro_costos' => $documento->id_centro_costos,
+                        'id_comprobante' => $documento->id_comprobante,
+                        'codigo_comprobante' => $documento->codigo_comprobante,
+                        'nombre_comprobante' => $documento->nombre_comprobante,
+                        'codigo_cecos' => $documento->codigo_cecos,
+                        'nombre_cecos' => $documento->nombre_cecos,
+                        'consecutivo' => $documento->consecutivo,
+                        'concepto' => '',
+                        'fecha_manual' => '',
+                        'fecha_creacion' => $documento->fecha_creacion,
+                        'fecha_edicion' => $documento->fecha_edicion,
+                        'created_by' => $documento->created_by,
+                        'updated_by' => $documento->updated_by,
+                        'dias_cumplidos' => '',
+                        'mora' => '',
+                        'saldo_anterior' => $documento->saldo_anterior,
+                        'total_abono' => $documento->total_abono,
+                        'total_facturas' => $documento->total_facturas,
+                        'saldo' => $documento->saldo_final,
+                        'nivel' => 1,
+                        'errores' => $documento->error
                     ];
-                }
+                });
             });
     }
 
-    private function documentosTotal()
+    private function nivelDosCartera()
     {
-        $fecha = Carbon::now();
+        $query = $this->carteraDocumentosQuery();
+        $query->unionAll($this->carteraAnteriorQuery());
 
-        $totalDocumentos = DB::connection('sam')->table('documentos_generals AS DG')
+        DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS cartera"))
+            ->mergeBindings($query)
             ->select(
-                "N.id AS id_nit",
-                "TD.nombre AS tipo_documento",
-                "N.numero_documento",
-                "N.id_ciudad",
+                'id_nit',
+                'numero_documento',
+                'nombre_nit',
+                'razon_social',
+                'apartamentos',
+                'id_cuenta',
+                'cuenta',
+                'naturaleza_cuenta',
+                'auxiliar',
+                'nombre_cuenta',
+                'documento_referencia',
+                'id_centro_costos',
+                'codigo_cecos',
+                'nombre_cecos',
+                'id_comprobante',
+                'codigo_comprobante',
+                'nombre_comprobante',
+                'consecutivo',
+                'concepto',
+                'fecha_manual',
+                'created_at',
+                'fecha_creacion',
+                'fecha_edicion',
+                'created_by',
+                'updated_by',
+                'anulado',
+                'plazo',
+                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
+                DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
+                DB::raw('SUM(total_columnas) AS total_columnas'),
                 DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
-                    ELSE NULL
-                END) AS nombre_nit"),
-                "N.razon_social",
-                "N.telefono_1",
-                "N.telefono_2",
-                "N.email",
-                "N.direccion",
-                "N.plazo",
-                "PC.id AS id_cuenta",
-                "PC.cuenta",
-                "PC.nombre AS nombre_cuenta",
-                "DG.documento_referencia",
-                "DG.id_centro_costos",
-                "CC.codigo AS codigo_cecos",
-                "CC.nombre AS nombre_cecos",
-                "DG.id_comprobante AS id_comprobante",
-                "CO.codigo AS codigo_comprobante",
-                "CO.nombre AS nombre_comprobante",
-                "CO.tipo_comprobante",
-                "DG.consecutivo",
-                "DG.concepto",
-                "DG.fecha_manual",
-                "DG.created_at",
-                DB::raw("SUM(DG.debito) AS debito"),
-                DB::raw("SUM(DG.credito) AS credito"),
-                DB::raw("DATEDIFF('$fecha', DG.fecha_manual) AS dias_cumplidos"),
-                DB::raw("DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                "DG.created_by",
-                "DG.updated_by",
-                DB::raw("IF(PC.naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
-                DB::raw("IF(PC.naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
-                DB::raw("IF(
-                    PC.naturaleza_cuenta = 0,
-                    SUM(DG.debito - DG.credito),
-                    SUM(DG.credito - DG.debito)
-                ) AS saldo")
+					WHEN naturaleza_cuenta = 0 AND SUM(debito) < 0 THEN 1
+					WHEN naturaleza_cuenta = 1 AND SUM(credito) < 0 THEN 1
+					ELSE 0
+				END) AS error")
             )
-            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
-            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-            ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
-            ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
-            ->leftJoin('tipos_documentos AS TD', 'N.id_tipo_documento', 'TD.id')
-            ->where('anulado', 0)
-            ->when($this->request['id_nit'] ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('N.id', $this->request['id_nit']);
-			})
-            ->when($this->request['id_tipo_cuenta'] ? $this->request['id_tipo_cuenta'] : false, function ($query) {
-				$query->where('PC.id_tipo_cuenta', $this->request['id_tipo_cuenta']);
-			})
-            ->when($this->request['fecha_cartera'] ? $this->request['fecha_cartera'] : false, function ($query) {
-				$query->where('DG.fecha_manual', '<=', $this->request['fecha_cartera']);
-			})
-            ->groupByRaw('DG.id')
-            ->orderByRaw('DG.fecha_manual')
-            ->get();
-        //TOTAL DOCUMENTOS
-        $this->carteraCollection['9999'] = [
+            ->groupByRaw($this->groupString(2))
+            ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
+            ->chunk(233, function ($documentos) {
+                
+                $documentos->each(function ($documento) {
+                    $key = '';
+                    if ($this->request['agrupar_cartera'] == 'id_nit') {
+                        $key = $documento->numero_documento.'-A-'.$documento->cuenta;
+                    }
+                    if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                        $nombreKey = str_replace(' ', '', $documento->nombre_nit);
+                        $key = $documento->cuenta.'-A-'.$nombreKey;
+                    }
+                    $mora = $documento->dias_cumplidos - $documento->plazo;
+                    $this->carteraCollection[$key] = [
+                        'id_cartera' => $this->id_cartera,
+                        'id_nit' => $documento->id_nit,
+                        'numero_documento' => $documento->numero_documento,
+                        'nombre_nit' => $documento->nombre_nit,
+                        'razon_social' => $documento->razon_social,
+                        'apartamento_nit' => $documento->apartamentos,
+                        'id_cuenta' => $documento->id_cuenta,
+                        'cuenta' => $documento->cuenta,
+                        'nombre_cuenta' => $documento->nombre_cuenta,
+                        'documento_referencia' => '',
+                        'id_centro_costos' => $documento->id_centro_costos,
+                        'id_comprobante' => $documento->id_comprobante,
+                        'codigo_comprobante' => $documento->codigo_comprobante,
+                        'nombre_comprobante' => $documento->nombre_comprobante,
+                        'codigo_cecos' => $documento->codigo_cecos,
+                        'nombre_cecos' => $documento->nombre_cecos,
+                        'consecutivo' => $documento->consecutivo,
+                        'concepto' => '',
+                        'fecha_manual' => '',
+                        'fecha_creacion' => $documento->fecha_creacion,
+                        'fecha_edicion' => $documento->fecha_edicion,
+                        'created_by' => $documento->created_by,
+                        'updated_by' => $documento->updated_by,
+                        'dias_cumplidos' => $documento->dias_cumplidos,
+                        'mora' => $mora < 0 ? 0 : $mora,
+                        'saldo_anterior' => $documento->saldo_anterior,
+                        'total_abono' => $documento->total_abono,
+                        'total_facturas' => $documento->total_facturas,
+                        'saldo' => $documento->saldo_final,
+                        'nivel' => 2,
+                        'errores' => $documento->error
+                    ];
+                });
+            });
+    }
+
+    private function nivelTresCartera()
+    {
+        $query = $this->carteraDocumentosQuery();
+        $query->unionAll($this->carteraAnteriorQuery());
+
+        DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS cartera"))
+            ->mergeBindings($query)
+            ->select(
+                'id_nit',
+                'numero_documento',
+                'nombre_nit',
+                'razon_social',
+                'apartamentos',
+                'id_cuenta',
+                'cuenta',
+                'naturaleza_cuenta',
+                'auxiliar',
+                'nombre_cuenta',
+                'documento_referencia',
+                'id_centro_costos',
+                'codigo_cecos',
+                'nombre_cecos',
+                'id_comprobante',
+                'codigo_comprobante',
+                'nombre_comprobante',
+                'consecutivo',
+                'concepto',
+                'fecha_manual',
+                'created_at',
+                'fecha_creacion',
+                'fecha_edicion',
+                'created_by',
+                'updated_by',
+                'anulado',
+                'plazo',
+                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
+                DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
+                DB::raw('SUM(total_columnas) AS total_columnas'),
+                DB::raw("(CASE
+					WHEN naturaleza_cuenta = 0 AND SUM(debito) < 0 THEN 1
+					WHEN naturaleza_cuenta = 1 AND SUM(credito) < 0 THEN 1
+					ELSE 0
+				END) AS error")
+            )
+            ->groupByRaw($this->groupString(3))
+            ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
+            ->chunk(233, function ($documentos) {
+                $documentos->each(function ($documento) {
+                    $this->contador++;
+                    $key = '';
+                    if ($this->request['agrupar_cartera'] == 'id_nit') {
+                        $key = $documento->numero_documento.'-A-'.$documento->cuenta.'-B-'.$this->contador;
+                    }
+                    if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                        $nombreKey = str_replace(' ', '', $documento->nombre_nit);
+                        $key = $documento->cuenta.'-A-'.$nombreKey.'-B-'.$this->contador;
+                    }
+                    $mora = $documento->dias_cumplidos - $documento->plazo;
+                    $this->carteraCollection[$key] = [
+                        'id_cartera' => $this->id_cartera,
+                        'id_nit' => $documento->id_nit,
+                        'numero_documento' => $documento->numero_documento,
+                        'nombre_nit' => $documento->nombre_nit,
+                        'razon_social' => $documento->razon_social,
+                        'apartamento_nit' => $documento->apartamentos,
+                        'id_cuenta' => $documento->id_cuenta,
+                        'cuenta' => $documento->cuenta,
+                        'nombre_cuenta' => $documento->nombre_cuenta,
+                        'documento_referencia' => $documento->documento_referencia,
+                        'id_centro_costos' => $documento->id_centro_costos,
+                        'id_comprobante' => $documento->id_comprobante,
+                        'codigo_comprobante' => $documento->codigo_comprobante,
+                        'nombre_comprobante' => $documento->nombre_comprobante,
+                        'codigo_cecos' => $documento->codigo_cecos,
+                        'nombre_cecos' => $documento->nombre_cecos,
+                        'consecutivo' => $documento->consecutivo,
+                        'concepto' => $documento->concepto,
+                        'fecha_manual' => $documento->fecha_manual,
+                        'fecha_creacion' => $documento->fecha_creacion,
+                        'fecha_edicion' => $documento->fecha_edicion,
+                        'created_by' => $documento->created_by,
+                        'updated_by' => $documento->updated_by,
+                        'dias_cumplidos' => $documento->dias_cumplidos,
+                        'mora' => $mora < 0 ? 0 : $mora,
+                        'saldo_anterior' => $documento->saldo_anterior,
+                        'total_abono' => $documento->total_abono,
+                        'total_facturas' => $documento->total_facturas,
+                        'saldo' => $documento->saldo_final,
+                        'nivel' => 3,
+                        'errores' => $documento->error
+                    ];
+                });
+            });
+    }
+
+    private function totalesCartera()
+    {
+        $query = $this->carteraDocumentosQuery();
+        $query->unionAll($this->carteraAnteriorQuery());
+
+        $total = DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS cartera"))
+            ->mergeBindings($query)
+            ->select(
+                'id_nit',
+                'numero_documento',
+                'nombre_nit',
+                'razon_social',
+                'id_cuenta',
+                'cuenta',
+                'naturaleza_cuenta',
+                'auxiliar',
+                'nombre_cuenta',
+                'documento_referencia',
+                'id_centro_costos',
+                'codigo_cecos',
+                'nombre_cecos',
+                'id_comprobante',
+                'codigo_comprobante',
+                'nombre_comprobante',
+                'consecutivo',
+                'concepto',
+                'fecha_manual',
+                'created_at',
+                'fecha_creacion',
+                'fecha_edicion',
+                'created_by',
+                'updated_by',
+                'anulado',
+                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
+                DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
+                DB::raw('SUM(total_columnas) AS total_columnas')
+            )
+            ->orderByRaw('created_at')
+            ->first();
+
+        $this->carteraCollection['99999999999'] = [
             'id_cartera' => $this->id_cartera,
             'id_nit' => '',
             'numero_documento' => '',
             'nombre_nit' => '',
             'razon_social' => '',
-            'plazo' => '',
+            'apartamento_nit' => '',
             'id_cuenta' => '',
             'cuenta' => 'TOTALES',
             'nombre_cuenta' => '',
             'documento_referencia' => '',
+            'id_centro_costos' => '',
+            'id_comprobante' => '',
             'codigo_comprobante' => '',
             'nombre_comprobante' => '',
+            'codigo_cecos' => '',
+            'nombre_cecos' => '',
+            'consecutivo' => '',
             'concepto' => '',
             'fecha_manual' => '',
+            'fecha_creacion' => '',
+            'fecha_edicion' => '',
+            'created_by' => '',
+            'updated_by' => '',
             'dias_cumplidos' => '',
-            'fecha_creacion' => NULL,
-            'fecha_edicion' => NULL,
-            'created_by' => NULL,
-            'updated_by' => NULL,
-            'total_abono' => $totalDocumentos->sum('total_abono'),
-            'total_facturas' => $totalDocumentos->sum('total_facturas'),
-            'saldo' => $totalDocumentos->sum('saldo'),
-            'detalle' => 'si',
-            'detalle_group' => false,
+            'mora' => '',
+            'saldo_anterior' => $total ? $total->saldo_anterior : 0,
+            'total_abono' => $total ? $total->total_abono : 0,
+            'total_facturas' => $total ? $total->total_facturas : 0,
+            'saldo' => $total ? $total->saldo_final : 0,
+            'nivel' => 0,
+            'errores' => 0,
         ];
     }
 
-    private function addTotalsPadresData($documento)
+    private function carteraDocumentosQuery($documento_referencia = NULL, $id_nit = NULL, $id_cuenta = NULL)
     {
-        $cuentasAsociadas = $this->getCuentas($documento->cuenta); //return ARRAY PADRES CUENTA
-        foreach ($cuentasAsociadas as $cuenta) {
-            if ($this->hasCuentaData($cuenta)) $this->sumCuentaData($cuenta, $documento);
-            else $this->newCuentaData($cuenta, $documento, $cuentasAsociadas);
+        $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
+            ->select(
+                'N.id AS id_nit',
+                'N.numero_documento',
+                DB::raw("(CASE
+                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    ELSE NULL
+                END) AS nombre_nit"),
+                "N.razon_social",
+                "N.plazo",
+                "N.apartamentos",
+                "PC.id AS id_cuenta",
+                "PC.cuenta",
+                "PC.naturaleza_cuenta",
+                "PC.auxiliar",
+                "PC.nombre AS nombre_cuenta",
+                "DG.documento_referencia",
+                "DG.id_centro_costos",
+                "CC.codigo AS codigo_cecos",
+                "CC.nombre AS nombre_cecos",
+                "CO.id AS id_comprobante",
+                "CO.codigo AS codigo_comprobante",
+                "CO.nombre AS nombre_comprobante",
+                "DG.consecutivo",
+                "DG.concepto",
+                "DG.fecha_manual",
+                "DG.created_at",
+                DB::raw("DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                "DG.created_by",
+                "DG.updated_by",
+                "DG.anulado",
+                DB::raw("0 AS saldo_anterior"),
+                DB::raw("DG.debito AS debito"),
+                DB::raw("DG.credito AS credito"),
+                DB::raw("DG.debito - DG.credito AS saldo_final"),
+                DB::raw("1 AS total_columnas")
+            )
+            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
+            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+            ->leftJoin('plan_cuentas_tipos AS PCT', 'PC.id', 'PCT.id_cuenta')
+            ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
+            ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
+            ->where('anulado', 0)
+            ->whereIn('PCT.id_tipo_cuenta', $this->tipoCuentas())
+            ->when($this->request['fecha_desde'] ? true : false, function ($query) {
+				$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde']);
+			}) 
+            ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
+				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
+			})
+            ->when($this->request['id_nit'] ? true : false, function ($query) {
+				$query->where('DG.id_nit', $this->request['id_nit']);
+			})
+			->when($this->request['id_cuenta'] ? true : false, function ($query) {
+				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+			});
+
+        return $documentosQuery;
+    }
+
+    private function carteraAnteriorQuery($documento_referencia = NULL, $id_nit = NULL, $id_cuenta = NULL)
+    {
+        $anterioresQuery = DB::connection('sam')->table('documentos_generals AS DG')
+            ->select(
+                'N.id AS id_nit',
+                'N.numero_documento',
+                DB::raw("(CASE
+                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    ELSE NULL
+                END) AS nombre_nit"),
+                "N.razon_social",
+                "N.plazo",
+                "N.apartamentos",
+                "PC.id AS id_cuenta",
+                "PC.cuenta",
+                "PC.naturaleza_cuenta",
+                "PC.auxiliar",
+                "PC.nombre AS nombre_cuenta",
+                "DG.documento_referencia",
+                "DG.id_centro_costos",
+                "CC.codigo AS codigo_cecos",
+                "CC.nombre AS nombre_cecos",
+                "CO.id AS id_comprobante",
+                "CO.codigo AS codigo_comprobante",
+                "CO.nombre AS nombre_comprobante",
+                "DG.consecutivo",
+                "DG.concepto",
+                "DG.fecha_manual",
+                "DG.created_at",
+                DB::raw("DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                "DG.created_by",
+                "DG.updated_by",
+                "DG.anulado",
+                DB::raw("debito - credito AS saldo_anterior"),
+                DB::raw("0 AS debito"),
+                DB::raw("0 AS credito"),
+                DB::raw("0 AS saldo_final"),
+                DB::raw("1 AS total_columnas")
+            )
+            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
+            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+            ->leftJoin('plan_cuentas_tipos AS PCT', 'PC.id', 'PCT.id_cuenta')
+            ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
+            ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
+            ->where('anulado', 0)
+            ->whereIn('PCT.id_tipo_cuenta', $this->tipoCuentas())
+            ->when($this->request['fecha_desde'] ? true : false, function ($query) {
+				$query->where('DG.fecha_manual', '<', $this->request['fecha_desde']);
+			})
+            ->when($this->request['id_nit'] ? true : false, function ($query) {
+				$query->where('DG.id_nit', $this->request['id_nit']);
+			})
+			->when($this->request['id_cuenta'] ? true : false, function ($query) {
+				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+			});
+
+        return $anterioresQuery;
+    }
+    
+    private function groupString($nivel)
+    {
+        $groupBy = '';
+        if ($nivel == 2) {
+            if ($this->request['agrupar_cartera'] == 'id_nit') {
+                $groupBy = 'id_cuenta, id_nit';
+            }
+            if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                $groupBy = 'id_nit, id_cuenta';
+            }
         }
-    }
 
-    private function addTotalNitsData($documento)
-    {
-        $cuentaNumero = 1;
-        $cuentaNueva = $this->nuevaCuenta($documento, $cuentaNumero);
-        while ($this->hasCuentaData($cuentaNueva)) {
-            $cuentaNumero++;
-            $cuentaNueva = $this->nuevaCuenta($documento, $cuentaNumero);
-        }
-        //TOTAL POR NITS
-        $this->carteraCollection[$cuentaNueva] = [
-            'id_cartera' => $this->id_cartera,
-            'id_nit' => $documento->id_nit,
-            'numero_documento' => $documento->numero_documento,
-            'nombre_nit' => $documento->nombre_nit,
-            'razon_social' => $documento->razon_social,
-            'plazo' => $documento->plazo,
-            'id_cuenta' => $documento->id_cuenta,
-            'cuenta' => $documento->cuenta,
-            'nombre_cuenta' => $documento->nombre_cuenta,
-            'documento_referencia' => $documento->documento_referencia,
-            'codigo_comprobante' => $documento->codigo_comprobante,
-            'nombre_comprobante' => $documento->nombre_comprobante,
-            'concepto' => $documento->concepto,
-            'fecha_manual' => $documento->fecha_manual,
-            'dias_cumplidos' => $documento->dias_cumplidos,
-            'fecha_creacion' => $documento->fecha_creacion,
-            'fecha_edicion' => $documento->fecha_edicion,
-            'created_by' => $documento->created_by,
-            'updated_by' => $documento->updated_by,
-            'total_abono' => $documento->total_abono,
-            'total_facturas' => $documento->total_facturas,
-            'saldo' => $documento->saldo,
-            'detalle' => false,
-            'detalle_group' => 'nits',
-        ];
-    }
-
-    private function newCuentaData($cuenta, $documento, $cuentasAsociadas)
-    {
-        $detalle = false;
-        $detalleGroup = false;
-
-        if(strlen($cuenta) >= strlen($cuentasAsociadas[count($cuentasAsociadas)-1])){
-            $detalle = true;
+        if ($nivel == 3) {
+            if ($this->request['agrupar_cartera'] == 'id_nit') {
+                $groupBy = 'id_cuenta, id_nit, documento_referencia';
+            }
+            if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                $groupBy = 'id_nit, id_cuenta, documento_referencia';
+            }
         }
 
-        if(strlen($cuenta) >= strlen($cuentasAsociadas[count($cuentasAsociadas)-2])){
-            $detalleGroup = true;
-        }
-        
-        $cuentaData = PlanCuentas::whereCuenta($cuenta)->first();
-        if(!$cuentaData){
-            return;
-        }
-
-        $this->carteraCollection[$cuenta] = [
-            'id_cartera' => $this->id_cartera,
-            'id_nit' => '',
-            'numero_documento' => '',
-            'nombre_nit' => '',
-            'razon_social' => '',
-            'plazo' => '',
-            'id_cuenta' => $cuentaData->id,
-            'cuenta' => $cuentaData->cuenta,
-            'nombre_cuenta' => $cuentaData->nombre,
-            'documento_referencia' => '',
-            'codigo_comprobante' => '',
-            'nombre_comprobante' => '',
-            'concepto' => '',
-            'fecha_manual' => '',
-            'dias_cumplidos' => '',
-            'fecha_creacion' => NULL,
-            'fecha_edicion' => NULL,
-            'created_by' => NULL,
-            'updated_by' => NULL,
-            'total_abono' => number_format((float)$documento->total_abono, 2, '.', ''),
-            'total_facturas' => number_format((float)$documento->total_facturas, 2, '.', ''),
-            'saldo' => number_format((float)$documento->saldo, 2, '.', ''),
-            'detalle' => $detalle,
-            'detalle_group' => $detalleGroup,
-        ];
+        return $groupBy;
     }
 
-    private function getCuentas($cuenta)
+    private function tipoCuentas ()
     {
-        $dataCuentas = NULL;
-
-        if(strlen($cuenta) > 6){
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                mb_substr($cuenta, 0, 4),
-                mb_substr($cuenta, 0, 6),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 4) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                mb_substr($cuenta, 0, 4),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 2) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 1) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                $cuenta,
-            ];
-        } else {
-            $dataCuentas =[
-                $cuenta,
-            ];
-        }
-
-        return $dataCuentas;
+        if ($this->request['tipo_informe'] == 'por_cobrar') return [3,7];
+        if ($this->request['tipo_informe'] == 'por_pagar') return [4,8];
+        return [3,7,4,8];
     }
-
-    private function nuevaCuenta($documento, $cuentaNumero)
-    {
-        return $documento->cuenta.'-'.
-            $documento->id_nit.'B'.
-            $documento->documento_referencia.'A'.
-            $cuentaNumero.'B';
-    }
-
-    private function nuevaCuentaDetalle($documento, $cuentaNumero)
-    {
-        return $documento->cuenta.'-'.
-            $documento->id_nit.'B'.
-            $documento->documento_referencia.'B'.
-            $cuentaNumero.'B';
-    }
-
-    private function sumCuentaData($cuenta, $extracto)
-    {
-        $this->carteraCollection[$cuenta]['total_abono']+= number_format((float)$extracto->total_abono, 2, '.', '');
-        $this->carteraCollection[$cuenta]['total_facturas']+= number_format((float)$extracto->total_facturas, 2, '.', '');
-        $this->carteraCollection[$cuenta]['saldo']+= number_format((float)$extracto->saldo, 2, '.', '');
-    }
-
-    private function hasCuentaData($cuenta)
-	{
-		return isset($this->carteraCollection[$cuenta]);
-	}
-
-
 }

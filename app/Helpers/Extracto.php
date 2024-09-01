@@ -9,13 +9,15 @@ use App\Models\Sistema\DocumentosGeneral;
 class Extracto
 {
     public $id_nit;
+    public $id_cuenta;
     public $id_tipo_cuenta;
     public $documento_referencia;
     public $fecha;
 
-    public function __construct($id_nit = null, $id_tipo_cuenta = null, $documento_referencia = null, $fecha = null)
+    public function __construct($id_nit = null, $id_tipo_cuenta = null, $documento_referencia = null, $fecha = null, $id_cuenta = null)
     {
         $this->id_nit = $id_nit;
+        $this->id_cuenta = $id_cuenta;
         $this->id_tipo_cuenta = $id_tipo_cuenta;
         $this->documento_referencia = $documento_referencia;
         $this->fecha = $fecha;
@@ -70,14 +72,44 @@ class Extracto
                 'updated_by',
                 DB::raw('SUM(total_abono) AS total_abono'),
                 DB::raw('SUM(total_facturas) AS total_facturas'),
-                DB::raw('SUM(saldo) AS saldo'),
+                DB::raw('CASE WHEN (SUM(saldo)) < 0 THEN SUM(saldo) * -1 ELSE SUM(saldo) END AS saldo'),
             )
+            ->orderByRaw('cuenta, fecha_manual ASC')
             ->groupByRaw('documento_referencia, id_cuenta, id_nit');
 
         return $extracto;
     }
 
     public function anticipos()
+    {
+        $fecha = Carbon::now();
+
+        $query = $this->queryAnticipos();
+
+        $anticipo = DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS documentosanticipos"))
+            ->mergeBindings($query)
+            ->select(
+                "id_nit",
+                "id_cuenta",
+                "id_comprobante",
+                "id_centro_costos",
+                "fecha_manual",
+                "consecutivo",
+                "documento_referencia",
+                "naturaleza_cuenta",
+                DB::raw('IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono'),
+                DB::raw('IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) AS saldo'),
+                DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
+            )
+            ->groupByRaw('id_nit')
+            ->havingRaw("IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) != 0")
+            ->where('fecha_manual', '<=', $fecha);
+
+        return $anticipo;
+    }
+
+    public function anticiposDiscriminados()
     {
         $fecha = Carbon::now();
 
@@ -130,7 +162,8 @@ class Extracto
 			->where("anulado", 0)
 			->where("id_nit", $this->id_nit)
             ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
-				$query->where('PC.id_tipo_cuenta', $this->id_tipo_cuenta);
+                if (is_array($this->id_tipo_cuenta)) $query->whereIn('PC.id_tipo_cuenta', $this->id_tipo_cuenta);
+                else $query->where('PC.id_tipo_cuenta', $this->id_tipo_cuenta);
 			})
 			->when($this->documento_referencia, function ($query, $documento_referencia) {
 				$query->where('documento_referencia', $documento_referencia);
@@ -167,7 +200,12 @@ class Extracto
 				$query->where('DG.id_nit', $this->id_nit);
 			})
             ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
-				$query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
+                if (is_array($this->id_tipo_cuenta)) $query->whereIn('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
+                else $query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
+			})
+            ->when($this->id_cuenta ? $this->id_cuenta : false, function ($query) {
+                if (is_array($this->id_cuenta)) $query->whereIn('PC.id', $this->id_cuenta);
+                else $query->where('PC.id', $this->id_cuenta);
 			});
     }
 
@@ -237,8 +275,12 @@ class Extracto
             ->when($this->id_nit ? $this->id_nit : false, function ($query) {
 				$query->where('N.id', $this->id_nit);
 			})
+            ->when($this->id_cuenta ? $this->id_cuenta : false, function ($query) {
+				$query->where('PC.id', $this->id_cuenta);
+			})
             ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
-				$query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
+                if (is_array($this->id_tipo_cuenta)) $query->whereIn('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
+                else $query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
 			})
             ->when($this->documento_referencia ? $this->documento_referencia : false, function ($query) {
 				$query->where('DG.documento_referencia', $this->documento_referencia);
@@ -250,7 +292,7 @@ class Extracto
 				$query->where('DG.fecha_manual', '<=', $this->fecha);
 			})
             ->when($this->documento_referencia ? false : true, function ($query) {
-                $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) > 0");
+                $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) != 0");
 			})
             ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
 

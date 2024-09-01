@@ -72,7 +72,7 @@
 
                     <div class="form-group col-6 col-sm-6 col-md-6" >
                         <label for="example-text-input" class="form-control-label">Costo compra</label>
-                        <input type="number" class="form-control form-control-sm" name="precio_inicial" id="precio_inicial" onfocus="this.select();" onfocusout="addPrecioInicialProducto()" onkeypress="changeCostoCompra(event)" value="0" required>
+                        <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="precio_inicial" id="precio_inicial" onfocus="this.select();" onfocusout="addPrecioInicialProducto()" onkeypress="changeCostoCompra(event)" value="0" required>
                         <div class="invalid-feedback">
                             El campo Precio inicial es requerido
                         </div>
@@ -80,7 +80,7 @@
 
                     <div class="form-group col-6 col-sm-6 col-md-6">
                         <label for="example-text-input" class="form-control-label">Porcentaje utilidad</label>
-                        <input type="text" class="form-control form-control-sm" name="porcentaje_utilidad" id="porcentaje_utilidad" onfocus="this.select();" onfocusout="addPorcentajeUtilidadProducto()" onkeypress="changePorcentajeUtilidad(event)" value="0" required>
+                        <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_utilidad" id="porcentaje_utilidad" onfocusout="addPorcentajeUtilidadProducto()" onkeypress="changePorcentajeUtilidad(event)" value="0" required>
                         <div class="invalid-feedback">
                             El campo Porcentaje utilidad es requerido
                         </div>
@@ -88,7 +88,7 @@
 
                     <div class="form-group col-6 col-sm-6 col-md-6">
                         <label for="example-text-input" class="form-control-label">Valor utilidad</label>
-                        <input type="number" class="form-control form-control-sm" name="valor_utilidad" id="valor_utilidad" onfocus="this.select();" onfocusout="addValorUtilidadProducto()" onkeypress="changeValorUtilidad(event)" value="0" step="any">
+                        <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="valor_utilidad" id="valor_utilidad" onfocusout="addValorUtilidadProducto()" onkeypress="changeValorUtilidad(event)" value="0">
                         <div class="invalid-feedback">
                             El campo Valor utilidad es requerido
                         </div>
@@ -96,7 +96,7 @@
 
                     <div class="form-group col-6 col-sm-6 col-md-6" >
                         <label for="example-text-input" class="form-control-label">Valor venta</label>
-                        <input type="number" class="form-control form-control-sm" name="precio_producto" id="precio_producto" onfocus="this.select();" onfocusout="addPrecioProducto()" onkeypress="changeValorVenta(event)" value="0" step="any">
+                        <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="precio_producto" id="precio_producto" onfocusout="addPrecioProducto()" onkeypress="changeValorVenta(event)" value="0">
                         <div class="invalid-feedback">
                             El campo Precio es requerido
                         </div>
@@ -104,7 +104,7 @@
     
                     <div class="form-group col-6 col-sm-6 col-md-6">
                         <label for="example-text-input" class="form-control-label">Precio minimo</label>
-                        <input type="number" class="form-control form-control-sm" name="precio_minimo" id="precio_minimo" onfocus="this.select();" onfocusout="addPrecioMinimoProducto()" onkeypress="changePrecioMinimo(event)" value="0" required>
+                        <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" onfocusout="addPrecioMinimoProducto()" name="precio_minimo" id="precio_minimo" value="0" required>
                         <div class="invalid-feedback">
                             El campo Precio minimo es requerido
                         </div>
@@ -122,6 +122,16 @@
                     <div class="form-group col-6 col-sm-4 col-md-4" id="input-iva-valor" style="display: none">
                         <label for="example-text-input" class="form-control-label" id="text_porcentaje_iva">Valor iva</label>
                         <input type="text" class="form-control form-control-sm" name="valor_iva" id="valor_iva" onfocus="this.select();" onfocusout="actualizarDatosProducto()" onkeypress="changePorcentajeUtilidad(event)" value="0" disabled>
+                    </div>
+
+                    <div class="form-group col-6 col-sm-4 col-md-4" id="input-impuestos-porcentaje" style="display: none">
+                        <label for="example-text-input" class="form-control-label" id="text_otros_impuestos_porcentaje"></label>
+                        <input type="text" class="form-control form-control-sm" name="porcentaje_otros_impuestos" id="porcentaje_otros_impuestos" onfocus="this.select();" value="0" disabled>
+                    </div>
+
+                    <div class="form-group col-6 col-sm-4 col-md-4" id="input-impuestos-valor" style="display: none">
+                        <label for="example-text-input" class="form-control-label" id="text_otros_impuestos_valor"></label>
+                        <input type="text" class="form-control form-control-sm" name="valor_otros_impuestos" id="valor_otros_impuestos" onfocus="this.select();" value="0" disabled>
                     </div>
 
                     <div class="form-group col-6 col-sm-4 col-md-4 row" style="margin-bottom: 0.1rem !important;" id="item-maneja-variante">

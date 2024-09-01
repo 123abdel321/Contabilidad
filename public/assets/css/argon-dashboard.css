@@ -28,8 +28,8 @@
   --bs-gray-700: #495057;
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
-  --bs-primary: #1c4587 ;
-  --bs-primary-second: rgb(16, 38, 204) ;
+  --bs-primary: #003883 ;
+  --bs-primary-second: #002e6b;
   --bs-secondary: #8392ab;
   --bs-success: #2dce89;
   --bs-info: #11cdef;
@@ -4060,9 +4060,9 @@ textarea.form-control-lg {
   border-radius: 0.5rem;
 }
 .dropdown-menu[data-bs-popper] {
-  top: 100%;
+  /* top: 100%;
   left: 0;
-  margin-top: 1.625rem;
+  margin-top: 1.625rem; */
 }
 
 .dropdown-menu-start {
@@ -5290,6 +5290,7 @@ textarea.form-control-lg {
   display: flex;
   padding-left: 0;
   list-style: none;
+  margin-top: -25px !important;
 }
 
 .page-link {
@@ -5325,8 +5326,8 @@ textarea.form-control-lg {
 .page-item.active .page-link {
   z-index: 3;
   color: #fff;
-  background-color: #596CFF;
-  border-color: #4358f5;
+  background-color: #003883;
+  border-color: #003883;
 }
 .page-item.disabled .page-link {
   color: #6c757d;
@@ -6074,7 +6075,7 @@ textarea.form-control-lg {
   border-bottom: 1px solid #dee2e6;
   border-top-left-radius: calc(0.75rem - 1px);
   border-top-right-radius: calc(0.75rem - 1px);
-  background-color: #1c4587;
+  background-color: #003883;
 }
 .modal-header .btn-close {
   padding: 0.5rem 0.5rem;
@@ -9482,7 +9483,7 @@ textarea.form-control-lg {
 }
 
 .bg-dark {
-  background-color: #344767 !important;
+  background-color: #002e6b73 !important;
 }
 
 .bg-white {
@@ -10699,7 +10700,7 @@ textarea.form-control-lg {
   }
 
   .me-sm-4 {
-    margin-right: 1.5rem !important;
+    margin-right: .5rem !important;
   }
 
   .me-sm-5 {
@@ -19223,8 +19224,8 @@ textarea.form-control-lg {
 
 .btn-primary:hover,
 .btn.bg-gradient-primary:hover {
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
+  background-color: var(--bs-primary-second);
+  border-color: var(--bs-primary-second);
 }
 .btn-primary .btn.bg-outline-primary,
 .btn.bg-gradient-primary .btn.bg-outline-primary {
@@ -19609,7 +19610,7 @@ textarea.form-control-lg {
 }
 
 .card {
-  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+  box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 2px 2px 2px rgb(0 0 0 / 57%);
 }
 .card .card-header {
   padding: 1.5rem;

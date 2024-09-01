@@ -37,7 +37,7 @@ label, .form-label {
 
 .fondo-sistema {
     height: 100% !important;
-    background-position: center;
+    background-position: top;
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -122,7 +122,7 @@ label, .form-label {
     /* left: 29px !important; */
 }
 thead tr:first-child th {
-    background-color: #2581cd;
+    background-color: #003883;
     color: white;
     font-weight: bold;
     font-size: 14px;
@@ -161,7 +161,7 @@ thead tr:first-child th {
 }
 
 .footer-navigation .nav-item .nav-link.active {
-    background-color: #2a3548 !important;
+    background-color: #003883 !important;
     color: white;
     cursor: context-menu;
 }
@@ -245,7 +245,7 @@ th.dtfc-fixed-right {
 }
 
 .btn {
-    box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 2px 2px 2px rgb(0 0 0 / 57%);
+    box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 3px 3px 2px rgb(0 0 0 / 57%);
 }
 
 .btn:hover {
@@ -673,7 +673,7 @@ td{
 }
 
 .mb-4 {
-    margin-bottom: 1rem !important;
+    margin-bottom: 0.6rem !important;
 }
 
 .form-control-sm {
@@ -695,4 +695,28 @@ td{
 
 .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__message {
     font-size: 11px !important;
+}
+
+.text-align-right {
+    padding-right: inherit !important;
+    text-align: right !important;
+    background-position: left 0.75rem center !important;
+}
+
+/* .btn-bg-danger:hover {
+    color: #f5365c !important;
+    background: white !important;
+    border: solid 1px;
+    transition: 0.5s ease all;
+}
+
+.btn-bg-info:hover {
+    color: #11cdef !important;
+    background: white !important;
+    border: solid 1px;
+    transition: 0.5s ease all;
+} */
+
+div.dataTables_processing {
+    z-index: 99 !important;
 }

@@ -2,13 +2,15 @@
 namespace App\Helpers;
 
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
-use App\Models\Sistema\DocumentosGeneral;
-use App\Models\Sistema\Comprobantes;
-use App\Models\Sistema\PlanCuentas;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use stdClass;
 use DB;
+//MODELS
+use App\Models\Sistema\PlanCuentas;
+use App\Models\Sistema\Comprobantes;
+use App\Models\Sistema\VariablesEntorno;
+use App\Models\Sistema\DocumentosGeneral;
 
 class Documento
 {
@@ -519,10 +521,11 @@ class Documento
 
         if ($this->captura) {
             $isUnbalanced = $this->getTotals()->diferencia > 0;
-
-            // if ($isUnbalanced) {
-            //     $this->errors['documento'][] = 'Documento descuadrado';
-            // }
+            $capturarDocumentosDescuadrados = VariablesEntorno::where('nombre', 'capturar_documento_descuadrado')->first();
+            if ($isUnbalanced) {
+                if (!$capturarDocumentosDescuadrados) $this->errors['documento'][] = 'Documento descuadrado';
+                else if ($capturarDocumentosDescuadrados && $capturarDocumentosDescuadrados->valor == 0) $this->errors['documento'][] = 'Documento descuadrado';
+            }
         }
 
         if ($this->hasErrors()) {

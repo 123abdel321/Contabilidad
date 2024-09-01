@@ -20,6 +20,7 @@ use App\Models\Sistema\FacVentaPagos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\FacVentaDetalles;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
 use App\Models\Sistema\FacFacturaDetalle;
 use App\Models\Sistema\FacProductosBodegas;
@@ -69,7 +70,13 @@ class NotaCreditoController extends Controller
 
     public function index (Request $request)
     {
-        return view('pages.capturas.nota_credito.nota_credito-view');
+        $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
+
+        $data = [
+            'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : ''
+        ];
+
+        return view('pages.capturas.nota_credito.nota_credito-view', $data);
     }
 
     public function create (Request $request)
@@ -197,10 +204,28 @@ class NotaCreditoController extends Controller
                     }
                     $movimiento->relation()->associate($notaCredito);
                     $notaCredito->bodegas()->save($movimiento);
+
+                    //AGREGAR INVENTARIO
+                    if ($productoDb->precio_inicial) {
+                        $cuentaCosto = $productoDb->familia->cuenta_costos;
+                        $cuentaOpuestoCosto = PlanCuentas::CREDITO == $cuentaCosto->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
+
+                        $docCosto = new DocumentosGeneral([
+                            "id_cuenta" => $cuentaCosto->id,
+                            "id_nit" => $cuentaCosto->exige_nit ? $notaCredito->id_cliente : null,
+                            "id_centro_costos" => $cuentaCosto->exige_centro_costos ? $notaCredito->id_centro_costos : null,
+                            "concepto" => $cuentaCosto->exige_concepto ? 'NOTA CREDITO: '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
+                            "documento_referencia" => $cuentaCosto->exige_documento_referencia ? $notaCredito->documento_referencia : null,
+                            "debito" => $productoDb->precio_inicial * $producto->cantidad,
+                            "credito" => $productoDb->precio_inicial * $producto->cantidad,
+                            "created_by" => request()->user()->id,
+                            "updated_by" => request()->user()->id
+                        ]);
+                        $documentoGeneral->addRow($docCosto, $cuentaOpuestoCosto);
+                    }
                 }
 
                 $totalesProducto = $this->calcularTotalesProducto($producto);
-                
                 //CREAR NOTA CREDITO DETALLE
                 FacVentaDetalles::create([
                     'id_venta' => $notaCredito->id,
@@ -229,7 +254,7 @@ class NotaCreditoController extends Controller
                     "id_cuenta" => $cuentaDevolucion->id,
                     "id_nit" => $cuentaDevolucion->exige_nit ? $notaCredito->id_cliente : null,
                     "id_centro_costos" => $cuentaDevolucion->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                    "concepto" => 'COMPRA: '.$cuentaDevolucion->exige_concepto ? $nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
+                    "concepto" => $cuentaDevolucion->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
                     "documento_referencia" => $cuentaDevolucion->exige_documento_referencia ? $notaCredito->documento_referencia : null,
                     "debito" => $totalesProducto->subtotal,
                     "credito" => $totalesProducto->subtotal,
@@ -247,10 +272,10 @@ class NotaCreditoController extends Controller
                         "id_cuenta" => $cuentaCosto->id,
                         "id_nit" => $cuentaCosto->exige_nit ? $notaCredito->id_cliente : null,
                         "id_centro_costos" => $cuentaCosto->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                        "concepto" => 'COMPRA: '.$cuentaCosto->exige_concepto ? $nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
+                        "concepto" => $cuentaCosto->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
                         "documento_referencia" => $cuentaCosto->exige_documento_referencia ? $notaCredito->documento_referencia : null,
-                        "debito" => $totalesProducto->subtotal,
-                        "credito" => $totalesProducto->subtotal,
+                        "debito" => $productoDb->precio_inicial,
+                        "credito" => $productoDb->precio_inicial,
                         "created_by" => request()->user()->id,
                         "updated_by" => request()->user()->id
                     ]);
@@ -266,7 +291,7 @@ class NotaCreditoController extends Controller
                         "id_cuenta" => $cuentaDescuento->id,
                         "id_nit" => $cuentaDescuento->exige_nit ? $notaCredito->id_cliente : null,
                         "id_centro_costos" => $cuentaDescuento->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                        "concepto" => 'COMPRA: '.$cuentaDescuento->exige_concepto ? $nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
+                        "concepto" => $cuentaDescuento->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
                         "documento_referencia" => $cuentaDescuento->exige_documento_referencia ? $notaCredito->documento_referencia : null,
                         "debito" => $totalesProducto->descuento,
                         "credito" => $totalesProducto->descuento,
@@ -279,20 +304,19 @@ class NotaCreditoController extends Controller
                 //AGREGAR IVA
                 if ($totalesProducto->iva) {
                     $cuentaIva = $productoDb->familia->cuenta_venta_devolucion_iva;
-                    $cuentaOpuestoIva = PlanCuentas::CREDITO == $cuentaIva->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
 
                     $docDevolucion = new DocumentosGeneral([
                         "id_cuenta" => $cuentaIva->id,
                         "id_nit" => $cuentaIva->exige_nit ? $notaCredito->id_cliente : null,
                         "id_centro_costos" => $cuentaIva->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                        "concepto" => 'COMPRA: '.$cuentaIva->exige_concepto ? $nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
+                        "concepto" => $cuentaIva->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
                         "documento_referencia" => $cuentaIva->exige_documento_referencia ? $notaCredito->documento_referencia : null,
                         "debito" => $totalesProducto->iva,
                         "credito" => $totalesProducto->iva,
                         "created_by" => request()->user()->id,
                         "updated_by" => request()->user()->id
                     ]);
-                    $documentoGeneral->addRow($docDevolucion, $cuentaOpuestoIva);
+                    $documentoGeneral->addRow($docDevolucion, $cuentaIva->naturaleza_ventas);
                 }
 
                 //AGREGAR RETE FUENTE
@@ -304,7 +328,7 @@ class NotaCreditoController extends Controller
                         "id_cuenta" => $cuentaRetencion->id,
                         "id_nit" => $cuentaRetencion->exige_nit ? $notaCredito->id_cliente : null,
                         "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                        "concepto" => 'TOTAL: '.$cuentaRetencion->exige_concepto ? $nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
+                        "concepto" => $cuentaRetencion->exige_concepto ? 'TOTAL: '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
                         "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $notaCredito->documento_referencia : null,
                         "debito" => $cuentaRetencion->naturaleza_ventas == PlanCuentas::DEBITO ? $this->totalesFactura['total_rete_fuente'] : 0,
                         "credito" => $cuentaRetencion->naturaleza_ventas == PlanCuentas::CREDITO ? $this->totalesFactura['total_rete_fuente'] : 0,
@@ -319,9 +343,10 @@ class NotaCreditoController extends Controller
                 //AGREGAR FORMAS DE PAGO
                 foreach ($request->get('pagos') as $pago) {
                     $pago = (object)$pago;
-                    $pagoValor = $pago->id == 1 ? $pago->valor - $this->totalesPagos['total_cambio'] : $pago->valor;
-
                     $formaPago = $this->findFormaPago($pago->id);
+                    $pagoValor = $pago->id == 1 ? $pago->valor - $this->totalesPagos['total_cambio'] : $pago->valor;
+                    $cuentaOpuestoPago = PlanCuentas::CREDITO == $formaPago->cuenta->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
+
                     $totalProductos-= $pagoValor;
 
                     FacVentaPagos::create([
@@ -337,14 +362,14 @@ class NotaCreditoController extends Controller
                         'id_cuenta' => $formaPago->cuenta->id,
                         'id_nit' => $formaPago->cuenta->exige_nit ? $notaCredito->id_cliente : null,
                         'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                        'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
+                        'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL: '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
                         'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $notaCredito->documento_referencia : null,
-                        'debito' => $formaPago->cuenta->naturaleza_ventas == PlanCuentas::DEBITO ? $pagoValor : 0,
-                        'credito' => $formaPago->cuenta->naturaleza_ventas == PlanCuentas::CREDITO ? $pagoValor : 0,
+                        'debito' => $pagoValor,
+                        'credito' => $pagoValor,
                         'created_by' => request()->user()->id,
                         'updated_by' => request()->user()->id
                     ]);
-                    $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
+                    $documentoGeneral->addRow($doc, $cuentaOpuestoPago);
                 }
             }
 
@@ -419,18 +444,21 @@ class NotaCreditoController extends Controller
         $totalRetefuente = 0;
 
         $detalleProducto = FacFacturaDetalle::find($producto->id_factura_detalle);
+        $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
 
         $subtotal = $producto->total_devolucion;
         $proporcion = $producto->total_devolucion / floatval($detalleProducto->total);
 
         if ($detalleProducto->iva_valor) {
             $totalIva = $detalleProducto->iva_valor * $proporcion;
-            $subtotal - $totalIva;
+            $subtotal-= $totalIva;
+            // if ($ivaIncluido) {
+            // }
         }
 
         if ($detalleProducto->descuento_valor) {
             $totalDescuento = $detalleProducto->descuento_valor * $proporcion;
-            $subtotal - $totalDescuento;
+            $subtotal-= $totalDescuento;
         }
 
         if ($this->facturaVentas->total_rete_fuente) {

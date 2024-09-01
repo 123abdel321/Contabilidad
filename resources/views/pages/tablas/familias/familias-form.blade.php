@@ -69,6 +69,12 @@
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
+                                        <label for="exampleFormControlSelect1">Otros Impuestos venta</label>
+                                        <select name="id_cuenta_impuestos_venta" id="id_cuenta_impuestos_venta" class="form-control form-control-sm">
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-12 col-sm-6 col-md-6">
                                         <label for="exampleFormControlSelect1">Devolución iva</label>
                                         <select name="id_cuenta_venta_devolucion_iva" id="id_cuenta_venta_devolucion_iva" class="form-control form-control-sm">
                                         </select>
@@ -123,6 +129,12 @@
                                     <div class="form-group col-12 col-sm-6 col-md-6">
                                         <label for="exampleFormControlSelect1">Iva</label>
                                         <select name="id_cuenta_compra_iva" id="id_cuenta_compra_iva" class="form-control form-control-sm">
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-12 col-sm-6 col-md-6">
+                                        <label for="exampleFormControlSelect1">Otros Impuestos compra</label>
+                                        <select name="id_cuenta_impuestos_compra" id="id_cuenta_impuestos_compra" class="form-control form-control-sm">
                                         </select>
                                     </div>
 

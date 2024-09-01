@@ -38,6 +38,7 @@ class BalanceController extends Controller
             ->where('fecha_hasta', $request->get('fecha_hasta'))
             ->where('fecha_desde', $request->get('fecha_desde'))
             ->where('id_cuenta', $request->get('id_cuenta', null))
+            ->where('tipo', $request->get('tipo', null))
             ->where('nivel', $request->get('nivel', null))
 			->first();
 

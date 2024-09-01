@@ -43,31 +43,51 @@ class UbicacionController extends Controller
 
 	public function getCiudad (Request $request)
     {
-		$query = $request->get("q");
-		$queryModel = Ciudades::whereNotNull("id")->select(
-			'id',
-			'id_pais',
-			'id_departamento',
-			'codigo',
-			'indicativo',
-			'nombre',
-			'nombre_completo',
-			\DB::raw("nombre_completo as text")
-		);
+		if ($request->has('getall')) {
+			$queryModel = Ciudades::where('id_pais', '53')->select(
+				'id',
+				'id_pais',
+				'id_departamento',
+				'codigo',
+				'indicativo',
+				'nombre',
+				'nombre_completo',
+				\DB::raw("nombre_completo as text")
+			);
 
-		if($query){
-			$queryModel->where("nombre","LIKE","%".$query."%");
+			return response()->json([
+				'success'=>	true,
+				'data' => $queryModel->get(),
+				'message'=> 'Ciudades generadas con exito!'
+			]);
+
+		} else {
+			$query = $request->get("q");
+			$queryModel = Ciudades::whereNotNull("id")->select(
+				'id',
+				'id_pais',
+				'id_departamento',
+				'codigo',
+				'indicativo',
+				'nombre',
+				'nombre_completo',
+				\DB::raw("nombre_completo as text")
+			);
+	
+			if($query){
+				$queryModel->where("nombre","LIKE","%".$query."%");
+			}
+	
+			if($request->get("id_departamento")){
+				$queryModel->where("id_departamento",$request->get("id_departamento"));
+			}
+	
+			if($request->get("id_pais")){
+				$queryModel->where("id_pais",$request->get("id_pais"));
+			}
+	
+			return $queryModel->paginate(30);
 		}
-
-		if($request->get("id_departamento")){
-			$queryModel->where("id_departamento",$request->get("id_departamento"));
-		}
-
-		if($request->get("id_pais")){
-			$queryModel->where("id_pais",$request->get("id_pais"));
-		}
-
-		return $queryModel->paginate(30);
 	}
 
 }

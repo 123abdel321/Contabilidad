@@ -3,6 +3,7 @@
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
             <th>Nombre</th>
+            <th>Tipo cuenta</th>
             <th>Naturaleza cuenta</th>
             <th>Ingresos</th>
             <th>Egresos</th>
@@ -12,9 +13,10 @@
             <th>Dcto refe</th>
             <th>Concepto</th>
             <th>Centro costros</th>
-            <th>Formato</th>
-            <th>Concepto</th>
-            <th>Columna</th>
+            <th>Impuesto</th>
+            <th>Exo. Formato</th>
+            <th>Exo. Concepto</th>
+            <th>Exo. Columna</th>
             <th>Creación registro</th>
             <th>Ultima actualización</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Acciones</th>

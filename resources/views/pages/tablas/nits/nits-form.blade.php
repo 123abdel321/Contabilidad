@@ -123,6 +123,16 @@
                         <input type="text" class="form-control form-control-sm" name="observaciones" id="observaciones">
                     </div>
 
+                    <div class="form-group col-12 col-sm-6 col-md-6" id="div_porcentaje_aiu">
+                        <label for="example-text-input" class="form-control-label">Porcentaje AIU</label>
+                        <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_aiu" id="porcentaje_aiu" value="0">
+                    </div>
+
+                    <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6" id="div_declarante">
+                        <input class="form-check-input" type="checkbox" name="declarante_nit" id="declarante_nit" style="height: 20px;" checked>
+                        <label class="form-check-label" for="declarante_nit">Declara Renta</label>
+                    </div>
+
                 </form>
 
             </div>

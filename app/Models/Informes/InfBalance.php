@@ -22,6 +22,7 @@ class InfBalance extends Model
         'fecha_hasta',
         'exporta_excel',
         'archivo_excel',
+        'tipo',
         'nivel',
         'created_by',
         'updated_by',

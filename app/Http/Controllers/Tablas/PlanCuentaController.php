@@ -101,9 +101,8 @@ class PlanCuentaController extends Controller
                 $columnSortOrder = $order_arr[0]['dir']; // asc or desc
                 $searchValue = $search_arr['value']; // Search value
         
-                $cuentas = PlanCuentas::orderBy($columnName,$columnSortOrder)
-                    ->with(
-                        'tipos_cuenta',
+                $cuentas = PlanCuentas::with(
+                        'tipos_cuenta.tipo',
                         'padre',
                         'impuesto',
                         'exogena_formato',
@@ -119,6 +118,32 @@ class PlanCuentaController extends Controller
                         'created_by',
                         'updated_by'
                     );
+
+                if ($columnIndex == '2') {
+                    $cuentas->orderBy('naturaleza_cuenta',$columnSortOrder);
+                } else if ($columnIndex == '3') {
+                    $cuentas->orderBy('naturaleza_ingresos',$columnSortOrder);
+                } else if ($columnIndex == '4') {
+                    $cuentas->orderBy('naturaleza_egresos',$columnSortOrder);
+                } else if ($columnIndex == '5') {
+                    $cuentas->orderBy('naturaleza_compras',$columnSortOrder);
+                } else if ($columnIndex == '6') {
+                    $cuentas->orderBy('naturaleza_ventas',$columnSortOrder);
+                } else if ($columnIndex == '7') {
+                    $cuentas->orderBy('exige_nit',$columnSortOrder);
+                } else if ($columnIndex == '8') {
+                    $cuentas->orderBy('exige_documento_referencia',$columnSortOrder);
+                } else if ($columnIndex == '9') {
+                    $cuentas->orderBy('exige_concepto',$columnSortOrder);
+                } else if ($columnIndex == '10') {
+                    $cuentas->orderBy('exige_centro_costos',$columnSortOrder);
+                } else if ($columnIndex == '14') {
+                    $cuentas->orderBy('created_at',$columnSortOrder);
+                } else if ($columnIndex == '15') {
+                    $cuentas->orderBy('updated_at',$columnSortOrder);
+                } else if ($columnName) {
+                    $cuentas->orderBy($columnName,$columnSortOrder);
+                }
 
                 $totalCuentas = $cuentas->count();
                 
@@ -483,20 +508,32 @@ class PlanCuentaController extends Controller
         }
         
         if ($request->has("id_tipo_cuenta")) {
-            $planCuenta->where('auxiliar', 1);
+            if (!$request->has("total_cuentas")) {
+                $planCuenta->where('auxiliar', 1);
+            }
             $planCuenta->whereHas('tipos_cuenta', function ($query) use($request) {
                 $query->whereIn('id_tipo_cuenta', $request->get('id_tipo_cuenta'));
             });
         }
 
         if ($request->get("search")) {
-            $planCuenta->where('cuenta', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('nombre', 'LIKE', '%' . $request->get("search") . '%');
+            $planCuenta->where('cuenta', 'LIKE', $request->get("search") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("search") . '%')
+                ->when($request->get('id_tipo_cuenta') ? $request->get('id_tipo_cuenta') : false, function ($query) use ($request) {
+                    $query->whereHas('tipos_cuenta', function ($query) use($request) {
+                        $query->whereIn('id_tipo_cuenta', $request->get('id_tipo_cuenta'));
+                    });
+                });
         }
 
         if ($request->get("q")) {
-            $planCuenta->where('cuenta', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+            $planCuenta->where('cuenta', 'LIKE', $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%')
+                ->when($request->get('id_tipo_cuenta') ? $request->get('id_tipo_cuenta') : false, function ($query) {
+                    $query->whereHas('tipos_cuenta', function ($query) use($request) {
+                        $query->whereIn('id_tipo_cuenta', $request->get('id_tipo_cuenta'));
+                    });
+                });
         }
 
         return $planCuenta->orderBy('cuenta')->paginate($totalRows);

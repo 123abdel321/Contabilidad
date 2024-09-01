@@ -19,6 +19,7 @@ function compraInit () {
 
     compra_table = $('#compraTable').DataTable({
         dom: '',
+        pageLength: 200,
         responsive: false,
         processing: true,
         serverSide: false,
@@ -80,6 +81,7 @@ function compraInit () {
                 }
             },
         ],
+
         columnDefs: [{
             'orderable': false
         }],
@@ -368,6 +370,9 @@ function compraInit () {
                 $('#fecha_manual_compra-feedback').text('La Fecha se encuentra en un año cerrado');
             }
         }).fail((err) => {
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
         });
     
     }
@@ -842,14 +847,7 @@ function saveCompra() {
         $("#iniciarCapturaCompraLoading").hide();
 
         var mensaje = err.responseJSON.message;
-        var errorsMsg = "";
-        for (field in mensaje) {
-            var errores = mensaje[field];
-            for (campo in errores) {
-                errorsMsg += field+": "+errores[campo]+" <br>";
-            }
-            
-        };
+        var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Creación errada', errorsMsg);
     });
 }
@@ -864,37 +862,38 @@ function ocultarBotonesCabezaCompra () {
 
 function getProductosCompra(){
     var data = [];
-
     var dataDocumento = compra_table.rows().data();
-    if(dataDocumento.length > 0){
-        for (let index = 0; index < dataDocumento.length; index++) {
 
-            const id_row = dataDocumento[index].id;
-            var id_producto = $('#combo_producto_'+id_row).val();
-            var cantidad = $('#compra_cantidad_'+id_row).val();
-            
-            if (id_producto && cantidad) {
-                var costo = $('#compra_costo_'+id_row).val();
-                var descuento_porcentaje = $('#compra_descuento_porcentaje_'+id_row).val();
-                var descuento_valor = $('#compra_descuento_valor_'+id_row).val();
-                var iva_porcentaje = $('#compra_iva_porcentaje_'+id_row).val();
-                var iva_valor = $('#compra_iva_valor_'+id_row).val();
-                var total = $('#compra_total_'+id_row).val();
+    if (!dataDocumento.length) return data;
 
-                data.push({
-                    id_producto: parseInt(id_producto),
-                    cantidad: parseInt(cantidad),
-                    costo: costo ? parseFloat(costo) : 0,
-                    subtotal: parseInt(cantidad) * parseFloat(costo),
-                    descuento_porcentaje: descuento_porcentaje ? parseFloat(descuento_porcentaje) : 0,
-                    descuento_valor: descuento_valor ? parseFloat(descuento_valor) : 0,
-                    iva_porcentaje: iva_porcentaje ? parseFloat(iva_porcentaje) : 0,
-                    iva_valor: iva_valor ? parseFloat(iva_valor) : 0,
-                    total: total ? parseFloat(total) : 0,
-                });
-            }
+    for (let index = 0; index < dataDocumento.length; index++) {
+
+        const id_row = dataDocumento[index].id;
+        var id_producto = $('#combo_producto_'+id_row).val();
+        var cantidad = $('#compra_cantidad_'+id_row).val();
+        
+        if (id_producto && cantidad) {
+            var costo = $('#compra_costo_'+id_row).val();
+            var descuento_porcentaje = $('#compra_descuento_porcentaje_'+id_row).val();
+            var descuento_valor = $('#compra_descuento_valor_'+id_row).val();
+            var iva_porcentaje = $('#compra_iva_porcentaje_'+id_row).val();
+            var iva_valor = $('#compra_iva_valor_'+id_row).val();
+            var total = $('#compra_total_'+id_row).val();
+
+            data.push({
+                id_producto: parseInt(id_producto),
+                cantidad: parseInt(cantidad),
+                costo: costo ? parseFloat(costo) : 0,
+                subtotal: parseInt(cantidad) * parseFloat(costo),
+                descuento_porcentaje: descuento_porcentaje ? parseFloat(descuento_porcentaje) : 0,
+                descuento_valor: descuento_valor ? parseFloat(descuento_valor) : 0,
+                iva_porcentaje: iva_porcentaje ? parseFloat(iva_porcentaje) : 0,
+                iva_valor: iva_valor ? parseFloat(iva_valor) : 0,
+                total: total ? parseFloat(total) : 0,
+            });
         }
     }
+    
     return data;
 }
 
@@ -940,12 +939,23 @@ function mostrarValoresCompras () {
     if (total) disabledFormasPagoCompras(false);
     else disabledFormasPagoCompras();
 
-    $("#compra_total_iva").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(iva));
-    $("#compra_total_descuento").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(descuento));
-    $("#compra_total_retencion").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(retencion));
-    $("#compra_total_valor").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total));
-    $("#compra_sub_total").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valorBruto));
-    document.getElementById('total_faltante_compra').innerText = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+    var countA = new CountUp('compra_total_iva', 0, iva, 2, 0.5);
+        countA.start();
+
+    var countB = new CountUp('compra_total_descuento', 0, descuento, 2, 0.5);
+        countB.start();
+
+    var countC = new CountUp('compra_total_retencion', 0, retencion, 2, 0.5);
+        countC.start();
+
+    var countD = new CountUp('compra_total_valor', 0, total, 2, 0.5);
+        countD.start();
+
+    var countE = new CountUp('compra_sub_total', 0, valorBruto, 2, 0.5);
+        countE.start();
+
+    var countF = new CountUp('total_faltante_compra', 0, total, 2, 0.5);
+        countF.start();
 }
 
 function disabledFormasPagoCompras(estado = true) {

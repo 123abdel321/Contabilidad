@@ -24,12 +24,12 @@
                         </div>
 
                         <div class="form-group col-6 col-sm-3 col-md-2">
-                            <label for="example-text-input" class="form-control-label">Precio desde</label>
+                            <label for="example-text-input" class="form-control-label">Valor desde</label>
                             <input name="precio_desde_documentos_generales" id="precio_desde_documentos_generales" class="form-control form-control-sm" type="number">
                         </div>
 
                         <div class="form-group col-6 col-sm-3 col-md-2">
-                            <label for="example-text-input" class="form-control-label">Precio hasta</label>
+                            <label for="example-text-input" class="form-control-label">Valor hasta</label>
                             <input name="precio_hasta_documentos_generales" id="precio_hasta_documentos_generales" class="form-control form-control-sm" type="number">
                         </div>
 

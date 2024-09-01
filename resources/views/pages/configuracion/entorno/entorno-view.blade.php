@@ -23,7 +23,17 @@
                 <div class="tab-content" id="myTabContent" style="background-color: white;">
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                        <div class="container row">
+                        <div class="row" style="margin-top: 10px; padding-left: 10px;">
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="example-text-input" class="form-control-label">Valor UVT </label>
+                                <input type="number" class="form-control form-control-sm" name="valor_uvt" id="valor_uvt">
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="example-text-input" class="form-control-label">Porcentaje Iva AIU</label>
+                                <input type="number" class="form-control form-control-sm" name="porcentaje_iva_aiu" id="porcentaje_iva_aiu">
+                            </div>
 
                             <div class="form-check form-switch col-12 col-sm-6 col-md-4">
                                 <input class="form-check-input" type="checkbox" name="iva_incluido" id="iva_incluido" style="height: 20px;">
@@ -38,16 +48,18 @@
                                     Documentos descuadrados
                                 </label>
                             </div>
-    
-                            <div class="form-group col-12 col-sm-6 col-md-4" >
-                                <label for="example-text-input" class="form-control-label">Valor UVT </label>
-                                <input type="number" class="form-control form-control-sm" name="valor_uvt" id="valor_uvt">
-                            </div>
 
                             <div class="form-check form-switch col-12 col-sm-6 col-md-4">
                                 <input class="form-check-input" type="checkbox" name="vendedores_ventas" id="vendedores_ventas" style="height: 20px;">
                                 <label class="form-check-label" for="vendedores_ventas">
-                                    Vendedores ventas
+                                    Vendedores captura ventas
+                                </label>
+                            </div>
+
+                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
+                                <input class="form-check-input" type="checkbox" name="ubicacion_maximoph" id="ubicacion_maximoph" style="height: 20px;">
+                                <label class="form-check-label" for="ubicacion_maximoph">
+                                    Ubicacion MaximoPh en informes
                                 </label>
                             </div>
 

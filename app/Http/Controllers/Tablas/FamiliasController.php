@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\FacFamilias;
+use App\Models\Sistema\FacProductos;
 
 class FamiliasController extends Controller
 {
@@ -52,12 +53,14 @@ class FamiliasController extends Controller
                 'cuenta_venta_retencion.impuesto',
                 'cuenta_venta_devolucion.impuesto',
                 'cuenta_venta_iva.impuesto',
+                'cuenta_venta_impuestos.impuesto',
                 'cuenta_venta_descuento.impuesto',
                 'cuenta_venta_devolucion_iva.impuesto',
                 'cuenta_compra.impuesto',
                 'cuenta_compra_retencion.impuesto',
                 'cuenta_compra_devolucion.impuesto',
                 'cuenta_compra_iva.impuesto',
+                'cuenta_compra_impuestos.impuesto',
                 'cuenta_compra_descuento.impuesto',
                 'cuenta_compra_devolucion_iva.impuesto',
                 'cuenta_inventario.impuesto',
@@ -98,12 +101,14 @@ class FamiliasController extends Controller
             'id_cuenta_venta_retencion' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_venta_devolucion' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_venta_iva' => 'nullable|exists:sam.plan_cuentas,id',
+            'id_cuenta_venta_impuestos' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_venta_descuento' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_venta_devolucion_iva' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_retencion' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_devolucion' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_iva' => 'nullable|exists:sam.plan_cuentas,id',
+            'id_cuenta_compra_impuestos' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_descuento' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_devolucion_iva' => 'nullable|exists:sam.plan_cuentas,id',
         ];
@@ -131,6 +136,7 @@ class FamiliasController extends Controller
                 'id_cuenta_venta_retencion' => $request->get('id_cuenta_venta_retencion'),
                 'id_cuenta_venta_devolucion' => $request->get('id_cuenta_venta_devolucion'),
                 'id_cuenta_venta_iva' => $request->get('id_cuenta_venta_iva'),
+                'id_cuenta_venta_impuestos' => $request->get('id_cuenta_venta_impuestos'),
                 'id_cuenta_venta_descuento' => $request->get('id_cuenta_venta_descuento'),
                 'id_cuenta_venta_devolucion_iva' => $request->get('id_cuenta_venta_devolucion_iva'),
                 'id_cuenta_inventario' => $request->get('id_cuenta_inventario'),
@@ -139,6 +145,7 @@ class FamiliasController extends Controller
                 'id_cuenta_compra_retencion' => $request->get('id_cuenta_compra_retencion'),
                 'id_cuenta_compra_devolucion' => $request->get('id_cuenta_compra_devolucion'),
                 'id_cuenta_compra_iva' => $request->get('id_cuenta_compra_iva'),
+                'id_cuenta_compra_impuestos' => $request->get('id_cuenta_compra_impuestos'),
                 'id_cuenta_compra_descuento' => $request->get('id_cuenta_compra_descuento'),
                 'id_cuenta_compra_devolucion_iva' => $request->get('id_cuenta_compra_devolucion_iva'),
                 'created_by' => request()->user()->id,
@@ -192,12 +199,14 @@ class FamiliasController extends Controller
             'id_cuenta_venta_retencion' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_venta_devolucion' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_venta_iva' => 'nullable|exists:sam.plan_cuentas,id',
+            'id_cuenta_venta_impuestos' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_venta_descuento' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_venta_devolucion_iva' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_retencion' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_devolucion' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_iva' => 'nullable|exists:sam.plan_cuentas,id',
+            'id_cuenta_compra_impuestos' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_descuento' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_devolucion_iva' => 'nullable|exists:sam.plan_cuentas,id',
         ];
@@ -226,6 +235,7 @@ class FamiliasController extends Controller
                     'id_cuenta_venta_retencion' => $request->get('id_cuenta_venta_retencion'),
                     'id_cuenta_venta_devolucion' => $request->get('id_cuenta_venta_devolucion'),
                     'id_cuenta_venta_iva' => $request->get('id_cuenta_venta_iva'),
+                    'id_cuenta_venta_impuestos' => $request->get('id_cuenta_venta_impuestos'),
                     'id_cuenta_venta_descuento' => $request->get('id_cuenta_venta_descuento'),
                     'id_cuenta_venta_devolucion_iva' => $request->get('id_cuenta_venta_devolucion_iva'),
                     'id_cuenta_inventario' => $request->get('id_cuenta_inventario'),
@@ -234,6 +244,7 @@ class FamiliasController extends Controller
                     'id_cuenta_compra_retencion' => $request->get('id_cuenta_compra_retencion'),
                     'id_cuenta_compra_devolucion' => $request->get('id_cuenta_compra_devolucion'),
                     'id_cuenta_compra_iva' => $request->get('id_cuenta_compra_iva'),
+                    'id_cuenta_compra_impuestos' => $request->get('id_cuenta_compra_impuestos'),
                     'id_cuenta_compra_descuento' => $request->get('id_cuenta_compra_descuento'),
                     'id_cuenta_compra_devolucion_iva' => $request->get('id_cuenta_compra_devolucion_iva'),
                     'updated_by' => request()->user()->id,
@@ -279,15 +290,15 @@ class FamiliasController extends Controller
     {
         try {
 
-            // $documentos = DocumentosGeneral::where('id_cuenta', $request->get('id'));
+            $productos = FacProductos::where('id_familia', $request->get('id'));
 
-            // if($documentos->count() > 0) {
-            //     return response()->json([
-            //         'success'=>	false,
-            //         'data' => '',
-            //         'message'=> 'No se puede eliminar una cuenta usado por los documentos!'
-            //     ]);
-            // }
+            if($productos->count() > 0) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => '',
+                    'message'=> 'No se puede eliminar una familia usada por los productos!'
+                ]);
+            }
 
             FacFamilias::where('id', $request->get('id'))->delete();
 
@@ -318,12 +329,14 @@ class FamiliasController extends Controller
                 'cuenta_venta_retencion',
                 'cuenta_venta_devolucion',
                 'cuenta_venta_iva.impuesto',
+                'cuenta_venta_impuestos.impuesto',
                 'cuenta_venta_descuento',
                 'cuenta_venta_devolucion_iva',
                 'cuenta_compra',
                 'cuenta_compra_retencion',
                 'cuenta_compra_devolucion',
                 'cuenta_compra_iva',
+                'cuenta_compra_impuestos.impuesto',
                 'cuenta_compra_descuento',
                 'cuenta_compra_devolucion_iva',
                 'cuenta_inventario',

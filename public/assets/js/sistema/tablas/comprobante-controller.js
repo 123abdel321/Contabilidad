@@ -54,6 +54,9 @@ function comprobanteInit() {
                         return 'OTROS'
                         break;
                     case 5:
+                        return 'GASTOS'
+                        break;
+                    case 6:
                         return 'CIERRE'
                         break;
                     default:

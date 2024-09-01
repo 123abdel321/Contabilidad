@@ -50,4 +50,9 @@ class FacVentaDetalles extends Model
 	{
 		return $this->belongsTo(PlanCuentas::class, 'id_cuenta_venta_iva', 'id');
 	}
+
+    public function cuenta_retencion()
+	{
+		return $this->belongsTo(PlanCuentas::class, 'id_cuenta_venta_retencion', 'id');
+	}
 }

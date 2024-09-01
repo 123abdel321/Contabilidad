@@ -18,6 +18,7 @@ const itemMenuActive = localStorage.getItem("item_active_menu");
 const dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
+
 $.ajaxSetup({
     'headers':{
         "Authorization": auth_token,
@@ -67,6 +68,20 @@ var moduloCreado = {
     'movimientoinventario': false,
     'notacredito': false,
     'ventasgenestales': false,
+    'estadoactual': false,
+    'estadocomprobante': false,
+    'importnits': false,
+    'importdocumentos': false,
+    'eliminardocumentos': false,
+    'recibo': false,
+    'pago': false,
+    'recibos': false,
+    'conceptogastos': false,
+    'gasto': false,
+    'resumencomprobante': false,
+    'presupuesto': false,
+    'impuestos': false,
+    'resultados': false,
 };
 
 var moduloRoute = {
@@ -98,6 +113,20 @@ var moduloRoute = {
     'movimientoinventario': 'capturas',
     'notacredito': 'capturas',
     'ventasgenerales': 'informes',
+    'estadoactual': 'informes',
+    'estadocomprobante': 'informes',
+    'importnits': 'importador',
+    'importdocumentos': 'importador',
+    'eliminardocumentos': 'capturas',
+    'recibo': 'capturas',
+    'pago': 'capturas',
+    'recibos': 'informes',
+    'conceptogastos': 'tablas',
+    'gasto': 'capturas',
+    'resumencomprobante': 'informes',
+    'presupuesto': 'tablas',
+    'impuestos': 'informes',
+    'resultados': 'informes',
 }
 
 $('.water').show();
@@ -148,6 +177,17 @@ function openNewItem(id, nombre, icon) {
     document.getElementById('sidenav-main-2').click();
 }
 
+function closeAnotherItems(id) {
+    let items = document.getElementsByClassName("nav-padre");
+    for (let index = 0; index < items.length; index++) {
+        const element = items[index];
+        if (element.id != 'nav_'+id) {
+            element.classList.add("collapsed");
+            document.getElementById('collapse'+element.id.split('_')[1]).classList.remove("show"); 
+        }
+    }
+}
+
 function closeMenu() {
     if (body.classList.contains(className)) {
         toggleSidenavMaximo();
@@ -175,7 +215,7 @@ function callInitFuntion(id) {
 function includeJs(id){
     let scriptEle = document.createElement("script");
 
-    let urlFile = base_web + "assets/js/sistema/"+moduloRoute[id]+"/"+id+"-controller.js";
+    let urlFile = base_web + "assets/js/sistema/"+moduloRoute[id]+"/"+id+"-controller.js?v="+version_app;
     scriptEle.setAttribute("src", urlFile);
     scriptEle.onload = function () {
         callInitFuntion(id);
@@ -277,7 +317,7 @@ function toggleSidenavMaximoClose() {
 
 //PERSONAL TABLE LENGUAJE
 const lenguajeDatatable = {
-    "sProcessing":     "Cargando <span><i style='font-size: 15px' class='fa fa-spinner fa-spin'></i></span>",
+    "sProcessing":     "",
     "sLengthMenu":     "Mostrar _MENU_ registros",
     "sZeroRecords":    "No se encontraron resultados",
     "sEmptyTable":     "Ningún registro disponible",
@@ -362,6 +402,17 @@ function getDataById(idData, tabla) {
         var element = data[index];
         if(element.id == idData){
             return element;
+        }
+    }
+    return false;
+}
+
+function getIndexById(idData, tabla) {
+    var data = tabla.rows().data();
+    for (let index = 0; index < data.length; index++) {
+        var element = data[index];
+        if(element.id == idData){
+            return index;
         }
     }
     return false;
@@ -695,4 +746,111 @@ function hideAllMenus() {
             element.style.display = 'none';
         }
     }
+}
+
+function formatNumber(n) {
+    // format number 1000000 to 1,234,567
+    return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+} 
+
+function formatCurrencyValue (value) {
+    if (value) {
+        value = value + '';
+
+        if (value.indexOf(".") >= 0) {    
+            var decimal_pos = value.indexOf(".");
+            
+            var left_side = value.substring(0, decimal_pos);
+            var right_side = value.substring(decimal_pos);
+        
+            left_side = formatNumber(left_side);
+            right_side = formatNumber(parseFloat(right_side).toFixed(2).slice(1));
+            right_side = right_side.substring(0, 2);
+        
+            valorFormato = left_side + "." + right_side;
+        
+            return valorFormato;
+        } else {
+            return formatNumber(value)+".00";
+        }
+
+    } else {
+        return '0.00';
+    }
+}
+ 
+function formatCurrency(input, blur) {
+    // appends $ to value, validates decimal side
+    // and puts cursor back in right position.
+    
+    // get input value
+    var input_val = input.val();
+    input_val = input_val.replace(',', '');
+    // don't validate empty input
+    if (input_val === "") { return; }
+    
+    // original length
+    var original_len = input_val.length;
+  
+    // initial caret position 
+    var caret_pos = input.prop("selectionStart");
+      
+    // check for decimal
+    if (input_val.indexOf(".") >= 0) {
+        // get position of first decimal
+        // this prevents multiple decimals from
+        // being entered
+        var decimal_pos = input_val.indexOf(".");
+        // split number by decimal point
+        var left_side = input_val.substring(0, decimal_pos);
+        var right_side = input_val.substring(decimal_pos);
+        // add commas to left side of number
+        left_side = formatNumber(left_side);
+        // validate right side
+        right_side = formatNumber(right_side);
+        // On blur make sure 2 numbers after decimal
+        if (blur === "blur") {
+            right_side += "00";
+        }
+        // Limit decimal to only 2 digits
+        right_side = right_side.substring(0, 2);
+
+        input_val = left_side + "." + right_side;
+    } else {
+        input_val = formatNumber(input_val);
+        if (blur === "blur") {
+            input_val += ".00";
+        }
+        input_val = input_val;
+    }
+    
+    // send updated string to input
+    input.val(input_val);
+    
+    // put caret back in the right position
+    var updated_len = input_val.length;
+    caret_pos = updated_len - original_len + caret_pos;
+    input[0].setSelectionRange(caret_pos, caret_pos);
+}
+
+function stringToNumberFloat (value) {
+    value = value+'';
+    if (value) value = parseFloat(parseFloat(value.replaceAll(',', '')).toFixed(2));
+    return value ? value : 0;
+}
+
+function arreglarMensajeError(mensaje) {
+    var errorsMsg = '';
+    if (typeof mensaje === 'object') {
+        for (field in mensaje) {
+            var errores = mensaje[field];
+            for (campo in errores) {
+                errorsMsg += field+": "+errores[campo]+" <br>";
+            }
+        };
+    }
+    else if (typeof mensaje === 'string') {
+        errorsMsg = mensaje;
+    }
+    return errorsMsg;
 }

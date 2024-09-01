@@ -66,6 +66,15 @@ function plancuentaInit() {
             {"data":'nombre'},
             {
                 "data": function (row, type, set){
+                    if(row.tipos_cuenta.length){
+                        if (row.tipos_cuenta[0].tipo) return row.tipos_cuenta[0].tipo.nombre;
+                        else return '';
+                    }
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
                     if(row.naturaleza_cuenta){
                         return 'Credito';
                     }
@@ -142,6 +151,14 @@ function plancuentaInit() {
                         return 'Si';
                     }
                     return 'No';
+                }
+            },
+            {
+                "data": function (row, type, set){
+                    if(row.impuesto){
+                        return row.impuesto.nombre+' - $'+row.impuesto.base+' - '+row.impuesto.porcentaje+'%';
+                    }
+                    return '';
                 }
             },
             {
@@ -447,6 +464,11 @@ function plancuentaInit() {
         dropdownParent: $('#planCuentaFormModal'),
     });
 
+    $("#searchInputCuenta").on("input", function (e) {
+        plan_cuentas_table.context[0].jqXHR.abort();
+        $('#planCuentaTable').DataTable().search($("#searchInputCuenta").val()).draw();
+    });
+
     let column = plan_cuentas_table.column(13);
 
     if (!editarPlanCuenta && !eliminarPlanCuenta) column.visible(false);
@@ -467,11 +489,6 @@ $(document).on('click', '#createPlanCuenta', function () {
     $("#updatePlanCuenta").hide();
     $("#savePlanCuenta").show();
     $("#planCuentaFormModal").modal('show');
-});
-
-$("#searchInputCuenta").on("input", function (e) {
-    plan_cuentas_table.context[0].jqXHR.abort();
-    $('#planCuentaTable').DataTable().search($("#searchInputCuenta").val()).draw();
 });
 
 $(document).on('click', '#savePlanCuenta', function () {
@@ -616,7 +633,8 @@ $(document).on('click', '#updatePlanCuenta', function () {
             $("#updatePlanCuenta").hide();
             $("#savePlanCuentaLoading").hide();
             $("#planCuentaFormModal").modal('hide');
-            plan_cuentas_table.row.add(res.data).draw();
+            
+            plan_cuentas_table.ajax.reload();
             agregarToast('exito', 'Actualización exitosa', 'Cuenta actualizada con exito!', true );
         }
     }).fail((err) => {

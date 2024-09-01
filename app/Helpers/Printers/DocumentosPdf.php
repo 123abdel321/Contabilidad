@@ -58,13 +58,13 @@ class DocumentosPdf extends AbstractPrinterPdf
 		$totalFactura = 0;
 		$calcularTotal = false;
 
-		if($this->factura->comprobante->tipo_comprobante != 4) {
+		if($this->factura->comprobante && $this->factura->comprobante->tipo_comprobante != 4) {
 			$calcularTotal = true;
 		}
 
 		$nombre_usuario = 'PROVEEDOR';
 
-		if ($this->factura->comprobante->tipo_comprobante == 0 || $this->factura->comprobante->tipo_comprobante == 3) {
+		if ($this->factura->comprobante && $this->factura->comprobante->tipo_comprobante == 0 || $this->factura->comprobante->tipo_comprobante == 3) {
 			$nombre_usuario = 'CLIENTE';
 		}
 

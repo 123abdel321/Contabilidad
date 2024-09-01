@@ -66,7 +66,7 @@
                                 <span class="mask bg-gradient-primary opacity-4"></span>
                                 <img src="/img/logo_contabilidad.png" class="navbar-brand-img h-10 position-relative" style="width: 100px; align-self: center;" alt="main_logo-login">
                                 <h4 class="mt-1 text-white font-weight-bolder position-relative">PORTAFOLIO ERP</h4>
-                                <!-- <p class="text-white position-relative">BETA {{ config('app.version') }}</p> -->
+                                <p class="text-white position-relative">BETA {{ config('app.version') }}</p>
                             </div>
                         </div>
                     </div>

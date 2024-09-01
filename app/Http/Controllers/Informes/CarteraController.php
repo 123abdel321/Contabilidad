@@ -11,6 +11,7 @@ use App\Jobs\ProcessInformeCartera;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfCartera;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Informes\InfCarteraDetalle;
 
 class CarteraController extends Controller
@@ -19,7 +20,13 @@ class CarteraController extends Controller
 
     public function index ()
     {
-        return view('pages.contabilidad.cartera.cartera-view');
+        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
+
+        $data = [
+            'ubicacion_maximoph' => $ubicacion_maximoph && $ubicacion_maximoph->valor ? $ubicacion_maximoph->valor : '0',
+        ];
+
+        return view('pages.contabilidad.cartera.cartera-view', $data);
     }
 
     public function generate(Request $request)
@@ -31,14 +38,17 @@ class CarteraController extends Controller
                 'message'=> 'Por favor ingresar un rango de fechas válido.'
             ]);
 		}
-
+        
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
 
         $cartera = InfCartera::where('id_empresa', $empresa->id)
-            ->where('fecha_hasta', $request->get('fecha_cartera'))
+            ->where('fecha_desde', $request->get('fecha_desde'))
+            ->where('fecha_hasta', $request->get('fecha_hasta'))
             ->where('id_nit', $request->get('id_nit', null))
             ->where('id_cuenta', $request->get('id_cuenta', null))
-            ->where('detallar_cartera', $request->get('detallar_cartera', null))
+            ->where('agrupar_cartera', $request->get('agrupar_cartera', null))
+            ->where('tipo_informe', $request->get('tipo_informe', null))
+            ->where('nivel', $request->get('nivel', null))
 			->first();
         
         if($cartera) {
@@ -95,10 +105,12 @@ class CarteraController extends Controller
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         
         $cartera = InfCartera::where('id_empresa', $empresa->id)
-            ->where('fecha_hasta', $request->get('fecha_cartera'))
+            ->where('fecha_desde', $request->get('fecha_desde'))
+            ->where('fecha_hasta', $request->get('fecha_hasta'))
             ->where('id_nit', $request->get('id_nit', null))
             ->where('id_cuenta', $request->get('id_cuenta', null))
-            ->where('detallar_cartera', $request->get('detallar_cartera', null))
+            ->where('agrupar_cartera', $request->get('agrupar_cartera', null))
+            ->where('nivel', $request->get('nivel', null))
 			->first();
             
         if ($cartera) {
