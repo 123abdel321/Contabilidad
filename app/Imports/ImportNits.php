@@ -28,18 +28,18 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
             if ($row['numero_documento']) {
                 $nuevoMail = $row['email'];
                 if (!$row['email']) {
-                    $nuevoMail = '';
-                    if ($row['primer_nombre'] && $row['primer_apellido']) {
-                        $nuevoMail= $row['primer_nombre'].'.'.$row['primer_apellido'].rand(1, 5000);
-                    } else if ($row['primer_nombre']) {
-                        $nuevoMail= $row['primer_nombre'].'_'.rand(1, 5000);
-                    } else if ($row['primer_apellido']) {
-                        $nuevoMail= $row['primer_apellido'].'_'.rand(1, 5000);
-                    } else if ($row['otros_nombres']) {
-                        $nuevoMail= $row['otros_nombres'].'_'.rand(1, 5000);
-                    } else if ($row['segundo_apellido']) {
-                        $nuevoMail= $row['segundo_apellido'].'_'.rand(1, 5000);
-                    }
+                    $nuevoMail = $row['numero_documento'].'_'.rand(1, 5000);
+                    // if ($row['primer_nombre'] && $row['primer_apellido']) {
+                    //     $nuevoMail= $row['primer_nombre'].'.'.$row['primer_apellido'].rand(1, 5000);
+                    // } else if ($row['primer_nombre']) {
+                    //     $nuevoMail= $row['primer_nombre'].'_'.rand(1, 5000);
+                    // } else if ($row['primer_apellido']) {
+                    //     $nuevoMail= $row['primer_apellido'].'_'.rand(1, 5000);
+                    // } else if ($row['otros_nombres']) {
+                    //     $nuevoMail= $row['otros_nombres'].'_'.rand(1, 5000);
+                    // } else if ($row['segundo_apellido']) {
+                    //     $nuevoMail= $row['segundo_apellido'].'_'.rand(1, 5000);
+                    // }
                     $razon_social = explode(" ", $this->razon_social);
                     $nuevoMail.='@'.$razon_social[0].'.com';
                 }
