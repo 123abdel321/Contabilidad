@@ -138,6 +138,7 @@ btn.addEventListener('click', event => {
         });
         agregarToast('exito', 'Cédulas/Nits importadas', 'Cédulas nits importadas con exito!', true);
     }).fail((err) => {
+
         $('#cargarPlantillaNits').show();
         $('#actualizarPlantillaNits').show();
         $('#cargarPlantillaNitsLoagind').hide();
@@ -146,6 +147,6 @@ btn.addEventListener('click', event => {
                 $('#actualizarPlantillaNits').show();
             }
         });
-        agregarToast('error', 'Importación de nits errado', '');
+        agregarToast('error', 'Importación de nits errado', err.data);
     });
 });
