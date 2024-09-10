@@ -50,6 +50,7 @@ class ProcessInformeBalance implements ShouldQueue
 				'fecha_desde' => $this->request['fecha_desde'],
 				'fecha_hasta' => $this->request['fecha_hasta'],
 				'id_cuenta' => $this->request['id_cuenta'],
+				'id_nit' => $this->request['id_nit'],
 				'tipo' => $this->request['tipo'],
 				'nivel' => $this->request['nivel'],
 			]);
@@ -225,6 +226,9 @@ class ProcessInformeBalance implements ShouldQueue
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
             ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
 				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+			})
+            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
+				$query->where('DG.id_nit', $this->request['id_nit'].'%');
 			});
 
         return $documentosQuery;
@@ -259,7 +263,10 @@ class ProcessInformeBalance implements ShouldQueue
             ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
             ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
                 $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
-            });
+            })
+            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
+				$query->where('DG.id_nit', $this->request['id_nit'].'%');
+			});
 
         return $documentosQuery;
     }

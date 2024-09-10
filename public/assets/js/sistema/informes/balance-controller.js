@@ -83,6 +83,7 @@ function balanceInit() {
                 d.fecha_desde = $('#fecha_desde_balance').val();
                 d.fecha_hasta = $('#fecha_hasta_balance').val();
                 d.id_cuenta = $('#id_cuenta_balance').val();
+                d.id_nit = $('#id_nit_balance').val();
             }
         },
         "columns": [
@@ -121,6 +122,7 @@ function balanceInit() {
         ]
     });
     balance_table.column(1).visible(false);
+
     $('#id_cuenta_balance').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -136,6 +138,24 @@ function balanceInit() {
                 };
             }
         }
+    });
+
+    $('#id_nit_balance').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione una Cédula/nit",
+        allowClear: true,
+        ajax: {
+            url: 'api/nit/combo-nit',
+            dataType: 'json',
+            headers: headers,
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+
     });
 
     $("#tipo_informe_balance").on('change', function(){

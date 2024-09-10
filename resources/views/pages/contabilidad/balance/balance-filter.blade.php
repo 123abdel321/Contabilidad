@@ -13,16 +13,21 @@
                 <form id="balanceprimaryrmeForm" style="margin-top: 10px;">
                     <input name="id_balance_cargado" id="id_balance_cargado" class="form-control form-control-sm" type="text" style="display: none;">
                     <div class="row">
-                        <div class="form-group form-group col-12 col-sm-4 col-md-3">
+                        <div class="form-group form-group col-12 col-sm-4 col-md-2">
                             <label for="exampleFormControlSelect1">Tipo informe</label>
                             <select class="form-control form-control-sm tipo_cartera" id="tipo_informe_balance" name="tipo_informe_balance">
                                 <option value="1">De prueba</option>
                                 <option value="2">De terceros</option>
                             </select>
                         </div>
-                        <div class="form-group col-12 col-sm-4 col-md-3">
+                        <div class="form-group col-12 col-sm-4 col-md-2">
                             <label for="exampleFormControlSelect1">Cuenta</label>
                             <select name="id_cuenta_balance" id="id_cuenta_balance" class="form-control form-control-sm">
+                            </select>
+                        </div>
+                        <div class="form-group col-12 col-sm-4 col-md-2">
+                            <label for="exampleFormControlSelect1">Cedula / Nit</label>
+                            <select name="id_nit_balance" id="id_nit_balance" class="form-control form-control-sm">
                             </select>
                         </div>
                         <div class="form-group col-12 col-sm-4 col-md-2">

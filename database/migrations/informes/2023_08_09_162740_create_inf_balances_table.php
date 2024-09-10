@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('id_empresa');
             $table->integer('id_cuenta')->nullable();
+            $table->integer('id_nit')->nullable();
             $table->date('fecha_desde');
             $table->date('fecha_hasta');
             $table->integer('tipo')->nullable();

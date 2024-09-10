@@ -18,6 +18,7 @@ class InfBalance extends Model
         'id',
         'id_empresa',
         'id_cuenta',
+        'id_nit',
         'fecha_desde',
         'fecha_hasta',
         'exporta_excel',
