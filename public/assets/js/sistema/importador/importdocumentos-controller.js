@@ -145,6 +145,7 @@ btnImportDocumento.addEventListener('click', event => {
         });
         agregarToast('exito', 'Documentos importadas', 'Documentos importadas con exito!', true);
     }).fail((err) => {
+        var mensaje = err.responseJSON
         $('#cargarPlantillaDocumentos').show();
         $('#actualizarPlantillaDocumentos').show();
         $('#cargarPlantillaDocumentosLoagind').hide();
@@ -153,6 +154,6 @@ btnImportDocumento.addEventListener('click', event => {
                 $('#actualizarPlantillaDocumentos').show();
             }
         });
-        agregarToast('error', 'Importación de documentos errado', '');
+        agregarToast('error', 'Importación de documentos errado', mensaje.data);
     });
 });
