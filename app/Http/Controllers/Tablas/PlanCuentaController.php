@@ -193,11 +193,13 @@ class PlanCuentaController extends Controller
 				"required",
 				function ($attribute, $value, $fail) use ($request) {
                     $cuentaPadre = PlanCuentas::find($request->get('id_padre')); 
-                    $cuentaNueva = $cuentaPadre->cuenta.''.$value;
-					$search = PlanCuentas::whereCuenta($cuentaNueva)->first();
-					if ($search) {
-						$fail("La cuenta ".$cuentaNueva." ya existe.");
-					}
+                    if ($cuentaPadre) {
+                        $cuentaNueva = $cuentaPadre->cuenta.''.$value;
+                        $search = PlanCuentas::whereCuenta($cuentaNueva)->first();
+                        if ($search) {
+                            $fail("La cuenta ".$cuentaNueva." ya existe.");
+                        }
+                    }
                 },
 			],
             'nombre' => 'required',
