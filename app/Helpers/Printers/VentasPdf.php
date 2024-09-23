@@ -50,6 +50,7 @@ class VentasPdf extends AbstractPrinterPdf
     public function data()
     {
         $this->venta->load([
+			'resolucion',
             'cliente',
             'comprobante',
             'detalles',
