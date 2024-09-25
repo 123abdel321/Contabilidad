@@ -48,8 +48,8 @@ function estadoactualInit() {
                 return;
             }
             if(data.total == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 55%)');
-                $('td', row).css('font-weight', 'bold');
+                // $('td', row).css('background-color', 'rgb(64 164 209 / 55%)');
+                // $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.total == 1){
