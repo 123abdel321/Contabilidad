@@ -38,6 +38,8 @@ class Nits extends Model
 		'direccion',
 		'apartamentos',
 		'email',
+		'email_1',
+		'email_2',
 		'email_recepcion_factura_electronica',
 		'telefono_1',
 		'telefono_2',
