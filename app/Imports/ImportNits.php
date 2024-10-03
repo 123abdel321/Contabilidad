@@ -74,7 +74,7 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
                 }
             } else {
                 $estado = 1;
-                $observacionMala.= 'El numero de documento: '.$row['cedula_nit'].', es obligatorio!<br>';
+                $observacionMala.= 'El numero de documento: '.$row['numero_documento'].', es obligatorio!<br>';
             }
 
             NitsImport::create([
