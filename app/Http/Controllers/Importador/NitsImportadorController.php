@@ -235,11 +235,12 @@ class NitsImportadorController extends Controller
                     $this->rowErrors+= 1;
                     $errores.= 'El numero de documento: '.$dataNit->numero_documento.', no fue encontrado!<br>';
                 } else {
+
                     $nitsConMismoCorreo = Nits::where('numero_documento', '!=', $dataNit->numero_documento)
                         ->where('email', $dataNit->email)
                         ->first();
 
-                    if ($nitsConMismoCorreo) {
+                    if ($dataNit->email && $nitsConMismoCorreo) {
                         $this->rowErrors+= 1;
                         $errores.= 'El email: '.$dataNit->email.', ya esta en uso por el documento: '.$nitsConMismoCorreo->numero_documento.'!<br>';
                     }
