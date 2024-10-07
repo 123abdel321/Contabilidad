@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Informes;
 use Illuminate\Http\Request;
 use App\Exports\BalanceExport;
 use App\Events\PrivateMessageEvent;
+use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeBalance;
 //MODELS
@@ -153,19 +154,32 @@ class BalanceController extends Controller
             $informeBalance->archivo_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
             $informeBalance->save();
 
-            (new BalanceExport($request->get('id')))->store($fileName, 'do_spaces', null, [
-                'visibility' => 'public'
-            ])->chain([
-                event(new PrivateMessageEvent('informe-balance-'.$request->user()['has_empresa'].'_'.$request->user()->id, [
-                    'tipo' => 'exito',
-                    'mensaje' => 'Excel de Balance generado con exito!',
-                    'titulo' => 'Excel generado',
-                    'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
-                    'autoclose' => false
-                ])),
-                $informeBalance->exporta_excel = 2,
-                $informeBalance->save(),
-            ]);
+            $has_empresa = $request->user()['has_empresa'];
+            $user_id = $request->user()->id;
+            $id_informe = $request->get('id');
+
+            Bus::chain([
+                function () use ($id_informe, &$fileName) {
+                    // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
+                    (new BalanceExport($id_informe))->store($fileName, 'do_spaces', null, [
+                        'visibility' => 'public'
+                    ]);
+                },
+                function () use ($user_id, $has_empresa, $url, $informeBalance) {
+                    // Lanza el evento cuando el proceso termine
+                    event(new PrivateMessageEvent('informe-balance-'.$has_empresa.'_'.$user_id, [
+                        'tipo' => 'exito',
+                        'mensaje' => 'Excel de Balance generado con exito!',
+                        'titulo' => 'Excel generado',
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
+                        'autoclose' => false
+                    ]));
+                    
+                    // Actualiza el informe auxiliar
+                    $informeBalance->exporta_excel = 2;
+                    $informeBalance->save();
+                }
+            ])->dispatch();
 
             return response()->json([
                 'success'=>	true,
