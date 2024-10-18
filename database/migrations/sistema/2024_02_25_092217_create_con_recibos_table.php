@@ -16,12 +16,13 @@ return new class extends Migration
             $table->integer('id_nit');
             $table->integer('id_comprobante');
             $table->integer('id_vendedor')->nullable();
+            $table->string('request_id', 200)->nullable();
             $table->date('fecha_manual')->nullable();
             $table->string('consecutivo', 20);
             $table->decimal('total_abono', 15);
             $table->decimal('total_anticipo', 15);
             $table->mediumText('observacion')->nullable();
-            $table->integer('estado')->default(1)->comment('0:Rechazado, 1:Aprobado, 2:Pendiente')->nullable();
+            $table->integer('estado')->default(1)->comment('0:Rechazado, 1:Aprobado, 2:Pendiente, 3:Pendiente Pasarela')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();
