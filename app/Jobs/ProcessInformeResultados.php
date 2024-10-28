@@ -5,6 +5,7 @@ namespace App\Jobs;
 use DB;
 use Exception;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -62,16 +63,16 @@ class ProcessInformeResultados implements ShouldQueue
 				'id_empresa' => $this->id_empresa,
 				'fecha_desde' => $this->request['fecha_desde'],
 				'fecha_hasta' => $this->request['fecha_hasta'],
-                'cuenta_desde' => $this->request['cuenta_desde'],
-				'cuenta_hasta' => $this->request['cuenta_hasta'],
 				'id_cecos' => $this->request['id_cecos'],
 				'id_nit' => $this->request['id_nit'],
 			]);
 
             $this->id_resultado = $resultado->id;
 
-            $this->documentosResultado();
+            $this->presupuestoDatos();
+            // $this->documentosResultado();
             $this->totalesDocumentosResultado();
+            
             ksort($this->resultadoCollection, SORT_STRING | SORT_FLAG_CASE);
 
             foreach (array_chunk($this->resultadoCollection,233) as $resultadoCollection){
@@ -95,6 +96,43 @@ class ProcessInformeResultados implements ShouldQueue
 
 			throw $exception;
         }
+    }
+
+    private function presupuestoDatos()
+    {
+        $year = Carbon::parse($this->request['fecha_desde'])->format('Y');
+        
+        DB::connection('sam')
+            ->table('presupuestos AS P')
+            ->select('PD.*')
+            ->where('P.periodo', $year)
+            ->where('P.tipo', $this->request['tipo'])
+            ->where('PD.auxiliar', 1)
+            ->orderByRaw('PD.id')
+            ->leftJoin('presupuesto_detalles AS PD', 'PD.id_presupuesto', 'P.id')
+            ->when($this->request['cuenta'], function ($query) {
+                $query->where('PD.cuenta', 'LIKE', $this->request['cuenta'].'%');
+            })
+            ->chunk(233, function ($presupuestos) {
+                $presupuestos->each(function ($presupuesto) {
+                    $presupuestoPadre = false;
+                    $cuentasAsociadas = $this->getCuentas($presupuesto->cuenta); //return ARRAY PADRES CUENTA
+                    $documento = $this->documentosIndividuales($presupuesto->cuenta);
+                    
+                    foreach ($cuentasAsociadas as $cuenta) {
+                        $exiteCuenta = PlanCuentas::whereCuenta($cuenta);
+                        if ($exiteCuenta->count()) {
+                            if ($this->hasCuentaData($cuenta)) $this->sumCuentaData($cuenta, $documento);
+                            else $this->newCuentaData($cuenta, $documento);
+    
+                            $presupuesto = $this->getPresupuesto($cuenta, $presupuestoPadre);
+                            $presupuestoPadre = true;
+    
+                            $this->addCuentaPpto($cuenta, $presupuesto);
+                        }
+                    }
+                });
+            });
     }
 
     private function documentosResultado()
@@ -124,6 +162,7 @@ class ProcessInformeResultados implements ShouldQueue
             ->groupByRaw('cuenta')
             ->orderByRaw('cuenta')
             ->chunk(233, function ($documentos) {
+
                 $documentos->each(function ($documento) {
                     $presupuestoPadre = false;
                     $cuentasAsociadas = $this->getCuentas($documento->cuenta); //return ARRAY PADRES CUENTA
@@ -139,6 +178,55 @@ class ProcessInformeResultados implements ShouldQueue
                     }
                 });
             });
+    }
+
+    private function documentosIndividuales($cuenta)
+    {
+        $query = $this->resultadoDocumentosQuery($cuenta);
+        $query->unionAll($this->resultadoAnteriorQuery($cuenta));
+        
+        $documeto = DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS resultado"))
+            ->mergeBindings($query)
+            ->select(
+                'id_cuenta',
+                'id_nit',
+                'numero_documento',
+                'nombre_nit',
+                'cuenta',
+                'nombre_cuenta',
+                'created_by',
+                'updated_by',
+                'fecha_manual',
+                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
+                DB::raw('SUM(documentos_totales) AS documentos_totales')
+            )
+            ->groupByRaw('cuenta')
+            ->orderByRaw('cuenta')
+            ->first();
+
+        if ($documeto) return $documeto;
+        $cuentaData = PlanCuentas::whereCuenta($cuenta)->first();
+
+        return (object)[
+            'id_cuenta' => $cuentaData->id,
+            'id_nit' => '',
+            'numero_documento' => '',
+            'nombre_nit' => '',
+            'cuenta' => $cuentaData->cuenta,
+            'nombre_cuenta' => $cuentaData->nombre,
+            'created_by' => '',
+            'updated_by' => '',
+            'fecha_manual' => '',
+            'saldo_anterior' => 0,
+            'debito' => 0,
+            'credito' => 0,
+            'saldo_final' => 0,
+            'documentos_totales' => 0
+        ];
     }
 
     private function totalesDocumentosResultado()
@@ -242,7 +330,7 @@ class ProcessInformeResultados implements ShouldQueue
         ];
     }
 
-    private function resultadoDocumentosQuery()
+    private function resultadoDocumentosQuery($cuenta = null)
     {
         $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
@@ -270,16 +358,17 @@ class ProcessInformeResultados implements ShouldQueue
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
-            ->where('cuenta', 'LIKE', '4%')
-            ->orWhere('cuenta', 'LIKE', '5%')
-            ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
-				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
-			});
+            ->when($this->request['cuenta'], function ($query) {
+                $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+            })
+            ->when($cuenta, function ($query) use ($cuenta){
+                $query->where('PC.cuenta', $cuenta);
+            });
 
         return $documentosQuery;
     }
 
-    private function resultadoAnteriorQuery()
+    private function resultadoAnteriorQuery($cuenta = null)
     {
         $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
@@ -306,10 +395,11 @@ class ProcessInformeResultados implements ShouldQueue
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
-            ->where('cuenta', 'LIKE', '4%')
-            ->orWhere('cuenta', 'LIKE', '5%')
-            ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
+            ->when($this->request['cuenta'], function ($query) {
                 $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+            })
+            ->when($cuenta, function ($query) use ($cuenta){
+                $query->where('PC.cuenta', $cuenta);
             });
 
         return $documentosQuery;
@@ -357,7 +447,6 @@ class ProcessInformeResultados implements ShouldQueue
     private function newCuentaData($cuenta, $resultado)
     {
         $cuentaData = PlanCuentas::whereCuenta($cuenta)->first();
-
         if(!$cuentaData){
             return;
         }
@@ -463,7 +552,10 @@ class ProcessInformeResultados implements ShouldQueue
         $sum = $this->resultadoCollection[$cuenta]['debito'] + $this->resultadoCollection[$cuenta]['credito']; 
         $pptoPorcentaje = $sum ? ($ppto->ppto_movimiento / $sum) * 100 : 0;
         $saldoFinal = $this->resultadoCollection[$cuenta]['saldo_final'] < 0 ? $this->resultadoCollection[$cuenta]['saldo_final'] * -1 : $this->resultadoCollection[$cuenta]['saldo_final'];
-        $pptoPorcentajeAcumulado = $saldoFinal && $ppto->ppto_acumulado ? ($ppto->ppto_acumulado / $saldoFinal) * 100 : 0;
+        $pptoPorcentajeAcumulado = 0;
+        if ($saldoFinal != '0.00' && $ppto->ppto_acumulado) {
+            $pptoPorcentajeAcumulado = ($ppto->ppto_acumulado / $saldoFinal) * 100;
+        }
         $this->resultadoCollection[$cuenta]['ppto_anterior'] = $ppto->ppto_anterior;
         $this->resultadoCollection[$cuenta]['ppto_movimiento'] = $ppto->ppto_movimiento;
         $this->resultadoCollection[$cuenta]['ppto_acumulado'] = $ppto->ppto_acumulado;
