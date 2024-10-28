@@ -21,8 +21,8 @@ return new class extends Migration
             $table->integer('id_cuenta_retencion_declarante')->nullable();
             $table->string('observacion', 200)->nullable();
             $table->decimal('subtotal', 15)->default(0);
-            $table->decimal('aiu_porcentaje', 5)->default(0);
-            $table->decimal('aiu_valor', 15)->default(0);
+            $table->decimal('aiu_porcentaje', 5)->nullable()->default(0);
+            $table->decimal('aiu_valor', 15)->nullable()->default(0);
             $table->decimal('descuento_porcentaje', 5)->default(0);
             $table->decimal('rete_fuente_porcentaje', 5)->default(0);
             $table->decimal('descuento_valor', 15)->default(0);
