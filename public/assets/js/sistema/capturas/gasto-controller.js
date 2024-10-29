@@ -433,9 +433,7 @@ function addRowGastos(openCuenta = true) {
 function changeConceptoGasto(idGasto) {
     let data = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
     if (!data) return;
-    
-    // var indexRetencion = retencionesGasto.findIndex(item => item.id_retencion == idGasto);
-    // retencionesGasto
+
     var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
     var indexTable = getIndexById(idGasto, gasto_table);
     var proveedor = $comboNitGastos.select2('data')[0];
@@ -454,15 +452,13 @@ function changeConceptoGasto(idGasto) {
     //RETENCION
     if (!proveedor.declarante) {
         if (data.cuenta_retencion_declarante && data.cuenta_retencion_declarante.impuesto) {
-            if (data.cuenta_iva) {
-                var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_iva.impuesto.id);
-                if (!existe || existe < 0) {
-                    retencionesGasto.push({
-                        id_retencion: data.cuenta_retencion_declarante.impuesto.id,
-                        porcentaje: parseFloat(data.cuenta_retencion_declarante.impuesto.porcentaje),
-                        base: parseFloat(data.cuenta_retencion_declarante.impuesto.base),
-                    });
-                }
+            var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion_declarante.impuesto.id);
+            if (!existe || existe < 0) {
+                retencionesGasto.push({
+                    id_retencion: data.cuenta_retencion_declarante.impuesto.id,
+                    porcentaje: parseFloat(data.cuenta_retencion_declarante.impuesto.porcentaje),
+                    base: parseFloat(data.cuenta_retencion_declarante.impuesto.base),
+                });
             }
         }
     } else {
@@ -540,7 +536,6 @@ function mostrarValoresGastos () {
 }
 
 function setDisabledGastosRow(data = null, idGasto) {
-    console.log('setDisabledGastosRow: ',data);
     if (data) {
         $("#gastovalor_"+idGasto).prop('disabled', false);
         $("#gastoobservacion_"+idGasto).prop('disabled', false);
@@ -699,7 +694,7 @@ function changeValorGasto (idGasto, event = null) {
         if (!valorGasto) return;
         if (!calculandoDatos) return;
         calculandoDatos = false;
-
+        
         var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
         
         var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
