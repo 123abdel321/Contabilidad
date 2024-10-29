@@ -12,6 +12,8 @@ use App\Models\Sistema\Nits;
 use App\Models\Sistema\TipoDocumentos;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
+use App\Models\Empresas\ResponsabilidadesTributarias;
+
 
 class NitController extends Controller
 {
@@ -31,7 +33,13 @@ class NitController extends Controller
 
     public function index ()
     {
-        return view('pages.tablas.nits.nits-view');
+        $responsabilidades = ResponsabilidadesTributarias::get();
+
+        $data = [
+            'responsabilidades' => $responsabilidades
+        ];
+
+        return view('pages.tablas.nits.nits-view', $data);
     }
 
     public function generate (Request $request)
@@ -185,11 +193,17 @@ class NitController extends Controller
         }
 
         DB::connection('sam')->beginTransaction();
-        
+
+        $responsabilidades = NULL;
+        if ($request->get('id_responsabilidades')) {
+            $responsabilidades = implode(",", $request->get('id_responsabilidades'));
+        }
+
         try {
             $nit = Nits::create([
                 'id_tipo_documento' => $request->get('id_tipo_documento'),
                 'id_vendedor' => $request->get('id_vendedor'),
+                'id_responsabilidades' => $responsabilidades,
                 'numero_documento' => $request->get('numero_documento'),
                 'tipo_contribuyente' => $request->get('id_tipo_documento') == '6' ? 1 : 2,
                 'primer_apellido' => $request->get('primer_apellido'),
@@ -203,6 +217,7 @@ class NitController extends Controller
                 'email_2' => $request->get('email_2'),
                 'telefono_1' => $request->get('telefono_1'),
                 'porcentaje_aiu' => $request->get('porcentaje_aiu'),
+                'porcentaje_reteica' => $request->get('porcentaje_reteica'),
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
                 'declarante' => $request->get('declarante'),
@@ -254,11 +269,17 @@ class NitController extends Controller
             }
         }
 
+        $responsabilidades = NULL;
+        if ($request->get('id_responsabilidades')) {
+            $responsabilidades = implode(",", $request->get('id_responsabilidades'));
+        }
+
         Nits::where('id', $request->get('id'))
             ->update([
                 'id_tipo_documento' => $request->get('id_tipo_documento'),
                 'id_vendedor' => $request->get('id_vendedor'),
                 'numero_documento' => $request->get('numero_documento'),
+                'id_responsabilidades' => $responsabilidades,
                 'tipo_contribuyente' => $request->get('tipo_contribuyente'),
                 'primer_apellido' => $request->get('primer_apellido'),
                 'segundo_apellido' => $request->get('segundo_apellido'),
@@ -273,6 +294,7 @@ class NitController extends Controller
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
                 'porcentaje_aiu' => $request->get('porcentaje_aiu'),
+                'porcentaje_reteica' => $request->get('porcentaje_reteica'),
                 'declarante' => $request->get('declarante'),
                 'updated_by' => request()->user()->id,
             ]);

@@ -3,6 +3,7 @@ var nits_table = null;
 var $comboCiudad = null;
 var $comboVendedores = null;
 var $comboTipoDocumento = null;
+var $comboResponsabilidares = null;
 
 function nitInit() {
     nits_table = $('#nitTable').DataTable({
@@ -83,6 +84,7 @@ function nitInit() {
                 }
             },
             {"data":'porcentaje_aiu', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'porcentaje_reteica', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
@@ -155,6 +157,11 @@ function nitInit() {
                 $('#declarante_nit').prop('checked', false);
             }
 
+            if (data.id_responsabilidades) {
+                var id_responsabilidades = data.id_responsabilidades.split(",");
+                $("#id_responsabilidades").val(id_responsabilidades).change();
+            }
+
             hideFormNits();
         
             $("#id_nit_up").val(data.id);
@@ -170,6 +177,7 @@ function nitInit() {
             $("#telefono_1").val(data.telefono_1);
             $("#observaciones").val(data.observaciones);
             $("#porcentaje_aiu").val(data.porcentaje_aiu);
+            $("#porcentaje_reteica").val(data.porcentaje_reteica);
             
             if(data.logo_nit) {
                 $('#new_avatar').attr('src', 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/'+data.logo_nit);
@@ -304,6 +312,11 @@ function nitInit() {
         }
     });
 
+    $comboResponsabilidares = $('#id_responsabilidades').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#nitFormModal'),
+    });
+
     $("#searchInputNits").on("input", function (e) {
         nits_table.context[0].jqXHR.abort();
         $('#nitTable').DataTable().search($("#searchInputNits").val()).draw();
@@ -406,6 +419,8 @@ $(document).on('click', '#updateNit', function () {
             observaciones: $("#observaciones").val(),
             id_vendedor: $('#id_vendedor_nit').val(),
             porcentaje_aiu: $('#porcentaje_aiu').val(),
+            porcentaje_reteica: $('#porcentaje_reteica').val(),
+            id_responsabilidades: $("#id_responsabilidades").val(),
             declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
@@ -475,6 +490,8 @@ $(document).on('click', '#saveNit', function () {
             observaciones: $("#observaciones").val(),
             id_vendedor: $('#id_vendedor_nit').val(),
             porcentaje_aiu: $('#porcentaje_aiu').val(),
+            porcentaje_reteica: $('#porcentaje_reteica').val(),
+            id_responsabilidades: $("#id_responsabilidades").val(),
             declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
@@ -537,6 +554,7 @@ function clearFormNits(){
     $("#direccion").val('');
     $("#email").val('');
     $("#porcentaje_aiu").val('');
+    $("#porcentaje_reteica").val('');
     $('#default_avatar').show();
     $('#new_avatar').hide();
 
@@ -558,6 +576,8 @@ function hideFormNits(){
         'razon_social',
         'telefono_1',
         'porcentaje_aiu',
+        'porcentaje_reteica',
+        'id_responsabilidades',
         'direccion',
         'email',
         'declarante'
@@ -571,6 +591,8 @@ function hideFormNits(){
         'razon_social',
         'telefono_1',
         'porcentaje_aiu',
+        'porcentaje_reteica',
+        'id_responsabilidades',
         'direccion',
         'email',
         'declarante'
@@ -587,6 +609,8 @@ function hideFormNits(){
         'otros_nombres',
         'telefono_1',
         'porcentaje_aiu',
+        'porcentaje_reteica',
+        'id_responsabilidades',
         'direccion',
         'email',
         'declarante'
@@ -600,7 +624,7 @@ function hideFormNits(){
     if (tipoDocumento && tipoDocumento == '6') {
         nitsForm.forEach(form => {
             $("#div_"+form).show();
-            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu') {
+            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu' || form == 'id_responsabilidades') {
             } else {
                 $("#"+form).prop('required',true);
             }
@@ -608,7 +632,7 @@ function hideFormNits(){
     } else if (tipoDocumento) {
         noNitsForm.forEach(form => {
             $("#div_"+form).show();
-            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu') {
+            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu' || form == 'id_responsabilidades') {
             } else {
                 $("#"+form).prop('required',true);
             }

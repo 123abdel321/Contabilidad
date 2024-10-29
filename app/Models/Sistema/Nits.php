@@ -57,6 +57,7 @@ class Nits extends Model
 		'logo_nit',
 		'declarante',
 		'porcentaje_aiu',
+		'porcentaje_reteica',
 		'created_by',
 		'updated_by',
 		'created_at',

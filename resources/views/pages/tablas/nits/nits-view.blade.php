@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    @include('pages.tablas.nits.nits-form')
+    @include('pages.tablas.nits.nits-form', ['responsabilidades' => $responsabilidades])
     
 </div>
 

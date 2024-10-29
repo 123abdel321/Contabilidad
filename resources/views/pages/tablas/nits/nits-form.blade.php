@@ -1,4 +1,4 @@
-<div class="modal fade" id="nitFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="nitFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -126,6 +126,20 @@
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_porcentaje_aiu">
                         <label for="example-text-input" class="form-control-label">Porcentaje AIU</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_aiu" id="porcentaje_aiu" value="0">
+                    </div>
+
+                    <div class="form-group col-12 col-sm-6 col-md-6" id="div_porcentaje_reteica">
+                        <label for="example-text-input" class="form-control-label">Porcentaje ReteICA</label>
+                        <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_reteica" id="porcentaje_reteica" value="0">
+                    </div>
+
+                    <div class="form-group form-group col-12 col-sm-6 col-md-6" id="div_id_responsabilidades">
+                        <label for="exampleFormControlSelect1">Responsabilidades</label>
+                        <select class="form-control form-control-sm" id="id_responsabilidades" name="id_responsabilidades[]" multiple="multiple">
+                            @foreach ($responsabilidades as $responsabilidad)
+                                <option value="{{ $responsabilidad->id }}">{{ $responsabilidad->codigo.' - '.$responsabilidad->nombre }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6" id="div_declarante">
