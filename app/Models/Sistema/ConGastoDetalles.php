@@ -27,6 +27,8 @@ class ConGastoDetalles extends Model
         'descuento_porcentaje',
         'rete_fuente_porcentaje',
         'rete_fuente_valor',
+        'rete_ica_porcentaje',
+        'rete_ica_valor',
         'descuento_valor',
         'iva_porcentaje',
         'iva_valor',

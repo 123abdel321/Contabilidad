@@ -20,6 +20,7 @@ class ConConceptoGastos extends Model
         'id_cuenta_iva',
         'id_cuenta_retencion',
         'id_cuenta_retencion_declarante',
+        'id_cuenta_reteica',
         'created_by',
         'updated_by',
     ];
@@ -47,5 +48,10 @@ class ConConceptoGastos extends Model
     public function cuenta_retencion_declarante()
     {
         return $this->belongsTo(PlanCuentas::class, "id_cuenta_retencion_declarante");
+    }
+
+    public function cuenta_reteica()
+    {
+        return $this->belongsTo(PlanCuentas::class, "id_cuenta_reteica");
     }
 }

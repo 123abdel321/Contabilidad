@@ -9,6 +9,7 @@ var $comboNitGastos = null;
 var guardandoGasto = false;
 var retencionesGasto = [];
 var porcentajeAIUGastos = 0;
+var porcentajeReteica = 0;
 var validandoDatosIva = false;
 var validarFacturaGastos = false;
 var abrirFormasPagoGastos = false;
@@ -85,6 +86,16 @@ function gastoInit () {
                         <div class="input-group input-group-sm" style="height: 18px; min-width: 112px;">
                             <span id="gasto_retencion_porcentaje_text_${row.id}" class="input-group-text" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">${row.porcentaje_retencion}%</span>
                             <input style="height: 30px; text-align: right; min-width: 80px;" type="text" class="form-control form-control-sm" id="gasto_retencion_valor_${row.id}" value="${new Intl.NumberFormat("ja-JP").format(row.valor_retencion)}" disabled>
+                        </div>
+                    </div>`;
+                }
+            },
+            {//VALOR RETEICA
+                "data": function (row, type, set, col){
+                    return `<div class="form-group mb-3" style="min-width: 85px;">
+                        <div class="input-group input-group-sm" style="height: 18px; min-width: 112px;">
+                            <span id="gasto_reteica_porcentaje_text_${row.id}" class="input-group-text" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">${row.porcentaje_reteica}%</span>
+                            <input style="height: 30px; text-align: right; min-width: 80px;" type="text" class="form-control form-control-sm" id="gasto_reteica_valor_${row.id}" value="${new Intl.NumberFormat("ja-JP").format(row.valor_reteica)}" disabled>
                         </div>
                     </div>`;
                 }
@@ -292,6 +303,24 @@ function gastoInit () {
         $comboCentroCostoGastos.val(dataCecos.id).trigger('change');
     }
 
+    $comboNitGastos.on('select2:close', function(event) {
+        var dataNit = $('#id_nit_gasto').select2('data');
+        var columnValReteIca = gasto_table.column(8);
+
+        if (dataNit && dataNit.length) {
+            dataNit = dataNit[0];
+            if (dataNit.porcentaje_reteica) {
+                porcentajeReteica = parseFloat(dataNit.porcentaje_reteica);
+                columnValReteIca.visible(true);
+            } else {
+                columnValReteIca.visible(false);
+            }
+        } else {
+            porcentajeReteica = 0;
+            columnValReteIca.visible(false);
+        }
+    });
+
     dataGasto = [];
     retencionesGasto = [];
 
@@ -415,10 +444,12 @@ function addRowGastos(openCuenta = true) {
         "descuento_gasto": 0,
         "porcentaje_descuento_gasto": 0,
         "valor_iva": 0,
+        "valor_reteica": 0,
         "no_valor_iva": 0,
         "porcentaje_iva": 0,
         "valor_retencion": 0,
         "porcentaje_retencion": 0,
+        "porcentaje_reteica": 0,
         "total_valor_gasto": 0,
         'observacion':  '',
     };
@@ -433,7 +464,7 @@ function addRowGastos(openCuenta = true) {
 function changeConceptoGasto(idGasto) {
     let data = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
     if (!data) return;
-
+    
     var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
     var indexTable = getIndexById(idGasto, gasto_table);
     var proveedor = $comboNitGastos.select2('data')[0];
@@ -447,6 +478,13 @@ function changeConceptoGasto(idGasto) {
         dataGasto[indexGasto].porcentaje_iva = porcentajeIvaAIU;
     } else if (!data.id_cuenta_iva && !parseInt(proveedor.porcentaje_aiu)) {
         dataGasto[indexGasto].editar_iva = true;
+    }
+
+    //RETEICA
+    if (data.cuenta_reteica && data.cuenta_reteica.id) {
+        if (porcentajeReteica) {
+            dataGasto[indexGasto].porcentaje_reteica = porcentajeReteica
+        }
     }
 
     //RETENCION
@@ -499,7 +537,7 @@ function changeConceptoGasto(idGasto) {
 
 function mostrarValoresGastos () {
     
-    var [gasto_iva, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
+    var [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
 
     if (gasto_iva) $("#gasto_iva_disp_view").show();
     else $("#gasto_iva_disp_view").hide();
@@ -516,10 +554,16 @@ function mostrarValoresGastos () {
     if (gasto_descuento) $("#gasto_descuento_disp_view").show();
     else $("#gasto_descuento_disp_view").hide();
 
+    if (gasto_reteica) $("#gasto_reteica_disp_view").show();
+    else $("#gasto_reteica_disp_view").hide();
+
     var countA = new CountUp('gasto_sub_total', 0, gasto_sub_total, 2, 0.5);
         countA.start();
 
     var countB = new CountUp('gasto_iva', 0, gasto_iva, 2, 0.5);
+        countB.start();
+
+    var countB = new CountUp('gasto_reteica', 0, gasto_reteica, 2, 0.5);
         countB.start();
 
     var countC = new CountUp('gasto_retencion', 0, gasto_retencion, 2, 0.5);
@@ -604,8 +648,9 @@ function changeValorNoIvaGasto (idGasto, event = null) {
         var valorNoiva = stringToNumberFloat($("#gasto_no_iva_valor_"+idGasto).val());
         var valorPorcentajeDescuento = (valorDescuento / valorGasto) * 100;
         var valorSubtotal = valorGasto - (valorDescuento + valorNoiva);
-        var valorRetencion = valorSubtotal * (dataGasto[indexGasto].porcentaje_retencion / 100);
-        var valorTotal = valorSubtotal - valorRetencion;
+        var valorRetencion = dataGasto[indexGasto].porcentaje_retencion ? valorSubtotal * (dataGasto[indexGasto].porcentaje_retencion / 100) : 0;
+        var valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? valorSubtotal * (dataGasto[indexGasto].porcentaje_reteica / 100) : 0;
+        var valorTotal = valorSubtotal - (valorRetencion + valorReteIca);
 
         dataGasto[indexGasto].porcentaje_descuento_gasto = valorPorcentajeDescuento;
         dataGasto[indexGasto].descuento_gasto = valorDescuento;
@@ -698,9 +743,10 @@ function changeValorGasto (idGasto, event = null) {
         var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
         
         var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
-        var valorSubtotal = valorGasto - (dataGasto[indexGasto].descuento_gasto + dataGasto[indexGasto].no_valor_iva);
+        var valorSubtotal = valorGasto - (dataGasto[indexGasto].descuento_gasto + dataGasto[indexGasto].no_valor_iva + dataGasto[indexGasto].valor_reteica);
         var valorIva = 0;
         var baseAIU = 0;
+        var valorReteica = 0;
 
         if (porcentajeAIUGastos) {
             baseAIU = valorSubtotal * (porcentajeAIUGastos / 100);
@@ -709,14 +755,19 @@ function changeValorGasto (idGasto, event = null) {
             valorIva = valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100);
         }
 
+        if (dataGasto[indexGasto].porcentaje_reteica) {
+            valorReteica = valorSubtotal * (dataGasto[indexGasto].porcentaje_reteica / 100);
+        }
+
         var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal, baseAIU);
-        var valorTotal = parseFloat((valorSubtotal + valorIva) - valorRetencion).toFixed(2);
+        var valorTotal = parseFloat((valorSubtotal + valorIva) - (valorRetencion + valorReteica)).toFixed(2);
 
         dataGasto[indexGasto].valor_gasto = valorGasto;
         dataGasto[indexGasto].valor_iva = valorIva;
         dataGasto[indexGasto].base_aiu = baseAIU;
         dataGasto[indexGasto].total_valor_gasto = valorTotal;
         dataGasto[indexGasto].porcentaje_retencion = porcentajeRetencion;
+        dataGasto[indexGasto].valor_reteica = valorReteica;
         dataGasto[indexGasto].valor_retencion = valorRetencion;
         
         updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
@@ -790,6 +841,7 @@ function totalFormasPagoGastos (idFormaPago = null) {
 function totalValoresGastos () {
     var gasto_iva = 0;
     var gasto_total = 0;
+    var gasto_reteica = 0;
     var gasto_sub_total = 0;
     var gasto_retencion = 0;
     var gasto_descuento = 0;
@@ -818,7 +870,7 @@ function totalValoresGastos () {
                     var idConcepto = dataConceptoGasto.id;
                     dataGasto[index].porcentaje_retencion = porcentajeRetencion;
                     dataGasto[index].valor_retencion = parseFloat(totalRetencion).toFixed(2);
-                    dataGasto[index].total_valor_gasto = parseFloat((subTotal + dataGasto[index].valor_iva) - totalRetencion).toFixed(2);
+                    dataGasto[index].total_valor_gasto = parseFloat((subTotal + dataGasto[index].valor_iva) - (totalRetencion + + dataGasto[index].valor_reteica)).toFixed(2);
 
                     var indexTable = getIndexById(dataGasto[index].id, gasto_table);
                     gasto_table.row(indexTable).data(dataGasto[index]).draw(false);
@@ -836,7 +888,7 @@ function totalValoresGastos () {
     } else {
         for (let index = 0; index < dataGasto.length; index++) {
             if (dataGasto[index].valor_retencion) {
-                var subTotal = dataGasto[index].valor_gasto - dataGasto[index].descuento_gasto;
+                var subTotal = dataGasto[index].valor_gasto - (dataGasto[index].descuento_gasto);
 
                 dataGasto[index].porcentaje_retencion = porcentajeRetencion;
                 dataGasto[index].valor_retencion = 0;
@@ -864,12 +916,13 @@ function totalValoresGastos () {
     dataGasto.forEach(gastoRow => {
         gasto_sub_total+= parseFloat(gastoRow.valor_gasto) - parseFloat(gastoRow.descuento_gasto) + parseFloat(gastoRow.no_valor_iva);
         gasto_iva+= parseFloat(gastoRow.valor_iva) + parseFloat(gastoRow.no_valor_iva);
+        gasto_reteica+= parseFloat(gastoRow.valor_reteica);
         gasto_retencion+= parseFloat(gastoRow.valor_retencion);
-        gasto_total+= parseFloat(gastoRow.total_valor_gasto) + parseFloat(gastoRow.no_valor_iva);
+        gasto_total+= (parseFloat(gastoRow.total_valor_gasto) + parseFloat(gastoRow.no_valor_iva));
         gasto_descuento+= gastoRow.descuento_gasto;
     });
     
-    return [gasto_iva, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total];
+    return [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total];
 }
 
 function calcularRetencion (valorSubtotal = null, valorGastoRow, baseAIU = 0) {
@@ -911,7 +964,7 @@ function changeFormaPagoGasto (idFormaPago, event, anticipo) {
     if(event.keyCode == 13){
         calcularGastosPagos(idFormaPago);
 
-        var [gasto_iva, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
+        var [gasto_iva, gasto_reteica, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
         var [totalPagos, totalAnticipos] = totalFormasPagoGastos();
         var totalFaltante = gasto_total - (totalPagos + totalAnticipos);
         
@@ -959,7 +1012,7 @@ function validateSaveGastos() {
         }
 
         var [totalPagos, totalAnticipos] = totalFormasPagoGastos();
-        var [gasto_iva, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
+        var [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
         
         if (gasto_total - (totalPagos + totalAnticipos) == 0) {
             guardandoGasto = true;
@@ -1076,7 +1129,7 @@ function calcularGastosPagos (idFormaPago = null) {
         $('#gasto_forma_pago_'+idFormaPago).val(0);
     }
 
-    var [gasto_iva, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
+    var [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
     var [totalPagos, totalAnticipos] = totalFormasPagoGastos();
     var totalFaltante = gasto_total - (totalPagos + totalAnticipos);
 
@@ -1196,7 +1249,7 @@ $(document).on('keydown', '.custom-gasto_conceptogasto .select2-search__field', 
         return;
     }
 
-    var [gasto_iva, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
+    var [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total] = totalValoresGastos();
     var dataSearch = $('.select2-search__field').val();
     
     if (event.keyCode == 96 && !dataSearch.length) {

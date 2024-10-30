@@ -54,6 +54,12 @@
                         </select>
                     </div>
 
+                    <div class="form-group col-12 col-sm-6 col-md-6">
+                        <label for="exampleFormControlSelect1">Cuenta Rete-Ica</label>
+                        <select name="id_cuenta_concepto_gasto_reteica" id="id_cuenta_concepto_gasto_reteica" class="form-control form-control-sm">
+                        </select>
+                    </div>
+
                 </form>
 
             </div>

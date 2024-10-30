@@ -161,6 +161,10 @@
                                         <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">RETENCIÓN: </h6></td>
                                         <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_retencion">0.00</h6></td>
                                     </tr>
+                                    <tr id="gasto_reteica_disp_view" style="display: none;">
+                                        <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">RETEICA: </h6></td>
+                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_reteica">0.00</h6></td>
+                                    </tr>
                                     <tr id="gasto_descuento_disp_view" style="display: none;">
                                         <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">DESCUENTO: </h6></td>
                                         <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_descuento">0.00</h6></td>

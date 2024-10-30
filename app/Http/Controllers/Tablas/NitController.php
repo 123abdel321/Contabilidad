@@ -385,6 +385,7 @@ class NitController extends Controller
             'email',
             'declarante',
             'porcentaje_aiu',
+            'porcentaje_reteica',
             'apartamentos',
             \DB::raw('telefono_1 AS telefono'),
             $text

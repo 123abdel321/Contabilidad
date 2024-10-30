@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('id_cuenta_gasto')->nullable();
             $table->integer('id_cuenta_iva')->nullable();
             $table->integer('id_cuenta_retencion')->nullable();
+            $table->integer('id_cuenta_reteica')->nullable();
             $table->integer('id_cuenta_retencion_declarante')->nullable();
             $table->string('observacion', 200)->nullable();
             $table->decimal('subtotal', 15)->default(0);
@@ -25,8 +26,10 @@ return new class extends Migration
             $table->decimal('aiu_valor', 15)->nullable()->default(0);
             $table->decimal('descuento_porcentaje', 5)->default(0);
             $table->decimal('rete_fuente_porcentaje', 5)->default(0);
+            $table->decimal('rete_ica_porcentaje', 5)->default(0);
             $table->decimal('descuento_valor', 15)->default(0);
             $table->decimal('rete_fuente_valor', 15)->default(0);
+            $table->decimal('rete_ica_valor', 15)->default(0);
             $table->decimal('iva_porcentaje', 5)->default(0);
             $table->decimal('iva_valor', 15)->default(0);
             $table->decimal('total', 15)->default(0);

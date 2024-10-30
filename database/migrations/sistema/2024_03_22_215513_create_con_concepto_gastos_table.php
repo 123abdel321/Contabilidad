@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('id_cuenta_iva')->nullable();
             $table->integer('id_cuenta_retencion')->nullable();
             $table->integer('id_cuenta_retencion_declarante')->nullable();
+            $table->integer('id_cuenta_reteica')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();
