@@ -234,7 +234,7 @@ function conceptogastosInit() {
             data: function (params) {
                 var query = {
                     search: params.term,
-                    id_tipo_cuenta: [9]
+                    id_tipo_cuenta: [12]
                 }
                 return query;
             },
