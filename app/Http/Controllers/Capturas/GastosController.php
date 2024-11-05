@@ -405,7 +405,7 @@ class GastosController extends Controller
             if ($this->proveedor->porcentaje_aiu) {
                 $baseAIU = $subtotalGasto * ($this->proveedor->porcentaje_aiu / 100);
                 
-                if ($porcentaje_iva_aiu->valor) {
+                if ($porcentaje_iva_aiu && $porcentaje_iva_aiu->valor) {
                     $ivaGasto = $baseAIU * ($porcentaje_iva_aiu->valor / 100);
                 } else{ 
                     $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
