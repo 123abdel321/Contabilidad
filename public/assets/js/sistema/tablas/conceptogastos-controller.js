@@ -306,6 +306,16 @@ function conceptogastosInit() {
                 $comboCuentaGastoIva.val(dataCuenta.id).trigger('change');
             }
 
+            if(data.cuenta_reteica){
+                var dataCuenta = {
+                    id: data.cuenta_reteica.id,
+                    text: data.cuenta_reteica.cuenta + ' - ' + data.cuenta_reteica.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaGastoReteIca.append(newOption).trigger('change');
+                $comboCuentaGastoReteIca.val(dataCuenta.id).trigger('change');
+            }
+
             $("#codigo_concepto_gasto").val(data.codigo);
             $("#nombre_concepto_gasto").val(data.nombre);
             $("#id_concepto_gasto_up").val(data.id);

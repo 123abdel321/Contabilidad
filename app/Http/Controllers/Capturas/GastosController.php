@@ -97,7 +97,7 @@ class GastosController extends Controller
             'pagos.*.id' => 'required|exists:sam.fac_formas_pagos,id',
             'pagos.*.valor' => 'required',
         ];
-
+        
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
 		if ($validator->fails()){
@@ -112,7 +112,7 @@ class GastosController extends Controller
         $request->request->add(['consecutivo' => $consecutivo]);
         $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
         $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
-
+        
         try {
             DB::connection('sam')->beginTransaction();
             
@@ -151,7 +151,7 @@ class GastosController extends Controller
                 $subtotalGasto = $movimiento->valor_gasto - $movimiento->descuento_gasto;
                 $baseAIU = 0;
 
-                if ($this->proveedor->porcentaje_aiu) {
+                if (floatval($this->proveedor->porcentaje_aiu)) {
 
                     $ivaGasto = 0;
                     $baseAIU = $subtotalGasto * ($this->proveedor->porcentaje_aiu / 100);
@@ -349,6 +349,7 @@ class GastosController extends Controller
                 'cuenta_gasto',
                 'cuenta_descento',
                 'cuenta_iva.impuesto',
+                'cuenta_reteica.impuesto',
                 'cuenta_retencion.impuesto',
                 'cuenta_retencion_declarante.impuesto'
             )->find($gasto->id_concepto);
@@ -401,8 +402,8 @@ class GastosController extends Controller
             $porcentajeIva = $conceptoGasto->cuenta_iva ? floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje) : 0;
             $porcentajeRetencion = $this->totalesFactura['porcentaje_rete_fuente'];
             $subtotalGasto = $gasto->valor_gasto - ($gasto->descuento_gasto + $gasto->no_valor_iva);
-
-            if ($this->proveedor->porcentaje_aiu) {
+            
+            if (floatval($this->proveedor->porcentaje_aiu)) {
                 $baseAIU = $subtotalGasto * ($this->proveedor->porcentaje_aiu / 100);
                 
                 if ($porcentaje_iva_aiu && $porcentaje_iva_aiu->valor) {
@@ -414,7 +415,6 @@ class GastosController extends Controller
                 $retencionGasto = $porcentajeRetencion ? $baseAIU * ($porcentajeRetencion / 100) : 0;
                 $totalGasto = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - ($retencionGasto + $reteicaGasto);
             } else {
-                
                 $ivaGasto = $porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0;
                 $reteicaGasto = $porcentajeReteIca ? $subtotalGasto * ($porcentajeReteIca / 100) : 0;
                 $retencionGasto = $porcentajeRetencion ? $subtotalGasto * ($porcentajeRetencion / 100) : 0;
