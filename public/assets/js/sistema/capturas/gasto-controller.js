@@ -647,9 +647,9 @@ function changeValorNoIvaGasto (idGasto, event = null) {
         var valorDescuento = stringToNumberFloat($("#gastovalordescuento_"+idGasto).val());
         var valorNoiva = stringToNumberFloat($("#gasto_no_iva_valor_"+idGasto).val());
         var valorPorcentajeDescuento = (valorDescuento / valorGasto) * 100;
-        var valorSubtotal = valorGasto - (valorDescuento + valorNoiva);
-        var valorRetencion = dataGasto[indexGasto].porcentaje_retencion ? valorSubtotal * (dataGasto[indexGasto].porcentaje_retencion / 100) : 0;
-        var valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? valorSubtotal * (dataGasto[indexGasto].porcentaje_reteica / 100) : 0;
+        var valorSubtotal = valorGasto - (valorDescuento);
+        var valorRetencion = dataGasto[indexGasto].porcentaje_retencion ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_retencion / 100) : 0;
+        var valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_reteica / 100) : 0;
         var valorTotal = valorSubtotal - (valorRetencion + valorReteIca);
 
         dataGasto[indexGasto].porcentaje_descuento_gasto = valorPorcentajeDescuento;
@@ -856,13 +856,13 @@ function totalValoresGastos () {
     [valorRetencion, porcentajeRetencion] = calcularRetencion(subTotalGeneral);
     if (valorRetencion) {
         for (let index = 0; index < dataGasto.length; index++) {
-            var subTotal = dataGasto[index].valor_gasto - (dataGasto[index].descuento_gasto + dataGasto[index].no_valor_iva);
+            var subTotal = dataGasto[index].valor_gasto - (dataGasto[index].descuento_gasto);
             var totalRetencion = 0;
             if (porcentajeAIUGastos) {
                 var baseAIU = subTotal * (porcentajeAIUGastos / 100);
                 totalRetencion = baseAIU * (porcentajeRetencion / 100);
             } else {
-                totalRetencion = subTotal * (porcentajeRetencion / 100);
+                totalRetencion = (subTotal - dataGasto[index].no_valor_iva) * (porcentajeRetencion / 100);
             }
             if (totalRetencion != dataGasto[index].valor_retencion) {
                 var dataConceptoGasto = $('#combo_concepto_gasto_'+dataGasto[index].id).select2('data')[0];

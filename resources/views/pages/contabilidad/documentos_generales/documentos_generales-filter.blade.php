@@ -12,7 +12,7 @@
 
                 <form id="documentosGeneralesFilterForm" class="needs-validation" style="margin-top: 10px;" novalidate>
                     <div class="row">
-
+                        <input name="id_documento_general_cargado" id="id_documento_general_cargado" class="form-control form-control-sm" type="text" style="display: none;">
                         <div class="form-group col-6 col-sm-3 col-md-2">
                             <label for="example-text-input" class="form-control-label">Fecha desde<span style="color: red">*</span></label>
                             <input name="fecha_desde_documentos_generales" id="fecha_desde_documentos_generales" class="form-control form-control-sm" type="date" require>
@@ -116,6 +116,16 @@
                     <span id="generarDocumentosGeneralesLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">BUSCANDO</b>
+                    </span>
+                    <!-- BOTON EXCEL -->
+                    <span id="descargarExcelDocumento" class="btn badge bg-gradient-dark btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
+                        <i class="fas fa-file-excel" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">EXCEL</b>
+                    </span>
+                    <span id="descargarExcelDocumentoDisabled" class="badge bg-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                        <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>
+                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                 </div>
             </div>

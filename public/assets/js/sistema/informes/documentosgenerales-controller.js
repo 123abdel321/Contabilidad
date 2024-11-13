@@ -278,12 +278,12 @@ var channel = pusher.subscribe('informe-documentos-generales-'+localStorage.getI
 
 channel.bind('notificaciones', function(data) {
     console.log('notificaciones', data);
+    $('#id_documento_general_cargado').val(data.id_documento_general);
     if(data.url_file){
         loadExcel(data);
         return;
     }
     if(data.id_documento_general){
-        $('#id_auxiliar_cargado').val(data.id_documento_general);
         loadDocumentosGeneralesById(data.id_documento_general);
         return;
     }
@@ -316,6 +316,8 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
 
     $("#generarDocumentosGenerales").hide();
     $("#generarDocumentosGeneralesLoading").show();
+    $("#descargarExcelDocumento").hide();
+    $("#descargarExcelDocumentoDisabled").hide();
 
     var agruparDocumentos = $("#agrupar_documentos_generales").val();
     var agruparDocumentosText = '';
@@ -353,8 +355,51 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
     
     documentos_generales_table.ajax.url(url).load(function(res) {
         if(res.success) {
+            console.log(res);
+            $("#descargarExcelDocumento").show();
+            $("#descargarExcelDocumentoDisabled").hide();
             agregarToast('info', 'Generando documentos generales', 'En un momento se le notificará cuando el informe esté generado...', true );
         }
+    });
+});
+
+$(document).on('click', '#descargarExcelDocumento', function () {
+    $("#generarDocumentosGenerales").hide();
+    $("#generarDocumentosGeneralesLoading").show();
+    $("#descargarExcelDocumento").hide();
+    $("#descargarExcelDocumentoDisabled").hide();
+
+    $.ajax({
+        url: base_url + 'documentos-generales-excel',
+        method: 'POST',
+        data: JSON.stringify({id: $('#id_documento_general_cargado').val()}),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        $("#generarDocumentosGenerales").show();
+        $("#generarDocumentosGeneralesLoading").hide();
+        $("#descargarExcelDocumento").show();
+        if(res.success){
+            if(res.url_file){
+                window.open('https://'+res.url_file, "_blank");
+                return; 
+            }
+            agregarToast('info', 'Generando excel', res.message, true);
+        }
+    }).fail((err) => {
+        var errorsMsg = "";
+        var mensaje = err.responseJSON.message;
+        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += "- "+errores[campo]+" <br>";
+                }
+            };
+        } else {
+            errorsMsg = mensaje
+        }
+        agregarToast('error', 'Error al generar excel', errorsMsg);
     });
 });
 
