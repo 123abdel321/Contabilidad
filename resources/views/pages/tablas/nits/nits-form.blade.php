@@ -128,8 +128,14 @@
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_aiu" id="porcentaje_aiu" value="0">
                     </div>
 
+                    <div class="form-group col-12 col-sm-6 col-md-6">
+                        <label for="exampleFormControlSelect1" style=" width: 100%;">Actividad economica</label>
+                        <select class="form-control form-control-sm" name="id_actividad_economica_nit" id="id_actividad_economica_nit">
+                        </select>
+                    </div>
+
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_porcentaje_reteica">
-                        <label for="example-text-input" class="form-control-label">Porcentaje ReteICA</label>
+                        <label for="example-text-input" class="form-control-label">Milaje ReteICA</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_reteica" id="porcentaje_reteica" value="0">
                     </div>
 
@@ -140,6 +146,11 @@
                                 <option value="{{ $responsabilidad->id }}">{{ $responsabilidad->codigo.' - '.$responsabilidad->nombre }}</option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6" id="div_declarante">
+                        <input class="form-check-input" type="checkbox" name="sumar_aiu_nits" id="sumar_aiu_nits" style="height: 20px;">
+                        <label class="form-check-label" for="sumar_aiu_nits">Sumar calculo AIU</label>
                     </div>
 
                     <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6" id="div_declarante">

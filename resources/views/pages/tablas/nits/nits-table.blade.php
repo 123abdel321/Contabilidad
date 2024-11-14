@@ -12,8 +12,10 @@
             <th>Tipo documento</th>
             <th>Tipo contribuyente</th>
             <th>Declarante</th>
+            <th>Actividad economica</th>
+            <th>Milaje ReteICA</th>
             <th>% AIU</th>
-            <th>% ReteICA</th>
+            <th>Sumar AIU</th>
             <th>Creación registro</th>
             <th>Ultima actualización</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Acciones</th>

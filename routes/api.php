@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post("empresa","App\Http\Controllers\InstaladorController@createEmpresa");
     Route::post("seleccionar-empresa","App\Http\Controllers\ApiController@setEmpresa");
     Route::get('responsabilidades-combo', 'App\Http\Controllers\Configuracion\EmpresaController@comboResponsabilidades');
+    Route::get('actividad-economica-combo', 'App\Http\Controllers\Configuracion\EmpresaController@comboActividadEconomica');
     //CONFIGURACION
     Route::put('empresa', 'App\Http\Controllers\Configuracion\EmpresaController@updateEmpresa');
     Route::put('entorno', 'App\Http\Controllers\Configuracion\EntornoController@updateEntorno');

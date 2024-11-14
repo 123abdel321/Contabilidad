@@ -60,7 +60,7 @@ class NitController extends Controller
                 $columnSortOrder = $order_arr[0]['dir']; // asc or desc
                 $searchValue = $search_arr['value']; // Search value
     
-                $nits = Nits::with('tipo_documento', 'ciudad', 'vendedor.nit')
+                $nits = Nits::with('tipo_documento', 'ciudad', 'vendedor.nit', 'actividad_economica')
                     ->select(
                         '*',
                         DB::raw("DATE_FORMAT(nits.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
@@ -204,6 +204,7 @@ class NitController extends Controller
                 'id_tipo_documento' => $request->get('id_tipo_documento'),
                 'id_vendedor' => $request->get('id_vendedor'),
                 'id_responsabilidades' => $responsabilidades,
+                'id_actividad_economica' => $request->get('id_actividad_economica'),
                 'numero_documento' => $request->get('numero_documento'),
                 'tipo_contribuyente' => $request->get('id_tipo_documento') == '6' ? 1 : 2,
                 'primer_apellido' => $request->get('primer_apellido'),
@@ -221,6 +222,7 @@ class NitController extends Controller
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
                 'declarante' => $request->get('declarante'),
+                'sumar_aiu' => $request->get('sumar_aiu'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
@@ -280,6 +282,7 @@ class NitController extends Controller
                 'id_vendedor' => $request->get('id_vendedor'),
                 'numero_documento' => $request->get('numero_documento'),
                 'id_responsabilidades' => $responsabilidades,
+                'id_actividad_economica' => $request->get('id_actividad_economica'),
                 'tipo_contribuyente' => $request->get('tipo_contribuyente'),
                 'primer_apellido' => $request->get('primer_apellido'),
                 'segundo_apellido' => $request->get('segundo_apellido'),
@@ -296,6 +299,7 @@ class NitController extends Controller
                 'porcentaje_aiu' => $request->get('porcentaje_aiu'),
                 'porcentaje_reteica' => $request->get('porcentaje_reteica'),
                 'declarante' => $request->get('declarante'),
+                'sumar_aiu' => $request->get('sumar_aiu'),
                 'updated_by' => request()->user()->id,
             ]);
 
