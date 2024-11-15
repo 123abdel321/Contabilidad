@@ -1,5 +1,6 @@
 var documentos_generales_table = null;
 var generarDocumentosGenerales = false;
+var agrupadoPorDocumento = false;
 
 function documentosgeneralesInit() {
 
@@ -134,6 +135,9 @@ function documentosgeneralesInit() {
                 return html;
             }},
             {"data": function (row, type, set){
+                if (row.nivel == 1 && agrupadoPorDocumento) {
+                    return '<span id="imprimirdocumentogeneral_'+row.id+'" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-documentogeneral" style="margin-bottom: 0rem !important; color: black; background-color: white !important;">Imprimir</span>';
+                }
                 var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
                 if(!row.updated_by && !row.fecha_edicion) return '';
                 if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
@@ -311,6 +315,12 @@ function getNivelAgrupado() {
     return false;
 }
 
+$(document).on('click', '.imprimir-documentogeneral', function () {
+    var id = this.id.split('_')[1];
+    var data = getDataById(id, documentos_generales_table);
+    window.open(`/documentos-generales-print/${data.id_comprobante}/${data.consecutivo}`, "_blank");
+});
+
 $(document).on('click', '#generarDocumentosGenerales', function () {
     generarDocumentosGenerales = false;
 
@@ -352,6 +362,9 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
     url+= '&agrupar='+agruparDocumentosText;
     url+= '&agrupado='+getNivelAgrupado();
     url+= '&generar='+generarDocumentosGenerales;
+
+    if (agruparDocumentosText == 'consecutivo') agrupadoPorDocumento = true;
+    else agrupadoPorDocumento = false;
     
     documentos_generales_table.ajax.url(url).load(function(res) {
         if(res.success) {

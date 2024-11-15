@@ -127,7 +127,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
     private function documentosGeneralesAgruparNormal()
     {
         $query = $this->DocumentosGeneralesQuery();
-
+        
         DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS documentosgeneralesdata"))
             ->mergeBindings($query)
@@ -135,7 +135,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $cuentaPadre = $this->getCuentaPadre($documento);
-                    
+                    // dd('documento', $documento);
                     if ($this->hasCuentaData($cuentaPadre)) $this->sumCuentaData($cuentaPadre, $documento);
                     else $this->newCuentaTotal($cuentaPadre, $documento);
                     $this->newCuentaDetalle($cuentaPadre, $documento, false);
@@ -360,7 +360,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'id_nit' => in_array('id_nit', $this->agrupacion) ? $documento->id_nit : null,
             'id_cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->id_cuenta : null,
             'id_usuario' => null,
-            'id_comprobante' => in_array('id_comprobante', $this->agrupacion) ? $documento->id_comprobante : null,
+            'id_comprobante' => $documento->id_comprobante,
             'id_centro_costos' => in_array('id_centro_costos', $this->agrupacion) ? $documento->id_centro_costos : null,
             'cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->cuenta : null,
             'nombre_cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->nombre_cuenta : null,

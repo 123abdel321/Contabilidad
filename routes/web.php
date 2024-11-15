@@ -181,6 +181,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		//DOCUMENTOS
 		Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos');
 		Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('documento-pdf');
+		Route::get('/documentos-generales-print/{id_comprobante}/{consecutivo}', [DocumentoController::class, 'showGeneralPdf'])->name('documento-pdf');
 		//DOCUMENTOS GENERALES
 		Route::get('/documentosgenerales', [DocumentosGeneralesController::class, 'index']);
 		// Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('documento-pdf');
