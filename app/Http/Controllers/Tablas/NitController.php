@@ -388,6 +388,7 @@ class NitController extends Controller
             'segundo_apellido',
             'email',
             'declarante',
+            'sumar_aiu',
             'porcentaje_aiu',
             'porcentaje_reteica',
             'apartamentos',

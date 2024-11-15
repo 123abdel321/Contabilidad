@@ -309,6 +309,7 @@ class GastosController extends Controller
 
     private function createFacturaGasto($request)
     {
+        
         $this->calcularTotales($request->get('gastos'), $request->get('id_proveedor'));
         $this->calcularFormasPago($request->get('pagos'));
         
@@ -396,39 +397,53 @@ class GastosController extends Controller
                 'cuenta_retencion_declarante.impuesto',
                 'cuenta_reteica'
             )->find($gasto->id_concepto);
+            
+            $baseAIU = 0;
 
             $porcentajeReteIca = floatval($nit->porcentaje_reteica);
             $porcentajeReteIca = $conceptoGasto->cuenta_reteica ? $porcentajeReteIca : 0;
             $porcentajeIva = $conceptoGasto->cuenta_iva ? floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje) : 0;
             $porcentajeRetencion = $this->totalesFactura['porcentaje_rete_fuente'];
-            $subtotalGasto = $gasto->valor_gasto - ($gasto->descuento_gasto + $gasto->no_valor_iva);
+
+            $subtotalGasto = $gasto->valor_gasto - $gasto->descuento_gasto;
             
             if (floatval($this->proveedor->porcentaje_aiu)) {
-                $baseAIU = $subtotalGasto * ($this->proveedor->porcentaje_aiu / 100);
-                
-                if ($porcentaje_iva_aiu && $porcentaje_iva_aiu->valor) {
-                    $ivaGasto = $baseAIU * ($porcentaje_iva_aiu->valor / 100);
-                } else{ 
-                    $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
-                }
-                $reteicaGasto = $porcentajeReteIca ? $subtotalGasto * ($porcentajeIva / 100) : 0;
-                $retencionGasto = $porcentajeRetencion ? $baseAIU * ($porcentajeRetencion / 100) : 0;
-                $totalGasto = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - ($retencionGasto + $reteicaGasto);
+                $baseAIU = $subtotalGasto * (floatval($this->proveedor->porcentaje_aiu / 100));
+            }
+
+            $valorRetencion = 0;
+            $valorReteIca = 0;
+            $valorIva = 0;
+
+            if ($baseAIU) {
+                $porcentajeIva = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
+                $porcentajeIva = $porcentajeIva ? floatval($porcentajeIva->valor) : 0;
+
+                $valorRetencion = $porcentajeRetencion ? $baseAIU * ($porcentajeRetencion / 100) : 0;
+                $valorReteIca = $porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0;
+                $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
             } else {
+                $valorRetencion = $porcentajeRetencion ? $subtotalGasto * ($porcentajeRetencion / 100) : 0;
+                $valorReteIca = $porcentajeReteIca ? $subtotalGasto * ($porcentajeReteIca / 1000) : 0;
                 $ivaGasto = $porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0;
-                $reteicaGasto = $porcentajeReteIca ? $subtotalGasto * ($porcentajeReteIca / 100) : 0;
-                $retencionGasto = $porcentajeRetencion ? $subtotalGasto * ($porcentajeRetencion / 100) : 0;
-                $totalGasto = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - ($retencionGasto + $reteicaGasto);
+            }
+            
+            $valorTotal = 0;
+            if ($nit->sumar_aiu) {
+                $valorTotal = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva + $baseAIU) - ($valorRetencion + $valorReteIca);
+            }
+            else {
+                $valorTotal = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - ($valorRetencion + $valorReteIca);
             }
 
             $this->totalesFactura['subtotal']+= $subtotalGasto;
             $this->totalesFactura['total_iva']+= $ivaGasto;
             $this->totalesFactura['total_no_iva']+= $gasto->no_valor_iva;
             $this->totalesFactura['total_descuento']+= $gasto->descuento_gasto;
-            $this->totalesFactura['total_rete_fuente']+= $retencionGasto;
-            $this->totalesFactura['total_rete_ica']+= $reteicaGasto;
+            $this->totalesFactura['total_rete_fuente']+= $valorRetencion;
+            $this->totalesFactura['total_rete_ica']+= $valorReteIca;
             $this->totalesFactura['porcentaje_rete_ica']+= $porcentajeReteIca;
-            $this->totalesFactura['total_gasto']+= round($totalGasto, 2);
+            $this->totalesFactura['total_gasto']+= round($valorTotal, 2);
         }
     }
 

@@ -356,6 +356,34 @@ function nitInit() {
         dropdownParent: $('#nitFormModal'),
     });
 
+    $comboActividadEconomica = $('#id_actividad_economica_nit').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        dropdownParent: $('#nitFormModal'),
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Debes ingresar más caracteres...";
+            }
+        },
+        ajax: {
+            url: 'api/actividad-economica-combo',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     $("#searchInputNits").on("input", function (e) {
         nits_table.context[0].jqXHR.abort();
         $('#nitTable').DataTable().search($("#searchInputNits").val()).draw();
@@ -369,34 +397,6 @@ function nitInit() {
     $('.water').hide();
     nits_table.ajax.reload();
 }
-
-$comboActividadEconomica = $('#id_actividad_economica_nit').select2({
-    theme: 'bootstrap-5',
-    delay: 250,
-    dropdownParent: $('#nitFormModal'),
-    allowClear: true,
-    language: {
-        noResults: function() {
-            return "No hay resultado";        
-        },
-        searching: function() {
-            return "Buscando..";
-        },
-        inputTooShort: function () {
-            return "Debes ingresar más caracteres...";
-        }
-    },
-    ajax: {
-        url: 'api/actividad-economica-combo',
-        headers: headers,
-        dataType: 'json',
-        processResults: function (data) {
-            return {
-                results: data.data
-            };
-        }
-    }
-});
 
 $('.only-numbers').keypress(function (e) {
     var txt = String.fromCharCode(e.which);

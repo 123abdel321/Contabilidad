@@ -40,6 +40,6 @@
 </div>
 
 <script>
-    var editarUsuario = '<?php echo auth()->user()->can('cedulas_nits update'); ?>';
-    var eliminarUsuario = '<?php echo auth()->user()->can('cedulas_nits delete'); ?>';
+    var editarUsuario = @json(auth()->user()->can('cedulas_nits update'));
+    var eliminarUsuario = @json(auth()->user()->can('cedulas_nits delete'));
 </script>
