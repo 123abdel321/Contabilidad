@@ -211,7 +211,7 @@ function nitInit() {
             $("#observaciones").val(data.observaciones);
             $("#porcentaje_aiu").val(data.porcentaje_aiu);
             $("#porcentaje_reteica").val(data.porcentaje_reteica);
-
+            $("#div_id_actividad_economica_nit").show();
             if (data.actividad_economica) {
                 $("#div_porcentaje_reteica").show();
             } else {
@@ -438,11 +438,16 @@ $(document).on('click', '#createNits', function () {
     hideFormNits();
     $("#updateNit").hide();
     $("#saveNit").show();
+    $("#div_declarante").hide();
+    $("#div_id_actividad_economica_nit").hide();
     $("#nitFormModal").modal('show');
 });
 
 $("#id_tipo_documento").on('change', function(e) {
     hideFormNits();
+    $("#div_sumar_aiu").show();
+    $("#div_declarante").show();
+    $("#div_id_actividad_economica_nit").show();
 });
 
 $('#id_actividad_economica_nit').on('change', function (e) {
@@ -626,8 +631,12 @@ function clearFormNits(){
     $("#porcentaje_reteica").val('');
     $('#default_avatar').show();
     $('#new_avatar').hide();
-    $("#id_actividad_economica").val('').change();
-    $("#id_responsabilidades").val('').change();    
+    $("#id_actividad_economica_nit").val('').change();
+    $("#id_responsabilidades").val('').change();
+    
+    $("#div_sumar_aiu").hide();
+    $("#div_declarante").hide();
+    $("#div_id_actividad_economica_nit").hide();
 
     newImgProfile = '';
 }
@@ -648,6 +657,7 @@ function hideFormNits(){
         'telefono_1',
         'porcentaje_aiu',
         'id_responsabilidades',
+        'id_actividad_economica_nit',
         'direccion',
         'email',
         'declarante'

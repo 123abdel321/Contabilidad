@@ -128,7 +128,7 @@
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_aiu" id="porcentaje_aiu" value="0">
                     </div>
 
-                    <div class="form-group col-12 col-sm-6 col-md-6">
+                    <div class="form-group col-12 col-sm-6 col-md-6" id="div_id_actividad_economica_nit">
                         <label for="exampleFormControlSelect1" style=" width: 100%;">Actividad economica</label>
                         <select class="form-control form-control-sm" name="id_actividad_economica_nit" id="id_actividad_economica_nit">
                         </select>
@@ -148,7 +148,7 @@
                         </select>
                     </div>
 
-                    <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6" id="div_declarante">
+                    <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6" id="div_sumar_aiu">
                         <input class="form-check-input" type="checkbox" name="sumar_aiu_nits" id="sumar_aiu_nits" style="height: 20px;">
                         <label class="form-check-label" for="sumar_aiu_nits">Sumar calculo AIU</label>
                     </div>
