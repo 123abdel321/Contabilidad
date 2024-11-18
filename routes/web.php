@@ -113,6 +113,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/home', [HomeController::class, 'index'])->name('home');
 		//AUXILIARES
 		Route::get('/auxiliar', [AuxiliarController::class, 'index'])->name('auxiliar');
+		Route::get('/auxiliar-pdf/{id}', [AuxiliarController::class, 'showPdf'])->name('auxiliar-pdf');
 		Route::get('/auxiliar-excel', [AuxiliarController::class, 'exportExcel'])->name('auxiliar-excel');
 		//BALANCE
 		Route::get('/balance', [BalanceController::class, 'index'])->name('balance');

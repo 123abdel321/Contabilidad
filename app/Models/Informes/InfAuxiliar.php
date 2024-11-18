@@ -31,6 +31,6 @@ class InfAuxiliar extends Model
 
     public function detalle(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Informes\InfAuxiliarDetalle', 'id_auxiliar');
+        return $this->belongsToMany('App\Models\Informes\InfAuxiliarDetalle', 'id_auxiliar', 'id');
     }
 }

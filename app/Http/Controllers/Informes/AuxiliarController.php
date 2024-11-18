@@ -8,6 +8,7 @@ use App\Events\PrivateMessageEvent;
 use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeAuxiliar;
+use App\Helpers\Printers\AuxiliarPdf;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -198,5 +199,27 @@ class AuxiliarController extends Controller
             ], 422);
         }
     }
+
+    public function showPdf(Request $request, $id)
+	{
+        $detalle = InfAuxiliarDetalle::where('id_auxiliar', $id)->get();
+
+		if(!count($detalle)) {
+			return response()->json([
+				'success'=>	false,
+				'data' => [],
+				'message'=> 'El auxiliar no existe'
+			], 422);
+		}
+
+		$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+		$data = (new AuxiliarPdf($empresa, $detalle))->buildPdf()->getData();
+
+		return view('pdf.informes.auxiliar.auxiliar', $data);
+
+        return (new AuxiliarPdf($empresa, $detalle))
+            ->buildPdf()
+            ->showPdf();
+	}
 
 }

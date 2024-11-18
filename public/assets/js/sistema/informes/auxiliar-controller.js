@@ -54,9 +54,12 @@ function auxiliarInit() {
                     }
                 }
             }
+            if (data.id_nit) {
+                return;
+            }
             if(data.detalle_group == 'nits-totales'){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 25%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.detalle_group == 'nits'){
@@ -65,23 +68,23 @@ function auxiliarInit() {
             }
             if(data.cuenta == "TOTALES"){
                 $('td', row).css('background-color', 'rgb(28 69 135)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('font-weight', '600');
                 $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 1){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 90%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.cuenta.length == 2){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 75%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.cuenta.length == 4){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.detalle == 0 && data.detalle_group == 0){
@@ -89,12 +92,12 @@ function auxiliarInit() {
             }
             if(data.detalle_group && !data.detalle){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.detalle){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 35%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('font-weight', '600');
                 return;
             }
         },
@@ -241,9 +244,12 @@ $(document).on('click', '#generarAuxiliar', function () {
     generarAuxiliar = false;
     $("#generarAuxiliar").hide();
     $("#generarAuxiliarLoading").show();
-    $('#descargarExcelAuxiliar').prop('disabled', true);
+
     $("#descargarExcelAuxiliar").hide();
     $("#descargarExcelAuxiliarDisabled").show();
+
+    $("#descargarPdfAuxiliar").hide();
+    $("#descargarPdfAuxiliarDisabled").show();
 
     $(".cardTotalAuxiliar").css("background-color", "white");
 
@@ -305,13 +311,18 @@ channel.bind('notificaciones', function(data) {
 });
 
 function loadAuxiliarById(id_auxiliar) {
+    $('#id_auxiliar_cargado').val(id_auxiliar);
     auxiliar_table.ajax.url(base_url + 'auxiliares-show?id='+id_auxiliar).load(function(res) {
         if(res.success){
             $("#generarAuxiliar").show();
             $("#generarAuxiliarLoading").hide();
-            $('#descargarExcelAuxiliar').prop('disabled', false);
+
             $("#descargarExcelAuxiliar").show();
             $("#descargarExcelAuxiliarDisabled").hide();
+
+            $("#descargarPdfAuxiliar").show();
+            $("#descargarPdfAuxiliarDisabled").hide();
+
             $('#generarAuxiliarUltimo').hide();
             $('#generarAuxiliarUltimoLoading').hide();
             if(res.descuadre) {
@@ -406,6 +417,17 @@ $(document).on('click', '#descargarExcelAuxiliar', function () {
     });
 });
 
+$(document).on('click', '#descargarPdfAuxiliar', function () {
+    var id_auxiliar = $('#id_auxiliar_cargado').val();
+    if (id_auxiliar) {
+        window.open(base_web+'auxiliar-pdf/'+id_auxiliar, "_blank");
+    } else {
+        $("#descargarPdfAuxiliar").hide();
+        $("#descargarPdfAuxiliarDisabled").show();
+        agregarToast('error', 'Error al generar pdf', 'No se ha encontrado el id del informe');
+    }
+});
+
 $(document).on('click', '#generarAuxiliarUltimo', function () {
     $('#generarAuxiliarUltimo').hide();
     $('#generarAuxiliarUltimoLoading').show();
@@ -474,6 +496,9 @@ $("#id_nit_auxiliar").on('change', function(){
 function clearAuxiliar() {
     $("#descargarExcelAuxiliar").hide();
     $("#descargarExcelAuxiliarDisabled").show();
+
+    $("#descargarPdfAuxiliar").hide();
+    $("#descargarPdfAuxiliarDisabled").show();
 }
 
 function formatNitAuxiliar (nit) {

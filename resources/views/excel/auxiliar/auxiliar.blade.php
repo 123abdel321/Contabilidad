@@ -27,6 +27,8 @@
                     @include('excel.auxiliar.celdas', ['style' => 'background-color: #e3f1f8;', 'auxiliar' => $auxiliar])
                 @elseif($auxiliar->cuenta == 'TOTALES')
                     @include('excel.auxiliar.celdas', ['style' => 'background-color: #1c4587; font-weight: bold; color: white;', 'auxiliar' => $auxiliar])
+                @elseif ($auxiliar->id_nit)
+                    @include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #FFF;', 'auxiliar' => $auxiliar])
                 @elseif(strlen($auxiliar->cuenta) == 1)  
                     @include('excel.auxiliar.celdas', ['style' => 'background-color: #53add6; font-weight: bold;', 'auxiliar' => $auxiliar])
                 @elseif(strlen($auxiliar->cuenta) == 2) 
