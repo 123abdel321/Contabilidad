@@ -117,6 +117,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/auxiliar-excel', [AuxiliarController::class, 'exportExcel'])->name('auxiliar-excel');
 		//BALANCE
 		Route::get('/balance', [BalanceController::class, 'index'])->name('balance');
+		Route::get('/balance-pdf/{id}', [BalanceController::class, 'showPdf'])->name('auxiliar-pdf');
 		Route::get('/balance-excel', [BalanceController::class, 'exportExcel'])->name('balance-excel');
 		//CUENTAS POR COBRAR
 		Route::get('/cartera', [CarteraController::class, 'index'])->name('cartera');

@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 //MODELS
 use App\Models\Empresas\Empresa;
 
-class AuxiliarPdf extends AbstractPrinterPdf
+class BalancePdf extends AbstractPrinterPdf
 {
     public $detalles;
 	public $empresa;
@@ -24,18 +24,16 @@ class AuxiliarPdf extends AbstractPrinterPdf
 
     public function view()
 	{
-		return 'pdf.informes.auxiliar.auxiliar';
+		return 'pdf.informes.balance.balance';
 	}
 
     public function name()
 	{
-		return 'auxiliar_'.uniqid();
+		return 'balance_'.uniqid();
 	}
 
     public function paper()
 	{
-		return 'landscape';
-		return 'portrait';
 		return '';
 	}
 
@@ -43,7 +41,7 @@ class AuxiliarPdf extends AbstractPrinterPdf
     {
         return [
 			'empresa' => $this->empresa,
-			'auxiliares' => $this->detalles,
+			'balances' => $this->detalles,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user()->username
 		];

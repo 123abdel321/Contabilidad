@@ -8,6 +8,7 @@ use App\Events\PrivateMessageEvent;
 use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeBalance;
+use App\Helpers\Printers\BalancePdf;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -194,5 +195,27 @@ class BalanceController extends Controller
             ], 422);
         }
     }
+
+    public function showPdf(Request $request, $id)
+	{
+        $detalle = InfBalanceDetalle::where('id_balance', $id)->get();
+
+		if(!count($detalle)) {
+			return response()->json([
+				'success'=>	false,
+				'data' => [],
+				'message'=> 'El balance no existe'
+			], 422);
+		}
+
+		$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+		// $data = (new BalancePdf($empresa, $detalle))->buildPdf()->getData();
+
+		// return view('pdf.informes.balance.balance', $data);
+
+        return (new BalancePdf($empresa, $detalle))
+            ->buildPdf()
+            ->showPdf();
+	}
 
 }

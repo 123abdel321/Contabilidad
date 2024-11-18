@@ -172,8 +172,12 @@ $(document).on('click', '#generarBalance', function () {
     generarBalance = false;
     $("#generarBalance").hide();
     $("#generarBalanceLoading").show();
-    $('#descargarExcelBalance').prop('disabled', true);
+
     $("#descargarExcelBalance").hide();
+    $("#descargarExcelBalanceDisabled").show();
+
+    $("#descargarPdfBalance").hide();
+    $("#descargarPdfBalanceDisabled").show();
 
     $(".cardTotalBalance").css("background-color", "white");
 
@@ -236,14 +240,18 @@ channel.bind('notificaciones', function(data) {
 });
 
 function loadBalanceById(id_balance) {
+    $('#id_balance_cargado').val(id_balance);
     balance_table.ajax.url(base_url + 'balances-show?id='+id_balance).load(function(res) {
         if(res.success){
             $("#generarBalance").show();
             $("#generarBalanceLoading").hide();
             $("#generarBalanceUltimoLoading").hide();
-            $('#descargarExcelBalance').prop('disabled', false);
+
             $("#descargarExcelBalance").show();
             $("#descargarExcelBalanceDisabled").hide();
+
+            $("#descargarPdfBalance").show();
+            $("#descargarPdfBalanceDisabled").hide();
 
             if(res.descuadre) {
                 Swal.fire(
@@ -346,6 +354,17 @@ $(document).on('click', '#descargarExcelBalance', function () {
     });
 });
 
+$(document).on('click', '#descargarPdfBalance', function () {
+    var id_balance = $('#id_balance_cargado').val();
+    if (id_balance) {
+        window.open(base_web+'balance-pdf/'+id_balance, "_blank");
+    } else {
+        $("#descargarPdfBalance").hide();
+        $("#descargarPdfBalanceDisabled").show();
+        agregarToast('error', 'Error al generar pdf', 'No se ha encontrado el id del informe');
+    }
+});
+
 $(document).on('click', '#generarBalanceUltimo', function () {
     $('#generarBalanceUltimo').hide();
     $('#generarBalanceUltimoLoading').show();
@@ -415,4 +434,7 @@ $(".nivel_balance").on('change', function(){
 function clearBalance() {
     $("#descargarExcelBalance").hide();
     $("#descargarExcelBalanceDisabled").show();
+
+    $("#descargarPdfBalance").hide();
+    $("#descargarPdfBalanceDisabled").show();
 }
