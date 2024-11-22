@@ -563,9 +563,6 @@ function mostrarValoresGastos () {
     if (gasto_descuento) $("#gasto_descuento_disp_view").show();
     else $("#gasto_descuento_disp_view").hide();
 
-    // if (gasto_reteica) $("#gasto_reteica_disp_view").show();
-    // else $("#gasto_reteica_disp_view").hide();
-
     var countA = new CountUp('gasto_sub_total', 0, gasto_sub_total, 2, 0.5);
         countA.start();
 
@@ -637,7 +634,7 @@ function changeValorDescuentoGasto (idGasto, event = null) {
         var valorReteIca = 0;
         var valorIva = 0;
 
-        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal, baseAIU);
+        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU);
 
         if (baseAIU) {
             valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? baseAIU * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
@@ -687,7 +684,7 @@ function changeValorNoIvaGasto (idGasto, event = null) {
         var valorPorcentajeDescuento = (valorDescuento / valorGasto) * 100;
         var valorSubtotal = valorGasto - (valorDescuento);
         var valorIva = valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100);
-        var valorRetencion = dataGasto[indexGasto].porcentaje_retencion ? (valorSubtotal) * (dataGasto[indexGasto].porcentaje_retencion / 100) : 0;
+        var valorRetencion = dataGasto[indexGasto].porcentaje_retencion ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_retencion / 100) : 0;
         var valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
         var valorTotal = (valorSubtotal) - (valorRetencion + valorReteIca);
 
@@ -767,7 +764,7 @@ function changePorcentajeDescuentoGasto (idGasto, event = null) {
         var valorReteIca = 0;
         var valorIva = 0;
 
-        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal, baseAIU);
+        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU);
 
         if (baseAIU) {
             valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? baseAIU * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
@@ -822,8 +819,8 @@ function changeValorGasto (idGasto, event = null) {
         var valorReteIca = 0;
         var valorIva = 0;
 
-        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal, baseAIU);
-
+        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU);
+        console.log('valorRetencion: ',valorRetencion);
         if (baseAIU) {
             valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? baseAIU * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
             valorIva = dataGasto[indexGasto].porcentaje_iva ? baseAIU * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
@@ -878,8 +875,14 @@ function updateDataGasto(dataGasto, dataConcepto, idGasto) {
 }
 
 function focusFormaPagoGasto (idFormaPago, anticipo = false) {
+
+    if (guardandoGasto) {
+        return;
+    }
+
     var [gasto_iva, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total, gasto_aiu] = totalValoresGastos();
     var [totalPagos, totalAnticipos] = totalFormasPagoGastos(idFormaPago);
+
     var totalFaltante = gasto_total - (totalPagos + totalAnticipos);
     var saldoFormaPago = stringToNumberFloat($('#gasto_forma_pago_'+idFormaPago).val());
 
@@ -915,6 +918,7 @@ function totalFormasPagoGastos (idFormaPago = null) {
 }
 
 function totalValoresGastos () {
+
     var gasto_iva = 0;
     var gasto_aiu = 0;
     var gasto_total = 0;
@@ -925,12 +929,25 @@ function totalValoresGastos () {
     var subTotalGeneral = 0;
     var valorRetencion = false;
     var porcentajeRetencion = false;
+    
+    dataGasto.forEach(gastoRow => {
+        gasto_iva+= gastoRow.valor_iva + gastoRow.no_valor_iva;
+        gasto_reteica+= gastoRow.valor_reteica;
+        gasto_retencion+= gastoRow.valor_retencion;
+        gasto_descuento+= gastoRow.descuento_gasto;
+        gasto_total+= gastoRow.total_valor_gasto;
+        gasto_sub_total+= gastoRow.valor_gasto - gastoRow.descuento_gasto
+        gasto_aiu+= gastoRow.base_aiu;
+    });
+
+    return [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total, gasto_aiu];
 
     dataGasto.forEach(gastoRow => {
-        subTotalGeneral+= gastoRow.valor_gasto - (gastoRow.descuento_gasto);
+        subTotalGeneral+= gastoRow.valor_gasto - (gastoRow.descuento_gasto + gastoRow.no_valor_iva);
     });
 
     [valorRetencion, porcentajeRetencion] = calcularRetencion(subTotalGeneral);
+
     if (valorRetencion) {
         for (let index = 0; index < dataGasto.length; index++) {
             var subTotal = dataGasto[index].valor_gasto - (dataGasto[index].descuento_gasto);
@@ -995,7 +1012,7 @@ function totalValoresGastos () {
         gasto_iva+= parseFloat(gastoRow.valor_iva) + parseFloat(gastoRow.no_valor_iva);
         gasto_reteica+= parseFloat(gastoRow.valor_reteica);
         gasto_retencion+= parseFloat(gastoRow.valor_retencion);
-        gasto_total+= (parseFloat(gastoRow.total_valor_gasto));
+        gasto_total+= (parseFloat(gastoRow.total_valor_gasto) + parseFloat(gastoRow.no_valor_iva));
         gasto_descuento+= gastoRow.descuento_gasto;
         gasto_aiu+= gastoRow.base_aiu;
     });
@@ -1012,7 +1029,7 @@ function calcularRetencion (valorSubtotal = null, valorGastoRow, baseAIU = 0) {
         calcularRow = true;
         valorSubtotal = valorGastoRow;
         dataGasto.forEach(gastoRow => {
-            valorSubtotal+= (gastoRow.valor_gasto - gastoRow.descuento_gasto);
+            valorSubtotal+= (gastoRow.valor_gasto - (gastoRow.descuento_gasto + gastoRow.no_valor_iva));
         });
     }
 
@@ -1200,6 +1217,11 @@ function getGastosData() {
 }
 
 function calcularGastosPagos (idFormaPago = null) {
+
+    if (guardandoGasto) {
+        return;
+    }
+
     if (
         parseInt($('#gasto_forma_pago_'+idFormaPago).val()) == '' ||
         $('#gasto_forma_pago_'+idFormaPago).val() < 0
@@ -1207,13 +1229,15 @@ function calcularGastosPagos (idFormaPago = null) {
         $('#gasto_forma_pago_'+idFormaPago).val(0);
     }
 
+    $('#total_faltante_gasto').removeClass("is-invalid");
+
     var [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total, gasto_aiu] = totalValoresGastos();
     var [totalPagos, totalAnticipos] = totalFormasPagoGastos();
     var totalFaltante = gasto_total - (totalPagos + totalAnticipos);
 
     if (idFormaPago && totalFaltante < 0) {
         var [totalPagos, totalCXP] = totalFormasPagoGastos(idFormaPago);
-        $('#gasto_forma_pago_'+idFormaPago).val(new Intl.NumberFormat("ja-JP").format(totalAbonos - (totalPagos + totalCXP)));
+        $('#gasto_forma_pago_'+idFormaPago).val(new Intl.NumberFormat("ja-JP").format((totalPagos + totalCXP)));
         $('#gasto_forma_pago_'+idFormaPago).select();
         return;
     }
