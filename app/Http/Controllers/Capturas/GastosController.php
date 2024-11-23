@@ -164,7 +164,7 @@ class GastosController extends Controller
 
                     $retencionGasto = $porcentajeRetencion ? ($baseAIU - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0;
                     $reteIcaGasto = $porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0;
-                    $totalGasto = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - ($retencionGasto + $reteIcaGasto);
+                    $totalGasto = ($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto);
                     
                     $subtotalGasto+= $ivaGasto;
                 } else {
@@ -172,10 +172,6 @@ class GastosController extends Controller
                     $retencionGasto = $porcentajeRetencion ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0;
                     $reteIcaGasto = $porcentajeReteIca ? $subtotalGasto * ($porcentajeReteIca / 1000) : 0;
                     $totalGasto = ($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto);
-                }
-
-                if ($movimiento->no_valor_iva) {
-                    $totalGasto+= $movimiento->no_valor_iva;
                 }
 
                 if ($this->proveedor->sumar_aiu) {
@@ -192,7 +188,7 @@ class GastosController extends Controller
                     'id_cuenta_reteica' => $conceptoGasto->id_cuenta_reteica,
                     'id_cuenta_retencion_declarante' => $conceptoGasto->id_cuenta_retencion_declarante,
                     'observacion' => $movimiento->observacion,
-                    'subtotal' => $subtotalGasto + $movimiento->no_valor_iva,
+                    'subtotal' => $subtotalGasto,
                     'aiu_porcentaje' => $this->proveedor->porcentaje_aiu,
                     'aiu_valor' => $baseAIU,
                     'descuento_porcentaje' => $movimiento->porcentaje_descuento_gasto,
@@ -441,11 +437,11 @@ class GastosController extends Controller
             
             $valorTotal = 0;
             if ($nit->sumar_aiu) {
-                $valorTotal = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva + $baseAIU) - ($valorRetencion + $valorReteIca);
+                $valorTotal = ($subtotalGasto + $ivaGasto + $baseAIU) - ($valorRetencion + $valorReteIca);
                 $subtotalGasto+= $baseAIU;
             }
             else {
-                $valorTotal = ($subtotalGasto + $ivaGasto + $gasto->no_valor_iva) - ($valorRetencion + $valorReteIca);
+                $valorTotal = ($subtotalGasto + $ivaGasto) - ($valorRetencion + $valorReteIca);
             }
 
             $this->totalesFactura['subtotal']+= $subtotalGasto;

@@ -645,8 +645,8 @@ function changeValorDescuentoGasto (idGasto, event = null) {
         }
         var valorTotal = 0;
 
-        if (sumarAIU) valorTotal = parseFloat((valorSubtotal + valorIva + valorNoiva + baseAIU) - (valorRetencion + valorReteIca)).toFixed(2);
-        else valorTotal = parseFloat((valorSubtotal + valorIva + valorNoiva) - (valorRetencion + valorReteIca)).toFixed(2);
+        if (sumarAIU) valorTotal = parseFloat((valorSubtotal + valorIva + baseAIU) - (valorRetencion + valorReteIca)).toFixed(2);
+        else valorTotal = parseFloat((valorSubtotal + valorIva) - (valorRetencion + valorReteIca)).toFixed(2);
 
         dataGasto[indexGasto].porcentaje_descuento_gasto = valorPorcentajeDescuento;
         dataGasto[indexGasto].descuento_gasto = valorDescuento;
@@ -690,7 +690,7 @@ function changeValorNoIvaGasto (idGasto, event = null) {
 
         dataGasto[indexGasto].porcentaje_descuento_gasto = valorPorcentajeDescuento;
         dataGasto[indexGasto].descuento_gasto = valorDescuento;
-        dataGasto[indexGasto].total_valor_gasto = valorTotal + valorNoiva;
+        dataGasto[indexGasto].total_valor_gasto = valorTotal;
         dataGasto[indexGasto].valor_iva = valorIva;
         dataGasto[indexGasto].no_valor_iva = valorNoiva;
         dataGasto[indexGasto].valor_retencion = valorRetencion;
@@ -776,8 +776,8 @@ function changePorcentajeDescuentoGasto (idGasto, event = null) {
         
         var valorTotal = 0;
 
-        if (sumarAIU) valorTotal = parseFloat((valorSubtotal + valorIva + valorNoiva + baseAIU) - (valorRetencion + valorReteIca)).toFixed(2);
-        else valorTotal = parseFloat((valorSubtotal + valorIva + valorNoiva) - (valorRetencion + valorReteIca)).toFixed(2);
+        if (sumarAIU) valorTotal = parseFloat((valorSubtotal + valorIva + baseAIU) - (valorRetencion + valorReteIca)).toFixed(2);
+        else valorTotal = parseFloat((valorSubtotal + valorIva) - (valorRetencion + valorReteIca)).toFixed(2);
 
         dataGasto[indexGasto].porcentaje_descuento_gasto = valorPorcentajeDescuento;
         dataGasto[indexGasto].descuento_gasto = valorDescuento;
@@ -829,8 +829,8 @@ function changeValorGasto (idGasto, event = null) {
             valorIva = dataGasto[indexGasto].porcentaje_iva ? valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
         }
         var valorTotal = 0 ;
-        if (sumarAIU) valorTotal = parseFloat((valorSubtotal + valorIva + valorNoiva + baseAIU) - (valorRetencion + valorReteIca)).toFixed(2);
-        else valorTotal = parseFloat((valorSubtotal + valorIva + valorNoiva) - (valorRetencion + valorReteIca)).toFixed(2);
+        if (sumarAIU) valorTotal = parseFloat((valorSubtotal + valorIva + baseAIU) - (valorRetencion + valorReteIca)).toFixed(2);
+        else valorTotal = parseFloat((valorSubtotal + valorIva) - (valorRetencion + valorReteIca)).toFixed(2);
 
         dataGasto[indexGasto].valor_gasto = valorGasto;
         dataGasto[indexGasto].porcentaje_descuento_gasto = valorPorcentajeDescuento;
