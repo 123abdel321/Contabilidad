@@ -505,7 +505,9 @@ class GastosController extends Controller
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
+        // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
+
+        // return view('pdf.facturacion.gastos', $data);
  
         return (new GastosPdf($empresa, $gasto))
             ->buildPdf()
