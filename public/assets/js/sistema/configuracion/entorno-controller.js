@@ -8,7 +8,7 @@ function entornoInit() {
             'iva_incluido',
             'capturar_documento_descuadrado',
             'vendedores_ventas',
-            'ubicacion_maximoph',
+            'ubicacion_maximoph'
         ];
 
         checksEntorno.forEach(entorno => {
@@ -27,6 +27,16 @@ function entornoInit() {
             $('#porcentaje_iva_aiu').val(variable.valor);
             continue;
         }
+
+        if (variable.nombre == 'cuenta_utilidad') {
+            $('#cuenta_utilidad').val(variable.valor);
+            continue;
+        }
+
+        if (variable.nombre == 'cuenta_perdida') {
+            $('#cuenta_perdida').val(variable.valor);
+            continue;
+        }
     }
 }
 
@@ -37,6 +47,8 @@ $(document).on('click', '#updateEntorno', function () {
     let data = {
         valor_uvt: $('#valor_uvt').val(),
         porcentaje_iva_aiu: $('#porcentaje_iva_aiu').val(),
+        cuenta_utilidad: $('#cuenta_utilidad').val(),
+        cuenta_perdida: $('#cuenta_perdida').val(),
         iva_incluido: $("input[type='checkbox']#iva_incluido").is(':checked') ? '1' : '',
         capturar_documento_descuadrado: $("input[type='checkbox']#capturar_documento_descuadrado").is(':checked') ? '1' : '0',
         vendedores_ventas: $("input[type='checkbox']#vendedores_ventas").is(':checked') ? '1' : '',

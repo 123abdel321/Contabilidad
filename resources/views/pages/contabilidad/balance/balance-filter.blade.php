@@ -18,12 +18,16 @@
                             <select class="form-control form-control-sm tipo_cartera" id="tipo_informe_balance" name="tipo_informe_balance">
                                 <option value="1">De prueba</option>
                                 <option value="2">De terceros</option>
+                                <option value="3">General</option>
                             </select>
                         </div>
                         <div class="form-group col-12 col-sm-4 col-md-2">
-                            <label for="exampleFormControlSelect1">Cuenta</label>
-                            <select name="id_cuenta_balance" id="id_cuenta_balance" class="form-control form-control-sm">
-                            </select>
+                            <label for="exampleFormControlSelect1">Cuenta desde</label>
+                            <input name="cuenta_desde_balance" id="cuenta_desde_balance" onfocus="this.select()" class="form-control form-control-sm" type="text">
+                        </div>
+                        <div class="form-group col-12 col-sm-4 col-md-2">
+                            <label for="exampleFormControlSelect1">Cuenta hasta</label>
+                            <input name="cuenta_hasta_balance" id="cuenta_hasta_balance" onfocus="this.select()" class="form-control form-control-sm" type="text">
                         </div>
                         <div class="form-group col-12 col-sm-4 col-md-2">
                             <label for="exampleFormControlSelect1">Cedula / Nit</label>

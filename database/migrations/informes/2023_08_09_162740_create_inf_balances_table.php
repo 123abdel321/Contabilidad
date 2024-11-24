@@ -17,7 +17,9 @@ return new class extends Migration
             $table->integer('id_cuenta')->nullable();
             $table->integer('id_nit')->nullable();
             $table->date('fecha_desde');
-            $table->date('fecha_hasta');
+            $table->date('fecha_hasta');    
+            $table->string('cuenta_desde')->nullable();
+            $table->string('cuenta_hasta')->nullable();
             $table->integer('tipo')->nullable();
             $table->integer('nivel')->nullable();
             $table->integer('exporta_excel')->nullable()->comment('1: Exportando, 2: Exportado');

@@ -13,6 +13,7 @@ use App\Helpers\Printers\BalancePdf;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfBalance;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Informes\InfBalanceDetalle;
 
 class BalanceController extends Controller
@@ -34,13 +35,55 @@ class BalanceController extends Controller
             ]);
 		}
 
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        if ($request->get('tipo') == '3') {
+            $cuentaPerdida = VariablesEntorno::whereNombre('cuenta_perdida')->first();
+            $cuentaPerdida = $cuentaPerdida ? $cuentaPerdida->valor : '';
+            $cuentaUtilidad = VariablesEntorno::whereNombre('cuenta_utilidad')->first();
+            $cuentaUtilidad = $cuentaUtilidad ? $cuentaUtilidad->valor : '';
+    
+            if (!$cuentaPerdida && !$cuentaUtilidad) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'Se necesita configurar cuenta utilidad y cuenta perdida en el entorno.'
+                ]);
+            }
+    
+            $cuentaPerdida = PlanCuentas::where('cuenta', $cuentaPerdida)->first();
+            $cuentaUtilidad = PlanCuentas::where('cuenta', $cuentaUtilidad)->first();
+    
+            if (!$cuentaPerdida && !$cuentaUtilidad) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'La cuenta utilidad y la cuenta perdida no existen en el plan de cuentas.'
+                ]);
+            }
+    
+            if (!$cuentaPerdida) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'La cuenta perdida no existen en el plan de cuentas.'
+                ]);
+            }
+    
+            if (!$cuentaUtilidad) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'La cuenta utilidad no existen en el plan de cuentas.'
+                ]);
+            }
+        }
 
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        
         $balance = InfBalance::where('id_empresa', $empresa->id)
             ->where('fecha_hasta', $request->get('fecha_hasta'))
             ->where('fecha_desde', $request->get('fecha_desde'))
-            ->where('id_cuenta', $request->get('id_cuenta', null))
-            ->where('id_nit', $request->get('id_cuenta', null))
+            ->where('cuenta_hasta', $request->get('cuenta_hasta'))
+            ->where('cuenta_desde', $request->get('cuenta_desde'))
             ->where('tipo', $request->get('tipo', null))
             ->where('nivel', $request->get('nivel', null))
 			->first();
@@ -48,11 +91,6 @@ class BalanceController extends Controller
         if($balance) {
             InfBalanceDetalle::where('id_balance', $balance->id)->delete();
             $balance->delete();
-        }
-
-        if($request->get('id_cuenta')) {
-            $cuenta = PlanCuentas::find($request->get('id_cuenta'));
-            $request->request->add(['cuenta' => $cuenta->cuenta]);
         }
 
         ProcessInformeBalance::dispatch($request->all(), $request->user()->id, $empresa->id);
@@ -64,7 +102,7 @@ class BalanceController extends Controller
     	]);
     }
 
-    public function show(Request $request)
+    public function show (Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -100,7 +138,7 @@ class BalanceController extends Controller
         ]);
     }
 
-    public function find(Request $request)
+    public function find (Request $request)
     {
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         $id_cuenta = $request->get('id_cuenta') != 'null' ? $request->get('id_cuenta') : NULL;
@@ -108,7 +146,9 @@ class BalanceController extends Controller
         $balance = InfBalance::where('id_empresa', $empresa->id)
             ->where('fecha_hasta', $request->get('fecha_hasta'))
             ->where('fecha_desde', $request->get('fecha_desde'))
-            ->where('id_cuenta', $id_cuenta)
+            ->where('cuenta_hasta', $request->get('cuenta_hasta'))
+            ->where('cuenta_desde', $request->get('cuenta_desde'))
+            ->where('tipo', $request->get('tipo', null))
             ->where('nivel', $request->get('nivel', null))
 			->first();
             

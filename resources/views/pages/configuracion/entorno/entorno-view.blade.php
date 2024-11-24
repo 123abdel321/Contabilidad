@@ -26,6 +26,16 @@
                         <div class="row" style="margin-top: 10px; padding-left: 10px;">
 
                             <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="example-text-input" class="form-control-label">Cuenta utilidad </label>
+                                <input type="text" class="form-control form-control-sm" name="cuenta_utilidad" id="cuenta_utilidad">
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="example-text-input" class="form-control-label">Cuenta perdida </label>
+                                <input type="text" class="form-control form-control-sm" name="cuenta_perdida" id="cuenta_perdida">
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
                                 <label for="example-text-input" class="form-control-label">Valor UVT </label>
                                 <input type="number" class="form-control form-control-sm" name="valor_uvt" id="valor_uvt">
                             </div>
