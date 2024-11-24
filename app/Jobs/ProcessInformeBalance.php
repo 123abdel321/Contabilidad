@@ -47,7 +47,7 @@ class ProcessInformeBalance implements ShouldQueue
 
         DB::connection('informes')->beginTransaction();
 
-        if ($request['tipo'] == '3') {
+        if ($this->request['tipo'] == '3') {
             $this->cuentaPerdida = VariablesEntorno::whereNombre('cuenta_perdida')->first()->valor;
             $this->cuentaUtilidad = VariablesEntorno::whereNombre('cuenta_utilidad')->first()->valor;
 
