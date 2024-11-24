@@ -36,13 +36,6 @@ class ProcessInformeBalance implements ShouldQueue
         $this->request = $request;
 		$this->id_usuario = $id_usuario;
 		$this->id_empresa = $id_empresa;
-        if ($request['tipo'] == '3') {
-            $this->cuentaPerdida = VariablesEntorno::whereNombre('cuenta_perdida')->first()->valor;
-            $this->cuentaUtilidad = VariablesEntorno::whereNombre('cuenta_utilidad')->first()->valor;
-
-            $this->cuentaPerdida = PlanCuentas::where('cuenta', $this->cuentaPerdida)->first();
-            $this->cuentaUtilidad = PlanCuentas::where('cuenta', $this->cuentaUtilidad)->first();
-        }
     }
 
     public function handle()
@@ -53,6 +46,14 @@ class ProcessInformeBalance implements ShouldQueue
         setDBInConnection('sam', $empresa->token_db);
 
         DB::connection('informes')->beginTransaction();
+
+        if ($request['tipo'] == '3') {
+            $this->cuentaPerdida = VariablesEntorno::whereNombre('cuenta_perdida')->first()->valor;
+            $this->cuentaUtilidad = VariablesEntorno::whereNombre('cuenta_utilidad')->first()->valor;
+
+            $this->cuentaPerdida = PlanCuentas::where('cuenta', $this->cuentaPerdida)->first();
+            $this->cuentaUtilidad = PlanCuentas::where('cuenta', $this->cuentaUtilidad)->first();
+        }
         
         try {
             $balance = InfBalance::create([
