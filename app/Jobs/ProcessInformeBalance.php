@@ -73,7 +73,9 @@ class ProcessInformeBalance implements ShouldQueue
             if ($this->request['tipo'] == '2') $this->tercerosBalance();
             if ($this->request['tipo'] == '3') $this->generalBalance();
             
-            $this->totalesDocumentosBalance();
+            if ($this->request['tipo'] == '3') $this->totalesGeneralBalance();
+            else $this->totalesDocumentosBalance();
+            
             ksort($this->balanceCollection, SORT_STRING | SORT_FLAG_CASE);
 
             foreach (array_chunk($this->balanceCollection,233) as $balanceCollection){
@@ -178,14 +180,14 @@ class ProcessInformeBalance implements ShouldQueue
 
     private function generalBalance()
     {
-        $query = $this->balanceDocumentosGenelQuery();
+        $query = $this->balanceDocumentosGeneralQuery();
         $query->unionAll($this->balanceAnteriorGeneralQuery());
 
         $totales = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS balance"))
             ->mergeBindings($query)
             ->select(
-                DB::raw('0 AS saldo_anterior'),
+                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
                 DB::raw('SUM(saldo_final) AS saldo_final'),
@@ -218,6 +220,39 @@ class ProcessInformeBalance implements ShouldQueue
     {
         $query = $this->balanceDocumentosQuery();
         $query->unionAll($this->balanceAnteriorQuery());
+
+        $totales = DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS balance"))
+            ->mergeBindings($query)
+            ->select(
+                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(saldo_final) AS saldo_final'),
+                DB::raw('SUM(documentos_totales) AS documentos_totales')
+            )
+            ->orderByRaw('cuenta')
+            ->get();
+
+        $total = $totales[0]->saldo_anterior + $totales[0]->debito - $totales[0]->credito;
+        $this->balanceCollection['9999'] = [
+            'id_balance' => $this->id_balance,
+            'id_cuenta' => '',
+            'cuenta' => 'TOTALES',
+            'nombre_cuenta' => '',
+            'auxiliar' => '',
+            'saldo_anterior' => number_format((float)$totales[0]->saldo_anterior, 2, '.', ''),
+            'debito' => number_format((float)$totales[0]->debito, 2, '.', ''),
+            'credito' => number_format((float)$totales[0]->credito, 2, '.', ''),
+            'saldo_final' => number_format((float)$total, 2, '.', ''),
+            'documentos_totales' => $totales[0]->documentos_totales,
+        ];
+    }
+
+    private function totalesGeneralBalance()
+    {
+        $query = $this->balanceDocumentosGeneralQuery(true);
+        $query->unionAll($this->balanceAnteriorGeneralQuery(true));
 
         $totales = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS balance"))
@@ -334,7 +369,7 @@ class ProcessInformeBalance implements ShouldQueue
         return $documentosQuery;
     }
 
-    private function balanceDocumentosGenelQuery()
+    private function balanceDocumentosGeneralQuery($total = false)
     {
         $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
@@ -362,10 +397,12 @@ class ProcessInformeBalance implements ShouldQueue
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
-            ->where(function ($query) {
-                $query->where('PC.cuenta', '>=', '4')
-                    ->where('PC.cuenta', '<=', '7')
-                    ->orWhere('PC.cuenta', 'LIKE', '7%');
+            ->where(function ($query) use ($total){
+                if (!$total) {
+                    $query->where('PC.cuenta', '>=', '4')
+                        ->where('PC.cuenta', '<=', '7')
+                        ->orWhere('PC.cuenta', 'LIKE', '7%');
+                }
 			})
             ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
 				$query->where('DG.id_nit', $this->request['id_nit'].'%');
@@ -374,7 +411,7 @@ class ProcessInformeBalance implements ShouldQueue
         return $documentosQuery;
     }
 
-    private function balanceAnteriorGeneralQuery()
+    private function balanceAnteriorGeneralQuery($total = false)
     {
         $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
@@ -401,10 +438,12 @@ class ProcessInformeBalance implements ShouldQueue
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
-            ->where(function ($query) {
-                $query->where('PC.cuenta', '>=', '4')
-                    ->where('PC.cuenta', '<=', '7')
-                    ->orWhere('PC.cuenta', 'LIKE', '7%');
+            ->where(function ($query) use ($total){
+                if (!$total) {
+                    $query->where('PC.cuenta', '>=', '4')
+                        ->where('PC.cuenta', '<=', '7')
+                        ->orWhere('PC.cuenta', 'LIKE', '7%');
+                }
 			})
             ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
 				$query->where('DG.id_nit', $this->request['id_nit'].'%');
