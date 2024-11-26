@@ -282,7 +282,9 @@ var channel = pusher.subscribe('informe-documentos-generales-'+localStorage.getI
 
 channel.bind('notificaciones', function(data) {
     console.log('notificaciones', data);
-    $('#id_documento_general_cargado').val(data.id_documento_general);
+    if (data.id_documento_general) {
+        $('#id_documento_general_cargado').val(data.id_documento_general);
+    }
     if(data.url_file){
         loadExcel(data);
         return;
