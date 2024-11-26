@@ -170,7 +170,7 @@ class GastosController extends Controller
                 } else {
                     $ivaGasto = $porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0;
                     $retencionGasto = $porcentajeRetencion ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0;
-                    $reteIcaGasto = $porcentajeReteIca ? $subtotalGasto * ($porcentajeReteIca / 1000) : 0;
+                    $reteIcaGasto = $porcentajeReteIca ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeReteIca / 1000) : 0;
                     $totalGasto = ($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto);
                 }
 
@@ -431,7 +431,7 @@ class GastosController extends Controller
                 $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
             } else {
                 $valorRetencion = $porcentajeRetencion ? ($subtotalGasto - $gasto->no_valor_iva) * ($porcentajeRetencion / 100) : 0;
-                $valorReteIca = $porcentajeReteIca ? $subtotalGasto * ($porcentajeReteIca / 1000) : 0;
+                $valorReteIca = $porcentajeReteIca ? ($subtotalGasto - $gasto->no_valor_iva) * ($porcentajeReteIca / 1000) : 0;
                 $ivaGasto = $porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0;
             }
             

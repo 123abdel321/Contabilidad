@@ -640,7 +640,7 @@ function changeValorDescuentoGasto (idGasto, event = null) {
             valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? baseAIU * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
             valorIva = dataGasto[indexGasto].porcentaje_iva ? baseAIU * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
         } else {
-            valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
+            valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
             valorIva = dataGasto[indexGasto].porcentaje_iva ? valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
         }
         var valorTotal = 0;
@@ -685,7 +685,7 @@ function changeValorNoIvaGasto (idGasto, event = null) {
         var valorSubtotal = valorGasto - (valorDescuento);
         var valorIva = valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100);
         var valorRetencion = dataGasto[indexGasto].porcentaje_retencion ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_retencion / 100) : 0;
-        var valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
+        var valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
         var valorTotal = (valorSubtotal) - (valorRetencion + valorReteIca);
 
         dataGasto[indexGasto].porcentaje_descuento_gasto = valorPorcentajeDescuento;
@@ -770,7 +770,7 @@ function changePorcentajeDescuentoGasto (idGasto, event = null) {
             valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? baseAIU * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
             valorIva = dataGasto[indexGasto].porcentaje_iva ? baseAIU * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
         } else {
-            valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
+            valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
             valorIva = dataGasto[indexGasto].porcentaje_iva ? valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
         }
         
@@ -825,7 +825,7 @@ function changeValorGasto (idGasto, event = null) {
             valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? baseAIU * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
             valorIva = dataGasto[indexGasto].porcentaje_iva ? baseAIU * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
         } else {
-            valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
+            valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
             valorIva = dataGasto[indexGasto].porcentaje_iva ? valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
         }
         var valorTotal = 0 ;
