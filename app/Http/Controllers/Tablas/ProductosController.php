@@ -51,7 +51,7 @@ class ProductosController extends Controller
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
-        $rowperpage = $request->get("length");
+        $rowperpage = 20;
 
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
@@ -63,8 +63,7 @@ class ProductosController extends Controller
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
-        $productos = FacProductos::skip($start)
-            ->with(
+        $productos = FacProductos::with(
                 'variantes.variante',
                 'variantes.opcion',
                 'inventarios.bodega',
@@ -101,6 +100,7 @@ class ProductosController extends Controller
             'total_productos' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FPB.cantidad) AS total_productos"))->first()->total_productos,
         ];
 
+        $totalProductos = $productos->count();
         $productosPaginate = $productos->skip($start)
             ->take($rowperpage);
 
@@ -108,8 +108,8 @@ class ProductosController extends Controller
             'success'=>	true,
             'draw' => $draw,
             'totalesProductos' => $totalesProductos,
-            'iTotalRecords' => $productos->count(),
-            'iTotalDisplayRecords' => $productos->count(),
+            'iTotalRecords' => $totalProductos,
+            'iTotalDisplayRecords' => $totalProductos,
             'data' => $productosPaginate->get(),
             'perPage' => $rowperpage,
             'message'=> 'Productos cargados con exito!'
