@@ -442,7 +442,11 @@ class VentaController extends Controller
             ->take($rowperpage);
 
         if($columnName){
-            $ventas->orderBy($columnName,$columnSortOrder);
+            if ($columnName === 'documento_referencia') {
+                $ventas->orderByRaw("CAST($columnName AS UNSIGNED) $columnSortOrder");
+            } else {
+                $ventas->orderBy($columnName,$columnSortOrder);
+            }
         }
         
         if ($request->get('id_cliente')) {

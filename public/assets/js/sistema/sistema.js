@@ -39,6 +39,8 @@ let buttonMostrarLateral = document.getElementById('button-mostrar-lateral');
 let buttonocultarLateral = document.getElementById('button-ocultar-lateral');
 let iconSidenav = document.getElementById('iconSidenav');
 
+iniciarCanalesDeNotificacion();
+
 var moduloCreado = {
     'nit': false,
     'comprobante': false,
@@ -127,6 +129,58 @@ var moduloRoute = {
     'presupuesto': 'tablas',
     'impuestos': 'informes',
     'resultados': 'informes',
+}
+
+function iniciarCanalesDeNotificacion () {
+    channelAbdelCartagena = pusher.subscribe('canal-general-abdel-cartagena');
+}
+
+channelAbdelCartagena.bind('notificaciones', function(data) {
+    let timerInterval;
+    Swal.fire({
+        title: "Actualizando nueva version!",
+        html: "Se recargará la pagina para aplicar la version: "+version_app,
+        timer: 4000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const timer = Swal.getPopup().querySelector("b");
+            timerInterval = setInterval(() => {
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+        }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+        }
+    });
+    setTimeout(function(){
+        closeSessionProfile();
+    },4000);
+});
+
+function closeSessionProfile() {
+    $.ajax({
+        url: base_web + 'logout',
+        method: 'POST',
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        localStorage.setItem("token_db_portafolio", '');
+        localStorage.setItem("auth_token", '');
+        localStorage.setItem("auth_token_erp", '');
+        localStorage.setItem("empresa_nombre", '');
+        localStorage.setItem("notificacion_code", '');
+        localStorage.setItem("notificacion_code_general", '');
+        localStorage.setItem("fondo_sistema", '');
+        localStorage.setItem("empresa_logo", '');
+
+        window.location.href = '/login';
+    }).fail((res) => {
+        window.location.href = '/login';
+    });
 }
 
 $('.water').show();

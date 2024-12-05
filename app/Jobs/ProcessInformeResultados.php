@@ -118,13 +118,12 @@ class ProcessInformeResultados implements ShouldQueue
                     $presupuestoPadre = false;
                     $cuentasAsociadas = $this->getCuentas($presupuesto->cuenta); //return ARRAY PADRES CUENTA
                     $documento = $this->documentosIndividuales($presupuesto->cuenta);
-                    
                     foreach ($cuentasAsociadas as $cuenta) {
                         $exiteCuenta = PlanCuentas::whereCuenta($cuenta);
                         if ($exiteCuenta->count()) {
                             if ($this->hasCuentaData($cuenta)) $this->sumCuentaData($cuenta, $documento);
                             else $this->newCuentaData($cuenta, $documento);
-    
+
                             $presupuesto = $this->getPresupuesto($cuenta, $presupuestoPadre);
                             $presupuestoPadre = true;
     
@@ -408,7 +407,6 @@ class ProcessInformeResultados implements ShouldQueue
     private function getCuentas($cuenta)
     {
         $dataCuentas = NULL;
-
         if(strlen($cuenta) > 6){
             $dataCuentas =[
                 $cuenta,
@@ -525,16 +523,14 @@ class ProcessInformeResultados implements ShouldQueue
         $mesDesde = intval(explode("-", $this->request['fecha_desde'])[1]);
         $mesHasta = intval(explode("-", $this->request['fecha_hasta'])[1]);
         $dataPresupuesto['padre'] = $presupuesto->id_padre ? true : false;
-        
         foreach ($this->meses as $mesNumero => $mesNombre) {
-            if ($mesDesde >= $mesNumero && $mesNumero <= $mesHasta) {
+            if ($mesNumero >= $mesDesde && $mesNumero <= $mesHasta) {
                 $dataPresupuesto['ppto_movimiento']+= $presupuesto->{$mesNombre};
-            } else if ($mesDesde < $mesNumero){
+            } else if ($mesNumero < $mesDesde){
                 $dataPresupuesto['ppto_anterior']+= $presupuesto->{$mesNombre};
             }
             $dataPresupuesto['ppto_acumulado']+= $presupuesto->{$mesNombre};
         }
-
         return $dataPresupuesto;
     }
 
