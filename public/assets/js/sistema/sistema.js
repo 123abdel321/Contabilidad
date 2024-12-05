@@ -132,10 +132,10 @@ var moduloRoute = {
 }
 
 function iniciarCanalesDeNotificacion () {
-    channelAbdelCartagena = pusher.subscribe('canal-general-abdel-cartagena');
+    channelAbdelCastro = pusher.subscribe('canal-general-abdel-castro');
 }
 
-channelAbdelCartagena.bind('notificaciones', function(data) {
+channelAbdelCastro.bind('notificaciones', function(data) {
     let timerInterval;
     Swal.fire({
         title: "Actualizando nueva version!",

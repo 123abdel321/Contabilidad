@@ -1,3 +1,4 @@
+let searchTimeoutProductos;
 var productos_table = null;
 var productos_varaibles_table = null;
 var tipo_producto = 0;
@@ -51,6 +52,9 @@ function productosInit() {
             type: "GET",
             headers: headers,
             url: base_url + 'producto',
+            data: function ( d ) {
+                d.search = $("#searchInputProductos").val()
+            }
         },
         columns: [
             // {"data":'id'},
@@ -584,6 +588,13 @@ function productosInit() {
     productos_table.ajax.reload(function(res) {
         showTotalsProductos(res);
     })
+
+    $("#searchInputProductos").on("input", function () {
+        clearTimeout(searchTimeoutProductos);
+        searchTimeoutProductos = setTimeout(function () {
+            productos_table.ajax.reload();
+        }, 300);
+    });
 }
 
 function asignarDatosInventario (dataProducto) {
@@ -2050,11 +2061,6 @@ function readURL(input) {
         $('#new_produc_img').show();
     }
 }
-
-$("#searchInputProductos").on("input", function (e) {
-    productos_table.context[0].jqXHR.abort();
-    $('#productoTable').DataTable().search($("#searchInputProductos").val()).draw();
-});
 
 $('#productoTable').on('search.dt', function (res, data) {
     if (data.json) {
