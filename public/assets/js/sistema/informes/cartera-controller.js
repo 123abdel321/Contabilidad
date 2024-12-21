@@ -39,6 +39,23 @@ function carteraInit() {
         },
         'rowCallback': function(row, data, index){
             var nivel = getNivelCartera();
+            var nivelData = parseInt(data.nivel);
+            var naturaleza = parseInt(data.naturaleza_cuenta);
+            
+            if (naturaleza == 0 && nivelData == 2) {
+                if (parseInt(data.saldo_anterior) < 0 || parseInt(data.saldo) < 0) {
+                    $('td', row).css('background-color', '#ff00004d');
+                    $('td', row).css('color', 'black');
+                    return;
+                }
+            }
+            if (naturaleza == 1 && nivelData == 2) {
+                if (parseInt(data.saldo_anterior) > 0 || parseInt(data.saldo) > 0) {
+                    $('td', row).css('background-color', '#ff00004d');
+                    $('td', row).css('color', 'black');
+                    return;
+                }
+            }
             if (nivel == 1) {
                 if (data.nivel == 0) {
                     $('td', row).css('background-color', 'rgb(28 69 135)');
@@ -145,10 +162,66 @@ function carteraInit() {
             }},
             {data: 'documento_referencia'},
             {data: 'fecha_manual'},
-            {data: 'saldo_anterior', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 5, targets: -4},
+            {
+                data: null,
+                render: function (row, type, set) {
+                    var nivelData = parseInt(row.nivel);
+                    var naturaleza = parseInt(row.naturaleza_cuenta);
+                    const formattedNumber = $.fn.dataTable.render.number(',', '.', 2, '').display(row.saldo_anterior);
+
+                    if (naturaleza == 0 && nivelData == 2) {
+                        if (parseInt(row.saldo_anterior) < 0) {
+                            return `<div class="">
+                                <i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;
+                                ${formattedNumber}
+                            </div>`;
+                        }
+                    }
+                    if (naturaleza == 1 && nivelData == 2) {
+                        if (parseInt(row.saldo_anterior) > 0) {
+                            return `<div class="">
+                                <i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;
+                                ${formattedNumber}
+                            </div>`;
+                        }
+                    }
+                    return formattedNumber;
+                },
+                className: 'dt-body-right',
+                responsivePriority: 5,
+                targets: -4
+            },
             {data: 'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 4, targets: -3},
             {data: 'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 3, targets: -2},
-            {data: 'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 2, targets: -1},
+            {
+                data: null,
+                render: function (row, type, set) {
+                    var nivelData = parseInt(row.nivel);
+                    var naturaleza = parseInt(row.naturaleza_cuenta);
+                    const formattedNumber = $.fn.dataTable.render.number(',', '.', 2, '').display(row.saldo);
+
+                    if (naturaleza == 0 && nivelData == 2) {
+                        if (parseInt(row.saldo) < 0) {
+                            return `<div class="">
+                                <i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;
+                                ${formattedNumber}
+                            </div>`;
+                        }
+                    }
+                    if (naturaleza == 1 && nivelData == 2) {
+                        if (parseInt(row.saldo) > 0) {
+                            return `<div class="">
+                                <i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;
+                                ${formattedNumber}
+                            </div>`;
+                        }
+                    }
+                    return formattedNumber;
+                },
+                className: 'dt-body-right',
+                responsivePriority: 2,
+                targets: -1
+            },
             {"data": function (row, type, set){
                 if (row.nivel == 3) {
                     return row.consecutivo
