@@ -692,7 +692,9 @@ function removejscssfile(filename, filetype){
 }
 
 function loadExcel(data) {
-    window.open('https://'+data.url_file, "_blank");
+    setTimeout(function(){
+        window.open('https://'+data.url_file, "_blank");
+    },100);
     agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
 }
 

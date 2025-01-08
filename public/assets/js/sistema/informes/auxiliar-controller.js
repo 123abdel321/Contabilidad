@@ -295,7 +295,6 @@ $(document).on('click', '#generarAuxiliar', function () {
 var channel = pusher.subscribe('informe-auxiliar-'+localStorage.getItem("notificacion_code"));
 
 channel.bind('notificaciones', function(data) {
-    console.log('notificaciones', data);
     if(data.url_file){
         loadExcel(data);
         return;
