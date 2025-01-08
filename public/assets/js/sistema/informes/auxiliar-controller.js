@@ -54,12 +54,9 @@ function auxiliarInit() {
                     }
                 }
             }
-            if (data.id_nit) {
-                return;
-            }
             if(data.detalle_group == 'nits-totales'){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 25%)');
-                $('td', row).css('font-weight', '600');
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.detalle_group == 'nits'){
@@ -68,23 +65,23 @@ function auxiliarInit() {
             }
             if(data.cuenta == "TOTALES"){
                 $('td', row).css('background-color', 'rgb(28 69 135)');
-                $('td', row).css('font-weight', '600');
+                $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 1){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 90%)');
-                $('td', row).css('font-weight', '600');
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.cuenta.length == 2){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 75%)');
-                $('td', row).css('font-weight', '600');
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.cuenta.length == 4){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
-                $('td', row).css('font-weight', '600');
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.detalle == 0 && data.detalle_group == 0){
@@ -92,12 +89,12 @@ function auxiliarInit() {
             }
             if(data.detalle_group && !data.detalle){//
                 $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
-                $('td', row).css('font-weight', '600');
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.detalle){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 35%)');
-                $('td', row).css('font-weight', '600');
+                $('td', row).css('font-weight', 'bold');
                 return;
             }
         },

@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Informes;
 
 use Illuminate\Http\Request;
-// use App\Exports\BalanceExport;
+use App\Exports\CarteraExport;
+use Illuminate\Support\Facades\Bus;
 use App\Events\PrivateMessageEvent;
-use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeCartera;
+use App\Http\Controllers\Controller;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -126,6 +127,75 @@ class CarteraController extends Controller
             'data' => '',
             'message'=> 'Cartera no existente'
         ]);
+    }
+
+    public function exportExcel(Request $request)
+    {
+        try {
+            $informeCartera = InfCartera::find($request->get('id'));
+
+            if($informeCartera && $informeCartera->exporta_excel == 1) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => '',
+                    'message'=> 'Actualmente se esta generando el excel de cartera'
+                ]);
+            }
+
+            if($informeCartera && $informeCartera->exporta_excel == 2) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => $informeCartera->archivo_excel,
+                    'message'=> ''
+                ]);
+            }
+
+            $fileName = 'cartera_'.uniqid().'.xlsx';
+            $url = $fileName;
+
+            // $informeCartera->exporta_excel = 1;
+            // $informeCartera->archivo_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
+            $informeCartera->save();
+
+            $has_empresa = $request->user()['has_empresa'];
+            $user_id = $request->user()->id;
+            $id_informe = $request->get('id');
+
+            Bus::chain([
+                function () use ($id_informe, &$fileName) {
+                    // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
+                    (new CarteraExport($id_informe))->store($fileName, 'do_spaces', null, [
+                        'visibility' => 'public'
+                    ]);
+                },
+                function () use ($user_id, $has_empresa, $url, $informeCartera) {
+                    // Lanza el evento cuando el proceso termine
+                    event(new PrivateMessageEvent('informe-cartera-'.$has_empresa.'_'.$user_id, [
+                        'tipo' => 'exito',
+                        'mensaje' => 'Excel de Cartera generado con exito!',
+                        'titulo' => 'Excel generado',
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
+                        'autoclose' => false
+                    ]));
+                    
+                    // Actualiza el informe auxiliar
+                    $informeCartera->exporta_excel = 2;
+                    $informeCartera->save();
+                }
+            ])->dispatch();
+
+            return response()->json([
+                'success'=>	true,
+                'url_file' => '',
+                'message'=> 'Se le notificará cuando el informe haya finalizado'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
     }
 
 }

@@ -348,6 +348,38 @@ function carteraInit() {
     actualizarColumnas();
 }
 
+$(document).on('click', '#descargarExcelCartera', function () {
+    $.ajax({
+        url: base_url + 'cartera-excel',
+        method: 'POST',
+        data: JSON.stringify({id: $('#id_cartera_cargado').val()}),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            if(res.url_file){
+                window.open('https://'+res.url_file, "_blank");
+                return; 
+            }
+            agregarToast('info', 'Generando excel', res.message, true);
+        }
+    }).fail((err) => {
+        var errorsMsg = "";
+        var mensaje = err.responseJSON.message;
+        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += "- "+errores[campo]+" <br>";
+                }
+            };
+        } else {
+            errorsMsg = mensaje
+        }
+        agregarToast('error', 'Error al generar excel', errorsMsg);
+    });
+});
+
 function actualizarColumnas() {
     var nivel = getNivelCartera();
     var agrupado = $("#agrupar_cartera").val();

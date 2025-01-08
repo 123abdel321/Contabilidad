@@ -87,7 +87,7 @@
                         <b style="vertical-align: text-top;">BUSCANDO</b>
                     </span>
                     <!-- BOTON EXCEL -->
-                    <!-- <span id="descargarExcelCartera" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; display:none;">
+                    <span id="descargarExcelCartera" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXCEL</b>
                     </span>
@@ -95,7 +95,7 @@
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
-                    </span> -->
+                    </span>
                     <!-- BOTON ULTIMO INFORME -->
                     <span id="generarCarteraUltimo" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; margin-right: 3px; float: right; display:none;">
                         <i class="fas fa-history" style="font-size: 17px;"></i>&nbsp;

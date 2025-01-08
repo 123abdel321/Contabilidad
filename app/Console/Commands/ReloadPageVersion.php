@@ -29,7 +29,7 @@ class ReloadPageVersion extends Command
     public function handle()
     {
         // sleep(30);
-        event(new PrivateMessageEvent('canal-general-abdel-cartagena', [
+        event(new PrivateMessageEvent('canal-general-abdel-castro', [
             'tipo' => 'reloadPage',
         ]));
 
