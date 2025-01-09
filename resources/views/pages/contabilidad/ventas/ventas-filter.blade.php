@@ -58,6 +58,12 @@
                             </select>
                         </div>
 
+                        <div class="form-group col-6 col-sm-4 col-md-3">
+                            <label for="usuario-text-input" class="form-control-label">Forma de pago</label>
+                            <select name="id_forma_pago_ventas" id="id_forma_pago_ventas" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
+                            </select>
+                        </div>
+
                         <div class="form-group col-12 col-sm-4 col-md-2 row" style="margin-bottom: 0.1rem !important;">
                             <label for="example-text-input" class="form-control-label">Detallar ventas</label>
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">

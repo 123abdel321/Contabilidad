@@ -48,6 +48,7 @@ function ventasInit() {
                 d.id_bodega = $('#id_bodega_ventas').val();
                 d.id_producto = $('#id_producto_ventas').val();
                 d.id_usuario = $('#id_usuario_ventas').val();
+                d.id_forma_pago = $('#id_forma_pago_ventas').val();
                 d.detallar_venta = $("input[type='radio']#detallar_venta1").is(':checked') ? 'si' : 'no';
             }
         },
@@ -246,6 +247,40 @@ function ventasInit() {
         }
     });
 
+    $('#id_forma_pago_ventas').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccionar forma de pago",
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/forma-pago/combo-forma-pago',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     $('.water').hide();
     ventas_table.ajax.reload(function (res) {
         showTotalsVentas(res);
@@ -322,6 +357,7 @@ $(document).on('click', '#generarInformeZ', function () {
     $('#id_bodega_ventas').val() ? url+= '&id_bodega='+$('#id_bodega_ventas').val() : null;
     $('#id_resolucion_ventas').val() ? url+= '&id_resolucion='+$('#id_resolucion_ventas').val() : null;
     $('#id_producto').val() ? url+= '&id_producto='+$('#id_producto').val() : null;
+    $('#id_forma_pago_ventas').val() ? url+= '&id_forma_pago='+$('#id_forma_pago_ventas').val() : null;
     $('#id_usuario').val() ? url+= '&id_usuario='+$('#id_usuario').val() : null;
     url+= $("input[type='radio']#detallar_venta1").is(':checked') ? '&detallar_venta=1' : '&detallar_venta=0';
 

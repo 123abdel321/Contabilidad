@@ -430,7 +430,8 @@ class VentaController extends Controller
                 'cliente',
                 'comprobante',
                 'detalles',
-                'vendedor.nit'
+                'vendedor.nit',
+                'pagos'
             )
             ->select(
                 '*',
@@ -476,6 +477,12 @@ class VentaController extends Controller
         if ($request->get('id_producto')) {
             $ventas->whereHas('detalles', function ($query) use($request) {
                 $query->where('id_producto', '=', $request->get('id_producto'));
+            });
+        }
+
+        if ($request->get('id_forma_pago')) {
+            $ventas->whereHas('pagos', function ($query) use($request) {
+                $query->where('id_forma_pago', '=', $request->get('id_forma_pago'));
             });
         }
 
@@ -851,6 +858,7 @@ class VentaController extends Controller
         return DB::connection('sam')->table('fac_ventas AS FV')
             ->leftJoin('fac_venta_detalles AS FVD', 'FV.id', 'FVD.id_venta')
             ->leftJoin('fac_productos AS FP', 'FVD.id_producto', 'FP.id')
+            ->leftJoin('fac_venta_pagos AS FVP', 'FV.id', 'FVP.id_venta')
             ->when(true, function ($query) use ($notas) {
                 if ($notas) {
                     $query->whereNotNull('id_factura');
@@ -875,6 +883,9 @@ class VentaController extends Controller
             })
             ->when($request->get('id_bodega') ? true : false, function ($query) use ($request) {
                 $query->where('FV.id_bodega', $request->get('id_bodega'));
+            })
+            ->when($request->get('id_forma_pago') ? true : false, function ($query) use ($request) {
+                $query->where('FVP.id_forma_pago', $request->get('id_forma_pago'));
             })
             ->when($request->get('id_usuario') ? true : false, function ($query) use ($request) {
                 $query->where('FV.created_by', $request->get('id_usuario'));
