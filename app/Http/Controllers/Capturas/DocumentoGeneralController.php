@@ -492,7 +492,7 @@ class DocumentoGeneralController extends Controller
 			return response()->json([
 				'success'=>	true,
 				'data' => $documentoGeneral->getRows(),
-				'impresion' => $comprobante->imprimir_en_capturas ? $facDocumento->id : '',
+				'impresion' => $comprobante->imprimir_en_capturas ? $request->get('consecutivo') : '',
 				'id_comprobante' => $comprobante->id,
 				'message'=> 'Documentos creados con exito!'
 			], 200);
