@@ -96,10 +96,8 @@ class DocumentoController extends Controller
 
     public function showPdf(Request $request, $id)
     {
-        // return $request->user();
-
         $factura = FacDocumentos::whereId($id)->first();
-
+        
         if(!$factura) {
             return response()->json([
                 'success'=>	false,
@@ -121,11 +119,12 @@ class DocumentoController extends Controller
     {
         $comprobante = Comprobantes::where('id', $id_comprobante)->first();
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-
+        
         if ($comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
             $recibo = ConRecibos::with('comprobante')
                 ->where('id_comprobante', $id_comprobante)
                 ->where('consecutivo', $consecutivo)
+                ->orderBy('id', 'DESC')
                 ->first();
 
             if ($recibo) {
@@ -139,6 +138,7 @@ class DocumentoController extends Controller
             $venta = FacVentas::with('comprobante')
                 ->where('id_comprobante', $id_comprobante)
                 ->where('consecutivo', $consecutivo)
+                ->orderBy('id', 'DESC')
                 ->first();
 
             if ($venta) {
@@ -152,6 +152,7 @@ class DocumentoController extends Controller
             $compra = FacCompras::with('comprobante')
                 ->where('id_comprobante', $id_comprobante)
                 ->where('consecutivo', $consecutivo)
+                ->orderBy('id', 'DESC')
                 ->first();
 
             if ($compra) {
@@ -165,6 +166,7 @@ class DocumentoController extends Controller
             $gasto = ConGastos::with('comprobante')
                 ->where('id_comprobante', $id_comprobante)
                 ->where('consecutivo', $consecutivo)
+                ->orderBy('id', 'DESC')
                 ->first();
 
             if ($gasto) {
@@ -178,6 +180,7 @@ class DocumentoController extends Controller
         $facDocumento = FacDocumentos::with('documentos')
             ->where('id_comprobante', $id_comprobante)
             ->where('consecutivo', $consecutivo)
+            ->orderBy('id', 'DESC')
             ->first();
 
         if (count($facDocumento->documentos)) {
