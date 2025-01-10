@@ -392,7 +392,7 @@ class DocumentoGeneralController extends Controller
 			$facDocumento = null;
 
 			$tokenFactura = $request->get('token_factura') ? $request->get('token_factura') : $this->generateTokenDocumento();
-
+			
 			if($request->get('editing_documento')) {
 				$facDocumento = DocumentosGeneral::with('relation')
 					->where('id_comprobante', $request->get('id_comprobante'))
@@ -401,7 +401,7 @@ class DocumentoGeneralController extends Controller
 					->first();
 					
 				$facDocumento = $facDocumento->relation;
-
+				
 				DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
 					->where('fecha_manual', $request->get('fecha_manual'))
@@ -493,6 +493,7 @@ class DocumentoGeneralController extends Controller
 				'success'=>	true,
 				'data' => $documentoGeneral->getRows(),
 				'impresion' => $comprobante->imprimir_en_capturas ? $facDocumento->id : '',
+				'id_comprobante' => $comprobante->id,
 				'message'=> 'Documentos creados con exito!'
 			], 200);
 
