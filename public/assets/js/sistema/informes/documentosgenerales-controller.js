@@ -73,6 +73,9 @@ function documentosgeneralesInit() {
             {"data": function (row, type, set){ //CUENTA
                 if (row.nivel == 99) return 'TOTALES'
                 if (row.id_cuenta) return row.cuenta;
+                if (row.nivel == 1 && agrupadoPorDocumento) {
+                    return '<span id="imprimirdocumentogeneral_'+row.id+'" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-documentogeneral" style="margin-bottom: 0rem !important; color: black; background-color: white !important;">Imprimir</span>';
+                }
                 return '';
             }},
             {"data": function (row, type, set){ //CUENTA
