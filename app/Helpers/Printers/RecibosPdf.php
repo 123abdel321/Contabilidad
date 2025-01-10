@@ -47,10 +47,12 @@ class RecibosPdf extends AbstractPrinterPdf
 
     public function data()
     {
+		
         $this->recibo->load([
             'nit',
             'detalles.cuenta',
-			'pagos.forma_pago'
+			'pagos.forma_pago',
+			'documentos'
         ]);
 
 		$getNit = Nits::whereId($this->recibo->id_nit)->with('ciudad')->first();
@@ -72,7 +74,7 @@ class RecibosPdf extends AbstractPrinterPdf
 			'empresa' => $this->empresa,
 			'nit' => $nit,
 			'recibo' => $this->recibo,
-			'detalles' => $this->recibo->detalles,
+			'detalles' => $this->recibo->documentos,
 			'pagos' => $this->recibo->pagos,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user() ? request()->user()->username : 'MaximoPH'
