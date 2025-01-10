@@ -119,7 +119,6 @@ class DocumentoController extends Controller
     {
         $comprobante = Comprobantes::where('id', $id_comprobante)->first();
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        
         if ($comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
             $recibo = ConRecibos::with('comprobante')
                 ->where('id_comprobante', $id_comprobante)
@@ -128,7 +127,7 @@ class DocumentoController extends Controller
                 ->first();
 
             if ($recibo) {
-                $data = (new RecibosPdf($empresa, $recibo))->buildPdf()->getData();
+                // $data = (new RecibosPdf($empresa, $recibo))->buildPdf()->getData();
                 return (new RecibosPdf($empresa, $recibo))
                     ->buildPdf()
                     ->showPdf();
@@ -142,7 +141,7 @@ class DocumentoController extends Controller
                 ->first();
 
             if ($venta) {
-                $data = (new VentasPdf($empresa, $venta))->buildPdf()->getData();
+                // $data = (new VentasPdf($empresa, $venta))->buildPdf()->getData();
                 return (new VentasPdf($empresa, $venta))
                     ->buildPdf()
                     ->showPdf();
@@ -156,7 +155,7 @@ class DocumentoController extends Controller
                 ->first();
 
             if ($compra) {
-                $data = (new ComprasPdf($empresa, $compra))->buildPdf()->getData();
+                // $data = (new ComprasPdf($empresa, $compra))->buildPdf()->getData();
                 return (new ComprasPdf($empresa, $compra))
                     ->buildPdf()
                     ->showPdf();
@@ -170,7 +169,7 @@ class DocumentoController extends Controller
                 ->first();
 
             if ($gasto) {
-                $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
+                // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
                 return (new GastosPdf($empresa, $gasto))
                     ->buildPdf()
                     ->showPdf();

@@ -227,13 +227,13 @@
 											@if($recibo->total_abono)
 												<tr>
 													<td class="padding5" style="font-weight: bold;">Total abono</td>
-													<td class="valor padding5">{{ $recibo->total_abono }}</td>
+													<td class="valor padding5">{{ number_format($recibo->total_abono, 2) }}</td>
 												</tr>
 											@endif
 											@if($recibo->total_anticipo)
 												<tr>
 													<td class="padding5" style="font-weight: bold;">Total anticipo</td>
-													<td class="valor padding5">{{ $recibo->total_anticipo }}</td>
+													<td class="valor padding5">{{ number_format($recibo->total_anticipo, 2) }}</td>
 												</tr>
 											@endif
 										</tbody>
@@ -257,10 +257,9 @@
 					<th class="padding5">CUENTA</th>
 					<th class="padding5">NOMBRE</th>
 					<th class="padding5">FACTURA</th>
-					<th class="padding5">VALOR</th>
-					<th class="padding5">PAGO</th>
-					<th class="padding5">ANTICIPO</th>
-					<th class="padding5">SALDO</th>
+					<th class="padding5">CONCEPTO</th>
+					<th class="padding5">DEBITO</th>
+					<th class="padding5">CREDITO</th>
 				</tr>
 			</thead>
 			<tbody class="detalle-factura">
@@ -269,10 +268,9 @@
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->cuenta->cuenta }}</td>
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->cuenta->nombre }}</td>
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->documento_referencia }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->total_saldo) }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->total_abono) }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->total_anticipo) }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->nuevo_saldo) }}</td>
+						<td class="padding5 detalle-factura-descripcion">{{ $detalle->concepto }}</td>
+						<td class="padding5 valor">{{ number_format($detalle->debito, 2) }}</td>
+						<td class="padding5 valor">{{ number_format($detalle->credito, 2) }}</td>
 					</tr>
 				@endforeach
 			</tbody>
