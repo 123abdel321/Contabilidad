@@ -260,7 +260,7 @@ class ProcessInformeBalance implements ShouldQueue
                 DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
-                DB::raw('SUM(saldo_final) AS saldo_final'),
+                DB::raw('SUM(saldo_anterior) + SUM(saldo_final) AS saldo_final'),
                 DB::raw('SUM(documentos_totales) AS documentos_totales')
             )
             ->orderByRaw('cuenta')
