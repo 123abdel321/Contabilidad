@@ -5,6 +5,7 @@ namespace App\Models\Informes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class InfImpuestosDetalle extends Model
 {
     use HasFactory;
@@ -43,4 +44,9 @@ class InfImpuestosDetalle extends Model
         "created_by",
         "updated_by",
     ];
+
+    public function nit()
+    {
+        return $this->belongsTo("App\Models\Sistema\Nits", 'id_nit');
+	}
 }

@@ -657,6 +657,7 @@ class ProcessInformeImpuestos implements ShouldQueue
     {
         if ($this->request['tipo_informe'] == 'iva') return [9,16];
         if ($this->request['tipo_informe'] == 'retencion') return [12,13];
-        return [9,12,13,16];
+        if ($this->request['tipo_informe'] == 'reteica') return [17];
+        return [9,12,13,16,17];
     }
 }

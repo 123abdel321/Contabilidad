@@ -18,6 +18,7 @@
                             <select class="form-control form-control-sm tipo_impuestos" id="tipo_informe_impuestos" name="tipo_informe_impuestos">
                                 <option value="iva">Iva</option>
                                 <option value="retencion">Retención</option>
+                                <option value="reteica">Reteica</option>
                             </select>
                         </div>
                         <div class="form-group col-12 col-sm-4 col-md-3">

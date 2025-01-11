@@ -3,6 +3,7 @@
         <tr>
             <th id="nombre_item_impuestos" style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
             <th>Nombre</th>
+            <th>Actividad economica</th>
             <th>Saldo anterior</th>
             <th>Debito</th>
             <th>Credito</th>

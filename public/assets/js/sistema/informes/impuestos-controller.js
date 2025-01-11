@@ -124,6 +124,14 @@ function impuestosInit() {
                 }
                 return '';
             }},
+            {"data": function (row, type, set){
+                if (row.nit) {
+                    if (row.nit.actividad_economica) {
+                        return row.nit.actividad_economica.nombre;
+                    }
+                }
+                return '';
+            }},
             {data: 'saldo_anterior', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 5, targets: -4},
             {data: 'debito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 5, targets: -4},
             {data: 'credito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 5, targets: -4},
@@ -163,7 +171,7 @@ function impuestosInit() {
                 var query = {
                     search: params.term,
                     total_cuentas: true,
-                    id_tipo_cuenta: $("#tipo_informe_impuestos").val() == 'iva' ? [9,16] : [12,13]
+                    id_tipo_cuenta: tipoCuentaInforme()
                 }
                 return query;
             },
@@ -203,7 +211,11 @@ function impuestosInit() {
         actualizarColumnas();
         document.getElementById("generarImpuestos").click();
     });
-    
+
+    $("#tipo_informe_impuestos").on('change', function(){
+        actualizarColumnas();
+    });
+
     $("#nivel_impuestos3").on('change', function(){
         actualizarColumnas();
         document.getElementById("generarImpuestos").click();
@@ -240,29 +252,37 @@ function impuestosInit() {
     actualizarColumnas();
 }
 
+function tipoCuentaInforme() {
+    let tipoInforme = $("#tipo_informe_impuestos").val();
+    if (tipoInforme == 'iva') return [9,16];
+    if (tipoInforme == 'retencion') return [12,13];
+    if (tipoInforme == 'reteica') return [17];
+}
+
 function actualizarColumnas() {
     var nivel = getNivelImpuestos();
+    let tipoInforme = $("#tipo_informe_impuestos").val();
 
-    var columnComprobante = impuestos_table.column(8);
-    var columnFechaManul = impuestos_table.column(9);
-    var columnConcecutivo = impuestos_table.column(10);
-    var columnConcepto = impuestos_table.column(11);
-    var columnUsuario = impuestos_table.column(12);
+    var columnActividadEconomica = impuestos_table.column(2);
+    var columnComprobante = impuestos_table.column(9);
+    var columnFechaManul = impuestos_table.column(10);
+    var columnConcecutivo = impuestos_table.column(11);
+    var columnConcepto = impuestos_table.column(12);
     
+    if (tipoInforme == 'reteica') columnActividadEconomica.visible(true);
+    else columnActividadEconomica.visible(false);
 
     if (nivel == 1 || nivel == 2) {
         columnComprobante.visible(false);
         columnFechaManul.visible(false);
         columnConcecutivo.visible(false);
         columnConcepto.visible(false);
-        columnUsuario.visible(false);
     }
     if (nivel == 3) {
         columnComprobante.visible(true);
         columnFechaManul.visible(true);
         columnConcecutivo.visible(true);
         columnConcepto.visible(true);
-        columnUsuario.visible(true);
     }
 }
 
