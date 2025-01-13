@@ -150,12 +150,17 @@ $imagenes = [
 
 var urlImgFondo = $imagenes[getRandomInt($imagenes.length)];
 
-if (localStorage.getItem("fondo_sistema") != 'null' && localStorage.getItem("fondo_sistema") != '') {
-    urlImgFondo = bucketUrl + localStorage.getItem("fondo_sistema");
-}
+// if (localStorage.getItem("fondo_sistema") != 'null' && localStorage.getItem("fondo_sistema") != '') {
+//     urlImgFondo = bucketUrl + localStorage.getItem("fondo_sistema");
+// }
 setTimeout(function(){
+    console.log('urlImgFondo: ',urlImgFondo);
     $(".fondo-sistema").css('background-image', 'url(' +urlImgFondo+ ')');
 },200);
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
 
 channelAbdelCastro.bind('notificaciones', function(data) {
     let timerInterval;
