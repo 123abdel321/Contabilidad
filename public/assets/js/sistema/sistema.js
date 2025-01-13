@@ -135,6 +135,28 @@ function iniciarCanalesDeNotificacion () {
     channelAbdelCastro = pusher.subscribe('canal-general-abdel-castro');
 }
 
+$imagenes = [
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_1.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_2.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_3.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_4.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_5.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_6.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_7.jpeg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_8.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_9.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_10.jpg'
+];
+
+var urlImgFondo = $imagenes[getRandomInt($imagenes.length)];
+
+if (localStorage.getItem("fondo_sistema") != 'null' && localStorage.getItem("fondo_sistema") != '') {
+    urlImgFondo = bucketUrl + localStorage.getItem("fondo_sistema");
+}
+setTimeout(function(){
+    $(".fondo-sistema").css('background-image', 'url(' +urlImgFondo+ ')');
+},200);
+
 channelAbdelCastro.bind('notificaciones', function(data) {
     let timerInterval;
     Swal.fire({
