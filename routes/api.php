@@ -261,6 +261,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('producto', 'update');
             Route::delete('producto', 'delete');
             Route::get('producto/combo-producto', 'comboProducto');
+            Route::get('productos', 'getAll');
         });
         //CARGUE DESCARGUE
         Route::controller(CargueDescargueController::class)->group(function () {

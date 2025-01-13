@@ -179,8 +179,8 @@ class ProductosController extends Controller
                 'id_familia' => $request->get('id_familia'),
                 'id_padre' => null,
                 'tipo_producto' => $request->get('tipo_producto'),
-                'codigo' => $request->get('codigo'),
-                'nombre' => $request->get('nombre'),
+                'codigo' => trim($request->get('codigo')),
+                'nombre' => trim($request->get('nombre')),
                 'precio' => $request->get('precio'),
                 'precio_minimo' => $request->get('precio_minimo'),
                 'precio_inicial' => $request->get('precio_inicial'),
@@ -353,8 +353,8 @@ class ProductosController extends Controller
             $producto = FacProductos::where('id', $request->get('id'))->first();
             $producto->id_familia = $request->get('id_familia');
             $producto->tipo_producto = $request->get('tipo_producto');
-            $producto->codigo = $request->get('codigo');
-            $producto->nombre = $request->get('nombre');
+            $producto->codigo = trim($request->get('codigo'));
+            $producto->nombre = trim($request->get('nombre'));
             $producto->precio = $request->get('precio');
             $producto->precio_inicial = $request->get('precio_inicial');
             $producto->precio_minimo = $request->get('precio_minimo');
@@ -640,6 +640,58 @@ class ProductosController extends Controller
         }
 
         return $producto->paginate(40);
+    }
+
+    public function getAll (Request $request)
+    {
+        $producto = FacProductos::select(
+                \DB::raw('*'),
+                \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+            )->with([
+                'familia.cuenta_compra.impuesto',
+                'familia.cuenta_compra_retencion.impuesto',
+                'familia.cuenta_compra_devolucion.impuesto',
+                'familia.cuenta_compra_iva.impuesto',
+                'familia.cuenta_compra_descuento.impuesto',
+                'familia.cuenta_compra_devolucion_iva.impuesto',
+                'familia.cuenta_venta.impuesto',
+                'familia.cuenta_venta_retencion.impuesto',
+                'familia.cuenta_venta_devolucion.impuesto',
+                'familia.cuenta_venta_iva.impuesto',
+                'familia.cuenta_venta_descuento.impuesto',
+                'familia.cuenta_venta_devolucion_iva.impuesto',
+                'familia.cuenta_inventario.impuesto',
+                'familia.cuenta_costos.impuesto'
+            ]);
+
+        if ($request->get("q")) {
+            $producto->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        if ($request->get("query")) {
+            $explodeQuery = explode(' - ', $request->get("query"));
+            if (count($explodeQuery) == 2) {
+                $producto->where('codigo', $explodeQuery[0]);
+            } else {
+                $producto->where('codigo', 'LIKE', '%' . $request->get("query") . '%')
+                    ->orWhere('nombre', 'LIKE', '%' . $request->get("query") . '%');
+            }
+        }
+
+        if ($request->has("id_bodega")) {
+            $producto->with(['inventarios' => function ($query) use ($request) {
+                $query->where('id_bodega', $request->get("id_bodega"));
+            }]);
+        } else {
+            $producto->with('inventarios');
+        }
+
+        $page = $request->input('page', 1);
+
+        return response()->json($producto->paginate(20, ['id', 'nombre'], 'page', $page));
+
+        return $producto->limit(50)->get();
     }
 
 }

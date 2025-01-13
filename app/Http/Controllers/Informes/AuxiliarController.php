@@ -140,7 +140,7 @@ class AuxiliarController extends Controller
                 return response()->json([
                     'success'=>	true,
                     'url_file' => '',
-                    'message'=> 'Actualmente se esta generando el excel del auxiliar 12'
+                    'message'=> 'Actualmente se esta generando el excel de auxiliar'
                 ]);
             }
 
@@ -213,9 +213,9 @@ class AuxiliarController extends Controller
 		}
 
 		$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-		$data = (new AuxiliarPdf($empresa, $detalle))->buildPdf()->getData();
+		// $data = (new AuxiliarPdf($empresa, $detalle))->buildPdf()->getData();
 
-		return view('pdf.informes.auxiliar.auxiliar', $data);
+		// return view('pdf.informes.auxiliar.auxiliar', $data);
 
         return (new AuxiliarPdf($empresa, $detalle))
             ->buildPdf()

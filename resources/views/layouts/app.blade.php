@@ -27,6 +27,8 @@
     <link href="assets/css/sistema/select2.min.css" rel="stylesheet" />
     <link href="assets/css/sistema/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 
+    <link href="assets/css/sistema/handsontable.min.css" rel="stylesheet" />
+    <link href="assets/css/sistema/ht-theme-main.min.css" rel="stylesheet" />
 </head>
 
 <body class="{{ $class ?? '' }} " style="background-color: #060e26;">
@@ -204,9 +206,11 @@
     <!-- countUp -->
     <script src="assets/js/sistema/countUp.min.js"></script>
     <!-- PUSHER -->
-    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script src="assets/js/sistema/pusher.min.js"></script>
     <!-- SISTEMA -->
     <script src="assets/js/sistema/sistema.js?v={{ config('app.version') }}" rel="stylesheet"></script>
+    <script src="assets/js/sistema/handsontable.full.min.js"></script>
+
     <!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js" rel="stylesheet"></script> -->
     
     @stack('js')

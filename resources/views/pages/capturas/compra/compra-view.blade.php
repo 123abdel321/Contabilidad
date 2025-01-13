@@ -99,6 +99,19 @@
         padding: 0.1rem 0.1rem;
     }
 
+    .handsontable .htDimmed {
+        color: black !important;
+    }
+
+    .handsontable div, .handsontable input, .handsontable table, .handsontable tbody, .handsontable textarea, .handsontable thead {
+        box-sizing: border-box !important;
+    }
+
+    .htDropdownMenu {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
 </style>
 
 <div class="container-fluid py-2">
@@ -118,7 +131,7 @@
         <div id="tabla-captura-compras" class="card mb-4 col-12 col-sm-12 col-md-9 ml-auto">
             <div id="card-compra" class="card-body" style="content-visibility: auto; overflow: auto; border-radius: 20px;">
 
-                @include('pages.capturas.compra.compra-table')
+                <div id="compraTable" class="ht-theme-main" style="margin-bottom: 5px;"></div>
                 <div style="padding: 8px;"></div>
 
             </div>
