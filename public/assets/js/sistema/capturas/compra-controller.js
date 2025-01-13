@@ -340,7 +340,7 @@ function editarCeldaProductoCompras(productoSeleccionado, newValue, row) {
 
     if (productoSeleccionado) {
         const inventario = productoSeleccionado.inventarios.length ? parseFloat(productoSeleccionado.inventarios[0].cantidad) : 0;
-        const costo = parseFloat(productoSeleccionado.precio);
+        const costo = parseFloat(productoSeleccionado.precio_inicial);
         let porcentajeiva = productoSeleccionado.familia.cuenta_compra_iva;
         porcentajeiva = porcentajeiva ? porcentajeiva.impuesto : 0;
         porcentajeiva = porcentajeiva ? porcentajeiva.porcentaje : 0;
@@ -365,7 +365,7 @@ function editarCeldaProductoCompras(productoSeleccionado, newValue, row) {
 
 function editarCeldaCantidadCompras(productoSeleccionado, newValue, row) {
     if (productoSeleccionado) {
-        const costo = parseFloat(productoSeleccionado.precio);
+        const costo = parseFloat(productoSeleccionado.precio_inicial);
         const cantidad = parseFloat(newValue);
         const inventario = parseFloat(hotCompras.getDataAtCell(row, 2));
         const porcentajeiva = parseFloat(hotCompras.getDataAtCell(row, 7));
