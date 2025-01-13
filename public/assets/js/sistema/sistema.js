@@ -154,9 +154,8 @@ var urlImgFondo = $imagenes[getRandomInt($imagenes.length)];
 //     urlImgFondo = bucketUrl + localStorage.getItem("fondo_sistema");
 // }
 setTimeout(function(){
-    console.log('urlImgFondo: ',urlImgFondo);
     $(".fondo-sistema").css('background-image', 'url(' +urlImgFondo+ ')');
-},200);
+},300);
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
