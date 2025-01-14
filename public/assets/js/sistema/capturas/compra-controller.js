@@ -36,6 +36,7 @@ function compraInit () {
         manualRowResize: true,
         manualColumnResize: true,
         navigableHeaders: true,
+        enterMoves: { row: 0, col: 0 },
         licenseKey: 'non-commercial-and-evaluation',
         columns: [
             {
@@ -49,9 +50,10 @@ function compraInit () {
                 type: 'dropdown',
                 strict: true,
                 allowInvalid: false,
+                copyable: false,
+                width: 230,
                 source: obtenerComprasProductos,
                 renderer: comprasProductosRenderer,
-                width: 230
             },
             { data: 'inventario', type: 'numeric', numericFormat: { pattern: '0,0' }, readOnly: true },
             { data: 'cantidad', type: 'numeric', numericFormat: { pattern: '0,0' } },
@@ -73,14 +75,14 @@ function compraInit () {
                     const col = change[1];
                     const newValue = change[3];
 
-                    if (col === 'producto' && newValue) {
+                    if (col === 'producto') {
                         const productoSeleccionado = productosData.find(function(producto) {
                             return producto.text === newValue;
                         });
 
                         editarCeldaProductoCompras(productoSeleccionado, newValue, row);
                     }
-                    if (col === 'cantidad' && newValue) {
+                    if (col === 'cantidad') {
                         const productoText = hotCompras.getDataAtCell(row, 1);
                         const productoSeleccionado = productosData.find(function(producto) {
                             return producto.text === productoText;
@@ -88,7 +90,7 @@ function compraInit () {
 
                         editarCeldaCantidadCompras(productoSeleccionado, newValue, row);
                     }
-                    if (col === 'costo' && newValue) {
+                    if (col === 'costo') {
                         const productoText = hotCompras.getDataAtCell(row, 1);
                         const productoSeleccionado = productosData.find(function(producto) {
                             return producto.text === productoText;
@@ -97,7 +99,7 @@ function compraInit () {
                         editarCeldaCostoCompras(productoSeleccionado, newValue, row);
                     }
 
-                    if (col === 'descuento' && newValue) {
+                    if (col === 'descuento') {
                         const productoText = hotCompras.getDataAtCell(row, 1);
                         const productoSeleccionado = productosData.find(function(producto) {
                             return producto.text === productoText;
@@ -106,7 +108,7 @@ function compraInit () {
                         editarCeldaDescuentoCompras(productoSeleccionado, newValue, row);
                     }
 
-                    if (col === 'porcentaje_descuento' && newValue) {
+                    if (col === 'porcentaje_descuento') {
                         const productoText = hotCompras.getDataAtCell(row, 1);
                         const productoSeleccionado = productosData.find(function(producto) {
                             return producto.text === productoText;
@@ -473,20 +475,24 @@ function celdaVaciaCompras(row) {
 
 function eliminarCompraRenderer(instance, td, row, col, prop, value, cellProperties) {
 
-    if (row === 0) td.innerHTML = '';
-    else {
-        const btnEliminar = document.createElement('span');
-        
-        btnEliminar.setAttribute('class', 'btn badge bg-gradient-danger drop-row-grid');
-        btnEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
-        btnEliminar.addEventListener('click', function () {
-            instance.alter('remove_row', row);
-            mostrarValoresCompras();
-        });
+    const btnEliminar = document.createElement('span');
     
-        td.innerHTML = '';
-        td.appendChild(btnEliminar);
-    }
+    btnEliminar.setAttribute('class', 'btn badge bg-gradient-danger drop-row-grid');
+    btnEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    btnEliminar.addEventListener('click', function () {
+        instance.alter('remove_row', row);
+        const hotComprasCount = hotCompras.countRows();
+        mostrarValoresCompras();
+        setTimeout(function(){
+            if (hotCompras.countRows() == 1) {
+                hotCompras.render();
+                hotCompras.selectCell(0, 1);
+            }
+        },10);
+    });
+
+    td.innerHTML = '';
+    td.appendChild(btnEliminar);
 
     return td;
 }
@@ -523,18 +529,6 @@ function comprasProductosRenderer(instance, td, row, col, prop, value, cellPrope
 
     if (producto) {
         const text = document.createTextNode(producto.text);
-        // const urlImagen = producto.imagen ?
-        //         bucketUrl+producto.imagen :
-        //         '/img/sin_imagen.png';
-
-        // const img = document.createElement('img');
-        // img.src = urlImagen;
-        // img.alt = producto.text;
-        // img.style.width = '40px';
-        // img.style.borderRadius = '10%';
-        // img.style.marginRight = '5px';
-
-        // td.appendChild(img);
         td.appendChild(text);
     } else {
         td.innerHTML = value || ''; // Por si no hay valor, muestra vacío
@@ -551,6 +545,21 @@ function ocultarColumnas(indicesColumnas) {
         },
     });
 }
+
+$('#id_proveedor_compra').on('select2:close', function(event) {
+    var data = $(this).select2('data');
+    if(data.length){
+        $('#fecha_manual_compra').focus();
+        $('#fecha_manual_compra').select();
+    }
+});
+
+$("#fecha_manual_compra").on('keydown', function(event) {
+    if(event.keyCode == 13){
+        $('#documento_referencia_compra').focus();
+        $('#documento_referencia_compra').select();
+    }
+});
 
 function loadFormasPagoCompra() {
     var totalRows = compra_table_pagos.rows().data().length;
