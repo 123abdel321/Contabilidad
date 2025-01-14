@@ -29,6 +29,8 @@
 
     <link href="assets/css/sistema/handsontable.min.css" rel="stylesheet" />
     <link href="assets/css/sistema/ht-theme-main.min.css" rel="stylesheet" />
+    <!-- <link href="assets/css/sistema/ht-theme-main.min.css" rel="stylesheet" /> -->
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@15.0/styles/ht-theme-horizon.css" /> 
 </head>
 
 <body class="{{ $class ?? '' }} " style="background-color: #060e26;">

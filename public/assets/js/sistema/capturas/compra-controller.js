@@ -21,6 +21,7 @@ function compraInit () {
 
     const container = document.getElementById('compraTable');
     hotCompras = new Handsontable(container, {
+        className: 'ht-theme-horizon',
         colHeaders: ['', 'Producto', 'Invt.', 'Cant.', 'Costo', 'Dscto', '% Dscto', '% Iva', 'Iva', 'Total', 'id'],
         rowHeaders: true,
         startRows: 0,

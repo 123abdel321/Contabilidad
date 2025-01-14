@@ -131,7 +131,7 @@
         <div id="tabla-captura-compras" class="card mb-4 col-12 col-sm-12 col-md-9 ml-auto">
             <div id="card-compra" class="card-body" style="content-visibility: auto; overflow: auto; border-radius: 20px;">
 
-                <div id="compraTable" class="hot ht-theme-horizon disable-auto-theme" style="margin-bottom: 5px;"></div>
+                <div id="compraTable" style="margin-bottom: 5px;"></div>
                 <div style="padding: 8px;"></div>
 
             </div>
