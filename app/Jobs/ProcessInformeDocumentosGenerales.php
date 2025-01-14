@@ -65,7 +65,6 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 'agrupar' => $this->request['agrupar'],
                 'agrupado' => $this->request['agrupado'],
             ]);
-
             $this->id_documentos_generales = $documentosGenerales->id;
             if ($this->request['agrupar'] && $this->request['agrupado']) $this->documentosGeneralesAgruparNiveles();
             else if (!$this->request['agrupar']) $this->documentosGeneralesSinAgrupar();
@@ -127,22 +126,20 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
     private function documentosGeneralesAgruparNormal()
     {
         $query = $this->DocumentosGeneralesQuery();
-        
         DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS documentosgeneralesdata"))
             ->mergeBindings($query)
-            ->orderByRaw($this->request['agrupar'])
+            ->orderByRaw('id')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $cuentaPadre = $this->getCuentaPadre($documento);
-                    // dd('documento', $documento);
                     if ($this->hasCuentaData($cuentaPadre)) $this->sumCuentaData($cuentaPadre, $documento);
                     else $this->newCuentaTotal($cuentaPadre, $documento);
                     $this->newCuentaDetalle($cuentaPadre, $documento, false);
                 });
             });
             
-        ksort($this->documentosCollection, SORT_STRING | SORT_FLAG_CASE);
+        // ksort($this->documentosCollection, SORT_STRING | SORT_FLAG_CASE);
         $this->addTotalData($query);
     }
 
