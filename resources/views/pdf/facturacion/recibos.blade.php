@@ -11,7 +11,7 @@
 				margin: 0;
 				font-family: "Lato", sans-serif;
 				line-height: 16px;
-				font-size: 10px;
+				font-size: 15px;
 				width: 100%;
 				text-transform: uppercase;
 			}
@@ -42,7 +42,7 @@
 			}
 
 			.table-detail {
-				font-size: 12px;
+				font-size: 15px;
 				width: 100%;
 				border-collapse: collapse;
 				height: 100%;
@@ -105,6 +105,11 @@
 				color: #8d00ff;
 				font-size: 2.8em;
 			}
+
+			.ubicacion-factura {
+				color: black;
+				font-size: 1.5em;
+			}
 			
 			.generado {
 				width: 40%;
@@ -149,6 +154,10 @@
 								<td class="consecutivo padding5">
 									<p> {{ $recibo->comprobante->nombre }} <br>
 										<span span class="numero-consecutivo">N° {{ $recibo->consecutivo }}</span>
+										@if ($nit && $nit->apartamentos)
+										<br/>
+										<span span class="ubicacion-factura">{{ $nit->apartamentos }}</span>
+										@endif
 									</p>
 								</td>
 								<td class="empresa padding5">

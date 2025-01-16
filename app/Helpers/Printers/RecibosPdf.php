@@ -66,7 +66,8 @@ class RecibosPdf extends AbstractPrinterPdf
 				'direccion' => $getNit->direccion,
 				'tipo_documento' => $getNit->tipo_documento->nombre,
 				'numero_documento' => $getNit->numero_documento,
-				"ciudad" => $getNit->ciudad ? $getNit->ciudad->nombre_completo : '',
+				'ciudad' => $getNit->ciudad ? $getNit->ciudad->nombre_completo : '',
+				'apartamentos' => $getNit->apartamentos ? $getNit->apartamentos : ''
 			];
 		}
 		
