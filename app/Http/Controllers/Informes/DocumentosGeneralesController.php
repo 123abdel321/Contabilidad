@@ -95,6 +95,17 @@ class DocumentosGeneralesController extends Controller
         $rowperpage = $request->get("length");
 
         $documentosGenerales = InfDocumentosGenerales::where('id', $request->get('id'))->first();
+        if (!$documentosGenerales) {
+            return response()->json([
+                'success'=>	true,
+                'draw' => $draw,
+                'iTotalRecords' => 0,
+                'iTotalDisplayRecords' => 0,
+                'data' => [],
+                'perPage' => 0,
+                'message'=> 'Documentos generado con exito!'
+            ]);
+        }
         $informe = InfDocumentosGeneralesDetalle::where('id_documentos_generales', $documentosGenerales->id);
 
         $informeTotals = $informe->get();
