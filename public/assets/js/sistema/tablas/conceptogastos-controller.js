@@ -39,6 +39,7 @@ function conceptogastosInit() {
             type: "GET",
             headers: headers,
             url: base_url + 'concepto-gasto',
+
         },
         columns: [
             {"data":'codigo'},
@@ -461,7 +462,7 @@ $('.form-control').keyup(function() {
 
 $("#searchInputConceptoGastos").on("input", function (e) {
     conceptos_gastos_table.context[0].jqXHR.abort();
-    $('#cecosTable').DataTable().search($("#searchInputConceptoGastos").val()).draw();
+    $('#conceptoGastosTable').DataTable().search($("#searchInputConceptoGastos").val()).draw();
 });
 
 $(document).on('click', '#createConceptoGasto', function () {
