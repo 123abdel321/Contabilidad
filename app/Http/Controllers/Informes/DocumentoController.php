@@ -119,6 +119,7 @@ class DocumentoController extends Controller
     {
         $comprobante = Comprobantes::where('id', $id_comprobante)->first();
         if (!$comprobante) {
+            logger()->critical("Error showGeneralPdf: el comprobante id: {$id_comprobante} no existe; consecutivo: {$consecutivo}");
             return response()->json([
                 'success'=>	false,
                 'data' => [],
