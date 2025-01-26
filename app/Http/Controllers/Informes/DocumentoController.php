@@ -118,6 +118,14 @@ class DocumentoController extends Controller
     public function showGeneralPdf(Request $request, $id_comprobante, $consecutivo)
     {
         $comprobante = Comprobantes::where('id', $id_comprobante)->first();
+        if (!$comprobante) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> "El comprobante: {$id_comprobante} no existe"
+            ]);
+        }
+        
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         if ($comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
             $recibo = ConRecibos::with('comprobante')
