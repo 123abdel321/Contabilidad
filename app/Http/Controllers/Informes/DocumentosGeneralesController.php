@@ -172,6 +172,60 @@ class DocumentosGeneralesController extends Controller
                 })
             ->delete();
 
+            DB::connection('sam')->table('fac_documentos')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 2)
+                    ->whereRaw('documentos_generals.relation_id = fac_documentos.id');
+            })
+            ->delete();
+
+            DB::connection('sam')->table('fac_compras')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 3)
+                    ->whereRaw('documentos_generals.relation_id = fac_compras.id');
+            })
+            ->delete();
+
+            DB::connection('sam')->table('fac_ventas')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 4)
+                    ->whereRaw('documentos_generals.relation_id = fac_ventas.id');
+            })
+            ->delete();
+
+            DB::connection('sam')->table('con_recibos')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 6)
+                    ->whereRaw('documentos_generals.relation_id = con_recibos.id');
+            })
+            ->delete();
+
+            DB::connection('sam')->table('con_gastos')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 7)
+                    ->whereRaw('documentos_generals.relation_id = con_gastos.id');
+            })
+            ->delete();
+
+            DB::connection('sam')->table('con_pagos')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 8)
+                    ->whereRaw('documentos_generals.relation_id = con_pagos.id');
+            })
+            ->delete();
+
             DB::connection('sam')->commit();
 
             return response()->json([
