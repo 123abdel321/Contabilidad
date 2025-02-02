@@ -30,6 +30,8 @@ class ProcessInformeCartera implements ShouldQueue
     public $id_cartera = 0;
     public $carteraCollection = [];
     public $id_notificacion = null;
+    public $cobrar = [3,7];
+    public $pagar = [4,8];
 
     public function __construct($request, $id_usuario, $id_empresa)
     {
@@ -64,12 +66,13 @@ class ProcessInformeCartera implements ShouldQueue
 				'agrupar_cartera' => $this->request['agrupar_cartera'],
 				'nivel' => $this->request['nivel'],
 			]);
-
             $this->id_cartera = $cartera->id;
-            $this->nivelUnoCartera();
-            if ($this->request['nivel'] != '1') $this->nivelDosCartera();
-            if ($this->request['nivel'] == '3') $this->nivelTresCartera();
-            $this->totalesCartera();
+            
+            $this->nivelUnoCartera();//NIVEL 1: GRUPOS
+            if (!$this->request['tipo_informe']) $this->nivelCeroCartera();//INFORME AMBOS
+            if ($this->request['nivel'] != '1') $this->nivelDosCartera();//NIVEL 2: SUB-GRUPOS 
+            if ($this->request['nivel'] == '3') $this->nivelTresCartera();//NIVEL 3: DETALLE 
+            $this->totalesCartera();//TOTALES
             
             ksort($this->carteraCollection, SORT_STRING | SORT_FLAG_CASE);
             foreach (array_chunk($this->carteraCollection,233) as $carteraCollection){
@@ -98,6 +101,111 @@ class ProcessInformeCartera implements ShouldQueue
 
 			throw $exception;
         }
+    }
+
+    private function nivelCeroCartera()
+    {
+        $query = $this->carteraDocumentosQuery();
+        $query->unionAll($this->carteraAnteriorQuery());
+
+        return DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS cartera"))
+            ->mergeBindings($query)
+            ->select(
+                'id_nit',
+                'numero_documento',
+                'nombre_nit',
+                'razon_social',
+                'apartamentos',
+                'id_cuenta',
+                'cuenta',
+                'id_tipo_cuenta',
+                'naturaleza_cuenta',
+                'auxiliar',
+                'nombre_cuenta',
+                'documento_referencia',
+                'id_centro_costos',
+                'codigo_cecos',
+                'nombre_cecos',
+                'id_comprobante',
+                'codigo_comprobante',
+                'nombre_comprobante',
+                'consecutivo',
+                'concepto',
+                'fecha_manual',
+                'created_at',
+                'fecha_creacion',
+                'fecha_edicion',
+                'created_by',
+                'updated_by',
+                'anulado',
+                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
+                // $this->calcularTotalFacturas(),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
+                DB::raw('SUM(total_columnas) AS total_columnas'),
+                DB::raw("(CASE
+					WHEN naturaleza_cuenta = 0 AND SUM(debito) < 0 THEN 1
+					WHEN naturaleza_cuenta = 1 AND SUM(credito) < 0 THEN 1
+					ELSE 0
+				END) AS error")
+            )
+            ->groupByRaw($this->request['agrupar_cartera'].', id_tipo_cuenta')
+            ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            ->chunk(233, function ($documentos) {
+                $documentos->each(function ($documento) {
+                    $key = '';
+
+                    if ($this->request['agrupar_cartera'] == 'id_nit') {
+                        $key = $documento->numero_documento;
+                    }
+                    if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                        $key = $documento->cuenta;
+                    }
+
+                    if ($this->hasCuentaData($key)) {
+                        $this->sumCuentaData($key, $documento);
+                    } else {
+                        $this->carteraCollection[$key] = [
+                            'id_cartera' => $this->id_cartera,
+                            'id_nit' => $documento->id_nit,
+                            'numero_documento' => $documento->numero_documento,
+                            'nombre_nit' => $documento->nombre_nit,
+                            'razon_social' => $documento->razon_social,
+                            'apartamento_nit' => $documento->apartamentos,
+                            'id_cuenta' => $documento->id_cuenta,
+                            'cuenta' => $documento->numero_documento,
+                            'naturaleza_cuenta' => $documento->naturaleza_cuenta,
+                            'nombre_cuenta' => $documento->nombre_nit,
+                            'documento_referencia' => '',
+                            'id_centro_costos' => $documento->id_centro_costos,
+                            'id_comprobante' => $documento->id_comprobante,
+                            'codigo_comprobante' => $documento->codigo_comprobante,
+                            'nombre_comprobante' => $documento->nombre_comprobante,
+                            'codigo_cecos' => $documento->codigo_cecos,
+                            'nombre_cecos' => $documento->nombre_cecos,
+                            'consecutivo' => $documento->consecutivo,
+                            'concepto' => '',
+                            'fecha_manual' => '',
+                            'fecha_creacion' => $documento->fecha_creacion,
+                            'fecha_edicion' => $documento->fecha_edicion,
+                            'created_by' => $documento->created_by,
+                            'updated_by' => $documento->updated_by,
+                            'dias_cumplidos' => '',
+                            'mora' => '',
+                            'saldo_anterior' => $documento->saldo_anterior,
+                            'total_abono' => null,
+                            'total_facturas' => null,
+                            'saldo' => $documento->saldo_final,
+                            'nivel' => 9,
+                            'errores' => $documento->error
+                        ];
+                    }
+                });
+            });
     }
 
     private function nivelUnoCartera()
@@ -141,7 +249,8 @@ class ProcessInformeCartera implements ShouldQueue
                 DB::raw('SUM(credito) AS credito'),
                 DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
-                $this->calcularTotalFacturas(),
+                // $this->calcularTotalFacturas(),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
                 DB::raw('SUM(total_columnas) AS total_columnas'),
                 DB::raw("(CASE
 					WHEN naturaleza_cuenta = 0 AND SUM(debito) < 0 THEN 1
@@ -154,6 +263,8 @@ class ProcessInformeCartera implements ShouldQueue
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $key = '';
+                    $ambos = false;
+                    $nombreTipoCuenta = NULL;
                     if ($this->request['agrupar_cartera'] == 'id_nit') {
                         $key = $documento->numero_documento;
                     }
@@ -161,10 +272,75 @@ class ProcessInformeCartera implements ShouldQueue
                         $key = $documento->cuenta;
                     }
 
+                    if (!$this->request['tipo_informe']) {
+                        $ambos = true;
+                        if (in_array($documento->id_tipo_cuenta, $this->cobrar)) {
+                            $key.='-AA';
+                            $nombreTipoCuenta = 'CUENTAS POR COBRAR';
+                        }
+                        else {
+                            $key.='-BB';
+                            $nombreTipoCuenta = 'CUENTAS POR PAGAR';
+                        }
+                    }
+
                     if ($this->hasCuentaData($key)) {
-                        $this->sumCuentaData($key, $documento);
+                        $total_abono = $documento ? $documento->total_abono : 0;
+                        $total_facturas = $documento ? $documento->total_facturas : 0;
+                        
+                        if (!$this->request['tipo_informe'] && $noTotalizar) {
+                            $total_abono = 0;
+                            $total_facturas = 0;
+                        }
+
+                        $this->carteraCollection[$key]['saldo_anterior']+= number_format((float)$documento->saldo_anterior, 2, '.', '');
+                        $this->carteraCollection[$key]['total_abono']+= number_format((float)$total_abono, 2, '.', '');
+                        $this->carteraCollection[$key]['total_facturas']+= number_format((float)$total_facturas, 2, '.', '');
+                        $this->carteraCollection[$key]['saldo']+= number_format((float)$documento->saldo_final, 2, '.', '');
                     } else {
-                        $this->newCuentaData($key, $documento);
+                        $numeroDocumento = $documento->numero_documento;
+                        if (!$this->request['tipo_informe']) $numeroDocumento = $documento->cuenta;
+
+                        $nombreNit = $documento->nombre_nit;
+                        if (!$this->request['tipo_informe']) $nombreNit = $documento->nombre_cuenta;
+
+                        $ubicacion = $documento->apartamentos;
+                        if (!$this->request['tipo_informe']) $ubicacion = '';
+
+                        $this->carteraCollection[$key] = [
+                            'id_cartera' => $this->id_cartera,
+                            'id_nit' => $documento->id_nit,
+                            'numero_documento' => $ambos ? $nombreTipoCuenta : $numeroDocumento,
+                            'nombre_nit' => $ambos ? null : $nombreNit,
+                            'razon_social' => $documento->razon_social,
+                            'apartamento_nit' => $ubicacion,
+                            'id_cuenta' => $documento->id_cuenta,
+                            'cuenta' => $ambos ? $nombreTipoCuenta : $documento->cuenta,
+                            'naturaleza_cuenta' => $documento->naturaleza_cuenta,
+                            'nombre_cuenta' => $ambos ? $nombreTipoCuenta : $documento->nombre_cuenta,
+                            'documento_referencia' => '',
+                            'id_centro_costos' => $documento->id_centro_costos,
+                            'id_comprobante' => $documento->id_comprobante,
+                            'codigo_comprobante' => $documento->codigo_comprobante,
+                            'nombre_comprobante' => $documento->nombre_comprobante,
+                            'codigo_cecos' => $documento->codigo_cecos,
+                            'nombre_cecos' => $documento->nombre_cecos,
+                            'consecutivo' => $documento->consecutivo,
+                            'concepto' => '',
+                            'fecha_manual' => '',
+                            'fecha_creacion' => $documento->fecha_creacion,
+                            'fecha_edicion' => $documento->fecha_edicion,
+                            'created_by' => $documento->created_by,
+                            'updated_by' => $documento->updated_by,
+                            'dias_cumplidos' => '',
+                            'mora' => '',
+                            'saldo_anterior' => $documento->saldo_anterior,
+                            'total_abono' => $documento->total_abono,
+                            'total_facturas' => $documento->total_facturas,
+                            'saldo' => $documento->saldo_final,
+                            'nivel' => 1,
+                            'errores' => $documento->error
+                        ];
                     }
                 });
             });
@@ -174,7 +350,7 @@ class ProcessInformeCartera implements ShouldQueue
     {
         $query = $this->carteraDocumentosQuery();
         $query->unionAll($this->carteraAnteriorQuery());
-
+        
         DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS cartera"))
             ->mergeBindings($query)
@@ -221,19 +397,35 @@ class ProcessInformeCartera implements ShouldQueue
 					ELSE 0
 				END) AS error")
             )
-            ->groupByRaw($this->groupString(2))
+            ->groupByRaw($this->groupString(2).', id_tipo_cuenta')
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
             ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $key = '';
-                    if ($this->request['agrupar_cartera'] == 'id_nit') {
-                        $key = $documento->numero_documento.'-A-'.$documento->cuenta;
+                    if (!$this->request['tipo_informe']) {
+                        $prefijo = '';
+
+                        if (in_array($documento->id_tipo_cuenta, $this->cobrar)) $prefijo = '-AA';
+                        else $prefijo = '-BB';
+
+                        if ($this->request['agrupar_cartera'] == 'id_nit') {
+                            $key = $documento->numero_documento.$prefijo.'-A-'.$documento->cuenta;
+                        }
+                        if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                            $nombreKey = str_replace(' ', '', $documento->nombre_nit);
+                            $key = $documento->cuenta.$prefijo.'-A-'.$nombreKey;
+                        }
+                    } else {
+                        if ($this->request['agrupar_cartera'] == 'id_nit') {
+                            $key = $documento->numero_documento.'-A-'.$documento->cuenta;
+                        }
+                        if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                            $nombreKey = str_replace(' ', '', $documento->nombre_nit);
+                            $key = $documento->cuenta.'-A-'.$nombreKey;
+                        }
                     }
-                    if ($this->request['agrupar_cartera'] == 'id_cuenta') {
-                        $nombreKey = str_replace(' ', '', $documento->nombre_nit);
-                        $key = $documento->cuenta.'-A-'.$nombreKey;
-                    }
+                    
                     $mora = $documento->dias_cumplidos - $documento->plazo;
                     $this->carteraCollection[$key] = [
                         'id_cartera' => $this->id_cartera,
@@ -290,6 +482,7 @@ class ProcessInformeCartera implements ShouldQueue
                 'id_cuenta',
                 'cuenta',
                 'naturaleza_cuenta',
+                'id_tipo_cuenta',
                 'auxiliar',
                 'nombre_cuenta',
                 'documento_referencia',
@@ -325,18 +518,35 @@ class ProcessInformeCartera implements ShouldQueue
             )
             ->groupByRaw($this->groupString(3))
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            
             ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $this->contador++;
                     $key = '';
-                    if ($this->request['agrupar_cartera'] == 'id_nit') {
-                        $key = $documento->numero_documento.'-A-'.$documento->cuenta.'-B-'.$this->contador;
+
+                    if (!$this->request['tipo_informe']) {
+                        $prefijo = '';
+
+                        if (in_array($documento->id_tipo_cuenta, $this->cobrar)) $prefijo = '-AA';
+                        else $prefijo = '-BB';
+                        if ($this->request['agrupar_cartera'] == 'id_nit') {
+                            $key = $documento->numero_documento.$prefijo.'-A-'.$documento->cuenta.$this->contador;
+                        }
+                        if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                            $nombreKey = str_replace(' ', '', $documento->nombre_nit);
+                            $key = $documento->cuenta.$prefijo.'-A-'.$nombreKey.'-B-'.$this->contador;
+                        }
+                    } else {
+                        if ($this->request['agrupar_cartera'] == 'id_nit') {
+                            $key = $documento->numero_documento.'-A-'.$documento->cuenta.'-B-'.$this->contador;
+                        }
+                        if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                            $nombreKey = str_replace(' ', '', $documento->nombre_nit);
+                            $key = $documento->cuenta.'-A-'.$nombreKey.'-B-'.$this->contador;
+                        }
                     }
-                    if ($this->request['agrupar_cartera'] == 'id_cuenta') {
-                        $nombreKey = str_replace(' ', '', $documento->nombre_nit);
-                        $key = $documento->cuenta.'-A-'.$nombreKey.'-B-'.$this->contador;
-                    }
+
                     $mora = $documento->dias_cumplidos - $documento->plazo;
                     $this->carteraCollection[$key] = [
                         'id_cartera' => $this->id_cartera,
@@ -415,7 +625,8 @@ class ProcessInformeCartera implements ShouldQueue
                 DB::raw('SUM(credito) AS credito'),
                 DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
-                $this->calcularTotalFacturas(),
+                // $this->calcularTotalFacturas(),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
                 DB::raw('SUM(total_columnas) AS total_columnas')
             )
@@ -620,21 +831,35 @@ class ProcessInformeCartera implements ShouldQueue
 		return isset($this->carteraCollection[$key]);
 	}
 
-    private function sumCuentaData($key, $documento)
+    private function sumCuentaData($key, $documento, $noTotalizar = true)
     {
+        $total_abono = $documento ? $documento->total_abono : 0;
+        $total_facturas = $documento ? $documento->total_facturas : 0;
+        
+        if (!$this->request['tipo_informe'] && $noTotalizar) {
+            $total_abono = 0;
+            $total_facturas = 0;
+        }
+
         $this->carteraCollection[$key]['saldo_anterior']+= number_format((float)$documento->saldo_anterior, 2, '.', '');
-        $this->carteraCollection[$key]['total_abono']+= number_format((float)$documento->total_abono, 2, '.', '');
-        $this->carteraCollection[$key]['total_facturas']+= number_format((float)$documento->total_facturas, 2, '.', '');
+        $this->carteraCollection[$key]['total_abono']+= number_format((float)$total_abono, 2, '.', '');
+        $this->carteraCollection[$key]['total_facturas']+= number_format((float)$total_facturas, 2, '.', '');
         $this->carteraCollection[$key]['saldo']+= number_format((float)$documento->saldo_final, 2, '.', '');
     }
 
     private function newCuentaData($key, $documento)
     {
+        $numeroDocumento = $documento->numero_documento;
+        if (!$this->request['tipo_informe']) $numeroDocumento = $documento->cuenta;
+
+        $nombreNit = $documento->nombre_nit;
+        if (!$this->request['tipo_informe']) $nombreNit = $documento->nombre_cuenta;
+
         $this->carteraCollection[$key] = [
             'id_cartera' => $this->id_cartera,
             'id_nit' => $documento->id_nit,
-            'numero_documento' => $documento->numero_documento,
-            'nombre_nit' => $documento->nombre_nit,
+            'numero_documento' => $numeroDocumento,
+            'nombre_nit' => $nombreNit,
             'razon_social' => $documento->razon_social,
             'apartamento_nit' => $documento->apartamentos,
             'id_cuenta' => $documento->id_cuenta,
@@ -668,6 +893,13 @@ class ProcessInformeCartera implements ShouldQueue
 
     private function newCuentaTotales($key, $documento)
     {
+        $total_abono = 0;
+        $total_facturas = 0;
+        if ($this->request['tipo_informe']) {
+            $total_abono = $documento ? $documento->total_abono : 0;
+            $total_facturas = $documento ? $documento->total_facturas : 0;
+        }
+
         $this->carteraCollection['99999999999'] = [
             'id_cartera' => $this->id_cartera,
             'id_nit' => '',
@@ -696,8 +928,8 @@ class ProcessInformeCartera implements ShouldQueue
             'dias_cumplidos' => '',
             'mora' => '',
             'saldo_anterior' => $documento ? $documento->saldo_anterior : 0,
-            'total_abono' => $documento ? $documento->total_abono : 0,
-            'total_facturas' => $documento ? $documento->total_facturas : 0,
+            'total_abono' => $total_abono,
+            'total_facturas' => $total_facturas,
             'saldo' => $documento ? $documento->saldo_final : 0,
             'nivel' => 0,
             'errores' => 0,
