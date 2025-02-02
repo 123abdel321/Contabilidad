@@ -71,8 +71,8 @@ function carteraInit() {
                 if (data.errores) $('td', row).css('background-color', 'rgb(209 64 64 / 40%)');
             } else if (nivel == 2) {
                 if (data.nivel == 9) {
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
-                    $('td', row).css('font-weight', '700');
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
+                    $('td', row).css('font-weight', '600');
                     return;
                 }
                 if (data.nivel == 0) {
@@ -87,8 +87,8 @@ function carteraInit() {
                         $('td', row).css('font-weight', 'bold');
                         return;
                     } else {
-                        $('td', row).css('background-color', 'rgb(64 164 209 / 35%)');
-                        $('td', row).css('font-weight', '550');
+                        $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
+                        $('td', row).css('font-weight', '450');
                         return ;
                     }
                 }
