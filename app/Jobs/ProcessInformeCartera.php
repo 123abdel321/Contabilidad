@@ -73,7 +73,6 @@ class ProcessInformeCartera implements ShouldQueue
             if ($this->request['nivel'] != '1') $this->nivelDosCartera();//NIVEL 2: SUB-GRUPOS 
             if ($this->request['nivel'] == '3') $this->nivelTresCartera();//NIVEL 3: DETALLE 
             $this->totalesCartera();//TOTALES
-            
             ksort($this->carteraCollection, SORT_STRING | SORT_FLAG_CASE);
             foreach (array_chunk($this->carteraCollection,233) as $carteraCollection){
                 DB::connection('informes')
@@ -274,13 +273,20 @@ class ProcessInformeCartera implements ShouldQueue
 
                     if (!$this->request['tipo_informe']) {
                         $ambos = true;
+                        $keyHeaderY = $key.'-AA';
+                        $keyHeaderZ = $key.'-BA';
                         if (in_array($documento->id_tipo_cuenta, $this->cobrar)) {
-                            $key.='-AA';
+                            $key.='-AC';
                             $nombreTipoCuenta = 'CUENTAS POR COBRAR';
                         }
                         else {
-                            $key.='-BB';
+                            $key.='-BC';
                             $nombreTipoCuenta = 'CUENTAS POR PAGAR';
+                        }
+                        if (in_array($documento->id_tipo_cuenta, $this->cobrar)) {
+                            if (!$this->hasCuentaData($keyHeaderY)) $this->agregarCabezaAmbos($keyHeaderY, true);
+                        } else {
+                            if (!$this->hasCuentaData($keyHeaderZ)) $this->agregarCabezaAmbos($keyHeaderZ, false);
                         }
                     }
 
@@ -406,7 +412,7 @@ class ProcessInformeCartera implements ShouldQueue
                     if (!$this->request['tipo_informe']) {
                         $prefijo = '';
 
-                        if (in_array($documento->id_tipo_cuenta, $this->cobrar)) $prefijo = '-AA';
+                        if (in_array($documento->id_tipo_cuenta, $this->cobrar)) $prefijo = '-AB';
                         else $prefijo = '-BB';
 
                         if ($this->request['agrupar_cartera'] == 'id_nit') {
@@ -528,7 +534,7 @@ class ProcessInformeCartera implements ShouldQueue
                     if (!$this->request['tipo_informe']) {
                         $prefijo = '';
 
-                        if (in_array($documento->id_tipo_cuenta, $this->cobrar)) $prefijo = '-AA';
+                        if (in_array($documento->id_tipo_cuenta, $this->cobrar)) $prefijo = '-AB';
                         else $prefijo = '-BB';
                         if ($this->request['agrupar_cartera'] == 'id_nit') {
                             $key = $documento->numero_documento.$prefijo.'-A-'.$documento->cuenta.$this->contador;
@@ -888,6 +894,44 @@ class ProcessInformeCartera implements ShouldQueue
             'saldo' => $documento->saldo_final,
             'nivel' => 1,
             'errores' => $documento->error
+        ];
+    }
+
+    private function agregarCabezaAmbos($key, $tipo = false)
+    {
+        $this->carteraCollection[$key] = [
+            'id_cartera' => $this->id_cartera,
+            'id_nit' => '',
+            'numero_documento' => $tipo ? 'CUENTAS POR COBRAR' : 'CUENTAS POR PAGAR',
+            'nombre_nit' => '',
+            'razon_social' => '',
+            'apartamento_nit' => '',
+            'id_cuenta' => '',
+            'cuenta' => '',
+            'naturaleza_cuenta' => '',
+            'nombre_cuenta' => $tipo ? 'CUENTAS POR COBRAR' : 'CUENTAS POR PAGAR',
+            'documento_referencia' => '',
+            'id_centro_costos' => '',
+            'id_comprobante' => '',
+            'codigo_comprobante' => '',
+            'nombre_comprobante' => '',
+            'codigo_cecos' => '',
+            'nombre_cecos' => '',
+            'consecutivo' => '',
+            'concepto' => '',
+            'fecha_manual' => '',
+            'fecha_creacion' => '',
+            'fecha_edicion' => '',
+            'created_by' => '',
+            'updated_by' => '',
+            'dias_cumplidos' => '',
+            'mora' => '',
+            'saldo_anterior' => 'SALDO ANTERIOR',
+            'total_abono' => $tipo ? 'FACTURA' : 'COMPENSAR',
+            'total_facturas' => $tipo ? 'COMPENSAR' : 'MAS ANTICIPOS',
+            'saldo' => 'SALDO FINAL',
+            'nivel' => 1,
+            'errores' => '',
         ];
     }
 

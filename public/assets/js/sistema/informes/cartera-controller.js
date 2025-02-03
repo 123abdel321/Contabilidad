@@ -71,8 +71,8 @@ function carteraInit() {
                 if (data.errores) $('td', row).css('background-color', 'rgb(209 64 64 / 40%)');
             } else if (nivel == 2) {
                 if (data.nivel == 9) {
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
-                    $('td', row).css('font-weight', '600');
+                    $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
+                    $('td', row).css('font-weight', '700');
                     return;
                 }
                 if (data.nivel == 0) {
@@ -87,8 +87,8 @@ function carteraInit() {
                         $('td', row).css('font-weight', 'bold');
                         return;
                     } else {
-                        $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
-                        $('td', row).css('font-weight', '450');
+                        $('td', row).css('background-color', 'rgb(64 164 209 / 40%)');
+                        $('td', row).css('font-weight', '600');
                         return ;
                     }
                 }
@@ -217,8 +217,26 @@ function carteraInit() {
                 responsivePriority: 5,
                 targets: -4
             },
-            {data: 'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 4, targets: -3},
-            {data: 'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right', responsivePriority: 3, targets: -2},
+            {
+                data: null,
+                render: function (row, type, set) {
+                    const formattedNumber = $.fn.dataTable.render.number(',', '.', 2, '').display(row.total_facturas);
+                    return formattedNumber;
+                },
+                className: 'dt-body-right',
+                responsivePriority: 4,
+                targets: -3
+            },
+            {
+                data: null,
+                render: function (row, type, set) {
+                    const formattedNumber = $.fn.dataTable.render.number(',', '.', 2, '').display(row.total_abono);
+                    return formattedNumber;
+                },
+                className: 'dt-body-right',
+                responsivePriority: 3,
+                targets: -2
+            },
             {
                 data: null,
                 render: function (row, type, set) {
@@ -370,6 +388,12 @@ function carteraInit() {
         findCartera();
     });
 
+    $(".tipo_informe_cartera").on('change', function(){
+        clearCartera();
+        findCartera();
+        ctualizarColumnas();
+    });
+
     findCartera();
     actualizarColumnas();
 }
@@ -407,19 +431,24 @@ $(document).on('click', '#descargarExcelCartera', function () {
 });
 
 function actualizarColumnas() {
-    var nivel = getNivelCartera();
-    var agrupado = $("#agrupar_cartera").val();
+    const nivel = getNivelCartera();
+    const agrupado = $("#agrupar_cartera").val();
+    const tipoInforme = $("#tipo_informe_cartera").val();
 
-    var columnUbicacionMaximoPH = cartera_table.column(2);
-    var columnFactura = cartera_table.column(3);
-    var columnFecha = cartera_table.column(4);
-    var columnConcecutivo = cartera_table.column(9);
-    var columnDias = cartera_table.column(10);
-    var columnMora = cartera_table.column(11);
-    var columnComprobante = cartera_table.column(12);
-    var columnConcepto = cartera_table.column(13);
+    const columnUbicacionMaximoPH = cartera_table.column(2);
+    const columnFactura = cartera_table.column(3);
+    const columnFecha = cartera_table.column(4);
+    const columnConcecutivo = cartera_table.column(9);
+    const columnDias = cartera_table.column(10);
+    const columnMora = cartera_table.column(11);
+    const columnComprobante = cartera_table.column(12);
+    const columnConcepto = cartera_table.column(13);
+
+    $("#nombre_saldo_anterior").html('Saldo anterior');
+    $("#nombre_total_factura").html('Total factura');
+    $("#nombre_total_abono").html('Total abono');
+    $("#nombre_saldo_final").html('Saldo final');
     
-
     if (nivel == 1 || nivel == 2) {
         columnFactura.visible(false);
         columnFecha.visible(false);
@@ -437,6 +466,13 @@ function actualizarColumnas() {
         columnMora.visible(true);
         columnComprobante.visible(true);
         columnConcepto.visible(true);
+    }
+
+    if (!tipoInforme) {
+        $("#nombre_saldo_anterior").html('');
+        $("#nombre_total_factura").html('');
+        $("#nombre_total_abono").html('');
+        $("#nombre_saldo_final").html('');
     }
 
     if (ubicacion_maximoph_cartera) {
