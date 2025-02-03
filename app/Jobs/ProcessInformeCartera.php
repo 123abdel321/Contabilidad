@@ -928,7 +928,7 @@ class ProcessInformeCartera implements ShouldQueue
             'mora' => '',
             'saldo_anterior' => 'SALDO ANTERIOR',
             'total_facturas' => $tipo ? 'FACTURA' : 'COMPENSAR',
-            'total_abono' => $tipo ? 'COMPENSAR' : 'MAS ANTICIPOS',
+            'total_abono' => $tipo ? 'ABONOS' : 'MAS ANTICIPOS',
             'saldo' => 'SALDO FINAL',
             'nivel' => 1,
             'errores' => '',
