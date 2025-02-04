@@ -73,6 +73,7 @@ class ProcessInformeCartera implements ShouldQueue
             if ($this->request['nivel'] != '1') $this->nivelDosCartera();//NIVEL 2: SUB-GRUPOS 
             if ($this->request['nivel'] == '3') $this->nivelTresCartera();//NIVEL 3: DETALLE 
             $this->totalesCartera();//TOTALES
+
             ksort($this->carteraCollection, SORT_STRING | SORT_FLAG_CASE);
             foreach (array_chunk($this->carteraCollection,233) as $carteraCollection){
                 DB::connection('informes')
@@ -277,11 +278,11 @@ class ProcessInformeCartera implements ShouldQueue
                         $keyHeaderZ = $key.'-BA';
                         if (in_array($documento->id_tipo_cuenta, $this->cobrar)) {
                             $key.='-AC';
-                            $nombreTipoCuenta = 'CUENTAS POR COBRAR';
+                            $nombreTipoCuenta = 'TOTALES POR COBRAR';
                         }
                         else {
                             $key.='-BC';
-                            $nombreTipoCuenta = 'CUENTAS POR PAGAR';
+                            $nombreTipoCuenta = 'TOTALES POR PAGAR';
                         }
                         if (in_array($documento->id_tipo_cuenta, $this->cobrar)) {
                             if (!$this->hasCuentaData($keyHeaderY)) $this->agregarCabezaAmbos($keyHeaderY, true);
