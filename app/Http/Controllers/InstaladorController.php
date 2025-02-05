@@ -492,7 +492,7 @@ class InstaladorController extends Controller
 
 				$file = $request->file('imagen_empresa_edit');
 				if ($file) {
-					if ($empresa && $empresa->logo) {
+					if ($empresa instanceof Empresa && $empresa->logo) {
 						Storage::disk('do_spaces')->delete($empresa->logo);
 					}
 					$logo = Storage::disk('do_spaces')->put('logos_empresas', $file, 'public');
