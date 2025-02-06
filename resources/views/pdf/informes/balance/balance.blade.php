@@ -199,6 +199,8 @@
 							@include('pdf.informes.balance.celdas', ['style' => 'background-color: #c5e4f1; font-weight: bold;', 'balance' => $balance])
 						@elseif(strlen($balance->cuenta) == 6)
 							@include('pdf.informes.balance.celdas', ['style' => 'background-color: #d9edf6; font-weight: bold;', 'balance' => $balance])
+						@else
+							@include('pdf.informes.balance.celdas', ['style' => '', 'balance' => $balance])
 						@endif
 					</tr>
                 @endforeach
