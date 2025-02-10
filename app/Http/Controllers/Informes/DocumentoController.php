@@ -187,6 +187,14 @@ class DocumentoController extends Controller
 
         $facDocumento = FacDocumentos::where('id', $documento->relation_id)->first();
 
+        if (!$facDocumento) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'La factura no existe'
+            ]);
+        }
+
         if (count($facDocumento->documentos)) {
             return (new DocumentosPdf($empresa, $facDocumento))
                 ->buildPdf()
