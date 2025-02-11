@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 //MODELS
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\ConPagos;
 use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\ConGastos;
 use App\Models\Sistema\ConRecibos;
@@ -174,12 +175,22 @@ class DocumentoController extends Controller
                     ->showPdf();
             }
         }
-        if ($comprobante->tipo_comprobante == Comprobantes::TIPO_EGRESOS) {
+        
+        if ($comprobante->tipo_comprobante == Comprobantes::TIPO_GASTOS) {
             $gasto = ConGastos::where('id', $documento->relation_id)->first();
-
             if ($gasto) {
                 // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
                 return (new GastosPdf($empresa, $gasto))
+                    ->buildPdf()
+                    ->showPdf();
+            }
+        }
+
+        if ($comprobante->tipo_comprobante == Comprobantes::TIPO_EGRESOS) {
+            $pagos = ConPagos::where('id', $documento->relation_id)->first();
+            if ($pagos) {
+                // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
+                return (new PagosPdf($empresa, $pagos))
                     ->buildPdf()
                     ->showPdf();
             }
