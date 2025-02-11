@@ -174,7 +174,7 @@ class DocumentoController extends Controller
                     ->showPdf();
             }
         }
-        if ($comprobante->tipo_comprobante == Comprobantes::TIPO_GASTOS) {
+        if ($comprobante->tipo_comprobante == Comprobantes::TIPO_EGRESOS) {
             $gasto = ConGastos::where('id', $documento->relation_id)->first();
 
             if ($gasto) {
