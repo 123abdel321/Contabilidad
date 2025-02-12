@@ -346,7 +346,7 @@ $(document).on('click', '#eliminarDocumentos', function () {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Si, borar!"
+        confirmButtonText: "Si, borrar!"
     }).then((result) => {
         $("#generarEliminarDocumentosLoading").hide();
         if (result.isConfirmed) {

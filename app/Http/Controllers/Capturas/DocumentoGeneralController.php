@@ -494,6 +494,7 @@ class DocumentoGeneralController extends Controller
 				'data' => $documentoGeneral->getRows(),
 				'impresion' => $comprobante->imprimir_en_capturas ? $request->get('consecutivo') : '',
 				'id_comprobante' => $comprobante->id,
+				'fecha_manual' => $request->get('fecha_manual'),
 				'message'=> 'Documentos creados con exito!'
 			], 200);
 

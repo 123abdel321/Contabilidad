@@ -1569,8 +1569,7 @@ function saveDocumentos() {
                 $comboComprobante.select2("open");
             },10);
             if(res.impresion && res.id_comprobante) {
-                window.open("/documentos-generales-print/"+res.id_comprobante+"/"+res.impresion, "", "_blank");
-                
+                window.open(`/documentos-generales-print/${res.id_comprobante}/${res.impresion}/${res.fecha_manual}`, "", "_blank");
             }
         } else {
             $("#agregarDocumentos").show();
