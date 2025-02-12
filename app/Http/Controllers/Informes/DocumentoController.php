@@ -117,7 +117,7 @@ class DocumentoController extends Controller
             ->showPdf();
     }
 
-    public function showGeneralPdf(Request $request, $id_comprobante, $consecutivo)
+    public function showGeneralPdf(Request $request, $id_comprobante, $consecutivo, $fecha_manual)
     {
         $comprobante = Comprobantes::where('id', $id_comprobante)->first();
         if (!$comprobante) {
@@ -131,6 +131,7 @@ class DocumentoController extends Controller
 
         $documento = DocumentosGeneral::with('comprobante')
             ->where('id_comprobante', $id_comprobante)
+            ->where('fecha_manual', $fecha_manual)
             ->where('consecutivo', $consecutivo)
             ->first();
 
