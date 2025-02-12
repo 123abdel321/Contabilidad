@@ -66,6 +66,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 'agrupado' => $this->request['agrupado'],
             ]);
             $this->id_documentos_generales = $documentosGenerales->id;
+            
             if ($this->request['agrupar'] && $this->request['agrupado']) $this->documentosGeneralesAgruparNiveles();
             else if (!$this->request['agrupar']) $this->documentosGeneralesSinAgrupar();
             else if ($this->request['agrupar']) $this->documentosGeneralesAgruparNormal();
@@ -129,7 +130,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
         DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS documentosgeneralesdata"))
             ->mergeBindings($query)
-            ->orderByRaw('id')
+            ->orderByRaw($this->request['agrupar'])
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $cuentaPadre = $this->getCuentaPadre($documento);
@@ -138,8 +139,8 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                     $this->newCuentaDetalle($cuentaPadre, $documento, false);
                 });
             });
-            
         // ksort($this->documentosCollection, SORT_STRING | SORT_FLAG_CASE);
+        // dd($this->documentosCollection);
         $this->addTotalData($query);
     }
 
@@ -214,6 +215,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                     ];
                 });
             });
+            
         $this->addTotalData($query);
     }  
     
@@ -297,7 +299,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 "CO.id AS id_comprobante",
                 "CO.codigo AS codigo_comprobante",
                 "CO.nombre AS nombre_comprobante",
-                "DG.consecutivo",
+                DB::raw('CAST(DG.consecutivo AS UNSIGNED) AS consecutivo'),
                 "DG.concepto",
                 "DG.fecha_manual",
                 "DG.created_at",
