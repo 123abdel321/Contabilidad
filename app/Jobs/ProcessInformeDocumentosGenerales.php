@@ -379,7 +379,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'documento_referencia' => in_array('documento_referencia', $this->agrupacion) ? $documento->documento_referencia : null,
             'consecutivo' => in_array('consecutivo', $this->agrupacion) ? $documento->consecutivo : null,
             'concepto' => null,
-            'fecha_manual' => null,
+            'fecha_manual' => in_array('consecutivo', $this->agrupacion) ? $documento->fecha_manual : null,
             'debito' => $documento->debito,
             'credito' => $documento->credito,
             'diferencia' => $documento->diferencia,
