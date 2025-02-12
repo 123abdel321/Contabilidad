@@ -323,6 +323,7 @@ function getNivelAgrupado() {
 $(document).on('click', '.imprimir-documentogeneral', function () {
     var id = this.id.split('_')[1];
     var data = getDataById(id, documentos_generales_table);
+    
     window.open(`/documentos-generales-print/${data.id_comprobante}/${data.consecutivo}/${data.fecha_manual}`, "_blank");
 });
 
