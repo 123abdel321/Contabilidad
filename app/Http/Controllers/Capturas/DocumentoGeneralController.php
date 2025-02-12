@@ -428,8 +428,6 @@ class DocumentoGeneralController extends Controller
 			$primerIdNit = null;
 			$documentoGeneral = new Documento($facDocumento->id_comprobante, $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
 
-			// if ($request->get('editing_documento')) $documentoGeneral->setCreatedAt($facDocumento->created_at);
-
 			foreach ($documento as $doc) {
 				// dd($doc);
 				$naturaleza = null;
@@ -511,7 +509,24 @@ class DocumentoGeneralController extends Controller
 
     public function generate(Request $request)
     {
+		$rules = [
+            'id_comprobante' => 'required|exists:sam.comprobantes,id',
+			'fecha_manual' => 'required|date',
+			'consecutivo' => 'required',
+        ];
+		
+		$validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 200);
+        }
+		
 		$documento = DocumentosGeneral::with(['centro_costos', 'cuenta', 'nit'])
+			->where('fecha_manual', $request->get('fecha_manual'))
 			->where('id_comprobante', $request->get('id_comprobante'))
 			->where('consecutivo', $request->get('consecutivo'))
             ->get();
