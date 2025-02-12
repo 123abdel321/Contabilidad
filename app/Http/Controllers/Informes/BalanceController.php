@@ -121,7 +121,7 @@ class BalanceController extends Controller
 
         if(!$balance->id_cuenta) {
             $filtros = false;
-            $descuadre = $total->saldo_final > 0 ? true : false;
+            $descuadre = $total->saldo_final != 0 ? true : false;
         }
 
         return response()->json([
@@ -249,8 +249,8 @@ class BalanceController extends Controller
 		}
 
 		$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-		// $data = (new BalancePdf($empresa, $detalle))->buildPdf()->getData();
 
+		// $data = (new BalancePdf($empresa, $detalle))->buildPdf()->getData();
 		// return view('pdf.informes.balance.balance', $data);
 
         return (new BalancePdf($empresa, $detalle))
