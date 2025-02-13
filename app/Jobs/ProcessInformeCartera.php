@@ -295,7 +295,7 @@ class ProcessInformeCartera implements ShouldQueue
                         $total_abono = $documento ? $documento->total_abono : 0;
                         $total_facturas = $documento ? $documento->total_facturas : 0;
                         
-                        if (!$this->request['tipo_informe'] && $noTotalizar) {
+                        if (!$this->request['tipo_informe']) {
                             $total_abono = 0;
                             $total_facturas = 0;
                         }
