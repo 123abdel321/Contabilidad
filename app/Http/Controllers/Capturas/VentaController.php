@@ -101,6 +101,10 @@ class VentaController extends Controller
 
     public function create (Request $request)
     {
+        // $venta = FacVentas::orderBy('id', 'DESC')->first();
+        // //FACTURAR ELECTRONICAMENTE
+        // $ventaElectronica = (new VentaElectronicaSender($venta))->send();
+        // dd('aca afuera');
         $rules = [
             'id_cliente' => 'required|exists:sam.nits,id',
             'id_bodega' => 'required|exists:sam.fac_bodegas,id',
@@ -127,6 +131,7 @@ class VentaController extends Controller
             'productos.*.iva_porcentaje' => 'required|numeric|min:0|max:100',
             'productos.*.iva_valor' => 'required|numeric|min:0',
             'productos.*.total' => 'required|numeric|min:0',
+            'productos.*.concepto' => 'nullable',
             'pagos' => 'array|required',
             'pagos.*.id' => 'required|exists:sam.fac_formas_pagos,id',
             'pagos.*.valor' => 'required|numeric|min:1',
@@ -225,6 +230,7 @@ class VentaController extends Controller
                     'iva_porcentaje' => $producto->iva_porcentaje,
                     'iva_valor' => $producto->iva_valor,
                     'total' => $producto->total,
+                    'observacion' => $producto->concepto,
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
@@ -258,12 +264,17 @@ class VentaController extends Controller
                                 "message"=> [$productoDb->codigo.' - '.$productoDb->nombre => ['La cuenta '.str_replace('cuenta_venta_', '', $cuentaKey). ' no se encuentra configurada en la familia: '. $productoDb->familia->codigo. ' - '. $productoDb->familia->nombre]]
                             ], 422);
                         }
+
+                        $concepto = "VENTA: {$nit->nombre_nit} - {$nit->documento} - {$venta->documento_referencia}";
+                        if ($producto->concepto) {
+                            $concepto.= " - {$producto->concepto}";
+                        }
         
                         $doc = new DocumentosGeneral([
                             "id_cuenta" => $cuentaRecord->id,
                             "id_nit" => $cuentaRecord->exige_nit ? $venta->id_cliente : null,
                             "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $venta->id_centro_costos : null,
-                            "concepto" => $cuentaRecord->exige_concepto ? 'VENTA: '. $nit->nombre_nit .' - '. $nit->documento .' - '. $venta->documento_referencia : null,
+                            "concepto" => $cuentaRecord->exige_concepto ? $concepto : null,
                             "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $venta->documento_referencia : null,
                             "debito" => $cuentaRecord->naturaleza_ventas == PlanCuentas::DEBITO ? $producto->{$keyTotalItem} : 0,
                             "credito" => $cuentaRecord->naturaleza_ventas == PlanCuentas::CREDITO ? $producto->{$keyTotalItem} : 0,

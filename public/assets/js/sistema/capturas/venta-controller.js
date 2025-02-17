@@ -93,6 +93,11 @@ function ventaInit () {
                     return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right;" id="venta_total_${idVentaProducto}" value="0" disabled>`;
                 }
             },
+            {//CONCEPTO
+                "data": function (row, type, set, col){
+                    return `<input type="text" class="form-control form-control-sm" id="venta_concepto_${row.id}" onkeypress="changeObservacionGasto(${row.id}, event)" onfocus="this.select();" onfocusout="changeObservacionGasto(${row.id})" style="width: 180px !important;" value="${row.concepto}" disabled>`;
+                }
+            },
         ],
         columnDefs: [{
             'orderable': false
@@ -755,6 +760,7 @@ function addRowProductoVenta () {
         "porcentaje_iva": 0,
         "valor_iva": 0,
         "valor_total": 0,
+        "concepto": "",
     }).draw(false);
 
     $('#card-venta').focus();
@@ -1096,6 +1102,7 @@ function changeProductoVenta (idRow) {
     $('#venta_producto_'+idRow).select2('open');
     $('#venta_cantidad_'+idRow).prop('disabled', false);
     $('#venta_costo_'+idRow).prop('disabled', false);
+    $('#venta_concepto_'+idRow).prop('disabled', false);
     
     document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%';
         
@@ -1464,13 +1471,14 @@ function getProductosVenta() {
         var cantidad = $('#venta_cantidad_'+id_row).val();
         
         if (id_producto && cantidad) {
-            var costo = stringToNumberFloat($('#venta_costo_'+id_row).val());
-            var descuento_porcentaje = stringToNumberFloat($('#venta_descuento_porcentaje_'+id_row).val());
-            var descuento_valor = stringToNumberFloat($('#venta_descuento_valor_'+id_row).val());
-            var iva_porcentaje = stringToNumberFloat($('#venta_iva_porcentaje_'+id_row).val());
-            var iva_valor = stringToNumberFloat($('#venta_iva_valor_'+id_row).val());
-            var total = stringToNumberFloat($('#venta_total_'+id_row).val());
-            var subtotal = parseInt(cantidad) * costo;
+            let costo = stringToNumberFloat($('#venta_costo_'+id_row).val());
+            let descuento_porcentaje = stringToNumberFloat($('#venta_descuento_porcentaje_'+id_row).val());
+            let descuento_valor = stringToNumberFloat($('#venta_descuento_valor_'+id_row).val());
+            let iva_porcentaje = stringToNumberFloat($('#venta_iva_porcentaje_'+id_row).val());
+            let iva_valor = stringToNumberFloat($('#venta_iva_valor_'+id_row).val());
+            let total = stringToNumberFloat($('#venta_total_'+id_row).val());
+            let subtotal = parseInt(cantidad) * costo;
+            let concepto = $('#venta_concepto_'+id_row).val();
 
             if(ivaIncluidoVentas) {
                 subtotal-= iva_valor;
@@ -1486,6 +1494,7 @@ function getProductosVenta() {
                 iva_porcentaje: iva_porcentaje ? iva_porcentaje : 0,
                 iva_valor: iva_valor ? iva_valor : 0,
                 total: total ? total : 0,
+                concepto: concepto ? concepto : null,
             });
         }
     }
