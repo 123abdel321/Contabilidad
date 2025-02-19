@@ -255,7 +255,7 @@
 			<tbody class="detalle-factura">
 				@foreach ($productos as $producto)
 					<tr>
-						<td class="padding5 detalle-factura-descripcion">{{ $producto->descripcion }}</td>
+						<td class="padding5 detalle-factura-descripcion">{{ $producto->descripcion }} {{ $producto->observacion }}</td>
 						<td class="padding5 valor">{{ number_format($producto->cantidad) }}</td>
 						<td class="padding5 valor">{{ number_format($producto->costo) }}</td>
 						<td class="padding5 valor">{{ number_format($producto->subtotal) }}</td>
