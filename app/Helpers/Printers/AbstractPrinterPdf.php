@@ -43,9 +43,15 @@ abstract class AbstractPrinterPdf
         $this->pdf->setPaper('A4', $this->paper);
     }
 
+    public function getPdf()
+	{
+		if (!$this->pdf) $this->imprimir();
+
+		return $this->pdf->output();
+	}
+
     public function showPdf()
     {
-        // dd($this->data);
         return $this->pdf->stream($this->name);
     }
 

@@ -21,6 +21,7 @@ function ventasInit() {
         fixedHeader: true,
         deferLoading: 0,
         initialLoad: false,
+        ordering: false,
         language: lenguajeDatatable,
         sScrollX: "100%",
         fixedColumns : {
@@ -82,12 +83,21 @@ function ventasInit() {
             }},
             {
                 "data": function (row, type, set){
+                    var html = '';
                     if (row.id) {
-                        var html = '';
-                        html+= '<span id="imprimirventa_'+row.id+'" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-venta" style="margin-bottom: 0rem !important; color: black; background-color: white !important;">Imprimir</span>';
-                        return html;
+                        html+= '<span id="imprimirventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info imprimir-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">PDF &nbsp;<i class="fas fa-print"></i></span>';
                     }
-                    return ''
+                    
+                    if (row.resolucion && !row.resolucion.fe_codigo_identificador && !row.fe_codigo_identificador){
+                        html+= '&nbsp;<span id="enviarfeventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary enviar-fe-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">Enviar FE &nbsp;<i class="fas fa-share"></i></span>';
+                        html+= '&nbsp;<span id="enviarfeventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="margin-bottom: 0rem !important; color: white; background-color: white !important; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                    }
+
+                    if (row.resolucion && row.fe_codigo_identificador) {
+                        html+= '&nbsp;<span id="reenviaremail_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success reenviar-email-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">Reenviar &nbsp;<i class="fas fa-envelope"></i></span>';
+                        html+= '&nbsp;<span id="reenviaremailloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success" style="margin-bottom: 0rem !important; color: white; background-color: white !important; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                    }
+                    return html;
                 }
             }
     
@@ -286,10 +296,111 @@ function ventasInit() {
         showTotalsVentas(res);
     });
 }
-
+//IMPRIMIR VENTAS PDF
 $(document).on('click', '.imprimir-venta', function () {
     var id = this.id.split('_')[1];
     window.open("/ventas-print/"+id, "_blank");
+});
+//REENVIAR FACTURACIÓN ELECTRONICA
+$(document).on('click', '.enviar-fe-venta', function () {
+    var id = this.id.split('_')[1];
+    $("#enviarfeventa_"+id).hide();
+    $("#enviarfeventaloading_"+id).show();
+    $.ajax({
+        url: base_url + 'ventas-fe',
+        method: 'POST',
+        data: JSON.stringify({
+            id_venta: id
+        }),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        ventas_table.ajax.reload(function (res) {
+            showTotalsVentas(res);
+        });
+    }).fail((err) => {
+        $("#enviarfeventa_"+id).show();
+        $("#enviarfeventaloading_"+id).hide();
+
+        $("#crearCapturaVenta").show();
+        $("#crearCapturaVentaLoading").hide();
+        
+        const mensajes = err.responseJSON.message;
+        let errorsMsg = '';
+        let countError = 0;
+
+        if (typeof mensajes === 'string') {
+            agregarToast('error', 'Envio a la dian errado', mensajes);
+            return;
+        }
+
+        mensajes.forEach(mensaje => {
+            countError++;
+            errorsMsg+='<b>'+countError+'-</b> '+mensaje+'<br/>';
+        });
+
+        agregarToast('error', 'Envio a la dian errado', errorsMsg);
+    });
+});
+//RENVIAR EMAIL FACTURA
+$(document).on('click', '.reenviar-email-venta', function () {
+
+    var id = this.id.split('_')[1];
+
+    Swal.fire({
+        title: "Agregar email de reenvio",
+        input: "text",
+        inputAttributes: {
+            autocapitalize: "off"
+        },
+        showCancelButton: true,
+        confirmButtonText: "Reenviar",
+        showLoaderOnConfirm: true,
+        preConfirm: async (email) => {
+            $("#reenviaremail_"+id).hide();
+            $("#reenviaremailloading_"+id).show();
+            $.ajax({
+                url: base_url + 'ventas-notificar',
+                method: 'POST',
+                data: JSON.stringify({
+                    id_venta: id,
+                    email: email
+                }),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                $("#reenviaremail_"+id).show();
+                $("#reenviaremailloading_"+id).hide();
+
+                agregarToast('exito', 'Reenvio de email exito', 'el email se ha enviado exitosamente!');
+
+            }).fail((err) => {
+                $("#reenviaremail_"+id).show();
+                $("#reenviaremailloading_"+id).hide();
+                
+                const mensajes = err.responseJSON.message;
+                let errorsMsg = '';
+                let countError = 0;
+
+                if (typeof mensajes === 'string') {
+                    agregarToast('error', 'Reenvio de email errado', mensajes);
+                    return;
+                }
+
+                mensajes.forEach(mensaje => {
+                    countError++;
+                    errorsMsg+='<b>'+countError+'-</b> '+mensaje+'<br/>';
+                });
+
+                agregarToast('error', 'Reenvio de email errado', errorsMsg);
+            });
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+        if (result.isConfirmed) {
+            console.log('result: ',result);
+        }
+    });
 });
 
 $(document).on('click', '#generarVentas', function () {

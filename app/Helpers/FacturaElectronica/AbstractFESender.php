@@ -4,6 +4,7 @@ namespace App\Helpers\FacturaElectronica;
 
 use App\Models\Sistema\VariablesEntorno;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Carbon;
 
 abstract class AbstractFESender
 {
@@ -11,15 +12,19 @@ abstract class AbstractFESender
 	protected $pagos;
 	protected $cliente;
 	protected $detalles;
-	protected $url = 'http://fe.portafolioerp.com/api/ubl2.1';
+	protected $url = 'http://localhost:6666/api/ubl2.1';
 
 	public function __construct($factura)
 	{
+		$iva_inlucido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
+		$iva_inlucido = $iva_inlucido ? $iva_inlucido->valor : false;
 		$factura->loadMissing($this->getRelationShips());
+		
 		$this->factura = $factura;
 		$this->pagos = $factura->pagos;
 		$this->cliente = $factura->cliente;
 		$this->detalles = $factura->detalles;
+		$this->iva_inluido = $iva_inlucido;
 	}
 
 	public abstract function getExtraParams(): array;
@@ -45,7 +50,7 @@ abstract class AbstractFESender
 
 	public function getUrl()
 	{
-		$enviroment = env('APP_ENV') == 'local' ? '/test' : '';
+		$enviroment = env('APP_ENV') == 'local' ? '' : '';
 
 		return $this->url . $this->getEndpoint() . $enviroment;
 	}
@@ -53,9 +58,10 @@ abstract class AbstractFESender
 	public function send()
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
+		
 		$params = $this->getParams();
+		// dd($params);
 		$url = $this->getUrl() . $setTestId;
-
 		$response = Http::withHeaders([
 			'Content-Type' => 'application/json',
 			'X-Requested-With' => 'XMLHttpRequest',
@@ -63,33 +69,37 @@ abstract class AbstractFESender
 		])->post($url, $params);
 
 		$data = (object) $response->json();
+		
 		info(json_encode($data));
 
-		if ($response->status() >= 500 || (property_exists($data, 'response') && isset($data->response['trace']))) {
-				return ["status" => 500, "message_object" => ["Error interno: http://facturaelectronica.begranda.com"]];
+		if (!property_exists($data, 'data')) {
+			return [
+				"status" => $response->status(),
+				"message_object" => $data->message,
+				"error_message" => $data->errors,
+				"zip_key" => null
+			];
 		}
 
-		if ($response->status() >= 400) {
-			if (property_exists($data, 'response') && isset($data->response['mensajesValidacion'])) {
-					return ["status" => 422, "message_object" => $data->response['mensajesValidacion']['string']];
-			}
-
-			return ["status" => $response->status(), "mensaje" => $data->message, "message_object" => (array)$data->errors];
+		if ($data->status >= 500) {
+			return [
+				"status" => 500,
+				"message_object" => ["Error interno: https://facelect.portafolioerp.com"]
+			];
 		}
 
-		if (property_exists($data, 'status') && $data->status >= 400 && !isset($data->response['cufe'])) {
-			$message = property_exists($data, 'message') ? $data->message : 'Error inesperado Dian.';
+		if ($data->status >= 400) {
+			
+			$statusDescription = $data->data['StatusDescription'];
+			$errorMessage = $data->data['ErrorMessage'];
+			$zipKey = $data->data['ZipKey'];
 
-			if (isset($data->response['mensajesValidacion'])) {
-				return ["status" => 422, "message_object" => $data->response['mensajesValidacion']['string']];
-			}
-
-			if (isset($data->response['object']) && isset($data->response['object']['envelope'])) {
-				$message = $data->response['object']['Envelope']['Body']['Fault']['Reaseon']['Text']['_value'];
-			}
-
-
-			return ["status" => $data->status, "message_object" => [$message]];
+			return [
+				"status" => $data->status,
+				"message_object" => $statusDescription,
+				"error_message" => $errorMessage,
+				"zip_key" => $zipKey
+			];
 		}
 
 		if(property_exists($data, 'cuds')){
@@ -98,15 +108,28 @@ abstract class AbstractFESender
 				"cuds" => $data->cuds,
 				"mensaje" => $data->message,
 				"xml" => $data->invoicexml,
-				"data" => $data
+				"data" => $data,
+				"zip_key" => null
 			];
 		}
 
-		return [
+		if (array_key_exists('cufe', $data->data)) {
+			$zipKey = $data->data['ResponseDian']['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ZipKey'];
+			return [
 				"status" => $data->status,
-				"cufe" => $data->response["cufe"],
-				"mensaje" => $data->response["mensaje"],
-				"xml" => $data->response["xml"]
+				"cufe" => $data->data['cufe'],
+				"mensaje" => $data->data['StatusDescription'],
+				"zip_key" => $zipKey
+			];
+		}
+
+		$zipKey = $data->data->ResponseDian['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ZipKey'];
+
+		return [
+			"status" => $data->status,
+			"cufe" => $data->data["cufe"],
+			"mensaje" => $data->data["StatusDescription"],
+			"zip_key" => $zipKey
 		];
 	}
 
@@ -118,6 +141,9 @@ abstract class AbstractFESender
 			'type_document_id' => CodigoDocumentoDianTypes::getIdTipoDocumentoDian(($this->factura->codigo_tipo_documento_dian)), // id tipo documento dian
 			'date' => date_format(date_create($this->factura->fecha_manual), 'Y-m-d'),
 			'time' => date_format(date_create($this->factura->created_at), 'H:i:s'),
+			'software-provider' => [
+				'provider_id' => 'e4db04df-a6a1-492c-a2a2-a063ee1319c0'
+			],
 			'allowance_charges' => [], // Cargos por subsidio
 			'tax_totals' => $this->taxTotals([1, 5]), // Total impuestos
 			'legal_monetary_totals' => [ // Legal monetary totals
@@ -130,6 +156,9 @@ abstract class AbstractFESender
 			],
 			"holding_tax_totals" => $this->taxTotals([6]),
 		);
+
+		if (empty($params["holding_tax_totals"])) unset($params["holding_tax_totals"]);
+
 		return array_merge($params, $this->getExtraParams());
 	}
 
@@ -154,9 +183,9 @@ abstract class AbstractFESender
 			$invoiceLines[] = [
 				"unit_measure_id" => 642, // Unidad de medida que se maneja
 				"invoiced_quantity" => $detalle->cantidad, // Cantidad de productos
-				"line_extension_amount" => $detalle->subtotal, // Total producto incluyento impuestos
+				"line_extension_amount" =>  $this->iva_inluido ? $detalle->subtotal - $detalle->iva_valor : $detalle->subtotal, // Total producto incluyento impuestos
 				"free_of_charge_indicator" => false, // Indica si el producto es una muestra gratis
-				"allowance_charges" => $this->totalDescuento($detalle),
+				// "allowance_charges" => $this->totalDescuento($detalle),
 				"tax_totals" => $this->taxTotalsDetalle($detalle, [1, 5]),
 				"description" => $detalle->producto->nombre, // Descripcion del producto
 				"code" => $detalle->producto->codigo, // (SKU) Codigo del producto
@@ -171,29 +200,31 @@ abstract class AbstractFESender
 	public function taxTotals($taxs = [1, 5, 6])
 	{
 		$taxTotals = [];
+		//ESTRUCTURA A ENTREGAR
 		$dataTaxTotals = $decoreTax = [
 			"iva" => [],
 			"reteIva" => [],
 			"reteFuente" => [],
 		];
+		//AGREGAR DETALLE DE LOS ITEMS
 		foreach ($this->detalles as $detalle) {
 			foreach ($taxs as $tax) {
 				switch ($tax) {
 					case 1: //IVA
-						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1]))) $dataTaxTotals['iva'][] = $dIva[0];
+						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1])) && intval($dIva[0]["tax_amount"])) $dataTaxTotals['iva'][] = $dIva[0];
 						break;
 					case 5: // RETE IVA
-						if (!empty($dRete = $this->taxTotalsDetalle($detalle, [5]))) $dataTaxTotals['reteIva'][] = $dRete[0];
+						if (!empty($dRete = $this->taxTotalsDetalle($detalle, [5])) && intval($dRete[0]["tax_amount"])) $dataTaxTotals['reteIva'][] = $dRete[0];
 						break;
 					case 6: // RETE FUENTE
-						if (!empty($dFuente = $this->taxTotalsDetalle($detalle, [6]))) $dataTaxTotals['reteFuente'][] = $dFuente[0];
+						if (!empty($dFuente = $this->taxTotalsDetalle($detalle, [6])) && intval($dFuente[0]["tax_amount"])) $dataTaxTotals['reteFuente'][] = $dFuente[0];
 						break;
 					default:
 						break;
 				}
 			}
 		}
-		
+		//AGREGAR TOTALES
 		foreach ($dataTaxTotals as $key => $impuestos) {
 			$data = null;
 			foreach ($impuestos as $ke => $impuesto) {
@@ -234,6 +265,7 @@ abstract class AbstractFESender
 			}
 			if ($data) $decoreTax[$key] = $data;
 		}
+		//ACTUALIZAT FORMATOS
 		foreach ($decoreTax as $key => $value) {
 			if (count($value)) {
 				$taxTotals[] =  $value;
@@ -254,7 +286,9 @@ abstract class AbstractFESender
 		foreach ($impuestos as $impuesto) {
 			$existencia = $data ? in_array($impuesto['tax_id'], $data) : true;
 			if ($existencia) {
-				$taxTotalsDetalle[] = $this->decoreTax($impuesto);
+				if (intval($impuesto['tax_amount'])) {
+					$taxTotalsDetalle[] = $this->decoreTax($impuesto);
+				}
 			}
 		}
 		return $taxTotalsDetalle;
@@ -278,7 +312,7 @@ abstract class AbstractFESender
 				"tax_id" => 1, //IVA
 				"tax_amount" => $detalle->iva_valor,
 				"percent" => $detalle->iva_porcentaje,
-				"taxable_amount" => number_format($detalle->subtotal, 2, '.', '')
+				"taxable_amount" => number_format($this->iva_inluido ? $detalle->subtotal - $detalle->iva_valor : $detalle->subtotal, 2, '.', '')
 			],
 			[
 				"tax_id" => 5, // RETE IVA

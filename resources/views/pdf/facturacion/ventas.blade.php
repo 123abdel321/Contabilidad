@@ -130,6 +130,14 @@
 				vertical-align: top;
 			}
 
+			.break-word {
+				word-break: break-all;
+			}
+
+			.no-transform {
+				text-transform: none;
+			}
+
 		</style>
 
 	</head>
@@ -158,6 +166,10 @@
 									@endif
 									@if ($empresa->telefono)
 										<span>TEL: {{ $empresa->telefono }}</span><br>
+									@endif
+									@if ($factura->fe_codigo_identificador && $factura->resolucion)
+										<span>Validación DIAN: {{ $factura->fecha_validacion }}</span><br>
+										<span>Vencimiento: {{ $factura->fecha_vencimiento }}</span><br>
 									@endif
 								</td>
 								
@@ -353,6 +365,62 @@
 			</thead>
 		</table>
 
+		@if ($qrCode)
+		<table>
+			<thead class="">
+				<tr>
+					<td class="spacer padding5"></td>
+				</tr>
+				<tr>
+					<td colspan="8 padding5">
+						<table>
+							<tr>
+								<td class="aling-top padding5">
+									<table class="width-100">
+										<thead>
+											<tr>
+												
+												<td class="aling-top padding5">
+													<table>
+														<tbody>
+															<tr>
+																<td>
+																	<img src="{{ $qrCode }}" alt="QR Code" style="width: 150px; height: 150px;">
+																</td>
+																<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+																<td>
+																	<p>
+																		<b>Resolución: </b> <br>
+																		AUTORIZACION {{ $factura->resolucion->numero_resolucion }} DE {{ $factura->resolucion->fecha }} DE
+																		{{ $factura->resolucion->prefijo }}{{ $factura->resolucion->consecutivo_desde }} HASTA {{ $factura->resolucion->prefijo }}{{ $factura->resolucion->consecutivo_hasta }} VIGENCIA
+																		{{ $factura->resolucion->vigencia }} MESES
+																	</p>
+																	@if ($factura->fe_codigo_identificador)
+																	<p>
+																		<b>Cufe: </b> <br>
+																		<span class="no-transform break-word">
+																			{{ $factura->fe_codigo_identificador }}
+																		</span>
+																	</p>
+																	@endif
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</td>
+												<td class="aling-top padding5">
+												</td>
+											</tr>
+										</thead>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</thead>
+		</table>
+		@endif
 		
 				
 		<script type="text/php">

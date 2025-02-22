@@ -5,13 +5,18 @@ namespace App\Http\Controllers\Capturas;
 use DB;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
+use App\Jobs\ProcessConsultarFE;
 use App\Helpers\Printers\VentasPdf;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 use App\Helpers\Printers\VentasInformeZ;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Helpers\FacturaElectronica\VentaElectronicaSender;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
+//TRAITS
+use App\Http\Controllers\Traits\BegConsecutiveTrait;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
+use App\Http\Controllers\Traits\BegFacturacionElectronica;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
@@ -32,6 +37,8 @@ use App\Models\Sistema\FacProductosBodegasMovimiento;
 class VentaController extends Controller
 {
     use BegConsecutiveTrait;
+    use BegDocumentHelpersTrait;
+    use BegFacturacionElectronica;
 
     protected $bodega = null;
     protected $resolucion = null;
@@ -101,10 +108,6 @@ class VentaController extends Controller
 
     public function create (Request $request)
     {
-        // $venta = FacVentas::orderBy('id', 'DESC')->first();
-        // //FACTURAR ELECTRONICAMENTE
-        // $ventaElectronica = (new VentaElectronicaSender($venta))->send();
-        // dd('aca afuera');
         $rules = [
             'id_cliente' => 'required|exists:sam.nits,id',
             'id_bodega' => 'required|exists:sam.fac_bodegas,id',
@@ -173,6 +176,8 @@ class VentaController extends Controller
             'id_comprobante' => $this->resolucion->comprobante->id,
             'consecutivo' => $consecutivo
         ]);
+
+        $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
 
         try {
             DB::connection('sam')->beginTransaction();
@@ -384,11 +389,6 @@ class VentaController extends Controller
 
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 
-            // //FACTURAR ELECTRONICAMENTE
-            // if ($this->resolucion == FacResolucion::TIPO_FACTURA_ELECTRONICA) {
-            //     $ventaElectronica = (new VentaElectronicaSender($venta))->send();
-            // }
-
             if (!$documentoGeneral->save()) {
 
 				DB::connection('sam')->rollback();
@@ -398,6 +398,39 @@ class VentaController extends Controller
 					'message'=> $documentoGeneral->getErrors()
 				], 422);
 			}
+
+            $feSended = false;
+            $hasCufe = false;
+
+            //FACTURAR ELECTRONICAMENTE
+            if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
+                $ventaElectronica = (new VentaElectronicaSender($venta))->send();
+
+                if ($ventaElectronica["status"] >= 400) {
+                    if ($ventaElectronica["zip_key"]) {
+                        $venta->fe_zip_key = $ventaElectronica["zip_key"];
+                        $venta->save();
+    
+                        if ($ventaElectronica["message_object"] == 'Batch en proceso de validación.') {
+                            //JOB CONSULTAR FACTURA EN 1MN
+                            info('Batch en proceso de validación.');
+                            ProcessConsultarFE::dispatch($venta->id, $ventaElectronica["zip_key"], $request->user()->id, $empresa->id)->delay(now()->addSeconds(10));
+                        }
+                    }
+                }
+
+                if ($ventaElectronica['status'] == 200) {
+                    $feSended = $ventaElectronica['status'] == 200;
+                    $hasCufe = (isset($ventaElectronica['cufe']) && $ventaElectronica['cufe']);
+    
+                    if($feSended || $hasCufe){
+                        $ventaElectronica['status'] = 200;
+                        $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
+                        $venta->fe_zip_key = $ventaElectronica['zip_key'];
+                        $venta->save();
+                    }
+                }
+            }
 
             DB::connection('sam')->commit();
 
@@ -430,13 +463,12 @@ class VentaController extends Controller
         $order_arr = $request->get('order');
         $search_arr = $request->get('search');
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
-		$ventas = FacVentas::skip($start)
+		$ventas = FacVentas::orderBy('id', 'DESC')
+            ->skip($start)
             ->with(
+                'resolucion',
                 'bodega',
                 'cliente',
                 'comprobante',
@@ -452,14 +484,6 @@ class VentaController extends Controller
                 'updated_by'
             )
             ->take($rowperpage);
-
-        if($columnName){
-            if ($columnName === 'documento_referencia') {
-                $ventas->orderByRaw("CAST($columnName AS UNSIGNED) $columnSortOrder");
-            } else {
-                $ventas->orderBy($columnName,$columnSortOrder);
-            }
-        }
         
         if ($request->get('id_cliente')) {
             $ventas->where('id_cliente', $request->get('id_cliente'));
@@ -535,7 +559,7 @@ class VentaController extends Controller
     private function generarVentaDetalles($dataVentas, $detallar = true)
     {
         foreach ($dataVentas as $value) {
-            
+            $resolucion = $value->resolucion && $value->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA ? $value->resolucion : null;
             $this->ventaData[] = [
                 "id" => $value->id,
                 "descripcion" => "",
@@ -559,7 +583,9 @@ class VentaController extends Controller
                 "fecha_edicion" => $value->fecha_edicion,
                 "created_by" => $value->created_by,
                 "updated_by" => $value->updated_by,
-                "detalle" => $detallar ? false : true
+                "detalle" => $detallar ? false : true,
+                "resolucion" => $resolucion,
+                'fe_codigo_identificador' => $value->fe_codigo_identificador
             ];
             if ($detallar) {
                 foreach ($value->detalles as $ventaDetalle) {
@@ -586,7 +612,9 @@ class VentaController extends Controller
                         "fecha_edicion" => "",
                         "created_by" => "",
                         "updated_by" => "",
-                        "detalle" => true
+                        "detalle" => true,
+                        "resolucion" => null,
+                        'fe_codigo_identificador' => null
                     ];
                 }
             }
@@ -722,9 +750,9 @@ class VentaController extends Controller
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        $data = (new VentasPdf($empresa, $factura))->buildPdf()->getData();
         
         if ($factura->resolucion->tipo_impresion == 0) {
+            $data = (new VentasPdf($empresa, $factura))->buildPdf()->getData();
             return view('pdf.facturacion.ventas-pos', $data);
         }
  
@@ -735,7 +763,6 @@ class VentaController extends Controller
 
     public function showPdfZ(Request $request)
     {
-        // dd($request->all());
         // $factura = FacVentas::whereId($id)
         //     ->with('resolucion')
         //     ->first();
@@ -750,9 +777,198 @@ class VentaController extends Controller
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         $data = (new VentasInformeZ($empresa, $request->all()))->buildPdf()->getData();
-        // dd($data);
+
         return view('pdf.facturacion.ventas-informez-pos', $data);
     }
+
+    public function facturacionElectronica(Request $request)
+    {
+        $rules = [
+			'id_venta' => "required|exists:sam.fac_ventas,id",
+		];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+        $venta = FacVentas::where('id', $request->id_venta)->first();
+        $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
+
+        if ($venta->fe_codigo_identificador) {
+			return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['factura_electronica' => ['mensaje' => "La factura $venta->consecutivo ya fue emitida."]]
+            ], 422);
+		}
+
+        try {
+            DB::connection('sam')->beginTransaction();
+
+            if ($venta->fe_zip_key) {
+
+                $url = "http://localhost:6666/api/ubl2.1/status/zip/{$venta->fe_zip_key}";
+
+                $bearerToken = VariablesEntorno::where('nombre', 'token_key_fe')->first();
+			    $bearerToken = $bearerToken ? $bearerToken->valor	: '';
+
+                $response = Http::withHeaders([
+                    'Content-Type' => 'application/json',
+                    'X-Requested-With' => 'XMLHttpRequest',
+                    'Authorization' => 'Bearer ' . $bearerToken
+                ])->post($url);
+
+                $data = (object) $response->json();
+
+                info(json_encode($data));
+
+                $dianResponse = $data->ResponseDian['Envelope']['Body']['GetStatusZipResponse']['GetStatusZipResult']['DianResponse'];
+                $isValid = $dianResponse['IsValid'];
+
+                if ($isValid == 'true') {
+                    $venta = $this->SetFeFields($venta, $dianResponse['XmlDocumentKey'], $empresa->nit);
+		            $venta->save();
+
+                    DB::connection('sam')->commit();
+
+                    return response()->json([
+                        'success'=>	true,
+                        'data' => [],
+                        'message'=> 'Factura electrónica enviada!'
+                    ], 200);
+                }
+            }
+
+            $ventaElectronica = (new VentaElectronicaSender($venta))->send();
+
+            if ($ventaElectronica["status"] >= 400) {
+                if ($ventaElectronica["zip_key"]) {
+                    $venta->fe_zip_key = $ventaElectronica["zip_key"];
+                    $venta->save();
+
+                    if ($ventaElectronica["message_object"] == 'Batch en proceso de validación.') {
+                        //JOB CONSULTAR FACTURA EN 1MN
+                        ProcessConsultarFE::dispatch($venta->id, $ventaElectronica["zip_key"], $request->user()->id, $empresa->id);
+
+                        DB::connection('sam')->commit();
+
+                        return response()->json([
+                            "success" => false,
+                            'data' => [],
+                            "message" => 'Batch en proceso de validación, el sistema le notificará una vez haya consultado la información'
+                        ], 300);
+                    }
+                }
+
+                DB::connection('sam')->commit();
+                
+                return response()->json([
+                    "success" => false,
+                    'data' => [],
+                    "message" => $ventaElectronica['message_object']
+                ], 422);
+            }
+
+            if ($ventaElectronica["status"] == 200) {
+                $feSended = $ventaElectronica['status'] == 200;
+                $hasCufe = (isset($ventaElectronica['cufe']) && $ventaElectronica['cufe']);
+
+                if($feSended || $hasCufe){
+                    $ventaElectronica['status'] = 200;
+                    $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
+                    $venta->fe_zip_key = $ventaElectronica['zip_key'];
+                    $venta->save();
+                }
+            }
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+				'success'=>	true,
+				'data' => [],
+				'message'=> 'Factura electrónica enviada!'
+			], 200);
+            
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function sendNotification(Request $request)
+	{
+
+        $rules = [
+			'id_venta' => "required|exists:sam.fac_ventas,id",
+		];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+        
+		try {
+            
+            $venta = FacVentas::with('cliente')
+                ->where('id', $request->id_venta)
+                ->first();
+
+            if ($this->isFe($venta) && !$venta->cufe) {
+                return response()->json([
+                    "success" => false,
+                    'data' => [],
+                    "message" => "La factura electrónica $venta->documento_referencia_fe no tiene cufe generado.",
+                ], 422);
+            }
+
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+            $pdf = (new VentasPdf($empresa, $venta))
+				->buildPdf()
+				->getPdf();
+
+            $email = $request->get('email') ?: $venta->cliente->email;
+
+            $this->sendEmailFactura(
+                $request->user()['has_empresa'],
+                $email,
+                $venta,
+                $pdf
+            );
+            
+            return response()->json([
+				'success'=>	true,
+				'data' => [],
+				'message'=> 'Factura enviada con exito!'
+			], 200);
+
+            
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+	}
 
     private function calcularTotales ($productos)
     {
@@ -902,6 +1118,5 @@ class VentaController extends Controller
                 $query->where('FV.created_by', $request->get('id_usuario'));
             });
     }
-
 
 }

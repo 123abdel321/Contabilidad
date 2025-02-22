@@ -40,7 +40,7 @@ class VentaElectronicaSender extends AbstractFESender
 			'email' => $this->cliente->email,
 			'phone' => $this->cliente->telefono_1 ? $this->cliente->telefono_1 : $this->cliente->telefono_2,
 			'address' => $this->cliente->direccion,
-			'merchant_registration' => "f",
+			'merchant_registration' => "0000000-00",
 		];
 	}
 }

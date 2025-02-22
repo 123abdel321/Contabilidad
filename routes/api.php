@@ -322,8 +322,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //CAPTURA VENTA
         Route::controller(VentaController::class)->group(function () {
             Route::get('ventas', 'generate');
-            Route::post('ventas', 'create');
             Route::get('facturas', 'read');
+            Route::post('ventas', 'create');
+            Route::post('ventas-fe', 'facturacionElectronica');
+            Route::post('ventas-notificar', 'sendNotification');
         });
         //CAPTURA GASTO
         Route::controller(GastosController::class)->group(function () {

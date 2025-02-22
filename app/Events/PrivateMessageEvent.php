@@ -24,12 +24,6 @@ class PrivateMessageEvent implements ShouldBroadcast
     {
         $this->channelName = $channelName;
         $this->message = $message;
-        // $this->message = [
-        //     'tipo' => 'exito',
-        //     'mensaje' => $message,
-        //     'titulo' => 'Informe generado con exito!',
-        //     'autoclose' => false
-        // ];
     }
 
     public function broadcastOn()

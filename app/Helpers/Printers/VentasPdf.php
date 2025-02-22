@@ -3,6 +3,7 @@
 namespace App\Helpers\Printers;
 
 use Illuminate\Support\Carbon;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
@@ -79,10 +80,18 @@ class VentasPdf extends AbstractPrinterPdf
 			}
 		}
 
+		$qrCodeBase64 = null;
+
+		if ($this->venta->fe_codigo_qr) {
+			$svg = QrCode::format('svg')->size(300)->generate($this->venta->fe_codigo_qr);
+			$qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($svg);
+		}
+
         return [
 			'empresa' => $this->empresa,
 			'cliente' => $this->venta->cliente,
 			'factura' => $this->venta,
+			'qrCode' => $qrCodeBase64,
 			'productos' => $this->venta->detalles,
 			'pagos' => $this->venta->pagos,
 			'impuestosIva' => $impuestosIva,

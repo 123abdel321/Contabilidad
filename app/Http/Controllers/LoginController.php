@@ -33,7 +33,7 @@ class LoginController extends Controller
     {
         $credenciales1 = ['email' => $request->email, 'password' => $request->password];
         $credenciales2 = ['username' => $request->email, 'password' => $request->password];
-
+        
         if (Auth::attempt($credenciales1) || Auth::attempt($credenciales2)) {
             $request->session()->regenerate();
             $user =  User::find(Auth::user()->id);
@@ -123,11 +123,12 @@ class LoginController extends Controller
         $user =  User::where('email', $request->get('email'))
             ->where('about', base64_decode($request->get('code_login')))
             ->first();
-
-        $user->tokens()->delete();
         
         if ($user) {
+
+            $user->tokens()->delete();
             Auth::login($user);
+
             if (Auth::user()) {
 
                 if($user->tokens()->where('tokenable_id', $user->id)
@@ -211,7 +212,7 @@ class LoginController extends Controller
         return response()->json([
     		'success'=>	false,
     		'data' => $request->all(),
-    		'message'=> 'logout true'
+    		'message'=> 'Datos incorrectos'
     	], 200);
     }
 

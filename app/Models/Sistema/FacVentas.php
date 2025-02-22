@@ -38,6 +38,7 @@ class FacVentas extends Model
         'fe_fecha_envio_correo',
         'fe_estado_acuse',
         'fe_codigo_qr',
+        'fe_zip_key',
         'created_by',
         'updated_by'
     ];
@@ -105,5 +106,39 @@ class FacVentas extends Model
 	public function getDocumentoReferenciaFeAttribute()
 	{
 		return $this->resolucion ? "{$this->resolucion->prefijo}{$this->consecutivo}" : '';
+	}
+
+    public function getFechaValidacionAttribute()
+	{
+		if (!$this->fe_fecha_validacion) return '';
+
+		return date('Y-m-d', strtotime($this->fe_fecha_validacion));
+	}
+
+    public function getFechaVencimientoAttribute()
+	{
+		$previousLoaded = $this->relationLoaded('cliente');
+
+		$this->loadMissing('cliente');
+
+		if (!$this->cliente) return '';
+        $plazo = $this->cliente->plazo ?? 30;
+		$fechaVencimiento = date('Y-m-d', strtotime($this->fecha_manual . " + 30 days"));
+
+		if ($previousLoaded) {
+			$this->unsetRelation('cliente');
+		}
+
+		return $fechaVencimiento;
+	}
+
+    public function getCufeAttribute()
+	{
+		return $this->fe_codigo_identificador;
+	}
+
+	public function setCufeAttribute($value)
+	{
+		$this->attributes['fe_codigo_identificador'] = $value;
 	}
 }
