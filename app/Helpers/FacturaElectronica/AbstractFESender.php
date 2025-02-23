@@ -60,7 +60,7 @@ abstract class AbstractFESender
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		
 		$params = $this->getParams();
-		// dd($params);
+
 		$url = $this->getUrl() . $setTestId;
 		$response = Http::withHeaders([
 			'Content-Type' => 'application/json',
@@ -72,9 +72,19 @@ abstract class AbstractFESender
 		
 		info(json_encode($data));
 
-		if (!property_exists($data, 'data')) {
+		if ($data->status == 200) {
 			return [
-				"status" => $response->status(),
+				"status" => $data->status,
+				"cufe" => $data->response['cufe'],
+				"mensaje" => $data->response['StatusDescription'],
+				"zip_key" => ''
+			];
+		}
+
+		if (!property_exists($data, 'data')) {
+			dd($data);
+			return [
+				"status" => $data->status,
 				"message_object" => $data->message,
 				"error_message" => $data->errors,
 				"zip_key" => null
@@ -113,16 +123,6 @@ abstract class AbstractFESender
 			];
 		}
 
-		if (array_key_exists('cufe', $data->data)) {
-			$zipKey = $data->data['ResponseDian']['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ZipKey'];
-			return [
-				"status" => $data->status,
-				"cufe" => $data->data['cufe'],
-				"mensaje" => $data->data['StatusDescription'],
-				"zip_key" => $zipKey
-			];
-		}
-
 		$zipKey = $data->data->ResponseDian['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ZipKey'];
 
 		return [
@@ -142,7 +142,7 @@ abstract class AbstractFESender
 			'date' => date_format(date_create($this->factura->fecha_manual), 'Y-m-d'),
 			'time' => date_format(date_create($this->factura->created_at), 'H:i:s'),
 			'software-provider' => [
-				'provider_id' => 'e4db04df-a6a1-492c-a2a2-a063ee1319c0'
+				'provider_id' => '6c8521e5-8f75-4041-93a9-045ed5912e4a'
 			],
 			'allowance_charges' => [], // Cargos por subsidio
 			'tax_totals' => $this->taxTotals([1, 5]), // Total impuestos
