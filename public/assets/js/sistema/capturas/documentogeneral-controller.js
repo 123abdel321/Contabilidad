@@ -1209,6 +1209,14 @@ function searchCaptura() {
                     $("#editing_documento").val("0");
                     addRow();
                 }
+            } else {
+                $("#agregarDocumentos").hide();
+                $("#iniciarCapturaDocumentosLoading").hide();                
+
+                $("#iniciarCapturaDocumentos").show();
+                $("#id_comprobante").prop('disabled', false);
+                $("#consecutivo").prop('disabled', false);
+                agregarToast('warning', 'Comprobante en uso', res.message, false);
             }
         }).fail((res) => {
             $("#iniciarCapturaDocumentosLoading").hide();
