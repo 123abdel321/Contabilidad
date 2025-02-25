@@ -365,6 +365,19 @@
 			</thead>
 		</table>
 
+		@if ($observacion)
+		<table>
+			<thead class="">
+				<tr>
+					<td class="spacer padding5"></td>
+				</tr>
+				<tr>
+				<p><b>Observación general: </b>{{ $observacion }}</p>
+				</tr>
+			</thead>
+		</table>
+		@endif
+
 		@if ($qrCode)
 		<table>
 			<thead class="">
