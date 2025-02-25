@@ -11,6 +11,7 @@ use App\Jobs\ProcessBorrarDocumentos;
 use App\Jobs\ProcessGenerarDocumentos;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\Nits;
@@ -25,6 +26,7 @@ use App\Models\Sistema\DocumentosGeneral;
 class DocumentoGeneralController extends Controller
 {
     use BegConsecutiveTrait;
+	use BegDocumentHelpersTrait;
 
 	protected $messages = null;
 	protected $cuentasDocumentos = [
@@ -522,18 +524,30 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 200);
+            ], 400);
         }
+
+		if ($this->isComprobanteInUse($request->get('id_comprobante'))) {
+			return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => "El comprobante seleccionado ya ha sido usado en una captura diferente y no puede ser usado en captura general."
+            ], 200);
+		}
 		
+		$comprobante = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+
 		$documento = DocumentosGeneral::with(['centro_costos', 'cuenta', 'nit'])
-			->where('fecha_manual', $request->get('fecha_manual'))
 			->where('id_comprobante', $request->get('id_comprobante'))
-			->where('consecutivo', $request->get('consecutivo'))
-            ->get();
+			->where('consecutivo', $request->get('consecutivo'));
+
+		if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
+			$documento->where('fecha_manual', $request->get('fecha_manual'));
+		}
 
 		return response()->json([
 			'success'=>	true,
-			'data' => $documento,
+			'data' => $documento->get(),
 			'message'=> 'Documentos cargados con exito!'
 		]);
     }

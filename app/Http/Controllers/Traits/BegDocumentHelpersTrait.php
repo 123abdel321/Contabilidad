@@ -14,6 +14,7 @@ use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\envioEmail;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\VariablesEntorno;
+use App\Models\Sistema\DocumentosGeneral;
 
 trait BegDocumentHelpersTrait
 {
@@ -65,7 +66,7 @@ trait BegDocumentHelpersTrait
 		return base64_decode($response['base64Bytes']);
 	}
 
-    private function isFe(FacVentas $factura)
+    public function isFe(FacVentas $factura)
 	{
 		if($factura instanceof FacVentas) {
 			return $factura->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA;
@@ -97,5 +98,17 @@ trait BegDocumentHelpersTrait
 		}
 
 		return '';
+	}
+
+	private function isComprobanteInUse($idComprobante) : bool
+	{
+		$documentos = DocumentosGeneral::where('id_comprobante', $idComprobante)
+			->whereNotNull('relation_id')
+			->whereNotNull('relation_type')
+			->where('relation_id', '!=', 2)
+			->where('relation_type', '!=', 2)
+			->count();
+
+		return $documentos > 0 ? true : false;
 	}
 }
