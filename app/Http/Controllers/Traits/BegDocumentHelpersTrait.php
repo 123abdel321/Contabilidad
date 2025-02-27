@@ -100,13 +100,12 @@ trait BegDocumentHelpersTrait
 		return '';
 	}
 
-	private function isComprobanteInUse($idComprobante) : bool
+	private function isComprobanteInUse($idComprobante, $relationType = 2) : bool
 	{
 		$documentos = DocumentosGeneral::where('id_comprobante', $idComprobante)
 			->whereNotNull('relation_id')
 			->whereNotNull('relation_type')
-			->where('relation_id', '!=', 2)
-			->where('relation_type', '!=', 2)
+			->where('relation_type', '!=', $relationType)
 			->count();
 
 		return $documentos > 0 ? true : false;

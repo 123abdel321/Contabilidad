@@ -542,8 +542,11 @@ class DocumentoGeneralController extends Controller
 			->where('consecutivo', $request->get('consecutivo'));
 
 		if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
-			$documento->where('fecha_manual', $request->get('fecha_manual'));
-		}
+            $fecha = $request->get('fecha_manual');
+        
+            $documento->whereMonth('fecha_manual', Carbon::parse($fecha)->month)
+                ->whereYear('fecha_manual', Carbon::parse($fecha)->year);
+        }
 
 		return response()->json([
 			'success'=>	true,
