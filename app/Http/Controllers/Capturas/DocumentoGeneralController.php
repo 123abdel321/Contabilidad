@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Capturas;
 
 use DB;
+use Carbon\Carbon;
 use DateTimeImmutable;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ProcessBorrarDocumentos;
 use App\Jobs\ProcessGenerarDocumentos;
 use Illuminate\Support\Facades\Validator;
+
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS
