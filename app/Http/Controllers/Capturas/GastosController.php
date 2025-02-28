@@ -126,6 +126,7 @@ class GastosController extends Controller
                     ->first();
 
                 if ($gasto) {
+                    $gasto->documentos()->delete();
                     $gasto->detalles()->delete();
                     $gasto->pagos()->delete();
                     $gasto->delete();
