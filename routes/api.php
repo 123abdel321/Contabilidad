@@ -330,6 +330,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //CAPTURA GASTO
         Route::controller(GastosController::class)->group(function () {
             Route::post('gastos', 'create');
+            Route::get('gastos', 'find');
         });
         //CAPTURA RECIBO
         Route::controller(RecibosController::class)->group(function () {

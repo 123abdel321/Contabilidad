@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Capturas;
 
 use DB;
+use Carbon\Carbon;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
 use App\Helpers\Printers\GastosPdf;
@@ -108,8 +109,6 @@ class GastosController extends Controller
             ], 422);
         }
 
-        $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
-        $request->request->add(['consecutivo' => $consecutivo]);
         $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
         $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
         
@@ -118,8 +117,25 @@ class GastosController extends Controller
             
             $this->proveedor = $this->findProveedor($request->get('id_proveedor'));
             if (!$this->proveedor->declarante) $this->tipoRetencion = 'cuenta_retencion_declarante';
-            //CREAR FACTURA GASTO
 
+            if ($request->get('editing_gasto')) {
+
+                $gasto = ConGastos::where('id_comprobante', $request->get('id_comprobante'))
+                    ->where('consecutivo', $request->get('consecutivo'))
+                    ->orderBy('id', 'DESC')
+                    ->first();
+
+                if ($gasto) {
+                    $gasto->detalles()->delete();
+                    $gasto->pagos()->delete();
+                    $gasto->delete();
+                }
+            } else {
+                $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
+                $request->request->add(['consecutivo' => $consecutivo]);
+            }
+
+            //CREAR FACTURA GASTO
             $gasto = $this->createFacturaGasto($request);
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE GASTOS
@@ -283,7 +299,9 @@ class GastosController extends Controller
                 $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_compras);
             }
 
-            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+            if (!$request->get('editing_gasto')) {
+                $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+            }
             
             if (!$documentoGeneral->save()) {
 
@@ -303,6 +321,7 @@ class GastosController extends Controller
 				'impresion' => $comprobanteGasto->imprimir_en_capturas ? $gasto->id : '',
 				'message'=> 'Gasto creada con exito!'
 			], 200);
+
         } catch (Exception $e) {
 
 			DB::connection('sam')->rollback();
@@ -312,6 +331,68 @@ class GastosController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
+    }
+
+    public function find (Request $request) 
+    {
+        $rules = [
+            'id_comprobante' => 'required|exists:sam.comprobantes,id',
+			'fecha_manual' => 'required|date',
+			'consecutivo' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 400);
+        }
+
+        $comprobante = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+
+        $gasto = ConGastos::with('nit', 'detalles.concepto', 'pagos')
+            ->where('id_comprobante', $request->get('id_comprobante'))
+            ->where('consecutivo', $request->get('consecutivo'));
+
+        if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
+            $fecha = $request->get('fecha_manual');
+        
+            $gasto->whereMonth('fecha_manual', Carbon::parse($fecha)->month)
+                ->whereYear('fecha_manual', Carbon::parse($fecha)->year);
+        }
+
+        return response()->json([
+			'success'=>	true,
+			'data' => $gasto->first(),
+			'message'=> 'Gasto cargado con exito!'
+		]);
+    }
+
+    public function showPdf(Request $request, $id)
+    {
+        $gasto = ConGastos::whereId($id)
+            ->with('comprobante')
+            ->first();
+
+        if(!$gasto) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'El gasto no existe'
+            ], 422);
+        }
+
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
+
+        // return view('pdf.facturacion.gastos', $data);
+ 
+        return (new GastosPdf($empresa, $gasto))
+            ->buildPdf()
+            ->showPdf();
     }
 
     private function createFacturaGasto($request)
@@ -484,30 +565,6 @@ class GastosController extends Controller
             $pago = (object)$pago;
             $this->totalesFactura['total_pagado']+= floatval($pago->valor);
         }
-    }
-
-    public function showPdf(Request $request, $id)
-    {
-        $gasto = ConGastos::whereId($id)
-            ->with('comprobante')
-            ->first();
-
-        if(!$gasto) {
-            return response()->json([
-                'success'=>	false,
-                'data' => [],
-                'message'=> 'El gasto no existe'
-            ], 422);
-        }
-
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
-
-        // return view('pdf.facturacion.gastos', $data);
- 
-        return (new GastosPdf($empresa, $gasto))
-            ->buildPdf()
-            ->showPdf();
-    }
+    }    
 
 }

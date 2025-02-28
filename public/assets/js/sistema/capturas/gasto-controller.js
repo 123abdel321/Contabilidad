@@ -330,6 +330,9 @@ function gastoInit () {
         }
     });
 
+    if (gastoUpdate) $("#consecutivo_gasto").prop('disabled', false);
+    else $("#consecutivo_gasto").prop('disabled', true);
+
     dataGasto = [];
     retencionesGasto = [];
 
@@ -426,6 +429,49 @@ function consecutivoSiguienteGasto() {
             agregarToast('error', 'Creación errada', errorsMsg);
         });
     }
+}
+
+function addRowGastosData(detalle) {
+
+    idGastoTable++;
+
+    let data = {
+        "id": idGastoTable,
+        "id_concepto": detalle.id_concepto_gastos,
+        "editar_iva": false,
+        "valor_gasto": detalle.subtotal,
+        'porcentaje_aiu': porcentajeAIUGastos,
+        'base_aiu': 0,
+        "descuento_gasto": detalle.descuento_valor,
+        "porcentaje_descuento_gasto": detalle.descuento_porcentaje,
+        "valor_iva": detalle.iva_valor,
+        "valor_reteica": detalle.rete_ica_valor,
+        "no_valor_iva": detalle.iva_valor,
+        "porcentaje_iva": detalle.iva_porcentaje,
+        "valor_retencion": detalle.detalle,
+        "porcentaje_retencion": detalle.rete_fuente_porcentaje,
+        "porcentaje_reteica": detalle.rete_ica_porcentaje,
+        "total_valor_gasto": detalle.total,
+        'observacion': detalle.observacion,
+    };
+
+    dataGasto.push(data);
+    gasto_table.row.add(data).draw(false);
+    document.getElementById("card-gasto").scrollLeft = 0;
+
+    if (detalle.concepto) {
+        var dataFormato = {
+            id: detalle.concepto.id,
+            text: detalle.concepto.codigo+' - '+detalle.concepto.nombre
+        };
+        var newOption = new Option(dataFormato.text, dataFormato.id, false, false);
+        $("#combo_concepto_gasto_"+idGastoTable).append(newOption).trigger('change');
+        $("#combo_concepto_gasto_"+idGastoTable).val(dataFormato.id).trigger('change');
+    }
+
+    changeConceptoGasto(idGastoTable);
+
+    mostrarValoresGastos();
 }
 
 function addRowGastos(openCuenta = true) {
@@ -1127,6 +1173,7 @@ function saveGasto () {
         fecha_manual: $("#fecha_manual_gasto").val(),
         documento_referencia: $("#documento_referencia_gasto").val(),
         consecutivo: $("#consecutivo_gasto").val(),
+        editing_gasto: $("#editing_gasto").val(),
     }
 
     disabledFormasPagoGasto();
@@ -1298,6 +1345,73 @@ $(document).on('change', '#id_comprobante_gasto', function () {
 });
 
 $(document).on('click', '#iniciarCapturaGasto', function () {
+    if (gastoUpdate) {
+
+        $("#iniciarCapturaGasto").hide();
+        $("#iniciarCapturaGastoLoading").show();
+
+        $.ajax({
+            url: base_url + 'gastos',
+            method: 'GET',
+            data: {
+                consecutivo: $("#consecutivo_gasto").val(),
+                fecha_manual: $("#fecha_manual_gasto").val(),
+                id_comprobante: $("#id_comprobante_gasto").val(),
+            },
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            if (res.success && res.data) {
+                
+                const gastos = res.data;
+                const pagos = gastos.pagos;
+                const detalles = gastos.detalles;
+
+                $("#editing_gasto").val("1");
+                $("#documento_referencia_gasto").val(gastos.documento_referencia);
+                
+                if (gastos.nit) {
+                    var dataFormato = {
+                        id: gastos.nit.id,
+                        text: gastos.nit.numero_documento+' - '+gastos.nit.nombre_completo
+                    };
+                    var newOption = new Option(dataFormato.text, dataFormato.id, false, false);
+                    $comboNitGastos.append(newOption).trigger('change');
+                    $comboNitGastos.val(dataFormato.id).trigger('change');
+                }
+                
+                for (let index = 0; index < detalles.length; index++) {
+                    const detalle = detalles[index];
+                    addRowGastosData(detalle);
+                }
+
+                for (let index = 0; index < pagos.length; index++) {
+                    const pago = pagos[index];
+                    $("#gasto_forma_pago_"+pago.id_forma_pago).val(new Intl.NumberFormat("ja-JP").format(pago.valor));
+                    calcularGastosPagos(pago.id_forma_pago, false);
+                }
+
+                $("#agregarGasto").show();
+                $("#cancelarCapturaGasto").show();
+                $("#iniciarCapturaGasto").hide();
+                $("#iniciarCapturaGastoLoading").hide();
+
+            } else {
+                $("#editing_gasto").val("0");
+                $("#agregarGasto").show();
+                $("#cancelarCapturaGasto").show();
+                $("#crearCapturaGastoDisabled").show();
+                $("#iniciarCapturaGasto").hide();
+                $("#iniciarCapturaGastoLoading").hide();
+                addRowGastos();
+            }
+        }).fail((err) => {
+            $('#documento_referencia_gasto_loading').hide();
+        });
+        return;
+    }
+
+    $("#editing_gasto").val("0");
     $("#agregarGasto").show();
     $("#cancelarCapturaGasto").show();
     $("#crearCapturaGastoDisabled").show();
@@ -1336,6 +1450,11 @@ function cancelarGasto() {
     mostrarValoresGastos();
     
     $('#total_faltante_gasto').val('0.00');
+    
+    $('#agregarGasto').hide();
+    
+    $('#crearCapturaGasto').hide();
+    $('#iniciarCapturaGasto').show();
     $('#cancelarCapturaGasto').hide();
     $('#input_anticipos_gasto').hide();
     $('#gasto_anticipo_disp_view').hide();
@@ -1440,4 +1559,11 @@ function buscarFacturaGasto(event) {
             $('#documento_referencia_gasto_loading').hide();
         });
     },100);
+}
+
+function enterConsecutivoGastos(event) {
+    if (event.keyCode == 13) {
+        document.getElementById('iniciarCapturaGasto').click();
+        return;
+    }
 }

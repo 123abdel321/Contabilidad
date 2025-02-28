@@ -133,6 +133,7 @@ var moduloRoute = {
 
 function iniciarCanalesDeNotificacion () {
     channelAbdelCastro = pusher.subscribe('canal-general-abdel-castro');
+    channelFe = pusher.subscribe('notificacion-fe-'+localStorage.getItem("notificacion_code"));
 }
 
 $imagenes = [
@@ -185,6 +186,10 @@ channelAbdelCastro.bind('notificaciones', function(data) {
     setTimeout(function(){
         closeSessionProfile();
     },4000);
+});
+
+channelFe.bind('notificaciones', function(data) {
+    agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
 });
 
 function closeSessionProfile() {
@@ -665,7 +670,7 @@ function agregarToast (tipo, titulo, descripcion, autoCierre = false) {
 
     // Plantilla del toast
     var toast = `
-        <div class="contenido">
+        <div class="contenido toast-general">
             <div class="icono">
                 ${iconos[tipo]}
             </div>

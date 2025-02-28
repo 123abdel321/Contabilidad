@@ -158,12 +158,12 @@
         }
 
         .footer-navigation {
+            margin: 0;
             position: fixed;
-            left: 0;
-            bottom: -1px;
-            width: 100%;
-            z-index: 999;
-            text-align: center;
+            margin-top: -15px;
+            top: 100%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .footer-navigation .nav {

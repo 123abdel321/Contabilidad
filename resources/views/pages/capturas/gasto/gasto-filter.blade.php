@@ -12,6 +12,8 @@
 
                 <form id="gastoFilterForm" class="needs-validation row" style="margin-top: 5px;" novalidate>
 
+                    <input name="editing_gasto" id="editing_gasto" class="form-control form-control-sm" type="text" style="display: none;">
+
                     <div class="form-group col-12 col-sm-4 col-md-3">
                         <label>Proveedor <span style="color: red">*</span></label>
                         <select name="id_nit_gasto" id="id_nit_gasto" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
@@ -61,7 +63,7 @@
 
                     <div class="form-group col-12 col-sm-4 col-md-1">
                         <label for="example-text-input" class="form-control-label">Consecutivo</label>
-                        <input type="text" class="form-control form-control-sm" name="consecutivo_gasto" id="consecutivo_gasto" disabled required>
+                        <input type="text" class="form-control form-control-sm" name="consecutivo_gasto" id="consecutivo_gasto" onkeydown="enterConsecutivoGastos(event)" disabled required>
                     </div>
 
                 </form>
