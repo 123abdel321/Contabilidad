@@ -81,6 +81,16 @@ class RecibosController extends Controller
                 $fechaManual
             ))->actual()->get();
 
+            if ($request->get('orden_cuentas')) {
+
+                $ordenFacturacion = $request->get('orden_cuentas');
+                asort($ordenFacturacion);
+
+                $extractos = $extractos->sortBy(function ($item) use ($ordenFacturacion) {
+                    return $ordenFacturacion[$item->id_cuenta] ?? 9999;
+                })->values();
+            }
+
             $cxcAnticipos = PlanCuentas::where('auxiliar', 1)
                 ->where('exige_documento_referencia', 1)
                 ->whereHas('tipos_cuenta', function ($query) {
