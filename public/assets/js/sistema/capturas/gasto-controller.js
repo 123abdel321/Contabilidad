@@ -972,97 +972,18 @@ function totalValoresGastos () {
     var gasto_sub_total = 0;
     var gasto_retencion = 0;
     var gasto_descuento = 0;
-    var subTotalGeneral = 0;
-    var valorRetencion = false;
-    var porcentajeRetencion = false;
     
     dataGasto.forEach(gastoRow => {
-        gasto_iva+= gastoRow.valor_iva + gastoRow.no_valor_iva;
-        gasto_reteica+= gastoRow.valor_reteica;
-        gasto_retencion+= gastoRow.valor_retencion;
-        gasto_descuento+= gastoRow.descuento_gasto;
-        gasto_total+= gastoRow.total_valor_gasto;
-        gasto_sub_total+= gastoRow.valor_gasto - gastoRow.descuento_gasto
-        gasto_aiu+= gastoRow.base_aiu;
-    });
-
-    return [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total, gasto_aiu];
-
-    dataGasto.forEach(gastoRow => {
-        subTotalGeneral+= gastoRow.valor_gasto - (gastoRow.descuento_gasto + gastoRow.no_valor_iva);
-    });
-
-    [valorRetencion, porcentajeRetencion] = calcularRetencion(subTotalGeneral);
-
-    if (valorRetencion) {
-        for (let index = 0; index < dataGasto.length; index++) {
-            var subTotal = dataGasto[index].valor_gasto - (dataGasto[index].descuento_gasto);
-            var totalRetencion = 0;
-            if (porcentajeAIUGastos) {
-                var baseAIU = subTotal * (porcentajeAIUGastos / 100);
-                totalRetencion = baseAIU * (porcentajeRetencion / 100);
-            } else {
-                totalRetencion = (subTotal) * (porcentajeRetencion / 100);
-            }
-            if (totalRetencion != dataGasto[index].valor_retencion) {
-                var dataConceptoGasto = $('#combo_concepto_gasto_'+dataGasto[index].id).select2('data')[0];
-                if (dataConceptoGasto) {
-                    var idConcepto = dataConceptoGasto.id;
-                    dataGasto[index].porcentaje_retencion = porcentajeRetencion;
-                    dataGasto[index].valor_retencion = parseFloat(totalRetencion).toFixed(2);
-                    dataGasto[index].total_valor_gasto = parseFloat((subTotal + dataGasto[index].valor_iva) - (totalRetencion + + dataGasto[index].valor_reteica)).toFixed(2);
-
-                    var indexTable = getIndexById(dataGasto[index].id, gasto_table);
-                    gasto_table.row(indexTable).data(dataGasto[index]).draw(false);
-
-                    var newOption = new Option(dataConceptoGasto.text, idConcepto, false, false);
-                    setTimeout(function(){
-                        $('#combo_concepto_gasto_'+dataGasto[index].id).append(newOption).trigger('change');
-                        $('#combo_concepto_gasto_'+dataGasto[index].id).val(idConcepto).trigger('change');
-                    },10);
-                    
-                    setDisabledGastosRow(dataGasto[index], dataGasto[index].id);
-                }
-            }
-        }
-    } else {
-        for (let index = 0; index < dataGasto.length; index++) {
-            if (dataGasto[index].valor_retencion) {
-                var subTotal = dataGasto[index].valor_gasto - (dataGasto[index].descuento_gasto);
-
-                dataGasto[index].porcentaje_retencion = porcentajeRetencion;
-                dataGasto[index].valor_retencion = 0;
-                dataGasto[index].total_valor_gasto = parseFloat((subTotal + dataGasto[index].valor_iva)).toFixed(2);
-
-                var dataConceptoGasto = $('#combo_concepto_gasto_'+dataGasto[index].id).select2('data')[0];
-                if (dataConceptoGasto) {
-                    var idConcepto = dataConceptoGasto.id;
-
-                    var indexTable = getIndexById(dataGasto[index].id, gasto_table);
-                    gasto_table.row(indexTable).data(dataGasto[index]).draw(false);
-
-                    var newOption = new Option(dataConceptoGasto.text, idConcepto, false, false);
-                    setTimeout(function(){
-                        $('#combo_concepto_gasto_'+dataGasto[index].id).append(newOption).trigger('change');
-                        $('#combo_concepto_gasto_'+dataGasto[index].id).val(idConcepto).trigger('change');
-                    },10);
-                    
-                    setDisabledGastosRow(dataGasto[index], dataGasto[index].id);
-                }
-            }
-        }
-    }
-
-    dataGasto.forEach(gastoRow => {
-        gasto_sub_total+= parseFloat(gastoRow.valor_gasto) - parseFloat(gastoRow.descuento_gasto);
-        gasto_iva+= parseFloat(gastoRow.valor_iva) + parseFloat(gastoRow.no_valor_iva);
+        const valorIva = parseFloat(gastoRow.no_valor_iva);
+        gasto_iva+= valorIva ?? parseFloat(gastoRow.valor_iva);
         gasto_reteica+= parseFloat(gastoRow.valor_reteica);
         gasto_retencion+= parseFloat(gastoRow.valor_retencion);
-        gasto_total+= (parseFloat(gastoRow.total_valor_gasto) + parseFloat(gastoRow.no_valor_iva));
-        gasto_descuento+= gastoRow.descuento_gasto;
-        gasto_aiu+= gastoRow.base_aiu;
+        gasto_descuento+= parseFloat(gastoRow.descuento_gasto);
+        gasto_total+= parseFloat(gastoRow.total_valor_gasto);
+        gasto_sub_total+= parseFloat(gastoRow.valor_gasto) - parseFloat(gastoRow.descuento_gasto)
+        gasto_aiu+= parseFloat(gastoRow.base_aiu);
     });
-    
+
     return [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total, gasto_aiu];
 }
 
