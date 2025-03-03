@@ -18,10 +18,10 @@
     @endif
 </td>
 <td style="{{ $style }}">{{ $auxiliar->documento_referencia }}</td>
-<td style="{{ $style }} font-weight: 600;">{{ $auxiliar->saldo_anterior }}</td>
-<td style="{{ $style }} font-weight: 600;">{{ $auxiliar->debito }}</td>
-<td style="{{ $style }} font-weight: 600;">{{ $auxiliar->credito }}</td>
-<td style="{{ $style }} font-weight: 600;">{{ $auxiliar->saldo_final }}</td>
+<td style="{{ $style }} text-align: right;">{{ $auxiliar->saldo_anterior }}</td>
+<td style="{{ $style }} text-align: right;">{{ $auxiliar->debito }}</td>
+<td style="{{ $style }} text-align: right;">{{ $auxiliar->credito }}</td>
+<td style="{{ $style }} text-align: right;">{{ $auxiliar->saldo_final }}</td>
 <td style="{{ $style }}">
     @if ($auxiliar->codigo_comprobante)
         {{ $auxiliar->codigo_comprobante }} - {{ $auxiliar->nombre_comprobante }}
