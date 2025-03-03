@@ -32,6 +32,8 @@ var nuevoProducto = {
 
 function productosInit() {
 
+    $('#cantidad_bodega_producto').val(0);
+
     productos_table = $('#productoTable').DataTable({
         pageLength: 20,
         dom: 'Brtip',
@@ -845,9 +847,12 @@ $(document).on('click', '#saveEditProducto', function () {
             $('#saveEditProducto').show();
             $('#cancelProducto').show();
             $('#saveNewProductoLoading').hide();
+            var currentPage = productos_table.page(); // Guarda la página actual
+
             productos_table.ajax.reload(function(res) {
                 showTotalsProductos(res);
-            });
+                productos_table.page(currentPage).draw(false); // Restaura la página actual
+            }, false);
             agregarToast('exito', 'Actualización exitosa', 'Producto actualizado con exito!', true);
             document.getElementById('cancelProducto').click();
         }
@@ -2143,8 +2148,7 @@ function focusNombreProducto() {
     $('#nombre_producto').select();
 }
 
-$("#id_familia_producto").on('change', function(e) {
-
+$('#id_familia_producto').on('select2:close', function(event) {
     var data = $(this).select2('data');
 
     if (data.length > 0) {
@@ -2168,6 +2172,7 @@ $("#id_familia_producto").on('change', function(e) {
             $('#input-impuestos-porcentaje').hide();
             $('#input-impuestos-valor').hide();
         }
+
         nuevoProducto.id_familia = parseInt(familia.id);
         if (familia.inventario) $('#producto-inventario').show();
         else $('#producto-inventario').hide();
