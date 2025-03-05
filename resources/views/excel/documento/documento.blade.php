@@ -8,6 +8,7 @@
             <th>Nombre</th>
             <th>Documento</th>
             <th>Nit</th>
+            <th>Ubicación</th>
             <th>Comprobante</th>
             <th>Consecutivo</th>
             <th>Centro</th>
@@ -24,7 +25,6 @@
 		</thead>
 		<tbody>
             @foreach($documentos as $documento)
-
                 <tr>
                     @if ($documento->nivel == 99)
                         @include('excel.documento.celdas', ['style' => 'background-color: #1c4587; font-weight: bold; color: white;', 'documento' => $documento])

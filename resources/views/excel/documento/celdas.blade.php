@@ -12,6 +12,7 @@
 </td>
 <!-- C --><td style="{{ $style }}">{{ $documento->numero_documento }}</td>
 <!-- D --><td style="{{ $style }}">{{ $documento->nombre_nit ? $documento->nombre_nit : $documento->razon_social }}</td>
+<!-- D --><td style="{{ $style }}">{{ $documento->apartamento_nit }}</td>
 <!-- E --><td style="{{ $style }}">
     @if ($documento->codigo_comprobante)
         {{ $documento->codigo_comprobante }} - {{ $documento->nombre_comprobante }}
