@@ -29,10 +29,11 @@ use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\FormasPagoController;
 use App\Http\Controllers\Tablas\VendedoresController;
+use App\Http\Controllers\Tablas\UbicacionesController;
 use App\Http\Controllers\Tablas\CentroCostoController;
+use App\Http\Controllers\Tablas\PresupuestoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
-use App\Http\Controllers\Tablas\PresupuestoController;
 use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
 //CAPTURAS
@@ -40,6 +41,7 @@ use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\PagosController;
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\GastosController;
+use App\Http\Controllers\Capturas\PedidoController;
 use App\Http\Controllers\Capturas\RecibosController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
@@ -142,6 +144,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/ventas', [VentaController::class, 'indexInforme'])->name('ventas');
 		Route::get('/ventas-print/{id}', [VentaController::class, 'showPdf'])->name('venta-pdf');
 		Route::get('/ventas-print-informez', [VentaController::class, 'showPdfZ']);
+		//PEDIDOS
+		Route::get('/pedido', [PedidoController::class, 'index'])->name('pedido');
 		//RECIBOS
 		Route::get('/recibo', [RecibosController::class, 'index'])->name('recibo');
 		Route::get('/recibo-print/{id}', [RecibosController::class, 'showPdf'])->name('recibo-pdf');
@@ -162,6 +166,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/comprobante', [ComprobantesController::class, 'index'])->name('comprobante');
 		//COMPROBANTES
 		Route::get('/cecos', [CentroCostoController::class, 'index'])->name('cecos');
+		//UBICACIONES
+		Route::get('/ubicaciones', [UbicacionesController::class, 'index'])->name('ubicaciones');
 		//COMPROBANTES
 		Route::get('/vendedores', [VendedoresController::class, 'index'])->name('vendedores');
 		//FAMILIAS

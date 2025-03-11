@@ -84,6 +84,8 @@ var moduloCreado = {
     'presupuesto': false,
     'impuestos': false,
     'resultados': false,
+    'ubicaciones': false,
+    'pedido': false,
 };
 
 var moduloRoute = {
@@ -129,6 +131,8 @@ var moduloRoute = {
     'presupuesto': 'tablas',
     'impuestos': 'informes',
     'resultados': 'informes',
+    'ubicaciones': 'tablas',
+    'pedido': 'capturas',
 }
 
 function iniciarCanalesDeNotificacion () {
