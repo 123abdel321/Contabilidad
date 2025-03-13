@@ -11,7 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ProcessBorrarDocumentos;
 use App\Jobs\ProcessGenerarDocumentos;
 use Illuminate\Support\Facades\Validator;
-
+//TRAITS
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS

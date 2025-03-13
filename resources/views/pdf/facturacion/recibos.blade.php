@@ -108,7 +108,7 @@
 
 			.ubicacion-factura {
 				color: black;
-				font-size: 1.5em;
+				font-size: 1.3em;
 			}
 			
 			.generado {
@@ -266,9 +266,10 @@
 					<th class="padding5">CUENTA</th>
 					<th class="padding5">NOMBRE</th>
 					<th class="padding5">FACTURA</th>
+					<th class="padding5">VALOR</th>
+					<th class="padding5">PAGO</th>
+					<th class="padding5">SALDO</th>
 					<th class="padding5">CONCEPTO</th>
-					<th class="padding5">DEBITO</th>
-					<th class="padding5">CREDITO</th>
 				</tr>
 			</thead>
 			<tbody class="detalle-factura">
@@ -277,9 +278,10 @@
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->cuenta->cuenta }}</td>
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->cuenta->nombre }}</td>
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->documento_referencia }}</td>
+						<td class="padding5 valor">{{ number_format($detalle->total_saldo, 2) }}</td>
+						<td class="padding5 valor">{{ number_format($detalle->total_abono, 2) }}</td>
+						<td class="padding5 valor">{{ number_format($detalle->nuevo_saldo, 2) }}</td>
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->concepto }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->debito, 2) }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->credito, 2) }}</td>
 					</tr>
 				@endforeach
 			</tbody>

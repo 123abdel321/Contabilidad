@@ -75,7 +75,7 @@ class RecibosPdf extends AbstractPrinterPdf
 			'empresa' => $this->empresa,
 			'nit' => $nit,
 			'recibo' => $this->recibo,
-			'detalles' => $this->recibo->documentos,
+			'detalles' => $this->recibo->detalles,
 			'pagos' => $this->recibo->pagos,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user() ? request()->user()->username : 'MaximoPH'
