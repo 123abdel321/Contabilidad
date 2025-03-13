@@ -1,19 +1,19 @@
 <style>
 
     .item-ubicacion {
-        width: 100px;
+        width: 130px;
     }
 
     .item-ubicacion .ubicaciones-datos {
-        width: 100%;
+        width: 130px;
         text-align: center;
         padding: 5px;
-        border: solid 1px #003883;
+        border: solid 1px #3a5c89;
         border-radius: 5px;
         cursor: pointer;
         margin-top: 5px;
         margin-bottom: 5px;
-        background-color: #003883;
+        background-color: #3a5c89;
         box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 2px 2px 2px rgb(0 0 0 / 57%);
     }
 
@@ -32,6 +32,9 @@
     .item-ubicacion .ubicaciones-datos .nombre {
         font-weight: 500;
         color: white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .item-ubicacion .ubicaciones-datos .total {
@@ -145,7 +148,7 @@
     .item-producto .producto-datos .imagen img{
         width: 100%;
         height: 100px;
-        object-fit: cover;
+        object-fit: contain;
         border-radius: 10px;
     }
 
@@ -332,13 +335,13 @@
 
         <div id="table-captura-pedidos" class="card mb-4 col-12 col-sm-12 col-md-7 col-lg-8 ml-auto" style="padding: 0;">
 
-            <!-- <div class="card-body container" style="content-visibility: auto; overflow: auto; border-radius: 20px; padding: 2px 10px 0px 10px !important;">
+            <div class="card-body container" style="content-visibility: auto; overflow: auto; border-radius: 20px; padding: 2px 10px 0px 10px !important;">
 
-                <b class="mt-2">Ubicaciones Activas</b>
+                <b class="mt-2">Ubicaciones</b>
 
-                <div style="display: flex; gap: 10px;">
+                <div id="div-item-ubicacion" style="display: flex; gap: 10px;">
 
-                    <div class="item-ubicacion">
+                    <!-- <div class="item-ubicacion">
                         <div class="ubicaciones-datos active">
                             <div class="selected"></div>
                             <div class="nombre">MESA 1</div>
@@ -360,11 +363,11 @@
                             <div class="nombre">MESA 3</div>
                             <div class="total">15.000</div>
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
 
-            </div> -->
+            </div>
 
             <div class="card-body container" style="content-visibility: auto; overflow: auto; border-radius: 20px;">
 

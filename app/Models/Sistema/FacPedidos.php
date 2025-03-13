@@ -27,6 +27,7 @@ class FacPedidos extends Model
         'total_rete_fuente',
         'total_cambio',
         'porcentaje_rete_fuente',
+        'estado',
         'total_factura',
         'created_by',
         'updated_by',

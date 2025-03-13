@@ -35,6 +35,18 @@ function initTablesUbicacion() {
             {"data":'codigo'},
             {"data":'nombre'},
             {"data": function (row, type, set){  
+                if (row.pedido) {
+                    return new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format( row.pedido.total_factura );
+                }
+                return 0;
+            }, className: "column-number", className: 'dt-body-right'},
+            {"data": function (row, type, set){  
+                if (row.pedido) {
+                    return '<span class="badge bg-gradient-primary">Pedido activo</span>'
+                }
+                return '<span class="badge bg-gradient-warning">Sin pedidos</span>'
+            }},
+            {"data": function (row, type, set){  
                 return row.tipo.nombre;
             }},
             {"data": function (row, type, set){  

@@ -21,6 +21,7 @@ use App\Http\Controllers\Traits\BegFacturacionElectronica;
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
+use App\Models\Sistema\Ubicacion;
 use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\FacPedidos;
 use App\Models\Sistema\PlanCuentas;
@@ -97,6 +98,7 @@ class PedidoController extends Controller
             'familias' => FacFamilias::get(),
             'cliente' => Nits::with('vendedor.nit')->where('numero_documento', '222222222222')->first(),
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
+            'ubicaciones' => Ubicacion::with('pedido')->get(),
             'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get(),
             'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : '',
             'vendedores_pedidos' => $vendedorVentas ? $vendedorVentas->valor : ''
@@ -345,7 +347,7 @@ class PedidoController extends Controller
                     'id_cliente' => $request->get('id_cliente'),
                     'id_bodega' => $request->get('id_bodega'),
                     'id_centro_costos' => $this->bodega->id_centro_costos,
-                    'id_ubicacion' => null,
+                    'id_ubicacion' => $request->get('id_ubicacion'),
                     'id_venta' => $venta->id,
                     'id_vendedor' => $request->get('id_vendedor'),
                     'consecutivo' => $request->get('consecutivo_bodegas'),
@@ -667,15 +669,25 @@ class PedidoController extends Controller
     public function find (Request $request)
     {
         try {
+            $pedido = FacPedidos::with(
+                'cliente',
+                'venta',
+                'bodega',
+                'detalles.cuenta_retencion.impuesto',
+                'detalles.producto'
+            );
 
-            $pedido = FacPedidos::with('cliente', 'venta', 'bodega', 'detalles.cuenta_retencion.impuesto', 'detalles.producto')
-                ->where('id_bodega', $request->get('id_bodega'))
-                ->where('consecutivo', $request->get('consecutivo'))
-                ->first();
+            if ($request->get('id_ubicacion')) {
+                $pedido->where('id_ubicacion', $request->get('id_ubicacion'))
+                    ->where('estado', 1);
+            } else {
+                $pedido->where('id_bodega', $request->get('id_bodega'))
+                    ->where('consecutivo', $request->get('consecutivo'));
+            }
 
             return response()->json([
                 "success"=>false,
-                'data' => $pedido,
+                'data' => $pedido->first(),
                 "message"=> 'Información cargada con exito!'
             ], 200);
 
@@ -730,7 +742,7 @@ class PedidoController extends Controller
             'id_cliente' => $request->get('id_cliente'),
             'id_bodega' => $request->get('id_bodega'),
             'id_centro_costos' => $this->bodega->id_centro_costos,
-            'id_ubicacion' => null,
+            'id_ubicacion' => $request->get('id_ubicacion'),
             'id_vendedor' => $request->get('id_vendedor'),
             'consecutivo' => $request->get('consecutivo'),
             'subtotal' => $this->totalesFactura['subtotal'],

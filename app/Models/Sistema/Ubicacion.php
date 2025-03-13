@@ -24,4 +24,10 @@ class Ubicacion extends Model
     {
         return $this->belongsTo(UbicacionTipo::class, "id_ubicacion_tipos");
     }
+
+    public function pedido()
+    {
+        return $this->belongsTo(FacPedidos::class, "id", "id_ubicacion")
+            ->where('estado', 1);
+    }
 }

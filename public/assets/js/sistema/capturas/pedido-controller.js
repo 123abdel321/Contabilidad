@@ -3,10 +3,11 @@ let pagePedidos = 1;
 let pedidoEditando = null;
 let porcentajeRetencionPedidos = 0
 let topeRetencionPedidos = 0
+let id_ubicacion_select = null;
 let $comboBodegaPedidos;
 let $comboClientePedidos;
 let pedidoFinalizado = false;
-let pedidos_table_pagos ;
+let pedidos_table_pagos;
 let bodegaEventoActivo = false;
 var guardandoPedido = false;
 let $comboResolucionPedidos;
@@ -21,6 +22,7 @@ function pedidoInit () {
 
     cargarTablasPedido();
     cargarCombosPedido();
+    cargarUbicacionPedido();
     cargarProductosPedido();
     loadFormasPagoPedidos();
     cargarChangesFunction();
@@ -65,6 +67,39 @@ function pedidoInit () {
 
     $("#searchInputPedidos").on("input", function (e) {
         $('#nitTable').DataTable().search($("#searchInputPedidos").val()).draw();
+    });
+}
+
+function cargarUbicacionPedido() {
+    $.ajax({
+        url: base_url + 'ubicaciones-combo-general',
+        method: 'GET',
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+
+        $("#div-item-ubicacion").empty();
+        id_ubicacion_select = null;
+
+        let dataUbicaciones = res.data;
+        for (let index = 0; index < dataUbicaciones.length; index++) {
+            const ubicaciones = dataUbicaciones[index];
+            const cassUbicacion = ubicaciones.pedido ? 'with' : 'selected';
+            
+            $("#div-item-ubicacion").append(`
+                <div class="item-ubicacion">
+                    <div id="ubicacion-pedido_${ubicaciones.id}" class="ubicaciones-datos">
+                        <div class="${cassUbicacion}"></div>
+                        <div class="nombre">${ubicaciones.nombre}</div>
+                        <div class="total">${new Intl.NumberFormat('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format( ubicaciones.pedido ? ubicaciones.pedido.total_factura : 0 )}</div>
+                    </div>
+                </div>
+            `);
+        }
+    }).fail((err) => {
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 }
 
@@ -280,14 +315,15 @@ function cargarCombosPedido() {
     });
 }
 
-function cargarProductosPedido(query = "", id_familia = null) {
+function cargarProductosPedido(query = "", id_familia = null, clear = true) {
     if (loadingPedidos) return;
     loadingPedidos = true;
 
-    let contenedor = $("#contenedor-productos-pedidos");
-    contenedor.html("");
-
-    agregarProductosLoaging(7);
+    if (clear) {
+        let contenedor = $("#contenedor-productos-pedidos");
+        contenedor.html("");
+        agregarProductosLoaging(7);
+    }
 
     $.ajax({
         url: base_url + 'producto/combo-producto',
@@ -300,7 +336,7 @@ function cargarProductosPedido(query = "", id_familia = null) {
         }
     }).done((res) => {
         if (res.data.length > 0) {
-            mostrarProductos(res.data);
+            mostrarProductos(res.data, clear);
             $("#count-productos-pedidos").html('Productos: '+res.total);
         } else {
             let contenedor = $("#contenedor-productos-pedidos");
@@ -343,16 +379,18 @@ function agregarProductosLoaging(total) {
     }
 }
 
-function mostrarProductos (listaProductos) {
+function mostrarProductos (listaProductos, clear) {
 
-    let contenedor = $("#contenedor-productos-pedidos");
-    contenedor.html("");
+    if (clear) {
+        let contenedor = $("#contenedor-productos-pedidos");
+        contenedor.html("");
+    }
 
     listaProductos.forEach(producto => {
-
-        let imagenSrc = producto.imagen || 'https://kzmlujhyhk8xlnk9h654.lite.vusercontent.net/placeholder.svg?height=80&width=80';
-        let classInventario = producto.inventarios.length ? 'bg-gradient-info' : 'bg-gradient-warning';
-        let textoInventario = producto.inventarios.length ? 'Sin Stock' : `INV: ${producto.inventarios.length}`;
+        let cantidadInv = producto.inventarios.length ? parseInt(producto.inventarios[0].cantidad) : 0
+        let imagenSrc = producto.imagen ? bucketUrl+producto.imagen : 'https://kzmlujhyhk8xlnk9h654.lite.vusercontent.net/placeholder.svg?height=80&width=80';
+        let classInventario = cantidadInv > 0 ? 'bg-gradient-info' : 'bg-gradient-warning';
+        let textoInventario = `INV: ${cantidadInv}`;
 
         let productoJson = encodeURIComponent(JSON.stringify(producto));
         
@@ -855,6 +893,7 @@ function savePedidoVenta() {
     let data = {
         pagos: getPedidosPagos(),
         productos: productosPedidos,
+        id_ubicacion: id_ubicacion_select,
         id_bodega: $("#id_bodega_pedido").val(),
         consecutivo_bodegas: $("#consecutivo_bodegas_pedidos").val(),
         id_cliente: $("#id_cliente_pedido").val(),
@@ -899,6 +938,7 @@ function savePedidoVenta() {
             consecutivoSiguienteBodegaPedido();
             loadAnticiposClientePedido();
             disabledFormasPagoPedido();
+            cargarUbicacionPedido();
             productosPedidos = [];
             
 
@@ -1031,14 +1071,17 @@ function validateSavePedido() {
 }
 
 function pressConcecutivoPedidos(event) {
-
     if(event.keyCode != 13) return;
+    buscarPedidos();
+}
 
+function buscarPedidos() {
     $("#consecutivo_bodegas_pedidos").prop('disabled', true);
 
     let data = {
         id_bodega: $("#id_bodega_pedido").val(),
-        consecutivo: $("#consecutivo_bodegas_pedidos").val()
+        consecutivo: $("#consecutivo_bodegas_pedidos").val(),
+        id_ubicacion: id_ubicacion_select
     }
 
     $.ajax({
@@ -1151,8 +1194,8 @@ function pressConcecutivoPedidos(event) {
 
         bodegaEventoActivo = false;
         mostrarValoresPedidos();
-
-        if (pedido.venta) {
+        
+        if (pedido.id_venta) {
             pedidoFinalizado = true;
             $("#crearCapturaVentaPedidosDisabled").show();
             $("#crearCapturaPedidosLoading").hide();
@@ -1215,6 +1258,7 @@ $(document).on('click', '#crearCapturaPedidos', function () {
 
     let data = {
         productos: productosPedidos,
+        id_ubicacion: id_ubicacion_select,
         id_bodega: $("#id_bodega_pedido").val(),
         consecutivo: $("#consecutivo_bodegas_pedidos").val(),
         id_cliente: $("#id_cliente_pedido").val(),
@@ -1278,6 +1322,7 @@ $(document).on('click', '#crearCapturaPedidos', function () {
             $("#lista_productos_seleccionados").empty();
             consecutivoSiguienteBodegaPedido();
             loadAnticiposClientePedido();
+            cargarUbicacionPedido();
             productosPedidos = [];
 
         } else {
@@ -1318,8 +1363,19 @@ $(document).on('click', '.limpiar-filtros-pedidos', function () {
     filtrarProductosPedidos();
 });
 
+$(document).on('click', '.ubicaciones-datos', function () {
+    var id = this.id.split('_')[1];
+
+    if (id_ubicacion_select == id) id_ubicacion_select = null;//LIMPIAR SI DA CLICK AL MISMO ITEM
+    else id_ubicacion_select = id; //SELECCIONAR ITEM
+
+    $(".ubicaciones-datos").removeClass('active');
+    if (id_ubicacion_select) $("#ubicacion-pedido_"+id_ubicacion_select).addClass('active');
+    buscarPedidos();
+});
+
 contenedorPedidos.on("scroll", function () {
     if (contenedorPedidos.scrollTop() + contenedorPedidos.innerHeight() >= contenedorPedidos[0].scrollHeight - 50) {
-        cargarProductosPedido();
+        cargarProductosPedido(null, null, false);
     }
 });

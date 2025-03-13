@@ -49,7 +49,8 @@ class UbicacionesController extends Controller
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
-        $ubicaciones = Ubicacion::orderBy($columnName,$columnSortOrder)
+        $ubicaciones = Ubicacion::with('pedido')
+            ->orderBy($columnName,$columnSortOrder)
             ->with('tipo')
             ->select(
                 '*',
@@ -198,6 +199,21 @@ class UbicacionesController extends Controller
     public function combo (Request $request)
     {
         $ubicacionesTipo = UbicacionTipo::select(
+            \DB::raw('*'),
+            \DB::raw("CONCAT(nombre) as text")
+        );
+
+        if ($request->get("search")) {
+            $ubicacionesTipo->where('nombre', 'LIKE', '%' . $request->get("search") . '%');
+        }
+
+        return $ubicacionesTipo->paginate(40);
+    }
+
+    public function comboUbicacion (Request $request)
+    {
+        $ubicacionesTipo = Ubicacion::with('pedido')
+        ->select(
             \DB::raw('*'),
             \DB::raw("CONCAT(nombre) as text")
         );

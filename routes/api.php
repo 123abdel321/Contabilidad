@@ -373,6 +373,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('ubicaciones', 'create');
             Route::put('ubicaciones', 'update');
             Route::delete('ubicaciones', 'delete');
+            Route::get('ubicaciones-combo-general', 'comboUbicacion');
         });
         
         
