@@ -22,6 +22,7 @@ use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\FacBodegas;
+use App\Models\Sistema\FacPedidos;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\FacFamilias;
 use App\Models\Sistema\FacProductos;
@@ -31,6 +32,7 @@ use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Sistema\FacVentaDetalles;
+use App\Models\Sistema\FacPedidoDetalles;
 use App\Models\Sistema\DocumentosGeneral;
 use App\Models\Sistema\FacProductosBodegas;
 use App\Models\Sistema\FacProductosBodegasMovimiento;
@@ -102,6 +104,153 @@ class PedidoController extends Controller
 
         return view('pages.capturas.pedido.pedido-view', $data);
     }
+    
+    public function create (Request $request)
+    {
+        $rules = [
+            'id_cliente' => 'required|exists:sam.nits,id',
+            'id_bodega' => 'required|exists:sam.fac_bodegas,id',
+            'consecutivo' => 'required|string',
+            'productos' => 'array|required',
+            'productos.*.id_producto' => [
+                'required',
+                'exists:sam.fac_productos,id',
+                function ($attribute, $value, $fail) {
+					$producto = FacProductos::whereId($value)
+                        ->with('familia')
+                        ->first();
+
+                    if (!$producto->familia->id_cuenta_venta) {
+                        $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta venta configurada");
+                    }
+				}
+            ],
+            'productos.*.cantidad' => 'required|numeric|min:1',
+            'productos.*.costo' => 'required|min:0',
+            'productos.*.descuento_porcentaje' => 'required|numeric|min:0|max:100',
+            'productos.*.descuento_valor' => 'required|numeric|min:0',
+            'productos.*.iva_porcentaje' => 'required|numeric|min:0|max:100',
+            'productos.*.iva_valor' => 'required|numeric|min:0',
+            'productos.*.total' => 'required|numeric|min:0',
+            'productos.*.concepto' => 'nullable',
+        ];
+        
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+        $pedidoEditado = null;
+
+        if (!$request->get('id_pedido')) {
+            $consecutivo = $this->getNextConsecutiveBodega($request->get('id_bodega'));
+    
+            $request->request->add([
+                'consecutivo' => $consecutivo
+            ]);
+        } else {
+            $pedidoEditado =  FacPedidos::where('id', $request->get('id_pedido'))->first();
+        }
+
+        if ($pedidoEditado && $pedidoEditado->id_venta) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>["Pedido" => ["El pedido ya ha sido facturado"]]
+            ], 422);
+        }
+        
+        $request->all();
+        $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
+
+        try {
+            DB::connection('sam')->beginTransaction();
+
+            if ($request->get('id_pedido')) {
+                $pedidoEditado->detalles()->delete();
+                $pedidoEditado->delete();
+            }
+
+            //CREAR FACTURA PEDIDO
+            $pedido = $this->createPedidoVenta($request);
+            
+            //AGREGAR DETALLE DE PRODUCTOS
+            foreach ($request->get('productos') as $producto) {
+                $producto = (object)$producto;
+                $nit = $this->findCliente($pedido->id_cliente);
+                $productoDb = $this->findProducto($producto->id_producto);
+                $producto->costo_total = $productoDb->precio_inicial * $producto->cantidad;
+
+                //AGREGAR MOVIMIENTO BODEGA
+                $bodegaProducto = FacProductosBodegas::where('id_bodega', $this->bodega->id)
+                    ->where('id_producto', $producto->id_producto)
+                    ->first();
+                    
+                if (
+                    $productoDb->familia->inventario &&
+                    $bodegaProducto &&
+                    $producto->cantidad > $bodegaProducto->cantidad &&
+                    !request()->user()->can('venta negativa')
+                ) {
+
+                    DB::connection('sam')->rollback();
+                    return response()->json([
+                        "success"=>false,
+                        'data' => [],
+                        "message"=> ['Cantidad bodega' => ['La cantidad del producto '.$productoDb->codigo. ' - ' .$productoDb->nombre. ' supera la cantidad en bodega']]
+                    ], 422);
+                }
+
+                //CREAR PEDIDO DETALLE
+                FacPedidoDetalles::create([
+                    'id_pedido' => $pedido->id,
+                    'id_producto' => $productoDb->id,
+                    'id_cuenta_venta' => $productoDb->familia->id_cuenta_venta,
+                    'id_cuenta_venta_retencion' => $productoDb->familia->id_cuenta_venta_retencion,
+                    'id_cuenta_venta_iva' => $productoDb->familia->id_cuenta_venta_iva,
+                    'id_cuenta_venta_descuento' => $productoDb->familia->id_cuenta_venta_descuento,
+                    'descripcion' => $productoDb->codigo.' - '.$productoDb->nombre,
+                    'cantidad' => $producto->cantidad,
+                    'costo' => $producto->costo,
+                    'subtotal' => $producto->costo * $producto->cantidad,
+                    'descuento_porcentaje' => $producto->descuento_porcentaje,
+                    'descuento_valor' => $producto->descuento_valor,
+                    'iva_porcentaje' => $producto->iva_porcentaje,
+                    'iva_valor' => $producto->iva_valor,
+                    'total' => $producto->total,
+                    'observacion' => $producto->concepto,
+                    'created_by' => request()->user()->id,
+                    'updated_by' => request()->user()->id
+                ]);
+            }
+
+            if (!$request->get('id_pedido')) {
+                $this->updateConsecutivoBodega($request->get('id_bodega'), $request->get('consecutivo'));
+            }
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+				'success'=>	true,
+				'data' => null,
+				'message'=> 'Pedido guardado con exito!'
+			], 200);
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
 
     public function venta (Request $request)
     {
@@ -137,7 +286,7 @@ class PedidoController extends Controller
             'pagos.*.id' => 'required|exists:sam.fac_formas_pagos,id',
             'pagos.*.valor' => 'required|numeric|min:1',
         ];
-
+        
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
 		if ($validator->fails()){
@@ -145,6 +294,21 @@ class PedidoController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
+            ], 422);
+        }
+
+        $pedido = null;
+        $nuevoPedido = false;
+
+        if ($request->get('id_pedido')) {
+            $pedido = FacPedidos::where('id', $request->get('id_pedido'))->first();
+        }
+        
+        if ($pedido && $pedido->id_venta) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>["Pedido" => ["El pedido ya ha sido facturado"]]
             ], 422);
         }
 
@@ -173,6 +337,30 @@ class PedidoController extends Controller
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA VENTA
             $venta = $this->createFacturaVenta($request);
+            
+            //CREAR FACTURA PEDIDO
+            if (!$pedido) {
+                $nuevoPedido = true;
+                $pedido = FacPedidos::create([
+                    'id_cliente' => $request->get('id_cliente'),
+                    'id_bodega' => $request->get('id_bodega'),
+                    'id_centro_costos' => $this->bodega->id_centro_costos,
+                    'id_ubicacion' => null,
+                    'id_venta' => $venta->id,
+                    'id_vendedor' => $request->get('id_vendedor'),
+                    'consecutivo' => $request->get('consecutivo_bodegas'),
+                    'subtotal' => $this->totalesFactura['subtotal'],
+                    'total_iva' => $this->totalesFactura['total_iva'],
+                    'total_descuento' => $this->totalesFactura['total_descuento'],
+                    'total_rete_fuente' => $this->totalesFactura['total_rete_fuente'],
+                    'porcentaje_rete_fuente' => $this->totalesFactura['porcentaje_rete_fuente'],
+                    'total_factura' => $this->totalesFactura['total_factura'],
+                    'observacion' => $request->get('observacion'),
+                    'estado' => 2,
+                    'created_by' => request()->user()->id,
+                    'updated_by' => request()->user()->id,
+                ]);
+            }
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE VENTAS
             $documentoGeneral = new Documento(
@@ -230,6 +418,30 @@ class PedidoController extends Controller
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
+
+                //CREAR PEDIDO DETALLE
+                if ($nuevoPedido) {
+                    FacPedidoDetalles::create([
+                        'id_pedido' => $pedido->id,
+                        'id_producto' => $productoDb->id,
+                        'id_cuenta_venta' => $productoDb->familia->id_cuenta_venta,
+                        'id_cuenta_venta_retencion' => $productoDb->familia->id_cuenta_venta_retencion,
+                        'id_cuenta_venta_iva' => $productoDb->familia->id_cuenta_venta_iva,
+                        'id_cuenta_venta_descuento' => $productoDb->familia->id_cuenta_venta_descuento,
+                        'descripcion' => $productoDb->codigo.' - '.$productoDb->nombre,
+                        'cantidad' => $producto->cantidad,
+                        'costo' => $producto->costo,
+                        'subtotal' => $producto->costo * $producto->cantidad,
+                        'descuento_porcentaje' => $producto->descuento_porcentaje,
+                        'descuento_valor' => $producto->descuento_valor,
+                        'iva_porcentaje' => $producto->iva_porcentaje,
+                        'iva_valor' => $producto->iva_valor,
+                        'total' => $producto->total,
+                        'observacion' => $producto->concepto,
+                        'created_by' => request()->user()->id,
+                        'updated_by' => request()->user()->id
+                    ]);
+                }
 
                 //AGREGAR MOVIMIENTO CONTABLE
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
@@ -379,7 +591,8 @@ class PedidoController extends Controller
             }
 
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
-
+            if ($nuevoPedido) $this->updateConsecutivoBodega($request->get('id_bodega'), $request->get('consecutivo_bodegas'));
+            
             if (!$documentoGeneral->save()) {
 
 				DB::connection('sam')->rollback();
@@ -389,6 +602,14 @@ class PedidoController extends Controller
 					'message'=> $documentoGeneral->getErrors()
 				], 422);
 			}
+
+            if ($request->get('id_pedido')) {
+                FacPedidos::where('id', $request->get('id_pedido'))
+                    ->update([
+                        'id_venta' => $venta->id,
+                        'estado' => 2
+                    ]);
+            }
 
             //FACTURAR ELECTRONICAMENTE
             if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
@@ -443,6 +664,30 @@ class PedidoController extends Controller
         }
     }
 
+    public function find (Request $request)
+    {
+        try {
+
+            $pedido = FacPedidos::with('cliente', 'venta', 'bodega', 'detalles.cuenta_retencion.impuesto', 'detalles.producto')
+                ->where('id_bodega', $request->get('id_bodega'))
+                ->where('consecutivo', $request->get('consecutivo'))
+                ->first();
+
+            return response()->json([
+                "success"=>false,
+                'data' => $pedido,
+                "message"=> 'Información cargada con exito!'
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => $pedido,
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
     private function createFacturaVenta ($request)
     {
         $this->calcularTotales($request->get('productos'));
@@ -473,6 +718,34 @@ class PedidoController extends Controller
         ]);
 
         return $venta;
+    }
+
+    private function createPedidoVenta ($request)
+    {
+        $this->calcularTotales($request->get('productos'));
+
+        $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
+        
+        $pedido = FacPedidos::create([
+            'id_cliente' => $request->get('id_cliente'),
+            'id_bodega' => $request->get('id_bodega'),
+            'id_centro_costos' => $this->bodega->id_centro_costos,
+            'id_ubicacion' => null,
+            'id_vendedor' => $request->get('id_vendedor'),
+            'consecutivo' => $request->get('consecutivo'),
+            'subtotal' => $this->totalesFactura['subtotal'],
+            'total_iva' => $this->totalesFactura['total_iva'],
+            'total_descuento' => $this->totalesFactura['total_descuento'],
+            'total_rete_fuente' => $this->totalesFactura['total_rete_fuente'],
+            'porcentaje_rete_fuente' => $this->totalesFactura['porcentaje_rete_fuente'],
+            'total_factura' => $this->totalesFactura['total_factura'],
+            'observacion' => $request->get('observacion'),
+            'estado' => 1,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id,
+        ]);
+
+        return $pedido;
     }
 
     private function calcularTotales ($productos)

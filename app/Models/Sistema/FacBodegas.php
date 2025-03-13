@@ -20,6 +20,7 @@ class FacBodegas extends Model
         'id_centro_costos',
         'id_cuenta_cartera',
         'id_responsable',
+        'consecutivo',
         'created_by',
         'updated_by',
     ];

@@ -1,9 +1,13 @@
+let timerBusquedaPedidos;
 let pagePedidos = 1;
+let pedidoEditando = null;
 let porcentajeRetencionPedidos = 0
 let topeRetencionPedidos = 0
 let $comboBodegaPedidos;
 let $comboClientePedidos;
+let pedidoFinalizado = false;
 let pedidos_table_pagos ;
+let bodegaEventoActivo = false;
 var guardandoPedido = false;
 let $comboResolucionPedidos;
 let $comboVendedorPedidos;
@@ -19,6 +23,7 @@ function pedidoInit () {
     cargarCombosPedido();
     cargarProductosPedido();
     loadFormasPagoPedidos();
+    cargarChangesFunction();
 
     if(primeraBodegaPedido && primeraBodegaPedido.length > 0){
         var dataBodega = {
@@ -57,6 +62,42 @@ function pedidoInit () {
             $comboClientePedidos.select2("open");
         },10);
     }
+
+    $("#searchInputPedidos").on("input", function (e) {
+        $('#nitTable').DataTable().search($("#searchInputPedidos").val()).draw();
+    });
+}
+
+function filtrarProductosPedidos(id_familia) {
+    clearTimeout(timerBusquedaPedidos);
+
+    $(".familia-filter-pedidos").removeClass("bg-gradient-dark");
+    $(".familia-filter-pedidos").removeClass("bg-gradient-light");
+    $(".familia-filter-pedidos").addClass("bg-gradient-light");
+
+    if (id_familia) {
+        $("#filter-familias-pedido-"+id_familia).removeClass("bg-gradient-light");
+        $("#filter-familias-pedido-"+id_familia).addClass("bg-gradient-dark");
+    } else {
+        $("#filter-familias-pedido").removeClass("bg-gradient-light");
+        $("#filter-familias-pedido").addClass("bg-gradient-dark");
+    }
+
+    timerBusquedaPedidos = setTimeout(() => {
+        let busqueda = $("#searchInputPedidos").val().trim();
+        cargarProductosPedido(busqueda, id_familia); // Llama a la API con el texto ingresado
+    }, 200); // Espera 500ms antes de hacer la petición
+}
+
+function cargarChangesFunction() {
+    $("#id_resolucion_pedido").on('change', function(event) {
+        consecutivoSiguientePedido();
+    });
+    
+    $("#id_bodega_pedido").on('change', function(event) {
+        if (bodegaEventoActivo) return;
+        consecutivoSiguienteBodegaPedido();
+    });
 }
 
 function cargarTablasPedido() {
@@ -239,46 +280,37 @@ function cargarCombosPedido() {
     });
 }
 
-function cargarProductosPedido() {
+function cargarProductosPedido(query = "", id_familia = null) {
     if (loadingPedidos) return;
     loadingPedidos = true;
+
+    let contenedor = $("#contenedor-productos-pedidos");
+    contenedor.html("");
+
+    agregarProductosLoaging(7);
 
     $.ajax({
         url: base_url + 'producto/combo-producto',
         method: 'GET',
         headers: headers,
         dataType: 'json',
+        data: {
+            query: query,
+            id_familia: id_familia
+        }
     }).done((res) => {
         if (res.data.length > 0) {
-            res.data.forEach(producto => {
-
-                let imagenSrc = 'https://kzmlujhyhk8xlnk9h654.lite.vusercontent.net/placeholder.svg?height=80&width=80';
-                let classInventario = 'bg-gradient-warning';
-                let textoInventario = `INV: ${producto.inventarios.length}`;
-
-                if (producto.imagen) imagenSrc = producto.imagen;
-                if (producto.inventarios.length) {
-                    classInventario = 'bg-gradient-info';
-                    textoInventario = 'Sin Stock'
-                }
-
-                let productoJson = encodeURIComponent(JSON.stringify(producto));
-                
-                $("#contenedor-productos-pedidos").append(`
-                    <div class="item-producto" onclick="seleccionarProducto(this)" data-producto="${productoJson}">
-                        <div class="producto-datos" style="">
-                            <div class="imagen">
-                                <img src="${imagenSrc}">
-                            </div>
-                            <div class="nombre">${producto.nombre}</div>
-                            <div class="precio">${producto.precio}</div>
-                            <div class="inventario">
-                                <span class="badge ${classInventario}">${textoInventario}</span>
-                            </div>
-                        </div>
-                    </div>
-                `);
-            });
+            mostrarProductos(res.data);
+            $("#count-productos-pedidos").html('Productos: '+res.total);
+        } else {
+            let contenedor = $("#contenedor-productos-pedidos");
+            contenedor.html(`
+                <div style=" font-size: 20px; padding: 60px; text-align: -webkit-center;">
+                    SIN PRODUCTOS ENCONTRADOS
+                    <br/>
+                    <button type="button" class="btn btn-sm btn-outline-info limpiar-filtros-pedidos">Limpiar filtros</button>
+                </div>
+            `);
         }
 
         pagePedidos++;
@@ -288,6 +320,56 @@ function cargarProductosPedido() {
         var mensaje = err.responseJSON.message;
         var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Creación errada', errorsMsg);
+    });
+}
+
+function agregarProductosLoaging(total) {
+    for (let index = 0; index < total; index++) {
+        $("#contenedor-productos-pedidos").append(`
+            <div class="item-producto" onclick="seleccionarProducto(this)">
+                <div class="producto-datos" style="">
+                    <div class="imagen">
+                        <div class="placeholder" style="width: 100%; height: 100px; border-radius: 10px;"></div>
+                    </div>
+                    <p class="card-text placeholder-glow" style="height: 75px; border-radius: 2px;">
+                        <span class="placeholder" style="font-size: 10px; width: 90%; margin-top: -10px; margin-left: 5px; border-radius: 2px;"></span>
+                        <span class="placeholder" style="font-size: 10px; width: 90%; margin-top: -25px; margin-left: 5px;border-radius: 2px;"></span>
+                        <span class="placeholder" style="font-size: 10px; width: 60%; margin-top: -40px; margin-left: 19px; border-radius: 5px;"></span>
+                        <span class="placeholder" style="font-size: 13px; width: 80%; margin-top: -50px; margin-left: 9px; border-radius: 5px;"></span>
+                    </p>
+                </div>
+            </div>
+        `);
+    }
+}
+
+function mostrarProductos (listaProductos) {
+
+    let contenedor = $("#contenedor-productos-pedidos");
+    contenedor.html("");
+
+    listaProductos.forEach(producto => {
+
+        let imagenSrc = producto.imagen || 'https://kzmlujhyhk8xlnk9h654.lite.vusercontent.net/placeholder.svg?height=80&width=80';
+        let classInventario = producto.inventarios.length ? 'bg-gradient-info' : 'bg-gradient-warning';
+        let textoInventario = producto.inventarios.length ? 'Sin Stock' : `INV: ${producto.inventarios.length}`;
+
+        let productoJson = encodeURIComponent(JSON.stringify(producto));
+        
+        $("#contenedor-productos-pedidos").append(`
+            <div class="item-producto" onclick="seleccionarProducto(this)" data-producto="${productoJson}">
+                <div class="producto-datos" style="">
+                    <div class="imagen">
+                        <img src="${imagenSrc}">
+                    </div>
+                    <div class="nombre">${producto.nombre}</div>
+                    <div class="precio">${producto.precio}</div>
+                    <div class="inventario">
+                        <span class="badge ${classInventario}">${textoInventario}</span>
+                    </div>
+                </div>
+            </div>
+        `);
     });
 }
 
@@ -303,6 +385,9 @@ function loadFormasPagoPedidos() {
 }
 
 function seleccionarProducto(element) {
+
+    if (pedidoFinalizado) return;
+
     let productoJson = element.getAttribute("data-producto"); // Obtener el JSON desde el atributo
     let producto = JSON.parse(decodeURIComponent(productoJson)); // Convertirlo en un objeto
 
@@ -316,11 +401,11 @@ function seleccionarProducto(element) {
     let ivaValor = 0;
 
     //OBTENER IVA DEL PRODUCTO
-    if (producto.familia.cuenta_venta_iva && producto.familia.cuenta_venta_iva.impuesto) {
+    if (producto.familia && producto.familia.cuenta_venta_iva && producto.familia.cuenta_venta_iva.impuesto) {
         ivaPorcentaje = parseFloat(producto.familia.cuenta_venta_iva.impuesto.porcentaje);
     }
     //OBTENER RETE-FUENTE DEL PRODUCTO
-    if (producto.familia.cuenta_venta_retencion && producto.familia.cuenta_venta_retencion.impuesto) {
+    if (producto.familia && producto.familia.cuenta_venta_retencion && producto.familia.cuenta_venta_retencion.impuesto) {
         var impuestoPorcentaje = parseFloat(producto.familia.cuenta_venta_retencion.impuesto.porcentaje);
         var topeValor = parseFloat(producto.familia.cuenta_venta_retencion.impuesto.base);
         if (impuestoPorcentaje > porcentajeRetencionPedidos) {
@@ -724,6 +809,37 @@ function consecutivoSiguientePedido() {
     }
 }
 
+function consecutivoSiguienteBodegaPedido() {
+    var id_bodega = $('#id_bodega_pedido').val();
+
+    if(id_bodega) {
+
+        $("#consecutivo_bodegas_pedidos").prop('disabled', true);
+
+        let data = {
+            id_bodega: id_bodega,
+        }
+
+        $.ajax({
+            url: base_url + 'bodega-consecutivo',
+            method: 'GET',
+            data: data,
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            $("#consecutivo_bodegas_pedidos").prop('disabled', false);
+            if(res.success){
+                $("#consecutivo_bodegas_pedidos").val(res.data);
+            }
+        }).fail((err) => {
+            $("#consecutivo_bodegas_pedidos").prop('disabled', false);
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
+        });
+    }
+}
+
 function savePedidoVenta() {
 
     var form = document.querySelector('#pedidosVentasForm');
@@ -740,11 +856,12 @@ function savePedidoVenta() {
         pagos: getPedidosPagos(),
         productos: productosPedidos,
         id_bodega: $("#id_bodega_pedido").val(),
+        consecutivo_bodegas: $("#consecutivo_bodegas_pedidos").val(),
         id_cliente: $("#id_cliente_pedido").val(),
         fecha_manual: $("#fecha_manual_pedido").val(),
         id_resolucion: $("#id_resolucion_pedido").val(),
         id_vendedor: null,
-        id_pedido: null,
+        id_pedido: pedidoEditando,
         consecutivo: $("#consecutivo_pedido").val(),
         observacion: $("#observacion_pedido").val(),
     };
@@ -765,21 +882,25 @@ function savePedidoVenta() {
 
             $("#savePedidos").show();
             $("#savePedidosLoading").hide();
+            $("#pedidosFormModal").modal('hide');
 
             if(res.impresion) {
                 window.open("/ventas-print/"+res.impresion, '_blank');
             }
+
             consecutivoPedidos = 0;
 
             setTimeout(function(){
                 $('#id_cliente_pedido').focus();
                 $comboClientePedidos.select2("open");
             },10);
-
-            $("#pedidosFormModal").modal('hide');
             
+            $("#lista_productos_seleccionados").empty();
+            consecutivoSiguienteBodegaPedido();
             loadAnticiposClientePedido();
             disabledFormasPagoPedido();
+            productosPedidos = [];
+            
 
         } else {
             var mensaje = res.mensages;
@@ -909,16 +1030,169 @@ function validateSavePedido() {
     }
 }
 
+function pressConcecutivoPedidos(event) {
 
-$("#id_resolucion_pedido").on('change', function(event) {
-    consecutivoSiguientePedido();
-});
+    if(event.keyCode != 13) return;
+
+    $("#consecutivo_bodegas_pedidos").prop('disabled', true);
+
+    let data = {
+        id_bodega: $("#id_bodega_pedido").val(),
+        consecutivo: $("#consecutivo_bodegas_pedidos").val()
+    }
+
+    $.ajax({
+        url: base_url + 'pedido',
+        method: 'GET',
+        data: data,
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+
+        $("#consecutivo_bodegas_pedidos").prop('disabled', false);
+
+        productosPedidos = [];
+        pedidoFinalizado = false;
+        $("#lista_productos_seleccionados").empty();
+
+        if (!res.data) {
+            pedidoEditando = null;
+            return;
+        }
+
+        const pedido = res.data
+        const detalles = pedido.detalles;
+
+        if(pedido.bodega) {
+            bodegaEventoActivo = true;
+            var dataBodega = {
+                id: pedido.bodega.id,
+                text: pedido.bodega.codigo+' - '+pedido.bodega.nombre
+            };
+            var newOption = new Option(dataBodega.text, dataBodega.id, false, false);
+            $comboBodegaPedidos.append(newOption).trigger('change');
+            $comboBodegaPedidos.val(dataBodega.id).trigger('change');
+        }
+
+        if(pedido.cliente) {
+            var dataCliente = {
+                id: pedido.cliente.id,
+                text: pedido.cliente.numero_documento+' - '+pedido.cliente.nombre_completo
+            };
+            var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
+            $comboClientePedidos.append(newOption).trigger('change');
+            $comboClientePedidos.val(dataCliente.id).trigger('change');
+        }
+
+        pedidoEditando = pedido.id;
+
+        for (let index = 0; index < detalles.length; index++) {
+            const producto = detalles[index];
+            
+            consecutivoPedidos++;
+
+            var impuestoPorcentaje = parseFloat(producto.cuenta_retencion.impuesto.porcentaje);
+            var topeValor = parseFloat(producto.cuenta_retencion.impuesto.base);
+
+            if (impuestoPorcentaje > porcentajeRetencionPedidos) {
+                porcentajeRetencionPedidos = impuestoPorcentaje;
+                topeRetencionPedidos = topeValor;
+            }
+            
+            productosPedidos.push({
+                consecutivo: consecutivoPedidos,
+                id_producto: producto.id,
+                cantidad: parseFloat(producto.cantidad),
+                costo: parseFloat(producto.costo),
+                subtotal: parseFloat(producto.subtotal),
+                descuento_porcentaje: parseFloat(producto.descuento_porcentaje),
+                descuento_valor: parseFloat(producto.descuento_valor),
+                iva_porcentaje: parseFloat(producto.iva_porcentaje),
+                iva_valor: parseFloat(producto.iva_valor),
+                total: parseFloat(producto.total),
+                concepto: producto.observacion,
+            });
+
+            letProductoCantidad = `
+                <div class="col-3 cantidad">
+                    <div id="quitar_producto_${consecutivoPedidos}" class="quitar" onclick="restarCantidadPedido(${consecutivoPedidos})"><i class="fas fa-minus"></i></div>
+                        <input id="cantidad_producto_${consecutivoPedidos}" class="button-cantidad-producto" type="text" value="${parseInt(producto.cantidad)}" onfocus="this.select();">
+                    <div id="agregar_producto_${consecutivoPedidos}" class="agregar" onclick="sumarCantidadPedido(${consecutivoPedidos})"><i class="fas fa-plus"></i></div>
+                </div>
+                <div id="eliminar_producto_${consecutivoPedidos}" class="col-2 eliminar" onclick="eliminarProductoPedido(${consecutivoPedidos})"><i class="fas fa-trash-alt"></i></div>
+                `;
+
+            if (pedido.id_venta) {
+                letProductoCantidad = `<div class="col-5" style="place-content: center;">
+                    <div style="text-align: center; font-weight: bold; font-size: 20px; color: lightseagreen;">
+                        Cant: ${parseInt(producto.cantidad)}
+                    </div>
+                </div>`
+            }
+            // pedido.venta
+
+            $("#lista_productos_seleccionados").append(`
+                <div id="list_group_item_${consecutivoPedidos}" class="list-group-item">
+                    <div class="row" style="width: 100%; margin: 0px;">
+                        <div class="col-12 nombre">
+                            ${producto.producto.nombre}
+                        </div>
+                    </div>
+                    <div class="row" style="width: 100%; margin: 0px;">
+                        <div class="col-7 precio">
+                            <div id="precio_producto_${consecutivoPedidos}" style="margin-bottom: 0px; font-weight: 600; font-size: 12px; color: #939393;">Precio: ${new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(producto.costo)}</div>
+                            <div id="total_producto_${consecutivoPedidos}" style="margin-bottom: 0px; font-weight: bold; font-size: 13px;">Total: ${new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(producto.total)}</div>
+                        </div>
+                        ${letProductoCantidad}
+                    </div>
+                </div>`
+            );
+        }
+
+        bodegaEventoActivo = false;
+        mostrarValoresPedidos();
+
+        if (pedido.venta) {
+            pedidoFinalizado = true;
+            $("#crearCapturaVentaPedidosDisabled").show();
+            $("#crearCapturaPedidosLoading").hide();
+            $("#crearCapturaPedidosDisabled").show();
+            $("#crearCapturaVentaPedidos").hide();
+            $("#crearCapturaPedidos").hide();
+        }
+
+    }).fail((res) => {
+        $("#consecutivo_bodegas_pedidos").prop('disabled', false);
+    });
+}
 
 $(document).on('click', '#crearCapturaVentaPedidos', function () {
-    var form = document.querySelector('#pedidoFilterForm');
 
-    if(!form.checkValidity()){
-        form.classList.add('was-validated');
+    $('#id_cliente_pedido').removeClass("is-invalid");
+    $('#id_bodega_pedido').removeClass("is-invalid");
+    $('#consecutivo_bodegas_pedidos').removeClass("is-invalid");
+
+    let isValit = true;
+    const id_bodega = $("#id_bodega_pedido").val();
+    const consecutivo = $("#consecutivo_bodegas_pedidos").val();
+    const id_cliente = $("#id_cliente_pedido").val();
+
+    if (!id_cliente) {
+        isValit = false;
+        $('#id_cliente_pedido').addClass("is-invalid");
+    }
+
+    if (!id_bodega) {
+        isValit = false;
+        $('#id_bodega_pedido').addClass("is-invalid");
+    }
+
+    if (!consecutivo) {
+        isValit = false;
+        $('#consecutivo_bodegas_pedidos').addClass("is-invalid");
+    }
+
+    if (!isValit) {
         return;
     }
 
@@ -931,8 +1205,117 @@ $(document).on('click', '#crearCapturaVentaPedidos', function () {
     $("#pedidosFormModal").modal('show');
 });
 
+$(document).on('click', '#crearCapturaPedidos', function () {
+
+    let = isValit = true;
+
+    $('#id_bodega_pedido').removeClass("is-invalid");
+    $('#id_cliente_pedido').removeClass("is-invalid");
+    $('#consecutivo_bodegas_pedidos').removeClass("is-invalid");
+
+    let data = {
+        productos: productosPedidos,
+        id_bodega: $("#id_bodega_pedido").val(),
+        consecutivo: $("#consecutivo_bodegas_pedidos").val(),
+        id_cliente: $("#id_cliente_pedido").val(),
+        fecha_manual: $("#fecha_manual_pedido").val(),
+        id_resolucion: $("#id_resolucion_pedido").val(),
+        id_vendedor: null,
+        id_pedido: pedidoEditando,
+        observacion: $("#observacion_pedido").val(),
+    };
+
+    if (!data.id_cliente) {
+        isValit = false;
+        $('#id_cliente_pedido').addClass("is-invalid");
+    }
+
+    if (!data.id_bodega) {
+        isValit = false;
+        $('#id_bodega_pedido').addClass("is-invalid");
+    }
+
+    if (!data.consecutivo) {
+        isValit = false;
+        $('#consecutivo_bodegas_pedidos').addClass("is-invalid");
+    }
+
+    if (!isValit) {
+        return;
+    }
+
+    $("#crearCapturaVentaPedidosDisabled").show();
+    $("#crearCapturaPedidosLoading").show();
+    $("#crearCapturaPedidosDisabled").hide();
+    $("#crearCapturaVentaPedidos").hide();
+    $("#crearCapturaPedidos").hide();
+
+    $.ajax({
+        url: base_url + 'pedido',
+        method: 'POST',
+        data: JSON.stringify(data),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        guardandoPedido = false;
+        if (res.success) {
+
+            agregarToast('exito', 'Creación exitosa', 'Pedido guardado con exito!', true);
+
+            $("#crearCapturaVentaPedidosDisabled").show();
+            $("#crearCapturaPedidosDisabled").show();
+            $("#crearCapturaPedidos").hide();
+            $("#crearCapturaPedidosLoading").hide();
+            $("#crearCapturaVentaPedidos").hide();
+
+            consecutivoPedidos = 0;
+
+            setTimeout(function(){
+                $('#id_cliente_pedido').focus();
+                $comboClientePedidos.select2("open");
+            },10);
+
+            $("#lista_productos_seleccionados").empty();
+            consecutivoSiguienteBodegaPedido();
+            loadAnticiposClientePedido();
+            productosPedidos = [];
+
+        } else {
+
+            $("#crearCapturaVentaPedidosDisabled").hide();
+            $("#crearCapturaPedidosLoading").hide();
+            $("#crearCapturaPedidosDisabled").hide();
+            $("#crearCapturaVentaPedidos").show();
+            $("#crearCapturaPedidos").show();
+
+            var mensaje = res.mensages;
+            var errorsMsg = "";
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += "- "+errores[campo]+" <br>";
+                }
+            };
+            agregarToast('error', 'Creación errada', errorsMsg);
+        }
+    }).fail((err) => {
+        guardandoPedido = false;
+        $("#savePedidos").show();
+        $("#savePedidosLoading").hide();
+        
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Creación errada', errorsMsg);
+    });
+});
+
 $(document).on('click', '#savePedidos', function () {
     validateSavePedido();
+});
+
+$(document).on('click', '.limpiar-filtros-pedidos', function () {
+    $("#searchInputPedidos").val('');
+    filtrarProductosPedidos();
 });
 
 contenedorPedidos.on("scroll", function () {

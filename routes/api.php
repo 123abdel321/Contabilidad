@@ -248,6 +248,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('bodega', 'update');
             Route::delete('bodega', 'delete');
             Route::get('bodega/combo-bodega', 'comboBodega');
+            Route::get('bodega-consecutivo', 'consecutivo');
             Route::get('existencias-producto', 'existenciasProducto');
         });
         //VARIANTES
@@ -332,7 +333,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //PEDIDO VENTA
         Route::controller(PedidoController::class)->group(function () {
             Route::post('pedido-ventas', 'venta');
-        });        
+            Route::post('pedido', 'create');
+            Route::get('pedido', 'find');
+        });
         //CAPTURA GASTO
         Route::controller(GastosController::class)->group(function () {
             Route::post('gastos', 'create');

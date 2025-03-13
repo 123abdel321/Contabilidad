@@ -94,7 +94,7 @@
         }
     }
 
-    @media (max-width: 990px) {
+    @media (min-width: 769px) and (max-width: 990px) {
         #table-captura-pedidos.col-md-7 {
             flex: 0 0 auto;
             width: 57%;
@@ -179,6 +179,22 @@
     }
 
     #contenedor-productos-pedidos {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        padding: 3px;
+        max-height: 400px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        align-content: flex-start;
+        max-height: 70vh;
+        background-color: ghostwhite;
+        padding: 5px;
+        border-radius: 5px;
+        place-content: space-evenly;
+    }
+
+    #contenedor-productos-pedidos-loading {
         display: flex;
         flex-wrap: wrap;
         gap: 5px;
@@ -353,46 +369,25 @@
             <div class="card-body container" style="content-visibility: auto; overflow: auto; border-radius: 20px;">
 
                 <div class="filter-familias">
-                    <span class="badge btn bg-gradient-dark">TODOS</span>
+                    <span id="filter-familias-pedido" class="badge btn bg-gradient-dark familia-filter-pedidos" onclick="filtrarProductosPedidos()">TODOS</span>
                     @foreach ($familias as $familia)
-                        <span class="badge btn bg-gradient-light">{{ $familia->nombre }}</span>
+                        <span id="filter-familias-pedido-{{ $familia->id }}" class="badge btn bg-gradient-light familia-filter-pedidos" onclick="filtrarProductosPedidos({{ $familia->id }})">{{ $familia->nombre }}</span>
                     @endforeach
                 </div>
 
-                <div style="width: 100%; display: inline-flex;">
-                    <input type="text" id="searchInputCecos" class="form-control form-control-sm search-table" placeholder="Buscar productos" style="margin-top: 7px; margin-bottom: 5px !important;">
+                <div style="width: 100%;">
+                    <div class="row" style="width: 100%;">
+                        <div class="col-8" style="display: inline-flex;">
+                            <input type="text" id="searchInputPedidos" class="form-control form-control-sm search-table" placeholder="Buscar productos" onkeyup="filtrarProductosPedidos()" style="margin-top: 7px; margin-bottom: 5px !important;">
+                        </div>
+                        <div class="col-4" style="place-self: center;">
+                            <div id="count-productos-pedidos" style="place-content: center; font-size: 15px; font-weight: 500; color: darkcyan; margin-left: 10px;">Productos: 0</div>
+                        </div>
+                    </div>
+                    
                 </div>
 
                 <div id="contenedor-productos-pedidos">
-
-                    <!-- <div class="item-producto">
-                        <div class="producto-datos" style="">
-                            <div class="familia">
-                                <span class="badge bg-gradient-primary">NOMBRE</span>
-                            </div>
-                            <div class="imagen">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6lVFdtn2ICGHZ1sXp7jqZcTtL2w7H1OHqZQ&s">
-                            </div>
-                            <div class="nombre">CELULAR #5</div>
-                            <div class="precio">850.000</div>
-                            <div class="inventario">
-                                <span class="badge bg-gradient-info">INV: 8</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="item-producto">
-                        <div class="producto-datos" style="">
-                            <div class="imagen">
-                                <img src="https://kzmlujhyhk8xlnk9h654.lite.vusercontent.net/placeholder.svg?height=80&width=80">
-                            </div>
-                            <div class="nombre">CELULAR #5</div>
-                            <div class="precio">850.000</div>
-                            <div class="inventario">
-                                <span class="badge bg-gradient-warning">INV: 0</span>
-                            </div>
-                        </div>
-                    </div> -->
 
                 </div>
 
@@ -404,7 +399,7 @@
                 <div id="totales-venta-card" class="card col-12 col-sm-12 col-md-12 ml-auto" style="height: min-content; margin-bottom: 0.5rem !important;">
                     <div class="mb-4 col-12 col-sm-12 col-md-12 ml-auto">
 
-                        <form id="pedidoFilterForm" class="cliente-pedidos needs-validation row" style="margin-top: 10px;" novalidate>
+                        <div id="pedidoFilterForm" class="cliente-pedidos needs-validation row" style="margin-top: 10px;" novalidate>
                             <div class="col-12">
                                 <label for="id_cliente_pedido">Cliente<span style="color: red">*</span></label>
                                 <div class="input-group">
@@ -443,16 +438,16 @@
 
                             <div class="form-group col-12 col-sm-6 col-md-6">
                                 <label for="example-text-input" class="form-control-label">Consecutivo <span style="color: red">*</span></label>
-                                <input type="text" class="form-control form-control-sm" name="consecutivo_bodegas" id="consecutivo_bodegas" required>
+                                <input type="text" class="form-control form-control-sm" name="consecutivo_bodegas_pedidos" id="consecutivo_bodegas_pedidos" onkeypress="pressConcecutivoPedidos(event)" onfocus="this.select();" required>
 
                                 <div class="invalid-feedback">
                                     El consecutivo es requerido
                                 </div>
                             </div>
 
-                        </form>
+                        </div>
                     
-                        <ul id="lista_productos_seleccionados" class="list-group list-group-pedidos" style="max-height: 38vh; overflow: auto; height: 36vh; background-color: ghostwhite;">
+                        <ul id="lista_productos_seleccionados" class="list-group list-group-pedidos" style="max-height: 38vh; overflow: auto; background-color: ghostwhite;">
 
                             <!-- <div class="list-group-item">
                                 <div class="row" style="width: 100%; margin: 0px;">
@@ -513,6 +508,10 @@
                                 <span id="crearCapturaPedidos" href="javascript:void(0)" class="badge btn badge bg-gradient-primary" style="width: 100%; float: right; display: none; margin-bottom: 0px !important;">
                                     <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                                     <b style="vertical-align: text-top;">GRABAR PEDIDO</b>
+                                </span>
+                                <span id="crearCapturaPedidosLoading" class="badge bg-gradient-primary" style="display:none; width: 100%;">
+                                    <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                                    <b style="vertical-align: text-top;">CARGANDO</b>
                                 </span>
                             </div>
                             <div class="col-6">

@@ -631,6 +631,15 @@ class ProductosController extends Controller
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
 
+        if ($request->get("query")) {
+            $producto->where('codigo', 'LIKE', '%' . $request->get("query") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("query") . '%');
+        }
+
+        if ($request->get("id_familia")) {
+            $producto->where('id_familia', $request->get("id_familia"));
+        }
+
         if ($request->has("id_bodega")) {
             $producto->with(['inventarios' => function ($query) use ($request) {
                 $query->where('id_bodega', $request->get("id_bodega"));

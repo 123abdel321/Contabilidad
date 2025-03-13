@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Traits;
 
 use DB;
+use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\DocumentosGeneral;
 
@@ -35,6 +36,23 @@ trait BegConsecutiveTrait
         }
 
 		return $comprobante->consecutivo_siguiente;
+    }
+
+    public function getNextConsecutiveBodega($bodega)
+    {
+        if (is_numeric($bodega) > 0) {
+			$bodega = FacBodegas::find($bodega);
+		}
+
+        if (!($bodega instanceof FacBodegas)) {
+			return null;
+        }
+
+        if (!$bodega) {
+			return null;
+        }
+
+        return $bodega->consecutivo;
     }
 
 	static function getLastConsecutive($id_comprobante, $fecha)
@@ -77,5 +95,24 @@ trait BegConsecutiveTrait
         $comprobante->resolucion()->update(["consecutivo" => $comprobante->consecutivo_siguiente]);
 
         return $comprobante;
+    }
+
+    public function updateConsecutivoBodega($bodega, int $consecutivoActual)
+    {
+        if (is_numeric($bodega)) {
+            $bodega = FacBodegas::find($bodega);
+        } else if (!($bodega instanceof bodega)) {
+            return false;
+        }
+        
+		if ($consecutivoActual > $bodega->consecutivo) {
+			$bodega->consecutivo = $consecutivoActual;
+		}
+
+		$bodega->consecutivo = $bodega->consecutivo + 1;
+		$bodega::unsetEventDispatcher();
+		$bodega->save();
+
+        return $bodega;
     }
 }

@@ -808,7 +808,7 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
     }
 
     if (descuentoProducto > 0) {
-        totalDescuento = totalPorCantidad * descuentoProducto / 100;
+        totalDescuento = totalPorCantidad * (descuentoProducto / 100);
         $('#venta_descuento_valor_'+idRow).val(formatCurrencyValue(totalDescuento));
     } else {
         $('#venta_descuento_porcentaje_'+idRow).val(formatCurrencyValue(0));
@@ -821,8 +821,6 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
         totalIva = (totalPorCantidad - totalDescuento) * ivaProducto / 100;
         if (ivaIncluidoVentas) {
             totalIva = (totalPorCantidad - totalDescuento) - ((totalPorCantidad - totalDescuento) / (1 + (ivaProducto / 100)));
-        } else {
-            totalIva + totalIva;
         }
         
         $('#venta_iva_valor_'+idRow).val(formatCurrencyValue(totalIva));
@@ -1022,14 +1020,14 @@ function totalValoresVentas() {
             }
         }
 
+        if (ivaIncluidoVentas) valorBruto-= iva;
+
+        total = ivaIncluidoVentas ? valorBruto : valorBruto + iva;
+
         if (total >= topeRetencionVenta) {
             retencion = porcentajeRetencionVenta ? (valorBruto * porcentajeRetencionVenta) / 100 : 0;
             retencion = retencion;
         }
-
-        if (ivaIncluidoVentas) valorBruto-= iva;
-
-        total = ivaIncluidoVentas ? valorBruto : valorBruto + iva;
 
         if (redondearFactura) {
             var totalParaRedondear =  parseFloat(total / 1000);
