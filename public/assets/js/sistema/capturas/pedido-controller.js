@@ -1134,8 +1134,13 @@ function buscarPedidos() {
             
             consecutivoPedidos++;
 
-            var impuestoPorcentaje = parseFloat(producto.cuenta_retencion.impuesto.porcentaje);
-            var topeValor = parseFloat(producto.cuenta_retencion.impuesto.base);
+            var impuestoPorcentaje = 0;
+            var topeValor = 0;
+
+            if (producto.cuenta_retencion && producto.cuenta_retencion.impuesto) {
+                var impuestoPorcentaje = parseFloat(producto.cuenta_retencion.impuesto.porcentaje);
+                var topeValor = parseFloat(producto.cuenta_retencion.impuesto.base);
+            }
 
             if (impuestoPorcentaje > porcentajeRetencionPedidos) {
                 porcentajeRetencionPedidos = impuestoPorcentaje;
