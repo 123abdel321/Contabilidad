@@ -6,6 +6,8 @@
 		<tr>
             <th>Cuenta</th>
             <th>Nit</th>
+            <th>Zona</th>
+            <th>Ubicación</th>
             <th>Saldo anterior</th>
             <th>Total factura</th>
             <th>Total abono</th>

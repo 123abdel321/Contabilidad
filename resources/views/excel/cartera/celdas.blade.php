@@ -28,6 +28,8 @@
         @endif
     @endif
 </td>
+<td style="{{ $style }}">{{ isset(explode("-", $documento->apartamento_nit)[1]) ? explode("-", $documento->apartamento_nit)[1] : '' }}</td>
+<td style="{{ $style }}">{{ isset(explode("-", $documento->apartamento_nit)[0]) ? explode("-", $documento->apartamento_nit)[0] : '' }}</td>
 <!-- E --><td style="{{ $style }}">{{ $documento->saldo_anterior }}</td>
 <!-- F --><td style="{{ $style }}">{{ $documento->total_facturas }}</td>
 <!-- G --><td style="{{ $style }}">{{ $documento->total_abono }}</td>

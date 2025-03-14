@@ -57,10 +57,10 @@ class CarteraExport implements FromView, WithColumnWidths, WithStyles, WithColum
     public function columnFormats(): array
     {
         return [
-			'C' => NumberFormat::FORMAT_CURRENCY_USD,
-			'D' => NumberFormat::FORMAT_CURRENCY_USD,
 			'E' => NumberFormat::FORMAT_CURRENCY_USD,
 			'F' => NumberFormat::FORMAT_CURRENCY_USD,
+			'G' => NumberFormat::FORMAT_CURRENCY_USD,
+			'H' => NumberFormat::FORMAT_CURRENCY_USD,
         ];
 	}
 
@@ -69,10 +69,12 @@ class CarteraExport implements FromView, WithColumnWidths, WithStyles, WithColum
         return [
             'A' => 20,
 			'B' => 35,
-			'C' => 20,
-			'D' => 20,
+			'C' => 17,
+			'D' => 17,
 			'E' => 20,
 			'F' => 20,
+			'G' => 20,
+			'H' => 20,
         ];
 	}
 }
