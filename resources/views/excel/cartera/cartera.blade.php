@@ -16,11 +16,11 @@
 		@foreach($documentos as $documento)
 			<tr>
                 @if ($documento->nivel == 1)
-                    @include('excel.cartera.celdas', ['style' => 'background-color: #b3dbed; font-weight: bold;', 'documento' => $documento])
+                    @include('excel.cartera.celdas', ['style' => 'background-color: #b3dbed; font-weight: bold;', 'documento' => $documento, 'cabeza' => $cabeza])
                 @elseif ($documento->nivel == 0)
-                    @include('excel.cartera.celdas', ['style' => 'background-color: #1c4587; font-weight: bold; color: #FFF;', 'documento' => $documento])
+                    @include('excel.cartera.celdas', ['style' => 'background-color: #1c4587; font-weight: bold; color: #FFF;', 'documento' => $documento, 'cabeza' => $cabeza])
                 @else
-                    @include('excel.cartera.celdas', ['style' => 'background-color: #FFF;', 'documento' => $documento])
+                    @include('excel.cartera.celdas', ['style' => 'background-color: #FFF;', 'documento' => $documento, 'cabeza' => $cabeza])
                 @endif
 			</tr>
 		@endforeach

@@ -190,7 +190,7 @@
         overflow-y: auto;
         overflow-x: hidden;
         align-content: flex-start;
-        max-height: 70vh;
+        max-height: 58vh;
         background-color: ghostwhite;
         padding: 5px;
         border-radius: 5px;

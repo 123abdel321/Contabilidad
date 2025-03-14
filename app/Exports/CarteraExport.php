@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 //MODELS
+use App\Models\Informes\InfCartera;
 use App\Models\Informes\InfCarteraDetalle;
 
 class CarteraExport implements FromView, WithColumnWidths, WithStyles, WithColumnFormatting, ShouldQueue
@@ -31,6 +32,7 @@ class CarteraExport implements FromView, WithColumnWidths, WithStyles, WithColum
     public function view(): View
 	{
 		return view('excel.cartera.cartera', [
+            'cabeza' => InfCartera::where('id', $this->id_cartera)->first(),
 			'documentos' => InfCarteraDetalle::whereIdCartera($this->id_cartera)->get()
 		]);
 	}

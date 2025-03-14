@@ -1,15 +1,31 @@
 <!-- A --><td style="{{ $style }}">
-    @if ($documento->nivel == 2)
-        {{ $documento->cuenta }}
+    @if ( $cabeza->agrupar_cartera == 'id_cuenta' )
+        @if ($documento->nivel == 1)
+            {{ $documento->cuenta }}
+        @else
+            {{ $documento->numero_documento }}
+        @endif
     @else
-        {{ $documento->numero_documento }}
+        @if ($documento->nivel == 2)
+            {{ $documento->cuenta }}
+        @else
+            {{ $documento->numero_documento }}
+        @endif
     @endif
 </td>
 <!-- A --><td style="{{ $style }}">
-    @if ($documento->nivel == 2)
-        {{ $documento->nombre_cuenta }}
+    @if ( $cabeza->agrupar_cartera == 'id_cuenta' )
+        @if ($documento->nivel == 1)
+            {{ $documento->nombre_cuenta }}
+        @else
+            {{ $documento->nombre_nit }}
+        @endif
     @else
-        {{ $documento->nombre_nit }}
+        @if ($documento->nivel == 2)
+            {{ $documento->nombre_cuenta }}
+        @else
+            {{ $documento->nombre_nit }}
+        @endif
     @endif
 </td>
 <!-- E --><td style="{{ $style }}">{{ $documento->saldo_anterior }}</td>
