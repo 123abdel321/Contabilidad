@@ -43,6 +43,11 @@ function estadoactualInit() {
         },
         'rowCallback': function(row, data, index){
             var mes = data.mes;
+            if(data.total == 4){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
+                $('td', row).css('font-weight', 'bold');
+                return;
+            }
             if(data.total == 3){
                 $('td', row).css('background-color', '#ff8f003b');
                 return;

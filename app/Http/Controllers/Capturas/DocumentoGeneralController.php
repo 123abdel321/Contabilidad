@@ -695,7 +695,8 @@ class DocumentoGeneralController extends Controller
 				DB::raw("DATE_FORMAT(fecha_manual, '%Y') id"),
 				DB::raw("DATE_FORMAT(fecha_manual, '%Y') text")
 			)
-			->groupBy(DB::raw("DATE_FORMAT(fecha_manual, '%Y')"));
+			->groupBy(DB::raw("DATE_FORMAT(fecha_manual, '%Y')"))
+			->orderBy('id', 'DESC');
 
 		return $years->paginate(40);
 	}
