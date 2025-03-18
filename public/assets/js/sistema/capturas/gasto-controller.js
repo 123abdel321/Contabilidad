@@ -1289,6 +1289,7 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
                 const detalles = gastos.detalles;
 
                 $("#editing_gasto").val("1");
+                $("#fecha_manual_gasto").val(gastos.fecha_manual);
                 $("#documento_referencia_gasto").val(gastos.documento_referencia);
                 
                 if (gastos.nit) {
