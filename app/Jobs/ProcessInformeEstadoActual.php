@@ -143,7 +143,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 'DG.fecha_manual',
                 'DG.id_comprobante',
                 DB::raw("0 AS documentos"),
-                DB::raw("CONCAT(CO.codigo, ' - ', CO.nombre) AS comprobantes"),
+                DB::raw("'' AS comprobantes"),
                 DB::raw("DATE_FORMAT(fecha_manual, '%m') AS mes"),
                 DB::raw("DATE_FORMAT(fecha_manual, '%Y') AS year"),
                 DB::raw("DATE_FORMAT(fecha_manual, '%m') AS meses"),
@@ -170,13 +170,14 @@ class ProcessInformeEstadoActual implements ShouldQueue
             )
             ->chunk(987, function ($documentos) {
                 foreach ($documentos as $documento) {
-                    $inicioMes = date('Y-m-99', strtotime($documento->fecha_manual));
+                    $inicioMes = date('Y-m', strtotime($documento->fecha_manual));
+			        $finMes = date("Y-m-t", strtotime($documento->fecha_manual));
 
                     $documento->mes = $this->meses[intval($documento->mes)-1];
-                    $documento->errores = '';
+                    $documento->errores = $this->getErrores($inicioMes.'-01', $finMes);
                     $documento->total = 4;
     
-                    $this->estadoActualCollection[$inicioMes] = $documento;
+                    $this->estadoActualCollection[$inicioMes.'-99'] = $documento;
                 }
             });
     }

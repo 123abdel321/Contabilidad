@@ -63,7 +63,12 @@ class RecibosController extends Controller
 
     public function generate(Request $request)
     {
-        if (!$request->get('id_nit')) {
+        $editarRecibos = auth()->user()->can("recibo update");
+        $idNit = $request->get('id_nit');
+        $consecutivo = $request->get('consecutivo');
+        $idComprobante = $request->get('id_comprobante');
+
+        if (!$idNit && !$idComprobante) {
 			return response()->json([
                 'success'=>	true,
                 'data' => [],
@@ -71,15 +76,51 @@ class RecibosController extends Controller
             ], 200);
 		}
 
+        $reciboEdit = null;
         $fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual', null) : Carbon::now();
         
         try {
+
+            if ($idComprobante && $consecutivo && $editarRecibos) {
+
+                $reciboEdit = ConRecibos::with('detalles', 'pagos', 'nit')
+                    ->where('id_comprobante', $idComprobante)
+                    ->where('consecutivo', $consecutivo)
+                    ->first();
+
+                if ($reciboEdit) {
+                    $reciboEdit = $reciboEdit->toArray();
+                    $idNit = $reciboEdit['id_nit'];
+                    $fechaManual = $reciboEdit['fecha_manual'];
+                }
+            }
+            
             $extractos = (new Extracto(
-                $request->get('id_nit'),
+                $idNit,
                 3,
                 null,
                 $fechaManual
             ))->actual()->get();
+
+            if ($reciboEdit) {
+                $detalles = $reciboEdit['detalles'];
+                if (count($extractos)) {
+                    foreach ($extractos as $key => $extracto) {
+                        $indice = array_search($extracto->id_cuenta, array_column($detalles, 'id_cuenta'));
+                        if ($indice || $indice == 0) {
+                            $encontrado = $detalles[$indice];
+                            $extractos[$key] = $this->formatExtractoEdit($extracto, $encontrado);
+                            unset($detalles[$indice]);
+                        }
+                    }
+                }
+                
+                if (count($detalles)) {
+                    foreach ($detalles as $detalle) {
+                        $extractos[] = $this->addExtractoData($detalle);
+                    }
+                }
+            }
 
             if ($request->get('orden_cuentas')) {
 
@@ -125,6 +166,7 @@ class RecibosController extends Controller
                 ];
             }
 
+
             foreach ($cxcAnticipos as $cxcAnticipo) {
                 $dataRecibos[] = $this->formatCuentaAnticipo($cxcAnticipo, $request->get('id_nit'));
             }
@@ -132,6 +174,7 @@ class RecibosController extends Controller
             return response()->json([
                 'success'=>	true,
                 'data' => $dataRecibos,
+                'edit' => $reciboEdit,
                 'message'=> 'Recibo generado con exito!'
             ], 200);
 
@@ -223,7 +266,7 @@ class RecibosController extends Controller
                 'data' => [],
                 "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
             ], 422);
-        } else {
+        } else if (!$request->get('id_recibo')){
             $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
             $request->request->add([
                 'consecutivo' => $consecutivo
@@ -244,8 +287,19 @@ class RecibosController extends Controller
             'pagos.*.valor' => 'required',
         ];
 
-        $validator = Validator::make($request->all(), $rules, $this->messages);
+        if ($request->get('id_recibo')) {
+            $recibo = ConRecibos::where('id', $request->get('id_recibo'))->first();
+            
+            if ($recibo) {
+                $recibo->documentos()->delete();
+                $recibo->detalles()->delete();
+                $recibo->pagos()->delete();
+                $recibo->delete();
+            }
+        }
 
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+        // dd($request->all());
 		if ($validator->fails()){
             return response()->json([
                 "success"=>false,
@@ -349,7 +403,9 @@ class RecibosController extends Controller
                 $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
             }
 
-            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+            if (!$request->get('id_recibo')) {
+                $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+            }
 
             if (!$documentoGeneral->save()) {
 
@@ -899,6 +955,8 @@ class RecibosController extends Controller
 
     private function formatExtracto($extracto)
     {
+        $editando = property_exists($extracto, 'edit') ? true : false;
+        
         $this->id_recibo++;
         return [
             'id' => $this->id_recibo,
@@ -909,12 +967,44 @@ class RecibosController extends Controller
             'dias_cumplidos' => $extracto->dias_cumplidos,
             'plazo' => $extracto->plazo,
             'documento_referencia' => $extracto->documento_referencia,
-            'saldo' => $extracto->saldo,
-            'valor_recibido' => 0,
+            'saldo' => $editando ? $extracto->total_saldo : $extracto->saldo,
+            'valor_recibido' => $editando ? $extracto->total_abono : 0,
             'nuevo_saldo' => $extracto->saldo,
             'total_abono' => $extracto->total_abono,
-            'concepto' => '',
+            'concepto' => $editando ? $extracto->concepto : '',
             'cuenta_recibo' => true,
+        ];
+    }
+
+    private function formatExtractoEdit($extracto, $recibo)
+    {
+        $extracto->total_abono = $recibo['total_abono'];
+        $extracto->total_saldo = $extracto->saldo;
+        $extracto->concepto = $recibo['concepto'];
+        $extracto->nuevo_saldo = $recibo['nuevo_saldo'];
+        $extracto->valor_recibido = $recibo['total_abono'];
+        $extracto->edit = true;
+        
+        return $extracto;
+    }
+
+    private function addExtractoData($detalle)
+    {
+        $detalle = (object)$detalle;
+        $cuenta = PlanCuentas::find($detalle->id_cuenta);
+        return (object)[
+            'id_cuenta' => $detalle->id_cuenta,
+            'cuenta' => $cuenta->cuenta,
+            'nombre_cuenta' => $cuenta->nombre,
+            'fecha_manual' => $detalle->fecha_manual,
+            'concepto' => $detalle->concepto,
+            'dias_cumplidos' => 0,
+            'plazo' => 0,
+            'documento_referencia' => $detalle->documento_referencia,
+            'total_abono' => $detalle->total_abono,
+            'total_saldo' => $detalle->total_saldo,
+            'saldo' => $detalle->nuevo_saldo,
+            'edit' => true
         ];
     }
 

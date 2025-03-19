@@ -52,11 +52,6 @@ function estadoactualInit() {
                 $('td', row).css('background-color', '#ff8f003b');
                 return;
             }
-            if(data.total == 2){
-                // $('td', row).css('background-color', 'rgb(64 164 209 / 55%)');
-                // $('td', row).css('font-weight', 'bold');
-                return;
-            }
             if(data.total == 1){
                 $('td', row).css('background-color', 'rgb(28 69 135)');
                 $('td', row).css('font-weight', 'bold');
@@ -70,6 +65,11 @@ function estadoactualInit() {
             }
             if (parseInt(data.errores) >= 1) {
                 $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
+                return;
+            }
+            if(data.total == 2){
+                // $('td', row).css('background-color', 'rgb(64 164 209 / 55%)');
+                // $('td', row).css('font-weight', 'bold');
                 return;
             }
         },
