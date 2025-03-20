@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Printers;
 
+use App\Helpers\Extracto;
 use Illuminate\Support\Carbon;
 //MODELS
 use App\Models\Sistema\Nits;
@@ -47,7 +48,6 @@ class RecibosPdf extends AbstractPrinterPdf
 
     public function data()
     {
-		
         $this->recibo->load([
             'nit',
             'detalles.cuenta',
@@ -55,8 +55,9 @@ class RecibosPdf extends AbstractPrinterPdf
 			'documentos'
         ]);
 
-		$getNit = Nits::whereId($this->recibo->id_nit)->with('ciudad')->first();
 		$nit = null;
+		$saldo = 0;
+		$getNit = Nits::whereId($this->recibo->id_nit)->with('ciudad')->first();
 
 		if($getNit){ 
 			$nit = (object)[
@@ -71,12 +72,24 @@ class RecibosPdf extends AbstractPrinterPdf
 			];
 		}
 		
+		$extractos = (new Extracto(
+			$getNit->id,
+			3
+		))->actual()->get();
+
+		if (count($extractos)) {
+			foreach ($extractos as $extracto) {
+				$saldo+= floatval($extracto->saldo);
+			}
+		}
+
         return [
 			'empresa' => $this->empresa,
 			'nit' => $nit,
 			'recibo' => $this->recibo,
 			'detalles' => $this->recibo->detalles,
 			'pagos' => $this->recibo->pagos,
+			'saldo' => $saldo,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user() ? request()->user()->username : 'MaximoPH'
 		];

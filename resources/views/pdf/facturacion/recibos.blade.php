@@ -233,18 +233,10 @@
 												<td class="padding5">Fecha</td>
 												<td class="valor padding5">{{ $recibo->fecha_manual }}</td>
 											</tr>
-											@if($recibo->total_abono)
-												<tr>
-													<td class="padding5" style="font-weight: bold;">Total abono</td>
-													<td class="valor padding5">{{ number_format($recibo->total_abono, 2) }}</td>
-												</tr>
-											@endif
-											@if($recibo->total_anticipo)
-												<tr>
-													<td class="padding5" style="font-weight: bold;">Total anticipo</td>
-													<td class="valor padding5">{{ number_format($recibo->total_anticipo, 2) }}</td>
-												</tr>
-											@endif
+											<tr >
+												<td class="padding5" style="font-weight: bold;">Saldo pendiente</td>
+												<td class="valor padding5" style="font-weight: bold;">{{ number_format($saldo, 2) }}</td>
+											</tr>
 										</tbody>
 									</table>
 								</td>
