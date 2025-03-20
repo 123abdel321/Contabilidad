@@ -163,8 +163,15 @@
 								<td class="empresa padding5">
 									<h1>{{ $empresa->razon_social }}</h1>
 									<span>NIT: {{ $empresa->nit }}-{{ $empresa->dv }}</span><br>
-									<span>{{ $empresa->direccion }}</span><br>
-									<span>TEL: {{ $empresa->telefono }}</span><br>
+									@if ($empresa->direccion)
+										<span>DIRECCION:{{ $empresa->direccion }}</span><br>
+									@endif
+									@if ($empresa->telefono)
+										<span>TEL: {{ $empresa->telefono }}</span><br>
+									@endif
+									@if ($recibo->fecha_manual)
+										<span>FECHA: {{ $recibo->fecha_manual }}</span><br>
+									@endif
 								</td>
 								
 								<td class="logo padding5">
@@ -230,12 +237,16 @@
 										</thead>
 										<tbody>
 											<tr >
-												<td class="padding5">Fecha</td>
-												<td class="valor padding5">{{ $recibo->fecha_manual }}</td>
+												<td class="padding5">Saldo anterior</td>
+												<td class="valor padding5">{{ number_format($saldoAnterior, 2) }}</td>
 											</tr>
 											<tr >
-												<td class="padding5" style="font-weight: bold;">Saldo pendiente</td>
-												<td class="valor padding5" style="font-weight: bold;">{{ number_format($saldo, 2) }}</td>
+												<td class="padding5">Total abono</td>
+												<td class="valor padding5">{{ number_format($recibo->total_abono, 2) }}</td>
+											</tr>
+											<tr >
+												<td class="padding5">Saldo pendiente</td>
+												<td class="valor padding5">{{ number_format($saldo, 2) }}</td>
 											</tr>
 										</tbody>
 									</table>

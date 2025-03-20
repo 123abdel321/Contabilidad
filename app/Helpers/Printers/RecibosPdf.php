@@ -57,6 +57,7 @@ class RecibosPdf extends AbstractPrinterPdf
 
 		$nit = null;
 		$saldo = 0;
+		$saldoAnterior = 0;
 		$getNit = Nits::whereId($this->recibo->id_nit)->with('ciudad')->first();
 
 		if($getNit){ 
@@ -77,9 +78,24 @@ class RecibosPdf extends AbstractPrinterPdf
 			3
 		))->actual()->get();
 
+		$fechaAnterior = Carbon::parse($this->recibo->fecha_manual); 
+
+		$extractoAnterior = (new Extracto(
+			$getNit->id,
+			3,
+			null,
+			$fechaAnterior
+		))->actual()->get();
+
 		if (count($extractos)) {
 			foreach ($extractos as $extracto) {
 				$saldo+= floatval($extracto->saldo);
+			}
+		}
+
+		if (count($extractoAnterior)) {
+			foreach ($extractoAnterior as $extracto) {
+				$saldoAnterior+= floatval($extracto->saldo);
 			}
 		}
 
@@ -90,6 +106,7 @@ class RecibosPdf extends AbstractPrinterPdf
 			'detalles' => $this->recibo->detalles,
 			'pagos' => $this->recibo->pagos,
 			'saldo' => $saldo,
+			'saldoAnterior' => $saldoAnterior + $this->recibo->total_abono,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user() ? request()->user()->username : 'MaximoPH'
 		];
