@@ -111,7 +111,7 @@ class GastosController extends Controller
 
         $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
         $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
-        
+
         try {
             DB::connection('sam')->beginTransaction();
             
@@ -119,7 +119,6 @@ class GastosController extends Controller
             if (!$this->proveedor->declarante) $this->tipoRetencion = 'cuenta_retencion_declarante';
 
             if ($request->get('editing_gasto')) {
-
                 $gasto = ConGastos::where('id_comprobante', $request->get('id_comprobante'))
                     ->where('consecutivo', $request->get('consecutivo'))
                     ->orderBy('id', 'DESC')
@@ -149,6 +148,9 @@ class GastosController extends Controller
 
             $comprobanteGasto = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
+            $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
+            $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
+
             //AGREGAR MOVIMIENTO DE CUENTAS POR GASTO
             foreach ($request->get('gastos') as $movimiento) {
                 $movimiento = (object)$movimiento;
@@ -164,7 +166,14 @@ class GastosController extends Controller
 
                 $porcentajeRetencion = $this->totalesFactura['porcentaje_rete_fuente'];
                 $porcentajeReteIca = $this->totalesFactura['porcentaje_rete_ica'];
-                $porcentajeIva = $conceptoGasto->cuenta_iva ? floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje) : 0;
+                $porcentajeIva = 0;
+
+                if ($conceptoGasto->cuenta_iva && floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje)) {
+                    $porcentajeIva = floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje);
+                } else if (!$conceptoGasto->cuenta_iva && $this->proveedor->porcentaje_aiu && $porcentaje_iva_aiu) {
+                    $porcentajeIva = $porcentaje_iva_aiu;
+                }
+
                 $subtotalGasto = $movimiento->valor_gasto - $movimiento->descuento_gasto;
                 $baseAIU = 0;
 
@@ -354,7 +363,7 @@ class GastosController extends Controller
 
         $comprobante = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
-        $gasto = ConGastos::with('nit', 'detalles.concepto', 'pagos')
+        $gasto = ConGastos::with('nit', 'detalles.concepto', 'pagos', 'detalles.cuenta_retencion.impuesto', 'detalles.cuenta_retencion_declarante.impuesto')
             ->where('id_comprobante', $request->get('id_comprobante'))
             ->where('consecutivo', $request->get('consecutivo'));
 

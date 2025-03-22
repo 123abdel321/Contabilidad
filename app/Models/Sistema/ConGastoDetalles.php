@@ -41,4 +41,15 @@ class ConGastoDetalles extends Model
 	{
 		return $this->belongsTo(ConConceptoGastos::class, 'id_concepto_gastos');
 	}
+
+    public function cuenta_retencion()
+    {
+        return $this->belongsTo(PlanCuentas::class, 'id_cuenta_retencion');
+    }
+    
+    public function cuenta_retencion_declarante()
+    {
+        return $this->belongsTo(PlanCuentas::class, 'id_cuenta_retencion_declarante');
+    }
+    
 }

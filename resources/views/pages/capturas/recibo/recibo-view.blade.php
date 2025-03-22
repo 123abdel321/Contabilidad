@@ -183,10 +183,10 @@
     </div>
 
     <script>
-        const reciboFecha = @json(auth()->user()->can("recibo fecha"));
-        const reciboTotales = @json(auth()->user()->can("recibo totales"));
-        const reciboUpdate = @json(auth()->user()->can("recibo update"));
-        const comprobantesRecibos = @json($comprobantes);
+        let reciboFecha = @json(auth()->user()->can("recibo fecha"));
+        let reciboTotales = @json(auth()->user()->can("recibo totales"));
+        let reciboUpdate = @json(auth()->user()->can("recibo update"));
+        let comprobantesRecibos = @json($comprobantes);
     </script>
     
 </div>
