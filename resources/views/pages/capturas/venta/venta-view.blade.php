@@ -210,16 +210,17 @@
     </div>
 
     <script>
-        var ventaExistencias = '<?php echo auth()->user()->can("venta existencia"); ?>';
-        var ventaDescuento = '<?php echo auth()->user()->can("venta descuento"); ?>';
-        var ventaNegativa = '<?php echo auth()->user()->can("venta negativa"); ?>';
-        var ventaRapida = '<?php echo auth()->user()->can("venta rapida"); ?>';
+        let ventaExistencias = @json(auth()->user()->can("venta existencia"));
+        let ventaDescuento = @json(auth()->user()->can("venta descuento"));
+        let ventaNegativa = @json(auth()->user()->can("venta negativa"));
+        let ventaRapida = @json(auth()->user()->can("venta rapida"));
+        let ventaFecha = @json(auth()->user()->can("venta fecha"));
         
-        var primeraBodegaVenta = JSON.parse('<?php echo $bodegas; ?>');
-        var primeraResolucionVenta = JSON.parse('<?php echo $resolucion; ?>');
-        var ivaIncluidoVentas = '<?php echo $iva_incluido; ?>';
-        var vendedoresVentas = '<?php echo $vendedores_ventas; ?>';
-        var primeraNit = JSON.parse('<?php echo $cliente; ?>');
+        let primeraBodegaVenta = @json($bodegas);
+        let primeraResolucionVenta = @json($resolucion);
+        let ivaIncluidoVentas = @json($iva_incluido);
+        let vendedoresVentas = @json($vendedores_ventas);
+        let primeraNit = @json($cliente);
 
     </script>
     

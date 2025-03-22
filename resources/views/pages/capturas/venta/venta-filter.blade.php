@@ -60,7 +60,7 @@
 
                     <div class="form-group col-6 col-sm-4 col-md-3">
                         <label for="observacion_venta" class="form-control-label">Observación </label>
-                        <input type="text" class="form-control form-control-sm" name="observacion_venta" id="observacion_venta" required>
+                        <input type="text" class="form-control form-control-sm" name="observacion_venta" id="observacion_venta">
                     </div>
 
                     <div class="form-group col-6 col-sm-4 col-md-2">

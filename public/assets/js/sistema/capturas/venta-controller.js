@@ -23,6 +23,9 @@ function ventaInit () {
     fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
     $('#fecha_manual_venta').val(fecha);
 
+    if (ventaFecha) $("#fecha_manual_venta").prop('disabled', false);
+    else $("#fecha_manual_venta").prop('disabled', true);
+
     venta_table = $('#ventaTable').DataTable({
         dom: '',
         pageLength: 200,
