@@ -122,6 +122,10 @@ class PedidoController extends Controller
                         ->with('familia')
                         ->first();
 
+                    if (!$producto->familia) {
+                        $fail("El producto (".$producto->codigo." - ".$producto->nombre.") no tiene familia venta configurada");
+                    }
+
                     if (!$producto->familia->id_cuenta_venta) {
                         $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta venta configurada");
                     }
@@ -270,7 +274,11 @@ class PedidoController extends Controller
 					$producto = FacProductos::whereId($value)
                         ->with('familia')
                         ->first();
-
+                    
+                    if (!$producto->familia) {
+                        $fail("El producto (".$producto->codigo." - ".$producto->nombre.") no tiene familia venta configurada");
+                    }
+                    
                     if (!$producto->familia->id_cuenta_venta) {
                         $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta venta configurada");
                     }
