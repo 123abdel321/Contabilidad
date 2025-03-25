@@ -1,5 +1,8 @@
 let timerBusquedaPedidos;
-let pagePedidos = 1;
+let pagePedidos = 0;
+let familiaFilterPD;
+let searchFilterPD;
+let lastPagePedidos = 1;
 let pedidoEditando = null;
 let porcentajeRetencionPedidos = 0
 let topeRetencionPedidos = 0
@@ -15,6 +18,7 @@ let $comboVendedorPedidos;
 let loadingPedidos = false;
 let productosPedidos = [];
 let consecutivoPedidos = 0;
+let pedidoXHR = null;
 var totalAnticiposDisponiblesPedidos = 0;
 let contenedorPedidos = $("#contenedor-productos-pedidos");
 
@@ -47,6 +51,8 @@ function pedidoInit () {
         $comboCliente.append(newOption).trigger('change');
         $comboCliente.val(dataCliente.id).trigger('change');
 
+        loadAnticiposClientePedido();
+
         // if (primerNitPedido.vendedor) {
         //     var dataVendedor = {
         //         id: primerNitPedido.vendedor.nit.id,
@@ -56,8 +62,6 @@ function pedidoInit () {
         //     $comboVendedor.append(newOption).trigger('change');
         //     $comboVendedor.val(dataVendedor.id).trigger('change');
         // }
-
-        // loadAnticiposClientePedido();
 
     } else {
         setTimeout(function(){
@@ -91,7 +95,7 @@ function cargarUbicacionPedido() {
                     <div id="ubicacion-pedido_${ubicaciones.id}" class="ubicaciones-datos">
                         <div class="${cassUbicacion}"></div>
                         <div class="nombre">${ubicaciones.nombre}</div>
-                        <div class="total">${new Intl.NumberFormat('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format( ubicaciones.pedido ? ubicaciones.pedido.total_factura : 0 )}</div>
+                        <div id="ubicacion-total_${ubicaciones.id}" class="total">${new Intl.NumberFormat('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format( ubicaciones.pedido ? ubicaciones.pedido.total_factura : 0 )}</div>
                     </div>
                 </div>
             `);
@@ -105,23 +109,40 @@ function cargarUbicacionPedido() {
 
 function filtrarProductosPedidos(id_familia) {
     clearTimeout(timerBusquedaPedidos);
+    
+    pagePedidos = 0;
+    lastPagePedidos = 1;
 
     $(".familia-filter-pedidos").removeClass("bg-gradient-dark");
     $(".familia-filter-pedidos").removeClass("bg-gradient-light");
     $(".familia-filter-pedidos").addClass("bg-gradient-light");
 
     if (id_familia) {
+        familiaFilterPD = id_familia;
         $("#filter-familias-pedido-"+id_familia).removeClass("bg-gradient-light");
         $("#filter-familias-pedido-"+id_familia).addClass("bg-gradient-dark");
     } else {
+        familiaFilterPD = null;
         $("#filter-familias-pedido").removeClass("bg-gradient-light");
         $("#filter-familias-pedido").addClass("bg-gradient-dark");
     }
 
     timerBusquedaPedidos = setTimeout(() => {
-        let busqueda = $("#searchInputPedidos").val().trim();
-        cargarProductosPedido(busqueda, id_familia); // Llama a la API con el texto ingresado
-    }, 200); // Espera 500ms antes de hacer la petición
+        searchFilterPD = $("#searchInputPedidos").val().trim();
+        cargarProductosPedido();
+    }, 200);
+}
+
+function buscarProductosPedidos() {
+    clearTimeout(timerBusquedaPedidos);
+
+    pagePedidos = 0;
+    lastPagePedidos = 1;
+
+    timerBusquedaPedidos = setTimeout(() => {
+        searchFilterPD = $("#searchInputPedidos").val().trim();
+        cargarProductosPedido();
+    }, 200);
 }
 
 function cargarChangesFunction() {
@@ -315,9 +336,11 @@ function cargarCombosPedido() {
     });
 }
 
-function cargarProductosPedido(query = "", id_familia = null, clear = true) {
+function cargarProductosPedido(clear = true) {
     if (loadingPedidos) return;
     loadingPedidos = true;
+
+    if (pagePedidos >= lastPagePedidos) return;
 
     if (clear) {
         let contenedor = $("#contenedor-productos-pedidos");
@@ -331,14 +354,19 @@ function cargarProductosPedido(query = "", id_familia = null, clear = true) {
         headers: headers,
         dataType: 'json',
         data: {
-            query: query,
-            id_familia: id_familia
+            query: searchFilterPD,
+            id_familia: familiaFilterPD
         }
     }).done((res) => {
         if (res.data.length > 0) {
+            console.log('res: ',res);
+            pagePedidos++;
+            lastPagePedidos = res.last_page;
             mostrarProductos(res.data, clear);
             $("#count-productos-pedidos").html('Productos: '+res.total);
         } else {
+            pagePedidos = 0;
+            lastPagePedidos = 1;
             let contenedor = $("#contenedor-productos-pedidos");
             contenedor.html(`
                 <div style=" font-size: 20px; padding: 60px; text-align: -webkit-center;">
@@ -348,8 +376,6 @@ function cargarProductosPedido(query = "", id_familia = null, clear = true) {
                 </div>
             `);
         }
-
-        pagePedidos++;
         loadingPedidos = false;
 
     }).fail((err) => {
@@ -496,7 +522,7 @@ function seleccionarProducto(element) {
                 </div>
                 <div class="col-3 cantidad">
                     <div id="quitar_producto_${consecutivoPedidos}" class="quitar" onclick="restarCantidadPedido(${consecutivoPedidos})"><i class="fas fa-minus"></i></div>
-                    <input id="cantidad_producto_${consecutivoPedidos}" class="button-cantidad-producto" type="text" value="1" onfocus="this.select();">
+                    <input id="cantidad_producto_${consecutivoPedidos}" class="button-cantidad-producto" type="text" value="1" onfocus="this.select();" onkeypress="changeCantidadPedido(${consecutivoPedidos}, event)">
                     <div id="agregar_producto_${consecutivoPedidos}" class="agregar" onclick="sumarCantidadPedido(${consecutivoPedidos})"><i class="fas fa-plus"></i></div>
                 </div>
                 <div id="eliminar_producto_${consecutivoPedidos}" class="col-2 eliminar" onclick="eliminarProductoPedido(${consecutivoPedidos})"><i class="fas fa-trash-alt"></i></div>
@@ -505,6 +531,7 @@ function seleccionarProducto(element) {
     );
 
     mostrarValoresPedidos();
+    guardarPedido();
 }
 
 function mostrarValoresPedidos() {
@@ -516,17 +543,29 @@ function mostrarValoresPedidos() {
     if (retencion) $('#totales_retencion-pedidos').show();
     else $('#totales_retencion-pedidos').hide();
 
-    $("#crearCapturaPedidos").hide();
     $("#crearCapturaVentaPedidos").hide();
-    $("#crearCapturaPedidosDisabled").hide();
     $("#crearCapturaVentaPedidosDisabled").hide();
 
+    $("#eliminarPedidosDisabled").hide();
+    $("#imprimirPedidosDisabled").hide();
+    $("#eliminarPedidos").hide();
+    $("#imprimirPedidos").hide();
+
     if (total) {
-        $("#crearCapturaPedidos").show();
         $("#crearCapturaVentaPedidos").show();
+        $("#eliminarPedidos").show();
+        $("#imprimirPedidos").show();
     } else {
-        $("#crearCapturaPedidosDisabled").show();
+        $("#eliminarPedidosDisabled").show();
+        $("#imprimirPedidosDisabled").show();
         $("#crearCapturaVentaPedidosDisabled").show();
+    }
+
+    // const totalFactura = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(total);
+    //     $("#ubicacion-total_"+id_ubicacion_select).html(totalFactura);
+    if (id_ubicacion_select) {
+        var count0 = new CountUp('ubicacion-total_'+id_ubicacion_select, 0, total, 2, 0.5);
+        count0.start();
     }
 
     var countA = new CountUp('pedido_total_iva', 0, iva, 2, 0.5);
@@ -581,6 +620,7 @@ function sumarCantidadPedido(consecutivo) {
     productosPedidos[index].cantidad++;
     calcularCantidadPedido(consecutivo);
     mostrarValoresPedidos();
+    guardarPedido();
 }
 
 function restarCantidadPedido(consecutivo) {
@@ -597,6 +637,7 @@ function restarCantidadPedido(consecutivo) {
     productosPedidos[index].cantidad--;
     calcularCantidadPedido(consecutivo);
     mostrarValoresPedidos();
+    guardarPedido();
 }
 
 function eliminarProductoPedido(consecutivo) {
@@ -609,6 +650,7 @@ function eliminarProductoPedido(consecutivo) {
     document.getElementById("list_group_item_"+consecutivo).remove();
     productosPedidos.splice(index, 1);
     mostrarValoresPedidos();
+    guardarPedido();
 }
 
 function calcularCantidadPedido(consecutivo) {
@@ -927,6 +969,7 @@ function savePedidoVenta() {
                 window.open("/ventas-print/"+res.impresion, '_blank');
             }
 
+            pedidoEditando = null;
             consecutivoPedidos = 0;
 
             setTimeout(function(){
@@ -940,7 +983,6 @@ function savePedidoVenta() {
             disabledFormasPagoPedido();
             cargarUbicacionPedido();
             productosPedidos = [];
-            
 
         } else {
             var mensaje = res.mensages;
@@ -1100,6 +1142,7 @@ function buscarPedidos() {
 
         if (!res.data) {
             pedidoEditando = null;
+            mostrarValoresPedidos();
             return;
         }
 
@@ -1149,7 +1192,7 @@ function buscarPedidos() {
             
             productosPedidos.push({
                 consecutivo: consecutivoPedidos,
-                id_producto: producto.id,
+                id_producto: producto.id_producto,
                 cantidad: parseFloat(producto.cantidad),
                 costo: parseFloat(producto.costo),
                 subtotal: parseFloat(producto.subtotal),
@@ -1164,7 +1207,7 @@ function buscarPedidos() {
             letProductoCantidad = `
                 <div class="col-3 cantidad">
                     <div id="quitar_producto_${consecutivoPedidos}" class="quitar" onclick="restarCantidadPedido(${consecutivoPedidos})"><i class="fas fa-minus"></i></div>
-                        <input id="cantidad_producto_${consecutivoPedidos}" class="button-cantidad-producto" type="text" value="${parseInt(producto.cantidad)}" onfocus="this.select();">
+                        <input id="cantidad_producto_${consecutivoPedidos}" class="button-cantidad-producto" type="text" value="${parseInt(producto.cantidad)}" onfocus="this.select();" onkeypress="changeCantidadPedido(${consecutivoPedidos}, event)">
                     <div id="agregar_producto_${consecutivoPedidos}" class="agregar" onclick="sumarCantidadPedido(${consecutivoPedidos})"><i class="fas fa-plus"></i></div>
                 </div>
                 <div id="eliminar_producto_${consecutivoPedidos}" class="col-2 eliminar" onclick="eliminarProductoPedido(${consecutivoPedidos})"><i class="fas fa-trash-alt"></i></div>
@@ -1204,9 +1247,12 @@ function buscarPedidos() {
             pedidoFinalizado = true;
             $("#crearCapturaVentaPedidosDisabled").show();
             $("#crearCapturaPedidosLoading").hide();
-            $("#crearCapturaPedidosDisabled").show();
             $("#crearCapturaVentaPedidos").hide();
-            $("#crearCapturaPedidos").hide();
+
+            $("#eliminarPedidosDisabled").show();
+            $("#imprimirPedidosDisabled").show();
+            $("#eliminarPedidos").hide();
+            $("#imprimirPedidos").hide();
         }
 
     }).fail((res) => {
@@ -1253,8 +1299,7 @@ $(document).on('click', '#crearCapturaVentaPedidos', function () {
     $("#pedidosFormModal").modal('show');
 });
 
-$(document).on('click', '#crearCapturaPedidos', function () {
-
+function guardarPedido() {
     let = isValit = true;
 
     $('#id_bodega_pedido').removeClass("is-invalid");
@@ -1293,50 +1338,48 @@ $(document).on('click', '#crearCapturaPedidos', function () {
         return;
     }
 
-    $("#crearCapturaVentaPedidosDisabled").show();
-    $("#crearCapturaPedidosLoading").show();
-    $("#crearCapturaPedidosDisabled").hide();
-    $("#crearCapturaVentaPedidos").hide();
-    $("#crearCapturaPedidos").hide();
+    if (pedidoXHR !== null) {
+        pedidoXHR.abort();
+    }
 
-    $.ajax({
+    $("#crearCapturaVentaPedidosDisabled").hide();
+    $("#crearCapturaPedidosLoading").show();
+    $("#crearCapturaVentaPedidos").hide();
+
+    $("#eliminarPedidosDisabled").hide();
+    $("#imprimirPedidosDisabled").hide();
+    $("#eliminarPedidos").hide();
+    $("#imprimirPedidos").hide();
+
+    pedidoXHR = $.ajax({
         url: base_url + 'pedido',
         method: 'POST',
         data: JSON.stringify(data),
         headers: headers,
-        dataType: 'json',
+        dataType: 'json'
     }).done((res) => {
         guardandoPedido = false;
         if (res.success) {
-
-            agregarToast('exito', 'Creación exitosa', 'Pedido guardado con exito!', true);
-
-            $("#crearCapturaVentaPedidosDisabled").show();
-            $("#crearCapturaPedidosDisabled").show();
-            $("#crearCapturaPedidos").hide();
-            $("#crearCapturaPedidosLoading").hide();
-            $("#crearCapturaVentaPedidos").hide();
-
-            consecutivoPedidos = 0;
-
-            setTimeout(function(){
-                $('#id_cliente_pedido').focus();
-                $comboClientePedidos.select2("open");
-            },10);
-
-            $("#lista_productos_seleccionados").empty();
-            consecutivoSiguienteBodegaPedido();
-            loadAnticiposClientePedido();
-            cargarUbicacionPedido();
-            productosPedidos = [];
-
-        } else {
-
             $("#crearCapturaVentaPedidosDisabled").hide();
             $("#crearCapturaPedidosLoading").hide();
-            $("#crearCapturaPedidosDisabled").hide();
             $("#crearCapturaVentaPedidos").show();
-            $("#crearCapturaPedidos").show();
+
+            $("#eliminarPedidosDisabled").hide();
+            $("#imprimirPedidosDisabled").hide();
+            $("#eliminarPedidos").show();
+            $("#imprimirPedidos").show();
+
+            pedidoEditando = res.data.id;
+
+        } else {
+            $("#crearCapturaVentaPedidosDisabled").hide();
+            $("#crearCapturaPedidosLoading").hide();
+            $("#crearCapturaVentaPedidos").show();
+
+            $("#eliminarPedidosDisabled").hide();
+            $("#imprimirPedidosDisabled").hide();
+            $("#eliminarPedidos").show();
+            $("#imprimirPedidos").show();
 
             var mensaje = res.mensages;
             var errorsMsg = "";
@@ -1349,6 +1392,10 @@ $(document).on('click', '#crearCapturaPedidos', function () {
             agregarToast('error', 'Creación errada', errorsMsg);
         }
     }).fail((err) => {
+        console.log('err: ',err);
+
+        if (err.statusText == "abort") return;
+
         guardandoPedido = false;
         $("#savePedidos").show();
         $("#savePedidosLoading").hide();
@@ -1357,7 +1404,7 @@ $(document).on('click', '#crearCapturaPedidos', function () {
         var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Creación errada', errorsMsg);
     });
-});
+}
 
 $(document).on('click', '#savePedidos', function () {
     validateSavePedido();
@@ -1368,6 +1415,82 @@ $(document).on('click', '.limpiar-filtros-pedidos', function () {
     filtrarProductosPedidos();
 });
 
+$(document).on('click', '#eliminarPedidos', function () {
+
+    
+    Swal.fire({
+        title: '¿Borrar pedido?',
+        text: "No se podrá revertir!",
+        type: 'warning',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Borrar!',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.value){
+
+            $("#crearCapturaVentaPedidos").hide();
+            $("#crearCapturaVentaPedidosDisabled").hide();
+            $("#eliminarPedidosDisabled").hide();
+            $("#imprimirPedidosDisabled").hide();
+            $("#eliminarPedidos").hide();
+            $("#imprimirPedidos").hide();
+
+            $("#crearCapturaPedidosLoading").show();
+
+            $.ajax({
+                url: base_url + 'pedido',
+                method: 'DELETE',
+                data: JSON.stringify({id: pedidoEditando}),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                agregarToast('exito', 'Eliminación exitosa', 'Pedido eliminado con exito!', true );
+
+                $("#crearCapturaVentaPedidosDisabled").show();
+                $("#eliminarPedidosDisabled").show();
+                $("#imprimirPedidosDisabled").show();
+
+                $("#crearCapturaPedidosLoading").hide();
+                $("#crearCapturaVentaPedidos").hide();
+                $("#eliminarPedidos").hide();
+                $("#imprimirPedidos").hide();
+
+                pedidoEditando = null;
+                productosPedidos = [];
+                consecutivoPedidos = 0;
+
+                $('#id_cliente_pedido').val(null).change();
+                setTimeout(function(){
+                    $('#id_cliente_pedido').focus();
+                    $comboClientePedidos.select2("open");
+                },10);
+                
+                $("#lista_productos_seleccionados").empty();
+                consecutivoSiguienteBodegaPedido();
+                loadAnticiposClientePedido();
+                disabledFormasPagoPedido();
+                cargarUbicacionPedido();
+                mostrarValoresPedidos();
+                
+            }).fail((res) => {
+                agregarToast('error', 'Eliminación errada', res.message);
+
+                $("#crearCapturaVentaPedidosDisabled").hide();
+                $("#eliminarPedidosDisabled").hide();
+                $("#imprimirPedidosDisabled").hide();
+
+                $("#crearCapturaPedidosLoading").hide();
+                $("#crearCapturaVentaPedidos").show();
+                $("#eliminarPedidos").show();
+                $("#imprimirPedidos").show();
+            });
+        }
+    })
+});
+
 $(document).on('click', '.ubicaciones-datos', function () {
     var id = this.id.split('_')[1];
 
@@ -1376,11 +1499,29 @@ $(document).on('click', '.ubicaciones-datos', function () {
 
     $(".ubicaciones-datos").removeClass('active');
     if (id_ubicacion_select) $("#ubicacion-pedido_"+id_ubicacion_select).addClass('active');
+
     buscarPedidos();
 });
 
+function changeCantidadPedido(consecutivo, event) {
+    if(event.keyCode != 13) return;
+
+    let index = productosPedidos.findIndex(producto => producto.consecutivo === consecutivo);
+
+    if (index === -1) {
+        return;
+    }
+
+    const cantidadProducto = parseInt($("#cantidad_producto_"+consecutivo).val());
+    productosPedidos[index].cantidad = cantidadProducto;
+    calcularCantidadPedido(consecutivo);
+    mostrarValoresPedidos();
+    guardarPedido();
+} 
+
 contenedorPedidos.on("scroll", function () {
+
     if (contenedorPedidos.scrollTop() + contenedorPedidos.innerHeight() >= contenedorPedidos[0].scrollHeight - 50) {
-        cargarProductosPedido(null, null, false);
+        cargarProductosPedido(false);
     }
 });

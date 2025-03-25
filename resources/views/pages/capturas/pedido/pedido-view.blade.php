@@ -381,7 +381,7 @@
                 <div style="width: 100%;">
                     <div class="row" style="width: 100%;">
                         <div class="col-8" style="display: inline-flex;">
-                            <input type="text" id="searchInputPedidos" class="form-control form-control-sm search-table" placeholder="Buscar productos" onkeyup="filtrarProductosPedidos()" style="margin-top: 7px; margin-bottom: 5px !important;">
+                            <input type="text" id="searchInputPedidos" class="form-control form-control-sm search-table" placeholder="Buscar productos" onkeyup="buscarProductosPedidos()" style="margin-top: 7px; margin-bottom: 5px !important;">
                         </div>
                         <div class="col-4" style="place-self: center;">
                             <div id="count-productos-pedidos" style="place-content: center; font-size: 15px; font-weight: 500; color: darkcyan; margin-left: 10px;">Productos: 0</div>
@@ -503,21 +503,26 @@
                         </table>
 
                         <div class="row mt-3">
-                            <div class="col-6">
-                                <span id="crearCapturaPedidosDisabled" href="javascript:void(0)" class="badge bg-primary" style="width: 100%; float: right; background-color: #3a5c89 !important; cursor: no-drop;">
-                                    <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
-                                    <b style="vertical-align: text-top;">GRABAR PEDIDO</b>
+                            <div class="col-6" style="display: flex;">
+                                <span id="eliminarPedidos" href="javascript:void(0)" class="badge btn badge bg-gradient-danger" style="width: 100%; float: right; margin-bottom: 0px !important; display: none;">
+                                    <i class="fas fa-trash" style="font-size: 17px;"></i>
                                 </span>
-                                <span id="crearCapturaPedidos" href="javascript:void(0)" class="badge btn badge bg-gradient-primary" style="width: 100%; float: right; display: none; margin-bottom: 0px !important;">
-                                    <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
-                                    <b style="vertical-align: text-top;">GRABAR PEDIDO</b>
+                                <span id="eliminarPedidosDisabled" href="javascript:void(0)" class="badge bg-danger" style="width: 100%; float: right; margin-bottom: 0px !important; cursor: no-drop;">
+                                    <i class="fas fa-trash" style="font-size: 17px;"></i>
                                 </span>
-                                <span id="crearCapturaPedidosLoading" class="badge bg-gradient-primary" style="display:none; width: 100%;">
-                                    <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                                    <b style="vertical-align: text-top;">CARGANDO</b>
+                                &nbsp;
+                                <span id="imprimirPedidos" href="javascript:void(0)" class="badge btn badge bg-gradient-info" style="width: 100%; float: right; margin-bottom: 0px !important; display: none;">
+                                    <i class="fas fa-print" style="font-size: 17px;"></i>
+                                </span>
+                                <span id="imprimirPedidosDisabled" href="javascript:void(0)" class="badge bg-info" style="width: 100%; float: right; margin-bottom: 0px !important; cursor: no-drop;">
+                                    <i class="fas fa-print" style="font-size: 17px;"></i>
                                 </span>
                             </div>
                             <div class="col-6">
+                                <span id="crearCapturaPedidosLoading" class="badge bg-gradient-success" style="display:none; width: 100%;">
+                                    <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                                    <b style="vertical-align: text-top;">CARGANDO</b>
+                                </span>
                                 <span id="crearCapturaVentaPedidosDisabled" href="javascript:void(0)" class="badge bg-success" style="width: 100%; float: right; background-color: #2dce899c !important; cursor: no-drop;">
                                     <i class="fas fa-shopping-cart" style="font-size: 17px;"></i>&nbsp;
                                     <b style="vertical-align: text-top;">CREAR VENTA</b>

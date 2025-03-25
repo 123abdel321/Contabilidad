@@ -90,12 +90,15 @@ function productosInit() {
                 if (row.familia) {
                     return row.familia.nombre
                 }
-                return '';
+                return '<span class="badge rounded-pill bg-danger">SIN FAMILIA!</span>';
             }},
             {"data": function (row, type, set){  
                 var inventarios = row.inventarios;
                 var totalUnidades = 0
-                if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
+                if (!row.id_familia) {
+                    return '<span class="badge rounded-pill bg-danger">SIN FAMILIA!</span>';
+                }
+                if (row.id_familia && row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
                     inventarios.forEach(inventario => {
                         totalUnidades+= parseInt(inventario.cantidad);
                     });
@@ -115,6 +118,9 @@ function productosInit() {
             {"data": "valor_utilidad", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
                 var inventarios = row.inventarios
+                if (!row.id_familia) {
+                    return '<span class="badge rounded-pill bg-danger">SIN FAMILIA!</span>';
+                }
                 if (row.familia.inventario && inventarios.length > 0) {
                     var html = ``;
                     inventarios.forEach(inventario => {
@@ -128,6 +134,9 @@ function productosInit() {
             {"data": function (row, type, set){  
                 var inventarios = row.inventarios;
                 var totalUnidades = 0
+                if (!row.id_familia) {
+                    return '';
+                }
                 if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
                     inventarios.forEach(inventario => {
                         totalUnidades+= parseInt(inventario.cantidad);
@@ -140,6 +149,9 @@ function productosInit() {
             {"data": function (row, type, set){  
                 var inventarios = row.inventarios;
                 var totalUnidades = 0
+                if (!row.id_familia) {
+                    return '';
+                }
                 if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
                     inventarios.forEach(inventario => {
                         totalUnidades+= parseInt(inventario.cantidad);

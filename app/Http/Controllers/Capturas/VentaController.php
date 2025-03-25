@@ -123,7 +123,9 @@ class VentaController extends Controller
                         ->with('familia')
                         ->first();
 
-                    if (!$producto->familia->id_cuenta_venta) {
+                    if (!$producto->id_familia) {
+                        $fail("El producto (".$producto->codigo." - ".$producto->nombre.") no tiene familia venta configurada");
+                    } else if (!$producto->familia->id_cuenta_venta) {
                         $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta venta configurada");
                     }
 				}

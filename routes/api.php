@@ -335,6 +335,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('pedido-ventas', 'venta');
             Route::post('pedido', 'create');
             Route::get('pedido', 'find');
+            Route::delete('pedido', 'delete');
         });
         //CAPTURA GASTO
         Route::controller(GastosController::class)->group(function () {
