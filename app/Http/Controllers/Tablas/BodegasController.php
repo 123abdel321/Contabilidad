@@ -113,6 +113,7 @@ class BodegasController extends Controller
                 'id_centro_costos' => $request->get('id_centro_costos'),
                 'id_cuenta_cartera' => $request->get('id_cuenta_cartera'),
                 'consecutivo' => $request->get('consecutivo'),
+                'consecutivo_parqueadero' => $request->get('consecutivo_parqueadero'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
@@ -176,6 +177,7 @@ class BodegasController extends Controller
                     'id_centro_costos' => $request->get('id_centro_costos'),
                     'id_cuenta_cartera' => $request->get('id_cuenta_cartera'),
                     'consecutivo' => $request->get('consecutivo'),
+                    'consecutivo_parqueadero' => $request->get('consecutivo_parqueadero'),
                     'updated_by' => request()->user()->id,
                 ]);
             
@@ -283,6 +285,21 @@ class BodegasController extends Controller
         
 		if ($request->get('id_bodega')) {
 			$consecutivo = $this->getNextConsecutiveBodega($request->get('id_bodega'));
+		}
+
+        return response()->json([
+    		'success'=>	true,
+    		'data' => $consecutivo,
+    		'message'=> 'Consecutivo siguiente generado con exito!'
+    	]);
+    }
+
+    public function consecutivoParqueadero(Request $request)
+    {
+        $consecutivo = null;
+        
+		if ($request->get('id_bodega')) {
+			$consecutivo = $this->getNextConsecutiveBodegaParqueadero($request->get('id_bodega'));
 		}
 
         return response()->json([

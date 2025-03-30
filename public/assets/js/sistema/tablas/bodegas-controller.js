@@ -284,6 +284,7 @@ $(document).on('click', '#saveBodegas', function () {
         nombre: $('#nombre_bodega').val(),
         ubicacion: $('#ubicacion_bodega').val(),
         consecutivo: $('#consecutivo_bodegas').val(),
+        consecutivo_parqueadero: $('#consecutivo_parqueadero').val(),
         id_centro_costos: $('#id_centro_costos_bodega').val(),
         id_cuenta_cartera: $("#id_cuenta_cartera_bodega").val(),
     };
@@ -337,6 +338,7 @@ $(document).on('click', '#updateBodegas', function () {
         nombre: $('#nombre_bodega').val(),
         ubicacion: $('#ubicacion_bodega').val(),
         consecutivo: $('#consecutivo_bodegas').val(),
+        consecutivo_parqueadero: $('#consecutivo_parqueadero').val(),
         id_centro_costos: $('#id_centro_costos_bodega').val(),
         id_cuenta_cartera: $("#id_cuenta_cartera_bodega").val(),
     };

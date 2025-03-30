@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('imagen', 300)->nullable();
             $table->integer('id_padre')->nullable();
             $table->integer('id_familia')->nullable();
-            $table->integer('tipo_producto')->default(0)->comment('0:Producto, 1:Servicio, 2:Combo');
+            $table->integer('tipo_producto')->default(0)->comment('0:Producto, 1:Servicio, 2:Combo, 3:Parqueadero');
+            $table->integer('tipo_tiempo')->default(1)->comment('1:Hora, 2:Día, 3:Mes');
+            $table->integer('fraccion_hora')->default(0)->comment('0:No, 1:Si');
             $table->string('codigo', 60)->unique();
             $table->string('nombre', 200);
             $table->decimal('precio', 15)->default(0);

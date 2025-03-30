@@ -21,6 +21,7 @@ class FacBodegas extends Model
         'id_cuenta_cartera',
         'id_responsable',
         'consecutivo',
+        'consecutivo_parqueadero',
         'created_by',
         'updated_by',
     ];

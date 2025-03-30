@@ -19,6 +19,8 @@ class FacProductos extends Model
         'imagen',
         'id_familia',
         'tipo_producto',
+        'tipo_tiempo',
+        'fraccion_hora',
         'codigo',
         'nombre',
         'precio',

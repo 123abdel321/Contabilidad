@@ -15,7 +15,7 @@ const bucketUrl = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/';
 const btnLogout = document.getElementById('sessionLogout');
 const itemMenuActive = localStorage.getItem("item_active_menu");
 
-const dateNow = new Date();
+let dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
 
@@ -86,6 +86,7 @@ var moduloCreado = {
     'resultados': false,
     'ubicaciones': false,
     'pedido': false,
+    'parqueadero': false,
 };
 
 var moduloRoute = {
@@ -133,6 +134,7 @@ var moduloRoute = {
     'resultados': 'informes',
     'ubicaciones': 'tablas',
     'pedido': 'capturas',
+    'parqueadero': 'capturas',
 }
 
 function iniciarCanalesDeNotificacion () {

@@ -131,7 +131,7 @@
         padding: 2px;
         cursor: pointer;
         margin: 2px;
-        height: min-content;
+        /* height: min-content; */
         width: 100px;
         background-color: #FFF;
     }

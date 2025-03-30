@@ -50,7 +50,12 @@
                             <input type="text" class="form-control form-control-sm" name="consecutivo_bodegas" id="consecutivo_bodegas" placeholder="1" required>
                         </div>
 
-                    </div>  
+                        <div class="form-group col-12 col-sm-6 col-md-6">
+                            <label for="example-text-input" class="form-control-label">Consecutivo parqueadero</label>
+                            <input type="text" class="form-control form-control-sm" name="consecutivo_parqueadero" id="consecutivo_parqueadero" value="1" placeholder="1" required>
+                        </div>
+
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

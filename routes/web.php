@@ -43,6 +43,7 @@ use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\GastosController;
 use App\Http\Controllers\Capturas\PedidoController;
 use App\Http\Controllers\Capturas\RecibosController;
+use App\Http\Controllers\Capturas\ParqueaderoController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\DocumentoEliminarController;
@@ -146,6 +147,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/ventas-print-informez', [VentaController::class, 'showPdfZ']);
 		//PEDIDOS
 		Route::get('/pedido', [PedidoController::class, 'index'])->name('pedido');
+		//PARQUEADEROS
+		Route::get('/parqueadero', [ParqueaderoController::class, 'index'])->name('parqueadero');
 		//RECIBOS
 		Route::get('/recibo', [RecibosController::class, 'index'])->name('recibo');
 		Route::get('/recibo-print/{id}', [RecibosController::class, 'showPdf'])->name('recibo-pdf');

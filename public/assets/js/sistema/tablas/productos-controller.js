@@ -84,6 +84,9 @@ function productosInit() {
                 if (row.tipo_producto == 2) {
                     return '<span class="badge rounded-pill bg-primary">COMBO</span>';
                 }
+                if (row.tipo_producto == 2) {
+                    return '<span class="badge rounded-pill bg-primary">PARQUEADERO</span>';
+                }
                 return '';
             }},
             {"data": function (row, type, set){  
@@ -202,6 +205,8 @@ function productosInit() {
                 codigo: dataProducto.codigo,
                 id_familia: dataProducto.familia.id,
                 precio: stringToNumberFloat(dataProducto.precio),
+                tipo_tiempo: dataProducto.tipo_tiempo,
+                fraccion_hora: dataProducto.fraccion_hora,
                 tipo_producto: dataProducto.tipo_producto,
                 precio_minimo: stringToNumberFloat(dataProducto.precio_minimo),
                 precio_inicial: stringToNumberFloat(dataProducto.precio_inicial),
@@ -283,6 +288,11 @@ function productosInit() {
             else if (dataProducto.tipo_producto == 2) {
                 document.getElementById('tipo_producto_combo').click();
             }
+            else if (dataProducto.tipo_producto == 3) {
+                document.getElementById('tipo_producto_parqueadero').click();
+                $("#div-tipo-tiempo").show();
+                $("#div-fraccion_hora").show();
+            }
 
             if (dataProducto.variantes.length > 0) {
                 $('#btn-modal-variantes').hide();
@@ -331,6 +341,11 @@ function productosInit() {
                 $('#producto-inventario').show();
                 generarBodegas();
             }
+
+            if (nuevoProducto.fraccion_hora) $('#fraccion_hora').prop('checked', true);
+            else $('#fraccion_hora').prop('checked', false);
+
+            $("#tipo_tiempo_producto").val(nuevoProducto.tipo_tiempo).change();
 
             $('.dtfh-floatingparent').hide();
         });
@@ -760,6 +775,7 @@ $(document).on('click', '#createProducto', function () {
     document.getElementById("id_bodega_producto").disabled = false;
 
     $("#titulo-view").text('Agregar producto');
+    document.getElementById('tipo_producto_producto').click();
 });
 
 $(document).on('click', '#reloadProducto', function () {
@@ -794,6 +810,8 @@ $(document).on('click', '#saveNewProducto', function () {
     $('#saveNewProductoLoading').show();
     
     nuevoProducto.variantes = getVariantesActivas();
+    nuevoProducto.tipo_tiempo = $("#tipo_tiempo_producto").val();
+    nuevoProducto.fraccion_hora = $("input[type='checkbox']#fraccion_hora").is(':checked') ? '1' : '';
     nuevoProducto.id_familia = parseInt($('#id_familia_producto').val());
 
     $.ajax({
@@ -960,15 +978,22 @@ function clearFormProductos() {
 function changeProducType() {
     var checkProducto = $("input[type='radio']#tipo_producto_producto").is(':checked');
     var checkServicio = $("input[type='radio']#tipo_producto_servicio").is(':checked');
-    var checkCombo = $("input[type='radio']#tipo_producto_combo").is(':checked');
+    var checkParqueadero = $("input[type='radio']#tipo_producto_parqueadero").is(':checked');
+    // var checkCombo = $("input[type='radio']#tipo_producto_combo").is(':checked');
 
     $("#text_tipo_producto").hide();
     $("#text_tipo_servicio").hide();
     $("#text_tipo_combo").hide();
 
+    $('#div-precio_inicial').show();
+    $('#div-porcentaje_utilidad').show();
+    $('#div-valor_utilidad').show();
+    $('#div-precio_minimo').show();
+
     if(checkProducto) setCrearProducto();
     else if (checkServicio) setCrearServicio();
-    else if (checkCombo) setCrearCombo();
+    else if (checkParqueadero) setCrearParqueadero();
+    // else if (checkCombo) setCrearCombo();
 }
 
 function setCrearProducto() {
@@ -977,6 +1002,7 @@ function setCrearProducto() {
     $("#item-maneja-variante").show();
     $('#producto-inventario').hide();
     $('#producto-variantes').hide();
+    $("#div-tipo-tiempo").hide();
     document.getElementById("producto_variantes1").checked = true;
 }
 
@@ -986,6 +1012,7 @@ function setCrearServicio() {
     $("#item-maneja-variante").hide();
     $('#producto-inventario').hide();
     $('#producto-variantes').hide();
+    $("#div-tipo-tiempo").hide();
 }
 
 function setCrearCombo() {
@@ -994,6 +1021,20 @@ function setCrearCombo() {
     $("#item-maneja-variante").hide();
     $('#producto-inventario').hide();
     $('#producto-variantes').hide();
+    $("#div-tipo-tiempo").hide();
+}
+
+function setCrearParqueadero() {
+    nuevoProducto.tipo_producto = 3;
+    $("#item-maneja-variante").hide();
+    $('#producto-inventario').hide();
+    $('#producto-variantes').hide();
+    $('#div-precio_inicial').hide();
+    $('#div-porcentaje_utilidad').hide();
+    $('#div-valor_utilidad').hide();
+    $('#div-precio_minimo').hide();
+    $("#div-tipo-tiempo").show();
+    $("#div-fraccion_hora").show();
 }
 
 $('input[type=radio][name=producto_variantes]').change(function() {
@@ -1494,6 +1535,12 @@ $("#id_variante_producto").on('change', function(e) {
     }
 
     crearItemVariable(data[0]);
+});
+
+$("#tipo_tiempo_producto").on('change', function(e) {
+    const tipoTiempo = $("#tipo_tiempo_producto").val();
+    $("#div-fraccion_hora").hide();
+    if (tipoTiempo == 1) $("#div-fraccion_hora").show();
 });
 
 $("#id_bodega_producto_variante").on('change', function(e) {
@@ -2173,7 +2220,7 @@ $('#id_familia_producto').on('select2:close', function(event) {
             $('#input-iva-porcentaje').hide();
             $('#input-iva-valor').hide();
         }
-        console.log('familia: ',familia);
+
         if (familia.cuenta_venta_impuestos && familia.cuenta_venta_impuestos.impuesto) {
             $('#input-impuestos-porcentaje').show();
             $('#input-impuestos-valor').show();

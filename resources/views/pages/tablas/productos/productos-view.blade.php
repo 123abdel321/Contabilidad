@@ -221,7 +221,8 @@
     
 
 <script>
-    var primeraBodegas = JSON.parse('<?php echo $bodegas; ?>');
-    var editarProductos = '<?php echo auth()->user()->can('productos update'); ?>';
-    var eliminarProductos = '<?php echo auth()->user()->can('productos delete'); ?>';
+    let primeraBodegas = @json($bodegas);
+    let editarProductos = @json(auth()->user()->can('productos update'));
+    let eliminarProductos = @json(auth()->user()->can('productos delete'));
+    let parqueaderoProductos = @json(auth()->user()->can('parqueadero productos'));
 </script>

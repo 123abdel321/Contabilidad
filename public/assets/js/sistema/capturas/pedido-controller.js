@@ -219,11 +219,9 @@ function cargarCombosPedido() {
         dropdownCssClass: 'custom-id_cliente_pedido',
         language: {
             noResults: function() {
-                createNewNit = true;
                 return "No hay resultado";        
             },
             searching: function() {
-                createNewNit = false;
                 return "Buscando..";
             },
             inputTooShort: function () {
@@ -438,14 +436,14 @@ function mostrarProductos (listaProductos, clear) {
 }
 
 function loadFormasPagoPedidos() {
-    var totalRows = pedidos_table_pagos .rows().data().length;
-    if(pedidos_table_pagos .rows().data().length){
-        pedidos_table_pagos .clear([]).draw();
+    var totalRows = pedidos_table_pagos.rows().data().length;
+    if(pedidos_table_pagos.rows().data().length){
+        pedidos_table_pagos.clear([]).draw();
         for (let index = 0; index < totalRows; index++) {
-            pedidos_table_pagos .row(0).remove().draw();
+            pedidos_table_pagos.row(0).remove().draw();
         }
     }
-    pedidos_table_pagos .ajax.reload();
+    pedidos_table_pagos.ajax.reload();
 }
 
 function seleccionarProducto(element) {

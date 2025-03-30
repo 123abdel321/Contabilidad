@@ -34,6 +34,7 @@ use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\GastosController;
 use App\Http\Controllers\Capturas\PedidoController;
 use App\Http\Controllers\Capturas\RecibosController;
+use App\Http\Controllers\Capturas\ParqueaderoController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
@@ -250,6 +251,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('bodega/combo-bodega', 'comboBodega');
             Route::get('bodega-consecutivo', 'consecutivo');
             Route::get('existencias-producto', 'existenciasProducto');
+            Route::get('bodega-parqueadero-consecutivo', 'consecutivoParqueadero');
         });
         //VARIANTES
         Route::controller(VariantesController::class)->group(function () {
@@ -264,6 +266,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('producto', 'update');
             Route::delete('producto', 'delete');
             Route::get('producto/combo-producto', 'comboProducto');
+            Route::get('producto/combo-parqueadero', 'comboParqueadero');
             Route::get('productos', 'getAll');
         });
         //CARGUE DESCARGUE
@@ -336,6 +339,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('pedido', 'create');
             Route::get('pedido', 'find');
             Route::delete('pedido', 'delete');
+        });
+        //PARQUEADERO
+        Route::controller(ParqueaderoController::class)->group(function () {
+            Route::get('parqueadero', 'generate');
+            Route::post('parqueadero', 'create');
+            Route::post('parqueadero-ventas', 'venta');
         });
         //CAPTURA GASTO
         Route::controller(GastosController::class)->group(function () {

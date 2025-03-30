@@ -55,6 +55,23 @@ trait BegConsecutiveTrait
         return $bodega->consecutivo;
     }
 
+    public function getNextConsecutiveBodegaParqueadero($bodega)
+    {
+        if (is_numeric($bodega) > 0) {
+			$bodega = FacBodegas::find($bodega);
+		}
+
+        if (!($bodega instanceof FacBodegas)) {
+			return null;
+        }
+
+        if (!$bodega) {
+			return null;
+        }
+
+        return $bodega->consecutivo_parqueadero;
+    }
+
 	static function getLastConsecutive($id_comprobante, $fecha)
 	{
 		$castConsecutivo = 'MAX(CAST(consecutivo AS SIGNED)) AS consecutivo';
@@ -110,6 +127,25 @@ trait BegConsecutiveTrait
 		}
 
 		$bodega->consecutivo = $bodega->consecutivo + 1;
+		$bodega::unsetEventDispatcher();
+		$bodega->save();
+
+        return $bodega;
+    }
+
+    public function updateConsecutivoParqueadero($bodega, int $consecutivoActual)
+    {
+        if (is_numeric($bodega)) {
+            $bodega = FacBodegas::find($bodega);
+        } else if (!($bodega instanceof bodega)) {
+            return false;
+        }
+        
+		if ($consecutivoActual > $bodega->consecutivo_parqueadero) {
+			$bodega->consecutivo_parqueadero = $consecutivoActual;
+		}
+
+		$bodega->consecutivo_parqueadero = $bodega->consecutivo_parqueadero + 1;
 		$bodega::unsetEventDispatcher();
 		$bodega->save();
 

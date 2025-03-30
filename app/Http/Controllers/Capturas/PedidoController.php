@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Validator;
 //HELPERS
 use App\Helpers\Documento;
 use App\Helpers\Printers\VentasPdf;
-use App\Helpers\Printers\VentasInformeZ;
 use App\Helpers\FacturaElectronica\VentaElectronicaSender;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
 //TRAITS
@@ -159,14 +158,6 @@ class PedidoController extends Controller
             ]);
         } else {
             $pedidoEditado =  FacPedidos::where('id', $request->get('id_pedido'))->first();
-        }
-
-        if (!$pedidoEditado) {
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>["Pedido" => ["El pedido no existe"]]
-            ], 422);
         }
 
         if ($pedidoEditado && $pedidoEditado->id_venta) {
