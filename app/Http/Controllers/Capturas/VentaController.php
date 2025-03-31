@@ -92,7 +92,7 @@ class VentaController extends Controller
         $resoluciones = explode(",", $usuarioPermisos->ids_resolucion_responsable);
 
         $data = [
-            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', '222222222222')->first(),
+            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222222%')->first(),
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
             'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get(),
             'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : '',

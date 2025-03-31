@@ -340,31 +340,6 @@
                 <b class="mt-2">Ubicaciones</b>
 
                 <div id="div-item-ubicacion" style="display: flex; gap: 10px;">
-
-                    <!-- <div class="item-ubicacion">
-                        <div class="ubicaciones-datos active">
-                            <div class="selected"></div>
-                            <div class="nombre">MESA 1</div>
-                            <div class="total">0</div>
-                        </div>
-                    </div>
-
-                    <div class="item-ubicacion">
-                        <div class="ubicaciones-datos">
-                            <div class="without"></div>
-                            <div class="nombre">MESA 2</div>
-                            <div class="total">0</div>
-                        </div>
-                    </div>
-
-                    <div class="item-ubicacion">
-                        <div class="ubicaciones-datos">
-                            <div class="with"></div>
-                            <div class="nombre">MESA 3</div>
-                            <div class="total">15.000</div>
-                        </div>
-                    </div> -->
-
                 </div>
 
             </div>
@@ -451,30 +426,6 @@
                         </div>
                     
                         <ul id="lista_productos_seleccionados" class="list-group list-group-pedidos" style="max-height: 38vh; overflow: auto; background-color: ghostwhite;">
-
-                            <!-- <div class="list-group-item">
-                                <div class="row" style="width: 100%; margin: 0px;">
-                                    <div class="col-12 nombre">
-                                        DESODORANTE LADY SPEED BARRA
-                                    </div>
-                                </div>
-                                <div class="row" style="width: 100%; margin: 0px;">
-                                    <div class="col-7 precio">
-                                        <div style="margin-bottom: 0px; font-weight: 600; font-size: 12px; color: #939393;">Precio: 100.000</div>
-                                        <div style="margin-bottom: 0px; font-weight: bold; font-size: 13px;">Total: 500.000</div>
-                                    </div>
-                                    <div class="col-3 cantidad">
-                                        <div class="quitar"><i class="fas fa-minus"></i></div>
-                                        <input class="button-cantidad-producto" type="text" value="0" onfocus="this.select();">
-                                        <div class="agregar"><i class="fas fa-plus"></i></div>
-                                    </div>
-                                    <div class="col-2 eliminar">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </div>
-                                    
-                                </div>
-                            </div> -->
-                            
                         </ul>
 
                         <table class="table table-bordered table-captura-pedidos" width="100%" style="margin-top: 12px;">

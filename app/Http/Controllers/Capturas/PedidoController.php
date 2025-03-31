@@ -95,7 +95,7 @@ class PedidoController extends Controller
 
         $data = [
             'familias' => FacFamilias::get(),
-            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', '222222222222')->first(),
+            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222222%')->first(),
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
             'ubicaciones' => Ubicacion::with('pedido')->get(),
             'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get(),

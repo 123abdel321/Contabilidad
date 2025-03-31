@@ -4,6 +4,7 @@ let parqueadero_table_pagos;
 let $comboBodegaParqueadero = null;
 let $comboResolucionParqueadero = null;
 let $comboClienteParqueadero = null;
+let $comboClienteParqueaderoFilter = null;
 let $comboProductoParqueadero = null;
 let parqueaderoActivo = null;
 var totalAnticiposDisponiblesParqueadero = 0;
@@ -14,6 +15,8 @@ function parqueaderoInit () {
     cargarCombosParqueadero();
     cargarChangesParqueadero();
     loadFormasPagoParqueadero();
+
+    $("#buscarPlacaParqueadero").focus();
 }
 
 function cargarTablasParqueadero() {
@@ -38,6 +41,18 @@ function cargarTablasParqueadero() {
             type: "GET",
             headers: headers,
             url: base_url + 'parqueadero',
+            data: function ( d ) {
+                d.id_nit = $("#id_nit_parqueadro_filter").val(),
+                d.tipo_vehiculo = $("#tipo_vehiculo_parqueadero_filter").val();
+                d.placa = $("#placa_parqueadero_filter").val();
+            }
+        },
+        'rowCallback': function(row, data, index){
+            if (data.id_venta) {
+                // $('td', row).css('background-color', 'background-color: #05ff0026;');
+                $('td', row).css('background-color', 'rgb(186 231 176)');
+                return;
+            }
         },
         columns: [
             {"data":function (row, type, set){  
@@ -71,8 +86,10 @@ function cargarTablasParqueadero() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    if (!row.id_venta) html+= '<span id="pagarparqueadero_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success pagar-parqueadero" style="margin-bottom: 0rem !important; min-width: 50px;">Pagar</span>&nbsp;';
-                    if (eliminarParqueadero) html+= '<span id="deleteparqueadero_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-parqueadero" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    if (!row.id_venta) html+= '<span id="pagarparqueadero_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info pagar-parqueadero" style="margin-bottom: 0rem !important; min-width: 50px;">Pagar</span>&nbsp;';
+                    if (!row.id_venta && editarParqueadero) html+= '<span id="editparqueadero_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-parqueadero" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    if (!row.id_venta && eliminarParqueadero) html+= '<span id="deleteparqueadero_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-parqueadero" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    if (row.id_venta) html+= '<span id="deleteparqueadero_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary drop-parqueadero" style="margin-bottom: 0rem !important; min-width: 50px;">Imprimir</span>';
                     return html;
                 }
             },
@@ -144,7 +161,73 @@ function cargarTablasParqueadero() {
             $("#parqueaderoTexto").text('PLACA: '+data.placa);
 
             clearFormParqueaderoVenta();
+
+            if(primeraResolucionParqueadero && primeraResolucionParqueadero.length > 0){
+                var dataResolucion = {
+                    id: primeraResolucionParqueadero[0].id,
+                    text: primeraResolucionParqueadero[0].prefijo + ' - ' + primeraResolucionParqueadero[0].nombre
+                };
+                var newOption = new Option(dataResolucion.text, dataResolucion.id, false, false);
+                $comboResolucionParqueadero.append(newOption).trigger('change');
+                $comboResolucionParqueadero.val(dataResolucion.id).trigger('change');
+            }
+
             $("#parqueaderoVentaFormModal").modal('show');
+        });
+        //EDITAR PARQUEADERO
+        parqueadero_table.on('click', '.edit-parqueadero', function() {
+
+            var id = this.id.split('_')[1];
+            var data = getDataById(id, parqueadero_table);
+            parqueaderoActivo = data;
+
+            clearFormParqueaderoVenta();
+
+            $("#textParqueaderoCreate").hide();
+            $("#textParqueaderoUpdate").show();
+            $("#id_parqueadero_up").val(data.id);
+
+            if(data.bodega){
+                var dataBodega = {
+                    id: data.bodega.id,
+                    text: data.bodega.codigo + ' - ' + data.bodega.nombre
+                };
+                var newOption = new Option(dataBodega.text, dataBodega.id, false, false);
+                $comboBodegaParqueadero.append(newOption).trigger('change');
+                $comboBodegaParqueadero.val(dataBodega.id).trigger('change');
+            }
+
+            if(data.cliente){
+                var dataCliente = {
+                    id: data.bodega.id,
+                    text: data.bodega.codigo + ' - ' + data.bodega.nombre
+                };
+                var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
+                $comboClienteParqueadero.append(newOption).trigger('change');
+                $comboClienteParqueadero.val(dataCliente.id).trigger('change');
+            }
+
+            if(data.producto){
+                var dataProducto = {
+                    id: data.producto.id,
+                    text: data.producto.codigo + ' - ' + data.producto.nombre
+                };
+                var newOption = new Option(dataProducto.text, dataProducto.id, false, false);
+                $comboProductoParqueadero.append(newOption).trigger('change');
+                $comboProductoParqueadero.val(dataProducto.id).trigger('change');
+            }
+            
+            $("#saveParqueadero").hide();
+            $("#updateParqueadero").show();
+            $("#saveParqueaderoLoading").hide();
+
+            $("#fecha_inicio_parqueadero").prop('disabled',false);
+            $("#fecha_inicio_parqueadero").val(data.fecha_inicio);
+            $("#tipo_vehiculo_parqueadero").val(data.tipo).change();
+            $("#placa_vehiculo_parqueadero").val(data.placa).change();
+            $("#consecutivo_bodegas_parqueadero").val(data.consecutivo);
+
+            $("#parqueaderoFormModal").modal('show');
         });
     }
 
@@ -155,6 +238,10 @@ function clearFormParqueaderoVenta() {
     const dateParqueadero = new Date();
     const formattedDate = dateParqueadero.toISOString().split('T')[0]; // Obtiene yyyy-mm-dd
 
+    $("#textParqueaderoCreate").show();
+    $("#textParqueaderoUpdate").hide();
+
+    $("#fecha_inicio_parqueadero").prop('disabled',true);
     $("#id_resolucion_parqueadero").val(null).change();
     $("#fecha_manual_parqueadero").val(formattedDate);
     $("#consecutivo_parqueadero").val('');
@@ -190,6 +277,16 @@ function clearFormParqueadero(){
         var newOption = new Option(dataBodega.text, dataBodega.id, false, false);
         $comboBodegaParqueadero.append(newOption).trigger('change');
         $comboBodegaParqueadero.val(dataBodega.id).trigger('change');
+    }
+
+    if(primerNitParqueadero){
+        var dataCliente = {
+            id: primerNitParqueadero.id,
+            text: primerNitParqueadero.numero_documento + ' - ' + primerNitParqueadero.nombre_completo
+        };
+        var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
+        $comboClienteParqueadero.append(newOption).trigger('change');
+        $comboClienteParqueadero.val(dataCliente.id).trigger('change');
     }
 }
 
@@ -232,7 +329,32 @@ function cargarCombosParqueadero() {
         theme: 'bootstrap-5',
         dropdownParent: $('#parqueaderoFormModal'),
         delay: 250,
-        dropdownCssClass: 'custom-id_nit_parqueadero',
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/nit/combo-nit',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboClienteParqueaderoFilter = $('#id_nit_parqueadero_filter').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
         language: {
             noResults: function() {
                 return "No hay resultado";        
@@ -356,6 +478,14 @@ function cargarChangesParqueadero() {
 
     $("#id_resolucion_parqueadero").on('change', function(event) {
         consecutivoSiguienteResolucionParqueadero();
+    });
+
+    $("#id_nit_parqueadero_filter").on('change', function(event) {
+        parqueadero_table.ajax.reload();
+    });
+
+    $("#tipo_vehiculo_parqueadero_filter").on('change', function(event) {
+        parqueadero_table.ajax.reload();
     });
 }
 
@@ -566,6 +696,16 @@ function saveParqueaderoVenta() {
         guardandoParqueadero = false;
         if (res.success) {
             agregarToast('exito', 'Creación exitosa', 'Venta creada con exito!', true);
+
+            $("#saveParqueaderoVenta").show();
+            $("#saveParqueaderoVentaLoading").hide();
+            $("#parqueaderoFormModal").modal('hide');
+
+            if(res.impresion) {
+                window.open("/ventas-print/"+res.impresion, '_blank');
+            }
+            
+            arqueadero_table.ajax.reload();
         }
     }).fail((err) => {
         guardandoParqueadero = false;
@@ -645,7 +785,7 @@ function totalValoresParqueadero() {
 
         if (excedeCuartoHora) diferenciaFechas+= 1;
         else if (!excedeCuartoHora && producto.fraccion_hora) sumarCuartoHora = true;
-        else if (!excedeCuartoHora && !producto.fraccion_hora) diferenciaFechas+= 1;        
+        else if (!excedeCuartoHora && !producto.fraccion_hora) diferenciaFechas+= 1;
     }
 
     //CALCULAR DÍA
@@ -678,8 +818,6 @@ function totalValoresParqueadero() {
         $("#total_tiempo_parqueadero").text(`${diferenciaFechas} Meses`);
     }
 
-    console.log('diferenciaFechas: ',diferenciaFechas);
-
     if (!diferenciaFechas) diferenciaFechas = 1;
     
     let cuentaRetencion = producto.familia.cuenta_venta_retencion;
@@ -707,11 +845,12 @@ function totalValoresParqueadero() {
     valorBruto = (diferenciaFechas * costo) - descuentoProducto;
     iva = parseFloat(ivaProducto);
     descuento = descuentoProducto;
-    total = (valorBruto + iva).toFixed(1);7
-
+    total = (valorBruto + iva).toFixed(1);
+    
     if (sumarCuartoHora) {
-        total+= (producto.precio / 4);
+        total = parseFloat(total) + parseFloat(producto.precio / 4);
     }
+
 
     return [iva, retencion, descuento, total, valorBruto, redondeo];
 }
@@ -750,6 +889,38 @@ function consecutivoSiguienteParqueadero() {
             var mensaje = err.responseJSON.message;
             var errorsMsg = arreglarMensajeError(mensaje);
             agregarToast('error', 'Creación errada', errorsMsg);
+        });
+    }
+}
+
+function buscarPlacaParqueadero(event) {
+    if (event.keyCode == 13) {
+        parqueadero_table.ajax.reload(function (res) {
+            if (!res.data.length) {
+                let plata = $("#placa_parqueadero_filter").val();
+                let ultimoCarater = plata.slice(-1);
+
+                clearFormParqueadero();
+
+                $("#placa_vehiculo_parqueadero").val(plata);
+                if (parseInt(ultimoCarater)) $("#tipo_vehiculo_parqueadero").val(1).change();
+                else $("#tipo_vehiculo_parqueadero").val(2).change();
+
+                if(primeraBodegaParqueadero && primeraBodegaParqueadero.length > 0){
+                    var dataBodega = {
+                        id: primeraBodegaParqueadero[0].id,
+                        text: primeraBodegaParqueadero[0].codigo + ' - ' + primeraBodegaParqueadero[0].nombre
+                    };
+                    var newOption = new Option(dataBodega.text, dataBodega.id, false, false);
+                    $comboBodegaParqueadero.append(newOption).trigger('change');
+                    $comboBodegaParqueadero.val(dataBodega.id).trigger('change');
+                }
+
+                $("#saveParqueadero").show();
+                $("#updateParqueadero").hide();
+                $("#saveParqueaderoLoading").hide();
+                $("#parqueaderoFormModal").modal('show');
+            }
         });
     }
 }
@@ -819,5 +990,63 @@ $(document).on('click', '#saveParqueadero', function () {
             errorsMsg = mensaje
         }
         agregarToast('error', 'Creación errada', errorsMsg);
+    });
+});
+
+$(document).on('click', '#updateParqueadero', function () {
+
+    var form = document.querySelector('#parqueaderoForm');
+
+    if(!form.checkValidity()){
+        form.classList.add('was-validated');
+        return;
+    }
+
+    $("#saveParqueaderoLoading").show();
+    $("#updateParqueadero").hide();
+    $("#saveParqueadero").hide();
+
+    let data = {
+        id: $("#id_parqueadero_up").val(),
+        id_nit: $("#id_nit_parqueadero").val(),
+        tipo: $("#tipo_vehiculo_parqueadero").val(),
+        placa: $("#placa_vehiculo_parqueadero").val(),
+        fecha_inicio: $("#fecha_inicio_parqueadero").val(),
+        id_producto: $("#id_producto_parqueadero").val(),
+        id_bodega: $("#id_bodega_parqueadero").val(),
+        consecutivo: $("#consecutivo_bodegas_parqueadero").val(),
+    }
+
+    $.ajax({
+        url: base_url + 'parqueadero',
+        method: 'PUT',
+        data: JSON.stringify(data),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            clearFormParqueadero();
+            $("#saveParqueadero").show();
+            $("#saveParqueaderoLoading").hide();
+            $("#parqueaderoFormModal").modal('hide');
+            parqueadero_table.ajax.reload();
+            agregarToast('exito', 'Actualización exitosa', 'Item parqueadero actualizado con exito!', true);
+        }
+    }).fail((err) => {
+        $('#updateParqueadero').show();
+        $('#saveParqueaderoLoading').hide();
+        var errorsMsg = "";
+        var mensaje = err.responseJSON.message;
+        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += "- "+errores[campo]+" <br>";
+                }
+            };
+        } else {
+            errorsMsg = mensaje
+        }
+        agregarToast('error', 'Actualización errada', errorsMsg);
     });
 });

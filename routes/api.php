@@ -344,6 +344,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(ParqueaderoController::class)->group(function () {
             Route::get('parqueadero', 'generate');
             Route::post('parqueadero', 'create');
+            Route::put('parqueadero', 'update');
             Route::post('parqueadero-ventas', 'venta');
         });
         //CAPTURA GASTO

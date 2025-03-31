@@ -23,13 +23,16 @@ use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\FacFamilias;
+use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacVentaPagos;
+use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacParqueadero;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Sistema\FacVentaDetalles;
 use App\Models\Sistema\VariablesEntorno;
+use App\Models\Sistema\DocumentosGeneral;
 
 class ParqueaderoController extends Controller
 {
@@ -54,6 +57,7 @@ class ParqueaderoController extends Controller
         'id_cuenta_rete_fuente' => null,
         'subtotal' => 0,
         'total_iva' => 0,
+        'fecha_salida' => 0,
         'total_rete_fuente' => 0,
         'total_descuento' => 0,
         'total_factura' => 0,
@@ -92,7 +96,7 @@ class ParqueaderoController extends Controller
 
         $data = [
             'familias' => FacFamilias::get(),
-            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', '222222222222')->first(),
+            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222222%')->first(),
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
             'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get(),
             'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : '',
@@ -121,6 +125,7 @@ class ParqueaderoController extends Controller
         $parqueaderos = FacParqueadero::orderBy('id', 'DESC')
             ->with(
                 'venta',
+                'bodega',
                 'cliente',
                 'producto.familia.cuenta_venta',
                 'producto.familia.cuenta_venta_retencion.impuesto',
@@ -135,7 +140,11 @@ class ParqueaderoController extends Controller
                 'updated_by'
             );
 
-        $parqueaderosTotals = $parqueaderos->get();
+        if ($request->get('id_nit')) $parqueaderos->where('id_cliente', $request->get('id_nit'));
+        if ($request->get('tipo_vehiculo')) $parqueaderos->where('tipo', $request->get('tipo_vehiculo'));
+        if ($request->get('placa')) $parqueaderos->where('placa', $request->get('placa'));
+
+        $parqueaderosTotals = $parqueaderos->count();
 
         $parqueaderosPaginate = $parqueaderos->skip($start)
             ->take($rowperpage);
@@ -143,8 +152,8 @@ class ParqueaderoController extends Controller
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
-            'iTotalRecords' => $parqueaderosTotals->count(),
-            'iTotalDisplayRecords' => $parqueaderosTotals->count(),
+            'iTotalRecords' => $parqueaderosTotals,
+            'iTotalDisplayRecords' => $parqueaderosTotals,
             'data' => $parqueaderosPaginate->get(),
             'perPage' => $rowperpage,
             'message'=> 'Parqueaderos generadas con exito!'
@@ -202,7 +211,68 @@ class ParqueaderoController extends Controller
             return response()->json([
 				'success'=>	true,
 				'data' => $parqueadero->load('cliente', 'producto', 'venta'),
-				'message'=> 'Pedido guardado con exito!'
+				'message'=> 'Parqueadero guardado con exito!'
+			], 200);
+
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function update (Request $request)
+    {
+        $rules = [
+            'id' => 'required|exists:sam.fac_parqueaderos,id',
+            'tipo' => 'required',
+            'placa' => 'required|min:3|max:200|string',
+            'id_nit' => 'required|exists:sam.nits,id',
+            'fecha_inicio' => 'required',
+            'id_producto' => 'required|exists:sam.fac_productos,id',
+            'id_bodega' => 'required|exists:sam.fac_bodegas,id',
+            'consecutivo' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+        if ($validator->fails()){
+            
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+        try {
+
+            DB::connection('sam')->beginTransaction();
+
+            $consecutivo = $this->getNextConsecutiveBodegaParqueadero($request->get('id_bodega'));
+
+            $bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
+
+            $parqueadero = FacParqueadero::where('id', $request->get('id'))->first();
+            $parqueadero->tipo = $request->get('tipo');
+            $parqueadero->placa = $request->get('placa');
+            $parqueadero->id_cliente = $request->get('id_nit');
+            $parqueadero->id_bodega = $request->get('id_bodega');
+            $parqueadero->consecutivo = $request->get('consecutivo');
+            $parqueadero->id_producto = $request->get('id_producto');
+            $parqueadero->id_centro_costos = $bodega->id_centro_costos;
+            $parqueadero->fecha_inicio = Carbon::parse($request->get('fecha_inicio'))->format('Y-m-d H:i');
+            $parqueadero->updated_by = request()->user()->id;
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+				'success'=>	true,
+				'data' => $parqueadero->load('cliente', 'producto', 'venta'),
+				'message'=> 'Parqueadero actualizado con exito!'
 			], 200);
 
         } catch (Exception $e) {
@@ -407,6 +477,10 @@ class ParqueaderoController extends Controller
 				], 422);
 			}
 
+            $this->parqueadero->id_venta = $venta->id;
+            $this->parqueadero->fecha_fin = $this->totalesFactura['fecha_salida'];
+            $this->parqueadero->save();
+
             $feSended = false;
             $hasCufe = false;
 
@@ -458,8 +532,6 @@ class ParqueaderoController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
-
-        dd($request->all());
     }
 
     public function delete (Request $request)
@@ -539,6 +611,7 @@ class ParqueaderoController extends Controller
 
         $fechaInicio = Carbon::parse($this->parqueadero->fecha_inicio); // Reemplaza con tu fecha de inicio
         $fechaActual = Carbon::now();
+        $this->totalesFactura['fecha_salida'] = $fechaActual->format('Y-m-d H:i');
         
         if ($this->productoDb->tipo_tiempo == 1) {
 
@@ -645,6 +718,15 @@ class ParqueaderoController extends Controller
                     WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
                     ELSE NULL
                 END AS nombre_nit")
+            )
+            ->first();
+    }
+
+    private function findFormaPago ($id_forma_pago)
+    {
+        return FacFormasPago::where('id', $id_forma_pago)
+            ->with(
+                'cuenta'
             )
             ->first();
     }
