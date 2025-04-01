@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 //HELPERS
 use App\Helpers\Documento;
-use App\Helpers\Printers\VentasPdf;
+use App\Helpers\Printers\ParqueaderoPdf;
 use App\Helpers\FacturaElectronica\VentaElectronicaSender;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
 //TRAITS
@@ -558,6 +558,29 @@ class ParqueaderoController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
+    }
+
+    public function showPdf (Request $request, $id)
+    {
+        $parqueadero = FacParqueadero::whereId($id)
+            ->first();
+
+        if(!$parqueadero) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'La parqueadero no existe'
+            ], 422);
+        }
+
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        
+        $data = (new ParqueaderoPdf($empresa, $parqueadero))->buildPdf()->getData();
+        return view('pdf.facturacion.parqueadero-pos', $data);
+ 
+        // return (new VentasPdf($empresa, $parqueadero))
+        //     ->buildPdf()
+        //     ->showPdf();
     }
 
     private function createFacturaVenta ($request)

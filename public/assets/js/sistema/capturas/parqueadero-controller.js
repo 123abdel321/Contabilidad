@@ -89,7 +89,7 @@ function cargarTablasParqueadero() {
                     if (!row.id_venta) html+= '<span id="pagarparqueadero_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info pagar-parqueadero" style="margin-bottom: 0rem !important; min-width: 50px;">Pagar</span>&nbsp;';
                     if (!row.id_venta && editarParqueadero) html+= '<span id="editparqueadero_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-parqueadero" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
                     if (!row.id_venta && eliminarParqueadero) html+= '<span id="deleteparqueadero_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-parqueadero" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
-                    if (row.id_venta) html+= '<span id="deleteparqueadero_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary drop-parqueadero" style="margin-bottom: 0rem !important; min-width: 50px;">Imprimir</span>';
+                    if (row.id_venta) html+= '<span id="deleteparqueadero_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary imprimir-parqueadero" style="margin-bottom: 0rem !important; min-width: 50px;">Imprimir</span>';
                     return html;
                 }
             },
@@ -173,6 +173,14 @@ function cargarTablasParqueadero() {
             }
 
             $("#parqueaderoVentaFormModal").modal('show');
+
+            var dataFormasPago = parqueadero_table_pagos.rows().data();
+            if (dataFormasPago.length) {
+                const primeraFormaPago = dataFormasPago[0];
+                setTimeout(function(){
+                    document.getElementById("parqueadero_forma_pago_"+primeraFormaPago.id).focus();
+                },500);
+            }
         });
         //EDITAR PARQUEADERO
         parqueadero_table.on('click', '.edit-parqueadero', function() {
@@ -199,8 +207,8 @@ function cargarTablasParqueadero() {
 
             if(data.cliente){
                 var dataCliente = {
-                    id: data.bodega.id,
-                    text: data.bodega.codigo + ' - ' + data.bodega.nombre
+                    id: data.cliente.id,
+                    text: data.cliente.numero_documento + ' - ' + data.cliente.nombre_completo
                 };
                 var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
                 $comboClienteParqueadero.append(newOption).trigger('change');
@@ -228,6 +236,11 @@ function cargarTablasParqueadero() {
             $("#consecutivo_bodegas_parqueadero").val(data.consecutivo);
 
             $("#parqueaderoFormModal").modal('show');
+        });
+        //IMPRIMIR PARQUEADERO
+        parqueadero_table.on('click', '.imprimir-parqueadero', function() {
+            var id = this.id.split('_')[1];
+            if(id) window.open("/ventas-print/"+id, '_blank');
         });
     }
 
@@ -930,6 +943,9 @@ $(document).on('click', '#createParqueadero', function () {
     $("#updateParqueadero").hide();
     $("#saveParqueadero").show();
     $("#parqueaderoFormModal").modal('show');
+    setTimeout(function(){
+        document.getElementById("placa_vehiculo_parqueadero").focus();
+    },500);
 });
 
 $(document).on('click', '#saveParqueaderoVenta', function () {
@@ -972,6 +988,9 @@ $(document).on('click', '#saveParqueadero', function () {
             $("#saveParqueaderoLoading").hide();
             $("#parqueaderoFormModal").modal('hide');
             parqueadero_table.row.add(res.data).draw();
+
+            window.open("/parqueadero-print/"+res.data.id, '_blank');
+
             agregarToast('exito', 'Creación exitosa', 'Item parqueadero creado con exito!', true);
         }
     }).fail((err) => {
@@ -1049,4 +1068,8 @@ $(document).on('click', '#updateParqueadero', function () {
         }
         agregarToast('error', 'Actualización errada', errorsMsg);
     });
+});
+
+$('.form-control').keyup(function() {
+    $(this).val($(this).val().toUpperCase());
 });

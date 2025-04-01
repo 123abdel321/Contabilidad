@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\FacFamilias;
 use App\Models\Sistema\FacProductos;
+use App\Models\Sistema\FacParqueadero;
 use App\Models\Sistema\FacProductosBodegas;
 use App\Models\Sistema\FacVariantesOpciones;
 use App\Models\Sistema\FacProductosVariantes;
@@ -497,7 +498,7 @@ class ProductosController extends Controller
             DB::connection('sam')->beginTransaction();
 
             $productoVariante = FacProductos::where('id_padre', $request->get('id'));
-
+            $productoParqueadero = FacParqueadero::where('id_producto', $request->get('id'));
             $productoConMovimientos = FacProductosBodegasMovimiento::where('id_producto', $request->get('id'));
 
             if ($productoVariante->count() > 0) {
@@ -513,6 +514,14 @@ class ProductosController extends Controller
                     'success'=>	false,
                     'data' => '',
                     'message'=> 'No se puede eliminar producto con movimientos en inventario'
+                ]);
+            }
+
+            if ($productoParqueadero->count() > 1) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => '',
+                    'message'=> 'No se puede eliminar producto usandos en parqueadero'
                 ]);
             }
 

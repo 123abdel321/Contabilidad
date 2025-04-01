@@ -12,6 +12,11 @@
                     <div class="row">
                         <input type="text" class="form-control" name="id_parqueadero_up" id="id_parqueadero_up" style="display: none;">
 
+                        <div class="form-group col-12 col-sm-12 col-md-12">
+                            <label for="example-text-input" class="form-control-label">Placa<span style="color: red">*</span></label>
+                            <input type="text" class="form-control form-control" name="placa_vehiculo_parqueadero" id="placa_vehiculo_parqueadero" placeholder="ABC-123" required style="text-align-last: center; font-weight: bold; font-size: 30px;">
+                        </div>
+
                         <div class="form-group col-12 col-sm-6 col-md-6">
                             <label for="id_bodega_parqueadero">Bodega<span style="color: red">*</span></label>
                             <select name="id_bodega_parqueadero" id="id_bodega_parqueadero" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
@@ -44,11 +49,6 @@
                                 <option value="2">MOTO</option>
                                 <option value="3">OTROS</option>
                             </select>
-                        </div>
-
-                        <div class="form-group col-12 col-sm-6 col-md-6">
-                            <label for="example-text-input" class="form-control-label">Placa<span style="color: red">*</span></label>
-                            <input type="text" class="form-control form-control-sm" name="placa_vehiculo_parqueadero" id="placa_vehiculo_parqueadero" placeholder="ABC-123" required>
                         </div>
 
                         <div class="form-group col-12 col-sm-6 col-md-6">
