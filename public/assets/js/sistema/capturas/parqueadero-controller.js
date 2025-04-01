@@ -158,8 +158,11 @@ function cargarTablasParqueadero() {
             var id = this.id.split('_')[1];
             var data = getDataById(id, parqueadero_table);
             parqueaderoActivo = data;
-            $("#parqueaderoTexto").text('PLACA: '+data.placa);
-
+            if (data.producto?.imagen) {
+                $("#parqueaderoTexto").html(`<img style="height:35px;" src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/${data.producto.imagen}" /> ${data.placa}`);
+            } else {
+                $("#parqueaderoTexto").html(`PLACA: ${data.placa}`);
+            }
             clearFormParqueaderoVenta();
 
             if(primeraResolucionParqueadero && primeraResolucionParqueadero.length > 0){
