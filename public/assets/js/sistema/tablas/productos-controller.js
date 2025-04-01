@@ -84,7 +84,7 @@ function productosInit() {
                 if (row.tipo_producto == 2) {
                     return '<span class="badge rounded-pill bg-primary">COMBO</span>';
                 }
-                if (row.tipo_producto == 2) {
+                if (row.tipo_producto == 3) {
                     return '<span class="badge rounded-pill bg-primary">PARQUEADERO</span>';
                 }
                 return '';
