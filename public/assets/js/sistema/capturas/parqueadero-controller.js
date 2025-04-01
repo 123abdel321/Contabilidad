@@ -715,13 +715,13 @@ function saveParqueaderoVenta() {
 
             $("#saveParqueaderoVenta").show();
             $("#saveParqueaderoVentaLoading").hide();
-            $("#parqueaderoFormModal").modal('hide');
+            $("#parqueaderoVentaFormModal").modal('hide');
 
             if(res.impresion) {
                 window.open("/ventas-print/"+res.impresion, '_blank');
             }
             
-            arqueadero_table.ajax.reload();
+            parqueadero_table.ajax.reload();
         }
     }).fail((err) => {
         guardandoParqueadero = false;
@@ -834,7 +834,7 @@ function totalValoresParqueadero() {
         $("#total_tiempo_parqueadero").text(`${diferenciaFechas} Meses`);
     }
 
-    if (!diferenciaFechas) diferenciaFechas = 1;
+    if (!diferenciaFechas && producto.tipo_tiempo != 1) diferenciaFechas = 1;
     
     let cuentaRetencion = producto.familia.cuenta_venta_retencion;
     let porcentaje_rete_fuente = cuentaRetencion ? parseFloat(cuentaRetencion.porcentaje) : 0;

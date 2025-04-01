@@ -67,7 +67,6 @@ class ParqueaderoController extends Controller
 		"cuenta_venta_descuento" => ["valor" => "descuento_valor"],
         "cuenta_venta_iva" => ["valor" => "iva_valor"],
         "cuenta_inventario" => ["valor" => "costo_total"],
-        "cuenta_costos" => ["valor" => "costo_total"],
     ];
 
     public function __construct(Request $request)
@@ -266,6 +265,7 @@ class ParqueaderoController extends Controller
             $parqueadero->id_centro_costos = $bodega->id_centro_costos;
             $parqueadero->fecha_inicio = Carbon::parse($request->get('fecha_inicio'))->format('Y-m-d H:i');
             $parqueadero->updated_by = request()->user()->id;
+            $parqueadero->save();
 
             DB::connection('sam')->commit();
 
@@ -633,7 +633,9 @@ class ParqueaderoController extends Controller
             ->first();
 
         $fechaInicio = Carbon::parse($this->parqueadero->fecha_inicio); // Reemplaza con tu fecha de inicio
+        // $fechaActual = Carbon::parse('2025-04-01 11:10');
         $fechaActual = Carbon::now();
+        
         $this->totalesFactura['fecha_salida'] = $fechaActual->format('Y-m-d H:i');
         
         if ($this->productoDb->tipo_tiempo == 1) {
@@ -670,13 +672,13 @@ class ParqueaderoController extends Controller
                 $this->totalesFactura['id_cuenta_rete_fuente'] = $cuentaRetencion->id;
             }
         }
-
+        
         $iva = 0;
         $costo = $this->productoDb->precio;
         $totalPorCantidad = $totalProductos * $costo;
         $cuentaIva = $this->productoDb->familia->cuenta_venta_iva;
         $descuento = 0;
-
+        
         if ($cuentaIva && $cuentaIva->impuesto) {
             $impuesto = $cuentaIva->impuesto;
             
@@ -694,15 +696,16 @@ class ParqueaderoController extends Controller
         if ($ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
             $costo = round((float)$costo / (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 2);
         }
-
+        
         $subtotal = ($totalProductos * $costo) - $descuento;
+        
         $this->totalesFactura['subtotal']+= $subtotal;
         $this->totalesFactura['total_iva']+= $iva;
         $this->totalesFactura['total_descuento']+= $descuento;
         $this->totalesFactura['total_factura']+= $subtotal + $iva;
-
+        
         if ($sumarCuartoHora) {
-            $this->totalesFactura['total_factura']+= ($costo / 4);
+            $this->totalesFactura['total_factura']+= ($this->productoDb->precio / 4);
         }
 
         if ($this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] && $this->totalesFactura['porcentaje_rete_fuente'] > 0) {
