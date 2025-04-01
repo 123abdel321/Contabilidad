@@ -131,7 +131,7 @@
 
                 <tr>
                     <th class="font-15">
-                        TARIFA: {{ $factura->producto->codigo }} - {{ $factura->producto->nombre }}
+                        TARIFA: {{ $factura->producto->codigo }} - {{ $factura->producto->nombre }} <br/> {{ number_format($factura->producto->precio) }}
                     </th>
                 </tr>
 
