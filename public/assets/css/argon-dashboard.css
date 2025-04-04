@@ -4458,6 +4458,7 @@ textarea.form-control-lg {
   border: 1px solid transparent;
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
+  background: #cccccc;
 }
 .nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
   border-color: #e9ecef #e9ecef #dee2e6;

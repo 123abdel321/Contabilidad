@@ -13,9 +13,10 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Variables de entorno</button>
                     </li>
-                    <!-- <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="facturacion-tab" data-bs-toggle="tab" data-bs-target="#facturacion" type="button" role="tab" aria-controls="facturacion" aria-selected="false">Facturación</button>
                     </li>
+                    <!-- 
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contact</button>
                     </li> -->
@@ -44,6 +45,11 @@
                                 <label for="example-text-input" class="form-control-label">Porcentaje Iva AIU</label>
                                 <input type="number" class="form-control form-control-sm" name="porcentaje_iva_aiu" id="porcentaje_iva_aiu">
                             </div>
+
+                            <!-- <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="example-text-input" class="form-control-label">Observación general factura venta </label>
+                                <textarea type="text" class="form-control form-control-sm" name="observacion_venta" id="observacion_venta" rows="3"></textarea>
+                            </div> -->
 
                             <div class="form-check form-switch col-12 col-sm-6 col-md-4">
                                 <input class="form-check-input" type="checkbox" name="iva_incluido" id="iva_incluido" style="height: 20px;">
@@ -78,7 +84,15 @@
                         <br/>
 
                     </div>
-                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+                    <div class="tab-pane fade" id="facturacion" role="tabpanel" aria-labelledby="facturacion-tab">
+                        <div class="row" style="margin-top: 10px; padding-left: 10px;">
+                            <div class="form-group col-12">
+                                <label for="editor-container" class="form-control-label">Observación general factura venta</label>
+                                <div id="editor-container" style="height: 150px;"></div>
+                                <textarea name="observacion_venta" id="observacion_venta" hidden></textarea>
+                            </div>
+                        </div>
+                    </div>
                     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
                 </div>
                 <div style="background-color: white;">

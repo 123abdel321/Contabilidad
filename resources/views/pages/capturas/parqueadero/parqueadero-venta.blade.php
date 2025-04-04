@@ -2,15 +2,15 @@
     <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 id="parqueaderoTexto" class="modal-title" style="font-size: 35px;">Agregar pago</h5>
+                <h5 id="parqueaderoTexto" class="modal-title" style="font-size: 23px; width: 100%; text-align: center;">Agregar pago</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
-                <form id="parqueaderoVentasForm" style="margin-top: 10px;">
+                <form id="parqueaderoVentasForm">
                     <div class="row">
 
-                        <div id="total_tiempo_parqueadero" style="text-align: center; margin-bottom: 12px; font-size: 20px; font-weight: bold; color: #5a5a5a;"></div>
+                        <div id="total_tiempo_parqueadero" style="text-align: center; margin-bottom: 12px; font-size: 20px; font-weight: 600; color: #5a5a5a;"></div>
 
                         <div class="col-12 col-sm-12 col-md-6 row">
                             <div class="form-group col-12 col-sm-12 col-md-12" style="margin-bottom: 1px !important;">

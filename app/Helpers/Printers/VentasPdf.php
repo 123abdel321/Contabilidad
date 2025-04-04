@@ -8,6 +8,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\PlanCuentas;
+use App\Models\Sistema\VariablesEntorno;
 
 class VentasPdf extends AbstractPrinterPdf
 {
@@ -87,6 +88,9 @@ class VentasPdf extends AbstractPrinterPdf
 			$qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($svg);
 		}
 
+		$observacion_general = VariablesEntorno::where('nombre', 'observacion_venta')->first();
+		$observacion_general = $observacion_general ? $observacion_general->valor : NULL;
+
         return [
 			'empresa' => $this->empresa,
 			'cliente' => $this->venta->cliente,
@@ -98,6 +102,7 @@ class VentasPdf extends AbstractPrinterPdf
 			'observacion' => $this->venta->observacion,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user()->username,
+			'observacion_general' => $observacion_general,
 			'total_factura' => number_format($this->venta->total_factura)
 		];
     }

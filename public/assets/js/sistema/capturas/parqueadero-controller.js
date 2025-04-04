@@ -158,11 +158,11 @@ function cargarTablasParqueadero() {
             var id = this.id.split('_')[1];
             var data = getDataById(id, parqueadero_table);
             parqueaderoActivo = data;
-            if (data.producto?.imagen) {
-                $("#parqueaderoTexto").html(`<img style="height:35px;" src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/${data.producto.imagen}" /> ${data.placa}`);
-            } else {
-                $("#parqueaderoTexto").html(`PLACA: ${data.placa}`);
-            }
+            // if (data.producto?.imagen) {
+            //     $("#parqueaderoTexto").html(`PLACA: ${data.placa}`);
+            // } else {
+            // }
+            $("#parqueaderoTexto").html(`TARIFA: ${data.producto.nombre}<br/> PLACA: ${data.placa}`);
             clearFormParqueaderoVenta();
 
             if(primeraResolucionParqueadero && primeraResolucionParqueadero.length > 0){
@@ -797,7 +797,13 @@ function totalValoresParqueadero() {
         let diferenciaMinutos = Math.floor((diferenciaMs % (1000 * 60 * 60)) / (1000 * 60));
         let excedeCuartoHora = diferenciaMinutos > 15;
 
-        $("#total_tiempo_parqueadero").text(`${diferenciaFechas} Horas + ${diferenciaMinutos} Minutos`);
+        const año = fechaActual.getFullYear();
+        const mes = String(fechaActual.getMonth() + 1).padStart(2, "0"); // enero es 0
+        const dia = String(fechaActual.getDate()).padStart(2, "0");
+        const horas = String(fechaActual.getHours()).padStart(2, "0");
+        const minutos = String(fechaActual.getMinutes()).padStart(2, "0");
+
+        $("#total_tiempo_parqueadero").html(`<b style="color: black;">Entrada:</b> ${parqueaderoActivo.fecha_inicio}<br/> <b style="color: black;">Salida:</b> ${año}-${mes}-${dia} ${horas}:${minutos} <br/> <b style="color: black;">Total</b>: ${diferenciaFechas} Horas + ${diferenciaMinutos} Minutos`);
 
         if (excedeCuartoHora) diferenciaFechas+= 1;
         else if (!excedeCuartoHora && producto.fraccion_hora) sumarCuartoHora = true;

@@ -37,6 +37,11 @@ function entornoInit() {
             $('#cuenta_perdida').val(variable.valor);
             continue;
         }
+
+        if (variable.nombre == 'observacion_venta') {
+            quill.root.innerHTML = variable.valor;
+            continue;
+        }
     }
 }
 
@@ -49,6 +54,7 @@ $(document).on('click', '#updateEntorno', function () {
         porcentaje_iva_aiu: $('#porcentaje_iva_aiu').val(),
         cuenta_utilidad: $('#cuenta_utilidad').val(),
         cuenta_perdida: $('#cuenta_perdida').val(),
+        observacion_venta: quill.root.innerHTML,
         iva_incluido: $("input[type='checkbox']#iva_incluido").is(':checked') ? '1' : '',
         capturar_documento_descuadrado: $("input[type='checkbox']#capturar_documento_descuadrado").is(':checked') ? '1' : '0',
         vendedores_ventas: $("input[type='checkbox']#vendedores_ventas").is(':checked') ? '1' : '',
@@ -85,4 +91,12 @@ $(document).on('click', '#updateEntorno', function () {
         }
         agregarToast('error', 'Actualización errada', errorsMsg);
     });
+});
+
+var quill = new Quill('#editor-container', {
+    theme: 'snow',
+    placeholder: 'Escribe algo aquí...',
+    modules: {
+        toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], ['link']]
+    }
 });

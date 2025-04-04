@@ -434,7 +434,23 @@
 			</thead>
 		</table>
 		@endif
-		
+
+		@if ($observacion_general)
+		<table>
+			<thead class="">
+				<tr>
+					<td class="spacer padding5"></td>
+				</tr>
+			</thead>
+			<table>
+				<tr>
+					<td class="aling-top padding5">
+						{!! $observacion_general !!}
+					</td>
+				</tr>
+			</table>
+		</table>
+		@endif	
 				
 		<script type="text/php">
 			if ( isset($pdf) ) {
