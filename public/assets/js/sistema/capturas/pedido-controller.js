@@ -48,8 +48,8 @@ function pedidoInit () {
             text: primerNitPedido.numero_documento + ' - ' + primerNitPedido.nombre_completo
         };
         var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
-        $comboCliente.append(newOption).trigger('change');
-        $comboCliente.val(dataCliente.id).trigger('change');
+        $comboClientePedidos.append(newOption).trigger('change');
+        $comboClientePedidos.val(dataCliente.id).trigger('change');
 
         loadAnticiposClientePedido();
 
