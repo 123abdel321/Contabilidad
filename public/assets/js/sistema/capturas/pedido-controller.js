@@ -24,6 +24,8 @@ let contenedorPedidos = $("#contenedor-productos-pedidos");
 
 function pedidoInit () {
 
+    loadingPedidos = false;
+    
     cargarTablasPedido();
     cargarCombosPedido();
     cargarUbicacionPedido();
