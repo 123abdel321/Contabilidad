@@ -288,6 +288,19 @@
 				</tr>
                 <tr>
                     <td class="font-12">
+                        {!! $observacion_general !!}
+                    </td>
+                </tr>
+            </thead>
+        </table>
+
+        <table class="width-100">
+            <thead class="center-item">
+                <tr>
+					<td class="spacer padding5"></td>
+				</tr>
+                <tr>
+                    <td class="font-12">
                         USUARIO: {{ $usuario }}
                     </td>
                 </tr>
