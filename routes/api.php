@@ -33,6 +33,7 @@ use App\Http\Controllers\Capturas\PagosController;
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\GastosController;
 use App\Http\Controllers\Capturas\PedidoController;
+use App\Http\Controllers\Capturas\ReservaController;
 use App\Http\Controllers\Capturas\RecibosController;
 use App\Http\Controllers\Capturas\ParqueaderoController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
@@ -346,6 +347,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('parqueadero', 'create');
             Route::put('parqueadero', 'update');
             Route::post('parqueadero-ventas', 'venta');
+        });
+        //RESERVAS
+        Route::controller(ReservaController::class)->group(function () {
+            Route::post('reserva', 'create');
+            Route::put('reserva', 'update');
+            Route::get('reserva', 'table');
+            Route::delete('reserva', 'delete');
         });
         //CAPTURA GASTO
         Route::controller(GastosController::class)->group(function () {

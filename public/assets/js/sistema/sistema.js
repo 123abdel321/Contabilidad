@@ -87,6 +87,7 @@ var moduloCreado = {
     'ubicaciones': false,
     'pedido': false,
     'parqueadero': false,
+    'reserva': false,
 };
 
 var moduloRoute = {
@@ -135,6 +136,7 @@ var moduloRoute = {
     'ubicaciones': 'tablas',
     'pedido': 'capturas',
     'parqueadero': 'capturas',
+    'reserva': 'capturas',
 }
 
 function iniciarCanalesDeNotificacion () {

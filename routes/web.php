@@ -43,6 +43,7 @@ use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\GastosController;
 use App\Http\Controllers\Capturas\PedidoController;
 use App\Http\Controllers\Capturas\RecibosController;
+use App\Http\Controllers\Capturas\ReservaController;
 use App\Http\Controllers\Capturas\ParqueaderoController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
@@ -162,6 +163,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		//NOTA CREDITO
 		Route::get('/notacredito', [NotaCreditoController::class, 'index']);
 		Route::get('/ventas-print/{id}', [VentaController::class, 'showPdf'])->name('venta-pdf');
+		//RESERVA
+		Route::get('/reserva', [ReservaController::class, 'index']);
+		Route::get('/reserva-evento', [ReservaController::class, 'read']);
 		//NITS
 		Route::get('/nit', [NitController::class, 'index'])->name('nit');
 		//PLAN CUENTAS
