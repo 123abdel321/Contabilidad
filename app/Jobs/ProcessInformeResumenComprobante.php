@@ -62,8 +62,14 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 			$this->detallarResumenComprobante();
 			$this->totalesResumenComprobante();
 
-			ksort($this->resumenComprobanteCollection, SORT_STRING | SORT_FLAG_CASE);
-			// dd($this->resumenComprobanteCollection);
+			uksort($this->resumenComprobanteCollection, function($a, $b) {
+
+				$numA = (int) substr(strrchr($a, '-'), 1);
+				$numB = (int) substr(strrchr($b, '-'), 1);
+				
+				return $numA - $numB;
+			});
+			
 			foreach (array_chunk($this->resumenComprobanteCollection,233) as $resumenComprobanteCollection){
                 DB::connection('informes')
                     ->table('inf_resumen_comprobante_detalles')
@@ -176,7 +182,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 		if ($this->request['detallar'] != '1') return;
 		
 		$query = $this->queryResumenComprobanteDetalle()
-			->orderByRaw('PC.cuenta, CO.codigo, DG.consecutivo ASC')
+			->orderByRaw('PC.cuenta, CO.codigo, CAST(DG.consecutivo AS UNSIGNED) ASC')
 			->chunk(233, function ($documentos) {
 				$documentos->each(function ($documento) {
 					$key = $this->request['agrupado'] ? $documento->{$this->request['agrupado']} : $documento->cuenta;
@@ -186,7 +192,8 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 					if ($this->request['agrupado'] == 'id_cuenta') {
 						$key = $documento->cuenta;
 					}
-					$this->resumenComprobanteCollection[$documento->codigo_comprobante.'A'.$key.'B'.$documento->id_documento] = [
+
+					$this->resumenComprobanteCollection[$documento->codigo_comprobante.'A'.$key.'B-'.$documento->consecutivo] = [
 						'id_resumen_comprobante' => $this->id_resumen_comprobante,
 						'id_nit' => $documento->id_nit,
 						'id_cuenta' => $documento->id_cuenta,
