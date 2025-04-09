@@ -381,7 +381,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 'DG.consecutivo',
                 'DG.id_comprobante'
             )
-            ->chunk(233, function ($documentos) {
+            ->chunk(233, function ($documentos) use ($inicioMes) {
                 
                 foreach ($documentos as $documento) {
 
