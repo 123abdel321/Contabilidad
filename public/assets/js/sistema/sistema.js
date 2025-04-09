@@ -949,3 +949,10 @@ function arreglarMensajeError(mensaje) {
     }
     return errorsMsg;
 }
+
+function redondear(valor, redondeo_valor) {
+    if (!valor) return valor; //Sin valor a redondear
+    if (redondeo_valor === null) return valor; // No redondear
+    if (redondeo_valor === 0) return Math.floor(valor); // Quitar decimales (redondear hacia abajo)
+    return Math.round(valor / redondeo_valor) * redondeo_valor; // Redondear al múltiplo más cercano
+}

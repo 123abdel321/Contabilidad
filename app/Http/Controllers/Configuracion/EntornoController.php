@@ -54,10 +54,11 @@ class EntornoController extends Controller
                 'valor_uvt',
                 'vendedores_ventas',
                 'porcentaje_iva_aiu',
+                'redondeo_gastos',
                 'ubicacion_maximoph',
                 'cuenta_utilidad',
                 'cuenta_perdida',
-                'observacion_venta'
+                'observacion_venta',
             ];
             
             foreach ($variablesEntorno as $variable) {

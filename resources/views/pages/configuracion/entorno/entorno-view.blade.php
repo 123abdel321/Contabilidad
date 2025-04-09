@@ -27,23 +27,28 @@
                         <div class="row" style="margin-top: 10px; padding-left: 10px;">
 
                             <div class="form-group col-12 col-sm-6 col-md-4" >
-                                <label for="example-text-input" class="form-control-label">Cuenta utilidad </label>
+                                <label for="cuenta_utilidad" class="form-control-label">Cuenta utilidad </label>
                                 <input type="text" class="form-control form-control-sm" name="cuenta_utilidad" id="cuenta_utilidad">
                             </div>
 
                             <div class="form-group col-12 col-sm-6 col-md-4" >
-                                <label for="example-text-input" class="form-control-label">Cuenta perdida </label>
+                                <label for="cuenta_perdida" class="form-control-label">Cuenta perdida </label>
                                 <input type="text" class="form-control form-control-sm" name="cuenta_perdida" id="cuenta_perdida">
                             </div>
 
                             <div class="form-group col-12 col-sm-6 col-md-4" >
-                                <label for="example-text-input" class="form-control-label">Valor UVT </label>
+                                <label for="valor_uvt" class="form-control-label">Valor UVT </label>
                                 <input type="number" class="form-control form-control-sm" name="valor_uvt" id="valor_uvt">
                             </div>
 
                             <div class="form-group col-12 col-sm-6 col-md-4" >
-                                <label for="example-text-input" class="form-control-label">Porcentaje Iva AIU</label>
+                                <label for="porcentaje_iva_aiu" class="form-control-label">Porcentaje Iva AIU</label>
                                 <input type="number" class="form-control form-control-sm" name="porcentaje_iva_aiu" id="porcentaje_iva_aiu">
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="redondeo_gastos" class="form-control-label">Redondeo Gastos</label>
+                                <input type="number" class="form-control form-control-sm" name="redondeo_gastos" id="redondeo_gastos">
                             </div>
 
                             <!-- <div class="form-group col-12 col-sm-6 col-md-4" >

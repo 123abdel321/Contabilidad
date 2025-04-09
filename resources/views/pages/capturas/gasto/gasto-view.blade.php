@@ -217,6 +217,7 @@
         let comprobantesGastos = @json($comprobantes);
         let centrosCostosGastos = @json($centro_costos);
         let porcentajeIvaAIU = @json($porcentaje_iva_aiu);
+        let redondeoGastos = @json($redondeo_gastos);
     </script>
     
 </div>

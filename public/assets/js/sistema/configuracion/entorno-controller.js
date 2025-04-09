@@ -28,6 +28,11 @@ function entornoInit() {
             continue;
         }
 
+        if (variable.nombre == 'redondeo_gastos') {
+            $('#redondeo_gastos').val(variable.valor);
+            continue;
+        }
+
         if (variable.nombre == 'cuenta_utilidad') {
             $('#cuenta_utilidad').val(variable.valor);
             continue;
@@ -52,6 +57,7 @@ $(document).on('click', '#updateEntorno', function () {
     let data = {
         valor_uvt: $('#valor_uvt').val(),
         porcentaje_iva_aiu: $('#porcentaje_iva_aiu').val(),
+        redondeo_gastos: $('#redondeo_gastos').val(),
         cuenta_utilidad: $('#cuenta_utilidad').val(),
         cuenta_perdida: $('#cuenta_perdida').val(),
         observacion_venta: quill.root.innerHTML,
