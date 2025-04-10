@@ -59,9 +59,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
 
             $this->documentosEstadoActual();
             $this->totalMesesEstadoActual();
-            $this->totalYearsEstadoActual();
-
-            $estadoActualCollection = $this->ordenarData();
+            $estadoActualCollection = $this->ordenarData();            
             
             foreach (array_chunk($estadoActualCollection,233) as $data){
                 DB::connection('informes')
@@ -127,11 +125,12 @@ class ProcessInformeEstadoActual implements ShouldQueue
 			        $finMes = date("Y-m-t", strtotime($documento->fecha_manual));
 
                     $documento->mes = $this->meses[intval($documento->mes)-1];
-                    $documento->errores = $this->getErrores($inicioMes.'-01', $finMes, $documento->id_comprobante);
+                    [$erroresCount, $errores] = $this->getErrores($inicioMes.'-01', $finMes, $documento->id_comprobante);
+                    $documento->errores = $erroresCount;
                     $documento->total = 2;
 
-                    $this->estadoActualCollection[$inicioMes.'-'.$documento->id_comprobante] = $documento;
-                    if ($this->request['detalle']) $this->documentosDetalle($documento->id_comprobante, $inicioMes.'-01', $finMes);
+                    $this->estadoActualCollection[$inicioMes.'-A_'.$documento->id_comprobante] = $documento;
+                    if ($this->request['detalle']) $this->documentosDetalle($documento->id_comprobante, $inicioMes, $finMes);
                 }
             });
     }
@@ -174,17 +173,17 @@ class ProcessInformeEstadoActual implements ShouldQueue
 			        $finMes = date("Y-m-t", strtotime($documento->fecha_manual));
 
                     $documento->mes = $this->meses[intval($documento->mes)-1];
-                    $documento->errores = $this->getErrores($inicioMes.'-01', $finMes);
+                    [$erroresCount, $errores] = $this->getErrores($inicioMes.'-01', $finMes);
+                    $documento->errores = $erroresCount;
                     $documento->total = 4;
-    
-                    $this->estadoActualCollection[$inicioMes.'-99'] = $documento;
+                    $this->estadoActualCollection[$inicioMes.'-A99999999_99999999'] = $documento;
                 }
             });
     }
 
     private function totalYearsEstadoActual()
     {
-        $totales = DB::connection('sam')->table('documentos_generals AS DG')
+        $total = DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
                 DB::raw("0 AS documentos"),
                 DB::raw("'' AS comprobantes"),
@@ -210,19 +209,20 @@ class ProcessInformeEstadoActual implements ShouldQueue
             ->groupby(
                 DB::raw("DATE_FORMAT(fecha_manual, '%Y')")
             )
-            ->get();
+            ->first();
 
-        foreach ($totales as $total) {
-            $total->mes = 'TOTALES '. $total->year;
-            $total->errores = $this->getErrores(null, null, null, null, $total->year);
-            $total->total = 1;
-            $this->estadoActualCollection[$total->year.'-99999-99'] = $total;
-        }
+        $total->mes = 'TOTALES '. $total->year;
+        [$erroresCount, $errores] = $this->getErrores(null, null, null, null, $total->year);
+        $total->errores = $erroresCount;
+        $total->total = 1;
+
+        return $total;
     }
 
     private function getErrores($inicioMes = null, $finMes = null, $idComprobante = null, $consecutivo = null, $year = null)
     {
-        $this->errores = 0;
+        $this->errores = '';
+        $this->erroresCount = 0;
 
         DB::connection('sam')->table('documentos_generals AS DG')
             ->join('plan_cuentas', 'DG.id_cuenta', 'plan_cuentas.id')
@@ -247,24 +247,28 @@ class ProcessInformeEstadoActual implements ShouldQueue
 
                 foreach ($documentos as $documento) {
                     if($documento->exige_nit && !$documento->id_nit){
-                        $this->errores++;
+                        $this->errores.=" La cuenta {$documento->cuenta} exige nit <br/>";
+                        $this->erroresCount++;
                     }
         
                     if($documento->exige_documento_referencia && !$documento->documento_referencia){
-                        $this->errores++;
+                        $this->errores.=" La cuenta {$documento->cuenta} exige documento referencia <br/>";
+                        $this->erroresCount++;
                     }
         
                     if($documento->exige_concepto && !$documento->concepto){
-                        $this->errores++;
+                        $this->errores.=" La cuenta {$documento->cuenta} exige concepto <br/>";
+                        $this->erroresCount++;
                     }
         
                     if($documento->exige_centro_costos && !$documento->id_centro_costos){
-                        $this->errores++;
+                        $this->errores.=" La cuenta {$documento->cuenta} exige centro costos <br/>";
+                        $this->erroresCount++;
                     }
                 }
             });
 
-        return $this->errores;
+        return [$this->erroresCount, $this->errores];
     }
 
     private function getDocumentos($idComprobante, $inicioMes, $finMes)
@@ -313,14 +317,45 @@ class ProcessInformeEstadoActual implements ShouldQueue
     {
 		$ordenado = [];
 
-        ksort($this->estadoActualCollection, SORT_STRING | SORT_FLAG_CASE);
-        
+        uksort($this->estadoActualCollection, function($a, $b) {
+            // Extraer las partes de cada clave
+            $partsA = explode('_', $a);
+            $partsB = explode('_', $b);
+            
+            // Comparar la parte inicial (año-mes)
+            $cmpDate = strcmp($partsA[0], $partsB[0]);
+            if ($cmpDate !== 0) {
+                return $cmpDate;
+            }
+            
+            // Manejar el caso especial de 99999999 (debe ir al final de su grupo)
+            $isSpecialA = strpos($a, '99999999') !== false;
+            $isSpecialB = strpos($b, '99999999') !== false;
+            
+            if ($isSpecialA && !$isSpecialB) return 1;  // A es especial, va después
+            if (!$isSpecialA && $isSpecialB) return -1; // B es especial, va después
+            
+            // Comparar el número principal del documento (segunda parte)
+            $numA = isset($partsA[1]) ? (int)$partsA[1] : 0;
+            $numB = isset($partsB[1]) ? (int)$partsB[1] : 0;
+            
+            if ($numA !== $numB) {
+                return $numA - $numB;
+            }
+            
+            // Si tienen el mismo número principal, comparar los subdocumentos
+            $subA = isset($partsA[2]) ? (int)$partsA[2] : 0;
+            $subB = isset($partsB[2]) ? (int)$partsB[2] : 0;
+            
+            return $subA - $subB;
+        });
+
         foreach($this->estadoActualCollection as $estadoActual){
 			$ordenado[] = [
                 'id_estado_actual' => $this->id_estado_actual,
                 'documentos' => $estadoActual->documentos,
                 'comprobantes' => $estadoActual->comprobantes,
-                'mes' => $estadoActual->total == 2 ? $estadoActual->mes : '',
+                'mes' => $estadoActual->total == 2 || $estadoActual->total == 4 ? $estadoActual->mes : '',
                 'year' => $estadoActual->year,
                 'debito' => $estadoActual->debito,
                 'credito' => $estadoActual->credito,
@@ -330,6 +365,22 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 'total' => $estadoActual->total,
             ];
 		}
+
+        $estadoActual = $this->totalYearsEstadoActual();
+
+        $ordenado[] = [
+            'id_estado_actual' => $this->id_estado_actual,
+            'documentos' => $estadoActual->documentos,
+            'comprobantes' => $estadoActual->comprobantes,
+            'mes' => $estadoActual->total == 2 || $estadoActual->total == 4 ? $estadoActual->mes : '',
+            'year' => $estadoActual->year,
+            'debito' => $estadoActual->debito,
+            'credito' => $estadoActual->credito,
+            'diferencia' => $estadoActual->diferencia,
+            'registros' => $estadoActual->registros,
+            'errores' => $estadoActual->errores,
+            'total' => $estadoActual->total,
+        ];
 
 		return $ordenado;
     }
@@ -355,7 +406,6 @@ class ProcessInformeEstadoActual implements ShouldQueue
     {
         $this->faltantes = 0;
         $this->consecutivoActual = 0;
-
         DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
                 'DG.fecha_manual',
@@ -371,24 +421,22 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 DB::raw("COUNT(DG.id) registros")
             )
             ->where(function ($query) use ($inicioMes, $finMes) {
-                $query->where('DG.fecha_manual', '>=', $inicioMes)
+                $query->where('DG.fecha_manual', '>=', $inicioMes.'-01')
                     ->where('DG.fecha_manual', '<=', $finMes);
             })
             ->where('anulado', 0)
             ->where('id_comprobante', '=', $idComprobante)
-            ->orderBy('DG.consecutivo')
+            ->orderByRaw('CAST(DG.consecutivo AS UNSIGNED)')
             ->groupby(
                 'DG.consecutivo',
                 'DG.id_comprobante'
             )
             ->chunk(233, function ($documentos) use ($inicioMes) {
-                
+
                 foreach ($documentos as $documento) {
-
                     if ($this->consecutivoActual && $this->consecutivoActual + 1 != intval($documento->documentos)){
-                        $diferencia = intval($documento->documentos) - $this->consecutivoActual;
-
-                        $this->estadoActualCollection[$inicioMes] = (object)[
+                        $diferencia = intval($this->consecutivoActual + 1) - $this->consecutivoActual;
+                        $this->estadoActualCollection[$inicioMes.'-A_'.$documento->id_comprobante.'_'.$this->consecutivoActual + 1] = (object)[
                             'id_comprobante' => '',
                             'comprobantes' => '',
                             'mes' => '',
@@ -406,10 +454,11 @@ class ProcessInformeEstadoActual implements ShouldQueue
                     }
 
                     $this->consecutivoActual = intval($documento->documentos);
-                    $documento->errores = $this->getErrores(null, null, $documento->id_comprobante, $documento->documentos);
+                    [$erroresCount, $errores] = $this->getErrores(null, null, $documento->id_comprobante, $documento->documentos);
+                    $documento->errores = $errores;
                     $documento->total = 0;
 
-                    $this->estadoActualCollection[$inicioMes] = $documento;
+                    $this->estadoActualCollection[$inicioMes.'-A_'.$documento->id_comprobante.'_'.$documento->documentos] = $documento;
                 }
             });
     }
@@ -440,7 +489,8 @@ class ProcessInformeEstadoActual implements ShouldQueue
             ->get();
 
         $data[0]->mes = 'TOTALES '. $year;
-        $data[0]->errores = $this->getErrores(null, null, null, null, $data[0]->year);
+        [$erroresCount, $errores] = $this->getErrores(null, null, null, null, $data[0]->year);
+        $data[0]->errores = $erroresCount;
         $data[0]->total = 1;
         return $data[0];
     }

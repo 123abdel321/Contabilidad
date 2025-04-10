@@ -44,12 +44,16 @@ function estadoactualInit() {
         'rowCallback': function(row, data, index){
             var mes = data.mes;
             if(data.total == 4){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
+                $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
             if(data.total == 3){
                 $('td', row).css('background-color', '#ff8f003b');
+                return;
+            }
+            if(data.total == 2){
+                $('td', row).css('background-color', 'rgb(64 164 209 / 40%)');
                 return;
             }
             if(data.total == 1){
@@ -63,7 +67,10 @@ function estadoactualInit() {
                 $('td', row).css('font-weight', 'bold');
                 return;
             }
-            if (parseInt(data.errores) >= 1) {
+            if (
+                (!isNaN(data.errores) && parseInt(data.errores) > 0) || 
+                (typeof data.errores === 'string' && data.errores !== '0' && data.errores.includes('La cuenta'))
+            ) {
                 $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
                 return;
             }
