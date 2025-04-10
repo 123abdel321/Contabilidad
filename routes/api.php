@@ -165,6 +165,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(ResumenComprobantesController::class)->group(function () {
             Route::get('resumen-comprobante', 'generate');
             Route::get('resumen-comprobante-show', 'show');
+            Route::post('resumen-comprobante-excel', 'exportExcel');
         });
         //INFORME RESULTADOS
         Route::controller(ResultadosController::class)->group(function () {

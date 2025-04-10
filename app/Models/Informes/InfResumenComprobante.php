@@ -20,6 +20,8 @@ class InfResumenComprobante extends Model
         'id_comprobante',
         'id_cuenta',
         'id_nit',
+        'exporta_excel',
+        'archivo_excel',
         'agrupado',
         'detalle',
         'created_by',

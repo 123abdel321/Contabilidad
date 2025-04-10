@@ -139,6 +139,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 			->orderByRaw('PC.cuenta ASC')
 			->chunk(233, function ($documentos) {
 				$documentos->each(function ($documento) {
+					
 					$key = $documento->{$this->request['agrupado']};
 					if ($this->request['agrupado'] == 'id_nit') {
 						$key = $documento->numero_documento;
@@ -146,7 +147,8 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 					if ($this->request['agrupado'] == 'id_cuenta') {
 						$key = $documento->cuenta;
 					}
-					$this->resumenComprobanteCollection[$documento->codigo_comprobante.'A'.$key] = [
+					
+					$this->resumenComprobanteCollection[$documento->codigo_comprobante.'A-'.$key] = [
 						'id_resumen_comprobante' => $this->id_resumen_comprobante,
 						'id_nit' => $documento->id_nit,
 						'id_cuenta' => $documento->id_cuenta,
@@ -228,7 +230,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 	{
 		$totalesResumen = $this->queryResumenComprobantes()->first();
 
-		$this->resumenComprobanteCollection['99999999999'] = [
+		$this->resumenComprobanteCollection['9999999A-9999999B-99999999'] = [
 			'id_resumen_comprobante' => $this->id_resumen_comprobante,
 			'id_nit' => '',
 			'id_cuenta' => '',

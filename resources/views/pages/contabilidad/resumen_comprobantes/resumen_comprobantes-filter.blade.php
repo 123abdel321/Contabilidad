@@ -12,7 +12,7 @@
             
                 <form id="estadoActualInformeForm" style="margin-top: 10px;">
                     <div class="row">
-                        <input name="id_comprobantes_cargado" id="id_comprobantes_cargado" class="form-control form-control-sm" type="text" style="display: none;">
+                        <input name="id_resumen_comprobante" id="id_resumen_comprobante" class="form-control form-control-sm" type="text" style="display: none;">
 
                         <div class="form-group col-12 col-sm-6 col-md-3">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Comprobante</label>
@@ -50,7 +50,7 @@
                                 <option value="">Seleccionar</option>
                                 <option value="id_cuenta">Cuenta</option>
                                 <option value="id_nit">Cedula/Nits</option>
-                                <option value="consecutivo">Documento</option>
+                                <option value="consecutivo" selected>Documento</option>
                             </select>
                         </div>
 
@@ -82,7 +82,7 @@
                         <b style="vertical-align: text-top;">GENERANDO</b>
                     </span>
                     <!-- BOTON EXCEL -->
-                    <!-- <span id="descargarExcelResumenComprobantes" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
+                    <span id="descargarExcelResumenComprobantes" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">EXCEL</b>
                     </span>
@@ -90,7 +90,7 @@
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>
                         <b style="vertical-align: text-top;">EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
-                    </span> -->
+                    </span>
                     <!-- BOTON ULTIMO INFORME -->
                     <span id="generarResumenComprobantesUltimo" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; margin-right: 3px; float: right; display:none;">
                         <i class="fas fa-history" style="font-size: 17px;"></i>&nbsp;
