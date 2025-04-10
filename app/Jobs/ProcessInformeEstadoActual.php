@@ -435,7 +435,8 @@ class ProcessInformeEstadoActual implements ShouldQueue
 
                 foreach ($documentos as $documento) {
                     if ($this->consecutivoActual && $this->consecutivoActual + 1 != intval($documento->documentos)){
-                        $diferencia = intval($this->consecutivoActual + 1) - $this->consecutivoActual;
+                        $diferencia = intval($documento->documentos) - intval($this->consecutivoActual + 1);
+                        $diferencia = $diferencia < 0 ? $diferencia * -1 : $diferencia;
                         $this->estadoActualCollection[$inicioMes.'-A_'.$documento->id_comprobante.'_'.$this->consecutivoActual + 1] = (object)[
                             'id_comprobante' => '',
                             'comprobantes' => '',
