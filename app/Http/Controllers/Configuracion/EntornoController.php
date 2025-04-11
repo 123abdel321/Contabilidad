@@ -66,7 +66,7 @@ class EntornoController extends Controller
                     'nombre' => $variable,
                 ],[
                     'nombre' => $variable,
-                    'valor' => $request->get($variable) ? $request->get($variable) : '',
+                    'valor' => $request->get($variable)
                 ]);
 
                 if ($variable == 'valor_uvt') {
