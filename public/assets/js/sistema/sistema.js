@@ -951,6 +951,7 @@ function arreglarMensajeError(mensaje) {
 }
 
 function redondear(valor, redondeo_valor) {
+    if (redondeoGastos == '') return valor;
     redondeo_valor = parseFloat(redondeo_valor);
     if (!valor) return valor; //Sin valor a redondear
     if (redondeo_valor === null) return valor; // No redondear
