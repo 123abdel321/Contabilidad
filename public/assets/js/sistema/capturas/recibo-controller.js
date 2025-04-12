@@ -286,8 +286,8 @@ $(document).on('click', '#iniciarCapturaRecibo', function () {
             $comboNitRecibos.append(newOption).trigger('change');
             $comboNitRecibos.val(dataFormato.id).trigger('change');
 
-            $('fecha_manual_recibo').val(factura.fecha_manual);
-            $('total_abono_recibo').val(factura.total_abono);
+            $('#fecha_manual_recibo').val(factura.fecha_manual);
+            $('#total_abono_recibo').val(factura.total_abono);
             agregarPagos(factura.pagos);
         }
 
