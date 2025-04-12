@@ -10,7 +10,7 @@
 			body {
 				margin: 0;
 				font-family: "Lato", sans-serif;
-				line-height: 16px;
+				line-height: 15px;
 				font-size: 10px;
 				width: 100%;
 				text-transform: uppercase;
@@ -29,7 +29,7 @@
 
 
 			.spacer {
-				height: 30px;
+				height: 20px;
 			}
 
 			.valor {
@@ -146,9 +146,6 @@
 
 		<table >
 			<thead>
-				<tr>
-					<td class="spacer padding5"></td>
-				</tr>
 				<tr>
 					<td colspan="7 padding5">
 						<table>
