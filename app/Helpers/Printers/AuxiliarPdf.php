@@ -39,6 +39,12 @@ class AuxiliarPdf extends AbstractPrinterPdf
 		return '';
 	}
 
+	public function formatPaper()
+	{
+		if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
+		return 'A4';
+	}
+
     public function data()
     {
         return [

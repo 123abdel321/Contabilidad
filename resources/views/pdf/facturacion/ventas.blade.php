@@ -61,13 +61,13 @@
 				page-break-inside: avoid
 			}
 
-			.padding5 {
+			/* .padding5 {
 				padding: 5px;
 			}
 
 			.padding3 {
 				padding: 2px;
-			}
+			} */
 
 			.logo {
 				width: 25%;
@@ -366,10 +366,7 @@
 		<table>
 			<thead class="">
 				<tr>
-					<td class="spacer padding5"></td>
-				</tr>
-				<tr>
-				<p><b>Observación general: </b>{{ $observacion }}</p>
+					<p><b>Observación general: </b>{{ $observacion }}</p>
 				</tr>
 			</thead>
 		</table>
