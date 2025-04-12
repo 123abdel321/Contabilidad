@@ -29,7 +29,7 @@
 
 
 			.spacer {
-				height: 20px;
+				height: 10px;
 			}
 
 			.valor {
@@ -42,7 +42,7 @@
 			}
 
 			.table-detail {
-				font-size: 12px;
+				font-size: 10px;
 				width: 100%;
 				border-collapse: collapse;
 				height: 100%;
