@@ -99,17 +99,29 @@ class RecibosController extends Controller
                 $idNit,
                 3,
                 null,
-                $fechaManual
+                $fechaManual,
+                $consecutivo
             ))->actual()->get();
 
+            if (!count($extractos) && !$idNit) {
+                return response()->json([
+                    'success'=>	true,
+                    'data' => [],
+                    'message'=> 'Recibo generado con exito!'
+                ], 200);
+            }
+            
             if ($reciboEdit) {
                 $detalles = $reciboEdit['detalles'];
+                
                 if (count($extractos)) {
                     foreach ($extractos as $key => $extracto) {
-                        $indice = array_search($extracto->id_cuenta, array_column($detalles, 'id_cuenta'));
-                        if ($indice || $indice == 0) {
+                        $indice = array_search($extracto->documento_referencia, array_column($detalles, 'documento_referencia'));
+                        
+                        if (($indice || $indice == 0) && array_key_exists($indice, $detalles)) {
                             $encontrado = $detalles[$indice];
                             $extractos[$key] = $this->formatExtractoEdit($extracto, $encontrado);
+                            // dd($extractos);
                             unset($detalles[$indice]);
                         }
                     }
@@ -130,6 +142,8 @@ class RecibosController extends Controller
                 $extractos = $extractos->sortBy(function ($item) use ($ordenFacturacion) {
                     return $ordenFacturacion[$item->id_cuenta] ?? 9999;
                 })->values();
+            } else {
+                $extractos = $extractos->sortBy('cuenta')->values();
             }
 
             $cxcAnticipos = PlanCuentas::where('auxiliar', 1)

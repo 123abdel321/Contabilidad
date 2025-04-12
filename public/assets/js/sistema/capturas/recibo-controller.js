@@ -353,6 +353,7 @@ function saveRecibo() {
         $('#iniciarCapturaRecibo').show();
         $('#iniciarCapturaReciboLoading').hide();
         agregarToast('exito', 'Creación exitosa', 'Recibo creado con exito!', true);
+        
         guardandoRecibo = false
         if(res.impresion) {
             window.open("/recibo-print/"+res.impresion, '_blank');
@@ -412,14 +413,7 @@ function cancelarRecibo() {
     var totalRows = recibo_table.rows().data().length;
     totalAnticiposRecibo = 0;
 
-    if(recibo_table.rows().data().length){
-        recibo_table.clear([]).draw();
-        recibo_table.row(0).remove().draw();
-        mostrarValoresRecibos();
-        var countE = new CountUp('total_faltante_recibo', 0, 0, 2, 0.5);
-            countE.start();
-    }
-
+    consecutivoSiguienteRecibo();
     clearFormasPagoRecibo();
     $('#total_abono_recibo').val('0.00');
     $('#saldo_anticipo_recibo').val('0');
@@ -1063,6 +1057,9 @@ function consecutivoSiguienteRecibo() {
         }).done((res) => {
             if(res.success){
                 $("#documento_referencia_recibo").val(res.data);
+                setTimeout(function(){
+                    recibo_table.ajax.reload(null, false);
+                },10);
             }
         }).fail((err) => {
             var mensaje = err.responseJSON.message;

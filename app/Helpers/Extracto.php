@@ -8,19 +8,21 @@ use App\Models\Sistema\DocumentosGeneral;
 
 class Extracto
 {
+    public $fecha;
     public $id_nit;
     public $id_cuenta;
+    public $consecutivo;
     public $id_tipo_cuenta;
     public $documento_referencia;
-    public $fecha;
 
-    public function __construct($id_nit = null, $id_tipo_cuenta = null, $documento_referencia = null, $fecha = null, $id_cuenta = null)
+    public function __construct($id_nit = null, $id_tipo_cuenta = null, $documento_referencia = null, $fecha = null, $id_cuenta = null, $consecutivo = null)
     {
         $this->id_nit = $id_nit;
         $this->id_cuenta = $id_cuenta;
         $this->id_tipo_cuenta = $id_tipo_cuenta;
         $this->documento_referencia = $documento_referencia;
         $this->fecha = $fecha;
+        $this->consecutivo = $consecutivo;
     }
 
     public function actual()
@@ -293,6 +295,9 @@ class Extracto
 			})
             ->when($this->documento_referencia ? false : true, function ($query) {
                 $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) != 0");
+			})
+            ->when($this->consecutivo ? false : true, function ($query) {
+                $query->where('DG.consecutivo', $this->consecutivo);
 			})
             ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
 
