@@ -111,7 +111,7 @@
 			}
 
 			.footer {
-				position: fixed;
+				position: absolute;
 				bottom: 35px;
 				line-height: 15px;
 				font-size: 8px;
@@ -445,15 +445,6 @@
 			</table>
 		</table>
 		@endif	
-				
-		<script type="text/php">
-			if ( isset($pdf) ) {
-				$pdf->page_script('
-					$font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
-					$pdf->text(300, 800, "$PAGE_NUM / $PAGE_COUNT", $font, 8);
-				');
-			}
-		</script>
 
 		<table class="footer">
 			<tr>
@@ -480,6 +471,15 @@
 				</td>
 			</tr>
 		</table> 
+
+		<script type="text/php">
+			if ( isset($pdf) ) {
+				$pdf->page_script('
+					$font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+					$pdf->text(300, 800, "$PAGE_NUM / $PAGE_COUNT", $font, 8);
+				');
+			}
+		</script>
 		
 	</body>
 
