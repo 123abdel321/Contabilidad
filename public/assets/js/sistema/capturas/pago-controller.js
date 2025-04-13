@@ -1,6 +1,6 @@
 var fecha = null;
 var pago_table = null;
-var calculandoRow = false;
+var calculandoRowPagos = false;
 var guardandoPago = false;
 var pago_table_pagos = null;
 var validarFacturaPago = null;
@@ -852,7 +852,7 @@ function focusValorRecibido(idRow) {
 }
 
 function focusOutValorPagoRow(idRow) {
-    if (calculandoRow) return;
+    if (calculandoRowPagos) return;
     var data = getDataById(idRow, pago_table);
     var valorRecibido = stringToNumberFloat($("#pago_valor_"+idRow).val());
     if (!valorRecibido) return;
@@ -899,7 +899,7 @@ function focusOutValorPagoRow(idRow) {
 function changeValorRecibidoPagoRow(idRow, event) {
     if (!idRow) return;
     if(event.keyCode == 13) {
-        calculandoRow = true;
+        calculandoRowPagos = true;
         var data = getDataById(idRow, pago_table);
 
         if (data.cuenta_pago) {//ABONOS
@@ -944,7 +944,7 @@ function changeValorRecibidoPagoRow(idRow, event) {
             $('#pago_concepto_'+idRow).select();
         },80);
         setTimeout(function(){
-            calculandoRow = false;
+            calculandoRowPagos = false;
         },200); 
     }
 }

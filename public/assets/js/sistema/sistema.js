@@ -15,7 +15,7 @@ const bucketUrl = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/';
 const btnLogout = document.getElementById('sessionLogout');
 const itemMenuActive = localStorage.getItem("item_active_menu");
 
-let dateNow = new Date();
+var dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
 
@@ -648,7 +648,7 @@ function agregarToast (tipo, titulo, descripcion, autoCierre = false) {
 
     // Agregar id del toast
     const numeroAlAzar = Math.floor(Math.random() * 100);
-    const fecha = Date.now();
+    var fecha = Date.now();
     const toastId = fecha + numeroAlAzar;
     nuevoToast.id = toastId;
 

@@ -1,4 +1,3 @@
-var fecha = null;
 var idDocumento = 0;
 var editandoCaptura = 0;
 var rowExtracto = '';
@@ -12,11 +11,11 @@ var documento_extracto = null;
 var $comboComprobante = null;
 var guardarDocumentoGeneral = false;
 
+
 function documentogeneralInit() {
-
-    fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-
-    $('#fecha_manual_documento').val(fecha);
+    var dateNow = new Date;
+    var fechaDocumentoGeneral = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    $('#fecha_manual_documento').val(fechaDocumentoGeneral);
 
     documento_general_table = $('#documentoReferenciaTable').DataTable({
         pageLength: 300,

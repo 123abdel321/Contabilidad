@@ -355,12 +355,12 @@ function initCalendarReserva() {
         eventResize: function(info) {
             cambiarRangoDeReserva(info.event);
         },
-        // select: function(info) {
-        //     seleccionarRangoDeReservas(info);
-        // },
-        // eventClick: function(info) {
-        //     mostrarModalEvento(info.event.id);
-        // },
+        select: function(info) {
+            seleccionarRangoDeReservas(info);
+        },
+        eventClick: function(info) {
+            mostrarModalEvento(info.event.id);
+        },
         height: 'auto',
         contentHeight: 'auto',
         expandRows: true, // Hacer que las filas de eventos ocupen todo el espacio vertical disponible
@@ -545,6 +545,25 @@ function reloadReserva() {
     calendarioReservas.removeAllEvents();
     calendarioReservas.refetchEvents();
     reserva_table.ajax.reload();
+}
+
+function seleccionarRangoDeReservas(info) {
+    clearFormReserva();
+
+    var [fechaInicio, horaInicio] = armarFechaReserva(info.start);
+    var [fechaFin, horaFin] = armarFechaReserva(info.end);
+
+    $('#fecha_inicio_turno').val(fechaInicio);
+    $('#fecha_fin_turno').val(fechaFin);
+
+    $('#hora_inicio_turno').val(horaInicio);
+    $('#hora_fin_turno').val(horaFin);
+
+    $("#reservaFormModal").modal('show');
+}
+
+function mostrarModalEvento() {
+    console.log('mostrarModalEvento');
 }
 
 $(document).on('click', '#createReserva', function () {

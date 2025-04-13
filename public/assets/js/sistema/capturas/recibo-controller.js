@@ -1,17 +1,17 @@
-let fecha = null;
-let recibo_table = null;
-let calculandoRow = false;
-let guardandoRecibo = false;
-let noBuscarDatos = false;
-let recibo_table_pagos = null;
-let validarFacturaRecibo = null;
-let totalAnticiposRecibo = 0;
-let $comboNitRecibos = null;
-let $comboComprobanteRecibos = null;
+var recibo_table = null;
+var calculandoRowRecibos = false;
+var guardandoRecibo = false;
+var noBuscarDatos = false;
+var recibo_table_pagos = null;
+var validarFacturaRecibo = null;
+var totalAnticiposRecibo = 0;
+var $comboNitRecibos = null;
+var $comboComprobanteRecibos = null;
 
 function reciboInit () {
-    fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    $('#fecha_manual_recibo').val(fecha);
+    var dateNow = new Date;
+    var fechaRecibo = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    $('#fecha_manual_recibo').val(fechaRecibo);
 
     recibo_table = $('#reciboTable').DataTable({
         dom: '',
@@ -940,7 +940,7 @@ function focusValorRecibido(idRow) {
 }
 
 function focusOutValorReciboRow(idRow) {
-    if (calculandoRow) return;
+    if (calculandoRowRecibos) return;
     var data = getDataById(idRow, recibo_table);
     var valorRecibido = stringToNumberFloat($("#recibo_valor_"+idRow).val());
     if (!valorRecibido) return;
@@ -987,7 +987,7 @@ function focusOutValorReciboRow(idRow) {
 function changeValorRecibidoReciboRow(idRow, event) {
     if (!idRow) return;
     if(event.keyCode == 13) {
-        calculandoRow = true;
+        calculandoRowRecibos = true;
         var data = getDataById(idRow, recibo_table);
 
         if (data.cuenta_recibo) {//ABONOS
@@ -1032,7 +1032,7 @@ function changeValorRecibidoReciboRow(idRow, event) {
             $('#recibo_concepto_'+idRow).select();
         },80);
         setTimeout(function(){
-            calculandoRow = false;
+            calculandoRowRecibos = false;
         },200); 
     }
 }

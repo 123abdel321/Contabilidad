@@ -9,9 +9,52 @@ function auxiliarInit() {
     generarAuxiliar = false;
     auxiliarExistente = false;
 
+    cargarTablasAuxiliar();
+    cargarCombosAuxiliar();
+
     $('#fecha_desde_auxiliar').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
     $('#fecha_hasta_auxiliar').val(fechaDesde);
+    // findAuxiliar();
+}
 
+function cargarCombosAuxiliar() {
+    $('#id_nit_auxiliar').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione una Cédula/nit",
+        allowClear: true,
+        ajax: {
+            url: 'api/nit/combo-nit',
+            dataType: 'json',
+            headers: headers,
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+
+    });
+
+    $('#id_cuenta_auxiliar').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione una Cuenta",
+        allowClear: true,
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+}
+
+function cargarTablasAuxiliar() {
     auxiliar_table = $('#auxiliarInformeTable').DataTable({
         pageLength: 100,
         dom: 'Brtip',
@@ -198,43 +241,6 @@ function auxiliarInit() {
 
     if (ubicacion_maximoph) columnUbicacionMaximoPH.visible(true);
     else columnUbicacionMaximoPH.visible(false);
-
-    $('#id_nit_auxiliar').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        placeholder: "Seleccione una Cédula/nit",
-        allowClear: true,
-        ajax: {
-            url: 'api/nit/combo-nit',
-            dataType: 'json',
-            headers: headers,
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-
-    });
-
-    $('#id_cuenta_auxiliar').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        placeholder: "Seleccione una Cuenta",
-        allowClear: true,
-        ajax: {
-            url: 'api/plan-cuenta/combo-cuenta',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-    
-    findAuxiliar();
 }
 
 $(document).on('click', '#generarAuxiliar', function () {
