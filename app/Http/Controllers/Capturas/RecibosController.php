@@ -181,7 +181,6 @@ class RecibosController extends Controller
                 ];
             }
 
-
             foreach ($cxcAnticipos as $cxcAnticipo) {
                 $dataRecibos[] = $this->formatCuentaAnticipo($cxcAnticipo, $request->get('id_nit'));
             }
@@ -305,13 +304,36 @@ class RecibosController extends Controller
             'pagos.*.valor' => 'required',
         ];
 
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
+		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
+        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
+
+        if ($fechaManual < $fechaCierre) {
+			return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+            ], 200);
+		}
+
         if ($request->get('id_recibo')) {
             $recibo = ConRecibos::where('id', $request->get('id_recibo'))->first();
 
             $consecutivoUsado = $this->consecutivoUsado(
-                $recibo,
+                $comprobanteRecibo,
                 $request->get('consecutivo'),
-                $request->get('fecha_manual')
+                $request->get('fecha_manual'),
+                $recibo
             );
 
             if ($consecutivoUsado) {
@@ -328,16 +350,6 @@ class RecibosController extends Controller
                 $recibo->pagos()->delete();
                 $recibo->delete();
             }
-        }
-
-        $validator = Validator::make($request->all(), $rules, $this->messages);
-        // dd($request->all());
-		if ($validator->fails()){
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$validator->errors()
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $empresa = Empresa::where('id', request()->user()->id_empresa)->first();

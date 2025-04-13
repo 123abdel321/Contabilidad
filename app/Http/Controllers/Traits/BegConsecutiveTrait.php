@@ -152,11 +152,15 @@ trait BegConsecutiveTrait
         return $bodega;
     }
 
-    public function consecutivoUsado(Comprobantes $comprobante, int $consecutivo, $fecha_manual)
+    public function consecutivoUsado(Comprobantes $comprobante, int $consecutivo, $fecha_manual, $captura = null)
     {
-
         $consecutivoUsado = DocumentosGeneral::where('id_comprobante', $comprobante->id)
             ->where('consecutivo', $consecutivo);
+
+        if ($captura) {
+            $consecutivoUsado->whereNot('relation_id', $captura->id)
+                ->whereNot('relation_type', $captura->getMorphClass());
+        }
 
         if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
             $consecutivoUsado->where('fecha_manual', $fecha_manual);

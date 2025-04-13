@@ -9,6 +9,7 @@ use DateTimeImmutable;
 use App\Helpers\Extracto;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Helpers\Printers\PagosPdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -20,6 +21,7 @@ use App\Models\Empresas\Empresa;
 use App\Models\Sistema\ConPagos;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\Comprobantes;
+use App\Models\Sistema\CentroCostos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\ConPagoPagos;
 use App\Models\Sistema\DocumentosGeneral;
@@ -62,23 +64,78 @@ class PagosController extends Controller
 
     public function generate(Request $request)
     {
-        if (!$request->get('id_nit')) {
+        $editarPagos = auth()->user()->can("pago update");
+        $idNit = $request->get('id_nit');
+        $consecutivo = $request->get('consecutivo');
+        $idComprobante = $request->get('id_comprobante');
+
+        if (!$idNit && !$idComprobante) {
 			return response()->json([
                 'success'=>	true,
                 'data' => [],
-                'message'=> 'Pago generado con exito!'
-            ], 200);
+                'message'=> 'Recibo generado con exito!'
+            ], Response::HTTP_OK);
 		}
 
+        $pagoEdit = null;
         $fechaManual = request()->user()->can('pago fecha') ? $request->get('fecha_manual', null) : Carbon::now();
         
         try {
+
+            if ($idComprobante && $consecutivo && $editarPagos) {
+
+                $pagoEdit = ConPagos::with('detalles', 'pagos', 'nit')
+                    ->where('id_comprobante', $idComprobante)
+                    ->where('consecutivo', $consecutivo)
+                    ->first();
+
+                if ($pagoEdit) {
+                    $pagoEdit = $pagoEdit->toArray();
+                    $idNit = $pagoEdit['id_nit'];
+                    $fechaManual = $pagoEdit['fecha_manual'];
+                }
+            }
+
             $extractos = (new Extracto(
-                $request->get('id_nit'),
+                $idNit,
                 [4,8],
                 null,
-                $fechaManual
+                $fechaManual,
+                $consecutivo
             ))->actual()->get();
+
+            if (!count($extractos) && !$idNit && !$pagoEdit) {
+                return response()->json([
+                    'success'=>	true,
+                    'data' => [],
+                    'message'=> 'Pago generado con exito!'
+                ], Response::HTTP_OK);
+            }
+
+            if ($pagoEdit) {
+                $detalles = $pagoEdit['detalles'];
+                
+                if (count($extractos)) {
+                    foreach ($extractos as $key => $extracto) {
+                        $indice = array_search($extracto->documento_referencia, array_column($detalles, 'documento_referencia'));
+                        
+                        if (($indice || $indice == 0) && array_key_exists($indice, $detalles)) {
+                            $encontrado = $detalles[$indice];
+                            $extractos[$key] = $this->formatExtractoEdit($extracto, $encontrado);
+                            // dd($extractos);
+                            unset($detalles[$indice]);
+                        }
+                    }
+                }
+                
+                if (count($detalles)) {
+                    foreach ($detalles as $detalle) {
+                        $extractos[] = $this->addExtractoData($detalle);
+                    }
+                }
+            }
+
+            $extractos = $extractos->sortBy('cuenta')->values();
 
             $cxpAnticipos = PlanCuentas::where('auxiliar', 1)
                 ->where('exige_documento_referencia', 1)
@@ -121,8 +178,9 @@ class PagosController extends Controller
             return response()->json([
                 'success'=>	true,
                 'data' => $dataPagos,
+                'edit' => $pagoEdit,
                 'message'=> 'Pago generado con exito!'
-            ], 200);
+            ], Response::HTTP_OK);
 
         } catch (Exception $e) {
 
@@ -131,7 +189,7 @@ class PagosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -207,12 +265,15 @@ class PagosController extends Controller
         $this->fechaManual = request()->user()->can('pago fecha') ? $request->get('fecha_manual') : Carbon::now();
 
         if(!$comprobantePago) {
+
             return response()->json([
                 "success"=>false,
                 'data' => [],
                 "message"=> ['Comprobante pago' => ['El Comprobante del pago es incorrecto!']]
-            ], 422);
-        } else {
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        } else if (!$request->get('id_pago')){
+
             $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
             $request->request->add([
                 'consecutivo' => $consecutivo
@@ -240,25 +301,64 @@ class PagosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
+		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
+        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
+
+        if ($fechaManual < $fechaCierre) {
+			return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+            ], 200);
+		}
+
+        if ($request->get('id_pago')) {
+            $pago = ConPagos::where('id', $request->get('id_pago'))->first();
+
+            $consecutivoUsado = $this->consecutivoUsado(
+                $comprobantePago,
+                $request->get('consecutivo'),
+                $request->get('fecha_manual'),
+                $pago,
+            );
+
+            if ($consecutivoUsado) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=> "El consecutivo {$request->get('consecutivo')} ya está en uso."
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+            
+            if ($pago) {
+                $pago->documentos()->delete();
+                $pago->detalles()->delete();
+                $pago->pagos()->delete();
+                $pago->delete();
+            }
         }
 
         $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
 		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
 
-        // if ($this->fechaManual < $fechaCierre) {
-		// 	return response()->json([
-        //         "success"=>false,
-        //         'data' => [],
-        //         "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
-        //     ], 422);
-		// }
+        if (!$request->get('fecha_manual')) {
+			return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+		}
         
         try {
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA RECIBO
             $pago = $this->createFacturaPago($request);
             $nit = $this->findNit($pago->id_nit);
+            $centro_costos = CentroCostos::first();
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE RECIBOS
             $documentoGeneral = new Documento(
@@ -337,7 +437,9 @@ class PagosController extends Controller
                 $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_egresos);
             }
 
-            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+            if (!$request->get('id_pago')) {
+                $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+            }
 
             if (!$documentoGeneral->save()) {
 
@@ -346,7 +448,7 @@ class PagosController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
             DB::connection('sam')->commit();
@@ -356,7 +458,7 @@ class PagosController extends Controller
                 'data' => $documentoGeneral->getRows(),
                 'impresion' => $comprobantePago->imprimir_en_capturas ? $pago->id : '',
                 'message'=> 'Pago creado con exito!'
-            ], 200);
+            ], Response::HTTP_OK);
 
         } catch (Exception $e) {
 
@@ -365,7 +467,7 @@ class PagosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -380,7 +482,7 @@ class PagosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=> ['Comprobante pago' => ['El Comprobante del pago es incorrecto!']]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } else {
             $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
             $request->request->add([
@@ -405,7 +507,7 @@ class PagosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
@@ -422,7 +524,7 @@ class PagosController extends Controller
                     "success"=>false,
                     'data' => [],
                     "message"=>'La forma de pago con el id_cuenta_ingreso: '.$request->get('id_cuenta_ingreso').' No existe!'
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             $valorPago = $request->get('valor_pago') ? $request->get('valor_pago') : $request->get('valor_comprobante');
@@ -445,7 +547,7 @@ class PagosController extends Controller
                     "success"=>true,
                     'data' => [],
                     "message"=>'Comprobante enviado con exito'
-                ], 200);
+                ], Response::HTTP_OK);
             }
 
             $extractos = (new Extracto(
@@ -536,7 +638,7 @@ class PagosController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
             DB::connection('sam')->commit();
@@ -546,7 +648,7 @@ class PagosController extends Controller
                 'data' => $documentoGeneral->getRows(),
                 'impresion' => $comprobantePago->imprimir_en_capturas ? $pago->id : '',
                 'message'=> 'Pago creado con exito!'
-            ], 200);
+            ], Response::HTTP_OK);
 
 
         } catch (Exception $e) {
@@ -556,7 +658,7 @@ class PagosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -577,7 +679,7 @@ class PagosController extends Controller
                     "success"=>false,
                     'data' => [],
                     "message"=>$validator->errors()
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         }
 
@@ -606,7 +708,7 @@ class PagosController extends Controller
                     'success'=>	true,
                     'data' => [],
                     'message'=> 'Pago actualizado con exito!'
-                ], 200);
+                ], Response::HTTP_OK);
             }
 
             if ($request->get('estado') == 0) {
@@ -624,7 +726,7 @@ class PagosController extends Controller
                     'success'=>	true,
                     'data' => [],
                     'message'=> 'Pago actualizado con exito!'
-                ], 200);
+                ], Response::HTTP_OK);
             }
 
             $pago = ConPagos::where('id', $request->get('id'))
@@ -637,7 +739,7 @@ class PagosController extends Controller
                     "success"=>false,
                     'data' => [],
                     "message"=>'El pago no se puede modificar'
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             $nit = $this->findNit($pago->id_nit);
@@ -666,7 +768,7 @@ class PagosController extends Controller
                     "success"=>false,
                     'data' => [],
                     "message"=>'El nit no tiene cuentas por cobrar'
-                ], 422); 
+                ], Response::HTTP_UNPROCESSABLE_ENTITY); 
             }
 
             $valorPagado = $pago->total_abono;
@@ -754,7 +856,7 @@ class PagosController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
             //GUARDAMOS RECIBO
@@ -769,7 +871,7 @@ class PagosController extends Controller
                 'success'=>	true,
                 'data' => $documentoGeneral->getRows(),
                 'message'=> 'Pago aprobado con exito!'
-            ], 200);
+            ], Response::HTTP_OK);
             
         } catch (Exception $e) {
 
@@ -778,7 +880,7 @@ class PagosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -795,7 +897,7 @@ class PagosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
@@ -822,7 +924,7 @@ class PagosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -837,7 +939,7 @@ class PagosController extends Controller
                 'success'=>	false,
                 'data' => [],
                 'message'=> 'El pago no existe'
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
@@ -864,7 +966,7 @@ class PagosController extends Controller
                 'success'=>	false,
                 'data' => [],
                 'message'=> 'El pago no existe'
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $data = (new PagosPdf($empresa, $pago))->buildPdf()->getData();
@@ -876,6 +978,8 @@ class PagosController extends Controller
 
     private function formatExtracto($extracto)
     {
+        $editando = property_exists($extracto, 'edit') ? true : false;
+
         $this->id_pago++;
         return [
             'id' => $this->id_pago,
@@ -886,12 +990,44 @@ class PagosController extends Controller
             'dias_cumplidos' => $extracto->dias_cumplidos,
             'plazo' => $extracto->plazo,
             'documento_referencia' => $extracto->documento_referencia,
-            'saldo' => $extracto->saldo,
-            'valor_recibido' => 0,
+            'saldo' => $editando ? $extracto->total_saldo : $extracto->saldo,
+            'valor_recibido' => $editando ? $extracto->total_abono : 0,
             'nuevo_saldo' => $extracto->saldo,
             'total_abono' => $extracto->total_abono,
-            'concepto' => '',
+            'concepto' => $editando ? $extracto->concepto : '',
             'cuenta_pago' => true,
+        ];
+    }
+
+    private function formatExtractoEdit($extracto, $recibo)
+    {
+        $extracto->total_abono = $recibo['total_abono'];
+        $extracto->total_saldo = $extracto->saldo;
+        $extracto->concepto = $recibo['concepto'];
+        $extracto->nuevo_saldo = $recibo['nuevo_saldo'];
+        $extracto->valor_recibido = $recibo['total_abono'];
+        $extracto->edit = true;
+        
+        return $extracto;
+    }
+
+    private function addExtractoData($detalle)
+    {
+        $detalle = (object)$detalle;
+        $cuenta = PlanCuentas::find($detalle->id_cuenta);
+        return (object)[
+            'id_cuenta' => $detalle->id_cuenta,
+            'cuenta' => $cuenta->cuenta,
+            'nombre_cuenta' => $cuenta->nombre,
+            'fecha_manual' => $detalle->fecha_manual,
+            'concepto' => $detalle->concepto,
+            'dias_cumplidos' => 0,
+            'plazo' => 0,
+            'documento_referencia' => $detalle->documento_referencia,
+            'total_abono' => $detalle->total_abono,
+            'total_saldo' => $detalle->total_saldo,
+            'saldo' => $detalle->nuevo_saldo,
+            'edit' => true
         ];
     }
 

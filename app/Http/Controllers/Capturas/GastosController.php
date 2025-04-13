@@ -112,6 +112,18 @@ class GastosController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
+		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
+        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
+
+        if ($fechaManual < $fechaCierre) {
+			return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+            ], 200);
+		}
+
         try {
             DB::connection('sam')->beginTransaction();
             
@@ -133,7 +145,8 @@ class GastosController extends Controller
                 $consecutivoUsado = $this->consecutivoUsado(
                     $comprobanteGasto,
                     $request->get('consecutivo'),
-                    $request->get('fecha_manual')
+                    $request->get('fecha_manual'),
+                    $gasto
                 );
 
                 if ($consecutivoUsado) {
