@@ -1248,8 +1248,6 @@ $(document).on('change', '#id_comprobante_gasto', function () {
 
 $(document).on('click', '#iniciarCapturaGasto', function () {
 
-    cancelarGasto();
-
     if (gastoUpdate) {
 
         $("#crearCapturaGasto").hide();
@@ -1268,7 +1266,7 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
             dataType: 'json',
         }).done((res) => {
             if (res.success && res.data) {
-
+                cancelarGasto();
                 editandoGasto = false;
                 
                 const gastos = res.data;
