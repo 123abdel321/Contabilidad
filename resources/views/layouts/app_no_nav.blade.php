@@ -689,6 +689,7 @@
                     $('#error-login').show();
                 }
             }).fail((err) => {
+                console.log('err: ',err);
                 $("#button-login-loading").hide();
                 $("#button-login").show();
                 $('#error-login').show();
