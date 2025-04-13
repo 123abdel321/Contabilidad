@@ -689,10 +689,12 @@
                     $('#error-login').show();
                 }
             }).fail((err) => {
-                console.log('err: ',err);
                 $("#button-login-loading").hide();
                 $("#button-login").show();
                 $('#error-login').show();
+                if (err.status == 419) {
+                    window.location.href = '/home';
+                }
             });
         }
 
