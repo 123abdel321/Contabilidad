@@ -59,6 +59,7 @@ class EntornoController extends Controller
                 'cuenta_utilidad',
                 'cuenta_perdida',
                 'observacion_venta',
+                'fecha_ultimo_cierre'
             ];
             
             foreach ($variablesEntorno as $variable) {

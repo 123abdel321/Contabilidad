@@ -51,6 +51,11 @@
                                 <input type="number" class="form-control form-control-sm" name="redondeo_gastos" id="redondeo_gastos">
                             </div>
 
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="fecha_ultimo_cierre" class="form-control-label">Fecha ultimo cierre</label>
+                                <input type="date" class="form-control form-control-sm" name="fecha_ultimo_cierre" id="fecha_ultimo_cierre">
+                            </div>
+
                             <!-- <div class="form-group col-12 col-sm-6 col-md-4" >
                                 <label for="example-text-input" class="form-control-label">Observación general factura venta </label>
                                 <textarea type="text" class="form-control form-control-sm" name="observacion_venta" id="observacion_venta" rows="3"></textarea>

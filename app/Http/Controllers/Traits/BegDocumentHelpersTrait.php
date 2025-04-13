@@ -110,4 +110,22 @@ trait BegDocumentHelpersTrait
 
 		return $documentos > 0 ? true : false;
 	}
+
+	private function isFechaCierreLimit($fecha_manual)
+	{
+		$fechaCierre = VariablesEntorno::where('nombre', 'token_key_fe')->first();
+		$fechaCierre = $fechaCierre ? $fechaCierre->valor : NULL;
+
+		if (!$fechaCierre) {
+			return false;
+		}
+
+		$fechaCierre = DateTimeImmutable::createFromFormat('Y-m-d', $fechaCierre);
+        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
+
+		if ($fechaManual < $fechaCierre) {
+			return true;
+		}
+		return false;
+	}
 }

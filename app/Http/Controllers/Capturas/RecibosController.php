@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
@@ -31,6 +32,7 @@ use App\Models\Sistema\ArchivosGenerales;
 class RecibosController extends Controller
 {
     use BegConsecutiveTrait;
+    use BegDocumentHelpersTrait;
 
     protected $id_recibo = 0;
     protected $messages = null;
@@ -314,11 +316,9 @@ class RecibosController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
-		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
-        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
+        $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
 
-        if ($fechaManual < $fechaCierre) {
+        if ($isFechaCierreLimit) {
 			return response()->json([
                 "success"=>false,
                 'data' => [],

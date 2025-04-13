@@ -342,11 +342,9 @@ class DocumentoGeneralController extends Controller
             ], 200);
         }
 
-		$empresa = Empresa::where('id', request()->user()->id_empresa)->first();
-		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
-        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
+		$isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
 
-        if ($fechaManual < $fechaCierre) {
+        if ($isFechaCierreLimit) {
 			return response()->json([
                 "success"=>false,
                 'data' => [],
