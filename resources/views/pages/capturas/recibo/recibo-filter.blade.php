@@ -14,7 +14,7 @@
 
                     <input type="text" class="form-control" name="id_recibo_up" id="id_recibo_up" style="display: none;">
 
-                    <div class="form-group col-12 col-sm-6 col-md-3">
+                    <div class="form-group col-12 col-sm-4 col-md-3">
                         <label>Cédula / Nit<span style="color: red">*</span></label>
                         <select name="id_nit_recibo" id="id_nit_recibo" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
@@ -24,7 +24,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-6 col-md-3">
+                    <div class="form-group col-12 col-sm-4 col-md-3">
                         <label>Comprobante <span style="color: red">*</span></label>
                         <select name="id_comprobante_recibo" id="id_comprobante_recibo" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
@@ -34,12 +34,12 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-6 col-md-2" >
+                    <div class="form-group col-12 col-sm-4 col-md-2" >
                         <label for="example-text-input" class="form-control-label">Total abono</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="total_abono_recibo" id="total_abono_recibo" onfocus="this.select();" onkeypress="changeTotalAbonoRecibo(event)"  value="0">
                     </div>
 
-                    <div class="form-group col-12 col-sm-6 col-md-2">
+                    <div class="form-group col-12 col-sm-4 col-md-2">
                         <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
                         <input name="fecha_manual_recibo" id="fecha_manual_recibo" class="form-control form-control-sm" type="date" required>
                         <div class="invalid-feedback">
@@ -47,7 +47,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-6 col-md-2">
+                    <div class="form-group col-12 col-sm-4 col-md-2">
                         <label for="example-text-input" class="form-control-label">Consecutivo</label>
                         <input type="text" class="form-control form-control-sm" name="documento_referencia_recibo" id="documento_referencia_recibo" onkeydown="buscarFacturaRecibos(event)" disabled required>
                     </div>
