@@ -6,6 +6,7 @@ use DB;
 use Carbon\Carbon;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Helpers\Printers\GastosPdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -108,23 +109,40 @@ class GastosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
-        $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
 
         try {
             DB::connection('sam')->beginTransaction();
+            
+            $comprobanteGasto = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+
+            $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
+            $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
             
             $this->proveedor = $this->findProveedor($request->get('id_proveedor'));
             if (!$this->proveedor->declarante) $this->tipoRetencion = 'cuenta_retencion_declarante';
 
             if ($request->get('editing_gasto')) {
+
                 $gasto = ConGastos::where('id_comprobante', $request->get('id_comprobante'))
                     ->where('consecutivo', $request->get('consecutivo'))
                     ->orderBy('id', 'DESC')
                     ->first();
+
+                $consecutivoUsado = $this->consecutivoUsado(
+                    $comprobanteGasto,
+                    $request->get('consecutivo'),
+                    $request->get('fecha_manual')
+                );
+
+                if ($consecutivoUsado) {
+                    return response()->json([
+                        "success"=>false,
+                        'data' => [],
+                        "message"=> "El consecutivo {$request->get('consecutivo')} ya está en uso."
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                }
 
                 if ($gasto) {
                     $gasto->documentos()->delete();
@@ -147,8 +165,6 @@ class GastosController extends Controller
                 $request->get('fecha_manual'),
                 $request->get('consecutivo')
             );
-
-            $comprobanteGasto = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
             $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
             $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
@@ -280,7 +296,7 @@ class GastosController extends Controller
                         "success"=>false,
                         'data' => [],
                         "message"=> ['Cuenta retención' => ['La cuenta '.$cuentaRetencion->cuenta. ' - ' .$cuentaRetencion->nombre. ' no tiene naturaleza en compras']]
-                    ], 422);
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
             }
             //AGREGAR FORMAS DE PAGO
@@ -325,7 +341,7 @@ class GastosController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
             DB::connection('sam')->commit();
@@ -335,7 +351,7 @@ class GastosController extends Controller
 				'data' => $documentoGeneral->getRows(),
 				'impresion' => $comprobanteGasto->imprimir_en_capturas ? $gasto->id : '',
 				'message'=> 'Gasto creada con exito!'
-			], 200);
+			], Response::HTTP_OK);
 
         } catch (Exception $e) {
 
@@ -344,7 +360,7 @@ class GastosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -397,7 +413,7 @@ class GastosController extends Controller
                 'success'=>	false,
                 'data' => [],
                 'message'=> 'El gasto no existe'
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();

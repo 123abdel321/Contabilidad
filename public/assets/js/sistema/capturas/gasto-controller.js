@@ -1118,7 +1118,6 @@ function saveGasto () {
             window.open("/gasto-print/"+res.impresion, '_blank');
         }
     }).fail((err) => {
-        consecutivoSiguienteGasto();
         guardandoGasto = false;
 
         $("#agregarGasto").show();
@@ -1248,8 +1247,12 @@ $(document).on('change', '#id_comprobante_gasto', function () {
 });
 
 $(document).on('click', '#iniciarCapturaGasto', function () {
+
+    cancelarGasto();
+
     if (gastoUpdate) {
 
+        $("#crearCapturaGasto").hide();
         $("#iniciarCapturaGasto").hide();
         $("#iniciarCapturaGastoLoading").show();
 

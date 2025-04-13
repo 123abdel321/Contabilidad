@@ -210,14 +210,14 @@
     </div>
 
     <script>
-        let gastoIva = @json(auth()->user()->can("gasto iva"));
-        let gastoAIU = @json(auth()->user()->can("gasto aiu"));
-        let gastoDescuento = @json(auth()->user()->can("gasto descuento"));
-        let gastoUpdate = @json(auth()->user()->can("gasto update"));
-        let comprobantesGastos = @json($comprobantes);
-        let centrosCostosGastos = @json($centro_costos);
-        let porcentajeIvaAIU = @json($porcentaje_iva_aiu);
-        let redondeoGastos = @json($redondeo_gastos);
+        var gastoIva = @json(auth()->user()->can("gasto iva"));
+        var gastoAIU = @json(auth()->user()->can("gasto aiu"));
+        var gastoDescuento = @json(auth()->user()->can("gasto descuento"));
+        var gastoUpdate = @json(auth()->user()->can("gasto update"));
+        var comprobantesGastos = @json($comprobantes);
+        var centrosCostosGastos = @json($centro_costos);
+        var porcentajeIvaAIU = @json($porcentaje_iva_aiu);
+        var redondeoGastos = @json($redondeo_gastos);
     </script>
     
 </div>
