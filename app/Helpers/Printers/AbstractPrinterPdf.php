@@ -42,7 +42,7 @@ abstract class AbstractPrinterPdf
     {
         $this->pdf = app('dompdf.wrapper');
         $this->pdf->loadView($this->view, $this->data);
-        $this->pdf->setPaper('A4', $this->paper);
+        $this->pdf->setPaper($this->formato, $this->paper);
     }
 
     public function getPdf()

@@ -46,12 +46,12 @@ class VentasPdf extends AbstractPrinterPdf
 		if ($this->tipoEmpresion == 1) return 'landscape';
 		if ($this->tipoEmpresion == 2) return 'portrait';
 
-		return null;
+		return '';
 	}
 
 	public function formatPaper()
 	{
-		// if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
+		if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
 		return 'A4';
 	}
 
