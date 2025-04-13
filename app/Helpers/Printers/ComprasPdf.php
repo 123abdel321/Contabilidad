@@ -45,7 +45,7 @@ class ComprasPdf extends AbstractPrinterPdf
 
 	public function formatPaper()
 	{
-		if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
+		// if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
 		return 'A4';
 	}
 
