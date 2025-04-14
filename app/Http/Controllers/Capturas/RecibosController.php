@@ -103,7 +103,7 @@ class RecibosController extends Controller
                 3,
                 null,
                 $fechaManual,
-                $consecutivo
+                $reciboEdit ? $consecutivo : null
             ))->actual()->get();
             
             if (!count($extractos) && !$idNit && !$reciboEdit) {
