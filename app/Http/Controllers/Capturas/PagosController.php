@@ -103,7 +103,7 @@ class PagosController extends Controller
                 [4,8],
                 null,
                 $fechaManual,
-                $consecutivo
+                $pagoEdit ? $consecutivo : null
             ))->actual()->get();
 
             if (!count($extractos) && !$idNit && !$pagoEdit) {

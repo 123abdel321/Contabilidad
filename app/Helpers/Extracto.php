@@ -214,7 +214,7 @@ class Extracto
     public function queryActual()
     {
         $fecha = Carbon::now();
-
+        
         $queryActual = DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
                 "N.id AS id_nit",
@@ -293,10 +293,10 @@ class Extracto
             ->when($this->fecha ? $this->fecha : false, function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->fecha);
 			})
-            ->when($this->documento_referencia ? false : true, function ($query) {
+            ->when($this->documento_referencia, function ($query) {
                 $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) != 0");
 			})
-            ->when($this->consecutivo ? false : true, function ($query) {
+            ->when($this->consecutivo, function ($query) {
                 $query->where('DG.consecutivo', $this->consecutivo);
 			})
             ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
