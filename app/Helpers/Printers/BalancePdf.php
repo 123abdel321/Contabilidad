@@ -34,8 +34,8 @@ class BalancePdf extends AbstractPrinterPdf
 
     public function paper()
 	{
-		if ($this->tipoEmpresion == 1) return 'landscape';
-		if ($this->tipoEmpresion == 2) return 'portrait';
+		// if ($this->tipoEmpresion == 1) return 'landscape';
+		// if ($this->tipoEmpresion == 2) return 'portrait';
 
 		return '';
 	}
