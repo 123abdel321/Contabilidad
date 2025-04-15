@@ -359,7 +359,7 @@ function cargarProductosPedido(clear = true) {
         }
     }).done((res) => {
         if (res.data.length > 0) {
-            console.log('res: ',res);
+
             pagePedidos++;
             lastPagePedidos = res.last_page;
             mostrarProductos(res.data, clear);
@@ -454,7 +454,7 @@ function seleccionarProducto(element) {
 
     let productoJson = element.getAttribute("data-producto"); // Obtener el JSON desde el atributo
     let producto = JSON.parse(decodeURIComponent(productoJson)); // Convertirlo en un objeto
-
+    
     consecutivoPedidos++;
 
     let precioProducto = parseFloat(producto.precio);
@@ -497,6 +497,7 @@ function seleccionarProducto(element) {
     productosPedidos.push({
         consecutivo: consecutivoPedidos,
         id_producto: producto.id,
+        nombre: producto.codigo+' - '+producto.nombre,
         cantidad: 1,
         costo: precioProducto,
         subtotal: subtotal,
@@ -641,7 +642,7 @@ function restarCantidadPedido(consecutivo) {
 }
 
 function eliminarProductoPedido(consecutivo) {
-    let index = productosPedidos.findIndex(producto => producto.consecutivo === consecutivo);
+    const index = productosPedidos.findIndex(producto => producto.consecutivo === consecutivo);
 
     if (index === -1) {
         return;
@@ -651,6 +652,37 @@ function eliminarProductoPedido(consecutivo) {
     productosPedidos.splice(index, 1);
     mostrarValoresPedidos();
     guardarPedido();
+}
+
+function editarProductoPedido(consecutivo) {
+    const myOffcanvas = new bootstrap.Offcanvas(document.getElementById('offCanvasEditProducto'));
+    myOffcanvas.show();
+
+    const index = productosPedidos.findIndex(producto => producto.consecutivo === consecutivo);
+
+    if (index === -1) {
+        return;
+    }
+
+    const producto = productosPedidos[index];
+
+    $("#id_producto_edit").val(consecutivo);
+
+    $("#id_producto_name_edit").html(producto.nombre);
+    $("#producto_edit_cantidad").val(producto.cantidad);
+    $("#producto_edit_precio").val(producto.costo);
+    $("#producto_edit_porcentaje_descuento").val(producto.descuento_porcentaje);
+    $("#producto_edit_descuento").val(producto.descuento_valor);
+    $("#producto_edit_porcentaje_iva").html(producto.iva_porcentaje+'%');
+    $("#producto_edit_iva").val(producto.iva_valor);
+    $("#producto_edit_observacion").val(producto.concepto);
+
+    setTimeout(function(){
+        $('#producto_edit_observacion').focus();
+        $('#producto_edit_observacion').select();
+    },400);
+
+    $("#producto_edit_total").html(`Total: ${new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(producto.total)}`);
 }
 
 function calcularCantidadPedido(consecutivo) {
@@ -1193,6 +1225,7 @@ function buscarPedidos() {
             productosPedidos.push({
                 consecutivo: consecutivoPedidos,
                 id_producto: producto.id_producto,
+                nombre: producto.producto.codigo+' - '+producto.producto.nombre,
                 cantidad: parseFloat(producto.cantidad),
                 costo: parseFloat(producto.costo),
                 subtotal: parseFloat(producto.subtotal),
@@ -1210,7 +1243,10 @@ function buscarPedidos() {
                         <input id="cantidad_producto_${consecutivoPedidos}" class="button-cantidad-producto" type="text" value="${parseInt(producto.cantidad)}" onfocus="this.select();" onkeypress="changeCantidadPedido(${consecutivoPedidos}, event)">
                     <div id="agregar_producto_${consecutivoPedidos}" class="agregar" onclick="sumarCantidadPedido(${consecutivoPedidos})"><i class="fas fa-plus"></i></div>
                 </div>
-                <div id="eliminar_producto_${consecutivoPedidos}" class="col-2 eliminar" onclick="eliminarProductoPedido(${consecutivoPedidos})"><i class="fas fa-trash-alt"></i></div>
+                <div class="col-2 row">
+                    <div id="editar_producto_${consecutivoPedidos}" class="col-12 editar" onclick="editarProductoPedido(${consecutivoPedidos})"><i class="fas fa-edit"></i></div>
+                    <div id="eliminar_producto_${consecutivoPedidos}" class="col-12 eliminar" onclick="eliminarProductoPedido(${consecutivoPedidos})"><i class="fas fa-trash-alt"></i></div>
+                </div>
                 `;
 
             if (pedido.id_venta) {
@@ -1259,45 +1295,6 @@ function buscarPedidos() {
         $("#consecutivo_bodegas_pedidos").prop('disabled', false);
     });
 }
-
-$(document).on('click', '#crearCapturaVentaPedidos', function () {
-
-    $('#id_cliente_pedido').removeClass("is-invalid");
-    $('#id_bodega_pedido').removeClass("is-invalid");
-    $('#consecutivo_bodegas_pedidos').removeClass("is-invalid");
-
-    let isValit = true;
-    const id_bodega = $("#id_bodega_pedido").val();
-    const consecutivo = $("#consecutivo_bodegas_pedidos").val();
-    const id_cliente = $("#id_cliente_pedido").val();
-
-    if (!id_cliente) {
-        isValit = false;
-        $('#id_cliente_pedido').addClass("is-invalid");
-    }
-
-    if (!id_bodega) {
-        isValit = false;
-        $('#id_bodega_pedido').addClass("is-invalid");
-    }
-
-    if (!consecutivo) {
-        isValit = false;
-        $('#consecutivo_bodegas_pedidos').addClass("is-invalid");
-    }
-
-    if (!isValit) {
-        return;
-    }
-
-    clearFormPedidosVenta();
-    loadAnticiposClientePedido();
-
-    fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    $('#fecha_manual_pedido').val(fecha);
-
-    $("#pedidosFormModal").modal('show');
-});
 
 function guardarPedido() {
     let = isValit = true;
@@ -1392,7 +1389,6 @@ function guardarPedido() {
             agregarToast('error', 'Creación errada', errorsMsg);
         }
     }).fail((err) => {
-        console.log('err: ',err);
 
         if (err.statusText == "abort") return;
 
@@ -1405,6 +1401,165 @@ function guardarPedido() {
         agregarToast('error', 'Creación errada', errorsMsg);
     });
 }
+
+function cantidadPedidoEditkeyDown(event) {
+    if(event.keyCode == 13){
+        calcularPedidoProductoEdit();
+    }
+}
+
+function precioPedidoEditkeyDown(event) {
+    if(event.keyCode == 13){
+        calcularPedidoProductoEdit();
+    }
+}
+
+function descuentoPorcentajePedidoEditkeyDown(event) {
+    if(event.keyCode == 13){
+        calcularPedidoProductoEdit();
+    }
+}
+
+function descuentoPedidoEditkeyDown(event) {
+    if(event.keyCode == 13){
+        const descuentoProductoValor = parseFloat($('#producto_edit_descuento').val());
+        const costoProducto = parseFloat($("#producto_edit_precio").val());
+        const cantidadProducto = parseFloat($("#producto_edit_cantidad").val());
+        const porcentajeDescuento = descuentoProductoValor * 100 / (costoProducto * cantidadProducto);
+
+        $("#producto_edit_porcentaje_descuento").val(porcentajeDescuento);
+        setTimeout(function(){
+            calcularPedidoProductoEdit();
+        },10);
+    }
+}
+
+function descuentoPedidoEditFocusOut() {
+    const descuentoProductoValor = parseFloat($('#producto_edit_descuento').val());
+    const costoProducto = parseFloat($("#producto_edit_precio").val());
+    const cantidadProducto = parseFloat($("#producto_edit_cantidad").val());
+    const porcentajeDescuento = descuentoProductoValor * 100 / (costoProducto * cantidadProducto);
+
+    $("#producto_edit_porcentaje_descuento").val(porcentajeDescuento);
+    setTimeout(function(){
+        calcularPedidoProductoEdit();
+    },10);
+}
+
+function calcularPedidoProductoEdit () {
+    const consecutivo = parseInt($("#id_producto_edit").val());
+    
+    let index = productosPedidos.findIndex(producto => producto.consecutivo === consecutivo);
+
+    if (index === -1) {
+        return;
+    }
+
+    const costoProducto = parseFloat($("#producto_edit_precio").val());
+    const cantidadProducto = parseFloat($("#producto_edit_cantidad").val());
+    const descuentoProducto = parseFloat($('#producto_edit_porcentaje_descuento').val());
+    const ivaProducto = parseFloat(productosPedidos[index].iva_porcentaje);
+
+    var totalPorCantidad = 0;
+    var totalIva = 0;
+    var totalDescuento = 0;
+    var totalProducto = 0;
+    
+    if (cantidadProducto > 0) totalPorCantidad = cantidadProducto * costoProducto;
+
+    if (descuentoProducto > 0) totalDescuento = totalPorCantidad * (descuentoProducto / 100);
+    else totalDescuento = 0;
+
+    totalProducto = totalPorCantidad - totalDescuento;
+
+    if (ivaProducto > 0) {
+        totalIva = (totalPorCantidad - totalDescuento) * ivaProducto / 100;
+        if (ivaIncluidoPedido) {
+            totalIva = (totalPorCantidad - totalDescuento) - ((totalPorCantidad - totalDescuento) / (1 + (ivaProducto / 100)));
+        }
+    }
+
+    totalIva = parseFloat(totalIva).toFixed(2);
+
+    if (!ivaIncluidoPedido) {
+        totalProducto+= totalIva;
+    }
+
+    totalProducto = parseFloat(totalProducto).toFixed(2);
+
+    $("#producto_edit_iva").val(totalIva);
+    $("#producto_edit_descuento").val(totalDescuento);
+    $("#producto_edit_total").html(`Total: ${new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalProducto)}`);
+}
+
+$(document).on('click', '#crearCapturaVentaPedidos', function () {
+
+    $('#id_cliente_pedido').removeClass("is-invalid");
+    $('#id_bodega_pedido').removeClass("is-invalid");
+    $('#consecutivo_bodegas_pedidos').removeClass("is-invalid");
+
+    let isValit = true;
+    const id_bodega = $("#id_bodega_pedido").val();
+    const consecutivo = $("#consecutivo_bodegas_pedidos").val();
+    const id_cliente = $("#id_cliente_pedido").val();
+
+    if (!id_cliente) {
+        isValit = false;
+        $('#id_cliente_pedido').addClass("is-invalid");
+    }
+
+    if (!id_bodega) {
+        isValit = false;
+        $('#id_bodega_pedido').addClass("is-invalid");
+    }
+
+    if (!consecutivo) {
+        isValit = false;
+        $('#consecutivo_bodegas_pedidos').addClass("is-invalid");
+    }
+
+    if (!isValit) {
+        return;
+    }
+
+    clearFormPedidosVenta();
+    loadAnticiposClientePedido();
+
+    fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    $('#fecha_manual_pedido').val(fecha);
+
+    $("#pedidosFormModal").modal('show');
+});
+
+$(document).on('click', '#guardarEditProducto', function () {
+    
+    const consecutivo = parseInt($("#id_producto_edit").val());
+    
+    let index = productosPedidos.findIndex(producto => producto.consecutivo === consecutivo);
+
+    if (index === -1) {
+        return;
+    }
+
+    const costoProducto = parseFloat($("#producto_edit_precio").val());
+    const cantidadProducto = parseFloat($("#producto_edit_cantidad").val());
+    const descuentoProductoPorcentaje = parseFloat($('#producto_edit_porcentaje_descuento').val());
+    const descuentoProducto = parseFloat($('#producto_edit_descuento').val());
+    const ivaProducto = parseFloat($('#producto_edit_iva').val());
+    const observacionProducto = parseFloat($('#producto_edit_observacion').val());
+    
+    productosPedidos[index].costo = costoProducto;
+    productosPedidos[index].iva_valor = ivaProducto;
+    productosPedidos[index].cantidad = cantidadProducto;
+    productosPedidos[index].concepto = observacionProducto;
+    productosPedidos[index].descuento_valor = descuentoProducto;
+    productosPedidos[index].descuento_porcentaje = descuentoProductoPorcentaje;
+    
+    calcularCantidadPedido(consecutivo);
+    mostrarValoresPedidos();
+
+    document.getElementById('producto_close_edit').click();
+});
 
 $(document).on('click', '#savePedidos', function () {
     validateSavePedido();

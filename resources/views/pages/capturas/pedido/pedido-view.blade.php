@@ -310,6 +310,24 @@
         background-color: red;
     }
 
+    .list-group-pedidos .list-group-item .editar{
+        place-self: center;
+        text-align: center;
+    }
+
+    .list-group-pedidos .list-group-item .editar i{
+        color: green;
+        font-size: 15px;
+        padding: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .list-group-pedidos .list-group-item .editar i:hover{
+        color: white;
+        background-color: green;
+    }
+
     .cliente-pedidos .select2-container--bootstrap-5 {
         height: 30px;
     }
@@ -494,6 +512,7 @@
 
 </div>
 
+@include('pages.capturas.pedido.pedido-edit')
 @include('pages.capturas.pedido.pedido-venta')
 
 <script>
