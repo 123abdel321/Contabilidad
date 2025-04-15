@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 //HELPERS
 use App\Helpers\Documento;
-use App\Helpers\Printers\VentasPdf;
+use App\Helpers\Printers\PedidosPdf;
 use App\Helpers\FacturaElectronica\VentaElectronicaSender;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
 //TRAITS
@@ -258,7 +258,6 @@ class PedidoController extends Controller
 
     public function venta (Request $request)
     {
-
         $rules = [
             'id_cliente' => 'required|exists:sam.nits,id',
             'id_bodega' => 'required|exists:sam.fac_bodegas,id',
@@ -743,6 +742,24 @@ class PedidoController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
+    }
+
+    public function showPdf(Request $request, $id)
+    {
+        $pedido = FacPedidos::whereId($id)->first();
+
+        if(!$pedido) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'El pedido no existe'
+            ], 422);
+        }
+
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+        $data = (new PedidosPdf($empresa, $pedido))->buildPdf()->getData();
+        return view('pdf.facturacion.pedidos-pos', $data);
     }
 
     private function createFacturaVenta ($request)

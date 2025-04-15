@@ -38,6 +38,11 @@ class FacPedidos extends Model
         return $this->belongsTo(FacBodegas::class, 'id_bodega');
 	}
 
+    public function ubicacion()
+    {
+        return $this->belongsTo(Ubicacion::class, 'id_ubicacion');
+	}
+
     public function centro_costo()
     {
         return $this->belongsTo(CentroCostos::class, 'id_centro_costos');

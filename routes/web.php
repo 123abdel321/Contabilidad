@@ -148,6 +148,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/ventas-print-informez', [VentaController::class, 'showPdfZ']);
 		//PEDIDOS
 		Route::get('/pedido', [PedidoController::class, 'index'])->name('pedido');
+		Route::get('/pedido-print/{id}', [PedidoController::class, 'showPdf'])->name('pedido-pdf');
 		//PARQUEADEROS
 		Route::get('/parqueadero', [ParqueaderoController::class, 'index'])->name('parqueadero');
 		Route::get('/parqueadero-print/{id}', [ParqueaderoController::class, 'showPdf'])->name('parqueadero');

@@ -1492,6 +1492,22 @@ function calcularPedidoProductoEdit () {
     $("#producto_edit_total").html(`Total: ${new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalProducto)}`);
 }
 
+function changeCantidadPedido(consecutivo, event) {
+    if(event.keyCode != 13) return;
+
+    let index = productosPedidos.findIndex(producto => producto.consecutivo === consecutivo);
+
+    if (index === -1) {
+        return;
+    }
+
+    const cantidadProducto = parseInt($("#cantidad_producto_"+consecutivo).val());
+    productosPedidos[index].cantidad = cantidadProducto;
+    calcularCantidadPedido(consecutivo);
+    mostrarValoresPedidos();
+    guardarPedido();
+} 
+
 $(document).on('click', '#crearCapturaVentaPedidos', function () {
 
     $('#id_cliente_pedido').removeClass("is-invalid");
@@ -1546,7 +1562,7 @@ $(document).on('click', '#guardarEditProducto', function () {
     const descuentoProductoPorcentaje = parseFloat($('#producto_edit_porcentaje_descuento').val());
     const descuentoProducto = parseFloat($('#producto_edit_descuento').val());
     const ivaProducto = parseFloat($('#producto_edit_iva').val());
-    const observacionProducto = parseFloat($('#producto_edit_observacion').val());
+    const observacionProducto = $('#producto_edit_observacion').val();
     
     productosPedidos[index].costo = costoProducto;
     productosPedidos[index].iva_valor = ivaProducto;
@@ -1557,6 +1573,7 @@ $(document).on('click', '#guardarEditProducto', function () {
     
     calcularCantidadPedido(consecutivo);
     mostrarValoresPedidos();
+    guardarPedido();
 
     document.getElementById('producto_close_edit').click();
 });
@@ -1571,8 +1588,6 @@ $(document).on('click', '.limpiar-filtros-pedidos', function () {
 });
 
 $(document).on('click', '#eliminarPedidos', function () {
-
-    
     Swal.fire({
         title: '¿Borrar pedido?',
         text: "No se podrá revertir!",
@@ -1658,21 +1673,9 @@ $(document).on('click', '.ubicaciones-datos', function () {
     buscarPedidos();
 });
 
-function changeCantidadPedido(consecutivo, event) {
-    if(event.keyCode != 13) return;
-
-    let index = productosPedidos.findIndex(producto => producto.consecutivo === consecutivo);
-
-    if (index === -1) {
-        return;
-    }
-
-    const cantidadProducto = parseInt($("#cantidad_producto_"+consecutivo).val());
-    productosPedidos[index].cantidad = cantidadProducto;
-    calcularCantidadPedido(consecutivo);
-    mostrarValoresPedidos();
-    guardarPedido();
-} 
+$(document).on('click', '#imprimirPedidos', function () {
+    window.open("/pedido-print/"+pedidoEditando, '_blank');
+});
 
 contenedorPedidos.on("scroll", function () {
 
