@@ -98,6 +98,14 @@ class PagosController extends Controller
                 }
             }
 
+            if (!$idNit && !$pagoEdit) {
+                return response()->json([
+                    'success'=>	true,
+                    'data' => [],
+                    'message'=> 'Recibo generado con exito!'
+                ], Response::HTTP_OK);
+            }
+
             $extractos = (new Extracto(
                 $idNit,
                 [4,8],

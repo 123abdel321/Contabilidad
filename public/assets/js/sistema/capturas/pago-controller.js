@@ -587,7 +587,7 @@ function mostrarValoresPagos() {
         $('#crearCapturaPagoDisabled').show();
     }
 
-    if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP))) {
+    if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP)) && $('#id_nit_pago').val()) {
         $('#crearCapturaPago').show();
         $('#crearCapturaPagoDisabled').hide();
     } else {

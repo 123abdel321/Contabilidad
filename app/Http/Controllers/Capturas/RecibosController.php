@@ -97,6 +97,14 @@ class RecibosController extends Controller
                     $fechaManual = $reciboEdit['fecha_manual'];
                 }
             }
+
+            if (!$idNit && !$reciboEdit) {
+                return response()->json([
+                    'success'=>	true,
+                    'data' => [],
+                    'message'=> 'Recibo generado con exito!'
+                ], Response::HTTP_OK);
+            }
             
             $extractos = (new Extracto(
                 $idNit,
@@ -272,25 +280,6 @@ class RecibosController extends Controller
 
     public function create (Request $request)
     {
-        $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
-
-        $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual') : Carbon::now();
-
-        if(!$comprobanteRecibo) {
-
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-
-        } else if (!$request->get('id_recibo')){
-
-            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
-            $request->request->add([
-                'consecutivo' => $consecutivo
-            ]);
-        }
 
         $rules = [
             'id_nit' => 'required|exists:sam.nits,id',
@@ -313,6 +302,18 @@ class RecibosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+
+        $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual') : Carbon::now();
+
+        if(!$comprobanteRecibo) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -350,6 +351,9 @@ class RecibosController extends Controller
                 $recibo->pagos()->delete();
                 $recibo->delete();
             }
+        } else {
+            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
+            $request->request->add(['consecutivo' => $consecutivo]);
         }
 
         $empresa = Empresa::where('id', request()->user()->id_empresa)->first();

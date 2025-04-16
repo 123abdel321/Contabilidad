@@ -588,7 +588,7 @@ function mostrarValoresRecibos() {
         $('#crearCapturaReciboDisabled').show();
     }
 
-    if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP))) {
+    if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP)) && $('#id_nit_recibo').val()) {
         $('#crearCapturaRecibo').show();
         $('#crearCapturaReciboDisabled').hide();
     } else {
