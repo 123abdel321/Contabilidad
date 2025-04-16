@@ -67,8 +67,7 @@
 
     </head>
 
-    <body>
-    <!-- <body onload="window.print()"> -->
+    <body onload="window.print()">
         <table class="width-100">
             <thead class="center-item">
                 <tr>

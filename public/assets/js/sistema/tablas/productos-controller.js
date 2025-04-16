@@ -206,6 +206,7 @@ function productosInit() {
                 id_familia: dataProducto.familia.id,
                 precio: stringToNumberFloat(dataProducto.precio),
                 tipo_tiempo: dataProducto.tipo_tiempo,
+                tipo_vehiculo: dataProducto.tipo_vehiculo,
                 fraccion_hora: dataProducto.fraccion_hora,
                 tipo_producto: dataProducto.tipo_producto,
                 precio_minimo: stringToNumberFloat(dataProducto.precio_minimo),
@@ -291,6 +292,7 @@ function productosInit() {
             else if (dataProducto.tipo_producto == 3) {
                 document.getElementById('tipo_producto_parqueadero').click();
                 $("#div-tipo-tiempo").show();
+                $("#div-tipo-vehiculo").show();
                 $("#div-fraccion_hora").show();
             }
 
@@ -346,6 +348,7 @@ function productosInit() {
             else $('#fraccion_hora').prop('checked', false);
 
             $("#tipo_tiempo_producto").val(nuevoProducto.tipo_tiempo).change();
+            $("#tipo_vehiculo_producto").val(nuevoProducto.tipo_vehiculo).change();
 
             $('.dtfh-floatingparent').hide();
         });
@@ -811,6 +814,7 @@ $(document).on('click', '#saveNewProducto', function () {
     
     nuevoProducto.variantes = getVariantesActivas();
     nuevoProducto.tipo_tiempo = $("#tipo_tiempo_producto").val();
+    nuevoProducto.tipo_vehiculo = $("#tipo_vehiculo_producto").val();
     nuevoProducto.fraccion_hora = $("input[type='checkbox']#fraccion_hora").is(':checked') ? '1' : '';
     nuevoProducto.id_familia = parseInt($('#id_familia_producto').val());
 
@@ -864,7 +868,10 @@ $(document).on('click', '#saveEditProducto', function () {
     $('#saveNewProductoLoading').show();
 
     nuevoProducto.id = parseInt($('#id_producto_edit').val());
+    nuevoProducto.tipo_tiempo = $("#tipo_tiempo_producto").val();
+    nuevoProducto.tipo_vehiculo = $("#tipo_vehiculo_producto").val();
     nuevoProducto.id_familia = parseInt($('#id_familia_producto').val());
+    nuevoProducto.fraccion_hora = $("input[type='checkbox']#fraccion_hora").is(':checked') ? '1' : '';
     
     $.ajax({
         url: base_url + 'producto',
@@ -1003,6 +1010,7 @@ function setCrearProducto() {
     $('#producto-inventario').hide();
     $('#producto-variantes').hide();
     $("#div-tipo-tiempo").hide();
+    $("#div-tipo-vehiculo").hide();
     document.getElementById("producto_variantes1").checked = true;
 }
 
@@ -1013,6 +1021,7 @@ function setCrearServicio() {
     $('#producto-inventario').hide();
     $('#producto-variantes').hide();
     $("#div-tipo-tiempo").hide();
+    $("#div-tipo-vehiculo").hide();
 }
 
 function setCrearCombo() {
@@ -1022,6 +1031,7 @@ function setCrearCombo() {
     $('#producto-inventario').hide();
     $('#producto-variantes').hide();
     $("#div-tipo-tiempo").hide();
+    $("#div-tipo-vehiculo").hide();
 }
 
 function setCrearParqueadero() {
@@ -1034,6 +1044,7 @@ function setCrearParqueadero() {
     $('#div-valor_utilidad').hide();
     $('#div-precio_minimo').hide();
     $("#div-tipo-tiempo").show();
+    $("#div-tipo-vehiculo").show();
     $("#div-fraccion_hora").show();
 }
 

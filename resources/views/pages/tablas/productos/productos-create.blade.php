@@ -82,6 +82,15 @@
                         </select>
                     </div>
 
+                    <div id="div-tipo-vehiculo" class="form-group col-6 col-sm-6 col-md-6">
+                        <label for="tipo_vehiculo_producto">Tipo vehiculo</label>
+                        <select name="tipo_vehiculo_producto" id="tipo_vehiculo_producto" class="form-control form-control-sm" required>
+                            <option value="1">CARRO</option>
+                            <option value="2">MOTO</option>
+                            <option value="3">OTROS</option>
+                        </select>
+                    </div>
+
                     <div id="div-precio_inicial" class="form-group col-6 col-sm-6 col-md-6" >
                         <label for="example-text-input" class="form-control-label">Costo compra</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="precio_inicial" id="precio_inicial" onfocus="this.select();" onfocusout="addPrecioInicialProducto()" onkeypress="changeCostoCompra(event)" value="0" required>

@@ -30,6 +30,9 @@
     var primeraBodegaParqueadero = @json($bodegas);
     var ivaIncluidoParqueadero = @json($iva_incluido);
     var primeraResolucionParqueadero = @json($resolucion);
+    var primerCarro = @json($primer_producto_carro);
+    var primerMoto = @json($primer_producto_moto);
+    var primerOtro = @json($primer_producto_otro);
     var editarParqueadero = @json(auth()->user()->can('parqueadero update'));
     var eliminarParqueadero = @json(auth()->user()->can('parqueadero delete'));
 </script>

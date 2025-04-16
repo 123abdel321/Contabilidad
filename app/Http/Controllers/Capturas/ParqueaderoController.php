@@ -99,7 +99,10 @@ class ParqueaderoController extends Controller
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
             'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get(),
             'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : '',
-            'vendedores_pedidos' => $vendedorVentas ? $vendedorVentas->valor : ''
+            'vendedores_pedidos' => $vendedorVentas ? $vendedorVentas->valor : '',
+            'primer_producto_carro' => FacProductos::orderBy('id', 'ASC')->where('tipo_producto', 3)->where('tipo_vehiculo', 1)->first(),
+            'primer_producto_moto' => FacProductos::orderBy('id', 'ASC')->where('tipo_producto', 3)->where('tipo_vehiculo', 2)->first(),
+            'primer_producto_otro' => FacProductos::orderBy('id', 'ASC')->where('tipo_producto', 3)->where('tipo_vehiculo', 3)->first()
         ];
 
         return view('pages.capturas.parqueadero.parqueadero-view', $data);

@@ -181,6 +181,7 @@ class ProductosController extends Controller
                 'id_padre' => null,
                 'tipo_producto' => $request->get('tipo_producto'),
                 'tipo_tiempo' => $request->get('tipo_tiempo'),
+                'tipo_vehiculo' => $request->get('tipo_vehiculo'),
                 'fraccion_hora' => $request->get('tipo_tiempo') == '1' ? $request->get('fraccion_hora') : 0,
                 'codigo' => trim($request->get('codigo')),
                 'nombre' => trim($request->get('nombre')),
@@ -359,6 +360,7 @@ class ProductosController extends Controller
             $producto->id_familia = $request->get('id_familia');
             $producto->tipo_producto = $request->get('tipo_producto');
             $producto->tipo_tiempo = $request->get('tipo_tiempo');
+            $producto->tipo_vehiculo = $request->get('tipo_vehiculo');
             $producto->fraccion_hora = $request->get('tipo_tiempo') == '1' ? $request->get('fraccion_hora') : 0;
             $producto->codigo = trim($request->get('codigo'));
             $producto->nombre = trim($request->get('nombre'));

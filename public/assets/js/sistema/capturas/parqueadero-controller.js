@@ -304,6 +304,16 @@ function clearFormParqueadero(){
         $comboClienteParqueadero.append(newOption).trigger('change');
         $comboClienteParqueadero.val(dataCliente.id).trigger('change');
     }
+
+    if (primerCarro) {
+        var dataProducto = {
+            id: primerCarro.id,
+            text: primerCarro.codigo + ' - ' + primerCarro.nombre
+        };
+        var newOption = new Option(dataProducto.text, dataProducto.id, false, false);
+        $comboProductoParqueadero.append(newOption).trigger('change');
+        $comboProductoParqueadero.val(dataProducto.id).trigger('change');
+    }
 }
 
 function disabledFormasPagoParqueadero(estado = true) {
@@ -502,6 +512,40 @@ function cargarChangesParqueadero() {
 
     $("#tipo_vehiculo_parqueadero_filter").on('change', function(event) {
         parqueadero_table.ajax.reload();
+    });
+
+    $("#tipo_vehiculo_parqueadero").on('change', function(event) {
+        const tipoVehiculo = parseInt($("#tipo_vehiculo_parqueadero").val());
+        if (tipoVehiculo == 1 && primerCarro) {
+            var dataProducto = {
+                id: primerCarro.id,
+                text: primerCarro.codigo + ' - ' + primerCarro.nombre
+            };
+            var newOption = new Option(dataProducto.text, dataProducto.id, false, false);
+            $comboProductoParqueadero.append(newOption).trigger('change');
+            $comboProductoParqueadero.val(dataProducto.id).trigger('change');
+            return;
+        }
+        if (tipoVehiculo == 2 && primerMoto) {
+            var dataProducto = {
+                id: primerMoto.id,
+                text: primerMoto.codigo + ' - ' + primerMoto.nombre
+            };
+            var newOption = new Option(dataProducto.text, dataProducto.id, false, false);
+            $comboProductoParqueadero.append(newOption).trigger('change');
+            $comboProductoParqueadero.val(dataProducto.id).trigger('change');
+            return;
+        }
+        if (tipoVehiculo == 3 && primerOtro) {
+            var dataProducto = {
+                id: primerOtro.id,
+                text: primerOtro.codigo + ' - ' + primerOtro.nombre
+            };
+            var newOption = new Option(dataProducto.text, dataProducto.id, false, false);
+            $comboProductoParqueadero.append(newOption).trigger('change');
+            $comboProductoParqueadero.val(dataProducto.id).trigger('change');
+            return;
+        }
     });
 }
 
