@@ -356,8 +356,10 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             ->when(isset($this->request['id_usuario']) ? $this->request['id_usuario'] : false, function ($query) {
                 $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
             })
-            ->when(isset($this->request['anulado']) ? $this->request['anulado'] : false, function ($query) {
-                $query->where('DG.anulado', $this->request['anulado']);
+            ->when(true, function ($query) {
+                if ($this->request['anulado'] != null) {
+                    $query->where('DG.anulado', $this->request['anulado']);
+                }
             });
     }
 
