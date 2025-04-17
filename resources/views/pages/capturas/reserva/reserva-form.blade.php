@@ -2,8 +2,10 @@
     <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable" style="contain: content;" role="document">
         <div  class="modal-content" style="margin-top: 10px;" enctype="multipart/form-data">
             <div class="modal-header">
+
                 <h5 class="modal-title" id="textReservaCreate" style="display: block;">Reservas</h5>
-                <!-- <h5 class="modal-title" id="textReservaUpdate" style="display: none;">Editar Reserva</h5> -->
+                <h5 class="modal-title" id="textReservaUpdate" style="display: none;">Ver / Editar Reserva</h5>
+
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -58,6 +60,7 @@
                     Cancelar
                 </span>
                 <button id="saveReserva" href="javascript:void(0)" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button id="updateReserva" href="javascript:void(0)" class="btn bg-gradient-success btn-sm">Actualizar</button>
                 <button id="saveReservaLoading" class="btn btn-success btn-sm ms-auto" style="display:none;" disabled>
                     Cargando
                     <i class="fas fa-spinner fa-spin"></i>

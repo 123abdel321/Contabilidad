@@ -93,7 +93,7 @@ class ReservaController extends Controller
         $id_nit = $request->id_nit == 'null' ? null : $request->id_nit;
         $id_ubicacion = $request->id_ubicacion == 'null' ? null : $request->id_ubicacion;
 
-        $reserva = Reserva::with('ubicacion')
+        $reserva = Reserva::with('ubicacion', 'nit')
             ->where(function($query) use ($start, $end) {
                 $query->whereBetween('fecha_inicio', [$start, $end])
                     ->orWhereBetween('fecha_fin', [$start, $end])
@@ -127,6 +127,8 @@ class ReservaController extends Controller
                 'backgroundColor' => $color,
                 'borderColor' => $color,
                 'id' => $reserva->id,
+                'ubicacion' => $reserva->ubicacion,
+                'nit' => $reserva->nit,
                 'title' => $reserva->ubicacion->codigo .' - '. $reserva->ubicacion->nombre,
                 'start' => $horaInicio == "00:00:00" ? $fechaInicio : $fechaInicio.' '.$horaInicio,
                 'end' => $horaFin == "00:00:00" ? $fechaFin : $fechaFin.' '.$horaFin,
@@ -225,8 +227,11 @@ class ReservaController extends Controller
 
             Reserva::where('id', $request->get('id'))
                 ->update([
+                    'id_nit' => $request->get('id_nit'),
+                    'id_ubicacion' => $request->get('id_ubicacion'),
                     'fecha_inicio' => $fechaInicio,
                     'fecha_fin' => $fechaFin,
+                    'observacion' => $request->get('observacion'),
                     'updated_by' => request()->user()->id
                 ]);
 

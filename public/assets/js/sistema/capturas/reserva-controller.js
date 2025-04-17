@@ -359,7 +359,7 @@ function initCalendarReserva() {
             seleccionarRangoDeReservas(info);
         },
         eventClick: function(info) {
-            mostrarModalEvento(info.event.id);
+            mostrarModalEvento(info);
         },
         height: 'auto',
         contentHeight: 'auto',
@@ -431,6 +431,12 @@ function clearFormReserva () {
 
     $("#id_nit_reserva").val('').change();
     $("#id_ubicacion_reserva").val('').change();
+
+    $("#saveReserva").show();
+    $("#updateReserva").hide();
+
+    $("#textReservaCreate").show();
+    $("#textReservaUpdate").hide();
 
     $("#observacion_reserva").val(null);
 
@@ -548,22 +554,66 @@ function reloadReserva() {
 }
 
 function seleccionarRangoDeReservas(info) {
+    
     clearFormReserva();
 
     var [fechaInicio, horaInicio] = armarFechaReserva(info.start);
     var [fechaFin, horaFin] = armarFechaReserva(info.end);
 
-    $('#fecha_inicio_turno').val(fechaInicio);
-    $('#fecha_fin_turno').val(fechaFin);
+    $('#fecha_inicio_reserva').val(fechaInicio);
+    $('#fecha_fin_reserva').val(fechaFin);
 
-    $('#hora_inicio_turno').val(horaInicio);
-    $('#hora_fin_turno').val(horaFin);
+    $('#hora_inicio_reserva').val(horaInicio);
+    $('#hora_fin_reserva').val(horaFin);
 
     $("#reservaFormModal").modal('show');
 }
 
-function mostrarModalEvento() {
-    console.log('mostrarModalEvento');
+function mostrarModalEvento(info) {
+
+    info = info.event;
+    clearFormReserva();
+    
+    var [fechaInicio, horaInicio] = armarFechaReserva(info.start);
+    var [fechaFin, horaFin] = armarFechaReserva(info.end);
+
+    $('#id_reserva_up').val(info.id);
+    $('#fecha_inicio_reserva').val(fechaInicio);
+    $('#fecha_fin_reserva').val(fechaFin);
+
+    $('#hora_inicio_reserva').val(horaInicio);
+    $('#hora_fin_reserva').val(horaFin);
+
+    if(info.extendedProps && info.extendedProps.ubicacion){
+        const ubicacion = info.extendedProps.ubicacion;
+        var dataUbicacion = {
+            id: ubicacion.id,
+            text: ubicacion.nombre
+        };
+        var newOption = new Option(dataUbicacion.text, dataUbicacion.id, false, false);
+        $comboUbicacionReserva.append(newOption).trigger('change');
+        $comboUbicacionReserva.val(dataUbicacion.id).trigger('change');
+    }
+
+    if(info.extendedProps && info.extendedProps.nit){
+        const nit = info.extendedProps.nit;
+        console.log('nit: ',nit);
+        var dataNit = {
+            id: nit.id,
+            text: nit.numero_documento+' - '+nit.nombre_completo
+        };
+        var newOption = new Option(dataNit.text, dataNit.id, false, false);
+        $comboNitReserva.append(newOption).trigger('change');
+        $comboNitReserva.val(dataNit.id).trigger('change');
+    }
+
+    $("#saveReserva").hide();
+    $("#updateReserva").show();
+    $("#textReservaCreate").hide();
+    $("#textReservaUpdate").show();
+    $("#textReservaUpdate").html(`Ver / Editar Reserva #${info.id}`);
+
+    $("#reservaFormModal").modal('show');
 }
 
 $(document).on('click', '#createReserva', function () {
@@ -608,7 +658,7 @@ $(document).on('click', '#saveReserva', function () {
             $("#saveReservaLoading").hide();
             $("#reservaFormModal").modal('hide');
             
-            // reloadTurnos();
+            reloadReservas();
             agregarToast('exito', 'Creación exitosa', 'Reserva creado con exito!', true);
         }
     }).fail((err) => {
@@ -629,6 +679,76 @@ $(document).on('click', '#saveReserva', function () {
         agregarToast('error', 'Creación errada', errorsMsg);
     });
 });
+
+$(document).on('click', '#updateReserva', function () {
+    var form = document.querySelector('#form-reserva');
+
+    if(!form.checkValidity()){
+        form.classList.add('was-validated');
+        return;
+    }
+
+    let data = {
+        id: $("#id_reserva_up").val(),
+        id_nit: $("#id_nit_reserva").val(),
+        id_ubicacion: $("#id_ubicacion_reserva").val(),
+        fecha_inicio: $("#fecha_inicio_reserva").val(),
+        fecha_fin: $("#fecha_fin_reserva").val(),
+        hora_inicio: $("#hora_inicio_reserva").val(),
+        hora_fin: $("#hora_fin_reserva").val(),
+        observacion: $("#observacion_reserva").val(),
+    }
+
+    $("#updateReserva").hide();
+    $("#saveReservaLoading").show();
+
+    $.ajax({
+        url: base_url + 'reserva',
+        method: 'PUT',
+        data: JSON.stringify(data),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            $("#updateReserva").show();
+            $("#saveReservaLoading").hide();
+            $("#reservaFormModal").modal('hide');
+            
+            reloadReservas();
+            agregarToast('exito', 'Actualización exitosa', 'Reserva creado con exito!', true);
+        }
+    }).fail((err) => {
+        $('#updateReserva').show();
+        $('#saveReservaLoading').hide();
+        var errorsMsg = "";
+        var mensaje = err.responseJSON.message;
+        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += "- "+errores[campo]+" <br>";
+                }
+            };
+        } else {
+            errorsMsg = mensaje
+        }
+        agregarToast('error', 'Actualización errada', errorsMsg);
+    });
+});
+
+function reloadReservas() {
+    $("#reloadReservasIconNormal").hide();
+    $("#reloadReservasIconLoading").show();
+
+    setTimeout(function(){
+        $("#reloadReservasIconNormal").show();
+        $("#reloadReservasIconLoading").hide();
+    },500);
+
+    calendarioReservas.removeAllEvents();
+    calendarioReservas.refetchEvents();
+    reserva_table.ajax.reload();
+}
 
 $(document).on('click', '#detalleReserva', function () {
     reserva_table.ajax.reload();
