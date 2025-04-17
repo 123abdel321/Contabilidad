@@ -314,7 +314,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(DocumentoGeneralController::class)->group(function () {
             Route::get('consecutivo', 'getConsecutivo');
             Route::get('documentos', 'generate');
-            Route::put('documentos', 'anular');
+            Route::post('documentos-anular', 'anular');
             Route::post('documentos', 'create');
             Route::post('bulk-documentos', 'bulkDocumentos');
             Route::post('generar-documentos', 'generarDocumentos');

@@ -67,18 +67,18 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-6 col-sm-3 col-md-3">
+                        <!-- <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="example-text-input" class="form-control-label">Usuario</label>
                             <select name="id_usuario_documentos_generales" id="id_usuario_documentos_generales" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
-                        </div>
+                        </div> -->
 
                         <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="example-text-input" class="form-control-label">Concepto</label>
                             <input name="concepto_documentos_generales" id="concepto_documentos_generales" class="form-control form-control-sm" type="text">
                         </div>
                         
-                        <div class="form-group form-group col-12 col-sm-4 col-md-4">
+                        <div class="form-group form-group col-12 col-sm-3 col-md-3">
                             <label for="exampleFormControlSelect1">Agrupar por:</label>
                             <select class="form-control form-control-sm" id="agrupar_documentos_generales" name="agrupar_documentos_generales[]" multiple="multiple">
                                 <option value="id_cuenta">Cuenta</option>
@@ -89,7 +89,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-6 col-sm-2 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                        <div class="form-group col-6 col-sm-3 col-md-2 row" style="margin-bottom: 0.1rem !important;">
                             <label for="example-text-input" class="form-control-label">Agrupado</label>
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                 <input class="form-check-input" type="radio" name="agrupado_documentos_generales" id="agrupado_documentos_generales0" style="font-size: 11px;" checked>
@@ -101,6 +101,22 @@
                                 <input class="form-check-input" type="radio" name="agrupado_documentos_generales" id="agrupado_documentos_generales1" style="font-size: 11px;">
                                 <label class="form-check-label" for="agrupado_documentos_generales1" style="font-size: 11px;">
                                     Niveles
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-6 col-sm-3 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                            <label for="example-text-input" class="form-control-label">Documento</label>
+                            <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="anulado_documentos_generales" id="anulado_documentos_generales0" style="font-size: 11px;" checked>
+                                <label class="form-check-label" for="anulado_documentos_generales0" style="font-size: 11px;">
+                                    Normal
+                                </label>
+                            </div>
+                            <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="anulado_documentos_generales" id="anulado_documentos_generales1" style="font-size: 11px;">
+                                <label class="form-check-label" for="anulado_documentos_generales1" style="font-size: 11px;">
+                                    Anulado
                                 </label>
                             </div>
                         </div>

@@ -74,7 +74,12 @@ function documentosgeneralesInit() {
                 if (row.nivel == 99) return 'TOTALES'
                 if (row.id_cuenta) return row.cuenta;
                 if (row.nivel == 1 && agrupadoPorDocumento) {
-                    return '<span id="imprimirdocumentogeneral_'+row.id+'" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-documentogeneral" style="margin-bottom: 0rem !important; color: black; background-color: white !important;">Imprimir</span>';
+                    var html = ``;
+                    if (row.anulado == 1) return '';
+                    html+= `<span id="imprimirdocumentogeneral_${row.id}" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-documentogeneral" style="margin-bottom: 0rem !important; color: black; background-color: white !important;">Imprimir</span>&nbsp;`;
+                    html+= `<span id="anulardocumentogeneral_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger anular-documentogeneral" style="margin-bottom: 0rem !important;">Anular</span>`;
+
+                    return html;
                 }
                 return '';
             }},
@@ -139,7 +144,10 @@ function documentosgeneralesInit() {
             }},
             {"data": function (row, type, set){
                 if (row.nivel == 1 && agrupadoPorDocumento) {
-                    return '<span id="imprimirdocumentogeneral_'+row.id+'" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-documentogeneral" style="margin-bottom: 0rem !important; color: black; background-color: white !important;">Imprimir</span>';
+                    html+= `<span id="imprimirdocumentogeneral_${row.id}" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-documentogeneral" style="margin-bottom: 0rem !important; color: black; background-color: white !important;">Imprimir</span>&nbsp;`;
+                    html+= `<span id="anulardocumentogeneral_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger anular-documentogeneral" style="margin-bottom: 0rem !important;">Anular</span>`;
+
+                    return html;
                 }
                 var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
                 if(!row.updated_by && !row.fecha_edicion) return '';
@@ -284,7 +292,6 @@ function documentosgeneralesInit() {
 var channel = pusher.subscribe('informe-documentos-generales-'+localStorage.getItem("notificacion_code"));
 
 channel.bind('notificaciones', function(data) {
-    console.log('notificaciones', data);
     if (data.id_documento_general) {
         $('#id_documento_general_cargado').val(data.id_documento_general);
     }
@@ -320,11 +327,73 @@ function getNivelAgrupado() {
     return false;
 }
 
+function getDocumentoAnulado() {
+    if($("input[type='radio']#anulado_documentos_generales0").is(':checked')) return 0;
+    if($("input[type='radio']#anulado_documentos_generales1").is(':checked')) return 1;
+
+    return false;
+}
+
 $(document).on('click', '.imprimir-documentogeneral', function () {
     var id = this.id.split('_')[1];
     var data = getDataById(id, documentos_generales_table);
     
     window.open(`/documentos-generales-print/${data.id_comprobante}/${data.consecutivo}/${data.fecha_manual}`, "_blank");
+});
+
+$(document).on('click', '.anular-documentogeneral', function () {
+    var id = this.id.split('_')[1];
+    var data = getDataById(id, documentos_generales_table);
+
+    Swal.fire({
+        title: "Anular documento",
+        text: "Agregar concepto",
+        input: "text",
+        inputAttributes: {
+            autocapitalize: "off"
+        },
+        showCancelButton: true,
+        confirmButtonText: "Anular",
+        showLoaderOnConfirm: true,
+        preConfirm: async (concepto) => {
+            if (!concepto) {
+                agregarToast('warning', 'Error al anular documento', 'El concepto anulación es requerido');
+            }
+            $.ajax({
+                url: base_url + 'documentos-anular',
+                method: 'POST',
+                data: JSON.stringify({
+                    id_comprobante: data.id_comprobante,
+                    consecutivo: data.consecutivo,
+                    fecha_manual: data.fecha_manual,
+                    concepto: concepto
+                }),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                agregarToast('exito', 'Documento anulado', 'El documento se ha sido anulado exitosamente!');
+            }).fail((err) => {
+                var errorsMsg = "";
+                var mensaje = err.responseJSON.message;
+                if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+                    for (field in mensaje) {
+                        var errores = mensaje[field];
+                        for (campo in errores) {
+                            errorsMsg += "- "+errores[campo]+" <br>";
+                        }
+                    };
+                } else {
+                    errorsMsg = mensaje
+                }
+                agregarToast('error', 'Creación errada', errorsMsg);
+            });
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+        if (result.isConfirmed) {
+            
+        }
+    });
 });
 
 $(document).on('click', '#generarDocumentosGenerales', function () {
@@ -367,6 +436,7 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
     url+= '&id_usuario='+ id_usuario;
     url+= '&agrupar='+agruparDocumentosText;
     url+= '&agrupado='+getNivelAgrupado();
+    url+= '&anulado='+getDocumentoAnulado();
     url+= '&generar='+generarDocumentosGenerales;
 
     if (agruparDocumentosText == 'consecutivo') agrupadoPorDocumento = true;
@@ -374,7 +444,6 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
     
     documentos_generales_table.ajax.url(url).load(function(res) {
         if(res.success) {
-            console.log(res);
             $("#descargarExcelDocumento").show();
             $("#descargarExcelDocumentoDisabled").hide();
             agregarToast('info', 'Generando documentos generales', 'En un momento se le notificará cuando el informe esté generado...', true );

@@ -21,6 +21,7 @@ class Extracto
         $this->id_cuenta = $id_cuenta;
         $this->id_tipo_cuenta = $id_tipo_cuenta;
         $this->documento_referencia = $documento_referencia;
+        $this->fecha_dias = $fecha ?: Carbon::now();
         $this->fecha = $fecha;
         $this->consecutivo = $consecutivo;
     }
@@ -176,6 +177,95 @@ class Extracto
 				$query->where('fecha_manual', $fecha);
 			})
 			->groupBy("documento_referencia", "id_cuenta", "id_nit");
+	}
+
+    public function completo()
+	{
+		$where = '';
+		$whereFecha = '';
+		$whereTipoCuenta = '';
+		$having = '';
+
+		if ($this->id_tipo_cuenta) {
+			$whereTipoCuenta = "where cuentas.id_tipo_cuenta = {$this->id_tipo_cuenta} ";
+		}
+
+		if ($this->id_cuenta) {
+			$idCuentas = implode(', ', $this->id_cuenta);
+			$where = "id_cuenta in ($idCuentas) and ";
+		}
+
+		if ($this->fecha) {
+			$whereFecha = ($this->id_tipo_cuenta ? " and " : "where ") . "fecha_manual <= '{$this->fecha}'";
+		}
+
+		if ($this->documento_referencia) {
+			$where .= "documento_referencia = '{$this->documento_referencia}' and";
+		} else {
+			$having = "having IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) > 0";
+		}
+
+        $query = "
+            SELECT
+                id_documento AS id,
+                extracto.fecha_manual,
+                extracto.id_nit,
+                extracto.id_cuenta,
+                extracto.id_comprobante,
+                extracto.id_centro_costos,
+                extracto.documento_referencia,
+                extracto.credito,
+                extracto.debito,
+                extracto.concepto,
+                cuentas.naturaleza_cuenta,
+                IF(naturaleza_cuenta = 0, SUM(extracto.credito), SUM(extracto.debito)) as total_abono,
+                IF(
+                    naturaleza_cuenta = 0,
+                    SUM(extracto.debito - extracto.credito),
+                    SUM(extracto.credito - extracto.debito)
+                ) as saldo,
+                DATEDIFF('".$this->fecha_dias."', extracto.fecha_manual) AS dias_cumplidos
+            FROM
+                (
+                    SELECT
+                        id AS id_documento,
+                        fecha_manual,
+                        id_nit,
+                        id_cuenta,
+                        id_comprobante,
+                        id_centro_costos,
+                        documento_referencia,
+                        credito,
+                        debito,
+                        concepto
+                    FROM
+                        documentos_generals
+                    WHERE
+                        ".$where."
+                        id_nit = ".$this->id_nit."
+                        AND anulado = 0
+                ) extracto
+                INNER JOIN plan_cuentas cuentas ON extracto.id_cuenta = cuentas.id
+                ".$whereTipoCuenta."
+                ".$whereFecha."
+            GROUP BY
+                extracto.documento_referencia,
+                extracto.id_cuenta,
+                extracto.id_nit,
+                extracto.fecha_manual,
+                extracto.id_comprobante,
+                extracto.id_centro_costos,
+                extracto.credito,
+                extracto.debito,
+                extracto.concepto,
+                cuentas.naturaleza_cuenta,
+                id_documento
+            ".$having."
+        ";
+
+        $extracto = DB::connection('sam')->select($query);
+
+		return collect($extracto);
 	}
 
     public function queryAnticipos()
