@@ -18,7 +18,7 @@
 						<span class="f-fallback">
 							<br />
 							<img width="130"
-								src="https://test.portafolioerp.com/img/logo_contabilidad.png">
+								src="https://app.portafolioerp.com/img/logo_contabilidad.png">
 						</span>
 					</td>
 				</tr>
