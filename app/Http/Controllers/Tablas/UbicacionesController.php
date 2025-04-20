@@ -28,8 +28,6 @@ class UbicacionesController extends Controller
 
     public function index ()
     {
-        
-
         return view('pages.tablas.ubicaciones.ubicaciones-view');
     }
 

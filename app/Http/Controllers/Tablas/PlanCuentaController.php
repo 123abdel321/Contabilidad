@@ -34,48 +34,6 @@ class PlanCuentaController extends Controller
     {
         $tipoCuenta = TipoCuenta::get();
 
-        // $cuentasContables = ConPlanCuentas::skip(2400)->take(400)->get();
-        
-        // foreach ($cuentasContables as $cuenta) {
-        //     $idPadre = null;
-
-        //     if ($cuenta->id_padre) {
-        //         $cuentaPadreImport = ConPlanCuentas::where('id', $cuenta->id_padre)->first();
-        //         $cuentaPadre = PlanCuentas::where('cuenta', $cuentaPadreImport->cuenta)->first();
-        //         if ($cuentaPadre) {
-        //             $idPadre = $cuentaPadre->id;
-        //         }
-        //     }
-
-        //     $planCuenta = PlanCuentas::create([
-        //         'id_padre' => $idPadre,
-        //         'id_impuesto' => $cuenta->id_impuesto,
-        //         'cuenta' => $cuenta->cuenta,
-        //         'nombre' => $cuenta->nombre,
-        //         'pasarela' => $cuenta->pasarela, // Check si es una cuenta usada para sacar el extracto de pasarela
-        //         'auxiliar' => $cuenta->auxiliar,
-        //         'exige_nit' => $cuenta->exige_nit,
-        //         'exige_documento_referencia' => $cuenta->exige_documento_referencia,
-        //         'exige_concepto' => $cuenta->exige_concepto,
-        //         'exige_centro_costos' => $cuenta->exige_centro_costos,
-        //         'naturaleza_cuenta' => $cuenta->naturaleza_cuenta,
-        //         'naturaleza_ingresos' => null,
-        //         'naturaleza_egresos' => null,
-        //         'naturaleza_compras' => null,
-        //         'naturaleza_ventas' => null,
-        //         'cuenta_corriente' => $cuenta->cuenta_corriente,
-        //     ]);
-
-        //     if ($cuenta->id_tipo_cuenta) {
-        //         PlanCuentasTipo::create([
-        //             'id_cuenta' => $planCuenta->id,
-        //             'id_tipo_cuenta' => $cuenta->id_tipo_cuenta
-        //         ]);
-        //     }
-        // }
-
-        // dd('migrados!');
-
         $data = [
             'tipoCuenta' => $tipoCuenta,
         ];

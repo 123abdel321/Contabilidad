@@ -23,6 +23,7 @@ use App\Http\Controllers\Informes\DocumentosGeneralesController;
 use App\Http\Controllers\Informes\ResumenComprobantesController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
+use App\Http\Controllers\Tablas\ExogenaController;
 use App\Http\Controllers\Tablas\BodegasController;
 use App\Http\Controllers\Tablas\FamiliasController;
 use App\Http\Controllers\Tablas\ProductosController;
@@ -171,6 +172,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/nit', [NitController::class, 'index'])->name('nit');
 		//PLAN CUENTAS
 		Route::get('/plancuenta', [PlanCuentaController::class, 'index'])->name('plan-cuenta');
+		//EXOGENA
+		Route::get('/exogena', [ExogenaController::class, 'index'])->name('exogena');
 		//COMPROBANTES
 		Route::get('/comprobante', [ComprobantesController::class, 'index'])->name('comprobante');
 		//COMPROBANTES
