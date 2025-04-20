@@ -628,6 +628,11 @@
     <script src="assets/js/sistema/sweetalert2.all.min.js"></script>
 
     <script>
+
+        const host = window.location.host;
+
+        let base_url, base_web;
+
         if (host.includes("app.portafolioerp.com")) {
             base_url = "https://app.portafolioerp.com/api/";
             base_web = "https://app.portafolioerp.com/";
