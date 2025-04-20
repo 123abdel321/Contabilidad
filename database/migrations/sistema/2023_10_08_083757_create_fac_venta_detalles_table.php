@@ -30,6 +30,7 @@ return new class extends Migration
             $table->decimal('iva_porcentaje', 5)->default(0);
             $table->decimal('iva_valor', 15)->default(0);
             $table->decimal('total', 15)->default(0);
+            $table->string('observacion', 200)->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

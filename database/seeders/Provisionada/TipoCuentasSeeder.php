@@ -70,6 +70,10 @@ class TipoCuentasSeeder extends Seeder
                 'id' => 16,
                 'nombre' => 'IVA en ventas',
             ],
+            [
+                'id' => 17,
+                'nombre' => 'Reteica',
+            ],
         ]);
     }
 }

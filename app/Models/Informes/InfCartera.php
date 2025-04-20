@@ -21,6 +21,7 @@ class InfCartera extends Model
         'id_nit',
         'fecha_hasta',
         'fecha_desde',
+        'agrupar_cartera',
         'detallar_cartera',
         'nivel',
         'tipo_informe',

@@ -22,6 +22,7 @@ class CreateNitsTable extends Migration
             $table->integer('id_actividad_econo')->nullable()->index();
             $table->integer('id_banco')->nullable()->index();
             $table->longText('id_responsabilidades')->nullable();
+            $table->longText('id_actividad_economica')->nullable();
             $table->longText('id_vendedor')->nullable();
             $table->string('logo_nit', 255)->nullable();
             $table->string('numero_documento', 30)->unique();
@@ -46,9 +47,11 @@ class CreateNitsTable extends Migration
             $table->decimal('cupo', 15)->nullable();
             $table->decimal('descuento', 15)->nullable();
             $table->decimal('porcentaje_aiu', 15)->nullable();
+            $table->decimal('porcentaje_reteica', 15)->nullable();
             $table->boolean('no_calcular_iva')->default(false);
             $table->boolean('inactivar')->nullable();
             $table->boolean('declarante')->nullable();
+            $table->boolean('sumar_aiu')->nullable();
             $table->longText('observaciones')->nullable();
             $table->string('email_1', 250)->nullable();
             $table->string('email_2', 250)->nullable();

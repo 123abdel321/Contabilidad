@@ -168,7 +168,7 @@ var channelResumenComprobante = pusher.subscribe('informe-resumen-comprobantes-'
 
 channelResumenComprobante.bind('notificaciones', function(data) {
     if(data.url_file){
-        // loadExcel(data);
+        loadExcel(data);
         return;
     }
     if(data.id_resumen_comprobante){
@@ -182,6 +182,9 @@ function loadResumenComprobanteById(id_resumen_comprobante) {
     resumen_comprobante_table.ajax.url(base_url + 'resumen-comprobante-show?id='+id_resumen_comprobante).load(function(res) {
         if(res.success){
             agregarToast('exito', 'Resumen de comprobantes cargado', res.mensaje, true);
+
+            $("#descargarExcelResumenComprobantes").show();
+            $("#descargarExcelResumenComprobantesDisabled").hide();
 
             var agrupado = $('#agrupar_comprobantes').val();
             var tabla = resumen_comprobante_table;
@@ -243,6 +246,38 @@ function loadResumenComprobanteById(id_resumen_comprobante) {
         }
     });
 }
+
+$(document).on('click', '#descargarExcelResumenComprobantes', function () {
+    $.ajax({
+        url: base_url + 'resumen-comprobante-excel',
+        method: 'POST',
+        data: JSON.stringify({id: $('#id_resumen_comprobante').val()}),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            if(res.url_file){
+                window.open('https://'+res.url_file, "_blank");
+                return; 
+            }
+            agregarToast('info', 'Generando excel', res.message, true);
+        }
+    }).fail((err) => {
+        var errorsMsg = "";
+        var mensaje = err.responseJSON.message;
+        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += "- "+errores[campo]+" <br>";
+                }
+            };
+        } else {
+            errorsMsg = mensaje
+        }
+        agregarToast('error', 'Error al generar excel', errorsMsg);
+    });
+});
 
 $(document).on('click', '#generarResumenComprobantes', function () {
     $('#generarResumenComprobantes').hide();

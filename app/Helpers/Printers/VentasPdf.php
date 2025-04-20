@@ -3,10 +3,12 @@
 namespace App\Helpers\Printers;
 
 use Illuminate\Support\Carbon;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\PlanCuentas;
+use App\Models\Sistema\VariablesEntorno;
 
 class VentasPdf extends AbstractPrinterPdf
 {
@@ -47,9 +49,16 @@ class VentasPdf extends AbstractPrinterPdf
 		return '';
 	}
 
+	public function formatPaper()
+	{
+		// if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
+		return 'A4';
+	}
+
     public function data()
     {
         $this->venta->load([
+			'resolucion',
             'cliente',
             'comprobante',
             'detalles',
@@ -78,16 +87,28 @@ class VentasPdf extends AbstractPrinterPdf
 			}
 		}
 
+		$qrCodeBase64 = null;
+
+		if ($this->venta->fe_codigo_qr) {
+			$svg = QrCode::format('svg')->size(300)->generate($this->venta->fe_codigo_qr);
+			$qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($svg);
+		}
+
+		$observacion_general = VariablesEntorno::where('nombre', 'observacion_venta')->first();
+		$observacion_general = $observacion_general ? $observacion_general->valor : NULL;
+
         return [
 			'empresa' => $this->empresa,
 			'cliente' => $this->venta->cliente,
 			'factura' => $this->venta,
+			'qrCode' => $qrCodeBase64,
 			'productos' => $this->venta->detalles,
 			'pagos' => $this->venta->pagos,
 			'impuestosIva' => $impuestosIva,
 			'observacion' => $this->venta->observacion,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user()->username,
+			'observacion_general' => $observacion_general,
 			'total_factura' => number_format($this->venta->total_factura)
 		];
     }

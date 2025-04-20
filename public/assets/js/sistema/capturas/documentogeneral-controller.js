@@ -1,4 +1,3 @@
-var fecha = null;
 var idDocumento = 0;
 var editandoCaptura = 0;
 var rowExtracto = '';
@@ -12,11 +11,11 @@ var documento_extracto = null;
 var $comboComprobante = null;
 var guardarDocumentoGeneral = false;
 
+
 function documentogeneralInit() {
-
-    fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-
-    $('#fecha_manual_documento').val(fecha);
+    var dateNow = new Date;
+    var fechaDocumentoGeneral = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    $('#fecha_manual_documento').val(fechaDocumentoGeneral);
 
     documento_general_table = $('#documentoReferenciaTable').DataTable({
         pageLength: 300,
@@ -1209,6 +1208,14 @@ function searchCaptura() {
                     $("#editing_documento").val("0");
                     addRow();
                 }
+            } else {
+                $("#agregarDocumentos").hide();
+                $("#iniciarCapturaDocumentosLoading").hide();                
+
+                $("#iniciarCapturaDocumentos").show();
+                $("#id_comprobante").prop('disabled', false);
+                $("#consecutivo").prop('disabled', false);
+                agregarToast('warning', 'Comprobante en uso', res.message, false);
             }
         }).fail((res) => {
             $("#iniciarCapturaDocumentosLoading").hide();
@@ -1568,8 +1575,8 @@ function saveDocumentos() {
             setTimeout(function(){
                 $comboComprobante.select2("open");
             },10);
-            if(res.impresion) {
-                window.open("/documentos-print/"+res.impresion, "", "_blank");
+            if(res.impresion && res.id_comprobante) {
+                window.open(`/documentos-generales-print/${res.id_comprobante}/${res.impresion}/${res.fecha_manual}`, "", "_blank");
             }
         } else {
             $("#agregarDocumentos").show();

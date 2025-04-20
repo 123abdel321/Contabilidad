@@ -51,6 +51,8 @@ class ResultadosController extends Controller
         if($request->get('id_cuenta')) {
             $cuenta = PlanCuentas::find($request->get('id_cuenta'));
             $request->request->add(['cuenta' => $cuenta->cuenta]);
+        } else {
+            $request->request->add(['cuenta' => false]);
         }
 
         ProcessInformeResultados::dispatch($request->all(), $request->user()->id, $empresa->id);

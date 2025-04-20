@@ -22,7 +22,7 @@ var focusNextRow = null;
 
 function presupuestoInit() {
     presupuesto_table = $('#presupuestoTable').DataTable({
-        pageLength: 15,
+        pageLength: 30,
         dom: 'Brtip',
         responsive: false,
         processing: false,

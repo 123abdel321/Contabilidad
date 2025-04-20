@@ -31,6 +31,11 @@ class ConGastos extends Model
         'updated_by'
     ];
 
+    public function nit()
+    {
+        return $this->belongsTo(Nits::class, 'id_proveedor');
+	}
+
     public function documentos()
     {
         return $this->morphMany(DocumentosGeneral::class, 'relation');

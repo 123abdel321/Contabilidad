@@ -19,6 +19,7 @@ abstract class AbstractPrinterPdf
     abstract public function data();
     abstract public function name();
     abstract public function paper();
+    abstract public function formatPaper();
 
     public function __construct(Empresa $empresa) {
         $this->empresa = $empresa;
@@ -30,6 +31,7 @@ abstract class AbstractPrinterPdf
         $this->name = $this->name();
         $this->data = $this->data();
         $this->paper = $this->paper();
+        $this->formato = $this->formatPaper();
 
         $this->generatePdf();
 
@@ -40,12 +42,18 @@ abstract class AbstractPrinterPdf
     {
         $this->pdf = app('dompdf.wrapper');
         $this->pdf->loadView($this->view, $this->data);
-        $this->pdf->setPaper('A4', $this->paper);
+        $this->pdf->setPaper($this->formato, $this->paper);
     }
+
+    public function getPdf()
+	{
+		if (!$this->pdf) $this->imprimir();
+
+		return $this->pdf->output();
+	}
 
     public function showPdf()
     {
-        // dd($this->data);
         return $this->pdf->stream($this->name);
     }
 

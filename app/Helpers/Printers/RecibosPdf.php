@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Printers;
 
+use App\Helpers\Extracto;
 use Illuminate\Support\Carbon;
 //MODELS
 use App\Models\Sistema\Nits;
@@ -45,16 +46,25 @@ class RecibosPdf extends AbstractPrinterPdf
 		return '';
 	}
 
+	public function formatPaper()
+	{
+		// if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
+		return 'A4';
+	}
+
     public function data()
     {
         $this->recibo->load([
             'nit',
             'detalles.cuenta',
-			'pagos.forma_pago'
+			'pagos.forma_pago',
+			'documentos'
         ]);
 
-		$getNit = Nits::whereId($this->recibo->id_nit)->with('ciudad')->first();
 		$nit = null;
+		$saldo = 0;
+		$saldoAnterior = 0;
+		$getNit = Nits::whereId($this->recibo->id_nit)->with('ciudad')->first();
 
 		if($getNit){ 
 			$nit = (object)[
@@ -64,16 +74,45 @@ class RecibosPdf extends AbstractPrinterPdf
 				'direccion' => $getNit->direccion,
 				'tipo_documento' => $getNit->tipo_documento->nombre,
 				'numero_documento' => $getNit->numero_documento,
-				"ciudad" => $getNit->ciudad ? $getNit->ciudad->nombre_completo : '',
+				'ciudad' => $getNit->ciudad ? $getNit->ciudad->nombre_completo : '',
+				'apartamentos' => $getNit->apartamentos ? $getNit->apartamentos : ''
 			];
 		}
 		
+		$extractos = (new Extracto(
+			$getNit->id,
+			3
+		))->actual()->get();
+
+		$fechaAnterior = Carbon::parse($this->recibo->fecha_manual); 
+
+		$extractoAnterior = (new Extracto(
+			$getNit->id,
+			3,
+			null,
+			$fechaAnterior
+		))->actual()->get();
+
+		if (count($extractos)) {
+			foreach ($extractos as $extracto) {
+				$saldo+= floatval($extracto->saldo);
+			}
+		}
+
+		if (count($extractoAnterior)) {
+			foreach ($extractoAnterior as $extracto) {
+				$saldoAnterior+= floatval($extracto->saldo);
+			}
+		}
+
         return [
 			'empresa' => $this->empresa,
 			'nit' => $nit,
 			'recibo' => $this->recibo,
 			'detalles' => $this->recibo->detalles,
 			'pagos' => $this->recibo->pagos,
+			'saldo' => $saldo,
+			'saldoAnterior' => $saldoAnterior + $this->recibo->total_abono,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user() ? request()->user()->username : 'MaximoPH'
 		];

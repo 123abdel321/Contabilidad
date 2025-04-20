@@ -135,7 +135,9 @@ class PresupuestoController extends Controller
                 $cuentasPresupuesto[$planCuenta->cuenta] = $this->generarEstructura($planCuenta, $presupuesto->id);
                 if ($planCuenta->id_padre) {
                     $padre = $planCuenta->padre;
-                    $cuentasPresupuesto[$padre->cuenta] = $this->generarEstructura($padre, $presupuesto->id);
+                    if ($padre) {
+                        $cuentasPresupuesto[$padre->cuenta] = $this->generarEstructura($padre, $presupuesto->id);
+                    }
                 }
             }
 

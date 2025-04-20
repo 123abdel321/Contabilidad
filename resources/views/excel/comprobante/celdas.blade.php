@@ -1,0 +1,13 @@
+<!-- A --><td style="{{ $style }}">{{ $documento->cuenta }}</td>
+<!-- B --><td style="{{ $style }}">{{ $documento->nombre_cuenta }}</td>
+<!-- C --><td style="{{ $style }}">{{ $documento->numero_documento }}</td>
+<!-- D --><td style="{{ $style }}">{{ $documento->nombre_nit ? $documento->nombre_nit : $documento->razon_social }}</td>
+<!-- D --><td style="{{ $style }}">{{ $documento->apartamento_nit }}</td>
+<!-- E --><td style="{{ $style }}">{{ $documento->consecutivo }}</td>
+<!-- F --><td style="{{ $style }}">{{ $documento->fecha_manual }}</td>
+<!-- G --><td style="{{ $style }}">{{ $documento->debito }}</td>
+<!-- H --><td style="{{ $style }}">{{ $documento->credito }}</td>
+<!-- I --><td style="{{ $style }}">{{ $documento->diferencia }}</td>
+<!-- J --><td style="{{ $style }}">{{ $documento->credito }}</td>
+<!-- K --><td style="{{ $style }}">{{ $documento->concepto }}</td>
+<!-- L --><td style="{{ $style }}">{{ $documento->registros }}</td>

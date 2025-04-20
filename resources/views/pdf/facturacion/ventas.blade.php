@@ -10,7 +10,7 @@
 			body {
 				margin: 0;
 				font-family: "Lato", sans-serif;
-				line-height: 16px;
+				line-height: 15px;
 				font-size: 10px;
 				width: 100%;
 				text-transform: uppercase;
@@ -29,7 +29,7 @@
 
 
 			.spacer {
-				height: 30px;
+				height: 10px;
 			}
 
 			.valor {
@@ -42,7 +42,7 @@
 			}
 
 			.table-detail {
-				font-size: 12px;
+				font-size: 10px;
 				width: 100%;
 				border-collapse: collapse;
 				height: 100%;
@@ -61,13 +61,13 @@
 				page-break-inside: avoid
 			}
 
-			.padding5 {
+			/* .padding5 {
 				padding: 5px;
 			}
 
 			.padding3 {
 				padding: 2px;
-			}
+			} */
 
 			.logo {
 				width: 25%;
@@ -111,7 +111,7 @@
 			}
 
 			.footer {
-				position: fixed;
+				position: absolute;
 				bottom: 35px;
 				line-height: 15px;
 				font-size: 8px;
@@ -130,6 +130,14 @@
 				vertical-align: top;
 			}
 
+			.break-word {
+				word-break: break-all;
+			}
+
+			.no-transform {
+				text-transform: none;
+			}
+
 		</style>
 
 	</head>
@@ -138,9 +146,6 @@
 
 		<table >
 			<thead>
-				<tr>
-					<td class="spacer padding5"></td>
-				</tr>
 				<tr>
 					<td colspan="7 padding5">
 						<table>
@@ -159,13 +164,17 @@
 									@if ($empresa->telefono)
 										<span>TEL: {{ $empresa->telefono }}</span><br>
 									@endif
+									@if ($factura->fe_codigo_identificador && $factura->resolucion)
+										<span>Validación DIAN: {{ $factura->fecha_validacion }}</span><br>
+										<span>Vencimiento: {{ $factura->fecha_vencimiento }}</span><br>
+									@endif
 								</td>
 								
 								<td class="logo padding5">
 									@if ($empresa->logo)
-										<img style="height:70px;" src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}">
+										<img style="height:90px;" src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}">
 									@else
-										<img style="height:70px;" src="img/logo_contabilidad.png" />
+										<img style="height:90px;" src="img/logo_contabilidad.png" />
 									@endif
 								</td>
 							</tr>
@@ -255,7 +264,7 @@
 			<tbody class="detalle-factura">
 				@foreach ($productos as $producto)
 					<tr>
-						<td class="padding5 detalle-factura-descripcion">{{ $producto->descripcion }}</td>
+						<td class="padding5 detalle-factura-descripcion">{{ $producto->descripcion }} {{ $producto->observacion }}</td>
 						<td class="padding5 valor">{{ number_format($producto->cantidad) }}</td>
 						<td class="padding5 valor">{{ number_format($producto->costo) }}</td>
 						<td class="padding5 valor">{{ number_format($producto->subtotal) }}</td>
@@ -353,16 +362,89 @@
 			</thead>
 		</table>
 
-		
-				
-		<script type="text/php">
-			if ( isset($pdf) ) {
-				$pdf->page_script('
-					$font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
-					$pdf->text(300, 800, "$PAGE_NUM / $PAGE_COUNT", $font, 8);
-				');
-			}
-		</script>
+		@if ($observacion)
+		<table>
+			<thead class="">
+				<tr>
+					<p><b>Observación general: </b>{{ $observacion }}</p>
+				</tr>
+			</thead>
+		</table>
+		@endif
+
+		@if ($qrCode)
+		<table>
+			<thead class="">
+				<tr>
+					<td class="spacer padding5"></td>
+				</tr>
+				<tr>
+					<td colspan="8 padding5">
+						<table>
+							<tr>
+								<td class="aling-top padding5">
+									<table class="width-100">
+										<thead>
+											<tr>
+												
+												<td class="aling-top padding5">
+													<table>
+														<tbody>
+															<tr>
+																<td>
+																	<img src="{{ $qrCode }}" alt="QR Code" style="width: 150px; height: 150px;">
+																</td>
+																<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+																<td>
+																	<p>
+																		<b>Resolución: </b> <br>
+																		AUTORIZACION {{ $factura->resolucion->numero_resolucion }} DE {{ $factura->resolucion->fecha }} DE
+																		{{ $factura->resolucion->prefijo }}{{ $factura->resolucion->consecutivo_desde }} HASTA {{ $factura->resolucion->prefijo }}{{ $factura->resolucion->consecutivo_hasta }} VIGENCIA
+																		{{ $factura->resolucion->vigencia }} MESES
+																	</p>
+																	@if ($factura->fe_codigo_identificador)
+																	<p>
+																		<b>Cufe: </b> <br>
+																		<span class="no-transform break-word">
+																			{{ $factura->fe_codigo_identificador }}
+																		</span>
+																	</p>
+																	@endif
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</td>
+												<td class="aling-top padding5">
+												</td>
+											</tr>
+										</thead>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</thead>
+		</table>
+		@endif
+
+		@if ($observacion_general)
+		<table>
+			<thead class="">
+				<tr>
+					<td class="spacer padding5"></td>
+				</tr>
+			</thead>
+			<table>
+				<tr>
+					<td class="aling-top padding5">
+						{!! $observacion_general !!}
+					</td>
+				</tr>
+			</table>
+		</table>
+		@endif	
 
 		<table class="footer">
 			<tr>
@@ -389,6 +471,15 @@
 				</td>
 			</tr>
 		</table> 
+
+		<script type="text/php">
+			if ( isset($pdf) ) {
+				$pdf->page_script('
+					$font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+					$pdf->text(300, 800, "$PAGE_NUM / $PAGE_COUNT", $font, 8);
+				');
+			}
+		</script>
 		
 	</body>
 

@@ -11,7 +11,7 @@
 				margin: 0;
 				font-family: "Lato", sans-serif;
 				line-height: 16px;
-				font-size: 10px;
+				font-size: 15px;
 				width: 100%;
 				text-transform: uppercase;
 			}

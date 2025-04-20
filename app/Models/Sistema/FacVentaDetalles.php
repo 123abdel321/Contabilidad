@@ -32,6 +32,7 @@ class FacVentaDetalles extends Model
         'iva_porcentaje',
         'iva_valor',
         'total',
+        'observacion',
         'created_by',
         'updated_by',
     ];

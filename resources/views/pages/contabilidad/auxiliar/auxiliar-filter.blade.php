@@ -64,12 +64,22 @@
                     </span>
                     <!-- BOTON EXCEL -->
                     <span id="descargarExcelAuxiliar" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
-                        <i class="fas fa-file-excel" style="font-size: 17px;"></i>
+                        <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXCEL</b>
                     </span>
                     <span id="descargarExcelAuxiliarDisabled" class="badge bg-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
-                        <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>
+                        <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXCEL</b>
+                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
+                    </span>
+                    <!-- BOTON PDF -->
+                    <span id="descargarPdfAuxiliar" class="btn badge bg-gradient-success btn-bg-pdf" style="min-width: 40px; margin-right: 3px; display:none;">
+                        <i class="fas fa-file-pdf" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">PDF</b>
+                    </span>
+                    <span id="descargarPdfAuxiliarDisabled" class="badge bg-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                        <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">PDF</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                     <!-- BOTON ULTIMO INFORME -->

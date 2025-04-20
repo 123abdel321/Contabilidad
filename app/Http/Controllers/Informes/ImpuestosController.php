@@ -73,7 +73,7 @@ class ImpuestosController extends Controller
         $rowperpage = $request->get("length");
 
         $impuestos = InfImpuestos::where('id', $request->get('id'))->first();
-		$informe = InfImpuestosDetalle::where('id_impuestos', $impuestos->id);
+		$informe = InfImpuestosDetalle::where('id_impuestos', $impuestos->id)->with('nit.actividad_economica');
 		$total = InfImpuestosDetalle::where('id_impuestos', $impuestos->id)->orderBy('id', 'desc')->first();
 
         $informeTotals = $informe->get();

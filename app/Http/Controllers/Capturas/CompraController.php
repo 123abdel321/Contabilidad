@@ -105,7 +105,18 @@ class CompraController extends Controller
                 'consecutivo' => $consecutivo
             ]);
         }
-        
+
+        $existeDocumento = DocumentosGeneral::where('documento_referencia', $request->get('documento_referencia'))
+            ->where('id_comprobante', $request->get('id_comprobante'));
+
+        if ($existeDocumento->count()) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=> ['Documento referencia' => ["El Documento referencia {$request->get('documento_referencia')} ya existe!"]]
+            ], 422);
+        }
+
         $rules = [
             'id_proveedor' => 'required|exists:sam.nits,id',
             'id_bodega' => 'required|exists:sam.fac_bodegas,id',
@@ -382,11 +393,12 @@ class CompraController extends Controller
                 'created_by',
                 'updated_by'
             )
+            ->orderBy('id', 'DESC')
             ->take($rowperpage);
 
-        if($columnName){
-            $compras->orderBy($columnName,$columnSortOrder);
-        }
+        // if($columnName){
+        //     $compras->orderBy($columnName,$columnSortOrder);
+        // }
 
         if ($request->get('id_proveedor')) {
             $compras->where('id_proveedor', $request->get('id_proveedor'));

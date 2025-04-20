@@ -1,3 +1,4 @@
+let searchTimeoutProductos;
 var productos_table = null;
 var productos_varaibles_table = null;
 var tipo_producto = 0;
@@ -31,6 +32,8 @@ var nuevoProducto = {
 
 function productosInit() {
 
+    $('#cantidad_bodega_producto').val(0);
+
     productos_table = $('#productoTable').DataTable({
         pageLength: 20,
         dom: 'Brtip',
@@ -51,6 +54,9 @@ function productosInit() {
             type: "GET",
             headers: headers,
             url: base_url + 'producto',
+            data: function ( d ) {
+                d.search = $("#searchInputProductos").val()
+            }
         },
         columns: [
             // {"data":'id'},
@@ -78,18 +84,24 @@ function productosInit() {
                 if (row.tipo_producto == 2) {
                     return '<span class="badge rounded-pill bg-primary">COMBO</span>';
                 }
+                if (row.tipo_producto == 3) {
+                    return '<span class="badge rounded-pill bg-primary">PARQUEADERO</span>';
+                }
                 return '';
             }},
             {"data": function (row, type, set){  
                 if (row.familia) {
                     return row.familia.nombre
                 }
-                return '';
+                return '<span class="badge rounded-pill bg-danger">SIN FAMILIA!</span>';
             }},
             {"data": function (row, type, set){  
                 var inventarios = row.inventarios;
                 var totalUnidades = 0
-                if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
+                if (!row.id_familia) {
+                    return '<span class="badge rounded-pill bg-danger">SIN FAMILIA!</span>';
+                }
+                if (row.id_familia && row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
                     inventarios.forEach(inventario => {
                         totalUnidades+= parseInt(inventario.cantidad);
                     });
@@ -109,6 +121,9 @@ function productosInit() {
             {"data": "valor_utilidad", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
                 var inventarios = row.inventarios
+                if (!row.id_familia) {
+                    return '<span class="badge rounded-pill bg-danger">SIN FAMILIA!</span>';
+                }
                 if (row.familia.inventario && inventarios.length > 0) {
                     var html = ``;
                     inventarios.forEach(inventario => {
@@ -122,6 +137,9 @@ function productosInit() {
             {"data": function (row, type, set){  
                 var inventarios = row.inventarios;
                 var totalUnidades = 0
+                if (!row.id_familia) {
+                    return '';
+                }
                 if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
                     inventarios.forEach(inventario => {
                         totalUnidades+= parseInt(inventario.cantidad);
@@ -134,6 +152,9 @@ function productosInit() {
             {"data": function (row, type, set){  
                 var inventarios = row.inventarios;
                 var totalUnidades = 0
+                if (!row.id_familia) {
+                    return '';
+                }
                 if (row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
                     inventarios.forEach(inventario => {
                         totalUnidades+= parseInt(inventario.cantidad);
@@ -184,6 +205,9 @@ function productosInit() {
                 codigo: dataProducto.codigo,
                 id_familia: dataProducto.familia.id,
                 precio: stringToNumberFloat(dataProducto.precio),
+                tipo_tiempo: dataProducto.tipo_tiempo,
+                tipo_vehiculo: dataProducto.tipo_vehiculo,
+                fraccion_hora: dataProducto.fraccion_hora,
                 tipo_producto: dataProducto.tipo_producto,
                 precio_minimo: stringToNumberFloat(dataProducto.precio_minimo),
                 precio_inicial: stringToNumberFloat(dataProducto.precio_inicial),
@@ -265,6 +289,12 @@ function productosInit() {
             else if (dataProducto.tipo_producto == 2) {
                 document.getElementById('tipo_producto_combo').click();
             }
+            else if (dataProducto.tipo_producto == 3) {
+                document.getElementById('tipo_producto_parqueadero').click();
+                $("#div-tipo-tiempo").show();
+                $("#div-tipo-vehiculo").show();
+                $("#div-fraccion_hora").show();
+            }
 
             if (dataProducto.variantes.length > 0) {
                 $('#btn-modal-variantes').hide();
@@ -313,6 +343,12 @@ function productosInit() {
                 $('#producto-inventario').show();
                 generarBodegas();
             }
+
+            if (nuevoProducto.fraccion_hora) $('#fraccion_hora').prop('checked', true);
+            else $('#fraccion_hora').prop('checked', false);
+
+            $("#tipo_tiempo_producto").val(nuevoProducto.tipo_tiempo).change();
+            $("#tipo_vehiculo_producto").val(nuevoProducto.tipo_vehiculo).change();
 
             $('.dtfh-floatingparent').hide();
         });
@@ -584,6 +620,13 @@ function productosInit() {
     productos_table.ajax.reload(function(res) {
         showTotalsProductos(res);
     })
+
+    $("#searchInputProductos").on("input", function () {
+        clearTimeout(searchTimeoutProductos);
+        searchTimeoutProductos = setTimeout(function () {
+            productos_table.ajax.reload();
+        }, 300);
+    });
 }
 
 function asignarDatosInventario (dataProducto) {
@@ -735,6 +778,7 @@ $(document).on('click', '#createProducto', function () {
     document.getElementById("id_bodega_producto").disabled = false;
 
     $("#titulo-view").text('Agregar producto');
+    document.getElementById('tipo_producto_producto').click();
 });
 
 $(document).on('click', '#reloadProducto', function () {
@@ -769,6 +813,9 @@ $(document).on('click', '#saveNewProducto', function () {
     $('#saveNewProductoLoading').show();
     
     nuevoProducto.variantes = getVariantesActivas();
+    nuevoProducto.tipo_tiempo = $("#tipo_tiempo_producto").val();
+    nuevoProducto.tipo_vehiculo = $("#tipo_vehiculo_producto").val();
+    nuevoProducto.fraccion_hora = $("input[type='checkbox']#fraccion_hora").is(':checked') ? '1' : '';
     nuevoProducto.id_familia = parseInt($('#id_familia_producto').val());
 
     $.ajax({
@@ -821,7 +868,10 @@ $(document).on('click', '#saveEditProducto', function () {
     $('#saveNewProductoLoading').show();
 
     nuevoProducto.id = parseInt($('#id_producto_edit').val());
+    nuevoProducto.tipo_tiempo = $("#tipo_tiempo_producto").val();
+    nuevoProducto.tipo_vehiculo = $("#tipo_vehiculo_producto").val();
     nuevoProducto.id_familia = parseInt($('#id_familia_producto').val());
+    nuevoProducto.fraccion_hora = $("input[type='checkbox']#fraccion_hora").is(':checked') ? '1' : '';
     
     $.ajax({
         url: base_url + 'producto',
@@ -834,9 +884,12 @@ $(document).on('click', '#saveEditProducto', function () {
             $('#saveEditProducto').show();
             $('#cancelProducto').show();
             $('#saveNewProductoLoading').hide();
+            var currentPage = productos_table.page(); // Guarda la página actual
+
             productos_table.ajax.reload(function(res) {
                 showTotalsProductos(res);
-            });
+                productos_table.page(currentPage).draw(false); // Restaura la página actual
+            }, false);
             agregarToast('exito', 'Actualización exitosa', 'Producto actualizado con exito!', true);
             document.getElementById('cancelProducto').click();
         }
@@ -932,15 +985,22 @@ function clearFormProductos() {
 function changeProducType() {
     var checkProducto = $("input[type='radio']#tipo_producto_producto").is(':checked');
     var checkServicio = $("input[type='radio']#tipo_producto_servicio").is(':checked');
-    var checkCombo = $("input[type='radio']#tipo_producto_combo").is(':checked');
+    var checkParqueadero = $("input[type='radio']#tipo_producto_parqueadero").is(':checked');
+    // var checkCombo = $("input[type='radio']#tipo_producto_combo").is(':checked');
 
     $("#text_tipo_producto").hide();
     $("#text_tipo_servicio").hide();
     $("#text_tipo_combo").hide();
 
+    $('#div-precio_inicial').show();
+    $('#div-porcentaje_utilidad').show();
+    $('#div-valor_utilidad').show();
+    $('#div-precio_minimo').show();
+
     if(checkProducto) setCrearProducto();
     else if (checkServicio) setCrearServicio();
-    else if (checkCombo) setCrearCombo();
+    else if (checkParqueadero) setCrearParqueadero();
+    // else if (checkCombo) setCrearCombo();
 }
 
 function setCrearProducto() {
@@ -949,6 +1009,8 @@ function setCrearProducto() {
     $("#item-maneja-variante").show();
     $('#producto-inventario').hide();
     $('#producto-variantes').hide();
+    $("#div-tipo-tiempo").hide();
+    $("#div-tipo-vehiculo").hide();
     document.getElementById("producto_variantes1").checked = true;
 }
 
@@ -958,6 +1020,8 @@ function setCrearServicio() {
     $("#item-maneja-variante").hide();
     $('#producto-inventario').hide();
     $('#producto-variantes').hide();
+    $("#div-tipo-tiempo").hide();
+    $("#div-tipo-vehiculo").hide();
 }
 
 function setCrearCombo() {
@@ -966,6 +1030,22 @@ function setCrearCombo() {
     $("#item-maneja-variante").hide();
     $('#producto-inventario').hide();
     $('#producto-variantes').hide();
+    $("#div-tipo-tiempo").hide();
+    $("#div-tipo-vehiculo").hide();
+}
+
+function setCrearParqueadero() {
+    nuevoProducto.tipo_producto = 3;
+    $("#item-maneja-variante").hide();
+    $('#producto-inventario').hide();
+    $('#producto-variantes').hide();
+    $('#div-precio_inicial').hide();
+    $('#div-porcentaje_utilidad').hide();
+    $('#div-valor_utilidad').hide();
+    $('#div-precio_minimo').hide();
+    $("#div-tipo-tiempo").show();
+    $("#div-tipo-vehiculo").show();
+    $("#div-fraccion_hora").show();
 }
 
 $('input[type=radio][name=producto_variantes]').change(function() {
@@ -1466,6 +1546,12 @@ $("#id_variante_producto").on('change', function(e) {
     }
 
     crearItemVariable(data[0]);
+});
+
+$("#tipo_tiempo_producto").on('change', function(e) {
+    const tipoTiempo = $("#tipo_tiempo_producto").val();
+    $("#div-fraccion_hora").hide();
+    if (tipoTiempo == 1) $("#div-fraccion_hora").show();
 });
 
 $("#id_bodega_producto_variante").on('change', function(e) {
@@ -2051,11 +2137,6 @@ function readURL(input) {
     }
 }
 
-$("#searchInputProductos").on("input", function (e) {
-    productos_table.context[0].jqXHR.abort();
-    $('#productoTable').DataTable().search($("#searchInputProductos").val()).draw();
-});
-
 $('#productoTable').on('search.dt', function (res, data) {
     if (data.json) {
         var datos = data.json.totalesProductos;
@@ -2137,8 +2218,7 @@ function focusNombreProducto() {
     $('#nombre_producto').select();
 }
 
-$("#id_familia_producto").on('change', function(e) {
-
+$('#id_familia_producto').on('select2:close', function(event) {
     var data = $(this).select2('data');
 
     if (data.length > 0) {
@@ -2151,7 +2231,7 @@ $("#id_familia_producto").on('change', function(e) {
             $('#input-iva-porcentaje').hide();
             $('#input-iva-valor').hide();
         }
-        console.log('familia: ',familia);
+
         if (familia.cuenta_venta_impuestos && familia.cuenta_venta_impuestos.impuesto) {
             $('#input-impuestos-porcentaje').show();
             $('#input-impuestos-valor').show();
@@ -2162,6 +2242,7 @@ $("#id_familia_producto").on('change', function(e) {
             $('#input-impuestos-porcentaje').hide();
             $('#input-impuestos-valor').hide();
         }
+
         nuevoProducto.id_familia = parseInt(familia.id);
         if (familia.inventario) $('#producto-inventario').show();
         else $('#producto-inventario').hide();

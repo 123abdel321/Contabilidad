@@ -21,9 +21,9 @@ class Nits extends Model
 		'id_ciudad',
 		'id_departamento',
 		'id_pais',
-		'id_actividad_econo',
 		'id_banco',
 		'id_responsabilidades',
+		'id_actividad_economica',
 		'id_vendedor',
 		'numero_documento',
 		'digito_verificacion',
@@ -38,6 +38,8 @@ class Nits extends Model
 		'direccion',
 		'apartamentos',
 		'email',
+		'email_1',
+		'email_2',
 		'email_recepcion_factura_electronica',
 		'telefono_1',
 		'telefono_2',
@@ -54,7 +56,9 @@ class Nits extends Model
 		'email_2',
 		'logo_nit',
 		'declarante',
+		'sumar_aiu',
 		'porcentaje_aiu',
+		'porcentaje_reteica',
 		'created_by',
 		'updated_by',
 		'created_at',
@@ -80,8 +84,13 @@ class Nits extends Model
 	public function departamento() {
 		return $this->belongsTo('App\Models\Empresas\Departamentos', 'id_departamento', 'id');
 	}
+	
 	public function pais() {
 		return $this->belongsTo('App\Models\Empresas\Paises', 'id_pais', 'id');
+	}
+
+	public function actividad_economica() {
+		return $this->belongsTo('App\Models\Empresas\ActividadesEconomicas', 'id_actividad_economica', 'id');
 	}
 
 	public function getNombreCompletoAttribute()

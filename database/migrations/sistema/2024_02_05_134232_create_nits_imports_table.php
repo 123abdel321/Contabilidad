@@ -29,6 +29,8 @@ return new class extends Migration
             $table->string('observaciones', 100)->nullable();
             $table->string('email_1', 100)->nullable();
             $table->string('email_2', 100)->nullable();
+            $table->mediumText('observacion')->nullable();
+            $table->integer('estado')->default(0)->comment('0: Con errores; 1: Recibo nuevo;');
             $table->timestamps();
         });
     }

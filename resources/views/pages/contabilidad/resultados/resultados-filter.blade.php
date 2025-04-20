@@ -14,14 +14,18 @@
                     <input name="id_resultado_cargado" id="id_resultado_cargado" class="form-control form-control-sm" type="text" style="display: none;">
                     <div class="row">
 
-                        <div class="form-group col-6 col-sm-4 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Cuenta desde</label>
-                            <input name="cuenta_desde_resultados" id="cuenta_desde_resultados" class="form-control form-control-sm" type="text">
+                        <div class="form-group col-12 col-sm-4 col-md-3">
+                            <label for="exampleFormControlSelect1" style=" width: 100%;">Tipo informe</label>
+                            <select name="tipo_informe_resultado" id="tipo_informe_resultado" class="form-control form-control-sm">
+                                <option value="1">Igresos</option>
+                                <option value="2">Gastos</option>
+                            </select>
                         </div>
 
                         <div class="form-group col-6 col-sm-4 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Cuenta hasta</label>
-                            <input name="cuenta_hasta_resultados" id="cuenta_hasta_resultados" class="form-control form-control-sm" type="text">
+                            <label>Cuenta</label>
+                            <select name="id_cuenta_resultado" id="id_cuenta_resultado" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
+                            </select>
                         </div>
                         
                         <div class="form-group col-6 col-sm-4 col-md-3">

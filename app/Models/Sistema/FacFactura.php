@@ -38,4 +38,11 @@ class FacFactura extends FacVentas
 	{
 		$this->attributes['fe_codigo_identificador'] = $value;
 	}
+
+	public function getFechaValidacionAttribute()
+	{
+		if (!$this->fe_fecha_validacion) return '';
+
+		return date('Y-m-d', strtotime($this->fe_fecha_validacion));
+	}
 }

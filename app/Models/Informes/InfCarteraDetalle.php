@@ -19,6 +19,7 @@ class InfCarteraDetalle extends Model
         "id_cuenta",
         "cuenta",
         "nombre_cuenta",
+        "naturaleza_cuenta",
         "numero_documento",
         "nombre_nit",
         "razon_social",

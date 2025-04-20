@@ -149,9 +149,17 @@
                         <div class="col-12 col-sm-6 col-md-12" style="place-content: center;">
                             <table class="table table-bordered table-captura-totales" width="100%" style="margin-top: 9px;">
                                 <tbody>
+                                    <tr id="gasto_descuento_disp_view" style="display: none;">
+                                        <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">DESCUENTO: </h6></td>
+                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_descuento">0.00</h6></td>
+                                    </tr>
                                     <tr>
                                         <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500; ">SUB TOTAL: </h6></td>
                                         <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_sub_total">0.00</h6></td>
+                                    </tr>
+                                    <tr id="gasto_aiu_disp_view" style="display: none;">
+                                        <td><h6 id="texto_gasto_aiu" style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">AIU: </h6></td>
+                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_aiu">0.00</h6></td>
                                     </tr>
                                     <tr id="gasto_iva_disp_view" style="display: none;">
                                         <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">IVA: </h6></td>
@@ -161,9 +169,9 @@
                                         <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">RETENCIÓN: </h6></td>
                                         <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_retencion">0.00</h6></td>
                                     </tr>
-                                    <tr id="gasto_descuento_disp_view" style="display: none;">
-                                        <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">DESCUENTO: </h6></td>
-                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_descuento">0.00</h6></td>
+                                    <tr id="gasto_reteica_disp_view" style="display: none;">
+                                        <td><h6 id="texto_gasto_reteica" style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">RETEICA: </h6></td>
+                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_reteica">0.00</h6></td>
                                     </tr>
                                     <tr>
                                         <td><h6 style="margin-bottom: 0px; font-weight: bold;">TOTAL: </h6></td>
@@ -202,12 +210,14 @@
     </div>
 
     <script>
-        var gastoIva = '<?php echo auth()->user()->can("gasto iva"); ?>';
-        var gastoAIU = '<?php echo auth()->user()->can("gasto aiu"); ?>';
-        var gastoDescuento = '<?php echo auth()->user()->can("gasto descuento"); ?>';
-        var comprobantesGastos = JSON.parse('<?php echo $comprobantes; ?>');
-        var centrosCostosGastos = JSON.parse('<?php echo $centro_costos; ?>');
-        var porcentajeIvaAIU = JSON.parse('<?php echo $porcentaje_iva_aiu; ?>');
+        var gastoIva = @json(auth()->user()->can("gasto iva"));
+        var gastoAIU = @json(auth()->user()->can("gasto aiu"));
+        var gastoDescuento = @json(auth()->user()->can("gasto descuento"));
+        var gastoUpdate = @json(auth()->user()->can("gasto update"));
+        var comprobantesGastos = @json($comprobantes);
+        var centrosCostosGastos = @json($centro_costos);
+        var porcentajeIvaAIU = @json($porcentaje_iva_aiu);
+        var redondeoGastos = @json($redondeo_gastos);
     </script>
     
 </div>

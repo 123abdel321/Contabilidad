@@ -6,6 +6,9 @@ use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+//TRAITS
+use App\Http\Controllers\Traits\BegConsecutiveTrait;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS
 use App\Models\Sistema\FacBodegas;
 use App\Models\Empresas\UsuarioPermisos;
@@ -13,6 +16,9 @@ use App\Models\Sistema\FacProductosBodegas;
 
 class BodegasController extends Controller
 {
+
+    use BegConsecutiveTrait; 
+    
     protected $messages = null;
 
     public function __construct()
@@ -106,6 +112,8 @@ class BodegasController extends Controller
                 'ubicacion' => $request->get('ubicacion'),
                 'id_centro_costos' => $request->get('id_centro_costos'),
                 'id_cuenta_cartera' => $request->get('id_cuenta_cartera'),
+                'consecutivo' => $request->get('consecutivo'),
+                'consecutivo_parqueadero' => $request->get('consecutivo_parqueadero'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
@@ -168,6 +176,8 @@ class BodegasController extends Controller
                     'ubicacion' => $request->get('ubicacion'),
                     'id_centro_costos' => $request->get('id_centro_costos'),
                     'id_cuenta_cartera' => $request->get('id_cuenta_cartera'),
+                    'consecutivo' => $request->get('consecutivo'),
+                    'consecutivo_parqueadero' => $request->get('consecutivo_parqueadero'),
                     'updated_by' => request()->user()->id,
                 ]);
             
@@ -269,5 +279,33 @@ class BodegasController extends Controller
         ]);
     }
 
+    public function consecutivo(Request $request)
+    {
+        $consecutivo = null;
+        
+		if ($request->get('id_bodega')) {
+			$consecutivo = $this->getNextConsecutiveBodega($request->get('id_bodega'));
+		}
 
+        return response()->json([
+    		'success'=>	true,
+    		'data' => $consecutivo,
+    		'message'=> 'Consecutivo siguiente generado con exito!'
+    	]);
+    }
+
+    public function consecutivoParqueadero(Request $request)
+    {
+        $consecutivo = null;
+        
+		if ($request->get('id_bodega')) {
+			$consecutivo = $this->getNextConsecutiveBodegaParqueadero($request->get('id_bodega'));
+		}
+
+        return response()->json([
+    		'success'=>	true,
+    		'data' => $consecutivo,
+    		'message'=> 'Consecutivo siguiente generado con exito!'
+    	]);
+    }
 }

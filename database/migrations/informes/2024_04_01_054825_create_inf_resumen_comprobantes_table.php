@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer('id_cuenta')->nullable();
             $table->integer('id_nit')->nullable();
             $table->integer('agrupado')->nullable();
+            $table->integer('exporta_excel')->nullable()->comment('1: Exportando, 2: Exportado');
+            $table->string('archivo_excel')->nullable();
             $table->integer('detalle')->default(0)->nullable()->comment('0: No, 1: Si');
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();

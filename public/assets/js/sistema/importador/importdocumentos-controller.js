@@ -135,16 +135,39 @@ btnImportDocumento.addEventListener('click', event => {
         headers: headers,
         dataType: 'json',
     }).done((res) => {
-        $('#cargarPlantillaDocumentos').show();
-        $('#actualizarPlantillaDocumentos').hide();
-        $('#cargarPlantillaDocumentosLoagind').hide();
-        import_documentos_table.ajax.reload(function(res) {
-            if (res.success && res.data.length) {
-                $('#actualizarPlantillaDocumentos').show();
-            }
-        });
-        agregarToast('exito', 'Documentos importadas', 'Documentos importadas con exito!', true);
+        console.log('res: ',res);
+        if (res.success) {
+            $('#cargarPlantillaDocumentos').show();
+            $('#actualizarPlantillaDocumentos').hide();
+            $('#cargarPlantillaDocumentosLoagind').hide();
+            import_documentos_table.ajax.reload(function(res) {
+                if (res.success && res.data.length) {
+                    $('#actualizarPlantillaDocumentos').show();
+                }
+            });
+            agregarToast('exito', 'Documentos importadas', 'Documentos importadas con exito!', true);
+        } else {
+            let mensajeError = '';
+            $('#cargarPlantillaDocumentos').show();
+            $('#actualizarPlantillaDocumentos').show();
+            $('#cargarPlantillaDocumentosLoagind').hide();
+            import_documentos_table.ajax.reload(function(res) {
+                if (res.success && res.data.length) {
+                    $('#actualizarPlantillaDocumentos').show();
+                }
+            });
+            Object.keys(res.message).forEach(key => {
+                // Accede al objeto interno
+                const subObject = res.message[key];
+                Object.keys(subObject).forEach(subKey => {
+                    mensajeError+= `<b>${key}:</b> ${subObject[subKey]} <br/>`;
+                });
+            });
+
+            agregarToast('error', 'Documentos con error', mensajeError, false);
+        }
     }).fail((err) => {
+        var mensaje = err.responseJSON
         $('#cargarPlantillaDocumentos').show();
         $('#actualizarPlantillaDocumentos').show();
         $('#cargarPlantillaDocumentosLoagind').hide();
@@ -153,6 +176,6 @@ btnImportDocumento.addEventListener('click', event => {
                 $('#actualizarPlantillaDocumentos').show();
             }
         });
-        agregarToast('error', 'Importación de documentos errado', '');
+        agregarToast('error', 'Importación de documentos errado', mensaje.data);
     });
 });

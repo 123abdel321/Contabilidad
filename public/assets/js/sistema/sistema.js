@@ -1,13 +1,17 @@
+const host = window.location.host;
 
-//LOCAL
-// const base_url = 'http://localhost:8000/api/';
-// const base_web = 'http://localhost:8000/';
-//DEV
-// const base_url = 'https://test.portafolioerp.com/api/';
-// const base_web = 'https://test.portafolioerp.com/';
-//PRO
-const base_url = 'https://app.portafolioerp.com/api/';
-const base_web = 'https://app.portafolioerp.com/';
+let base_url, base_web;
+
+if (host.includes("app.portafolioerp.com")) {
+    base_url = "https://app.portafolioerp.com/api/";
+    base_web = "https://app.portafolioerp.com/";
+} else if (host.includes("test.portafolioerp.com")) {
+    base_url = "https://test.portafolioerp.com/api/";
+    base_web = "https://test.portafolioerp.com/";
+} else if (host.includes("localhost:8000")) {
+    base_url = 'http://localhost:8000/api/';
+    base_web = 'http://localhost:8000/';
+}
 
 const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
 // Pusher.logToConsole = true;
@@ -15,7 +19,7 @@ const bucketUrl = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/';
 const btnLogout = document.getElementById('sessionLogout');
 const itemMenuActive = localStorage.getItem("item_active_menu");
 
-const dateNow = new Date();
+var dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
 
@@ -38,6 +42,8 @@ let sidenav2 = document.getElementById('sidenav-main-2');
 let buttonMostrarLateral = document.getElementById('button-mostrar-lateral');
 let buttonocultarLateral = document.getElementById('button-ocultar-lateral');
 let iconSidenav = document.getElementById('iconSidenav');
+
+iniciarCanalesDeNotificacion();
 
 var moduloCreado = {
     'nit': false,
@@ -82,6 +88,11 @@ var moduloCreado = {
     'presupuesto': false,
     'impuestos': false,
     'resultados': false,
+    'ubicaciones': false,
+    'pedido': false,
+    'parqueadero': false,
+    'reserva': false,
+    'exogena': false
 };
 
 var moduloRoute = {
@@ -127,6 +138,94 @@ var moduloRoute = {
     'presupuesto': 'tablas',
     'impuestos': 'informes',
     'resultados': 'informes',
+    'ubicaciones': 'tablas',
+    'pedido': 'capturas',
+    'parqueadero': 'capturas',
+    'reserva': 'capturas',
+    'exogena': 'informes',
+}
+
+function iniciarCanalesDeNotificacion () {
+    channelAbdelCastro = pusher.subscribe('canal-general-abdel-castro');
+    channelFe = pusher.subscribe('notificacion-fe-'+localStorage.getItem("notificacion_code"));
+}
+
+$imagenes = [
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_1.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_2.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_3.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_4.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_5.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_6.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_7.jpeg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_8.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_9.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_10.jpg'
+];
+
+var urlImgFondo = $imagenes[getRandomInt($imagenes.length)];
+
+// if (localStorage.getItem("fondo_sistema") != 'null' && localStorage.getItem("fondo_sistema") != '') {
+//     urlImgFondo = bucketUrl + localStorage.getItem("fondo_sistema");
+// }
+setTimeout(function(){
+    $(".fondo-sistema").css('background-image', 'url(' +urlImgFondo+ ')');
+},300);
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+channelAbdelCastro.bind('notificaciones', function(data) {
+    let timerInterval;
+    Swal.fire({
+        title: "Actualizando nueva version!",
+        html: "Se recargará la pagina para aplicar la version: "+version_app,
+        timer: 4000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const timer = Swal.getPopup().querySelector("b");
+            timerInterval = setInterval(() => {
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+        }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+        }
+    });
+    setTimeout(function(){
+        closeSessionProfile();
+    },4000);
+});
+
+channelFe.bind('notificaciones', function(data) {
+    agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
+});
+
+function closeSessionProfile() {
+    $.ajax({
+        url: base_web + 'logout',
+        method: 'POST',
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        localStorage.setItem("token_db_portafolio", '');
+        localStorage.setItem("auth_token", '');
+        localStorage.setItem("auth_token_erp", '');
+        localStorage.setItem("empresa_nombre", '');
+        localStorage.setItem("notificacion_code", '');
+        localStorage.setItem("notificacion_code_general", '');
+        localStorage.setItem("fondo_sistema", '');
+        localStorage.setItem("empresa_logo", '');
+
+        window.location.href = '/login';
+    }).fail((res) => {
+        window.location.href = '/login';
+    });
 }
 
 $('.water').show();
@@ -555,7 +654,7 @@ function agregarToast (tipo, titulo, descripcion, autoCierre = false) {
 
     // Agregar id del toast
     const numeroAlAzar = Math.floor(Math.random() * 100);
-    const fecha = Date.now();
+    var fecha = Date.now();
     const toastId = fecha + numeroAlAzar;
     nuevoToast.id = toastId;
 
@@ -585,7 +684,7 @@ function agregarToast (tipo, titulo, descripcion, autoCierre = false) {
 
     // Plantilla del toast
     var toast = `
-        <div class="contenido">
+        <div class="contenido toast-general">
             <div class="icono">
                 ${iconos[tipo]}
             </div>
@@ -638,7 +737,9 @@ function removejscssfile(filename, filetype){
 }
 
 function loadExcel(data) {
-    window.open('https://'+data.url_file, "_blank");
+    setTimeout(function(){
+        window.open('https://'+data.url_file, "_blank");
+    },100);
     agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
 }
 
@@ -853,4 +954,13 @@ function arreglarMensajeError(mensaje) {
         errorsMsg = mensaje;
     }
     return errorsMsg;
+}
+
+function redondear(valor, redondeo_valor = null) {
+    if (!redondeo_valor && redondeo_valor != 0) return valor;
+    redondeo_valor = parseFloat(redondeo_valor);
+    if (!valor) return valor; //Sin valor a redondear
+    if (redondeo_valor === null) return valor; // No redondear
+    if (redondeo_valor === 0) return Math.floor(valor); // Quitar decimales (redondear hacia abajo)
+    return Math.round(valor / redondeo_valor) * redondeo_valor; // Redondear al múltiplo más cercano
 }

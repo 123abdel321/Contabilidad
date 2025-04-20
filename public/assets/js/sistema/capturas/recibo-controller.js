@@ -1,7 +1,7 @@
-var fecha = null;
 var recibo_table = null;
-var calculandoRow = false;
+var calculandoRowRecibos = false;
 var guardandoRecibo = false;
+var noBuscarDatosRecibo = false;
 var recibo_table_pagos = null;
 var validarFacturaRecibo = null;
 var totalAnticiposRecibo = 0;
@@ -9,8 +9,9 @@ var $comboNitRecibos = null;
 var $comboComprobanteRecibos = null;
 
 function reciboInit () {
-    fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    $('#fecha_manual_recibo').val(fecha);
+    var dateNow = new Date;
+    var fechaRecibo = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    $('#fecha_manual_recibo').val(fechaRecibo);
 
     recibo_table = $('#reciboTable').DataTable({
         dom: '',
@@ -31,6 +32,8 @@ function reciboInit () {
             data: function ( d ) {
                 d.id_nit = $('#id_nit_recibo').val();
                 d.fecha_manual = $('#fecha_manual_recibo').val();
+                d.id_comprobante = $("#id_comprobante_recibo").val();
+                d.consecutivo = $("#documento_referencia_recibo").val();
             }
         },
         columns: [
@@ -38,7 +41,7 @@ function reciboInit () {
             {
                 "data": function (row, type, set, col){
                     if (!row.cuenta_recibo) {
-                        return 'ANTICIPOS: '+row.nombre_cuenta;
+                        return row.nombre_cuenta;
                     }
                     return row.nombre_cuenta;
                 }, className: 'dt-body-left'
@@ -227,31 +230,84 @@ function reciboInit () {
     if (reciboFecha) $('#fecha_manual_recibo').prop('disabled', false);
     else $('#fecha_manual_recibo').prop('disabled', true);
 
+    if (reciboUpdate) $("#documento_referencia_recibo").prop('disabled', false);
+    else $("#documento_referencia_recibo").prop('disabled', true);
+
     loadFormasPagoRecibos();
+}
+
+function buscarFacturaRecibos(event) {
+
+    if(event.keyCode != 13) return;
+
+    document.getElementById('iniciarCapturaRecibo').click();
+}
+
+function agregarRecibos(pagos) {
+    if (pagos.length) {
+        let ultimoPago;
+        pagos.forEach(pago => {
+            ultimoPago = pago.id_forma_pago;
+            $("#recibo_forma_pago_"+pago.id_forma_pago).val(new Intl.NumberFormat("ja-JP").format(pago.valor));
+        });
+        calcularRecibosPagos(ultimoPago);
+    }
 }
 
 $(document).on('change', '#id_comprobante_recibo', function () {
     consecutivoSiguienteRecibo();
 });
 
-$(document).on('click', '#iniciarCapturaRecibo', function () {
+$(document).on('click', '#iniciarCapturaRecibo', function () {    
+
     $('#iniciarCapturaRecibo').hide();
+    $('#cancelarCapturaRecibo').hide();
+    $('#crearCapturaReciboDisabled').hide();
     $('#iniciarCapturaReciboLoading').show();
-    recibo_table.ajax.reload(function () {
+
+    reloadTableRecibos();
+});
+
+function reloadTableRecibos() {
+    recibo_table.ajax.reload(function (res) {
         $('#iniciarCapturaRecibo').show();
-        $('#cancelarCapturaRecibo').show();
+        
         $('#crearCapturaReciboDisabled').show();
         $('#iniciarCapturaReciboLoading').hide();
-        loadAnticiposRecibo();
+
+        let factura = res.edit;
+
+        if (factura) {
+            $('#cancelarCapturaRecibo').show();
+            noBuscarDatosRecibo = true;
+            $("#id_recibo_up").val(factura.id);
+
+            var dataFormato = {
+                id: factura.nit.id,
+                text: factura.nit.numero_documento+' - '+factura.nit.nombre_completo
+            };
+            var newOption = new Option(dataFormato.text, dataFormato.id, false, false);
+            $comboNitRecibos.append(newOption).trigger('change');
+            $comboNitRecibos.val(dataFormato.id).trigger('change');
+
+            $('#fecha_manual_recibo').val(factura.fecha_manual);
+            $('#total_abono_recibo').val(factura.total_abono);
+            agregarRecibos(factura.pagos);
+        }
+
         mostrarValoresRecibos();
-        var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresRecibos();
-        $("#total_abono_recibo").val(new Intl.NumberFormat("ja-JP").format(totalSaldo));
-        setTimeout(function(){
-            $("#total_abono_recibo").focus();
-            $("#total_abono_recibo").select();
-        },80);
+
+        if (!factura) {
+            // loadAnticiposRecibo();
+            // var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresRecibos();
+            // $("#total_abono_recibo").val(new Intl.NumberFormat("ja-JP").format(totalSaldo));
+            // setTimeout(function(){
+            //     $("#total_abono_recibo").focus();
+            //     $("#total_abono_recibo").select();
+            // },80);
+        }
     });
-});
+}
 
 $(document).on('click', '#cancelarCapturaRecibo', function () {
     cancelarRecibo();
@@ -263,8 +319,11 @@ $(document).on('click', '#crearCapturaRecibo', function () {
 
 $(document).on('change', '#id_nit_recibo', function () {
     let data = $('#id_nit_recibo').select2('data')[0];
-    if (data) {
+    if (data && !noBuscarDatosRecibo) {
         document.getElementById('iniciarCapturaRecibo').click();
+    }
+    if (!noBuscarDatosRecibo) {
+        noBuscarDatosRecibo = false;
     }
 });
 
@@ -275,6 +334,7 @@ function saveRecibo() {
     $('#iniciarCapturaReciboLoading').show();
 
     let data = {
+        id_recibo: $("#id_recibo_up").val(),
         pagos: getRecibosPagos(),
         movimiento: getMovimientoRecibo(),
         id_nit: $("#id_nit_recibo").val(),
@@ -297,12 +357,13 @@ function saveRecibo() {
         $('#iniciarCapturaRecibo').show();
         $('#iniciarCapturaReciboLoading').hide();
         agregarToast('exito', 'Creación exitosa', 'Recibo creado con exito!', true);
+        
         guardandoRecibo = false
         if(res.impresion) {
             window.open("/recibo-print/"+res.impresion, '_blank');
         }
     }).fail((err) => {
-        consecutivoSiguienteRecibo();
+        // consecutivoSiguienteRecibo();
         $('#iniciarCapturaRecibo').show();
         $('#cancelarCapturaRecibo').show();
         $('#crearCapturaRecibo').show();
@@ -353,17 +414,9 @@ function getMovimientoRecibo() {
 
 function cancelarRecibo() {
     $comboNitRecibos.val(0).trigger('change');
-    var totalRows = recibo_table.rows().data().length;
     totalAnticiposRecibo = 0;
 
-    if(recibo_table.rows().data().length){
-        recibo_table.clear([]).draw();
-        recibo_table.row(0).remove().draw();
-        mostrarValoresRecibos();
-        var countE = new CountUp('total_faltante_recibo', 0, 0, 2, 0.5);
-            countE.start();
-    }
-
+    consecutivoSiguienteRecibo();
     clearFormasPagoRecibo();
     $('#total_abono_recibo').val('0.00');
     $('#saldo_anticipo_recibo').val('0');
@@ -529,7 +582,13 @@ function mostrarValoresRecibos() {
             countE.start();
     }
 
-    if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP))) {
+    if (!totalSaldo) {
+        $('#crearCapturaRecibo').hide();
+        $('#cancelarCapturaRecibo').hide();
+        $('#crearCapturaReciboDisabled').show();
+    }
+
+    if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP)) && $('#id_nit_recibo').val()) {
         $('#crearCapturaRecibo').show();
         $('#crearCapturaReciboDisabled').hide();
     } else {
@@ -890,7 +949,7 @@ function focusValorRecibido(idRow) {
 }
 
 function focusOutValorReciboRow(idRow) {
-    if (calculandoRow) return;
+    if (calculandoRowRecibos) return;
     var data = getDataById(idRow, recibo_table);
     var valorRecibido = stringToNumberFloat($("#recibo_valor_"+idRow).val());
     if (!valorRecibido) return;
@@ -937,7 +996,7 @@ function focusOutValorReciboRow(idRow) {
 function changeValorRecibidoReciboRow(idRow, event) {
     if (!idRow) return;
     if(event.keyCode == 13) {
-        calculandoRow = true;
+        calculandoRowRecibos = true;
         var data = getDataById(idRow, recibo_table);
 
         if (data.cuenta_recibo) {//ABONOS
@@ -982,12 +1041,13 @@ function changeValorRecibidoReciboRow(idRow, event) {
             $('#recibo_concepto_'+idRow).select();
         },80);
         setTimeout(function(){
-            calculandoRow = false;
+            calculandoRowRecibos = false;
         },200); 
     }
 }
 
 function consecutivoSiguienteRecibo() {
+    var dateNow = new Date;
     var id_comprobante = $('#id_comprobante_recibo').val();
     var fecha_manual = $('#fecha_manual_recibo').val();
     var fecha_manual_hoy = fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
@@ -1007,6 +1067,9 @@ function consecutivoSiguienteRecibo() {
         }).done((res) => {
             if(res.success){
                 $("#documento_referencia_recibo").val(res.data);
+                setTimeout(function(){
+                    reloadTableRecibos();
+                },10);
             }
         }).fail((err) => {
             var mensaje = err.responseJSON.message;

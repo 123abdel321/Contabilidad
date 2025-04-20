@@ -3,14 +3,19 @@
 namespace App\Http\Controllers\Capturas;
 
 use DB;
+use Carbon\Carbon;
 use DateTimeImmutable;
+use App\Helpers\Extracto;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessBorrarDocumentos;
 use App\Jobs\ProcessGenerarDocumentos;
 use Illuminate\Support\Facades\Validator;
+//TRAITS
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\Nits;
@@ -25,6 +30,7 @@ use App\Models\Sistema\DocumentosGeneral;
 class DocumentoGeneralController extends Controller
 {
     use BegConsecutiveTrait;
+	use BegDocumentHelpersTrait;
 
 	protected $messages = null;
 	protected $cuentasDocumentos = [
@@ -87,11 +93,11 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 401);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
 		try {
-
+			
 			$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
 			ProcessGenerarDocumentos::dispatch($request->all(), $request->user()->id, $empresa->id);
 				
@@ -99,7 +105,7 @@ class DocumentoGeneralController extends Controller
 				'success'=>	true,
 				'data' => [],
 				'message'=> 'Documentos creados con exito!'
-			], 200);
+			], Response::HTTP_OK);
 			
 		} catch (Exception $e) {
 
@@ -108,7 +114,7 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 401);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 	}
 
@@ -144,7 +150,7 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 401);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
 		try {
@@ -229,7 +235,7 @@ class DocumentoGeneralController extends Controller
 						'success'=>	false,
 						'data' => [],
 						'message'=> $documentoGeneral->getErrors()
-					], 401);
+					], Response::HTTP_UNPROCESSABLE_ENTITY);
 				}
 
 				$this->updateConsecutivo($docGroup[0]->id_comprobante, $docGroup[0]->consecutivo_factura);
@@ -241,7 +247,7 @@ class DocumentoGeneralController extends Controller
 				'success'=>	true,
 				'data' => [],
 				'message'=> 'Documentos creados con exito!'
-			], 200);
+			], Response::HTTP_OK);
 		} catch (Exception $e) {
 
 			DB::connection('sam')->rollback();
@@ -249,7 +255,7 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 401);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 	}
 
@@ -267,7 +273,7 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 401);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 		try {
 			
@@ -295,7 +301,7 @@ class DocumentoGeneralController extends Controller
 				'success'=>	true,
 				'data' => [],
 				'message'=> 'Documentos eliminados con exito!'
-			], 200);
+			], Response::HTTP_OK);
 
 		} catch (Exception $e) {
 
@@ -304,7 +310,7 @@ class DocumentoGeneralController extends Controller
 				"success"=>false,
 				'data' => [],
 				"message"=>$e->getMessage()
-			], 401);
+			], Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
 	}
 
@@ -335,19 +341,17 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 200);
+            ], Response::HTTP_OK);
         }
 
-		$empresa = Empresa::where('id', request()->user()->id_empresa)->first();
-		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
-        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
+		$isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
 
-        if ($fechaManual < $fechaCierre) {
+        if ($isFechaCierreLimit) {
 			return response()->json([
                 "success"=>false,
                 'data' => [],
                 "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
-            ], 200);
+            ], Response::HTTP_OK);
 		}
 		
 		try {
@@ -385,14 +389,14 @@ class DocumentoGeneralController extends Controller
 						"success"=>false,
 						'data' => [],
 						"message"=> "El consecutivo {$request->get('consecutivo')} ya está en uso."
-					], 200);
+					], Response::HTTP_OK);
 				}
 			}
 
 			$facDocumento = null;
 
 			$tokenFactura = $request->get('token_factura') ? $request->get('token_factura') : $this->generateTokenDocumento();
-
+			
 			if($request->get('editing_documento')) {
 				$facDocumento = DocumentosGeneral::with('relation')
 					->where('id_comprobante', $request->get('id_comprobante'))
@@ -401,7 +405,7 @@ class DocumentoGeneralController extends Controller
 					->first();
 					
 				$facDocumento = $facDocumento->relation;
-
+				
 				DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
 					->where('fecha_manual', $request->get('fecha_manual'))
@@ -414,6 +418,7 @@ class DocumentoGeneralController extends Controller
 
 				$facDocumento = FacDocumentos::create([
 					'id_comprobante' => $request->get('id_comprobante'),
+					'id_nit' => $request->get('id_nit'),
 					'fecha_manual' => $request->get('fecha_manual'),
 					'consecutivo' => $request->get('consecutivo'),
 					'token_factura' => $tokenFactura,
@@ -426,8 +431,6 @@ class DocumentoGeneralController extends Controller
 			}
 			$primerIdNit = null;
 			$documentoGeneral = new Documento($facDocumento->id_comprobante, $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
-
-			// if ($request->get('editing_documento')) $documentoGeneral->setCreatedAt($facDocumento->created_at);
 
 			foreach ($documento as $doc) {
 				// dd($doc);
@@ -474,23 +477,16 @@ class DocumentoGeneralController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 200);
+				], Response::HTTP_OK);
 			}
 
 			if(!$request->get('editing_documento')) {
 				$this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 			} else {
-				$facDocumento = FacDocumentos::where('id_comprobante', $request->get('id_comprobante'))
-					->where('consecutivo', $request->get('consecutivo'))
-					->updateOrCreate([
-						'id_nit' => $primerIdNit,
-						'fecha_manual' => $request->get('fecha_manual'),
-						'consecutivo' => $request->get('consecutivo'),
-						'debito' => $debito,
-						'credito' => $credito,
-						'saldo_final' => $debito - $credito,
-						'updated_by' => request()->user()->id,
-					]);
+				$facDocumento->debito = $debito;
+				$facDocumento->credito = $credito;
+				$facDocumento->saldo_final = $debito - $credito;
+				$facDocumento->updated_by = request()->user()->id;
 			}
 
 			DB::connection('sam')->commit();
@@ -498,9 +494,11 @@ class DocumentoGeneralController extends Controller
 			return response()->json([
 				'success'=>	true,
 				'data' => $documentoGeneral->getRows(),
-				'impresion' => $comprobante->imprimir_en_capturas ? $facDocumento->id : '',
+				'impresion' => $comprobante->imprimir_en_capturas ? $request->get('consecutivo') : '',
+				'id_comprobante' => $comprobante->id,
+				'fecha_manual' => $request->get('fecha_manual'),
 				'message'=> 'Documentos creados con exito!'
-			], 200);
+			], Response::HTTP_OK);
 
 		} catch (Exception $e) {
 
@@ -509,20 +507,52 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 200);
+            ], Response::HTTP_OK);
         }
     }
 
     public function generate(Request $request)
     {
+		$rules = [
+            'id_comprobante' => 'required|exists:sam.comprobantes,id',
+			'fecha_manual' => 'required|date',
+			'consecutivo' => 'required',
+        ];
+		
+		$validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+		if ($this->isComprobanteInUse($request->get('id_comprobante'))) {
+			return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => "El comprobante seleccionado ya ha sido usado en una captura diferente y no puede ser usado en captura general."
+            ], Response::HTTP_OK);
+		}
+		
+		$comprobante = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+
 		$documento = DocumentosGeneral::with(['centro_costos', 'cuenta', 'nit'])
 			->where('id_comprobante', $request->get('id_comprobante'))
-			->where('consecutivo', $request->get('consecutivo'))
-            ->get();
+			->where('consecutivo', $request->get('consecutivo'));
+
+		if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
+            $fecha = $request->get('fecha_manual');
+        
+            $documento->whereMonth('fecha_manual', Carbon::parse($fecha)->month)
+                ->whereYear('fecha_manual', Carbon::parse($fecha)->year);
+        }
 
 		return response()->json([
 			'success'=>	true,
-			'data' => $documento,
+			'data' => $documento->get(),
 			'message'=> 'Documentos cargados con exito!'
 		]);
     }
@@ -532,7 +562,7 @@ class DocumentoGeneralController extends Controller
 		$rules = [
             'id_comprobante' => 'required|exists:sam.comprobantes,id',
 			'consecutivo' => 'required|numeric',
-			'motivo_anulacion' => 'required|string',
+			'concepto' => 'required|string',
 			'fecha_manual' => 'required',
         ];
 
@@ -543,25 +573,58 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 200);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
 		try {
-
 			DB::connection('sam')->beginTransaction();
 			
-			$documento = DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
+			$documentos = DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
 				->where('consecutivo', $request->get('consecutivo'))
 				->where('fecha_manual', $request->get('fecha_manual'))
-				->with('relation')->get();
-				
-			$documento[0]->relation->anulado = 1;
-			$documento[0]->relation->save();
+				->with('relation')
+				->get();
 
-			foreach ($documento as $doc) {
+			$comprobante = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+
+			if ($comprobante->tipo_comprobante == Comprobantes::TIPO_VENTAS) {
+				return response()->json([
+					"success"=>false,
+					'data' => [],
+					"message"=> 'Las ventas no pueden ser anuladas'
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
+			}
+
+			if ($comprobante->tipo_comprobante == Comprobantes::TIPO_COMPRAS) {
+				return response()->json([
+					"success"=>false,
+					'data' => [],
+					"message"=> 'Las compras no pueden ser anuladas'
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
+			}
+
+			$abonos = $this->getAbonosDocumento($documentos);
+
+			if (count($abonos) > 0) {
+				return response()->json([
+					"success"=>false,
+					'data' => [],
+					"message"=> 'El documento a eliminar tiene abonos. Elimina primero los abonos.'
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
+			}
+
+			$documento = null;
+
+			foreach ($documentos as $doc) {
 				$doc->anulado = 1;
-				$doc->concepto .= ' - motivo anulación: ' . $request->get('motivo_anulacion');
+				$doc->concepto .= ' - motivo anulación: ' . $request->get('concepto');
 				$doc->save();
+
+				$documento = $doc;
+			}
+
+			if ($documento->relation) {
+				$documento->relation->update(['anulado' => true]);
 			}
 
 			DB::connection('sam')->commit();
@@ -570,7 +633,7 @@ class DocumentoGeneralController extends Controller
                 'success'=>	true,
                 'data' => [],
                 'message'=> 'Documentos anulados con exito!'
-            ]);
+            ], Response::HTTP_OK);
 
 		} catch (Exception $e) {
 
@@ -579,11 +642,8 @@ class DocumentoGeneralController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 200);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-		DB::connection('sam')->beginTransaction();
-
 	}
 
     public function vacio(Request $request)
@@ -626,7 +686,7 @@ class DocumentoGeneralController extends Controller
 			'success'=>	true,
 			'data' =>  $empresa->fecha_ultimo_cierre,
 			'message'=> 'Año cerrado consultado con exito!'
-		], 200);
+		], Response::HTTP_OK);
 	}
 
 	private function newDocGeneral()
@@ -665,8 +725,42 @@ class DocumentoGeneralController extends Controller
 				DB::raw("DATE_FORMAT(fecha_manual, '%Y') id"),
 				DB::raw("DATE_FORMAT(fecha_manual, '%Y') text")
 			)
-			->groupBy(DB::raw("DATE_FORMAT(fecha_manual, '%Y')"));
+			->groupBy(DB::raw("DATE_FORMAT(fecha_manual, '%Y')"))
+			->orderBy('id', 'DESC');
 
 		return $years->paginate(40);
+	}
+
+	private function isCausacion($doc)
+	{
+		$naturaleza = $doc->cuenta->naturaleza_cuenta == ConCuenta::DEBITO ? 'debito' : 'credito';
+
+		return $doc->{$naturaleza} > 0;
+	}
+
+	private function getAbonosDocumento($documento)
+	{
+		$abonos = [];
+		$documento->load('cuenta');
+		
+		foreach ($documento as $doc) {
+			if (!$doc->documento_referencia) {
+				$extracto = (new Extracto(
+					$doc->id_nit,
+					null,
+					$doc->id_cuenta,
+					$doc->documento_referencia,
+					null
+				))->completo();
+
+				foreach ($extracto as $e) {
+					if ($e->total_abono > 0 && $this->isCausacion($doc)) {
+						$abonos[] = $e;
+					}
+				}
+			}
+		}
+
+		return $abonos;
 	}
 }

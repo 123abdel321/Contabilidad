@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('id_centro_costos')->nullable();
             $table->integer('id_responsable')->nullable();
             $table->integer('id_cuenta_cartera')->nullable();
+            $table->integer('consecutivo')->default(1)->nullable();
+            $table->integer('consecutivo_parqueadero')->default(1)->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

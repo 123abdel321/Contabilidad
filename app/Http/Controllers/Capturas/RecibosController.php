@@ -9,11 +9,13 @@ use DateTimeImmutable;
 use App\Helpers\Extracto;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Helpers\Printers\RecibosPdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
@@ -30,6 +32,7 @@ use App\Models\Sistema\ArchivosGenerales;
 class RecibosController extends Controller
 {
     use BegConsecutiveTrait;
+    use BegDocumentHelpersTrait;
 
     protected $id_recibo = 0;
     protected $messages = null;
@@ -63,23 +66,96 @@ class RecibosController extends Controller
 
     public function generate(Request $request)
     {
-        if (!$request->get('id_nit')) {
+        $editarRecibos = auth()->user()->can("recibo update");
+        $idNit = $request->get('id_nit');
+        $consecutivo = $request->get('consecutivo');
+        $idComprobante = $request->get('id_comprobante');
+
+        if (!$idNit && !$idComprobante) {
 			return response()->json([
                 'success'=>	true,
                 'data' => [],
                 'message'=> 'Recibo generado con exito!'
-            ], 200);
+            ], Response::HTTP_OK);
 		}
 
+        $reciboEdit = null;
         $fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual', null) : Carbon::now();
         
         try {
+
+            if ($idComprobante && $consecutivo && $editarRecibos) {
+
+                $reciboEdit = ConRecibos::with('detalles', 'pagos', 'nit')
+                    ->where('id_comprobante', $idComprobante)
+                    ->where('consecutivo', $consecutivo)
+                    ->first();
+
+                if ($reciboEdit) {
+                    $reciboEdit = $reciboEdit->toArray();
+                    $idNit = $reciboEdit['id_nit'];
+                    $fechaManual = $reciboEdit['fecha_manual'];
+                }
+            }
+
+            if (!$idNit && !$reciboEdit) {
+                return response()->json([
+                    'success'=>	true,
+                    'data' => [],
+                    'message'=> 'Recibo generado con exito!'
+                ], Response::HTTP_OK);
+            }
+            
             $extractos = (new Extracto(
-                $request->get('id_nit'),
+                $idNit,
                 3,
                 null,
-                $fechaManual
+                $fechaManual,
+                $reciboEdit ? $consecutivo : null
             ))->actual()->get();
+            
+            if (!count($extractos) && !$idNit && !$reciboEdit) {
+                return response()->json([
+                    'success'=>	true,
+                    'data' => [],
+                    'message'=> 'Recibo generado con exito!'
+                ], Response::HTTP_OK);
+            }
+            
+            if ($reciboEdit) {
+                $detalles = $reciboEdit['detalles'];
+                
+                if (count($extractos)) {
+                    foreach ($extractos as $key => $extracto) {
+                        $indice = array_search($extracto->documento_referencia, array_column($detalles, 'documento_referencia'));
+                        
+                        if (($indice || $indice == 0) && array_key_exists($indice, $detalles)) {
+                            $encontrado = $detalles[$indice];
+                            $extractos[$key] = $this->formatExtractoEdit($extracto, $encontrado);
+                            // dd($extractos);
+                            unset($detalles[$indice]);
+                        }
+                    }
+                }
+                
+                if (count($detalles)) {
+                    foreach ($detalles as $detalle) {
+                        $extractos[] = $this->addExtractoData($detalle);
+                    }
+                }
+            }
+
+            if ($request->get('orden_cuentas')) {
+
+                $ordenFacturacion = $request->get('orden_cuentas');
+                asort($ordenFacturacion);
+
+                $extractos = $extractos->sortBy(function ($item) use ($ordenFacturacion) {
+                    return $ordenFacturacion[$item->id_cuenta] ?? 9999;
+                })->values();
+            } else {
+                $extractos = $extractos->sortBy('cuenta')->values();
+            }
 
             $cxcAnticipos = PlanCuentas::where('auxiliar', 1)
                 ->where('exige_documento_referencia', 1)
@@ -122,8 +198,9 @@ class RecibosController extends Controller
             return response()->json([
                 'success'=>	true,
                 'data' => $dataRecibos,
+                'edit' => $reciboEdit,
                 'message'=> 'Recibo generado con exito!'
-            ], 200);
+            ], Response::HTTP_OK);
 
         } catch (Exception $e) {
 
@@ -132,7 +209,7 @@ class RecibosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -203,22 +280,6 @@ class RecibosController extends Controller
 
     public function create (Request $request)
     {
-        $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
-
-        $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual') : Carbon::now();
-
-        if(!$comprobanteRecibo) {
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
-            ], 422);
-        } else {
-            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
-            $request->request->add([
-                'consecutivo' => $consecutivo
-            ]);
-        }
 
         $rules = [
             'id_nit' => 'required|exists:sam.nits,id',
@@ -241,19 +302,70 @@ class RecibosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+
+        $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual') : Carbon::now();
+
+        if(!$comprobanteRecibo) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
+
+        if ($isFechaCierreLimit) {
+			return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+            ], 200);
+		}
+
+        if ($request->get('id_recibo')) {
+            $recibo = ConRecibos::where('id', $request->get('id_recibo'))->first();
+
+            $consecutivoUsado = $this->consecutivoUsado(
+                $comprobanteRecibo,
+                $request->get('consecutivo'),
+                $request->get('fecha_manual'),
+                $recibo
+            );
+
+            if ($consecutivoUsado) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=> "El consecutivo {$request->get('consecutivo')} ya está en uso."
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+            
+            if ($recibo) {
+                $recibo->documentos()->delete();
+                $recibo->detalles()->delete();
+                $recibo->pagos()->delete();
+                $recibo->delete();
+            }
+        } else {
+            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
+            $request->request->add(['consecutivo' => $consecutivo]);
         }
 
         $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
 		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
 
-        // if ($this->fechaManual < $fechaCierre) {
-		// 	return response()->json([
-        //         "success"=>false,
-        //         'data' => [],
-        //         "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
-        //     ], 422);
-		// }
+        if (!$request->get('fecha_manual')) {
+			return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+		}
         
         try {
             DB::connection('sam')->beginTransaction();
@@ -339,7 +451,9 @@ class RecibosController extends Controller
                 $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
             }
 
-            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+            if (!$request->get('id_recibo')) {
+                $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+            }
 
             if (!$documentoGeneral->save()) {
 
@@ -348,7 +462,7 @@ class RecibosController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
             DB::connection('sam')->commit();
@@ -358,7 +472,7 @@ class RecibosController extends Controller
                 'data' => $documentoGeneral->getRows(),
                 'impresion' => $comprobanteRecibo->imprimir_en_capturas ? $recibo->id : '',
                 'message'=> 'Recibo creado con exito!'
-            ], 200);
+            ], Response::HTTP_OK);
 
         } catch (Exception $e) {
 
@@ -367,7 +481,7 @@ class RecibosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -382,7 +496,7 @@ class RecibosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } else {
             // $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
             // $request->request->add([
@@ -407,7 +521,7 @@ class RecibosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
@@ -424,7 +538,7 @@ class RecibosController extends Controller
                     "success"=>false,
                     'data' => [],
                     "message"=>'La forma de pago con el id_cuenta_ingreso: '.$request->get('id_cuenta_ingreso').' No existe!'
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             $valorPago = $request->get('valor_pago') ? $request->get('valor_pago') : $request->get('valor_comprobante');
@@ -446,7 +560,7 @@ class RecibosController extends Controller
                     "success"=>true,
                     'data' => [],
                     "message"=>'Comprobante enviado con exito'
-                ], 200);
+                ], Response::HTTP_OK);
             }
 
             $consecutivo = $this->getNextConsecutive($recibo->id_comprobante, $recibo->fecha_manual);
@@ -540,7 +654,7 @@ class RecibosController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
             //GUARDAMOS RECIBO
@@ -556,7 +670,7 @@ class RecibosController extends Controller
                 'data' => $documentoGeneral->getRows(),
                 'impresion' => $comprobanteRecibo->imprimir_en_capturas ? $recibo->id : '',
                 'message'=> 'Recibo creado con exito!'
-            ], 200);
+            ], Response::HTTP_OK);
 
 
         } catch (Exception $e) {
@@ -566,7 +680,7 @@ class RecibosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -587,7 +701,7 @@ class RecibosController extends Controller
                     "success"=>false,
                     'data' => [],
                     "message"=>$validator->errors()
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         }
 
@@ -616,7 +730,7 @@ class RecibosController extends Controller
                     'success'=>	true,
                     'data' => [],
                     'message'=> 'Recibo actualizado con exito!'
-                ], 200);
+                ], Response::HTTP_OK);
             }
 
             if ($request->get('estado') == 0) {
@@ -634,7 +748,7 @@ class RecibosController extends Controller
                     'success'=>	true,
                     'data' => [],
                     'message'=> 'Recibo actualizado con exito!'
-                ], 200);
+                ], Response::HTTP_OK);
             }
 
             $recibo = ConRecibos::where('id', $request->get('id'))
@@ -647,7 +761,7 @@ class RecibosController extends Controller
                     "success"=>false,
                     'data' => [],
                     "message"=>'El recibo no se puede modificar'
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             $nit = $this->findNit($recibo->id_nit);
@@ -678,7 +792,7 @@ class RecibosController extends Controller
                     "success"=>false,
                     'data' => [],
                     "message"=>'El nit no tiene cuentas por cobrar'
-                ], 422); 
+                ], Response::HTTP_UNPROCESSABLE_ENTITY); 
             }
 
             $valorPagado = $recibo->total_abono;
@@ -767,7 +881,7 @@ class RecibosController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
             //GUARDAMOS RECIBO
@@ -782,7 +896,7 @@ class RecibosController extends Controller
                 'success'=>	true,
                 'data' => $documentoGeneral->getRows(),
                 'message'=> 'Recibo aprobado con exito!'
-            ], 200);
+            ], Response::HTTP_OK);
             
         } catch (Exception $e) {
 
@@ -791,7 +905,7 @@ class RecibosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -808,7 +922,7 @@ class RecibosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
@@ -835,7 +949,7 @@ class RecibosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -850,7 +964,7 @@ class RecibosController extends Controller
                 'success'=>	false,
                 'data' => [],
                 'message'=> 'El recibo no existe'
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
@@ -877,7 +991,7 @@ class RecibosController extends Controller
                 'success'=>	false,
                 'data' => [],
                 'message'=> 'El recibo no existe'
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $data = (new RecibosPdf($empresa, $recibo))->buildPdf()->getData();
@@ -889,6 +1003,8 @@ class RecibosController extends Controller
 
     private function formatExtracto($extracto)
     {
+        $editando = property_exists($extracto, 'edit') ? true : false;
+        
         $this->id_recibo++;
         return [
             'id' => $this->id_recibo,
@@ -899,12 +1015,44 @@ class RecibosController extends Controller
             'dias_cumplidos' => $extracto->dias_cumplidos,
             'plazo' => $extracto->plazo,
             'documento_referencia' => $extracto->documento_referencia,
-            'saldo' => $extracto->saldo,
-            'valor_recibido' => 0,
+            'saldo' => $editando ? $extracto->total_saldo : $extracto->saldo,
+            'valor_recibido' => $editando ? $extracto->total_abono : 0,
             'nuevo_saldo' => $extracto->saldo,
             'total_abono' => $extracto->total_abono,
-            'concepto' => '',
+            'concepto' => $editando ? $extracto->concepto : '',
             'cuenta_recibo' => true,
+        ];
+    }
+
+    private function formatExtractoEdit($extracto, $recibo)
+    {
+        $extracto->total_abono = $recibo['total_abono'];
+        $extracto->total_saldo = $extracto->saldo;
+        $extracto->concepto = $recibo['concepto'];
+        $extracto->nuevo_saldo = $recibo['nuevo_saldo'];
+        $extracto->valor_recibido = $recibo['total_abono'];
+        $extracto->edit = true;
+        
+        return $extracto;
+    }
+
+    private function addExtractoData($detalle)
+    {
+        $detalle = (object)$detalle;
+        $cuenta = PlanCuentas::find($detalle->id_cuenta);
+        return (object)[
+            'id_cuenta' => $detalle->id_cuenta,
+            'cuenta' => $cuenta->cuenta,
+            'nombre_cuenta' => $cuenta->nombre,
+            'fecha_manual' => $detalle->fecha_manual,
+            'concepto' => $detalle->concepto,
+            'dias_cumplidos' => 0,
+            'plazo' => 0,
+            'documento_referencia' => $detalle->documento_referencia,
+            'total_abono' => $detalle->total_abono,
+            'total_saldo' => $detalle->total_saldo,
+            'saldo' => $detalle->nuevo_saldo,
+            'edit' => true
         ];
     }
 

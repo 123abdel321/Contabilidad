@@ -9,9 +9,52 @@ function auxiliarInit() {
     generarAuxiliar = false;
     auxiliarExistente = false;
 
+    cargarTablasAuxiliar();
+    cargarCombosAuxiliar();
+
     $('#fecha_desde_auxiliar').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
     $('#fecha_hasta_auxiliar').val(fechaDesde);
+    // findAuxiliar();
+}
 
+function cargarCombosAuxiliar() {
+    $('#id_nit_auxiliar').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione una Cédula/nit",
+        allowClear: true,
+        ajax: {
+            url: 'api/nit/combo-nit',
+            dataType: 'json',
+            headers: headers,
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+
+    });
+
+    $('#id_cuenta_auxiliar').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione una Cuenta",
+        allowClear: true,
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+}
+
+function cargarTablasAuxiliar() {
     auxiliar_table = $('#auxiliarInformeTable').DataTable({
         pageLength: 100,
         dom: 'Brtip',
@@ -143,7 +186,7 @@ function auxiliarInit() {
                 if(row.naturaleza_cuenta == 0 && saldo_final < 0 && row.detalle_group == 'nits') {
                     var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
                     if (!cuenta == '11') {
-                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
                     }
                 } else if(row.naturaleza_cuenta == 1 && saldo_final > 0 && row.detalle_group == 'nits') {
                     var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
@@ -151,7 +194,7 @@ function auxiliarInit() {
                         return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
                     }
                 } else if(row.naturaleza_cuenta == 1 && saldo_final < 0) {
-                    return (saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                    return (saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
                 }
                 return saldo_final.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
             }, className: 'dt-body-right'},
@@ -198,52 +241,18 @@ function auxiliarInit() {
 
     if (ubicacion_maximoph) columnUbicacionMaximoPH.visible(true);
     else columnUbicacionMaximoPH.visible(false);
-
-    $('#id_nit_auxiliar').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        placeholder: "Seleccione una Cédula/nit",
-        allowClear: true,
-        ajax: {
-            url: 'api/nit/combo-nit',
-            dataType: 'json',
-            headers: headers,
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-
-    });
-
-    $('#id_cuenta_auxiliar').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        placeholder: "Seleccione una Cuenta",
-        allowClear: true,
-        ajax: {
-            url: 'api/plan-cuenta/combo-cuenta',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-    
-    findAuxiliar();
 }
 
 $(document).on('click', '#generarAuxiliar', function () {
     generarAuxiliar = false;
     $("#generarAuxiliar").hide();
     $("#generarAuxiliarLoading").show();
-    $('#descargarExcelAuxiliar').prop('disabled', true);
+
     $("#descargarExcelAuxiliar").hide();
     $("#descargarExcelAuxiliarDisabled").show();
+
+    $("#descargarPdfAuxiliar").hide();
+    $("#descargarPdfAuxiliarDisabled").show();
 
     $(".cardTotalAuxiliar").css("background-color", "white");
 
@@ -292,7 +301,6 @@ $(document).on('click', '#generarAuxiliar', function () {
 var channel = pusher.subscribe('informe-auxiliar-'+localStorage.getItem("notificacion_code"));
 
 channel.bind('notificaciones', function(data) {
-    console.log('notificaciones', data);
     if(data.url_file){
         loadExcel(data);
         return;
@@ -305,13 +313,18 @@ channel.bind('notificaciones', function(data) {
 });
 
 function loadAuxiliarById(id_auxiliar) {
+    $('#id_auxiliar_cargado').val(id_auxiliar);
     auxiliar_table.ajax.url(base_url + 'auxiliares-show?id='+id_auxiliar).load(function(res) {
         if(res.success){
             $("#generarAuxiliar").show();
             $("#generarAuxiliarLoading").hide();
-            $('#descargarExcelAuxiliar').prop('disabled', false);
+
             $("#descargarExcelAuxiliar").show();
             $("#descargarExcelAuxiliarDisabled").hide();
+
+            $("#descargarPdfAuxiliar").show();
+            $("#descargarPdfAuxiliarDisabled").hide();
+
             $('#generarAuxiliarUltimo').hide();
             $('#generarAuxiliarUltimoLoading').hide();
             if(res.descuadre) {
@@ -406,6 +419,17 @@ $(document).on('click', '#descargarExcelAuxiliar', function () {
     });
 });
 
+$(document).on('click', '#descargarPdfAuxiliar', function () {
+    var id_auxiliar = $('#id_auxiliar_cargado').val();
+    if (id_auxiliar) {
+        window.open(base_web+'auxiliar-pdf/'+id_auxiliar, "_blank");
+    } else {
+        $("#descargarPdfAuxiliar").hide();
+        $("#descargarPdfAuxiliarDisabled").show();
+        agregarToast('error', 'Error al generar pdf', 'No se ha encontrado el id del informe');
+    }
+});
+
 $(document).on('click', '#generarAuxiliarUltimo', function () {
     $('#generarAuxiliarUltimo').hide();
     $('#generarAuxiliarUltimoLoading').show();
@@ -474,6 +498,9 @@ $("#id_nit_auxiliar").on('change', function(){
 function clearAuxiliar() {
     $("#descargarExcelAuxiliar").hide();
     $("#descargarExcelAuxiliarDisabled").show();
+
+    $("#descargarPdfAuxiliar").hide();
+    $("#descargarPdfAuxiliarDisabled").show();
 }
 
 function formatNitAuxiliar (nit) {

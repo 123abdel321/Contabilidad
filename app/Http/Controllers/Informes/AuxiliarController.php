@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Informes;
 use Illuminate\Http\Request;
 use App\Exports\AuxiliarExport;
 use App\Events\PrivateMessageEvent;
+use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeAuxiliar;
+use App\Helpers\Printers\AuxiliarPdf;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -138,7 +140,7 @@ class AuxiliarController extends Controller
                 return response()->json([
                     'success'=>	true,
                     'url_file' => '',
-                    'message'=> 'Actualmente se esta generando el excel del auxiliar 12'
+                    'message'=> 'Actualmente se esta generando el excel de auxiliar'
                 ]);
             }
 
@@ -157,19 +159,32 @@ class AuxiliarController extends Controller
             $informeAuxiliar->archivo_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
             $informeAuxiliar->save();
 
-            (new AuxiliarExport($request->get('id')))->store($fileName, 'do_spaces', null, [
-                'visibility' => 'public'
-            ])->chain([
-                event(new PrivateMessageEvent('informe-auxiliar-'.$request->user()['has_empresa'].'_'.$request->user()->id, [
-                    'tipo' => 'exito',
-                    'mensaje' => 'Excel de Auxiliar generado con exito!',
-                    'titulo' => 'Excel generado',
-                    'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
-                    'autoclose' => false
-                ])),
-                $informeAuxiliar->exporta_excel = 2,
-                $informeAuxiliar->save(),
-            ]);
+            $has_empresa = $request->user()['has_empresa'];
+            $user_id = $request->user()->id;
+            $id_informe = $request->get('id');
+
+            Bus::chain([
+                function () use ($id_informe, &$fileName) {
+                    // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
+                    (new AuxiliarExport($id_informe))->store($fileName, 'do_spaces', null, [
+                        'visibility' => 'public'
+                    ]);
+                },
+                function () use ($user_id, $has_empresa, $url, $informeAuxiliar) {
+                    // Lanza el evento cuando el proceso termine
+                    event(new PrivateMessageEvent('informe-auxiliar-'.$has_empresa.'_'.$user_id, [
+                        'tipo' => 'exito',
+                        'mensaje' => 'Excel de Auxiliar generado con exito!',
+                        'titulo' => 'Excel generado',
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
+                        'autoclose' => false
+                    ]));
+                    
+                    // Actualiza el informe auxiliar
+                    $informeAuxiliar->exporta_excel = 2;
+                    $informeAuxiliar->save();
+                }
+            ])->dispatch();
 
             return response()->json([
                 'success'=>	true,
@@ -184,5 +199,27 @@ class AuxiliarController extends Controller
             ], 422);
         }
     }
+
+    public function showPdf(Request $request, $id)
+	{
+        $detalle = InfAuxiliarDetalle::where('id_auxiliar', $id)->get();
+
+		if(!count($detalle)) {
+			return response()->json([
+				'success'=>	false,
+				'data' => [],
+				'message'=> 'El auxiliar no existe'
+			], 422);
+		}
+
+		$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+		// $data = (new AuxiliarPdf($empresa, $detalle))->buildPdf()->getData();
+
+		// return view('pdf.informes.auxiliar.auxiliar', $data);
+
+        return (new AuxiliarPdf($empresa, $detalle))
+            ->buildPdf()
+            ->showPdf();
+	}
 
 }

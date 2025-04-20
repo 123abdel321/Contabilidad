@@ -252,9 +252,10 @@
 				<tr class="header-factura padding5">
 					<th class="padding5">CONCEPTO</th>
 					<th class="padding5">SUB TOTAL</th>
-					<th class="padding5">DESCUENTO</th>
+					<!-- <th class="padding5">DESCUENTO</th> -->
 					<th class="padding5">IVA</th>
 					<th class="padding5">RETENCIÓN</th>
+					<th class="padding5">RETEICA</th>
 					<th class="padding5">TOTAL</th>
 				</tr>
 			</thead>
@@ -263,9 +264,10 @@
 					<tr>
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->concepto->codigo }} - {{ $detalle->concepto->nombre }}</td>
 						<td class="padding5 valor">{{ number_format($detalle->subtotal) }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->descuento_valor) }}</td>
+						<!-- <td class="padding5 valor">{{ number_format($detalle->descuento_valor) }}</td> -->
 						<td class="padding5 valor">{{ number_format($detalle->iva_valor) }}</td>
 						<td class="padding5 valor">{{ number_format($detalle->rete_fuente_valor) }}</td>
+						<td class="padding5 valor">{{ number_format($detalle->rete_ica_valor) }}</td>
 						<td class="padding5 valor">{{ number_format($detalle->total) }}</td>
 					</tr>
 				@endforeach

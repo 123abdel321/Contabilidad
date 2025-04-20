@@ -2,7 +2,6 @@ var fecha = null;
 var compra_table = null;
 var compra_table_pagos = null;
 var validarFacturaCompra = null;
-var idCompraProducto = 0;
 var $comboBodegaCompra = null;
 var $comboProveedor = null;
 var $comboComprobante  = null;
@@ -11,189 +10,133 @@ var porcentajeRetencionCompras = 0;
 var topeRetencionCompras = 0;
 var abrirFormasPagoCompras = false;
 var guardandoCompra = false;
+let productosData = [];
+let programmaticChange = false;
+let hotCompras = null;
 
 function compraInit () {
     
     fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
     $('#fecha_manual_compra').val(fecha);
 
-    compra_table = $('#compraTable').DataTable({
-        dom: '',
-        pageLength: 200,
-        responsive: false,
-        processing: true,
-        serverSide: false,
-        deferLoading: 0,
-        initialLoad: false,
-        autoWidth: true,
-        language: lenguajeDatatable,
-        ordering: false,
+    const container = document.getElementById('compraTable');
+    hotCompras = new Handsontable(container, {
+        className: 'ht-theme-horizon',
+        colHeaders: ['', 'Producto', 'Invt.', 'Cant.', 'Costo', 'Dscto', '% Dscto', '% Iva', 'Iva', 'Total', 'id'],
+        rowHeaders: true,
+        startRows: 0,
+        width: '100%',
+        height: '350px',
+        stretchH: 'all',
+        contextMenu: false,
+        filters: false,
+        dropdownMenu: false,
+        minSpareRows: 1,
+        autoWrapRow: true,
+        autoWrapCol: true,
+        manualRowResize: true,
+        manualColumnResize: true,
+        navigableHeaders: true,
+        enterMoves: { row: 0, col: 0 },
+        licenseKey: 'non-commercial-and-evaluation',
         columns: [
-            {//BORRAR
-                "data": function (row, type, set, col){
-                    return `<span class="btn badge bg-gradient-danger drop-row-grid" onclick="deleteProductoCompra(${idCompraProducto})" id="delete-producto-compra_${idCompraProducto}"><i class="fas fa-trash-alt"></i></span>`;
-                }
+            {
+                data: 'eliminar',
+                renderer: eliminarCompraRenderer,
+                width: 45,
+                readOnly: true
             },
-            {//PRODUCTO
-                "data": function (row, type, set, col){
-                    return `<select class="form-control form-control-sm combo_producto combo-grid" id="combo_producto_${idCompraProducto}" onchange="changeProductoCompra(${idCompraProducto})" onfocusout="calcularProducto(${idCompraProducto})"></select>`;
-                },
+            {
+                data: 'producto',
+                type: 'dropdown',
+                strict: true,
+                allowInvalid: false,
+                copyable: false,
+                width: 230,
+                source: obtenerComprasProductos,
+                renderer: comprasProductosRenderer,
             },
-            {//EXISTENCIAS
-                "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 30px; text-align: right;" id="compra_existencia_${idCompraProducto}" disabled>`;
-                }
-            },
-            {//CANTIDAD
-                "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="compra_cantidad_${idCompraProducto}" min="1" value="1" onkeydown="CantidadkeyDown(${idCompraProducto}, event)" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
-                }
-            },
-            {//COSTO
-                "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="compra_costo_${idCompraProducto}" value="0" onkeydown="CostokeyDown(${idCompraProducto}, event)" style="min-width: 100px;" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
-                }
-            },
-            {//% DESCUENTO
-                "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="compra_descuento_porcentaje_${idCompraProducto}" value="0"  onkeydown="DescuentokeyDown(${idCompraProducto}, event)" maxlength="2" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
-                }
-            },
-            {//VALOR DESCUENTO
-                "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 80px; text-align: right;" id="compra_descuento_valor_${idCompraProducto}" value="0" onkeydown="DescuentoTotalkeyDown(${idCompraProducto}, event)" onfocusout="calcularProducto(${idCompraProducto})" disabled>`;
-                }
-            },
-            {//VALOR IVA
-                "data": function (row, type, set, col){
-                    return `<div class="form-group mb-3" style="min-width: 80px;">
-                        <div class="input-group input-group-sm" style="height: 18px; min-width: 100px;">
-                            <span id="compra_iva_porcentaje_text_${idCompraProducto}" class="input-group-text" style="height: 30px; background-color: #e9ecef; font-size: 11px; width: 33px; border-right: solid 2px #c9c9c9 !important; padding: 5px;">0%</span>
-                            <input style="height: 30px; text-align: right;" type="text" class="form-control form-control-sm" value="0" id="compra_iva_valor_${idCompraProducto}" value="0" disabled>
-                        </div>
-                    </div>
-                    <input type="number" class="form-control form-control-sm" style="min-width: 110px; display: none;" id="compra_iva_porcentaje_${idCompraProducto}" value="0"  onkeydown="DescuentoVentakeyDown(${idCompraProducto}, event)" maxlength="2" onfocusout="calcularProducto(${idCompraProducto})">`;
-                }
-            },
-            {//TOTAL
-                "data": function (row, type, set, col){
-                    return `<input type="number" class="form-control form-control-sm" style="min-width: 90px; text-align: right;" id="compra_total_${idCompraProducto}" value="0" disabled>`;
-                }
-            },
+            { data: 'inventario', type: 'numeric', numericFormat: { pattern: '0,0' }, readOnly: true },
+            { data: 'cantidad', type: 'numeric', numericFormat: { pattern: '0,0' } },
+            { data: 'costo', type: 'numeric', numericFormat: { pattern: '0,0' }, width: 80 },
+            { data: 'descuento', type: 'numeric', numericFormat: { pattern: '0,0' }, width: 80 },
+            { data: 'porcentaje_descuento', type: 'numeric', numericFormat: { pattern: '0,0' }, width: 80 },
+            { data: 'porcentaje_iva', type: 'numeric', numericFormat: { pattern: '0,0' }, readOnly: true },
+            { data: 'valor_iva', type: 'numeric', numericFormat: { pattern: '0,0' }, readOnly: true, width: 80 },
+            { data: 'total', type: 'numeric', numericFormat: { pattern: '0,0' }, readOnly: true, width: 100 },
+            { data: 'id_producto' }
         ],
+        afterChange: function(changes, source) {
+            if (programmaticChange || source !== 'edit') return;
+            programmaticChange = true;
+            if (source === 'edit') {
+                changes.forEach(function(change) {
 
-        columnDefs: [{
-            'orderable': false
-        }],
-        initComplete: function () {
-            $('#compraTable').on('draw.dt', function() {
-                $('.combo_producto').select2({
-                    theme: 'bootstrap-5',
-                    dropdownCssClass: 'custom-combo_producto',
-                    delay: 250,
-                    minimumInputLength: 2,
-                    language: {
-                        noResults: function() {
-                            return "No hay resultado";        
-                        },
-                        searching: function() {
-                            return "Buscando..";
-                        },
-                        inputTooShort: function () {
-                            return "Por favor introduce 2 o más caracteres";
-                        }
-                    },
-                    ajax: {
-                        url: 'api/producto/combo-producto',
-                        headers: headers,
-                        data: function (params) {
-                            var query = {
-                                q: params.term,
-                                id_bodega: $("#id_bodega_compra").val(),
-                                captura: 'compra',
-                                _type: 'query'
-                            }
-                            return query;
-                        },
-                        dataType: 'json',
-                        processResults: function (data) {
-                            return {
-                                results: data.data
-                            };
-                        }
-                    },
-                    templateResult: formatProducto,
-                    templateSelection: formatRepoSelection
-                });
-            });
+                    const row = change[0];
+                    const col = change[1];
+                    const newValue = change[3];
 
-            function formatProducto (producto) {
-                if (producto.loading) return producto.text;
+                    if (col === 'producto') {
+                        const productoSeleccionado = productosData.find(function(producto) {
+                            return producto.text === newValue;
+                        });
 
-                var urlImagen = producto.imagen ?
-                    bucketUrl+producto.imagen :
-                    '/img/sin_imagen.png';
+                        editarCeldaProductoCompras(productoSeleccionado, newValue, row);
+                    }
+                    if (col === 'cantidad') {
+                        const productoText = hotCompras.getDataAtCell(row, 1);
+                        const productoSeleccionado = productosData.find(function(producto) {
+                            return producto.text === productoText;
+                        });
 
-                var inventario = producto.inventarios.length > 0 ? 
-                    producto.inventarios[0].cantidad+' Existencias' :
-                    'Sin inventario';
+                        editarCeldaCantidadCompras(productoSeleccionado, newValue, row);
+                    }
+                    if (col === 'costo') {
+                        const productoText = hotCompras.getDataAtCell(row, 1);
+                        const productoSeleccionado = productosData.find(function(producto) {
+                            return producto.text === productoText;
+                        });
 
-                var color = producto.inventarios.length > 0 ?
-                    producto.inventarios[0].cantidad <= 0 ? 
-                    '#a30000' : '#1c4587' :
-                    '#838383';
-
-                var $container = '';
-
-                if (producto.familia.inventario && ventaExistenciasCompra) {
-                    var $container = $(`
-                        <div class="row">
-                            <div class="col-3" style="display: flex; justify-content: center; align-items: center;">
-                                <img
-                                    style="width: 40px; border-radius: 10%;"
-                                        src="${urlImagen}" />
-                                </div>
-                                <div class="col-9" style="padding-left: 0px !important">
-                                    <div class="row" style="margin-left: 5px;">
-                                        <div class="col-12" style="padding-left: 0px !important">
-                                            <h6 style="font-size: 12px; margin-bottom: 0px; color: black;">${producto.text}</h6>
-                                        </div>
-                                        <div class="col-12" style="padding-left: 0px !important">
-                                            <i class="fas fa-box-open" style="font-size: 11px; color: ${color};"></i>
-                                            ${inventario}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `);
-                    } else {
-                        var $container = $(`
-                            <div class="row">
-                                <div class="col-3" style="display: flex; justify-content: center; align-items: center;">
-                                    <img
-                                        style="width: 40px; border-radius: 10%;"
-                                        src="${urlImagen}" />
-                                </div>
-                                <div class="col-9">
-                                    <div class="row">
-                                        <div class="col-12" style="padding-left: 0px !important">
-                                            <h6 style="font-size: 12px; margin-bottom: 0px; color: black;">${producto.text}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `);
+                        editarCeldaCostoCompras(productoSeleccionado, newValue, row);
                     }
 
+                    if (col === 'descuento') {
+                        const productoText = hotCompras.getDataAtCell(row, 1);
+                        const productoSeleccionado = productosData.find(function(producto) {
+                            return producto.text === productoText;
+                        });
 
-                return $container;
-            }
+                        editarCeldaDescuentoCompras(productoSeleccionado, newValue, row);
+                    }
 
-            function formatRepoSelection (producto) {
-                return producto.full_name || producto.text;
+                    if (col === 'porcentaje_descuento') {
+                        const productoText = hotCompras.getDataAtCell(row, 1);
+                        const productoSeleccionado = productosData.find(function(producto) {
+                            return producto.text === productoText;
+                        });
+
+                        editarCeldaDescuentoPorcentajeCompras(productoSeleccionado, newValue, row);
+                    }
+                });
             }
-        }
+            setTimeout(() => mostrarValoresCompras(), 20);
+            setTimeout(() => programmaticChange = false, 10);
+        },
     });
+
+    hotCompras.updateSettings({
+        readOnly: true,
+    });
+
+    const hotComprasCount = hotCompras.countRows();
+
+    setTimeout(function(){
+        hotCompras.alter('remove_row', 0, hotComprasCount);
+
+        const cardCompra = document.querySelector('.wtHolder');
+        new PerfectScrollbar(container);
+        new PerfectScrollbar(cardCompra);
+    },10);
 
     compra_table_pagos = $('#compraFormaPago').DataTable({
         dom: '',
@@ -299,37 +242,6 @@ function compraInit () {
         }
     });
 
-    // $('#id_proveedor_compra').on('select2:close', function(event) {
-    //     var data = $(this).select2('data');
-    //     if(data.length){
-    //         setTimeout(function(){
-    //             $comboComprobante.select2("open");
-    //             $('#id_comprobante_compra').focus();
-    //         },10);
-    //     }
-    // });
-
-    // $("#id_comprobante_compra").on('select2:close', function(event) {
-    //     var data = $(this).select2('data');
-    //     console.log('id_comprobante_compra close', data.length);
-    //     if(data.length){
-    //         setTimeout(function(){
-    //             $comboBodegaCompra.select2("open");
-    //             $('#id_bodega_compra').select();
-    //         },10);
-    //     }
-    // });
-
-    // $('#id_bodega_compra').on('select2:close', function(event) {
-    //     var data = $(this).select2('data');
-    //     if(data.length){
-    //         setTimeout(function(){
-    //             $('#fecha_manual_compra').focus();
-    //             $('#fecha_manual_compra').select();
-    //         },10);
-    //     }
-    // });
-
     $("#fecha_manual_compra").on('keydown', function(event) {
         if(event.keyCode == 13){
             event.preventDefault();
@@ -415,20 +327,10 @@ function compraInit () {
         $comboComprobante.val(dataComprobante.id).trigger('change');
     }
 
-    var column2 = compra_table.column(2);
-    var column5 = compra_table.column(5);
-    var column6 = compra_table.column(6);
-
-    if (agregarDescuentoCompra){
-        column5.visible(true);
-        column6.visible(true);
-    } else {
-        column5.visible(false);
-        column6.visible(false);
-    }
-
-    if (ventaExistenciasCompra) column2.visible(true);
-    else column2.visible(false);
+    if (!agregarDescuentoCompra && !ventaExistenciasCompra) ocultarColumnas([2,5,6,10]);
+    else if (!agregarDescuentoCompra) ocultarColumnas([5,6,10]);
+    else if (!ventaExistenciasCompra) ocultarColumnas([2,10]);
+    else ocultarColumnas([10]);
 
     loadFormasPagoCompra()
 
@@ -436,6 +338,229 @@ function compraInit () {
         $comboProveedor.select2("open");
     },10);
 }
+
+function editarCeldaProductoCompras(productoSeleccionado, newValue, row) {
+
+    if (productoSeleccionado) {
+        const inventario = productoSeleccionado.inventarios.length ? parseFloat(productoSeleccionado.inventarios[0].cantidad) : 0;
+        const costo = parseFloat(productoSeleccionado.precio_inicial);
+        let porcentajeiva = productoSeleccionado.familia.cuenta_compra_iva;
+        porcentajeiva = porcentajeiva ? porcentajeiva.impuesto : 0;
+        porcentajeiva = porcentajeiva ? porcentajeiva.porcentaje : 0;
+        let valorIva = porcentajeiva ? costo * (parseFloat(porcentajeiva) / 100) : 0;
+        const total = parseFloat(costo) + parseFloat(valorIva);
+        
+        hotCompras.setDataAtCell(row, 2, inventario);//INVENTARIO
+        hotCompras.setDataAtCell(row, 3, 1);//CANTIDAD
+        hotCompras.setDataAtCell(row, 4, costo);//COSTO
+        hotCompras.setDataAtCell(row, 5, 0);//DESCUENTO
+        hotCompras.setDataAtCell(row, 6, 0);//DESCUENTO %
+        hotCompras.setDataAtCell(row, 7, porcentajeiva);//IVA %
+        hotCompras.setDataAtCell(row, 8, valorIva);//IVA VALOR
+        hotCompras.setDataAtCell(row, 9, total);//TOTAL
+        hotCompras.setDataAtCell(row, 10, productoSeleccionado.id);//ID PRODUCTO
+
+        calcularRetencionCompras(productoSeleccionado);
+
+        setTimeout(() => hotCompras.selectCell(row, 3), 10);
+    } else celdaVaciaCompras(row);
+}
+
+function editarCeldaCantidadCompras(productoSeleccionado, newValue, row) {
+    if (productoSeleccionado) {
+        const costo = parseFloat(productoSeleccionado.precio_inicial);
+        const cantidad = parseFloat(newValue);
+        const inventario = parseFloat(hotCompras.getDataAtCell(row, 2));
+        const porcentajeiva = parseFloat(hotCompras.getDataAtCell(row, 7));
+        const valorDescuento = parseFloat(hotCompras.getDataAtCell(row, 5));
+        const porcentajeDescuento = valorDescuento ? valorDescuento * 100 / (costo * cantidad) : 0;
+        const valorIva = porcentajeiva ? ((costo - valorDescuento) * cantidad) * (porcentajeiva / 100) : 0;
+        const total = ((costo - valorDescuento) * cantidad) + valorIva;
+        
+        hotCompras.setDataAtCell(row, 2, inventario);//INVENTARIO
+        hotCompras.setDataAtCell(row, 3, cantidad);//CANTIDAD
+        hotCompras.setDataAtCell(row, 4, costo);//COSTO
+        hotCompras.setDataAtCell(row, 5, valorDescuento);//DESCUENTO
+        hotCompras.setDataAtCell(row, 6, porcentajeDescuento.toFixed(2));//DESCUENTO %
+        hotCompras.setDataAtCell(row, 7, porcentajeiva);//IVA %
+        hotCompras.setDataAtCell(row, 8, valorIva);//IVA VALOR
+        hotCompras.setDataAtCell(row, 9, total);//TOTAL
+
+        setTimeout(() => hotCompras.selectCell(row, 4), 10);
+    } else celdaVaciaCompras(row);
+}
+
+function editarCeldaCostoCompras(productoSeleccionado, newValue, row) {
+    if (productoSeleccionado) {
+        const costo = parseFloat(newValue);
+        const cantidad = parseFloat(hotCompras.getDataAtCell(row, 3));
+        const inventario = parseFloat(hotCompras.getDataAtCell(row, 2));
+        const valorDescuento = parseFloat(hotCompras.getDataAtCell(row, 5));
+        const porcentajeDescuento = valorDescuento ? valorDescuento * 100 / (costo * cantidad) : 0;
+        const porcentajeiva = parseFloat(hotCompras.getDataAtCell(row, 7));
+        const valorIva = porcentajeiva ? ((costo - valorDescuento) * cantidad) * (porcentajeiva / 100) : 0;
+        const total = ((costo - valorDescuento) * cantidad) + valorIva;
+        
+        hotCompras.setDataAtCell(row, 2, inventario);//INVENTARIO
+        hotCompras.setDataAtCell(row, 3, cantidad);//CANTIDAD
+        hotCompras.setDataAtCell(row, 4, costo);//COSTO
+        hotCompras.setDataAtCell(row, 5, valorDescuento);//DESCUENTO
+        hotCompras.setDataAtCell(row, 6, porcentajeDescuento.toFixed(2));//DESCUENTO %
+        hotCompras.setDataAtCell(row, 7, porcentajeiva);//IVA %
+        hotCompras.setDataAtCell(row, 8, valorIva);//IVA VALOR
+        hotCompras.setDataAtCell(row, 9, total);//TOTAL
+
+        setTimeout(() => hotCompras.selectCell(row+1, 1), 10);
+    } else celdaVaciaCompras(row);
+}
+
+function editarCeldaDescuentoCompras(productoSeleccionado, newValue, row) {
+    if (productoSeleccionado) {
+        const costo = parseFloat(hotCompras.getDataAtCell(row, 4));
+        const cantidad = parseFloat(hotCompras.getDataAtCell(row, 3));
+        const inventario = parseFloat(hotCompras.getDataAtCell(row, 2));
+        const valorDescuento = parseFloat(newValue);
+        const porcentajeDescuento = valorDescuento ? valorDescuento * 100 / (costo * cantidad) : 0;
+        const porcentajeiva = parseFloat(hotCompras.getDataAtCell(row, 7));
+        const valorIva = porcentajeiva ? ((costo - valorDescuento) * cantidad) * (porcentajeiva / 100) : 0;
+        const total = ((costo - valorDescuento) * cantidad) + valorIva;
+        
+        hotCompras.setDataAtCell(row, 2, inventario);//INVENTARIO
+        hotCompras.setDataAtCell(row, 3, cantidad);//CANTIDAD
+        hotCompras.setDataAtCell(row, 4, costo);//COSTO
+        hotCompras.setDataAtCell(row, 5, valorDescuento);//DESCUENTO
+        hotCompras.setDataAtCell(row, 6, porcentajeDescuento.toFixed(2));//DESCUENTO %
+        hotCompras.setDataAtCell(row, 7, porcentajeiva);//IVA %
+        hotCompras.setDataAtCell(row, 8, valorIva);//IVA VALOR
+        hotCompras.setDataAtCell(row, 9, total);//TOTAL
+
+        setTimeout(() => hotCompras.selectCell(row+1, 1), 10);
+    } else celdaVaciaCompras(row);
+}
+
+function editarCeldaDescuentoPorcentajeCompras(productoSeleccionado, newValue, row) {
+    if (productoSeleccionado) {
+        const costo = parseFloat(hotCompras.getDataAtCell(row, 4));
+        const cantidad = parseFloat(hotCompras.getDataAtCell(row, 3));
+        const inventario = parseFloat(hotCompras.getDataAtCell(row, 2));
+        const porcentajeDescuento = parseFloat(hotCompras.getDataAtCell(row, 6));
+        const valorDescuento = (porcentajeDescuento / 100) * costo;
+        const porcentajeiva = parseFloat(hotCompras.getDataAtCell(row, 7));
+        const valorIva = porcentajeiva ? ((costo - valorDescuento) * cantidad) * (porcentajeiva / 100) : 0;
+        const total = ((costo - valorDescuento) * cantidad) + valorIva;
+        
+        hotCompras.setDataAtCell(row, 2, inventario);//INVENTARIO
+        hotCompras.setDataAtCell(row, 3, cantidad);//CANTIDAD
+        hotCompras.setDataAtCell(row, 4, costo);//COSTO
+        hotCompras.setDataAtCell(row, 5, valorDescuento);//DESCUENTO
+        hotCompras.setDataAtCell(row, 6, porcentajeDescuento);//DESCUENTO %
+        hotCompras.setDataAtCell(row, 7, porcentajeiva);//IVA %
+        hotCompras.setDataAtCell(row, 8, valorIva);//IVA VALOR
+        hotCompras.setDataAtCell(row, 9, total);//TOTAL
+
+        setTimeout(() => hotCompras.selectCell(row+1, 1), 10);
+    } else celdaVaciaCompras(row);
+}
+
+function celdaVaciaCompras(row) {
+    hotCompras.setDataAtCell(row, 2, 0);//INVENTARIO
+    hotCompras.setDataAtCell(row, 3, 0);//CANTIDAD
+    hotCompras.setDataAtCell(row, 4, 0);//COSTO
+    hotCompras.setDataAtCell(row, 5, 0);//DESCUENTO
+    hotCompras.setDataAtCell(row, 6, 0);//DESCUENTO %
+    hotCompras.setDataAtCell(row, 7, 0);//IVA %
+    hotCompras.setDataAtCell(row, 8, 0);//IVA VALOR
+    hotCompras.setDataAtCell(row, 9, 0);//TOTAL
+    setTimeout(() => hotCompras.selectCell(row, 1), 10);
+}
+
+function eliminarCompraRenderer(instance, td, row, col, prop, value, cellProperties) {
+
+    const btnEliminar = document.createElement('span');
+    
+    btnEliminar.setAttribute('class', 'btn badge bg-gradient-danger drop-row-grid');
+    btnEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    btnEliminar.addEventListener('click', function () {
+        instance.alter('remove_row', row);
+        const hotComprasCount = hotCompras.countRows();
+        mostrarValoresCompras();
+        setTimeout(function(){
+            if (hotCompras.countRows() == 1) {
+                hotCompras.render();
+                hotCompras.selectCell(0, 1);
+            }
+        },10);
+    });
+
+    td.innerHTML = '';
+    td.appendChild(btnEliminar);
+
+    return td;
+}
+
+function obtenerComprasProductos(query, process) {
+    if (productosData.length === 0 || !productosData.some(producto => producto.text === query)) {
+        $.ajax({
+            url: '/api/productos',
+            headers: headers,
+            data: { query: query, page: 1 },
+            method: 'GET',
+            success: function(response) {
+                productosData = response.data;
+                process(response.data.map(function(producto) {
+                    return producto.text.trim();
+                }));
+            }
+        });
+    } else {
+        const results = productosData.filter(function(producto) {
+            return producto.text.includes(query);
+        });
+        process(results.map(function(producto) {
+            return producto.text.trim();
+        }));
+    }
+}
+
+function comprasProductosRenderer(instance, td, row, col, prop, value, cellProperties) {
+    const producto = productosData.find(producto => producto.text === value);
+    
+    // Limpia la celda
+    Handsontable.dom.empty(td);
+
+    if (producto) {
+        const text = document.createTextNode(producto.text);
+        td.appendChild(text);
+    } else {
+        td.innerHTML = value || ''; // Por si no hay valor, muestra vacío
+    }
+
+    return td;
+}
+
+function ocultarColumnas(indicesColumnas) {
+    hotCompras.updateSettings({
+        hiddenColumns: {
+            columns: indicesColumnas, // Índices de las columnas que deseas ocultar
+            indicators: true,
+        },
+    });
+}
+
+$('#id_proveedor_compra').on('select2:close', function(event) {
+    var data = $(this).select2('data');
+    if(data.length){
+        $('#fecha_manual_compra').focus();
+        $('#fecha_manual_compra').select();
+    }
+});
+
+$("#fecha_manual_compra").on('keydown', function(event) {
+    if(event.keyCode == 13){
+        $('#documento_referencia_compra').focus();
+        $('#documento_referencia_compra').select();
+    }
+});
 
 function loadFormasPagoCompra() {
     var totalRows = compra_table_pagos.rows().data().length;
@@ -507,109 +632,29 @@ function totalFormasPagoCompras(idFormaPago = null) {
     return totalPagos;
 }
 
-$(document).on('keydown', '.custom-combo_producto .select2-search__field', function (event) {
-    var [iva, retencion, descuento, total, valorBruto] = totalValoresCompras();
-
-    if (event.keyCode == 96) {
-        abrirFormasPagoCompras = true;
-    } else if (event.keyCode == 13){
-        if (total > 0) {
-            if (abrirFormasPagoCompras) {
-                $(".combo_producto").select2('close');
-                focusFormaPagoCompra(1);
-                abrirFormasPagoCompras = false;
-            }
-        }
-    } else {
-        abrirFormasPagoCompras = false;
-    }
-});
-
-function addRowProductoCompra () {
-
-    var rows = compra_table.rows().data();
-    var totalRows = rows.length;
-    var dataLast = rows[totalRows - 1];
-
-    if (dataLast) {
-        var cuentaLast = $('#combo_producto_'+dataLast.id).val();
-        if (!cuentaLast) {
-            $('#combo_producto_'+dataLast.id).select2('open');
-            document.getElementById("card-compra").scrollLeft = 0;
-            return;
-        }
-    } else if(totalRows > 1) {
-        clearFormasPagoCompras();
-    }
-
-    compra_table.row.add({
-        "id": idCompraProducto,
-        "cantidad": 1,
-        "costo": 0,
-        "porcentaje_descuento": 0,
-        "valor_descuento": 0,
-        "porcentaje_iva": 0,
-        "valor_iva": 0,
-        "valor_total": 0,
-    }).draw(false)
-
+function iniciarCapturaCompra () {
+    hotCompras.selectCell(0, 1);
+    clearFormasPagoCompras();
     $('#card-compra').focus();
     document.getElementById("card-compra").scrollLeft = 0;
-
-    $('#combo_producto_'+idCompraProducto).focus();
-    $('#combo_producto_'+idCompraProducto).select2('open');
-    idCompraProducto++;
+    hotCompras.updateSettings({
+        readOnly: false,
+    });
+    hotCompras.render();
 }
 
-function changeProductoCompra (idRow) {
-    var data = $('#combo_producto_'+idRow).select2('data')[0];
-
-    if (data.length == 0) return;
-    
-    if (data.inventarios.length > 0) {
-        var totalInventario = parseInt(data.inventarios[0].cantidad);
-        $("#compra_existencia_"+idRow).val(totalInventario);
-    } else {
-        $("#compra_existencia_"+idRow).val(0);
-    }
-
-    if (data.familia.cuenta_compra_iva && data.familia.cuenta_compra_iva.impuesto) {
-
-        $('#compra_iva_porcentaje_'+idRow).val(data.familia.cuenta_compra_iva.impuesto.porcentaje);
-        $('#compra_iva_porcentaje_text_'+idRow).text(parseInt(data.familia.cuenta_compra_iva.impuesto.porcentaje)+'%');
-    }
-
-    if (data.familia.cuenta_compra_retencion && data.familia.cuenta_compra_retencion.impuesto) {
-        var impuestoPorcentaje = parseFloat(data.familia.cuenta_compra_retencion.impuesto.porcentaje);
-        var topeValor = parseFloat(data.familia.cuenta_compra_retencion.impuesto.base);
+function calcularRetencionCompras (producto) {
+    if (producto.familia.cuenta_compra_retencion && producto.familia.cuenta_compra_retencion.impuesto) {
+        var impuestoPorcentaje = parseFloat(producto.familia.cuenta_compra_retencion.impuesto.porcentaje);
+        var topeValor = parseFloat(producto.familia.cuenta_compra_retencion.impuesto.base);
         if (impuestoPorcentaje > porcentajeRetencionCompras) {
             porcentajeRetencionCompras = impuestoPorcentaje;
             topeRetencionCompras = topeValor;
         }
     }
 
-    if (data.familia.id_cuenta_compra_descuento && agregarDescuentoCompra) {
-        $('#compra_descuento_valor_'+idRow).prop('disabled', false);
-        $('#compra_descuento_porcentaje_'+idRow).prop('disabled', false);
-    } else {
-        $('#compra_descuento_valor_'+idRow).prop('disabled', true);
-        $('#compra_descuento_porcentaje_'+idRow).prop('disabled', true);
-    }
-
-    $('#compra_costo_'+idRow).val(parseFloat(data.precio_inicial));
-    $('#combo_producto_'+idRow).select2('open');
-    $('#compra_cantidad_'+idRow).prop('disabled', false);
-    $('#compra_costo_'+idRow).prop('disabled', false);
-    
     document.getElementById('compra_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionCompras+'%'+'<br> BASE '+ new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(topeRetencionCompras);
-        
-    calcularProducto(idRow);
-    clearFormasPagoCompras();
-    
-    setTimeout(function(){
-        $('#compra_cantidad_'+idRow).focus();
-        $('#compra_cantidad_'+idRow).select();
-    },10);
+    mostrarValoresCompras ();
 }
 
 function buscarFacturaCompra(event) {
@@ -656,83 +701,11 @@ function buscarFacturaCompra(event) {
     },100);
 }
 
-function CantidadkeyDown (idRow, event) {
-    if(event.keyCode == 13){
-        
-        var cantidad = $('#compra_cantidad_'+idRow).val();
-
-        if (cantidad <= 0) {
-            $('#compra_cantidad_'+idRow).val(1);
-            setTimeout(function(){
-                $('#compra_cantidad_'+idRow).focus();
-                $('#compra_cantidad_'+idRow).select();
-            },10);
-        } else {
-            calcularProducto(idRow);
-            setTimeout(function(){
-                $('#compra_costo_'+idRow).focus();
-                $('#compra_costo_'+idRow).select();
-            },10);
-        }
-    }
-}
-
-function CostokeyDown (idRow, event) {
-    if(event.keyCode == 13){
-        calcularProducto (idRow);
-        addRowProductoCompra();
-    }
-}
-
-function DescuentokeyDown (idRow, event) {
-    if(event.keyCode == 13){
-        calcularProducto(idRow);
-        setTimeout(function(){
-            $('#compra_descuento_valor_'+idRow).focus();
-            $('#compra_descuento_valor_'+idRow).select();
-        },10);
-    }
-}
-
-function DescuentoTotalkeyDown (idRow, event) {
-    if(event.keyCode == 13){
-        var descuentoProductoValor = $('#compra_descuento_valor_'+idRow).val();
-        var costoProducto = $('#compra_costo_'+idRow).val();
-        var cantidadProducto = $('#compra_cantidad_'+idRow).val();
-        var porcentajeDescuento = descuentoProductoValor * 100 / (costoProducto * cantidadProducto);
-
-        $('#compra_descuento_porcentaje_'+idRow).val(porcentajeDescuento);
-        calcularProducto(idRow);
-        setTimeout(function(){
-            $('#compra_iva_porcentaje_'+idRow).focus();
-            $('#compra_iva_porcentaje_'+idRow).select();
-        },10);
-    }
-}
-
-function IvakeyDown (idRow, event) {
-    if(event.keyCode == 13){
-        calcularProducto(idRow);
-        addRowProductoCompra();
-    }
-}
-
 $(document).on('click', '#cancelarCapturaCompra', function () {
     cancelarCompra();
 });
 
 function cancelarCompra() {
-    idCompraProducto = 0;
-    var totalRows = compra_table.rows().data().length;
-
-    if(compra_table.rows().data().length){
-        compra_table.clear([]).draw();
-        for (let index = 0; index < totalRows; index++) {
-            compra_table.row(0).remove().draw();
-        }
-        mostrarValoresCompras();
-    }
-
     $("#id_bodega_compra").prop('disabled', false);
 
     $('#agregarCompra').hide();
@@ -741,8 +714,13 @@ function cancelarCompra() {
     $("#crearCapturaCompra").hide();
     $("#cancelarCapturaCompra").hide();
     $("#crearCapturaCompraDisabled").hide();
+    $("#documento_referencia_compra").val(null);
 
+    const hotComprasCount = hotCompras.countRows();
+    hotCompras.alter('remove_row', 0, hotComprasCount);
+    
     setTimeout(function(){
+        mostrarValoresCompras();
         $comboProveedor.select2("open");
     },10);
 }
@@ -763,11 +741,11 @@ $(document).on('click', '#iniciarCapturaCompra', function () {
     $("#cancelarCapturaCompra").show();
     $("#crearCapturaCompraDisabled").show();
 
-    addRowProductoCompra();
+    iniciarCapturaCompra();
 });
 
 $(document).on('click', '#agregarCompra', function () {
-    addRowProductoCompra();
+    iniciarCapturaCompra();
 });
 
 $(document).on('click', '#crearCapturaCompra', function () {
@@ -804,17 +782,11 @@ function saveCompra() {
             if(res.impresion) {
                 window.open("/compras-print/"+res.impresion, "", "_blank");
             }
-            idCompraProducto = 0;
+
             $('#iniciarCapturaCompra').hide();
             $('#iniciarCapturaCompraLoading').hide();
             $('#documento_referencia_compra').val('');
 
-            var totalRows = compra_table.rows().data().length;
-            for (let index = 0; index < totalRows; index++) {
-                compra_table.row(0).remove().draw();
-            }
-
-            mostrarValoresCompras();
             agregarToast('exito', 'Creación exitosa', 'Compra creada con exito!', true);
             disabledFormasPagoCompras();
             cancelarCompra();
@@ -862,69 +834,28 @@ function ocultarBotonesCabezaCompra () {
 
 function getProductosCompra(){
     var data = [];
-    var dataDocumento = compra_table.rows().data();
 
-    if (!dataDocumento.length) return data;
-
-    for (let index = 0; index < dataDocumento.length; index++) {
-
-        const id_row = dataDocumento[index].id;
-        var id_producto = $('#combo_producto_'+id_row).val();
-        var cantidad = $('#compra_cantidad_'+id_row).val();
-        
-        if (id_producto && cantidad) {
-            var costo = $('#compra_costo_'+id_row).val();
-            var descuento_porcentaje = $('#compra_descuento_porcentaje_'+id_row).val();
-            var descuento_valor = $('#compra_descuento_valor_'+id_row).val();
-            var iva_porcentaje = $('#compra_iva_porcentaje_'+id_row).val();
-            var iva_valor = $('#compra_iva_valor_'+id_row).val();
-            var total = $('#compra_total_'+id_row).val();
-
+    const hotComprasCount = hotCompras.countRows();
+    for (let index = 0; index < hotComprasCount; index++) {
+        const id_producto = hotCompras.getDataAtCell(index, 10);
+        if (id_producto) {
+            const cantidad = hotCompras.getDataAtCell(index, 3);
+            const costo = hotCompras.getDataAtCell(index, 4);
             data.push({
-                id_producto: parseInt(id_producto),
-                cantidad: parseInt(cantidad),
-                costo: costo ? parseFloat(costo) : 0,
-                subtotal: parseInt(cantidad) * parseFloat(costo),
-                descuento_porcentaje: descuento_porcentaje ? parseFloat(descuento_porcentaje) : 0,
-                descuento_valor: descuento_valor ? parseFloat(descuento_valor) : 0,
-                iva_porcentaje: iva_porcentaje ? parseFloat(iva_porcentaje) : 0,
-                iva_valor: iva_valor ? parseFloat(iva_valor) : 0,
-                total: total ? parseFloat(total) : 0,
+                id_producto: id_producto,
+                cantidad: cantidad,
+                costo: costo,
+                subtotal: cantidad * costo,
+                descuento_valor: hotCompras.getDataAtCell(index, 5),
+                descuento_porcentaje: hotCompras.getDataAtCell(index, 6),
+                iva_porcentaje: hotCompras.getDataAtCell(index, 7),
+                iva_valor: hotCompras.getDataAtCell(index, 8),
+                total: hotCompras.getDataAtCell(index, 9),
             });
         }
     }
     
     return data;
-}
-
-function calcularProducto (idRow) {
-    var costoProducto = $('#compra_costo_'+idRow).val();
-    var cantidadProducto = $('#compra_cantidad_'+idRow).val();
-    var ivaProducto = $('#compra_iva_porcentaje_'+idRow).val();
-    var descuentoProducto = $('#compra_descuento_porcentaje_'+idRow).val();
-    var totalPorCantidad = 0;
-    var totalIva = 0;
-    var totalDescuento = 0;
-    var totalProducto = 0;
-    
-    if (cantidadProducto > 0) {
-        totalPorCantidad = cantidadProducto * costoProducto;
-    }
-
-    if (descuentoProducto > 0) {
-        totalDescuento = totalPorCantidad * descuentoProducto / 100;
-        $('#compra_descuento_valor_'+idRow).val(totalDescuento);
-    }
-
-    if (ivaProducto > 0) {
-        totalIva = (totalPorCantidad - totalDescuento) * ivaProducto / 100;
-        $('#compra_iva_valor_'+idRow).val(totalIva);
-    }
-
-    totalProducto = totalPorCantidad - totalDescuento + totalIva;
-    $('#compra_total_'+idRow).val(totalProducto);
-
-    mostrarValoresCompras ();
 }
 
 function mostrarValoresCompras () {
@@ -970,28 +901,26 @@ function disabledFormasPagoCompras(estado = true) {
 }
 
 function totalValoresCompras() {
-    var iva = retencion = descuento = total = 0;
-    var valorBruto = 0;
-    var dataCompra = compra_table.rows().data();
+    var iva = retencion = descuento = total = valorBruto = 0;
 
-    if(dataCompra.length > 0) {
-        
-        for (let index = 0; index < dataCompra.length; index++) {
-            var producto = $('#combo_producto_'+dataCompra[index].id).val();
-             
-            if (producto) {
-                var cantidad = $('#compra_cantidad_'+dataCompra[index].id).val();
-                var costo = $('#compra_costo_'+dataCompra[index].id).val();
-                var ivaSum = $('#compra_iva_valor_'+dataCompra[index].id).val();
-                var totaSum = $('#compra_total_'+dataCompra[index].id).val();
-                var descSum = $('#compra_descuento_valor_'+dataCompra[index].id).val();
+    const columnCosto = hotCompras.getDataAtCol(4);
+    columnCosto.forEach(function(value) {
+        valorBruto += value || 0;
+    });
+    const columnDescuento = hotCompras.getDataAtCol(5);
+    columnDescuento.forEach(function(value) {
+        descuento += value || 0;
+    });
+    const columnIva = hotCompras.getDataAtCol(8);
+    columnIva.forEach(function(value) {
+        iva += value || 0;
+    });
+    const columnTotal = hotCompras.getDataAtCol(9);
+    columnTotal.forEach(function(value) {
+        total += value || 0;
+    });
 
-                iva+= parseInt(ivaSum ? ivaSum : 0);
-                descuento+= parseInt(descSum ? descSum : 0);
-                total+= parseInt(totaSum ? totaSum : 0);
-                valorBruto+= (cantidad*costo) - parseInt(descSum ? descSum : 0);
-            }
-        }
+    if (total) {
         if (total >= topeRetencionCompras) {
             retencion = porcentajeRetencionCompras ? (valorBruto * porcentajeRetencionCompras) / 100 : 0;
             total = total - retencion;
@@ -1012,22 +941,6 @@ function totalValoresCompras() {
     }
 
     return [iva, retencion, descuento, total, valorBruto];
-}
-
-function deleteProductoCompra (idRow) {
-    let dataCompra = compra_table.rows().data();
-
-    for (let row = 0; row < dataCompra.length; row++) {
-        let element = dataCompra[row];
-        if(element.id == idRow) {
-            compra_table.row(row).remove().draw();
-            if(!compra_table.rows().data().lengt){
-                $("#crearCapturaCompraDisabled").show();
-                $("#crearCapturaCompra").hide();
-            }
-        }
-    }
-    mostrarValoresCompras();
 }
 
 function changeFormaPagoCompra(idFormaPago, event) {

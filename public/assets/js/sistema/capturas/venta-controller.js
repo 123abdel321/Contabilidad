@@ -1,27 +1,30 @@
-var fecha = null;
-var venta_table = null;
-var venta_table_pagos = null;
-var validarFacturaVenta = null;
-var validarExistenciasProducto = null;
-var idVentaProducto = 0;
-var $comboBodegaVenta = null;
-var $comboResolucion = null;
-var $comboCliente = null;
-var $comboVendedor = null;
-var porcentajeRetencionVenta = 0;
-var topeRetencionVenta = 0;
-var guardarVenta = false;
-var abrirFormasPagoVentas = false;
-var key13PressNewRow = false;
-var guardandoVenta = false;
-var totalAnticiposDisponibles = 0;
-var redondearFactura = false;
-var createNewNit = false;
+let fecha = null;
+let venta_table = null;
+let venta_table_pagos = null;
+let validarFacturaVenta = null;
+let validarExistenciasProducto = null;
+let idVentaProducto = 0;
+let $comboBodegaVenta = null;
+let $comboResolucion = null;
+let $comboCliente = null;
+let $comboVendedor = null;
+let porcentajeRetencionVenta = 0;
+let topeRetencionVenta = 0;
+let guardarVenta = false;
+let abrirFormasPagoVentas = false;
+let key13PressNewRow = false;
+let guardandoVenta = false;
+let totalAnticiposDisponibles = 0;
+let redondearFactura = false;
+let createNewNit = false;
 
 function ventaInit () {
 
     fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
     $('#fecha_manual_venta').val(fecha);
+
+    if (ventaFecha) $("#fecha_manual_venta").prop('disabled', false);
+    else $("#fecha_manual_venta").prop('disabled', true);
 
     venta_table = $('#ventaTable').DataTable({
         dom: '',
@@ -91,6 +94,11 @@ function ventaInit () {
             {//TOTAL
                 "data": function (row, type, set, col){
                     return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right;" id="venta_total_${idVentaProducto}" value="0" disabled>`;
+                }
+            },
+            {//CONCEPTO
+                "data": function (row, type, set, col){
+                    return `<input type="text" class="form-control form-control-sm" id="venta_concepto_${row.id}" onkeypress="changeObservacionGasto(${row.id}, event)" onfocus="this.select();" onfocusout="changeObservacionGasto(${row.id})" style="width: 180px !important;" value="${row.concepto}" disabled>`;
                 }
             },
         ],
@@ -755,6 +763,7 @@ function addRowProductoVenta () {
         "porcentaje_iva": 0,
         "valor_iva": 0,
         "valor_total": 0,
+        "concepto": "",
     }).draw(false);
 
     $('#card-venta').focus();
@@ -802,7 +811,7 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
     }
 
     if (descuentoProducto > 0) {
-        totalDescuento = totalPorCantidad * descuentoProducto / 100;
+        totalDescuento = totalPorCantidad * (descuentoProducto / 100);
         $('#venta_descuento_valor_'+idRow).val(formatCurrencyValue(totalDescuento));
     } else {
         $('#venta_descuento_porcentaje_'+idRow).val(formatCurrencyValue(0));
@@ -815,8 +824,6 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
         totalIva = (totalPorCantidad - totalDescuento) * ivaProducto / 100;
         if (ivaIncluidoVentas) {
             totalIva = (totalPorCantidad - totalDescuento) - ((totalPorCantidad - totalDescuento) / (1 + (ivaProducto / 100)));
-        } else {
-            totalIva + totalIva;
         }
         
         $('#venta_iva_valor_'+idRow).val(formatCurrencyValue(totalIva));
@@ -1016,14 +1023,14 @@ function totalValoresVentas() {
             }
         }
 
+        if (ivaIncluidoVentas) valorBruto-= iva;
+
+        total = ivaIncluidoVentas ? valorBruto : valorBruto + iva;
+
         if (total >= topeRetencionVenta) {
             retencion = porcentajeRetencionVenta ? (valorBruto * porcentajeRetencionVenta) / 100 : 0;
             retencion = retencion;
         }
-
-        if (ivaIncluidoVentas) valorBruto-= iva;
-
-        total = ivaIncluidoVentas ? valorBruto : valorBruto + iva;
 
         if (redondearFactura) {
             var totalParaRedondear =  parseFloat(total / 1000);
@@ -1096,6 +1103,7 @@ function changeProductoVenta (idRow) {
     $('#venta_producto_'+idRow).select2('open');
     $('#venta_cantidad_'+idRow).prop('disabled', false);
     $('#venta_costo_'+idRow).prop('disabled', false);
+    $('#venta_concepto_'+idRow).prop('disabled', false);
     
     document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%';
         
@@ -1464,13 +1472,14 @@ function getProductosVenta() {
         var cantidad = $('#venta_cantidad_'+id_row).val();
         
         if (id_producto && cantidad) {
-            var costo = stringToNumberFloat($('#venta_costo_'+id_row).val());
-            var descuento_porcentaje = stringToNumberFloat($('#venta_descuento_porcentaje_'+id_row).val());
-            var descuento_valor = stringToNumberFloat($('#venta_descuento_valor_'+id_row).val());
-            var iva_porcentaje = stringToNumberFloat($('#venta_iva_porcentaje_'+id_row).val());
-            var iva_valor = stringToNumberFloat($('#venta_iva_valor_'+id_row).val());
-            var total = stringToNumberFloat($('#venta_total_'+id_row).val());
-            var subtotal = parseInt(cantidad) * costo;
+            let costo = stringToNumberFloat($('#venta_costo_'+id_row).val());
+            let descuento_porcentaje = stringToNumberFloat($('#venta_descuento_porcentaje_'+id_row).val());
+            let descuento_valor = stringToNumberFloat($('#venta_descuento_valor_'+id_row).val());
+            let iva_porcentaje = stringToNumberFloat($('#venta_iva_porcentaje_'+id_row).val());
+            let iva_valor = stringToNumberFloat($('#venta_iva_valor_'+id_row).val());
+            let total = stringToNumberFloat($('#venta_total_'+id_row).val());
+            let subtotal = parseInt(cantidad) * costo;
+            let concepto = $('#venta_concepto_'+id_row).val();
 
             if(ivaIncluidoVentas) {
                 subtotal-= iva_valor;
@@ -1486,6 +1495,7 @@ function getProductosVenta() {
                 iva_porcentaje: iva_porcentaje ? iva_porcentaje : 0,
                 iva_valor: iva_valor ? iva_valor : 0,
                 total: total ? total : 0,
+                concepto: concepto ? concepto : null,
             });
         }
     }

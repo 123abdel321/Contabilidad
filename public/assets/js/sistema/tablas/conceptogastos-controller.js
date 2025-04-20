@@ -4,6 +4,7 @@ var $comboCuentaGasto = null;
 var $comboCuentaGastoRetencion = null;
 var $comboCuentaGastoRetencionDeclarante = null;
 var $comboCuentaGastoIva = null;
+var $comboCuentaGastoReteIca = null;
 
 function conceptogastosInit() {
 
@@ -38,6 +39,7 @@ function conceptogastosInit() {
             type: "GET",
             headers: headers,
             url: base_url + 'concepto-gasto',
+
         },
         columns: [
             {"data":'codigo'},
@@ -70,6 +72,14 @@ function conceptogastosInit() {
                 "data": function (row, type, set){
                     if(row.cuenta_retencion_declarante){
                         return row.cuenta_retencion_declarante.cuenta + ' - ' + row.cuenta_retencion_declarante.nombre;
+                    }
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
+                    if(row.cuenta_reteica){
+                        return row.cuenta_reteica.cuenta + ' - ' + row.cuenta_reteica.nombre;
                     }
                     return '';
                 }
@@ -204,6 +214,40 @@ function conceptogastosInit() {
         }
     });
 
+    $comboCuentaGastoReteIca = $('#id_cuenta_concepto_gasto_reteica').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#conceptoGastosFormModal'),
+        delay: 250,
+        allowClear: true,
+        placeholder: "Seleccione una Cuenta",
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            }
+        },
+        ajax: {
+            url: 'api/plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    id_tipo_cuenta: [17]
+
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     let column = conceptos_gastos_table.column(7);
     
     if (!editarConceptoGastos && !eliminarConceptoGastos) column.visible(false);
@@ -262,6 +306,16 @@ function conceptogastosInit() {
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
                 $comboCuentaGastoIva.append(newOption).trigger('change');
                 $comboCuentaGastoIva.val(dataCuenta.id).trigger('change');
+            }
+
+            if(data.cuenta_reteica){
+                var dataCuenta = {
+                    id: data.cuenta_reteica.id,
+                    text: data.cuenta_reteica.cuenta + ' - ' + data.cuenta_reteica.nombre
+                };
+                var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
+                $comboCuentaGastoReteIca.append(newOption).trigger('change');
+                $comboCuentaGastoReteIca.val(dataCuenta.id).trigger('change');
             }
 
             $("#codigo_concepto_gasto").val(data.codigo);
@@ -409,7 +463,7 @@ $('.form-control').keyup(function() {
 
 $("#searchInputConceptoGastos").on("input", function (e) {
     conceptos_gastos_table.context[0].jqXHR.abort();
-    $('#cecosTable').DataTable().search($("#searchInputConceptoGastos").val()).draw();
+    $('#conceptoGastosTable').DataTable().search($("#searchInputConceptoGastos").val()).draw();
 });
 
 $(document).on('click', '#createConceptoGasto', function () {
@@ -458,6 +512,7 @@ $(document).on('click', '#saveConceptoGasto', function () {
         id_cuenta_gasto: $('#id_cuenta_concepto_gasto_gasto').val(),
         id_cuenta_retencion: $('#id_cuenta_concepto_gasto_retencion').val(),
         id_cuenta_retencion_declarante: $('#id_cuenta_concepto_gasto_retencion_declarante').val(),
+        id_cuenta_reteica: $('#id_cuenta_concepto_gasto_reteica').val(),
         id_cuenta_iva: $('#id_cuenta_concepto_gasto_iva').val(),
     };
 
@@ -515,6 +570,7 @@ $(document).on('click', '#updateConceptoGasto', function () {
         id_cuenta_gasto: $('#id_cuenta_concepto_gasto_gasto').val(),
         id_cuenta_retencion: $('#id_cuenta_concepto_gasto_retencion').val(),
         id_cuenta_retencion_declarante: $('#id_cuenta_concepto_gasto_retencion_declarante').val(),
+        id_cuenta_reteica: $('#id_cuenta_concepto_gasto_reteica').val(),
         id_cuenta_iva: $('#id_cuenta_concepto_gasto_iva').val(),
     };
 

@@ -9,6 +9,7 @@ function entornoInit() {
             'capturar_documento_descuadrado',
             'vendedores_ventas',
             'ubicacion_maximoph',
+            'fecha_ultimo_cierre',
         ];
 
         checksEntorno.forEach(entorno => {
@@ -27,6 +28,31 @@ function entornoInit() {
             $('#porcentaje_iva_aiu').val(variable.valor);
             continue;
         }
+
+        if (variable.nombre == 'fecha_ultimo_cierre') {
+            $('#fecha_ultimo_cierre').val(variable.valor);
+            continue;
+        }
+
+        if (variable.nombre == 'redondeo_gastos') {
+            $('#redondeo_gastos').val(variable.valor);
+            continue;
+        }
+
+        if (variable.nombre == 'cuenta_utilidad') {
+            $('#cuenta_utilidad').val(variable.valor);
+            continue;
+        }
+
+        if (variable.nombre == 'cuenta_perdida') {
+            $('#cuenta_perdida').val(variable.valor);
+            continue;
+        }
+
+        if (variable.nombre == 'observacion_venta') {
+            quill.root.innerHTML = variable.valor;
+            continue;
+        }
     }
 }
 
@@ -37,6 +63,11 @@ $(document).on('click', '#updateEntorno', function () {
     let data = {
         valor_uvt: $('#valor_uvt').val(),
         porcentaje_iva_aiu: $('#porcentaje_iva_aiu').val(),
+        redondeo_gastos: $('#redondeo_gastos').val(),
+        cuenta_utilidad: $('#cuenta_utilidad').val(),
+        cuenta_perdida: $('#cuenta_perdida').val(),
+        fecha_ultimo_cierre: $('#fecha_ultimo_cierre').val(),
+        observacion_venta: quill.root.innerHTML,
         iva_incluido: $("input[type='checkbox']#iva_incluido").is(':checked') ? '1' : '',
         capturar_documento_descuadrado: $("input[type='checkbox']#capturar_documento_descuadrado").is(':checked') ? '1' : '0',
         vendedores_ventas: $("input[type='checkbox']#vendedores_ventas").is(':checked') ? '1' : '',
@@ -73,4 +104,12 @@ $(document).on('click', '#updateEntorno', function () {
         }
         agregarToast('error', 'Actualización errada', errorsMsg);
     });
+});
+
+var quill = new Quill('#editor-container', {
+    theme: 'snow',
+    placeholder: 'Escribe algo aquí...',
+    modules: {
+        toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], ['link']]
+    }
 });

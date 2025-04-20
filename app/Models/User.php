@@ -41,31 +41,17 @@ class User extends Authenticatable
         'fondo_sistema'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+    protected $appends = ['nombre_completo'];
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Always encrypt the password when it is updated.
-     *
-     * @param $value
-    * @return string
-    */
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
@@ -92,6 +78,17 @@ class User extends Authenticatable
 
     public function checkRelacionEmpresa($empresa,$campo = "hash"){
 		return $this->empresas->where($campo,$empresa)->first();
+	}
+
+    public function getNombreCompletoAttribute()
+	{
+		if($this->razon_social) return $this->razon_social;
+
+        if ($this->lastname) {
+            return "$this->firstname $this->lastname";
+        }
+
+		return "$this->firstname";
 	}
 
 }

@@ -54,7 +54,12 @@ class EntornoController extends Controller
                 'valor_uvt',
                 'vendedores_ventas',
                 'porcentaje_iva_aiu',
+                'redondeo_gastos',
                 'ubicacion_maximoph',
+                'cuenta_utilidad',
+                'cuenta_perdida',
+                'observacion_venta',
+                'fecha_ultimo_cierre'
             ];
             
             foreach ($variablesEntorno as $variable) {
@@ -62,7 +67,7 @@ class EntornoController extends Controller
                     'nombre' => $variable,
                 ],[
                     'nombre' => $variable,
-                    'valor' => $request->get($variable) ? $request->get($variable) : '',
+                    'valor' => $request->get($variable)
                 ]);
 
                 if ($variable == 'valor_uvt') {

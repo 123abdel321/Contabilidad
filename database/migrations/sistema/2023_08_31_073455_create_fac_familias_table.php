@@ -22,12 +22,14 @@ return new class extends Migration
             $table->integer('id_cuenta_venta_iva')->nullable();
             $table->integer('id_cuenta_venta_descuento')->nullable();
             $table->integer('id_cuenta_venta_devolucion_iva')->nullable();
+            $table->integer('id_cuenta_venta_impuestos')->nullable();
             $table->integer('id_cuenta_compra')->nullable();
             $table->integer('id_cuenta_compra_retencion')->nullable();
             $table->integer('id_cuenta_compra_devolucion')->nullable();
             $table->integer('id_cuenta_compra_iva')->nullable();
             $table->integer('id_cuenta_compra_descuento')->nullable();
             $table->integer('id_cuenta_compra_devolucion_iva')->nullable();
+            $table->integer('id_cuenta_compra_impuestos')->nullable();
             $table->integer('id_cuenta_inventario')->nullable();
             $table->integer('id_cuenta_costos')->nullable();
             $table->integer('created_by')->nullable();

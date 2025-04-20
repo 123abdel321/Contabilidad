@@ -26,9 +26,12 @@
 
                         <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_servicio" onChange="changeProducType()" autocomplete="off">
                         <label class="btn btn-sm btn-outline-primary" for="tipo_producto_servicio">Servicio</label>
-
-                        <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_combo" onChange="changeProducType()" autocomplete="off" disabled>
-                        <label class="btn btn-sm btn-outline-primary" for="tipo_producto_combo">Combo</label>
+                        @can('parqueadero productos')
+                            <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_parqueadero" onChange="changeProducType()" autocomplete="off">
+                            <label class="btn btn-sm btn-outline-primary" for="tipo_producto_parqueadero">Parqueadero</label>
+                        @endcan
+                        <!-- <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_combo" onChange="changeProducType()" autocomplete="off" disabled>
+                        <label class="btn btn-sm btn-outline-primary" for="tipo_producto_combo">Combo</label> -->
                         
                     </div>
 
@@ -62,7 +65,7 @@
                     </div>
     
                     <div class="form-group col-6 col-sm-6 col-md-6">
-                        <label for="exampleFormControlSelect1">Familia</label>
+                        <label for="id_familia_producto">Familia</label>
                         <select name="id_familia_producto" id="id_familia_producto" class="form-control form-control-sm" required>
                         </select>
                         <div class="invalid-feedback">
@@ -70,7 +73,25 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-6 col-md-6" >
+                    <div id="div-tipo-tiempo" class="form-group col-6 col-sm-6 col-md-6">
+                        <label for="tipo_tiempo_producto">Formato Tiempo</label>
+                        <select name="tipo_tiempo_producto" id="tipo_tiempo_producto" class="form-control form-control-sm" required>
+                            <option value="1">Hora</option>
+                            <option value="2">Día</option>
+                            <option value="3">Mes</option>
+                        </select>
+                    </div>
+
+                    <div id="div-tipo-vehiculo" class="form-group col-6 col-sm-6 col-md-6">
+                        <label for="tipo_vehiculo_producto">Tipo vehiculo</label>
+                        <select name="tipo_vehiculo_producto" id="tipo_vehiculo_producto" class="form-control form-control-sm" required>
+                            <option value="1">CARRO</option>
+                            <option value="2">MOTO</option>
+                            <option value="3">OTROS</option>
+                        </select>
+                    </div>
+
+                    <div id="div-precio_inicial" class="form-group col-6 col-sm-6 col-md-6" >
                         <label for="example-text-input" class="form-control-label">Costo compra</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="precio_inicial" id="precio_inicial" onfocus="this.select();" onfocusout="addPrecioInicialProducto()" onkeypress="changeCostoCompra(event)" value="0" required>
                         <div class="invalid-feedback">
@@ -78,7 +99,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-6 col-md-6">
+                    <div id="div-porcentaje_utilidad" class="form-group col-6 col-sm-6 col-md-6">
                         <label for="example-text-input" class="form-control-label">Porcentaje utilidad</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_utilidad" id="porcentaje_utilidad" onfocusout="addPorcentajeUtilidadProducto()" onkeypress="changePorcentajeUtilidad(event)" value="0" required>
                         <div class="invalid-feedback">
@@ -86,7 +107,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-6 col-md-6">
+                    <div id="div-valor_utilidad" class="form-group col-6 col-sm-6 col-md-6">
                         <label for="example-text-input" class="form-control-label">Valor utilidad</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="valor_utilidad" id="valor_utilidad" onfocusout="addValorUtilidadProducto()" onkeypress="changeValorUtilidad(event)" value="0">
                         <div class="invalid-feedback">
@@ -101,8 +122,15 @@
                             El campo Precio es requerido
                         </div>
                     </div>
+
+                    <div id="div-fraccion_hora" class="form-check form-switch col-12 col-sm-6 col-md-4" style="display: none;">
+                        <input class="form-check-input" type="checkbox" name="fraccion_hora" id="fraccion_hora" style="height: 20px;">
+                        <label class="form-check-label" for="fraccion_hora">
+                            Fracción de tiempo
+                        </label>
+                    </div>
     
-                    <div class="form-group col-6 col-sm-6 col-md-6">
+                    <div id="div-precio_minimo" class="form-group col-6 col-sm-6 col-md-6">
                         <label for="example-text-input" class="form-control-label">Precio minimo</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" onfocusout="addPrecioMinimoProducto()" name="precio_minimo" id="precio_minimo" value="0" required>
                         <div class="invalid-feedback">

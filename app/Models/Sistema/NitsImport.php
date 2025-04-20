@@ -30,5 +30,7 @@ class NitsImport extends Model
         'observaciones',
         'email_1',
         'email_2',
+        'observacion',
+        'estado',
     ];
 }

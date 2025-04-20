@@ -44,8 +44,8 @@ function resultadosInit() {
             data: function ( d ) {
                 d.fecha_desde = $('#fecha_desde_resultado').val();
                 d.fecha_hasta = $('#fecha_hasta_resultado').val();
-                d.cuenta_desde = $('#cuenta_desde_resultados').val();
-                d.cuenta_hasta = $('#cuenta_hasta_resultados').val();
+                d.id_cuenta = $('#id_cuenta_resultado').val();
+                d.tipo = $('#tipo_informe_resultado').val();
                 d.id_cecos = $('#id_cecos_resultado').val();
                 d.id_nit = $('#id_nit_resultado').val();
                 d.generar = generarResultados;
@@ -190,6 +190,40 @@ function resultadosInit() {
             }
         }
     });
+
+    $('#id_cuenta_resultado').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione una cuenta",
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: base_url + 'plan-cuenta/combo-cuenta',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
 }
 
 function loadResultadosById(id_impuesto) {
@@ -208,8 +242,18 @@ $(document).on('click', '#generarResultado', function () {
     $("#generarResultado").hide();
     $("#generarResultadoLoading").show();
 
-    resultados_table.ajax.reload(function(res) {
-        console.log('res: ',res);
+    var url = base_url + 'resultados';
+    url+= '?fecha_desde='+$('#fecha_desde_resultado').val();
+    url+= '&fecha_hasta='+$('#fecha_hasta_resultado').val();
+    url+= '&id_cuenta='+$('#id_cuenta_resultado').val();
+    url+= '&tipo='+$('#tipo_informe_resultado').val();
+    url+= '&id_cecos='+$('#id_cecos_resultado').val();
+    url+= '&id_nit='+$('#id_nit_resultado').val();
+
+    resultados_table.ajax.url(url).load(function(res) {
+        if(res.success) {
+            agregarToast('info', 'Generando informe', 'En un momento se le notificará cuando el informe esté generado...', true );
+        }
     });
 });
 

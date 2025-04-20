@@ -15,6 +15,7 @@ use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\VendedoresController;
 use App\Http\Controllers\Tablas\FormasPagoController;
+use App\Http\Controllers\Tablas\UbicacionesController;
 use App\Http\Controllers\Tablas\CentroCostoController;
 use App\Http\Controllers\Tablas\PresupuestoController;
 use App\Http\Controllers\Tablas\ComprobantesController;
@@ -31,7 +32,10 @@ use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\PagosController;
 use App\Http\Controllers\Capturas\CompraController;
 use App\Http\Controllers\Capturas\GastosController;
+use App\Http\Controllers\Capturas\PedidoController;
+use App\Http\Controllers\Capturas\ReservaController;
 use App\Http\Controllers\Capturas\RecibosController;
+use App\Http\Controllers\Capturas\ParqueaderoController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
@@ -78,6 +82,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post("empresa","App\Http\Controllers\InstaladorController@createEmpresa");
     Route::post("seleccionar-empresa","App\Http\Controllers\ApiController@setEmpresa");
     Route::get('responsabilidades-combo', 'App\Http\Controllers\Configuracion\EmpresaController@comboResponsabilidades');
+    Route::get('actividad-economica-combo', 'App\Http\Controllers\Configuracion\EmpresaController@comboActividadEconomica');
     //CONFIGURACION
     Route::put('empresa', 'App\Http\Controllers\Configuracion\EmpresaController@updateEmpresa');
     Route::put('entorno', 'App\Http\Controllers\Configuracion\EntornoController@updateEntorno');
@@ -140,6 +145,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('documentos-generales', 'App\Http\Controllers\Informes\DocumentosGeneralesController@generate');
         Route::get('documentos-generales-show', 'App\Http\Controllers\Informes\DocumentosGeneralesController@show');
         Route::post('documentos-generales-delete', 'App\Http\Controllers\Informes\DocumentosGeneralesController@delete');
+        Route::post('documentos-generales-excel', 'App\Http\Controllers\Informes\DocumentosGeneralesController@exportExcel');
         //VENTAS GENERALES
         Route::get('ventas-generales', 'App\Http\Controllers\Informes\VentasGeneralesController@generate');
         Route::get('ventas-generales-show', 'App\Http\Controllers\Informes\VentasGeneralesController@show');
@@ -159,6 +165,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(ResumenComprobantesController::class)->group(function () {
             Route::get('resumen-comprobante', 'generate');
             Route::get('resumen-comprobante-show', 'show');
+            Route::post('resumen-comprobante-excel', 'exportExcel');
         });
         //INFORME RESULTADOS
         Route::controller(ResultadosController::class)->group(function () {
@@ -244,7 +251,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('bodega', 'update');
             Route::delete('bodega', 'delete');
             Route::get('bodega/combo-bodega', 'comboBodega');
+            Route::get('bodega-consecutivo', 'consecutivo');
             Route::get('existencias-producto', 'existenciasProducto');
+            Route::get('bodega-parqueadero-consecutivo', 'consecutivoParqueadero');
         });
         //VARIANTES
         Route::controller(VariantesController::class)->group(function () {
@@ -259,6 +268,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('producto', 'update');
             Route::delete('producto', 'delete');
             Route::get('producto/combo-producto', 'comboProducto');
+            Route::get('producto/combo-parqueadero', 'comboParqueadero');
+            Route::get('productos', 'getAll');
         });
         //CARGUE DESCARGUE
         Route::controller(CargueDescargueController::class)->group(function () {
@@ -278,6 +289,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         });
         //EXOGENA
         Route::controller(ExogenaController::class)->group(function () {
+            Route::get('exogena', 'generate');
             Route::get('exogena/formato', 'comboFormato');
             Route::get('exogena/columna', 'comboFormatoColumna');
             Route::get('exogena/concepto', 'comboFormatoConcepto');
@@ -303,7 +315,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(DocumentoGeneralController::class)->group(function () {
             Route::get('consecutivo', 'getConsecutivo');
             Route::get('documentos', 'generate');
-            Route::put('documentos', 'anular');
+            Route::post('documentos-anular', 'anular');
             Route::post('documentos', 'create');
             Route::post('bulk-documentos', 'bulkDocumentos');
             Route::post('generar-documentos', 'generarDocumentos');
@@ -319,12 +331,36 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //CAPTURA VENTA
         Route::controller(VentaController::class)->group(function () {
             Route::get('ventas', 'generate');
-            Route::post('ventas', 'create');
             Route::get('facturas', 'read');
+            Route::post('ventas', 'create');
+            Route::post('ventas-fe', 'facturacionElectronica');
+            Route::post('ventas-notificar', 'sendNotification');
+        });
+        //PEDIDO VENTA
+        Route::controller(PedidoController::class)->group(function () {
+            Route::post('pedido-ventas', 'venta');
+            Route::post('pedido', 'create');
+            Route::get('pedido', 'find');
+            Route::delete('pedido', 'delete');
+        });
+        //PARQUEADERO
+        Route::controller(ParqueaderoController::class)->group(function () {
+            Route::get('parqueadero', 'generate');
+            Route::post('parqueadero', 'create');
+            Route::put('parqueadero', 'update');
+            Route::post('parqueadero-ventas', 'venta');
+        });
+        //RESERVAS
+        Route::controller(ReservaController::class)->group(function () {
+            Route::post('reserva', 'create');
+            Route::put('reserva', 'update');
+            Route::get('reserva', 'table');
+            Route::delete('reserva', 'delete');
         });
         //CAPTURA GASTO
         Route::controller(GastosController::class)->group(function () {
             Route::post('gastos', 'create');
+            Route::get('gastos', 'find');
         });
         //CAPTURA RECIBO
         Route::controller(RecibosController::class)->group(function () {
@@ -351,6 +387,16 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('nota-credito/factura-detalle', 'detalleFactura');
             Route::post('nota-credito', 'create');
         });
+        //UBICACIONES
+        Route::controller(UbicacionesController::class)->group(function () {
+            Route::get('ubicaciones', 'generate');
+            Route::get('ubicaciones-combo', 'combo');
+            Route::post('ubicaciones', 'create');
+            Route::put('ubicaciones', 'update');
+            Route::delete('ubicaciones', 'delete');
+            Route::get('ubicaciones-combo-general', 'comboUbicacion');
+        });
+        
         
     });
     

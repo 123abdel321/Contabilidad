@@ -39,6 +39,7 @@ return new class extends Migration
             $table->decimal('credito', 15)->nullable();
             $table->decimal('diferencia', 15)->nullable();
             $table->integer('nivel')->nullable();
+            $table->integer('anulado')->nullable();
             $table->integer('total_columnas')->default(1)->nullable();
             $table->dateTime('fecha_creacion')->nullable();
             $table->dateTime('fecha_edicion')->nullable();

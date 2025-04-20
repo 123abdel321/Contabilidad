@@ -15,6 +15,7 @@ use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Empresas\UsuarioEmpresa;
 use App\Models\Sistema\VariablesEntorno;
+use App\Models\Empresas\ActividadesEconomicas;
 use App\Models\Empresas\ResponsabilidadesTributarias;
 
 class EmpresaController extends Controller
@@ -300,6 +301,21 @@ class EmpresaController extends Controller
         }
 
         return $responsabilidades->paginate(40);
+    }
+
+    public function comboActividadEconomica(Request $request)
+    {
+        $actividadEconomica = ActividadesEconomicas::select(
+            \DB::raw('*'),
+            \DB::raw("CONCAT(codigo, ' - ', nombre, ' %', porcentaje) as text")
+        );
+
+        if ($request->get("q")) {
+            $actividadEconomica->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        return $actividadEconomica->paginate(40);
     }
 
     private function getNitCompleto($dataPage)

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0ea23df243961a4446dae1984c45b57e",
+    "content-hash": "c074bde70fb68e6a048874cf6106a9d2",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -154,6 +154,60 @@
                 "source": "https://github.com/aws/aws-sdk-php/tree/3.277.11"
             },
             "time": "2023-08-08T18:06:20+00:00"
+        },
+        {
+            "name": "bacon/bacon-qr-code",
+            "version": "2.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Bacon/BaconQrCode.git",
+                "reference": "8674e51bb65af933a5ffaf1c308a660387c35c22"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/8674e51bb65af933a5ffaf1c308a660387c35c22",
+                "reference": "8674e51bb65af933a5ffaf1c308a660387c35c22",
+                "shasum": ""
+            },
+            "require": {
+                "dasprid/enum": "^1.0.3",
+                "ext-iconv": "*",
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "phly/keep-a-changelog": "^2.1",
+                "phpunit/phpunit": "^7 | ^8 | ^9",
+                "spatie/phpunit-snapshot-assertions": "^4.2.9",
+                "squizlabs/php_codesniffer": "^3.4"
+            },
+            "suggest": {
+                "ext-imagick": "to generate QR code images"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BaconQrCode\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Scholzen 'DASPRiD'",
+                    "email": "mail@dasprids.de",
+                    "homepage": "https://dasprids.de/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "BaconQrCode is a QR code generator for PHP.",
+            "homepage": "https://github.com/Bacon/BaconQrCode",
+            "support": {
+                "issues": "https://github.com/Bacon/BaconQrCode/issues",
+                "source": "https://github.com/Bacon/BaconQrCode/tree/2.0.8"
+            },
+            "time": "2022-12-07T17:46:57+00:00"
         },
         {
             "name": "baopham/dynamodb",
@@ -368,6 +422,73 @@
             "time": "2023-04-07T10:38:54+00:00"
         },
         {
+            "name": "beberlei/assert",
+            "version": "v3.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beberlei/assert.git",
+                "reference": "b5fd8eacd8915a1b627b8bfc027803f1939734dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/b5fd8eacd8915a1b627b8bfc027803f1939734dd",
+                "reference": "b5fd8eacd8915a1b627b8bfc027803f1939734dd",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-simplexml": "*",
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "*",
+                "phpstan/phpstan": "*",
+                "phpunit/phpunit": ">=6.0.0",
+                "yoast/phpunit-polyfills": "^0.1.0"
+            },
+            "suggest": {
+                "ext-intl": "Needed to allow Assertion::count(), Assertion::isCountable(), Assertion::minCount(), and Assertion::maxCount() to operate on ResourceBundles"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/Assert/functions.php"
+                ],
+                "psr-4": {
+                    "Assert\\": "lib/Assert"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Richard Quadling",
+                    "email": "rquadling@gmail.com",
+                    "role": "Collaborator"
+                }
+            ],
+            "description": "Thin assertion library for input validation in business models.",
+            "keywords": [
+                "assert",
+                "assertion",
+                "validation"
+            ],
+            "support": {
+                "issues": "https://github.com/beberlei/assert/issues",
+                "source": "https://github.com/beberlei/assert/tree/v3.3.3"
+            },
+            "time": "2024-07-15T13:18:35+00:00"
+        },
+        {
             "name": "beyondcode/laravel-websockets",
             "version": "1.14.0",
             "source": {
@@ -568,6 +689,72 @@
             "time": "2021-12-14T00:20:41+00:00"
         },
         {
+            "name": "clue/stream-filter",
+            "version": "v1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clue/stream-filter.git",
+                "reference": "049509fef80032cb3f051595029ab75b49a3c2f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clue/stream-filter/zipball/049509fef80032cb3f051595029ab75b49a3c2f7",
+                "reference": "049509fef80032cb3f051595029ab75b49a3c2f7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.6 || ^5.7 || ^4.8.36"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions_include.php"
+                ],
+                "psr-4": {
+                    "Clue\\StreamFilter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@clue.engineering"
+                }
+            ],
+            "description": "A simple and modern approach to stream filtering in PHP",
+            "homepage": "https://github.com/clue/stream-filter",
+            "keywords": [
+                "bucket brigade",
+                "callback",
+                "filter",
+                "php_user_filter",
+                "stream",
+                "stream_filter_append",
+                "stream_filter_register"
+            ],
+            "support": {
+                "issues": "https://github.com/clue/stream-filter/issues",
+                "source": "https://github.com/clue/stream-filter/tree/v1.7.0"
+            },
+            "funding": [
+                {
+                    "url": "https://clue.engineering/support",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/clue",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-12-20T15:40:13+00:00"
+        },
+        {
             "name": "composer/semver",
             "version": "3.3.2",
             "source": {
@@ -647,6 +834,56 @@
                 }
             ],
             "time": "2022-04-01T19:23:25+00:00"
+        },
+        {
+            "name": "dasprid/enum",
+            "version": "1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DASPRiD/Enum.git",
+                "reference": "8dfd07c6d2cf31c8da90c53b83c026c7696dda90"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DASPRiD/Enum/zipball/8dfd07c6d2cf31c8da90c53b83c026c7696dda90",
+                "reference": "8dfd07c6d2cf31c8da90c53b83c026c7696dda90",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1 <9.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7 || ^8 || ^9 || ^10 || ^11",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DASPRiD\\Enum\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Scholzen 'DASPRiD'",
+                    "email": "mail@dasprids.de",
+                    "homepage": "https://dasprids.de/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP 7.1 enum implementation",
+            "keywords": [
+                "enum",
+                "map"
+            ],
+            "support": {
+                "issues": "https://github.com/DASPRiD/Enum/issues",
+                "source": "https://github.com/DASPRiD/Enum/tree/1.0.6"
+            },
+            "time": "2024-08-09T14:30:48+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -3080,6 +3317,142 @@
             "time": "2023-06-21T14:59:35+00:00"
         },
         {
+            "name": "mailersend/laravel-driver",
+            "version": "v2.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mailersend/mailersend-laravel-driver.git",
+                "reference": "dd465077e89b903fe1dcc75c92203c7449ef57ee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mailersend/mailersend-laravel-driver/zipball/dd465077e89b903fe1dcc75c92203c7449ef57ee",
+                "reference": "dd465077e89b903fe1dcc75c92203c7449ef57ee",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/support": "^9.0 || ^10.0  || ^11.0",
+                "mailersend/mailersend": "^0.8.0 || ^0.23.0 || ^0.24.0",
+                "nyholm/psr7": "^1.5",
+                "php": ">=8.0",
+                "php-http/guzzle7-adapter": "^1.0",
+                "symfony/mailer": "^6.0 || ^7.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^7.0 || ^9.0",
+                "phpunit/phpunit": "^9.0 || ^10.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "LaravelDriver": "MailerSend\\LaravelDriver\\LaravelDriverFacade"
+                    },
+                    "providers": [
+                        "MailerSend\\LaravelDriver\\LaravelDriverServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "MailerSend\\LaravelDriver\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tautvydas Tijūnaitis",
+                    "email": "tautvydas@mailersend.com",
+                    "homepage": "https://mailersend.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "MailerSend Laravel Driver",
+            "homepage": "https://github.com/mailersend/mailersend-laravel-driver",
+            "keywords": [
+                "email",
+                "laravel-driver",
+                "mailersend",
+                "transactional"
+            ],
+            "support": {
+                "issues": "https://github.com/mailersend/mailersend-laravel-driver/issues",
+                "source": "https://github.com/mailersend/mailersend-laravel-driver/tree/v2.7.0"
+            },
+            "time": "2024-08-28T08:14:54+00:00"
+        },
+        {
+            "name": "mailersend/mailersend",
+            "version": "v0.24.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mailersend/mailersend-php.git",
+                "reference": "b8086404b78c8fa34683cf7ca9d0776eb08d080b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mailersend/mailersend-php/zipball/b8086404b78c8fa34683cf7ca9d0776eb08d080b",
+                "reference": "b8086404b78c8fa34683cf7ca9d0776eb08d080b",
+                "shasum": ""
+            },
+            "require": {
+                "beberlei/assert": "^3.2",
+                "ext-json": "*",
+                "illuminate/collections": "^8.0 || ^9.0 || ^10.0 || ^11.0",
+                "php": "^7.4|^8.0",
+                "php-http/client-common": "^2.2",
+                "php-http/discovery": "^1.9",
+                "php-http/httplug": "^2.1",
+                "psr/http-client-implementation": "^1.0",
+                "psr/http-message": "^1.0 || ^2.0",
+                "symfony/options-resolver": "^4.0.15 || ~4.1.9 || ^4.2.1 || ^5.0 || ^6.0 || ^7.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.4.0",
+                "guzzlehttp/psr7": "^1.5.2",
+                "http-interop/http-factory-guzzle": "^1.0",
+                "mockery/mockery": "^0.9.4",
+                "php-http/guzzle7-adapter": "^0.1 || ^1.0",
+                "php-http/message": "^1.0",
+                "php-http/mock-client": "^1.0",
+                "phpunit/phpunit": "^7.5.15 || ^8.4 || ^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MailerSend\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tautvydas Tijūnaitis",
+                    "email": "tautvydas@mailersend.com",
+                    "homepage": "https://mailersend.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "MailerSend PHP SDK",
+            "homepage": "https://github.com/mailersend/mailersend-php",
+            "keywords": [
+                "email",
+                "mailersend",
+                "transactional"
+            ],
+            "support": {
+                "issues": "https://github.com/mailersend/mailersend-php/issues",
+                "source": "https://github.com/mailersend/mailersend-php/tree/v0.24.0"
+            },
+            "time": "2024-05-09T13:41:18+00:00"
+        },
+        {
             "name": "markbaker/complex",
             "version": "3.0.2",
             "source": {
@@ -3879,6 +4252,84 @@
             "time": "2023-02-08T01:06:31+00:00"
         },
         {
+            "name": "nyholm/psr7",
+            "version": "1.8.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Nyholm/psr7.git",
+                "reference": "a71f2b11690f4b24d099d6b16690a90ae14fc6f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nyholm/psr7/zipball/a71f2b11690f4b24d099d6b16690a90ae14fc6f3",
+                "reference": "a71f2b11690f4b24d099d6b16690a90ae14fc6f3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.1 || ^2.0"
+            },
+            "provide": {
+                "php-http/message-factory-implementation": "1.0",
+                "psr/http-factory-implementation": "1.0",
+                "psr/http-message-implementation": "1.0"
+            },
+            "require-dev": {
+                "http-interop/http-factory-tests": "^0.9",
+                "php-http/message-factory": "^1.0",
+                "php-http/psr7-integration-tests": "^1.0",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.4",
+                "symfony/error-handler": "^4.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nyholm\\Psr7\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com"
+                },
+                {
+                    "name": "Martijn van der Ven",
+                    "email": "martijn@vanderven.se"
+                }
+            ],
+            "description": "A fast PHP7 implementation of PSR-7",
+            "homepage": "https://tnyholm.se",
+            "keywords": [
+                "psr-17",
+                "psr-7"
+            ],
+            "support": {
+                "issues": "https://github.com/Nyholm/psr7/issues",
+                "source": "https://github.com/Nyholm/psr7/tree/1.8.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Zegnat",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nyholm",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-09-09T07:06:30+00:00"
+        },
+        {
             "name": "orangehill/iseed",
             "version": "v3.0.3",
             "source": {
@@ -4166,6 +4617,391 @@
                 "source": "https://github.com/dompdf/php-svg-lib/tree/0.5.0"
             },
             "time": "2022-09-06T12:16:56+00:00"
+        },
+        {
+            "name": "php-http/client-common",
+            "version": "2.7.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/client-common.git",
+                "reference": "0cfe9858ab9d3b213041b947c881d5b19ceeca46"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/client-common/zipball/0cfe9858ab9d3b213041b947c881d5b19ceeca46",
+                "reference": "0cfe9858ab9d3b213041b947c881d5b19ceeca46",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0",
+                "php-http/httplug": "^2.0",
+                "php-http/message": "^1.6",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.0 || ^2.0",
+                "symfony/options-resolver": "~4.0.15 || ~4.1.9 || ^4.2.1 || ^5.0 || ^6.0 || ^7.0",
+                "symfony/polyfill-php80": "^1.17"
+            },
+            "require-dev": {
+                "doctrine/instantiator": "^1.1",
+                "guzzlehttp/psr7": "^1.4",
+                "nyholm/psr7": "^1.2",
+                "phpspec/phpspec": "^5.1 || ^6.3 || ^7.1",
+                "phpspec/prophecy": "^1.10.2",
+                "phpunit/phpunit": "^7.5.20 || ^8.5.33 || ^9.6.7"
+            },
+            "suggest": {
+                "ext-json": "To detect JSON responses with the ContentTypePlugin",
+                "ext-libxml": "To detect XML responses with the ContentTypePlugin",
+                "php-http/cache-plugin": "PSR-6 Cache plugin",
+                "php-http/logger-plugin": "PSR-3 Logger plugin",
+                "php-http/stopwatch-plugin": "Symfony Stopwatch plugin"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Http\\Client\\Common\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com"
+                }
+            ],
+            "description": "Common HTTP Client implementations and tools for HTTPlug",
+            "homepage": "http://httplug.io",
+            "keywords": [
+                "client",
+                "common",
+                "http",
+                "httplug"
+            ],
+            "support": {
+                "issues": "https://github.com/php-http/client-common/issues",
+                "source": "https://github.com/php-http/client-common/tree/2.7.2"
+            },
+            "time": "2024-09-24T06:21:48+00:00"
+        },
+        {
+            "name": "php-http/discovery",
+            "version": "1.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/discovery.git",
+                "reference": "82fe4c73ef3363caed49ff8dd1539ba06044910d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/discovery/zipball/82fe4c73ef3363caed49ff8dd1539ba06044910d",
+                "reference": "82fe4c73ef3363caed49ff8dd1539ba06044910d",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0|^2.0",
+                "php": "^7.1 || ^8.0"
+            },
+            "conflict": {
+                "nyholm/psr7": "<1.0",
+                "zendframework/zend-diactoros": "*"
+            },
+            "provide": {
+                "php-http/async-client-implementation": "*",
+                "php-http/client-implementation": "*",
+                "psr/http-client-implementation": "*",
+                "psr/http-factory-implementation": "*",
+                "psr/http-message-implementation": "*"
+            },
+            "require-dev": {
+                "composer/composer": "^1.0.2|^2.0",
+                "graham-campbell/phpspec-skip-example-extension": "^5.0",
+                "php-http/httplug": "^1.0 || ^2.0",
+                "php-http/message-factory": "^1.0",
+                "phpspec/phpspec": "^5.1 || ^6.1 || ^7.3",
+                "sebastian/comparator": "^3.0.5 || ^4.0.8",
+                "symfony/phpunit-bridge": "^6.4.4 || ^7.0.1"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Http\\Discovery\\Composer\\Plugin",
+                "plugin-optional": true
+            },
+            "autoload": {
+                "psr-4": {
+                    "Http\\Discovery\\": "src/"
+                },
+                "exclude-from-classmap": [
+                    "src/Composer/Plugin.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com"
+                }
+            ],
+            "description": "Finds and installs PSR-7, PSR-17, PSR-18 and HTTPlug implementations",
+            "homepage": "http://php-http.org",
+            "keywords": [
+                "adapter",
+                "client",
+                "discovery",
+                "factory",
+                "http",
+                "message",
+                "psr17",
+                "psr7"
+            ],
+            "support": {
+                "issues": "https://github.com/php-http/discovery/issues",
+                "source": "https://github.com/php-http/discovery/tree/1.20.0"
+            },
+            "time": "2024-10-02T11:20:13+00:00"
+        },
+        {
+            "name": "php-http/guzzle7-adapter",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/guzzle7-adapter.git",
+                "reference": "03a415fde709c2f25539790fecf4d9a31bc3d0eb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/guzzle7-adapter/zipball/03a415fde709c2f25539790fecf4d9a31bc3d0eb",
+                "reference": "03a415fde709c2f25539790fecf4d9a31bc3d0eb",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "php": "^7.3 | ^8.0",
+                "php-http/httplug": "^2.0",
+                "psr/http-client": "^1.0"
+            },
+            "provide": {
+                "php-http/async-client-implementation": "1.0",
+                "php-http/client-implementation": "1.0",
+                "psr/http-client-implementation": "1.0"
+            },
+            "require-dev": {
+                "php-http/client-integration-tests": "^3.0",
+                "php-http/message-factory": "^1.1",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^8.0|^9.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Http\\Adapter\\Guzzle7\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com"
+                }
+            ],
+            "description": "Guzzle 7 HTTP Adapter",
+            "homepage": "http://httplug.io",
+            "keywords": [
+                "Guzzle",
+                "http"
+            ],
+            "support": {
+                "issues": "https://github.com/php-http/guzzle7-adapter/issues",
+                "source": "https://github.com/php-http/guzzle7-adapter/tree/1.1.0"
+            },
+            "time": "2024-11-26T11:14:36+00:00"
+        },
+        {
+            "name": "php-http/httplug",
+            "version": "2.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/httplug.git",
+                "reference": "5cad731844891a4c282f3f3e1b582c46839d22f4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/httplug/zipball/5cad731844891a4c282f3f3e1b582c46839d22f4",
+                "reference": "5cad731844891a4c282f3f3e1b582c46839d22f4",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0",
+                "php-http/promise": "^1.1",
+                "psr/http-client": "^1.0",
+                "psr/http-message": "^1.0 || ^2.0"
+            },
+            "require-dev": {
+                "friends-of-phpspec/phpspec-code-coverage": "^4.1 || ^5.0 || ^6.0",
+                "phpspec/phpspec": "^5.1 || ^6.0 || ^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Http\\Client\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eric GELOEN",
+                    "email": "geloen.eric@gmail.com"
+                },
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com",
+                    "homepage": "https://sagikazarmark.hu"
+                }
+            ],
+            "description": "HTTPlug, the HTTP client abstraction for PHP",
+            "homepage": "http://httplug.io",
+            "keywords": [
+                "client",
+                "http"
+            ],
+            "support": {
+                "issues": "https://github.com/php-http/httplug/issues",
+                "source": "https://github.com/php-http/httplug/tree/2.4.1"
+            },
+            "time": "2024-09-23T11:39:58+00:00"
+        },
+        {
+            "name": "php-http/message",
+            "version": "1.16.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/message.git",
+                "reference": "06dd5e8562f84e641bf929bfe699ee0f5ce8080a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/message/zipball/06dd5e8562f84e641bf929bfe699ee0f5ce8080a",
+                "reference": "06dd5e8562f84e641bf929bfe699ee0f5ce8080a",
+                "shasum": ""
+            },
+            "require": {
+                "clue/stream-filter": "^1.5",
+                "php": "^7.2 || ^8.0",
+                "psr/http-message": "^1.1 || ^2.0"
+            },
+            "provide": {
+                "php-http/message-factory-implementation": "1.0"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.6",
+                "ext-zlib": "*",
+                "guzzlehttp/psr7": "^1.0 || ^2.0",
+                "laminas/laminas-diactoros": "^2.0 || ^3.0",
+                "php-http/message-factory": "^1.0.2",
+                "phpspec/phpspec": "^5.1 || ^6.3 || ^7.1",
+                "slim/slim": "^3.0"
+            },
+            "suggest": {
+                "ext-zlib": "Used with compressor/decompressor streams",
+                "guzzlehttp/psr7": "Used with Guzzle PSR-7 Factories",
+                "laminas/laminas-diactoros": "Used with Diactoros Factories",
+                "slim/slim": "Used with Slim Framework PSR-7 implementation"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/filters.php"
+                ],
+                "psr-4": {
+                    "Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com"
+                }
+            ],
+            "description": "HTTP Message related tools",
+            "homepage": "http://php-http.org",
+            "keywords": [
+                "http",
+                "message",
+                "psr-7"
+            ],
+            "support": {
+                "issues": "https://github.com/php-http/message/issues",
+                "source": "https://github.com/php-http/message/tree/1.16.2"
+            },
+            "time": "2024-10-02T11:34:13+00:00"
+        },
+        {
+            "name": "php-http/promise",
+            "version": "1.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/promise.git",
+                "reference": "fc85b1fba37c169a69a07ef0d5a8075770cc1f83"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/promise/zipball/fc85b1fba37c169a69a07ef0d5a8075770cc1f83",
+                "reference": "fc85b1fba37c169a69a07ef0d5a8075770cc1f83",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "friends-of-phpspec/phpspec-code-coverage": "^4.3.2 || ^6.3",
+                "phpspec/phpspec": "^5.1.2 || ^6.2 || ^7.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Http\\Promise\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Joel Wurtz",
+                    "email": "joel.wurtz@gmail.com"
+                },
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com"
+                }
+            ],
+            "description": "Promise used for asynchronous HTTP requests",
+            "homepage": "http://httplug.io",
+            "keywords": [
+                "promise"
+            ],
+            "support": {
+                "issues": "https://github.com/php-http/promise/issues",
+                "source": "https://github.com/php-http/promise/tree/1.3.1"
+            },
+            "time": "2024-03-15T13:55:21+00:00"
         },
         {
             "name": "phpoffice/phpspreadsheet",
@@ -5788,6 +6624,74 @@
             "time": "2021-12-11T13:40:54+00:00"
         },
         {
+            "name": "simplesoftwareio/simple-qrcode",
+            "version": "4.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SimpleSoftwareIO/simple-qrcode.git",
+                "reference": "916db7948ca6772d54bb617259c768c9cdc8d537"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SimpleSoftwareIO/simple-qrcode/zipball/916db7948ca6772d54bb617259c768c9cdc8d537",
+                "reference": "916db7948ca6772d54bb617259c768c9cdc8d537",
+                "shasum": ""
+            },
+            "require": {
+                "bacon/bacon-qr-code": "^2.0",
+                "ext-gd": "*",
+                "php": ">=7.2|^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1",
+                "phpunit/phpunit": "~9"
+            },
+            "suggest": {
+                "ext-imagick": "Allows the generation of PNG QrCodes.",
+                "illuminate/support": "Allows for use within Laravel."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "QrCode": "SimpleSoftwareIO\\QrCode\\Facades\\QrCode"
+                    },
+                    "providers": [
+                        "SimpleSoftwareIO\\QrCode\\QrCodeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SimpleSoftwareIO\\QrCode\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Simple Software LLC",
+                    "email": "support@simplesoftware.io"
+                }
+            ],
+            "description": "Simple QrCode is a QR code generator made for Laravel.",
+            "homepage": "https://www.simplesoftware.io/#/docs/simple-qrcode",
+            "keywords": [
+                "Simple",
+                "generator",
+                "laravel",
+                "qrcode",
+                "wrapper"
+            ],
+            "support": {
+                "issues": "https://github.com/SimpleSoftwareIO/simple-qrcode/issues",
+                "source": "https://github.com/SimpleSoftwareIO/simple-qrcode/tree/4.2.0"
+            },
+            "time": "2021-02-08T20:43:55+00:00"
+        },
+        {
             "name": "smalot/pdfparser",
             "version": "v2.10.0",
             "source": {
@@ -5837,6 +6741,229 @@
                 "source": "https://github.com/smalot/pdfparser/tree/v2.10.0"
             },
             "time": "2024-04-29T06:36:50+00:00"
+        },
+        {
+            "name": "spatie/db-dumper",
+            "version": "3.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/db-dumper.git",
+                "reference": "55d4d6710e1ab18c1e7ce2b22b8ad4bea2a30016"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/db-dumper/zipball/55d4d6710e1ab18c1e7ce2b22b8ad4bea2a30016",
+                "reference": "55d4d6710e1ab18c1e7ce2b22b8ad4bea2a30016",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0",
+                "symfony/process": "^5.0|^6.0|^7.0"
+            },
+            "require-dev": {
+                "pestphp/pest": "^1.22"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\DbDumper\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Dump databases",
+            "homepage": "https://github.com/spatie/db-dumper",
+            "keywords": [
+                "database",
+                "db-dumper",
+                "dump",
+                "mysqldump",
+                "spatie"
+            ],
+            "support": {
+                "source": "https://github.com/spatie/db-dumper/tree/3.7.1"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-11-18T14:54:31+00:00"
+        },
+        {
+            "name": "spatie/laravel-backup",
+            "version": "9.2.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-backup.git",
+                "reference": "50effa86d6614282da747ae1194912e0ed273daf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-backup/zipball/50effa86d6614282da747ae1194912e0ed273daf",
+                "reference": "50effa86d6614282da747ae1194912e0ed273daf",
+                "shasum": ""
+            },
+            "require": {
+                "ext-zip": "^1.14.0",
+                "illuminate/console": "^10.10.0|^11.0",
+                "illuminate/contracts": "^10.10.0|^11.0",
+                "illuminate/events": "^10.10.0|^11.0",
+                "illuminate/filesystem": "^10.10.0|^11.0",
+                "illuminate/notifications": "^10.10.0|^11.0",
+                "illuminate/support": "^10.10.0|^11.0",
+                "league/flysystem": "^3.0",
+                "php": "^8.2",
+                "spatie/db-dumper": "^3.7",
+                "spatie/laravel-package-tools": "^1.6.2",
+                "spatie/laravel-signal-aware-command": "^1.2|^2.0",
+                "spatie/temporary-directory": "^2.0",
+                "symfony/console": "^6.0|^7.0",
+                "symfony/finder": "^6.0|^7.0"
+            },
+            "require-dev": {
+                "composer-runtime-api": "^2.0",
+                "ext-pcntl": "*",
+                "larastan/larastan": "^2.7.0",
+                "laravel/slack-notification-channel": "^2.5|^3.0",
+                "league/flysystem-aws-s3-v3": "^2.0|^3.0",
+                "mockery/mockery": "^1.4",
+                "orchestra/testbench": "^8.0|^9.0",
+                "pestphp/pest": "^1.20|^2.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.1",
+                "rector/rector": "^1.1"
+            },
+            "suggest": {
+                "laravel/slack-notification-channel": "Required for sending notifications via Slack"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\Backup\\BackupServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/Helpers/functions.php"
+                ],
+                "psr-4": {
+                    "Spatie\\Backup\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel package to backup your application",
+            "homepage": "https://github.com/spatie/laravel-backup",
+            "keywords": [
+                "backup",
+                "database",
+                "laravel-backup",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-backup/issues",
+                "source": "https://github.com/spatie/laravel-backup/tree/9.2.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/spatie",
+                    "type": "github"
+                },
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "other"
+                }
+            ],
+            "time": "2025-01-31T11:14:27+00:00"
+        },
+        {
+            "name": "spatie/laravel-package-tools",
+            "version": "1.18.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-package-tools.git",
+                "reference": "ba67eee37d86ed775dab7dad58a7cbaf9a6cfe78"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/ba67eee37d86ed775dab7dad58a7cbaf9a6cfe78",
+                "reference": "ba67eee37d86ed775dab7dad58a7cbaf9a6cfe78",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^9.28|^10.0|^11.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.5",
+                "orchestra/testbench": "^7.7|^8.0|^9.0",
+                "pestphp/pest": "^1.22|^2",
+                "phpunit/phpunit": "^9.5.24|^10.5",
+                "spatie/pest-plugin-test-time": "^1.1|^2.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\LaravelPackageTools\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Tools for creating Laravel packages",
+            "homepage": "https://github.com/spatie/laravel-package-tools",
+            "keywords": [
+                "laravel-package-tools",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-package-tools/issues",
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.18.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-01-22T08:51:18+00:00"
         },
         {
             "name": "spatie/laravel-permission",
@@ -5919,6 +7046,141 @@
                 }
             ],
             "time": "2023-08-30T23:41:24+00:00"
+        },
+        {
+            "name": "spatie/laravel-signal-aware-command",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-signal-aware-command.git",
+                "reference": "46cda09a85aef3fd47fb73ddc7081f963e255571"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-signal-aware-command/zipball/46cda09a85aef3fd47fb73ddc7081f963e255571",
+                "reference": "46cda09a85aef3fd47fb73ddc7081f963e255571",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^8.35|^9.0|^10.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.4.3"
+            },
+            "require-dev": {
+                "brianium/paratest": "^6.2",
+                "ext-pcntl": "*",
+                "nunomaduro/collision": "^5.3|^6.0",
+                "orchestra/testbench": "^6.16|^7.0|^8.0",
+                "pestphp/pest-plugin-laravel": "^1.3",
+                "phpunit/phpunit": "^9.5",
+                "spatie/laravel-ray": "^1.17"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Signal": "Spatie\\SignalAwareCommand\\Facades\\Signal"
+                    },
+                    "providers": [
+                        "Spatie\\SignalAwareCommand\\SignalAwareCommandServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\SignalAwareCommand\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Handle signals in artisan commands",
+            "homepage": "https://github.com/spatie/laravel-signal-aware-command",
+            "keywords": [
+                "laravel",
+                "laravel-signal-aware-command",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-signal-aware-command/issues",
+                "source": "https://github.com/spatie/laravel-signal-aware-command/tree/1.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-01-14T21:10:59+00:00"
+        },
+        {
+            "name": "spatie/temporary-directory",
+            "version": "2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/temporary-directory.git",
+                "reference": "580eddfe9a0a41a902cac6eeb8f066b42e65a32b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/temporary-directory/zipball/580eddfe9a0a41a902cac6eeb8f066b42e65a32b",
+                "reference": "580eddfe9a0a41a902cac6eeb8f066b42e65a32b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\TemporaryDirectory\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Vanderbist",
+                    "email": "alex@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Easily create, use and destroy temporary directories",
+            "homepage": "https://github.com/spatie/temporary-directory",
+            "keywords": [
+                "php",
+                "spatie",
+                "temporary-directory"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/temporary-directory/issues",
+                "source": "https://github.com/spatie/temporary-directory/tree/2.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-01-13T13:04:43+00:00"
         },
         {
             "name": "symfony/console",
@@ -6788,6 +8050,73 @@
                 }
             ],
             "time": "2023-04-28T15:57:00+00:00"
+        },
+        {
+            "name": "symfony/options-resolver",
+            "version": "v7.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/options-resolver.git",
+                "reference": "7da8fbac9dcfef75ffc212235d76b2754ce0cf50"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/7da8fbac9dcfef75ffc212235d76b2754ce0cf50",
+                "reference": "7da8fbac9dcfef75ffc212235d76b2754ce0cf50",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/deprecation-contracts": "^2.5|^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\OptionsResolver\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides an improved replacement for the array_replace PHP function",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "config",
+                "configuration",
+                "options"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/options-resolver/tree/v7.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-11-20T11:17:29+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",

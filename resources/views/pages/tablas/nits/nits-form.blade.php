@@ -1,4 +1,4 @@
-<div class="modal fade" id="nitFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="nitFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -126,6 +126,31 @@
                     <div class="form-group col-12 col-sm-6 col-md-6" id="div_porcentaje_aiu">
                         <label for="example-text-input" class="form-control-label">Porcentaje AIU</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_aiu" id="porcentaje_aiu" value="0">
+                    </div>
+
+                    <div class="form-group col-12 col-sm-6 col-md-6" id="div_id_actividad_economica_nit">
+                        <label for="exampleFormControlSelect1" style=" width: 100%;">Actividad economica</label>
+                        <select class="form-control form-control-sm" name="id_actividad_economica_nit" id="id_actividad_economica_nit">
+                        </select>
+                    </div>
+
+                    <div class="form-group col-12 col-sm-6 col-md-6" id="div_porcentaje_reteica">
+                        <label for="example-text-input" class="form-control-label">Milaje ReteICA</label>
+                        <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_reteica" id="porcentaje_reteica" value="0">
+                    </div>
+
+                    <div class="form-group form-group col-12 col-sm-6 col-md-6" id="div_id_responsabilidades">
+                        <label for="exampleFormControlSelect1">Responsabilidades</label>
+                        <select class="form-control form-control-sm" id="id_responsabilidades" name="id_responsabilidades[]" multiple="multiple">
+                            @foreach ($responsabilidades as $responsabilidad)
+                                <option value="{{ $responsabilidad->id }}">{{ $responsabilidad->codigo.' - '.$responsabilidad->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6" id="div_sumar_aiu">
+                        <input class="form-check-input" type="checkbox" name="sumar_aiu_nits" id="sumar_aiu_nits" style="height: 20px;">
+                        <label class="form-check-label" for="sumar_aiu_nits">Sumar calculo AIU</label>
                     </div>
 
                     <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6" id="div_declarante">

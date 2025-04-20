@@ -48,6 +48,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
         DB::connection('informes')->beginTransaction();
 
         try {
+
             $documentosGenerales = InfDocumentosGenerales::create([
                 'id_empresa' => $this->id_empresa,
                 'fecha_desde' => $this->request['fecha_desde'],
@@ -67,6 +68,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             ]);
 
             $this->id_documentos_generales = $documentosGenerales->id;
+            
             if ($this->request['agrupar'] && $this->request['agrupado']) $this->documentosGeneralesAgruparNiveles();
             else if (!$this->request['agrupar']) $this->documentosGeneralesSinAgrupar();
             else if ($this->request['agrupar']) $this->documentosGeneralesAgruparNormal();
@@ -135,14 +137,12 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $cuentaPadre = $this->getCuentaPadre($documento);
-                    
                     if ($this->hasCuentaData($cuentaPadre)) $this->sumCuentaData($cuentaPadre, $documento);
                     else $this->newCuentaTotal($cuentaPadre, $documento);
                     $this->newCuentaDetalle($cuentaPadre, $documento, false);
                 });
             });
             
-        ksort($this->documentosCollection, SORT_STRING | SORT_FLAG_CASE);
         $this->addTotalData($query);
     }
 
@@ -209,6 +209,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                         'credito' => $documento->credito,
                         'diferencia' => 0,
                         'nivel' => 0,
+                        'anulado' => $documento->anulado,
                         'total_columnas' => '',
                         'fecha_creacion' => $documento->fecha_creacion,
                         'fecha_edicion' => $documento->fecha_edicion,
@@ -217,6 +218,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                     ];
                 });
             });
+            
         $this->addTotalData($query);
     }  
     
@@ -262,6 +264,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'diferencia' => $totaldata->diferencia,
             'total_columnas' => $totaldata->total_columnas,
             'nivel' => 99,
+            'anulado' => 0,
             'fecha_creacion' => null,
             'fecha_edicion' => null,
             'created_by' => null,
@@ -278,7 +281,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 'N.numero_documento',
                 DB::raw("(CASE
                     WHEN N.id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN N.id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    WHEN N.id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
                     ELSE NULL
                 END) AS nombre_nit"),
                 "N.razon_social",
@@ -288,7 +291,10 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 "PC.naturaleza_cuenta",
                 "PC.auxiliar",
                 "PC.nombre AS nombre_cuenta",
-                "IM.base AS base_cuenta",
+                DB::raw("(CASE
+                    WHEN IM.base > 0 THEN (debito + credito) / (IM.porcentaje / 100)
+                    ELSE NULL
+                END) AS base_cuenta"),
                 "IM.porcentaje AS porcentaje_cuenta",
                 "DG.documento_referencia",
                 "DG.id_centro_costos",
@@ -297,7 +303,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 "CO.id AS id_comprobante",
                 "CO.codigo AS codigo_comprobante",
                 "CO.nombre AS nombre_comprobante",
-                "DG.consecutivo",
+                DB::raw('CAST(DG.consecutivo AS UNSIGNED) AS consecutivo'),
                 "DG.concepto",
                 "DG.fecha_manual",
                 "DG.created_at",
@@ -317,7 +323,6 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             ->leftJoin('impuestos AS IM', 'PC.id_impuesto', 'IM.id')
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
-            ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
             ->where(function ($query) {
@@ -350,6 +355,11 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             })
             ->when(isset($this->request['id_usuario']) ? $this->request['id_usuario'] : false, function ($query) {
                 $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
+            })
+            ->when(true, function ($query) {
+                if ($this->request['anulado'] != null) {
+                    $query->where('DG.anulado', $this->request['anulado']);
+                }
             });
     }
 
@@ -360,7 +370,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'id_nit' => in_array('id_nit', $this->agrupacion) ? $documento->id_nit : null,
             'id_cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->id_cuenta : null,
             'id_usuario' => null,
-            'id_comprobante' => in_array('id_comprobante', $this->agrupacion) ? $documento->id_comprobante : null,
+            'id_comprobante' => $documento->id_comprobante,
             'id_centro_costos' => in_array('id_centro_costos', $this->agrupacion) ? $documento->id_centro_costos : null,
             'cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->cuenta : null,
             'nombre_cuenta' => in_array('id_cuenta', $this->agrupacion) ? $documento->nombre_cuenta : null,
@@ -377,12 +387,13 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'documento_referencia' => in_array('documento_referencia', $this->agrupacion) ? $documento->documento_referencia : null,
             'consecutivo' => in_array('consecutivo', $this->agrupacion) ? $documento->consecutivo : null,
             'concepto' => null,
-            'fecha_manual' => null,
+            'fecha_manual' => in_array('consecutivo', $this->agrupacion) ? $documento->fecha_manual : null,
             'debito' => $documento->debito,
             'credito' => $documento->credito,
             'diferencia' => $documento->diferencia,
             'total_columnas' => $documento->total_columnas,
             'nivel' => 1,
+            'anulado' => $documento->anulado,
             'fecha_creacion' => null,
             'fecha_edicion' => null,
             'created_by' => null,
@@ -420,6 +431,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'diferencia' => $documento->diferencia,
             'total_columnas' => $documento->total_columnas,
             'nivel' => count($agrupacionesTotales),
+            'anulado' => $documento->anulado,
             'fecha_creacion' => null,
             'fecha_edicion' => null,
             'created_by' => null,
@@ -456,6 +468,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'credito' => $documento->credito,
             'diferencia' => $detallar ? $documento->diferencia : '',
             'nivel' => 0,
+            'anulado' => $documento->anulado,
             'total_columnas' => '',
             'fecha_creacion' => $documento->fecha_creacion,
             'fecha_edicion' => $documento->fecha_edicion,

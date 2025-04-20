@@ -11,7 +11,7 @@
 				margin: 0;
 				font-family: "Lato", sans-serif;
 				line-height: 16px;
-				font-size: 10px;
+				font-size: 15px;
 				width: 100%;
 				text-transform: uppercase;
 			}
@@ -42,7 +42,7 @@
 			}
 
 			.table-detail {
-				font-size: 12px;
+				font-size: 15px;
 				width: 100%;
 				border-collapse: collapse;
 				height: 100%;
@@ -105,6 +105,11 @@
 				color: #8d00ff;
 				font-size: 2.8em;
 			}
+
+			.ubicacion-factura {
+				color: black;
+				font-size: 1.3em;
+			}
 			
 			.generado {
 				width: 40%;
@@ -149,13 +154,24 @@
 								<td class="consecutivo padding5">
 									<p> {{ $recibo->comprobante->nombre }} <br>
 										<span span class="numero-consecutivo">N° {{ $recibo->consecutivo }}</span>
+										@if ($nit && $nit->apartamentos)
+										<br/>
+										<span span class="ubicacion-factura">{{ $nit->apartamentos }}</span>
+										@endif
 									</p>
 								</td>
 								<td class="empresa padding5">
 									<h1>{{ $empresa->razon_social }}</h1>
 									<span>NIT: {{ $empresa->nit }}-{{ $empresa->dv }}</span><br>
-									<span>{{ $empresa->direccion }}</span><br>
-									<span>TEL: {{ $empresa->telefono }}</span><br>
+									@if ($empresa->direccion)
+										<span>DIRECCION:{{ $empresa->direccion }}</span><br>
+									@endif
+									@if ($empresa->telefono)
+										<span>TEL: {{ $empresa->telefono }}</span><br>
+									@endif
+									@if ($recibo->fecha_manual)
+										<span>FECHA: {{ $recibo->fecha_manual }}</span><br>
+									@endif
 								</td>
 								
 								<td class="logo padding5">
@@ -221,21 +237,17 @@
 										</thead>
 										<tbody>
 											<tr >
-												<td class="padding5">Fecha</td>
-												<td class="valor padding5">{{ $recibo->fecha_manual }}</td>
+												<td class="padding5">Saldo anterior</td>
+												<td class="valor padding5">{{ number_format($saldoAnterior, 2) }}</td>
 											</tr>
-											@if($recibo->total_abono)
-												<tr>
-													<td class="padding5" style="font-weight: bold;">Total abono</td>
-													<td class="valor padding5">{{ $recibo->total_abono }}</td>
-												</tr>
-											@endif
-											@if($recibo->total_anticipo)
-												<tr>
-													<td class="padding5" style="font-weight: bold;">Total anticipo</td>
-													<td class="valor padding5">{{ $recibo->total_anticipo }}</td>
-												</tr>
-											@endif
+											<tr >
+												<td class="padding5">Total abono</td>
+												<td class="valor padding5">{{ number_format($recibo->total_abono, 2) }}</td>
+											</tr>
+											<tr >
+												<td class="padding5">Saldo pendiente</td>
+												<td class="valor padding5">{{ number_format($saldo, 2) }}</td>
+											</tr>
 										</tbody>
 									</table>
 								</td>
@@ -259,8 +271,8 @@
 					<th class="padding5">FACTURA</th>
 					<th class="padding5">VALOR</th>
 					<th class="padding5">PAGO</th>
-					<th class="padding5">ANTICIPO</th>
 					<th class="padding5">SALDO</th>
+					<th class="padding5">CONCEPTO</th>
 				</tr>
 			</thead>
 			<tbody class="detalle-factura">
@@ -269,10 +281,10 @@
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->cuenta->cuenta }}</td>
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->cuenta->nombre }}</td>
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->documento_referencia }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->total_saldo) }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->total_abono) }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->total_anticipo) }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->nuevo_saldo) }}</td>
+						<td class="padding5 valor">{{ number_format($detalle->total_saldo, 2) }}</td>
+						<td class="padding5 valor">{{ number_format($detalle->total_abono, 2) }}</td>
+						<td class="padding5 valor">{{ number_format($detalle->nuevo_saldo, 2) }}</td>
+						<td class="padding5 detalle-factura-descripcion">{{ $detalle->concepto }}</td>
 					</tr>
 				@endforeach
 			</tbody>

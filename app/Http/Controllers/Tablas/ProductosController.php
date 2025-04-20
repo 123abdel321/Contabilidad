@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\FacFamilias;
 use App\Models\Sistema\FacProductos;
+use App\Models\Sistema\FacParqueadero;
 use App\Models\Sistema\FacProductosBodegas;
 use App\Models\Sistema\FacVariantesOpciones;
 use App\Models\Sistema\FacProductosVariantes;
@@ -51,20 +52,18 @@ class ProductosController extends Controller
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
-        $rowperpage = $request->get("length");
+        $rowperpage = 20;
 
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+        $searchValue = $request->get('search');
 
         $columnIndex = $columnIndex_arr[0]['column']; // Column index
         $columnName = $columnName_arr[$columnIndex]['data']; // Column name
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
 
-        $productos = FacProductos::skip($start)
-            ->with(
+        $productos = FacProductos::with(
                 'variantes.variante',
                 'variantes.opcion',
                 'inventarios.bodega',
@@ -101,6 +100,7 @@ class ProductosController extends Controller
             'total_productos' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FPB.cantidad) AS total_productos"))->first()->total_productos,
         ];
 
+        $totalProductos = $productos->count();
         $productosPaginate = $productos->skip($start)
             ->take($rowperpage);
 
@@ -108,8 +108,8 @@ class ProductosController extends Controller
             'success'=>	true,
             'draw' => $draw,
             'totalesProductos' => $totalesProductos,
-            'iTotalRecords' => $productos->count(),
-            'iTotalDisplayRecords' => $productos->count(),
+            'iTotalRecords' => $totalProductos,
+            'iTotalDisplayRecords' => $totalProductos,
             'data' => $productosPaginate->get(),
             'perPage' => $rowperpage,
             'message'=> 'Productos cargados con exito!'
@@ -151,7 +151,7 @@ class ProductosController extends Controller
             'productos_variantes.*.inventarios.*.id' => 'nullable|exists:sam.fac_bodegas,id',
             'productos_variantes.*.inventarios.*.cantidad' => 'nullable|numeric',
         ];
-        
+
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
 		if ($validator->fails()){
@@ -180,8 +180,11 @@ class ProductosController extends Controller
                 'id_familia' => $request->get('id_familia'),
                 'id_padre' => null,
                 'tipo_producto' => $request->get('tipo_producto'),
-                'codigo' => $request->get('codigo'),
-                'nombre' => $request->get('nombre'),
+                'tipo_tiempo' => $request->get('tipo_tiempo'),
+                'tipo_vehiculo' => $request->get('tipo_vehiculo'),
+                'fraccion_hora' => $request->get('tipo_tiempo') == '1' ? $request->get('fraccion_hora') : 0,
+                'codigo' => trim($request->get('codigo')),
+                'nombre' => trim($request->get('nombre')),
                 'precio' => $request->get('precio'),
                 'precio_minimo' => $request->get('precio_minimo'),
                 'precio_inicial' => $request->get('precio_inicial'),
@@ -205,11 +208,13 @@ class ProductosController extends Controller
             }
 
             //ASOCIAR BODEGAS GENERALES AL PRODUCTO
-            $bodegas = $request->get('inventarios');
-
-            if (count($bodegas) > 0 ) {
-                foreach ($bodegas as $bodega) {
-                    $this->agregarBodega($productoPadre, $bodega);
+            if ($request->get('tipo_producto') != 3) {
+                $bodegas = $request->get('inventarios');
+    
+                if (count($bodegas) > 0 ) {
+                    foreach ($bodegas as $bodega) {
+                        $this->agregarBodega($productoPadre, $bodega);
+                    }
                 }
             }
 
@@ -354,8 +359,11 @@ class ProductosController extends Controller
             $producto = FacProductos::where('id', $request->get('id'))->first();
             $producto->id_familia = $request->get('id_familia');
             $producto->tipo_producto = $request->get('tipo_producto');
-            $producto->codigo = $request->get('codigo');
-            $producto->nombre = $request->get('nombre');
+            $producto->tipo_tiempo = $request->get('tipo_tiempo');
+            $producto->tipo_vehiculo = $request->get('tipo_vehiculo');
+            $producto->fraccion_hora = $request->get('tipo_tiempo') == '1' ? $request->get('fraccion_hora') : 0;
+            $producto->codigo = trim($request->get('codigo'));
+            $producto->nombre = trim($request->get('nombre'));
             $producto->precio = $request->get('precio');
             $producto->precio_inicial = $request->get('precio_inicial');
             $producto->precio_minimo = $request->get('precio_minimo');
@@ -492,7 +500,7 @@ class ProductosController extends Controller
             DB::connection('sam')->beginTransaction();
 
             $productoVariante = FacProductos::where('id_padre', $request->get('id'));
-
+            $productoParqueadero = FacParqueadero::where('id_producto', $request->get('id'));
             $productoConMovimientos = FacProductosBodegasMovimiento::where('id_producto', $request->get('id'));
 
             if ($productoVariante->count() > 0) {
@@ -508,6 +516,14 @@ class ProductosController extends Controller
                     'success'=>	false,
                     'data' => '',
                     'message'=> 'No se puede eliminar producto con movimientos en inventario'
+                ]);
+            }
+
+            if ($productoParqueadero->count() > 1) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => '',
+                    'message'=> 'No se puede eliminar producto usandos en parqueadero'
                 ]);
             }
 
@@ -590,23 +606,6 @@ class ProductosController extends Controller
 
     public function comboProducto (Request $request)
     {
-        $with = [
-            'familia.cuenta_compra.impuesto',
-            'familia.cuenta_compra_retencion.impuesto',
-            'familia.cuenta_compra_devolucion.impuesto',
-            'familia.cuenta_compra_iva.impuesto',
-            'familia.cuenta_compra_descuento.impuesto',
-            'familia.cuenta_compra_devolucion_iva.impuesto',
-            'familia.cuenta_venta.impuesto',
-            'familia.cuenta_venta_retencion.impuesto',
-            'familia.cuenta_venta_devolucion.impuesto',
-            'familia.cuenta_venta_iva.impuesto',
-            'familia.cuenta_venta_descuento.impuesto',
-            'familia.cuenta_venta_devolucion_iva.impuesto',
-            'familia.cuenta_inventario.impuesto',
-            'familia.cuenta_costos.impuesto'
-        ];
-
         $producto = FacProductos::select(
                 \DB::raw('*'),
                 \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
@@ -632,6 +631,15 @@ class ProductosController extends Controller
                 ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
 
+        if ($request->get("query")) {
+            $producto->where('codigo', 'LIKE', '%' . $request->get("query") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("query") . '%');
+        }
+
+        if ($request->get("id_familia")) {
+            $producto->where('id_familia', $request->get("id_familia"));
+        }
+
         if ($request->has("id_bodega")) {
             $producto->with(['inventarios' => function ($query) use ($request) {
                 $query->where('id_bodega', $request->get("id_bodega"));
@@ -641,6 +649,110 @@ class ProductosController extends Controller
         }
 
         return $producto->paginate(40);
+    }
+
+    public function comboParqueadero (Request $request)
+    {
+        $producto = FacProductos::select(
+                \DB::raw('*'),
+                \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+            )->with([
+                'familia.cuenta_compra.impuesto',
+                'familia.cuenta_compra_retencion.impuesto',
+                'familia.cuenta_compra_devolucion.impuesto',
+                'familia.cuenta_compra_iva.impuesto',
+                'familia.cuenta_compra_descuento.impuesto',
+                'familia.cuenta_compra_devolucion_iva.impuesto',
+                'familia.cuenta_venta.impuesto',
+                'familia.cuenta_venta_retencion.impuesto',
+                'familia.cuenta_venta_devolucion.impuesto',
+                'familia.cuenta_venta_iva.impuesto',
+                'familia.cuenta_venta_descuento.impuesto',
+                'familia.cuenta_venta_devolucion_iva.impuesto',
+                'familia.cuenta_inventario.impuesto',
+                'familia.cuenta_costos.impuesto'
+            ])
+            ->where('tipo_producto', 3);
+
+        if ($request->get("q") || $request->get("query")) {
+            $producto->where(function ($query) use ($request) {
+                if ($request->get("q")) {
+                    $query->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
+                            ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+                }
+        
+                if ($request->get("query")) {
+                    $query->orWhere('codigo', 'LIKE', '%' . $request->get("query") . '%')
+                            ->orWhere('nombre', 'LIKE', '%' . $request->get("query") . '%');
+                }
+            });
+        }
+
+        if ($request->get("id_familia")) {
+            $producto->where('id_familia', $request->get("id_familia"));
+        }
+
+        if ($request->has("id_bodega")) {
+            $producto->with(['inventarios' => function ($query) use ($request) {
+                $query->where('id_bodega', $request->get("id_bodega"));
+            }]);
+        } else {
+            $producto->with('inventarios');
+        }
+
+        return $producto->paginate(40);
+    }
+
+    public function getAll (Request $request)
+    {
+        $producto = FacProductos::select(
+                \DB::raw('*'),
+                \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+            )->with([
+                'familia.cuenta_compra.impuesto',
+                'familia.cuenta_compra_retencion.impuesto',
+                'familia.cuenta_compra_devolucion.impuesto',
+                'familia.cuenta_compra_iva.impuesto',
+                'familia.cuenta_compra_descuento.impuesto',
+                'familia.cuenta_compra_devolucion_iva.impuesto',
+                'familia.cuenta_venta.impuesto',
+                'familia.cuenta_venta_retencion.impuesto',
+                'familia.cuenta_venta_devolucion.impuesto',
+                'familia.cuenta_venta_iva.impuesto',
+                'familia.cuenta_venta_descuento.impuesto',
+                'familia.cuenta_venta_devolucion_iva.impuesto',
+                'familia.cuenta_inventario.impuesto',
+                'familia.cuenta_costos.impuesto'
+            ]);
+
+        if ($request->get("q")) {
+            $producto->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        if ($request->get("query")) {
+            $explodeQuery = explode(' - ', $request->get("query"));
+            if (count($explodeQuery) == 2) {
+                $producto->where('codigo', $explodeQuery[0]);
+            } else {
+                $producto->where('codigo', 'LIKE', '%' . $request->get("query") . '%')
+                    ->orWhere('nombre', 'LIKE', '%' . $request->get("query") . '%');
+            }
+        }
+
+        if ($request->has("id_bodega")) {
+            $producto->with(['inventarios' => function ($query) use ($request) {
+                $query->where('id_bodega', $request->get("id_bodega"));
+            }]);
+        } else {
+            $producto->with('inventarios');
+        }
+
+        $page = $request->input('page', 1);
+
+        return response()->json($producto->paginate(20, ['id', 'nombre'], 'page', $page));
+
+        return $producto->limit(50)->get();
     }
 
 }

@@ -4,12 +4,25 @@ namespace App\Http\Controllers\Informes;
 
 use DB;
 use Illuminate\Http\Request;
-use App\Helpers\Printers\DocumentosPdf;
 use App\Http\Controllers\Controller;
 //MODELS
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\ConPagos;
+use App\Models\Sistema\FacVentas;
+use App\Models\Sistema\ConGastos;
+use App\Models\Sistema\ConRecibos;
+use App\Models\Sistema\FacCompras;
+use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacDocumentos;
 use App\Models\Sistema\VariablesEntorno;
+use App\Models\Sistema\DocumentosGeneral;
+// PDFS
+use App\Helpers\Printers\PagosPdf;
+use App\Helpers\Printers\GastosPdf;
+use App\Helpers\Printers\VentasPdf;
+use App\Helpers\Printers\RecibosPdf;
+use App\Helpers\Printers\ComprasPdf;
+use App\Helpers\Printers\DocumentosPdf;
 
 class DocumentoController extends Controller
 {
@@ -85,10 +98,8 @@ class DocumentoController extends Controller
 
     public function showPdf(Request $request, $id)
     {
-        // return $request->user();
-
         $factura = FacDocumentos::whereId($id)->first();
-
+        
         if(!$factura) {
             return response()->json([
                 'success'=>	false,
@@ -104,6 +115,109 @@ class DocumentoController extends Controller
         return (new DocumentosPdf($empresa, $factura))
             ->buildPdf()
             ->showPdf();
+    }
+
+    public function showGeneralPdf(Request $request, $id_comprobante, $consecutivo, $fecha_manual)
+    {
+        $comprobante = Comprobantes::where('id', $id_comprobante)->first();
+        if (!$comprobante) {
+            logger()->critical("Error showGeneralPdf: el comprobante id: {$id_comprobante} no existe; consecutivo: {$consecutivo}");
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> "El comprobante: {$id_comprobante} no existe"
+            ]);
+        }
+
+        $documento = DocumentosGeneral::with('comprobante')
+            ->where('id_comprobante', $id_comprobante)
+            ->where('fecha_manual', $fecha_manual)
+            ->where('consecutivo', $consecutivo)
+            ->first();
+
+        if (!$documento) {
+            logger()->critical("Error showGeneralPdf: el documento id: {$documento->id} no tiene cabezas para imprimir;");
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> "El documento: {$documento->id} no tiene cabezas para imprimir"
+            ]);
+        }
+        
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        if ($documento->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
+            $recibo = ConRecibos::where('id', $documento->relation_id)->first();
+            if ($recibo) {
+                return (new RecibosPdf($empresa, $recibo))
+                    ->buildPdf()
+                    ->showPdf();
+            }
+        }
+        if ($comprobante->tipo_comprobante == Comprobantes::TIPO_VENTAS) {
+            $venta = FacVentas::where('id', $documento->relation_id)->first();;
+            if ($venta) {
+                // $data = (new VentasPdf($empresa, $venta))->buildPdf()->getData();
+                return (new VentasPdf($empresa, $venta))
+                    ->buildPdf()
+                    ->showPdf();
+            }
+        }
+        if ($comprobante->tipo_comprobante == Comprobantes::TIPO_COMPRAS) {
+            $compra = FacCompras::with('comprobante')
+                ->where('id_comprobante', $id_comprobante)
+                ->where('consecutivo', $consecutivo)
+                ->orderBy('id', 'DESC')
+                ->first();
+
+            if ($compra) {
+                // $data = (new ComprasPdf($empresa, $compra))->buildPdf()->getData();
+                return (new ComprasPdf($empresa, $compra))
+                    ->buildPdf()
+                    ->showPdf();
+            }
+        }
+        
+        if ($comprobante->tipo_comprobante == Comprobantes::TIPO_GASTOS) {
+            $gasto = ConGastos::where('id', $documento->relation_id)->first();
+            if ($gasto) {
+                // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
+                return (new GastosPdf($empresa, $gasto))
+                    ->buildPdf()
+                    ->showPdf();
+            }
+        }
+
+        if ($comprobante->tipo_comprobante == Comprobantes::TIPO_EGRESOS) {
+            $pagos = ConPagos::where('id', $documento->relation_id)->first();
+            if ($pagos) {
+                // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
+                return (new PagosPdf($empresa, $pagos))
+                    ->buildPdf()
+                    ->showPdf();
+            }
+        }
+
+        $facDocumento = FacDocumentos::where('id', $documento->relation_id)->first();
+
+        if (!$facDocumento) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'La factura no existe'
+            ]);
+        }
+
+        if (count($facDocumento->documentos)) {
+            return (new DocumentosPdf($empresa, $facDocumento))
+                ->buildPdf()
+                ->showPdf();
+        }
+
+        return response()->json([
+            'success'=>	false,
+            'data' => [],
+            'message'=> 'La factura no existe'
+        ]);
     }
 
     public function showPdfPublic(Request $request)

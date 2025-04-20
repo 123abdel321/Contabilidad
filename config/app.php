@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'version' => '1.6.29 - 2024/09/01',
+    'version' => '1.8.114 - 2025/04/20',
 
     /*
     |--------------------------------------------------------------------------
@@ -181,8 +181,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
-        // BaoPham\DynamoDb\DynamoDbServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -199,6 +198,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
 		'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
     ])->toArray(),
 

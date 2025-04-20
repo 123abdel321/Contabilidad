@@ -125,68 +125,71 @@
             </div>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-3 ml-auto">
-            
-            <div class="row justify-content-between">
-                
-                <div class="card mb-4 col-12 col-sm-7 col-md-12 ml-auto">
+        <div class="col-12 col-sm-12 col-md-3 ml-auto card mb-4" style="padding-left: 0.2rem;padding-right: 0.2rem;">
+            <div class="justify-content-between">
 
-                    <table class="table table-bordered table-captura-ventas" width="100%" style="margin-top: 12px;">
-                        <tbody>
-                            <tr id="recibo_anticipo_disp_view" style="display: none;">
-                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500; color: #0bb19e;">ANTICIPOS DISP: </h6></td>
-                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem; color: #0bb19e;" id="recibo_anticipo_disp">0.00</h6></td>
-                            </tr>
-                            <tr>
-                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">SALDO: </h6></td>
-                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="recibo_saldo">0.00</h6></td>
-                            </tr>
-                            <tr>
-                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">ABONO: </h6></td>
-                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="recibo_abono">0.00</h6></td>
-                            </tr>
-                            <tr id="recibo_anticipo_view" style="display: none;">
-                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">ANTICIPO: </h6></td>
-                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="recibo_anticipo">0.00</h6></td>
-                            </tr>
-                            <tr>
-                                <td><h6 style="margin-bottom: 0px; font-weight: bold;">SALDO NUEVO: </h6></td>
-                                <td><h6 style="margin-bottom: 0px; float: right; font-weight: bold;" id="recibo_total">0.00</h6></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div style="overflow: auto;">
-                        <table id="reciboFormaPago" class="table table-bordered display responsive table-captura-recibo" width="100%">
-                            <thead>
-                                <tr style="border: 0px !important;">
-                                    <th style="border-radius: 15px 0px 0px 0px !important;">Pagos</th>
-                                    <th style="border-radius: 0px 15px 0px 0px !important;">Total</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-
+                <div class="mb-4 ml-auto">
                     <div class="row">
-                        <div class="col-6">
-                            <h6 id="total_faltante_recibo_text" style="margin-bottom: 0px; font-weight: bold; margin-left: 4px; text-wrap: nowrap;">FALTANTE: </h6>
+                        <div class="col-12 col-sm-6 col-md-12" style="place-content: center;">
+                            <table class="table table-bordered table-captura-ventas" width="100%" style="margin-top: 9px;">
+                                <tbody>
+                                    <tr id="recibo_anticipo_disp_view" style="display: none;">
+                                        <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500; color: #0bb19e;">ANTICIPOS DISP: </h6></td>
+                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem; color: #0bb19e;" id="recibo_anticipo_disp">0.00</h6></td>
+                                    </tr>
+                                    <tr>
+                                        <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">SALDO: </h6></td>
+                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="recibo_saldo">0.00</h6></td>
+                                    </tr>
+                                    <tr>
+                                        <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">ABONO: </h6></td>
+                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="recibo_abono">0.00</h6></td>
+                                    </tr>
+                                    <tr id="recibo_anticipo_view" style="display: none;">
+                                        <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">ANTICIPO: </h6></td>
+                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="recibo_anticipo">0.00</h6></td>
+                                    </tr>
+                                    <tr>
+                                        <td><h6 style="margin-bottom: 0px; font-weight: bold;">SALDO NUEVO: </h6></td>
+                                        <td><h6 style="margin-bottom: 0px; float: right; font-weight: bold;" id="recibo_total">0.00</h6></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-6" style="text-align: end; text-wrap: nowrap;">
-                            <h6 id="total_faltante_recibo" style="margin-bottom: 0px; font-weight: bold; margin-right: 25px;">0.00</h6>
+
+                        <div class="col-12 col-sm-6 col-md-12">
+                            <div style="overflow: auto;">
+                                <table id="reciboFormaPago" class="table table-bordered display responsive table-captura-recibo" width="100%">
+                                    <thead>
+                                        <tr style="border: 0px !important;">
+                                            <th style="border-radius: 15px 0px 0px 0px !important;">Pagos</th>
+                                            <th style="border-radius: 0px 15px 0px 0px !important;">Total</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <h6 id="total_faltante_recibo_text" style="margin-bottom: 0px; font-weight: bold; margin-left: 4px; text-wrap: nowrap;">FALTANTE: </h6>
+                                </div>
+                                <div class="col-6" style="text-align: end; text-wrap: nowrap;">
+                                    <h6 id="total_faltante_recibo" style="margin-bottom: 0px; font-weight: bold; margin-right: 25px;">0.00</h6>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
 
     <script>
-        var reciboFecha = '<?php echo auth()->user()->can("recibo fecha"); ?>';
-        var reciboTotales = '<?php echo auth()->user()->can("recibo totales"); ?>';
-
-        var comprobantesRecibos = JSON.parse('<?php echo $comprobantes; ?>');
+        var reciboFecha = @json(auth()->user()->can("recibo fecha"));
+        var reciboTotales = @json(auth()->user()->can("recibo totales"));
+        var reciboUpdate = @json(auth()->user()->can("recibo update"));
+        var comprobantesRecibos = @json($comprobantes);
     </script>
     
 </div>

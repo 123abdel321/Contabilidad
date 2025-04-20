@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Traits;
 
 use DB;
+use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\DocumentosGeneral;
 
@@ -35,6 +36,40 @@ trait BegConsecutiveTrait
         }
 
 		return $comprobante->consecutivo_siguiente;
+    }
+
+    public function getNextConsecutiveBodega($bodega)
+    {
+        if (is_numeric($bodega) > 0) {
+			$bodega = FacBodegas::find($bodega);
+		}
+
+        if (!($bodega instanceof FacBodegas)) {
+			return null;
+        }
+
+        if (!$bodega) {
+			return null;
+        }
+
+        return $bodega->consecutivo;
+    }
+
+    public function getNextConsecutiveBodegaParqueadero($bodega)
+    {
+        if (is_numeric($bodega) > 0) {
+			$bodega = FacBodegas::find($bodega);
+		}
+
+        if (!($bodega instanceof FacBodegas)) {
+			return null;
+        }
+
+        if (!$bodega) {
+			return null;
+        }
+
+        return $bodega->consecutivo_parqueadero;
     }
 
 	static function getLastConsecutive($id_comprobante, $fecha)
@@ -77,5 +112,60 @@ trait BegConsecutiveTrait
         $comprobante->resolucion()->update(["consecutivo" => $comprobante->consecutivo_siguiente]);
 
         return $comprobante;
+    }
+
+    public function updateConsecutivoBodega($bodega, int $consecutivoActual)
+    {
+        if (is_numeric($bodega)) {
+            $bodega = FacBodegas::find($bodega);
+        } else if (!($bodega instanceof bodega)) {
+            return false;
+        }
+        
+		if ($consecutivoActual > $bodega->consecutivo) {
+			$bodega->consecutivo = $consecutivoActual;
+		}
+
+		$bodega->consecutivo = $bodega->consecutivo + 1;
+		$bodega::unsetEventDispatcher();
+		$bodega->save();
+
+        return $bodega;
+    }
+
+    public function updateConsecutivoParqueadero($bodega, int $consecutivoActual)
+    {
+        if (is_numeric($bodega)) {
+            $bodega = FacBodegas::find($bodega);
+        } else if (!($bodega instanceof bodega)) {
+            return false;
+        }
+        
+		if ($consecutivoActual > $bodega->consecutivo_parqueadero) {
+			$bodega->consecutivo_parqueadero = $consecutivoActual;
+		}
+
+		$bodega->consecutivo_parqueadero = $bodega->consecutivo_parqueadero + 1;
+		$bodega::unsetEventDispatcher();
+		$bodega->save();
+
+        return $bodega;
+    }
+
+    public function consecutivoUsado(Comprobantes $comprobante, int $consecutivo, $fecha_manual, $captura = null)
+    {
+        $consecutivoUsado = DocumentosGeneral::where('id_comprobante', $comprobante->id)
+            ->where('consecutivo', $consecutivo);
+
+        if ($captura) {
+            $consecutivoUsado->whereNot('relation_id', $captura->id)
+                ->whereNot('relation_type', $captura->getMorphClass());
+        }
+
+        if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
+            $consecutivoUsado->where('fecha_manual', $fecha_manual);
+        }
+        
+        return $consecutivoUsado->count();
     }
 }

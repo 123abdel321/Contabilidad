@@ -26,8 +26,16 @@
                 <div class="row">
                     <form id="form-importador-nits" enctype="multipart/form-data">
                         {{ csrf_field() }}
-                        <div class="col-6">
-                            <input class="form-control form-control-sm" id="file_import_nits" name="file_import_nits" type="file" style="box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 2px 2px 2px rgb(0 0 0 / 57%); font-size: 15px; color: black; font-weight: bold;">
+                        <div class="row">
+                            <div class="col-6">
+                                <input class="form-control form-control-sm" id="file_import_nits" name="file_import_nits" type="file" style="box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 2px 2px 2px rgb(0 0 0 / 57%); font-size: 15px; color: black; font-weight: bold;">
+                            </div>
+                            <div class="form-check form-switch col-4">
+                                <input class="form-check-input" type="checkbox" name="actualizar_valores" id="actualizar_valores" style="height: 20px;">
+                                <label class="form-check-label" for="actualizar_valores">
+                                    Actualizar datos nits
+                                </label>
+                            </div>
                         </div>
                         <br/>
                         <div class="col-12">

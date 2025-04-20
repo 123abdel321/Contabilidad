@@ -14,6 +14,7 @@ class DocumentosPdf extends AbstractPrinterPdf
 {
 	public $factura;
 	public $empresa;
+	public $tipoEmpresion;
 
 	public function __construct(Empresa $empresa, FacDocumentos $factura)
 	{
@@ -24,6 +25,7 @@ class DocumentosPdf extends AbstractPrinterPdf
 
 		$this->factura = $factura;
 		$this->empresa = $empresa;
+		$this->tipoEmpresion = $this->factura->comprobante->tipo_impresion;
 	}
 
     public function view()
@@ -38,7 +40,16 @@ class DocumentosPdf extends AbstractPrinterPdf
 
     public function paper()
 	{
+		if ($this->tipoEmpresion == 1) return 'landscape';
+		if ($this->tipoEmpresion == 2) return 'portrait';
+
 		return '';
+	}
+
+	public function formatPaper()
+	{
+		// if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
+		return 'A4';
 	}
 
     public function data()

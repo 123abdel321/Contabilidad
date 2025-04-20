@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Informes;
 use Illuminate\Http\Request;
 use App\Exports\BalanceExport;
 use App\Events\PrivateMessageEvent;
+use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeBalance;
+use App\Helpers\Printers\BalancePdf;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfBalance;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Informes\InfBalanceDetalle;
 
 class BalanceController extends Controller
@@ -32,12 +35,55 @@ class BalanceController extends Controller
             ]);
 		}
 
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        if ($request->get('tipo') == '3') {
+            $cuentaPerdida = VariablesEntorno::whereNombre('cuenta_perdida')->first();
+            $cuentaPerdida = $cuentaPerdida ? $cuentaPerdida->valor : '';
+            $cuentaUtilidad = VariablesEntorno::whereNombre('cuenta_utilidad')->first();
+            $cuentaUtilidad = $cuentaUtilidad ? $cuentaUtilidad->valor : '';
+    
+            if (!$cuentaPerdida && !$cuentaUtilidad) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'Se necesita configurar cuenta utilidad y cuenta perdida en el entorno.'
+                ]);
+            }
+    
+            $cuentaPerdida = PlanCuentas::where('cuenta', $cuentaPerdida)->first();
+            $cuentaUtilidad = PlanCuentas::where('cuenta', $cuentaUtilidad)->first();
+    
+            if (!$cuentaPerdida && !$cuentaUtilidad) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'La cuenta utilidad y la cuenta perdida no existen en el plan de cuentas.'
+                ]);
+            }
+    
+            if (!$cuentaPerdida) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'La cuenta perdida no existen en el plan de cuentas.'
+                ]);
+            }
+    
+            if (!$cuentaUtilidad) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'La cuenta utilidad no existen en el plan de cuentas.'
+                ]);
+            }
+        }
 
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        
         $balance = InfBalance::where('id_empresa', $empresa->id)
             ->where('fecha_hasta', $request->get('fecha_hasta'))
             ->where('fecha_desde', $request->get('fecha_desde'))
-            ->where('id_cuenta', $request->get('id_cuenta', null))
+            ->where('cuenta_hasta', $request->get('cuenta_hasta'))
+            ->where('cuenta_desde', $request->get('cuenta_desde'))
             ->where('tipo', $request->get('tipo', null))
             ->where('nivel', $request->get('nivel', null))
 			->first();
@@ -45,11 +91,6 @@ class BalanceController extends Controller
         if($balance) {
             InfBalanceDetalle::where('id_balance', $balance->id)->delete();
             $balance->delete();
-        }
-
-        if($request->get('id_cuenta')) {
-            $cuenta = PlanCuentas::find($request->get('id_cuenta'));
-            $request->request->add(['cuenta' => $cuenta->cuenta]);
         }
 
         ProcessInformeBalance::dispatch($request->all(), $request->user()->id, $empresa->id);
@@ -61,7 +102,7 @@ class BalanceController extends Controller
     	]);
     }
 
-    public function show(Request $request)
+    public function show (Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -80,7 +121,7 @@ class BalanceController extends Controller
 
         if(!$balance->id_cuenta) {
             $filtros = false;
-            $descuadre = $total->saldo_final > 0 ? true : false;
+            $descuadre = $total->saldo_final != 0 ? true : false;
         }
 
         return response()->json([
@@ -97,7 +138,7 @@ class BalanceController extends Controller
         ]);
     }
 
-    public function find(Request $request)
+    public function find (Request $request)
     {
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         $id_cuenta = $request->get('id_cuenta') != 'null' ? $request->get('id_cuenta') : NULL;
@@ -105,7 +146,9 @@ class BalanceController extends Controller
         $balance = InfBalance::where('id_empresa', $empresa->id)
             ->where('fecha_hasta', $request->get('fecha_hasta'))
             ->where('fecha_desde', $request->get('fecha_desde'))
-            ->where('id_cuenta', $id_cuenta)
+            ->where('cuenta_hasta', $request->get('cuenta_hasta'))
+            ->where('cuenta_desde', $request->get('cuenta_desde'))
+            ->where('tipo', $request->get('tipo', null))
             ->where('nivel', $request->get('nivel', null))
 			->first();
             
@@ -152,19 +195,32 @@ class BalanceController extends Controller
             $informeBalance->archivo_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
             $informeBalance->save();
 
-            (new BalanceExport($request->get('id')))->store($fileName, 'do_spaces', null, [
-                'visibility' => 'public'
-            ])->chain([
-                event(new PrivateMessageEvent('informe-balance-'.$request->user()['has_empresa'].'_'.$request->user()->id, [
-                    'tipo' => 'exito',
-                    'mensaje' => 'Excel de Balance generado con exito!',
-                    'titulo' => 'Excel generado',
-                    'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
-                    'autoclose' => false
-                ])),
-                $informeBalance->exporta_excel = 2,
-                $informeBalance->save(),
-            ]);
+            $has_empresa = $request->user()['has_empresa'];
+            $user_id = $request->user()->id;
+            $id_informe = $request->get('id');
+
+            Bus::chain([
+                function () use ($id_informe, &$fileName) {
+                    // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
+                    (new BalanceExport($id_informe))->store($fileName, 'do_spaces', null, [
+                        'visibility' => 'public'
+                    ]);
+                },
+                function () use ($user_id, $has_empresa, $url, $informeBalance) {
+                    // Lanza el evento cuando el proceso termine
+                    event(new PrivateMessageEvent('informe-balance-'.$has_empresa.'_'.$user_id, [
+                        'tipo' => 'exito',
+                        'mensaje' => 'Excel de Balance generado con exito!',
+                        'titulo' => 'Excel generado',
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
+                        'autoclose' => false
+                    ]));
+                    
+                    // Actualiza el informe auxiliar
+                    $informeBalance->exporta_excel = 2;
+                    $informeBalance->save();
+                }
+            ])->dispatch();
 
             return response()->json([
                 'success'=>	true,
@@ -179,5 +235,27 @@ class BalanceController extends Controller
             ], 422);
         }
     }
+
+    public function showPdf(Request $request, $id)
+	{
+        $detalle = InfBalanceDetalle::where('id_balance', $id)->get();
+
+		if(!count($detalle)) {
+			return response()->json([
+				'success'=>	false,
+				'data' => [],
+				'message'=> 'El balance no existe'
+			], 422);
+		}
+
+		$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+		// $data = (new BalancePdf($empresa, $detalle))->buildPdf()->getData();
+		// return view('pdf.informes.balance.balance', $data);
+
+        return (new BalancePdf($empresa, $detalle))
+            ->buildPdf()
+            ->showPdf();
+	}
 
 }

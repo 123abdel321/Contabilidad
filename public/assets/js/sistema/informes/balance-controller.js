@@ -82,7 +82,10 @@ function balanceInit() {
             data: function ( d ) {
                 d.fecha_desde = $('#fecha_desde_balance').val();
                 d.fecha_hasta = $('#fecha_hasta_balance').val();
-                d.id_cuenta = $('#id_cuenta_balance').val();
+                d.cuenta_desde = $('#cuenta_desde_balance').val();
+                d.cuenta_hasta = $('#cuenta_hasta_balance').val();
+                d.tipo = $('#tipo_informe_balance').val();
+                d.id_nit = $('#id_nit_balance').val();
             }
         },
         "columns": [
@@ -121,51 +124,76 @@ function balanceInit() {
         ]
     });
     balance_table.column(1).visible(false);
-    $('#id_cuenta_balance').select2({
+
+    $('#id_nit_balance').select2({
         theme: 'bootstrap-5',
         delay: 250,
-        placeholder: "Seleccione una Cuenta",
+        placeholder: "Seleccione una Cédula/nit",
         allowClear: true,
         ajax: {
-            url: 'api/plan-cuenta/combo-cuenta',
-            headers: headers,
+            url: 'api/nit/combo-nit',
             dataType: 'json',
+            headers: headers,
             processResults: function (data) {
                 return {
                     results: data.data
                 };
             }
         }
+
     });
 
     $("#tipo_informe_balance").on('change', function(){
-        console.log('123')
         var data = $("#tipo_informe_balance").val();
-        if (data == '2') balance_table.column(1).visible(true);
-        else balance_table.column(1).visible(false);
+        $('#cuenta_desde_balance').prop('disabled', false);
+        $('#cuenta_hasta_balance').prop('disabled', false);
+        $("#cuenta_desde_balance").val('');
+        $("#cuenta_hasta_balance").val('');
+        
+        if (data == '3') {
+            $('#cuenta_desde_balance').prop('disabled', true);
+            $('#cuenta_hasta_balance').prop('disabled', true);
+            $("#cuenta_desde_balance").val(1);
+            $("#cuenta_hasta_balance").val(3);
+        }
+        findBalance();
     });
 
     findBalance();
 }
 
 $(document).on('click', '#generarBalance', function () {
+    generarConsultaBalance()
+});
+
+function generarConsultaBalance() {
     generarBalance = false;
     $("#generarBalance").hide();
     $("#generarBalanceLoading").show();
-    $('#descargarExcelBalance').prop('disabled', true);
+
     $("#descargarExcelBalance").hide();
+    $("#descargarExcelBalanceDisabled").show();
+
+    $("#descargarPdfBalance").hide();
+    $("#descargarPdfBalanceDisabled").show();
 
     $(".cardTotalBalance").css("background-color", "white");
 
     $("#balance_anterior").text('$0');
     $("#balance_debito").text('$0');
     $("#balance_credito").text('$0');
+
     $("#balance_diferencia").text('$0');
+
+    var tipoInformeBalance = $("#tipo_informe_balance").val();
+    balance_table.column(1).visible(false);
+    if (tipoInformeBalance == '2') balance_table.column(1).visible(true);
 
     var url = base_url + 'balances';
     url+= '?fecha_desde='+$('#fecha_desde_balance').val();
     url+= '&fecha_hasta='+$('#fecha_hasta_balance').val();
-    url+= '&id_cuenta='+$('#id_cuenta_balance').val();
+    url+= '&cuenta_desde='+$('#cuenta_desde_balance').val();
+    url+= '&cuenta_hasta='+$('#cuenta_hasta_balance').val();
     url+= '&tipo='+$('#tipo_informe_balance').val();
     url+= '&nivel='+getNivel();
     url+= '&generar='+generarBalance;
@@ -186,7 +214,6 @@ $(document).on('click', '#generarBalance', function () {
                     reverseButtons: true,
                 }).then((result) => {
                     if (result.value){
-                        console.log('cargando: ',res.data)
                         $('#id_balance_cargado').val(res.data);
                         loadBalanceById(res.data);
                     } else {
@@ -197,9 +224,14 @@ $(document).on('click', '#generarBalance', function () {
             } else {
                 agregarToast('info', 'Generando balance', 'En un momento se le notificará cuando el informe esté generado...', true );
             }
+        } else {
+            $("#generarBalance").show();
+            $("#generarBalanceLoading").hide();
+            $("#generarBalanceUltimoLoading").hide();
+            agregarToast('error', 'Informe balance', res.message, false );
         }
     });
-});
+}
 
 var channel = pusher.subscribe('informe-balance-'+localStorage.getItem("notificacion_code"));
 
@@ -216,25 +248,30 @@ channel.bind('notificaciones', function(data) {
 });
 
 function loadBalanceById(id_balance) {
+    $('#id_balance_cargado').val(id_balance);
     balance_table.ajax.url(base_url + 'balances-show?id='+id_balance).load(function(res) {
         if(res.success){
             $("#generarBalance").show();
             $("#generarBalanceLoading").hide();
             $("#generarBalanceUltimoLoading").hide();
-            $('#descargarExcelBalance').prop('disabled', false);
+
             $("#descargarExcelBalance").show();
             $("#descargarExcelBalanceDisabled").hide();
 
-            if(res.descuadre) {
-                Swal.fire(
-                    'Balance descuadrado',
-                    '',
-                    'warning'
-                );
-            } else {
-                agregarToast('exito', 'Balance cargado', 'Informe cargado con exito!', true);
+            $("#descargarPdfBalance").show();
+            $("#descargarPdfBalanceDisabled").hide();
+
+            if ($("#tipo_informe_balance").val() != '3') {
+                if(res.descuadre) {
+                    Swal.fire(
+                        'Balance descuadrado',
+                        '',
+                        'warning'
+                    );
+                } else {
+                    agregarToast('exito', 'Balance cargado', 'Informe cargado con exito!', true);
+                }
             }
-            console.log(res);
             mostrarTotalesBalance(res.totales, res.filtros);
         }
     });
@@ -281,7 +318,8 @@ function GenerateBalance() {
     var url = base_url + 'balances';
     url+= '?fecha_desde='+$('#fecha_desde_balance').val();
     url+= '&fecha_hasta='+$('#fecha_hasta_balance').val();
-    url+= '&id_cuenta='+$('#id_cuenta_balance').val();
+    url+= '&cuenta_desde='+$('#cuenta_desde_balance').val();
+    url+= '&cuenta_hasta='+$('#cuenta_hasta_balance').val();
     url+= '&tipo='+$('#tipo_informe_balance').val();
     url+= '&nivel='+getNivel();
     url+= '&generar='+generarBalance;
@@ -326,6 +364,17 @@ $(document).on('click', '#descargarExcelBalance', function () {
     });
 });
 
+$(document).on('click', '#descargarPdfBalance', function () {
+    var id_balance = $('#id_balance_cargado').val();
+    if (id_balance) {
+        window.open(base_web+'balance-pdf/'+id_balance, "_blank");
+    } else {
+        $("#descargarPdfBalance").hide();
+        $("#descargarPdfBalanceDisabled").show();
+        agregarToast('error', 'Error al generar pdf', 'No se ha encontrado el id del informe');
+    }
+});
+
 $(document).on('click', '#generarBalanceUltimo', function () {
     $('#generarBalanceUltimo').hide();
     $('#generarBalanceUltimoLoading').show();
@@ -333,14 +382,18 @@ $(document).on('click', '#generarBalanceUltimo', function () {
 });
 
 function findBalance() {
+    console.log('findBalance');
     balanceExistente = false;
     $('#generarBalanceUltimo').hide();
     $('#generarBalanceUltimoLoading').show();
 
     var url = 'balances-find';
+
     url+= '?fecha_desde='+$('#fecha_desde_balance').val();
     url+= '&fecha_hasta='+$('#fecha_hasta_balance').val();
-    url+= '&id_cuenta='+$('#id_cuenta_balance').val();
+    url+= '&cuenta_desde='+$('#cuenta_desde_balance').val();
+    url+= '&cuenta_hasta='+$('#cuenta_hasta_balance').val();
+    url+= '&tipo='+$('#tipo_informe_balance').val();
     url+= '&nivel='+getNivel();
     
     $.ajax({
@@ -382,7 +435,14 @@ $("#fecha_hasta_balance").on('change', function(){
     findBalance();
 });
 
-$("#id_cuenta_balance").on('change', function(){
+$("#cuenta_desde_balance").on('change', function(){
+    var cuentaDesde = $("#cuenta_desde_balance").val();
+    $("#cuenta_hasta_balance").val(cuentaDesde);
+    clearBalance();
+    findBalance();
+});
+
+$("#cuenta_hasta_balance").on('change', function(){
     clearBalance();
     findBalance();
 });
@@ -395,4 +455,7 @@ $(".nivel_balance").on('change', function(){
 function clearBalance() {
     $("#descargarExcelBalance").hide();
     $("#descargarExcelBalanceDisabled").show();
+
+    $("#descargarPdfBalance").hide();
+    $("#descargarPdfBalanceDisabled").show();
 }

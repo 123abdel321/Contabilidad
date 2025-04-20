@@ -3,6 +3,8 @@ var nits_table = null;
 var $comboCiudad = null;
 var $comboVendedores = null;
 var $comboTipoDocumento = null;
+var $comboResponsabilidares = null;
+var $comboActividadEconomica = null;
 
 function nitInit() {
     nits_table = $('#nitTable').DataTable({
@@ -82,7 +84,24 @@ function nitInit() {
                     return 'NO';
                 }
             },
+            {
+                "data": function (row, type, set){
+                    if(row.actividad_economica){
+                        return row.actividad_economica.nombre;
+                    }
+                    return '';
+                }
+            },
+            {"data":'porcentaje_reteica', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data":'porcentaje_aiu', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {
+                "data": function (row, type, set){
+                    if(row.sumar_aiu){
+                        return 'SI';
+                    }
+                    return 'NO';
+                }
+            },
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
@@ -155,6 +174,27 @@ function nitInit() {
                 $('#declarante_nit').prop('checked', false);
             }
 
+            if (data.sumar_aiu) {
+                $('#sumar_aiu_nits').prop('checked', true);
+            } else {
+                $('#sumar_aiu_nits').prop('checked', false);
+            }
+
+            if (data.id_responsabilidades) {
+                var id_responsabilidades = data.id_responsabilidades.split(",");
+                $("#id_responsabilidades").val(id_responsabilidades).change();
+            }
+
+            if(data.actividad_economica){
+                var dataActividadEconomica = {
+                    id: data.actividad_economica.id,
+                    text: data.actividad_economica.nombre
+                };
+                var newOption = new Option(dataActividadEconomica.text, dataActividadEconomica.id, false, false);
+                $comboActividadEconomica.append(newOption).trigger('change');
+                $comboActividadEconomica.val(dataActividadEconomica.id).trigger('change');
+            }
+
             hideFormNits();
         
             $("#id_nit_up").val(data.id);
@@ -170,6 +210,13 @@ function nitInit() {
             $("#telefono_1").val(data.telefono_1);
             $("#observaciones").val(data.observaciones);
             $("#porcentaje_aiu").val(data.porcentaje_aiu);
+            $("#porcentaje_reteica").val(data.porcentaje_reteica);
+            $("#div_id_actividad_economica_nit").show();
+            if (data.actividad_economica) {
+                $("#div_porcentaje_reteica").show();
+            } else {
+                $("#div_porcentaje_reteica").hide();
+            }
             
             if(data.logo_nit) {
                 $('#new_avatar').attr('src', 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/'+data.logo_nit);
@@ -304,6 +351,39 @@ function nitInit() {
         }
     });
 
+    $comboResponsabilidares = $('#id_responsabilidades').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#nitFormModal'),
+    });
+
+    $comboActividadEconomica = $('#id_actividad_economica_nit').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        dropdownParent: $('#nitFormModal'),
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Debes ingresar más caracteres...";
+            }
+        },
+        ajax: {
+            url: 'api/actividad-economica-combo',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     $("#searchInputNits").on("input", function (e) {
         nits_table.context[0].jqXHR.abort();
         $('#nitTable').DataTable().search($("#searchInputNits").val()).draw();
@@ -317,21 +397,6 @@ function nitInit() {
     $('.water').hide();
     nits_table.ajax.reload();
 }
-
-// $('.only-lyrics').keypress(function (e) {
-//     var txt = String.fromCharCode(e.which);
-//     if (!txt.match(/[A-Za-z&. ]/)) {
-//         return false;
-//     }
-// });
-  
-// $('.only-lyrics').bind('paste', function() {
-//     setTimeout(function() { 
-//         var value = $(this).val();
-//         var updated = value.replace(/[^A-Za-z&. ]/g, '');
-//         $(this).val(updated);
-//     });
-// });
 
 $('.only-numbers').keypress(function (e) {
     var txt = String.fromCharCode(e.which);
@@ -373,11 +438,28 @@ $(document).on('click', '#createNits', function () {
     hideFormNits();
     $("#updateNit").hide();
     $("#saveNit").show();
+    $("#div_declarante").hide();
+    $("#div_id_actividad_economica_nit").hide();
     $("#nitFormModal").modal('show');
 });
 
 $("#id_tipo_documento").on('change', function(e) {
     hideFormNits();
+    $("#div_sumar_aiu").show();
+    $("#div_declarante").show();
+    $("#div_id_actividad_economica_nit").show();
+});
+
+$('#id_actividad_economica_nit').on('change', function (e) {
+    var data = $(this).select2('data');
+    if (data.length) {
+        var actividadEconomica = data[0];
+        $("#div_porcentaje_reteica").show();
+        $("#porcentaje_reteica").val(actividadEconomica.porcentaje);
+    } else {
+        $("#div_porcentaje_reteica").hide();
+        $("#porcentaje_reteica").val(0);
+    }
 });
 
 $(document).on('click', '#updateNit', function () {
@@ -406,7 +488,11 @@ $(document).on('click', '#updateNit', function () {
             observaciones: $("#observaciones").val(),
             id_vendedor: $('#id_vendedor_nit').val(),
             porcentaje_aiu: $('#porcentaje_aiu').val(),
+            porcentaje_reteica: $('#porcentaje_reteica').val(),
+            id_responsabilidades: $("#id_responsabilidades").val(),
+            id_actividad_economica: $("#id_actividad_economica_nit").val(),
             declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
+            sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
 
@@ -460,6 +546,7 @@ $(document).on('click', '#saveNit', function () {
         $("#saveNit").hide();
 
         let data = {
+
             id_tipo_documento: $("#id_tipo_documento").val(),
             numero_documento: $("#numero_documento").val(),
             tipo_contribuyente: $("#tipo_contribuyente").val(),
@@ -475,7 +562,11 @@ $(document).on('click', '#saveNit', function () {
             observaciones: $("#observaciones").val(),
             id_vendedor: $('#id_vendedor_nit').val(),
             porcentaje_aiu: $('#porcentaje_aiu').val(),
+            porcentaje_reteica: $('#porcentaje_reteica').val(),
+            id_responsabilidades: $("#id_responsabilidades").val(),
+            id_actividad_economica: $("#id_actividad_economica_nit").val(),
             declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
+            sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
 
@@ -537,8 +628,15 @@ function clearFormNits(){
     $("#direccion").val('');
     $("#email").val('');
     $("#porcentaje_aiu").val('');
+    $("#porcentaje_reteica").val('');
     $('#default_avatar').show();
     $('#new_avatar').hide();
+    $("#id_actividad_economica_nit").val('').change();
+    $("#id_responsabilidades").val('').change();
+    
+    $("#div_sumar_aiu").hide();
+    $("#div_declarante").hide();
+    $("#div_id_actividad_economica_nit").hide();
 
     newImgProfile = '';
 }
@@ -558,6 +656,8 @@ function hideFormNits(){
         'razon_social',
         'telefono_1',
         'porcentaje_aiu',
+        'id_responsabilidades',
+        'id_actividad_economica_nit',
         'direccion',
         'email',
         'declarante'
@@ -571,6 +671,7 @@ function hideFormNits(){
         'razon_social',
         'telefono_1',
         'porcentaje_aiu',
+        'id_responsabilidades',
         'direccion',
         'email',
         'declarante'
@@ -587,6 +688,7 @@ function hideFormNits(){
         'otros_nombres',
         'telefono_1',
         'porcentaje_aiu',
+        'id_responsabilidades',
         'direccion',
         'email',
         'declarante'
@@ -600,7 +702,7 @@ function hideFormNits(){
     if (tipoDocumento && tipoDocumento == '6') {
         nitsForm.forEach(form => {
             $("#div_"+form).show();
-            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu') {
+            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu' || form == 'id_responsabilidades') {
             } else {
                 $("#"+form).prop('required',true);
             }
@@ -608,13 +710,14 @@ function hideFormNits(){
     } else if (tipoDocumento) {
         noNitsForm.forEach(form => {
             $("#div_"+form).show();
-            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu') {
+            if (form == 'otros_nombres' || form == 'segundo_apellido' || form == 'porcentaje_aiu' || form == 'id_responsabilidades') {
             } else {
                 $("#"+form).prop('required',true);
             }
         });
     }
 
+    $("#div_porcentaje_reteica").hide();
     $('#id_vendedor_nit').prop('required',false);
     $('#observaciones').prop('required',false);
 }

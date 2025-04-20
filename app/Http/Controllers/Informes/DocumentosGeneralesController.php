@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Informes;
 
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
+use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Exports\DocumentoGeneralExport;
 use App\Jobs\ProcessInformeDocumentosGenerales;
 //MODELS
 use App\Models\Empresas\Empresa;
@@ -92,6 +95,17 @@ class DocumentosGeneralesController extends Controller
         $rowperpage = $request->get("length");
 
         $documentosGenerales = InfDocumentosGenerales::where('id', $request->get('id'))->first();
+        if (!$documentosGenerales) {
+            return response()->json([
+                'success'=>	true,
+                'draw' => $draw,
+                'iTotalRecords' => 0,
+                'iTotalDisplayRecords' => 0,
+                'data' => [],
+                'perPage' => 0,
+                'message'=> 'Documentos generado con exito!'
+            ]);
+        }
         $informe = InfDocumentosGeneralesDetalle::where('id_documentos_generales', $documentosGenerales->id);
 
         $informeTotals = $informe->get();
@@ -158,6 +172,60 @@ class DocumentosGeneralesController extends Controller
                 })
             ->delete();
 
+            DB::connection('sam')->table('fac_documentos')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 2)
+                    ->whereRaw('documentos_generals.relation_id = fac_documentos.id');
+            })
+            ->delete();
+
+            DB::connection('sam')->table('fac_compras')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 3)
+                    ->whereRaw('documentos_generals.relation_id = fac_compras.id');
+            })
+            ->delete();
+
+            DB::connection('sam')->table('fac_ventas')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 4)
+                    ->whereRaw('documentos_generals.relation_id = fac_ventas.id');
+            })
+            ->delete();
+
+            DB::connection('sam')->table('con_recibos')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 6)
+                    ->whereRaw('documentos_generals.relation_id = con_recibos.id');
+            })
+            ->delete();
+
+            DB::connection('sam')->table('con_gastos')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 7)
+                    ->whereRaw('documentos_generals.relation_id = con_gastos.id');
+            })
+            ->delete();
+
+            DB::connection('sam')->table('con_pagos')
+            ->whereNotExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('documentos_generals')
+                    ->where('documentos_generals.relation_type', 8)
+                    ->whereRaw('documentos_generals.relation_id = con_pagos.id');
+            })
+            ->delete();
+
             DB::connection('sam')->commit();
 
             return response()->json([
@@ -168,6 +236,76 @@ class DocumentosGeneralesController extends Controller
         } catch (Exception $e) {
 
 			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function exportExcel(Request $request)
+    {
+        try {
+            $infDocumentosGenerales = InfDocumentosGenerales::find($request->get('id'));
+
+            if($infDocumentosGenerales && $infDocumentosGenerales->exporta_excel == 1) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => '',
+                    'message'=> 'Actualmente se esta generando el excel del auxiliar 12'
+                ]);
+            }
+
+            if($infDocumentosGenerales && $infDocumentosGenerales->exporta_excel == 2) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => $infDocumentosGenerales->archivo_excel,
+                    'message'=> ''
+                ]);
+            }
+
+            $fileName = 'documento_general_'.uniqid().'.xlsx';
+            
+            $url = $fileName;
+
+            $infDocumentosGenerales->exporta_excel = 1;
+            $infDocumentosGenerales->archivo_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
+            $infDocumentosGenerales->save();
+
+            $has_empresa = $request->user()['has_empresa'];
+            $user_id = $request->user()->id;
+            $id_informe = $request->get('id');
+
+            Bus::chain([
+                function () use ($id_informe, &$fileName) {
+                    // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
+                    (new DocumentoGeneralExport($id_informe))->store($fileName, 'do_spaces', null, [
+                        'visibility' => 'public'
+                    ]);
+                },
+                function () use ($user_id, $has_empresa, $url, $infDocumentosGenerales) {
+                    // Lanza el evento cuando el proceso termine
+                    event(new PrivateMessageEvent('informe-documentos-generales-'.$has_empresa.'_'.$user_id, [
+                        'tipo' => 'exito',
+                        'mensaje' => 'Excel de documentos generado con exito!',
+                        'titulo' => 'Excel generado',
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
+                        'autoclose' => false
+                    ]));
+                    
+                    // Actualiza el informe auxiliar
+                    $infDocumentosGenerales->exporta_excel = 2;
+                    $infDocumentosGenerales->save();
+                }
+            ])->dispatch();
+
+            return response()->json([
+                'success'=>	true,
+                'url_file' => '',
+                'message'=> 'Se le notificará cuando el informe haya finalizado'
+            ]);
+        } catch (Exception $e) {
             return response()->json([
                 "success"=>false,
                 'data' => [],

@@ -66,7 +66,7 @@ function plancuentaInit() {
             {"data":'nombre'},
             {
                 "data": function (row, type, set){
-                    if(row.tipos_cuenta.length){
+                    if(row.tipos_cuenta && row.tipos_cuenta.length){
                         if (row.tipos_cuenta[0].tipo) return row.tipos_cuenta[0].tipo.nombre;
                         else return '';
                     }

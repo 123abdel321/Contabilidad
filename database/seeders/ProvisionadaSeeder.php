@@ -18,6 +18,10 @@ use Database\Seeders\Provisionada\TipoImpuestosSeeder;
 use Database\Seeders\Provisionada\TipoDocumentosSeeder;
 use Database\Seeders\Provisionada\TiposFormasPagosSeeder;
 use Database\Seeders\Provisionada\PlanCuentasTiposSeeder;
+use Database\Seeders\Provisionada\ExogenaFormatosProvisionalSeeder;
+use Database\Seeders\Provisionada\ExogenaFormatoColumnasProvisionalSeeder;
+use Database\Seeders\Provisionada\ExogenaFormatoConceptosProvisionalSeeder;
+
 
 
 class ProvisionadaSeeder extends Seeder
@@ -44,7 +48,9 @@ class ProvisionadaSeeder extends Seeder
         $this->call(TipoImpuestosSeeder::class);
         $this->call(TipoDocumentosSeeder::class);
         $this->call(TiposFormasPagosSeeder::class);
-        $this->call(PlanCuentasTiposSeeder::class);
+        $this->call(ExogenaFormatosProvisionalSeeder::class);
+        $this->call(ExogenaFormatoColumnasProvisionalSeeder::class);
+        $this->call(ExogenaFormatoConceptosProvisionalSeeder::class);
 
         DB::statement('SET foreign_key_checks = 1');
     }

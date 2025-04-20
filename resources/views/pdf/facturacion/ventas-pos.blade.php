@@ -96,6 +96,19 @@
                 <tr><th class="font-12">
                     FACTURA VENTA P.O.S: {{ $factura->documento_referencia }}
                 </th></tr>
+                
+                @if ($factura->resolucion)
+                    <tr><th class="font-12">
+                        RESOLUCION DIAN {{ $factura->resolucion->numero_resolucion }}
+                    </th></tr>
+                    <tr><th class="font-12">
+                        DEL {{ $factura->resolucion->fecha }} N. {{ $factura->consecutivo }} DE LA #{{ $factura->resolucion->consecutivo_desde }} HASTA LA #{{ $factura->resolucion->consecutivo_hasta }}
+                    </th></tr>
+                    <tr><th class="font-12">
+                        VIGANCIA: {{ $factura->resolucion->vigencia }} MESES
+                    </th></tr>
+                @endif
+                
                 <tr><th class="font-12">
                     FECHA: {{ $factura->fecha_manual }}
                 </th></tr>
@@ -266,6 +279,19 @@
                     <td class="font-13" class="spacer-10 padding5"></td>
                 </tr>
             </tbody>
+        </table>
+
+        <table class="width-100">
+            <thead class="center-item">
+                <tr>
+					<td class="spacer padding5"></td>
+				</tr>
+                <tr>
+                    <td class="font-12">
+                        {!! $observacion_general !!}
+                    </td>
+                </tr>
+            </thead>
         </table>
 
         <table class="width-100">

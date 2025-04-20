@@ -158,12 +158,12 @@
         }
 
         .footer-navigation {
+            margin: 0;
             position: fixed;
-            left: 0;
-            bottom: -1px;
-            width: 100%;
-            z-index: 999;
-            text-align: center;
+            margin-top: -15px;
+            top: 100%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .footer-navigation .nav {
@@ -628,15 +628,21 @@
     <script src="assets/js/sistema/sweetalert2.all.min.js"></script>
 
     <script>
-        //LOCAL
-        // const base_url = 'http://localhost:8000/api/';
-        // const base_web = 'http://localhost:8000/';
-        //DEV
-        // const base_url = 'https://test.portafolioerp.com/api/';
-        // const base_web = 'https://test.portafolioerp.com/';
-        //PRO
-        const base_url = 'https://app.portafolioerp.com/api/';
-        const base_web = 'https://app.portafolioerp.com/';
+
+        const host = window.location.host;
+
+        let base_url, base_web;
+
+        if (host.includes("app.portafolioerp.com")) {
+            base_url = "https://app.portafolioerp.com/api/";
+            base_web = "https://app.portafolioerp.com/";
+        } else if (host.includes("test.portafolioerp.com")) {
+            base_url = "https://test.portafolioerp.com/api/";
+            base_web = "https://test.portafolioerp.com/";
+        } else if (host.includes("localhost:8000")) {
+            base_url = 'http://localhost:8000/api/';
+            base_web = 'http://localhost:8000/';
+        }
 
         $("#button-login").click(function(event){
             sendDataLogin();
@@ -692,6 +698,9 @@
                 $("#button-login-loading").hide();
                 $("#button-login").show();
                 $('#error-login').show();
+                if (err.status == 419) {
+                    window.location.href = '/home';
+                }
             });
         }
 

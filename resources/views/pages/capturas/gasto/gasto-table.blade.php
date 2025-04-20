@@ -9,6 +9,7 @@
             <th>Dscto</th>
             <th>Iva</th>
             <th>Retención</th>
+            <th>Rete-Ica</th>
             <th>Total gasto</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Observación</th>
         </tr>

@@ -49,12 +49,12 @@ class NitsImportadorController extends Controller
 
         try {
             $file = $request->file('file_import_nits');
-
             NitsImport::truncate();
 
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+            $actualizarValores = $request->has('actualizar_valores') ? true : false;
 
-            $import = new ImportNits($empresa->razon_social);
+            $import = new ImportNits($empresa->razon_social, $actualizarValores);
             $import->import($file);
 
             return response()->json([
@@ -151,41 +151,57 @@ class NitsImportadorController extends Controller
             if (count($nitsImportados)) {
                 
                 foreach ($nitsImportados as $nit) {
-
-                    $idTipoDocumento = TipoDocumentos::where('codigo', $nit->tipo_documento)->first();
-                    $this->rowErrors = 0;
-                    $errores = $this->getErrores($nit);
-
-                    if ($this->rowErrors) {
-                        DB::connection('sam')->rollback();
-                        return response()->json([
-                            "success"=>false,
-                            'data' => $errores,
-                            "message"=>'Archivo con errores'
-                        ], 422);
+                    if ($nit->estado) {
+                        $nitExistente = Nits::where('numero_documento', $nit->numero_documento)->first();
+                        if ($nit->primer_nombre || $nit->otros_nombres || $nit->primer_apellido || $nit->segundo_apellido || $nit->razon_social) {
+                            $nitExistente->primer_nombre = $nit->primer_nombre;
+                            $nitExistente->otros_nombres = $nit->otros_nombres;
+                            $nitExistente->primer_apellido = $nit->primer_apellido;
+                            $nitExistente->segundo_apellido = $nit->segundo_apellido;
+                            $nitExistente->razon_social = $nit->razon_social;
+                        }
+                        if ($nit->email) $nitExistente->email = $nit->email;
+                        if ($nit->email_1) $nitExistente->email_1 = $nit->email_1;
+                        if ($nit->email_2) $nitExistente->email_2 = $nit->email_2;
+                        if ($nit->telefono_1) $nitExistente->telefono_1 = $nit->telefono_1;
+                        
+                        $nitExistente->save();
+                    } else {
+                        $idTipoDocumento = TipoDocumentos::where('codigo', $nit->tipo_documento)->first();
+                        $this->rowErrors = 0;
+                        $errores = $this->getErrores($nit);
+    
+                        if ($this->rowErrors) {
+                            DB::connection('sam')->rollback();
+                            return response()->json([
+                                "success"=>false,
+                                'data' => $errores,
+                                "message"=>'Archivo con errores'
+                            ], 422);
+                        }
+    
+                        Nits::create([
+                            'id_tipo_documento' => $idTipoDocumento->id,
+                            'id_vendedor' => $nit->id_vendedor,
+                            'numero_documento' => $nit->numero_documento,
+                            'tipo_contribuyente' => $idTipoDocumento->id == 6 ? 1 : 2,
+                            'primer_apellido' => $nit->primer_apellido,
+                            'segundo_apellido' => $nit->segundo_apellido,
+                            'primer_nombre' => $nit->primer_nombre,
+                            'otros_nombres' => $nit->otros_nombres,
+                            'razon_social' => $nit->razon_social,
+                            'direccion' => $nit->direccion,
+                            'email' => $nit->email,
+                            'telefono_1' => $nit->telefono_1,
+                            'observaciones' => $nit->observaciones,
+                            'email_1' => $nit->email_1,
+                            'email_2' => $nit->email_2,
+                            'plazo' => $nit->plazo,
+                            'cupo' => $nit->cupo,
+                            'created_by' => request()->user()->id,
+                            'updated_by' => request()->user()->id,
+                        ]);
                     }
-
-                    Nits::create([
-                        'id_tipo_documento' => $idTipoDocumento->id,
-                        'id_vendedor' => $nit->id_vendedor,
-                        'numero_documento' => $nit->numero_documento,
-                        'tipo_contribuyente' => $idTipoDocumento->id == 6 ? 1 : 2,
-                        'primer_apellido' => $nit->primer_apellido,
-                        'segundo_apellido' => $nit->segundo_apellido,
-                        'primer_nombre' => $nit->primer_nombre,
-                        'otros_nombres' => $nit->otros_nombres,
-                        'razon_social' => $nit->razon_social,
-                        'direccion' => $nit->direccion,
-                        'email' => $nit->email,
-                        'telefono_1' => $nit->telefono_1,
-                        'observaciones' => $nit->observaciones,
-                        'email_1' => $nit->email_1,
-                        'email_2' => $nit->email_2,
-                        'plazo' => $nit->plazo,
-                        'cupo' => $nit->cupo,
-                        'created_by' => request()->user()->id,
-                        'updated_by' => request()->user()->id,
-                    ]);
                 }
 
                 NitsImport::whereNotNull('id')->delete();
@@ -212,43 +228,66 @@ class NitsImportadorController extends Controller
     private function getErrores($dataNit)
     {
         $errores = '';
-        //VALIDAR TIPO DE DOCUMENTO
-        if ($dataNit->tipo_documento) {
-            $existe = TipoDocumentos::where('codigo', $dataNit->tipo_documento);
-            if (!$existe->count()) {
+        if ($dataNit->estado) {//ACTUALIZAR NITS
+            if ($dataNit->numero_documento) {
+                $nit = Nits::where('numero_documento', $dataNit->numero_documento)->first();
+                if (!$nit) {
+                    $this->rowErrors+= 1;
+                    $errores.= 'El numero de documento: '.$dataNit->numero_documento.', no fue encontrado!<br>';
+                } else {
+
+                    $nitsConMismoCorreo = Nits::where('numero_documento', '!=', $dataNit->numero_documento)
+                        ->where('email', $dataNit->email)
+                        ->first();
+
+                    if ($dataNit->email && $nitsConMismoCorreo) {
+                        $this->rowErrors+= 1;
+                        $errores.= 'El email: '.$dataNit->email.', ya esta en uso por el documento: '.$nitsConMismoCorreo->numero_documento.'!<br>';
+                    }
+                }
+            } else {
                 $this->rowErrors+= 1;
-                $errores.='El código tipo de documento no existe <br/>';
+                $errores.='El numero de documento es requerido <br/>';
             }
-        } else {
-            $this->rowErrors+= 1;
-            $errores.='El tipo de documento es requerido <br/>';
-        }
-        //VALIDAR NUMERO DOCUMENTO
-        if ($dataNit->numero_documento) {
-            $existe = Nits::where('numero_documento', $dataNit->numero_documento);
-            if ($existe->count()) {
+        } else {//CREAR NITS
+            //VALIDAR TIPO DE DOCUMENTO
+            if ($dataNit->tipo_documento) {
+                $existe = TipoDocumentos::where('codigo', $dataNit->tipo_documento);
+                if (!$existe->count()) {
+                    $this->rowErrors+= 1;
+                    $errores.='El código tipo de documento no existe <br/>';
+                }
+            } else {
                 $this->rowErrors+= 1;
-                $errores.='El numero de documento: '.$dataNit->numero_documento.' debe ser unico <br/>';
+                $errores.='El tipo de documento es requerido <br/>';
             }
-        } else {
-            $this->rowErrors+= 1;
-            $errores.='El numero de documento es requerido <br/>';
-        }
-        //VALIDAR EMAIL
-        if ($dataNit->email) {
-            $existe = Nits::where('email', $dataNit->email);
-            if ($existe->count()) {
+            //VALIDAR NUMERO DOCUMENTO
+            if ($dataNit->numero_documento) {
+                $existe = Nits::where('numero_documento', $dataNit->numero_documento);
+                if ($existe->count()) {
+                    $this->rowErrors+= 1;
+                    $errores.='El numero de documento: '.$dataNit->numero_documento.' debe ser unico <br/>';
+                }
+            } else {
                 $this->rowErrors+= 1;
-                $errores.='El email: '.$dataNit->email.' debe ser unico <br/>';
+                $errores.='El numero de documento es requerido <br/>';
             }
-        } else {
-            $this->rowErrors+= 1;
-            $errores.='El email es requerido <br/>';
-        }
-        //VALIDAR NOMBRES
-        if (!$dataNit->razon_social && !$dataNit->primer_nombre) {
-            $this->rowErrors+= 1;
-            $errores.='La razon social o el primero nombre son requerido <br/>';
+            //VALIDAR EMAIL
+            if ($dataNit->email) {
+                $existe = Nits::where('email', $dataNit->email);
+                if ($existe->count()) {
+                    $this->rowErrors+= 1;
+                    $errores.='El email: '.$dataNit->email.' debe ser unico <br/>';
+                }
+            } else {
+                $this->rowErrors+= 1;
+                $errores.='El email es requerido <br/>';
+            }
+            //VALIDAR NOMBRES
+            if (!$dataNit->razon_social && !$dataNit->primer_nombre) {
+                $this->rowErrors+= 1;
+                $errores.='La razon social o el primero nombre son requerido <br/>';
+            }
         }
 
         return $errores;

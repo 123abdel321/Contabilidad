@@ -183,10 +183,10 @@
     </div>
 
     <script>
-        var pagoFecha = '<?php echo auth()->user()->can("pago fecha"); ?>';
-        var pagoTotales = '<?php echo auth()->user()->can("pago totales"); ?>';
-
-        var comprobantesPagos = JSON.parse('<?php echo $comprobantes; ?>');
+        var pagoFecha = @json(auth()->user()->can("pago fecha"));
+        var pagoTotales = @json(auth()->user()->can("pago totales"));
+        var pagoUpdate = @json(auth()->user()->can("pago update"));
+        var comprobantesPagos = @json($comprobantes);
     </script>
     
 </div>

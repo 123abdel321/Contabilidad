@@ -18,22 +18,31 @@
                             <select class="form-control form-control-sm tipo_cartera" id="tipo_informe_balance" name="tipo_informe_balance">
                                 <option value="1">De prueba</option>
                                 <option value="2">De terceros</option>
+                                <option value="3">General</option>
                             </select>
                         </div>
                         <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="exampleFormControlSelect1">Cuenta</label>
-                            <select name="id_cuenta_balance" id="id_cuenta_balance" class="form-control form-control-sm">
+                            <label for="exampleFormControlSelect1">Cuenta desde</label>
+                            <input name="cuenta_desde_balance" id="cuenta_desde_balance" onfocus="this.select()" class="form-control form-control-sm" type="text">
+                        </div>
+                        <div class="form-group col-12 col-sm-4 col-md-3">
+                            <label for="exampleFormControlSelect1">Cuenta hasta</label>
+                            <input name="cuenta_hasta_balance" id="cuenta_hasta_balance" onfocus="this.select()" class="form-control form-control-sm" type="text">
+                        </div>
+                        <div class="form-group col-12 col-sm-4 col-md-3">
+                            <label for="exampleFormControlSelect1">Cedula / Nit</label>
+                            <select name="id_nit_balance" id="id_nit_balance" class="form-control form-control-sm">
                             </select>
                         </div>
-                        <div class="form-group col-12 col-sm-4 col-md-2">
+                        <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="example-text-input" class="form-control-label">Fecha desde</label>
                             <input name="fecha_desde_balance" id="fecha_desde_balance" class="form-control form-control-sm" type="date" require>
                         </div>
-                        <div class="form-group col-12 col-sm-4 col-md-2">
+                        <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="example-text-input" class="form-control-label">Fecha hasta</label>
                             <input name="fecha_hasta_balance" id="fecha_hasta_balance" class="form-control form-control-sm" type="date" require>
                         </div>
-                        <div class="form-group col-12 col-sm-4 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                        <div class="form-group col-12 col-sm-4 col-md-3 row" style="margin-bottom: 0.1rem !important;">
                             <label for="example-text-input" class="form-control-label">Niveles</label>
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                 <input class="form-check-input" type="radio" name="nivel_balance" id="nivel_balance1" style="font-size: 11px;">
@@ -74,6 +83,16 @@
                     <span id="descargarExcelBalanceDisabled" class="badge bg-dark" style="min-width: 40px; color: #adadad; margin-right: 3px;">
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXCEL</b>
+                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
+                    </span>
+                    <!-- BOTON PDF -->
+                    <span id="descargarPdfBalance" class="btn badge bg-gradient-success btn-bg-pdf" style="min-width: 40px; margin-right: 3px; display:none;">
+                        <i class="fas fa-file-pdf" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">PDF</b>
+                    </span>
+                    <span id="descargarPdfBalanceDisabled" class="badge bg-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                        <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">PDF</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                     <!-- BOTON ULTIMO INFORME -->

@@ -27,6 +27,8 @@ class ConGastoDetalles extends Model
         'descuento_porcentaje',
         'rete_fuente_porcentaje',
         'rete_fuente_valor',
+        'rete_ica_porcentaje',
+        'rete_ica_valor',
         'descuento_valor',
         'iva_porcentaje',
         'iva_valor',
@@ -39,4 +41,15 @@ class ConGastoDetalles extends Model
 	{
 		return $this->belongsTo(ConConceptoGastos::class, 'id_concepto_gastos');
 	}
+
+    public function cuenta_retencion()
+    {
+        return $this->belongsTo(PlanCuentas::class, 'id_cuenta_retencion');
+    }
+    
+    public function cuenta_retencion_declarante()
+    {
+        return $this->belongsTo(PlanCuentas::class, 'id_cuenta_retencion_declarante');
+    }
+    
 }
