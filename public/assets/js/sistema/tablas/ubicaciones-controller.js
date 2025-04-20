@@ -1,5 +1,5 @@
-let ubicaciones_table = null;
-let $comboUbicacionesTipo = null;
+var ubicaciones_table = null;
+var $comboUbicacionesTipo = null;
 
 function ubicacionesInit() {
 

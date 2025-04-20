@@ -1,13 +1,17 @@
+const host = window.location.host;
 
-//LOCAL
-// const base_url = 'http://localhost:8000/api/';
-// const base_web = 'http://localhost:8000/';
-//DEV
-const base_url = 'https://test.portafolioerp.com/api/';
-const base_web = 'https://test.portafolioerp.com/';
-//PRO
-// const base_url = 'https://app.portafolioerp.com/api/';
-// const base_web = 'https://app.portafolioerp.com/';
+let base_url, base_web;
+
+if (host.includes("app.portafolioerp.com")) {
+    base_url = "https://app.portafolioerp.com/api/";
+    base_web = "https://app.portafolioerp.com/";
+} else if (host.includes("test.portafolioerp.com")) {
+    base_url = "https://test.portafolioerp.com/api/";
+    base_web = "https://test.portafolioerp.com/";
+} else if (host.includes("localhost:8000")) {
+    base_url = 'http://localhost:8000/api/';
+    base_web = 'http://localhost:8000/';
+}
 
 const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
 // Pusher.logToConsole = true;
@@ -88,6 +92,7 @@ var moduloCreado = {
     'pedido': false,
     'parqueadero': false,
     'reserva': false,
+    'exogena': false
 };
 
 var moduloRoute = {
@@ -137,6 +142,7 @@ var moduloRoute = {
     'pedido': 'capturas',
     'parqueadero': 'capturas',
     'reserva': 'capturas',
+    'exogena': 'informes',
 }
 
 function iniciarCanalesDeNotificacion () {
