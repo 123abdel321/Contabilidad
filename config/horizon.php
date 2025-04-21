@@ -205,12 +205,6 @@ return [
             'memory' => 128, // MB
             'tries' => 3,
             'timeout' => 60,
-        ],
-
-        'local' => [
-            'supervisor-1' => [
-                'maxProcesses' => 3,
-            ],
-        ],
+        ]
     ],
 ];
