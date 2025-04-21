@@ -23,6 +23,11 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
+    protected $routeMiddleware = [
+        // Otros middlewares...
+        'horizon' => \Laravel\Horizon\Http\Middleware\Authorize::class,
+    ];
+
     /**
      * The application's route middleware groups.
      *
