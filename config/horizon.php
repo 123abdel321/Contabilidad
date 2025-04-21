@@ -70,9 +70,7 @@ return [
     |
     */
 
-    'middleware' => ['web', 'horizon'],
-
-    'gate' => App\Providers\HorizonServiceProvider::class,
+    'middleware' => ['web'],
 
     /*
     |--------------------------------------------------------------------------
