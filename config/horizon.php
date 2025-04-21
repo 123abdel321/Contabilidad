@@ -179,32 +179,42 @@ return [
     |
     */
 
-    'defaults' => [
-        'supervisor-1' => [
-            'connection' => 'redis',
-            'queue' => ['default'],
-            'balance' => 'auto',
-            'maxProcesses' => 1,
-            'maxTime' => 0,
-            'maxJobs' => 0,
-            'memory' => 128,
-            'tries' => 1,
-            'timeout' => 60,
-            'nice' => 0,
-        ],
-    ],
-
     'environments' => [
-        // Supervisor para jobs rápidos
-        'supervisor-fast' => [
-            'connection' => 'redis',
-            'queue' => ['default', 'urgent'],
-            'balance' => 'auto',
-            'maxProcesses' => 10,
-            'minProcesses' => 2,
-            'memory' => 128, // MB
-            'tries' => 3,
-            'timeout' => 60,
-        ]
+        'production' => [
+            'supervisor-1' => [
+                'connection' => 'redis',
+                'queue' => ['default'],
+                'balance' => 'auto',
+                'maxProcesses' => 1,
+                'maxTime' => 0,
+                'maxJobs' => 0,
+                'memory' => 128,
+                'tries' => 1,
+                'timeout' => 60,
+                'nice' => 0,
+            ],
+            'supervisor-fast' => [
+                'connection' => 'redis',
+                'queue' => ['default', 'urgent'],
+                'balance' => 'auto',
+                'maxProcesses' => 10,
+                'minProcesses' => 2,
+                'memory' => 128,
+                'tries' => 3,
+                'timeout' => 60,
+            ],
+        ],
+
+        'local' => [
+            'supervisor-1' => [
+                'connection' => 'redis', // ¡Asegúrate de incluir esto!
+                'queue' => ['default'],
+                'balance' => 'auto',
+                'maxProcesses' => 3, // Sobrescribes solo este valor
+                'memory' => 128,
+                'tries' => 1,
+                'timeout' => 60,
+            ],
+        ],
     ],
 ];
