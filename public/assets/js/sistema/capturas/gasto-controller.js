@@ -503,7 +503,7 @@ function changeConceptoGasto(idGasto) {
     }
 
     //RETENCION
-    if (proveedor.declarante) {
+    if (!proveedor.declarante) {
         if (data.cuenta_retencion_declarante && data.cuenta_retencion_declarante.impuesto) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion_declarante.impuesto.id);
             if (!existe || existe < 0) {
@@ -1417,7 +1417,7 @@ function addRowGastosData(detalle, nit) {
     };
     
     //RETENCION
-    if (nit.declarante) {
+    if (!nit.declarante) {
         if (detalle.cuenta_retencion_declarante && detalle.cuenta_retencion_declarante.impuesto) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == detalle.cuenta_retencion_declarante.impuesto.id);
             if (!existe || existe < 0) {
