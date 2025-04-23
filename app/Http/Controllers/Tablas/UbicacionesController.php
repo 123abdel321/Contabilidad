@@ -210,7 +210,11 @@ class UbicacionesController extends Controller
 
     public function comboUbicacion (Request $request)
     {
-        $ubicacionesTipo = Ubicacion::with('pedido')
+        $ubicacionesTipo = Ubicacion::with([
+            'pedido' => function($query) {
+                $query->whereNull('id_venta')->orWhere('id_venta', '');
+            }
+        ])
         ->select(
             \DB::raw('*'),
             \DB::raw("CONCAT(nombre) as text")

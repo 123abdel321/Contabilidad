@@ -1011,6 +1011,7 @@ function setCrearProducto() {
     $('#producto-variantes').hide();
     $("#div-tipo-tiempo").hide();
     $("#div-tipo-vehiculo").hide();
+    $("#div-fraccion_hora").hide();
     document.getElementById("producto_variantes1").checked = true;
 }
 
@@ -1022,6 +1023,7 @@ function setCrearServicio() {
     $('#producto-variantes').hide();
     $("#div-tipo-tiempo").hide();
     $("#div-tipo-vehiculo").hide();
+    $("#div-fraccion_hora").hide();
 }
 
 function setCrearCombo() {
@@ -1032,6 +1034,7 @@ function setCrearCombo() {
     $('#producto-variantes').hide();
     $("#div-tipo-tiempo").hide();
     $("#div-tipo-vehiculo").hide();
+    $("#div-fraccion_hora").hide();
 }
 
 function setCrearParqueadero() {

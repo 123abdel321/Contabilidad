@@ -526,7 +526,10 @@ function seleccionarProducto(element) {
                     <input id="cantidad_producto_${consecutivoPedidos}" class="button-cantidad-producto" type="text" value="1" onfocus="this.select();" onkeypress="changeCantidadPedido(${consecutivoPedidos}, event)">
                     <div id="agregar_producto_${consecutivoPedidos}" class="agregar" onclick="sumarCantidadPedido(${consecutivoPedidos})"><i class="fas fa-plus"></i></div>
                 </div>
-                <div id="eliminar_producto_${consecutivoPedidos}" class="col-2 eliminar" onclick="eliminarProductoPedido(${consecutivoPedidos})"><i class="fas fa-trash-alt"></i></div>
+                <div class="col-2 row">
+                    <div id="editar_producto_${consecutivoPedidos}" class="col-12 editar" onclick="editarProductoPedido(${consecutivoPedidos})"><i class="fas fa-edit"></i></div>
+                    <div id="eliminar_producto_${consecutivoPedidos}" class="col-12 eliminar" onclick="eliminarProductoPedido(${consecutivoPedidos})"><i class="fas fa-trash-alt"></i></div>
+                </div>
             </div>
         </div>`
     );
@@ -1175,6 +1178,7 @@ function buscarPedidos() {
         if (!res.data) {
             pedidoEditando = null;
             mostrarValoresPedidos();
+            consecutivoSiguienteBodegaPedido();
             return;
         }
 
@@ -1250,7 +1254,7 @@ function buscarPedidos() {
                 `;
 
             if (pedido.id_venta) {
-                letProductoCantidad = `<div class="col-5" style="place-content: center;">
+                letProductoCantidad = `<div class="col-7" style="place-content: center;">
                     <div style="text-align: center; font-weight: bold; font-size: 20px; color: lightseagreen;">
                         Cant: ${parseInt(producto.cantidad)}
                     </div>
@@ -1544,7 +1548,22 @@ $(document).on('click', '#crearCapturaVentaPedidos', function () {
     fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
     $('#fecha_manual_pedido').val(fecha);
 
+    if (primeraResolucionPedido.length == 1) {
+
+        var dataResolucion = {
+            id: primeraResolucionPedido[0].id,
+            text: primeraResolucionPedido[0].prefijo + ' - ' + primeraResolucionPedido[0].nombre
+        };
+        var newOption = new Option(dataResolucion.text, dataResolucion.id, false, false);
+        $comboResolucionPedidos.append(newOption).trigger('change');
+        $comboResolucionPedidos.val(dataResolucion.id).trigger('change');
+    }
+
     $("#pedidosFormModal").modal('show');
+
+    setTimeout(function(){
+        focusFormaPagoPedido(1);
+    },500);
 });
 
 $(document).on('click', '#guardarEditProducto', function () {
