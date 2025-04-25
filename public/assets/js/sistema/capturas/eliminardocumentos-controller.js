@@ -328,6 +328,7 @@ $(document).on('click', '#generarEliminarDocumentos', function () {
     url+= '&id_usuario='+ id_usuario;
     url+= '&agrupar='+agruparDocumentosText;
     url+= '&agrupado='+getNivelAgrupado();
+    url+= '&anulado='+getDocumentoEliminarAnulado();
     url+= '&generar='+generarEliminarDocumentos;
     
     eliminar_documentos_table.ajax.url(url).load(function(res) {
@@ -359,10 +360,11 @@ $(document).on('click', '#eliminarDocumentos', function () {
                 id_comprobante: $('#id_comprobante_eliminar_documentos').val(),
                 id_centro_costos: $('#id_cecos_eliminar_documentos').val(),
                 id_cuenta: $('#id_cuenta_eliminar_documentos').val(),
-                id_usuario: $('#id_usuario_eliminar_documentos').val(),
+                // id_usuario: $('#id_usuario_eliminar_documentos').val(),
                 documento_referencia: $('#factura_eliminar_documentos').val(),
                 consecutivo: $('#consecutivo_eliminar_documentos').val(),
-                concepto: $('#concepto_eliminar_documentos').val()
+                concepto: $('#concepto_eliminar_documentos').val(),
+                anulado: getDocumentoEliminarAnulado(),
             };
         
             $.ajax({
@@ -385,3 +387,10 @@ $(document).on('click', '#eliminarDocumentos', function () {
     });
 
 });
+
+function getDocumentoEliminarAnulado() {
+    if($("input[type='radio']#anulado_eliminar_generales0").is(':checked')) return 0;
+    if($("input[type='radio']#anulado_eliminar_generales1").is(':checked')) return 1;
+
+    return false;
+}

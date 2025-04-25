@@ -67,11 +67,11 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-6 col-sm-3 col-md-3">
+                        <!-- <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="example-text-input" class="form-control-label">Usuario</label>
                             <select name="id_usuario_eliminar_documentos" id="id_usuario_eliminar_documentos" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
-                        </div>
+                        </div> -->
 
                         <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="example-text-input" class="form-control-label">Concepto</label>
@@ -85,7 +85,7 @@
                                 <option value="id_nit">Cedula/Nits</option>
                                 <option value="id_comprobante">Comprobante</option>
                                 <option value="id_centro_costos">Centro costos</option>
-                                <option value="consecutivo">Documento</option>
+                                <option value="consecutivo" selected>Documento</option>
                             </select>
                         </div>
 
@@ -101,6 +101,22 @@
                                 <input class="form-check-input" type="radio" name="agrupado_eliminar_documentos" id="agrupado_eliminar_documentos1" style="font-size: 11px;">
                                 <label class="form-check-label" for="agrupado_eliminar_documentos1" style="font-size: 11px;">
                                     Niveles
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-6 col-sm-3 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                            <label for="example-text-input" class="form-control-label">Documento</label>
+                            <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="anulado_eliminar_generales" id="anulado_eliminar_generales0" style="font-size: 11px;" checked>
+                                <label class="form-check-label" for="anulado_eliminar_generales0" style="font-size: 11px;">
+                                    Normal
+                                </label>
+                            </div>
+                            <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="anulado_eliminar_generales" id="anulado_eliminar_generales1" style="font-size: 11px;">
+                                <label class="form-check-label" for="anulado_eliminar_generales1" style="font-size: 11px;">
+                                    Anulado
                                 </label>
                             </div>
                         </div>
