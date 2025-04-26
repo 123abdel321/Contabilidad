@@ -211,12 +211,15 @@ class ProcessInformeEstadoActual implements ShouldQueue
             )
             ->first();
 
-        $total->mes = 'TOTALES '. $total->year;
-        [$erroresCount, $errores] = $this->getErrores(null, null, null, null, $total->year);
-        $total->errores = $erroresCount;
-        $total->total = 1;
-
-        return $total;
+        if ($total) {
+            $total->mes = 'TOTALES '. $total->year;
+            [$erroresCount, $errores] = $this->getErrores(null, null, null, null, $total->year);
+            $total->errores = $erroresCount;
+            $total->total = 1;
+            return $total;
+        } else {
+            return [];
+        }
     }
 
     private function getErrores($inicioMes = null, $finMes = null, $idComprobante = null, $consecutivo = null, $year = null)
