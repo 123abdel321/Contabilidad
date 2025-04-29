@@ -79,7 +79,6 @@ class ProcessInformeBalance implements ShouldQueue
             else $this->totalesDocumentosBalance();
 
             ksort($this->balanceCollection, SORT_STRING | SORT_FLAG_CASE);
-
             foreach (array_chunk($this->balanceCollection, 233) as $balanceCollection) {
                 DB::connection('informes')
                     ->table('inf_balance_detalles')
@@ -102,8 +101,8 @@ class ProcessInformeBalance implements ShouldQueue
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            Log::info("Tiempo de ejecución del informe: {$executionTime} segundos");
-            Log::info("Consumo de memoria del informe: {$memoryUsage} bytes");
+            Log::info("Tiempo de ejecución del informe auxiliar: {$executionTime} segundos");
+            Log::info("Consumo de memoria del informe auxiliar: {$memoryUsage} bytes");
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();

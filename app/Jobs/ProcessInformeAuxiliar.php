@@ -5,6 +5,7 @@ namespace App\Jobs;
 use DB;
 use Exception;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -37,6 +38,9 @@ class ProcessInformeAuxiliar implements ShouldQueue
 
     public function handle()
     {
+        $startTime = microtime(true);
+        $startMemory = memory_get_usage();
+
 		$empresa = Empresa::find($this->id_empresa);
         
         copyDBConnection('sam', 'sam');
@@ -45,7 +49,6 @@ class ProcessInformeAuxiliar implements ShouldQueue
         DB::connection('informes')->beginTransaction();
         
         try {
-
             $auxiliar = InfAuxiliar::create([
 				'id_empresa' => $this->id_empresa,
 				'fecha_desde' => $this->request['fecha_desde'],
@@ -81,9 +84,17 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 'autoclose' => false
             ]));
 
+            $endTime = microtime(true);
+            $endMemory = memory_get_usage();
+
+            $executionTime = $endTime - $startTime;
+            $memoryUsage = $endMemory - $startMemory;
+
+            Log::info("Tiempo de ejecución del informe balance: {$executionTime} segundos");
+            Log::info("Consumo de memoria del informe balance: {$memoryUsage} bytes");
+
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
-
 			throw $exception;
         }
     }
@@ -133,7 +144,6 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
             ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
-
                 $documentos->each(function ($documento) {
                     $this->auxiliares[] = (object)[
                         'id_nit' => $documento->id_nit,
@@ -833,5 +843,35 @@ class ProcessInformeAuxiliar implements ShouldQueue
         $this->auxiliarCollection[$cuenta]['debito']+= number_format((float)$auxiliar->debito, 2, '.', '');
         $this->auxiliarCollection[$cuenta]['credito']+= number_format((float)$auxiliar->credito, 2, '.', '');
         $this->auxiliarCollection[$cuenta]['saldo_final']+= number_format((float)$auxiliar->saldo_final, 2, '.', '');
+    }
+
+    public function failed(Exception $exception)
+    {
+        DB::connection('informes')->rollBack();
+
+        // Si no tenemos la empresa, intentamos obtenerla
+        if (!$this->empresa && $this->id_empresa) {
+            $this->empresa = Empresa::find($this->id_empresa);
+        }
+
+        $token_db = $this->empresa ? $this->empresa->token_db : 'unknown';
+
+        event(new PrivateMessageEvent(
+            'informe-auxiliar-'.$token_db.'_'.$this->id_usuario, 
+            [
+                'tipo' => 'error',
+                'mensaje' => 'Error al generar el informe: '.$exception->getMessage(),
+                'titulo' => 'Error en proceso',
+                'autoclose' => false
+            ]
+        ));
+
+        // Registrar el error en los logs
+        logger()->error("Error en ProcessInformeAuxiliar: ".$exception->getMessage(), [
+            'exception' => $exception,
+            'request' => $this->request,
+            'user_id' => $this->id_usuario,
+            'empresa_id' => $this->id_empresa
+        ]);
     }
 }
