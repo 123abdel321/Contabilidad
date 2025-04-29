@@ -156,6 +156,12 @@ function cargarChangesFunction() {
         if (bodegaEventoActivo) return;
         consecutivoSiguienteBodegaPedido();
     });
+    
+    $("#id_cliente_pedido").on('change', function(event) {
+        if (productosPedidos.length) {
+            guardarPedido();
+        }
+    });
 }
 
 function cargarTablasPedido() {
@@ -1176,6 +1182,17 @@ function buscarPedidos() {
         $("#lista_productos_seleccionados").empty();
 
         if (!res.data) {
+
+            if (primerNitPedido) {
+                var dataCliente = {
+                    id: primerNitPedido.id,
+                    text: primerNitPedido.numero_documento + ' - ' + primerNitPedido.nombre_completo
+                };
+                var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
+                $comboClientePedidos.append(newOption).trigger('change');
+                $comboClientePedidos.val(dataCliente.id).trigger('change');
+            }
+
             pedidoEditando = null;
             mostrarValoresPedidos();
             consecutivoSiguienteBodegaPedido();
@@ -1280,6 +1297,7 @@ function buscarPedidos() {
             );
         }
 
+        $("#consecutivo_bodegas_pedidos").val(pedido.consecutivo);
         bodegaEventoActivo = false;
         mostrarValoresPedidos();
         

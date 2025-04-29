@@ -245,6 +245,9 @@ channel.bind('notificaciones', function(data) {
         loadBalanceById(data.id_balance);
         return;
     }
+    if(data.tipo == 'error'){
+        console.log('data: ',data);
+    }
 });
 
 function loadBalanceById(id_balance) {
