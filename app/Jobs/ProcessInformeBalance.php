@@ -96,14 +96,14 @@ class ProcessInformeBalance implements ShouldQueue
                 'autoclose' => false
             ]));
 
-            // $endTime = microtime(true);
-            // $endMemory = memory_get_usage();
+            $endTime = microtime(true);
+            $endMemory = memory_get_usage();
 
-            // $executionTime = $endTime - $startTime;
-            // $memoryUsage = $endMemory - $startMemory;
+            $executionTime = $endTime - $startTime;
+            $memoryUsage = $endMemory - $startMemory;
 
-            // Log::info("Tiempo de ejecución del informe: {$executionTime} segundos");
-            // Log::info("Consumo de memoria del informe: {$memoryUsage} bytes");
+            Log::info("Tiempo de ejecución del informe: {$executionTime} segundos");
+            Log::info("Consumo de memoria del informe: {$memoryUsage} bytes");
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
