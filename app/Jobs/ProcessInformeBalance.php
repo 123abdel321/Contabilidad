@@ -39,6 +39,9 @@ class ProcessInformeBalance implements ShouldQueue
 
     public function handle()
     {
+        $startTime = microtime(true);
+        $startMemory = memory_get_usage();
+
         $empresa = Empresa::find($this->id_empresa);
 
         copyDBConnection('sam', 'sam');
@@ -91,6 +94,15 @@ class ProcessInformeBalance implements ShouldQueue
                 'id_balance' => $this->id_balance,
                 'autoclose' => false
             ]));
+
+            $endTime = microtime(true);
+            $endMemory = memory_get_usage();
+
+            $executionTime = $endTime - $startTime;
+            $memoryUsage = $endMemory - $startMemory;
+
+            Log::info("Tiempo de ejecución del informe: {$executionTime} segundos");
+            Log::info("Consumo de memoria del informe: {$memoryUsage} bytes");
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
