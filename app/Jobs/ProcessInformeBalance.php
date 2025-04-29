@@ -6,6 +6,7 @@ use DB;
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
+use App\Events\PrivateMessageEvent;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Queue\SerializesModels;
@@ -13,7 +14,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 //MODELS
-use App\Events\PrivateMessageEvent;
 use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -44,12 +44,10 @@ class ProcessInformeBalance implements ShouldQueue
 
     public function handle()
     {
-        $empresa = Empresa::findOrFail($this->id_empresa);
-
-        $this->empresa = $empresa;
-        $this->setDynamicConnection($empresa->token_db);
+        $this->empresa = Empresa::findOrFail($this->id_empresa);
+        $this->setDynamicConnection($this->empresa->token_db);
         
-        DB::connection('informes')->transaction(function () use ($empresa) {
+        DB::connection('informes')->transaction(function () {
             $this->createBalanceRecord();
             
             if ($this->request['tipo'] == '3') {
@@ -82,10 +80,7 @@ class ProcessInformeBalance implements ShouldQueue
                 $insertBatch($batchData);
             }
 
-            event(new PrivateMessageEvent(
-                'informe-balance-'.$empresa->token_db.'_'.$this->id_usuario, 
-                $this->successMessage()
-            ));
+            $this->notifySuccess();
         });
     }
 
@@ -492,48 +487,47 @@ class ProcessInformeBalance implements ShouldQueue
         ];
     }
 
-    private function successMessage()
+    private function notifySuccess()
     {
-        return [
-            'tipo' => 'exito',
-            'mensaje' => 'Informe generado con éxito!',
-            'titulo' => 'Balance generado',
-            'id_balance' => $this->id_balance,
-            'autoclose' => false
-        ];
-    }
-
-    private function errorMessage($mensaje, $line)
-    {
-        return [
-            'tipo' => 'error',
-            'mensaje' => "$mensaje / Line: $line",
-            'titulo' => 'Balance generado con errores',
-            'id_balance' => null,
-            'autoclose' => false
-        ];
+        event(new PrivateMessageEvent(
+            'informe-balance-'.$this->empresa->token_db.'_'.$this->id_usuario, 
+            [
+                'tipo' => 'exito',
+                'mensaje' => 'Informe generado con éxito!',
+                'titulo' => 'Balance generado',
+                'id_balance' => $this->id_balance,
+                'autoclose' => false
+            ]
+        ));
     }
 
     public function failed(Exception $exception)
     {
         DB::connection('informes')->rollBack();
 
-        $mensaje = $exception->getMessage();
-        $line = $exception->getLine();
-        
-        Log::error("$mensaje / Line: $line");
-
-        if (!$this->empresa) {
-            try {
-                $this->empresa = Empresa::find($this->id_empresa);
-            } catch (Exception $e) {
-                $token_db = 'unknown';
-            }
+        // Si no tenemos la empresa, intentamos obtenerla
+        if (!$this->empresa && $this->id_empresa) {
+            $this->empresa = Empresa::find($this->id_empresa);
         }
 
+        $token_db = $this->empresa ? $this->empresa->token_db : 'unknown';
+
         event(new PrivateMessageEvent(
-            'informe-balance-'.$this->empresa->token_db.'_'.$this->id_usuario, 
-            $this->errorMessage($mensaje, $line)
+            'informe-balance-'.$token_db.'_'.$this->id_usuario, 
+            [
+                'tipo' => 'error',
+                'mensaje' => 'Error al generar el informe: '.$exception->getMessage(),
+                'titulo' => 'Error en proceso',
+                'autoclose' => false
+            ]
         ));
+
+        // Registrar el error en los logs
+        logger()->error("Error en ProcessInformeBalance: ".$exception->getMessage(), [
+            'exception' => $exception,
+            'request' => $this->request,
+            'user_id' => $this->id_usuario,
+            'empresa_id' => $this->id_empresa
+        ]);
     }
 }

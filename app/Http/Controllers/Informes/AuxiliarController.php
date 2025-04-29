@@ -22,13 +22,11 @@ class AuxiliarController extends Controller
 
     public function index ()
     {
-        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
+        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first('valor')->valor ?? '0';
 
-        $data = [
-            'ubicacion_maximoph' => $ubicacion_maximoph && $ubicacion_maximoph->valor ? $ubicacion_maximoph->valor : '0',
-        ];
-
-        return view('pages.contabilidad.auxiliar.auxiliar-view', $data);
+        return view('pages.contabilidad.auxiliar.auxiliar-view', [
+            'ubicacion_maximoph' => $ubicacion_maximoph
+        ]);
     }
 
     public function generate(Request $request)

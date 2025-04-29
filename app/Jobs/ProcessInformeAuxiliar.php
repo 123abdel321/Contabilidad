@@ -11,7 +11,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Events\PrivateMessageEvent;
-//MODELS
 use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -23,59 +22,55 @@ class ProcessInformeAuxiliar implements ShouldQueue
 
     public $request;
     public $id_usuario;
-	public $id_empresa;
+    public $id_empresa;
     public $id_auxiliar;
-    public $auxiliares = [];
-    public $auxiliarCollection = [];
+    protected $auxiliarCollection = [];
+    protected $cuentasPadres = [];
 
     public function __construct($request, $id_usuario, $id_empresa)
     {
         $this->request = $request;
-		$this->id_usuario = $id_usuario;
-		$this->id_empresa = $id_empresa;
+        $this->id_usuario = $id_usuario;
+        $this->id_empresa = $id_empresa;
     }
 
     public function handle()
     {
-		$empresa = Empresa::find($this->id_empresa);
+        $empresa = Empresa::find($this->id_empresa);
         
+        // Configurar conexión a la base de datos
         copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $empresa->token_db);
 
         DB::connection('informes')->beginTransaction();
         
         try {
-
+            // Crear registro principal del auxiliar
             $auxiliar = InfAuxiliar::create([
-				'id_empresa' => $this->id_empresa,
-				'fecha_desde' => $this->request['fecha_desde'],
-				'fecha_hasta' => $this->request['fecha_hasta'],
-				'id_cuenta' => $this->request['id_cuenta'],
-				'id_nit' => $this->request['id_nit']
-			]);
+                'id_empresa' => $this->id_empresa,
+                'fecha_desde' => $this->request['fecha_desde'],
+                'fecha_hasta' => $this->request['fecha_hasta'],
+                'id_cuenta' => $this->request['id_cuenta'],
+                'id_nit' => $this->request['id_nit']
+            ]);
 
             $this->id_auxiliar = $auxiliar->id;
             
-            $auxiliares = $this->documentosAuxiliar();
+            // Procesar datos en chunks para reducir memoria
+            $this->processAuxiliarData();
 
-            $this->addTotalNits($auxiliares);
-            $this->addTotalsData($auxiliares);
-            $this->addDetilsData($auxiliares);
-            $this->addTotalNitsData($auxiliares);
-            $this->addTotalsPadresData($auxiliares);
-            
-            ksort($this->auxiliarCollection, SORT_STRING | SORT_FLAG_CASE);
-            foreach (array_chunk($this->auxiliarCollection,233) as $auxiliarCollection){
+            // Insertar datos en chunks
+            foreach (array_chunk($this->auxiliarCollection, 233, true) as $chunk) {
                 DB::connection('informes')
                     ->table('inf_auxiliar_detalles')
-                    ->insert(array_values($auxiliarCollection));
-			}
+                    ->insert(array_values($chunk));
+            }
 
             DB::connection('informes')->commit();
 
             event(new PrivateMessageEvent('informe-auxiliar-'.$empresa->token_db.'_'.$this->id_usuario, [
                 'tipo' => 'exito',
-                'mensaje' => 'Informe generado con exito!',
+                'mensaje' => 'Informe generado con éxito!',
                 'titulo' => 'Auxiliar generado',
                 'id_auxiliar' => $this->id_auxiliar,
                 'autoclose' => false
@@ -83,19 +78,52 @@ class ProcessInformeAuxiliar implements ShouldQueue
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
-
-			throw $exception;
+            throw $exception;
         }
     }
 
-    private function documentosAuxiliar()
+    protected function processAuxiliarData()
     {
-        $query = $this->auxiliarDocumentosQuery();
-        $query->unionAll($this->auxiliarAnteriorQuery());
+        $totals = [
+            'debito' => 0,
+            'credito' => 0,
+            'saldo_anterior' => 0,
+            'saldo_final' => 0
+        ];
 
-        DB::connection('sam')
-            ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
-            ->mergeBindings($query)
+        // Procesar documentos en chunks
+        $this->processDocumentosChunks(function($documentos) use (&$totals) {
+            foreach ($documentos as $documento) {
+                // Acumular totales
+                $totals['debito'] += $documento->debito;
+                $totals['credito'] += $documento->credito;
+                $totals['saldo_final'] += $documento->saldo_final;
+                $totals['saldo_anterior'] += $documento->saldo_anterior;
+
+                // Procesar documento individual
+                $this->processDocumento($documento);
+            }
+        });
+
+        // Agregar totales al final
+        $this->addTotalGenerales($totals);
+    }
+
+    protected function processDocumentosChunks(callable $callback)
+    {
+        $query = $this->buildAuxiliarQuery();
+        
+        // Procesar en chunks para reducir memoria
+        $query->chunk(233, function($documentos) use ($callback) {
+            $callback($documentos);
+        });
+    }
+
+    protected function buildAuxiliarQuery()
+    {
+        $query = DB::connection('sam')
+            ->table(DB::raw("({$this->getUnionQuery()->toSql()}) AS auxiliardata"))
+            ->mergeBindings($this->getUnionQuery())
             ->select(
                 'id_nit',
                 'numero_documento',
@@ -131,83 +159,49 @@ class ProcessInformeAuxiliar implements ShouldQueue
             )
             ->groupByRaw('id_cuenta, id_nit, documento_referencia')
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
-            ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
-            ->chunk(233, function ($documentos) {
+            ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0');
 
-                $documentos->each(function ($documento) {
-                    $this->auxiliares[] = (object)[
-                        'id_nit' => $documento->id_nit,
-                        'numero_documento' => $documento->numero_documento,
-                        'nombre_nit' => $documento->nombre_nit,
-                        'razon_social' => $documento->razon_social,
-                        'id_cuenta' => $documento->id_cuenta,
-                        'cuenta' => $documento->cuenta,
-                        'naturaleza_cuenta' => $documento->naturaleza_cuenta,
-                        'auxiliar' => $documento->auxiliar,
-                        'nombre_cuenta' => $documento->nombre_cuenta,
-                        'documento_referencia' => $documento->documento_referencia,
-                        'id_centro_costos' => $documento->id_centro_costos,
-                        'apartamentos' => $documento->apartamentos,
-                        'codigo_cecos' => $documento->codigo_cecos,
-                        'nombre_cecos' => $documento->nombre_cecos,
-                        'id_comprobante' => $documento->id_comprobante,
-                        'codigo_comprobante' => $documento->codigo_comprobante,
-                        'nombre_comprobante' => $documento->nombre_comprobante,
-                        'consecutivo' => $documento->consecutivo,
-                        'concepto' => $documento->concepto,
-                        'fecha_manual' => $documento->fecha_manual,
-                        'created_at' => $documento->created_at,
-                        'fecha_creacion' => $documento->fecha_creacion,
-                        'fecha_edicion' => $documento->fecha_edicion,
-                        'created_by' => $documento->created_by,
-                        'updated_by' => $documento->updated_by,
-                        'anulado' => $documento->anulado,
-                        'saldo_anterior' => $documento->saldo_anterior,
-                        'debito' => $documento->debito,
-                        'credito' => $documento->credito,
-                        'saldo_final' => $documento->saldo_final,
-                        'total_columnas' => $documento->total_columnas,
-                    ];
-                });
-            });
-
-        return $this->auxiliares;
+        return $query;
     }
 
-    private function auxiliarDocumentosQuery($documento_referencia = NULL, $id_nit = NULL, $id_cuenta = NULL)
+    protected function getUnionQuery()
     {
-        $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
+        $documentosQuery = $this->buildDocumentosQuery();
+        $anterioresQuery = $this->buildAnterioresQuery();
+
+        return $documentosQuery->unionAll($anterioresQuery);
+    }
+
+    protected function buildDocumentosQuery()
+    {
+        return DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
                 'N.id AS id_nit',
                 'N.numero_documento',
-                DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
-                    ELSE NULL
-                END) AS nombre_nit"),
-                "N.razon_social",
-                "N.apartamentos",
-                "PC.id AS id_cuenta",
-                "PC.cuenta",
-                "PC.naturaleza_cuenta",
-                "PC.auxiliar",
-                "PC.nombre AS nombre_cuenta",
-                "DG.documento_referencia",
-                "DG.id_centro_costos",
-                "CC.codigo AS codigo_cecos",
-                "CC.nombre AS nombre_cecos",
-                "CO.id AS id_comprobante",
-                "CO.codigo AS codigo_comprobante",
-                "CO.nombre AS nombre_comprobante",
-                "DG.consecutivo",
-                "DG.concepto",
-                "DG.fecha_manual",
-                "DG.created_at",
+                DB::raw("COALESCE(NULLIF(N.razon_social, ''), CONCAT_WS(' ', N.primer_nombre, N.primer_apellido)) AS nombre_nit"),
+                'N.razon_social',
+                'N.apartamentos',
+                'PC.id AS id_cuenta',
+                'PC.cuenta',
+                'PC.naturaleza_cuenta',
+                'PC.auxiliar',
+                'PC.nombre AS nombre_cuenta',
+                'DG.documento_referencia',
+                'DG.id_centro_costos',
+                'CC.codigo AS codigo_cecos',
+                'CC.nombre AS nombre_cecos',
+                'CO.id AS id_comprobante',
+                'CO.codigo AS codigo_comprobante',
+                'CO.nombre AS nombre_comprobante',
+                'DG.consecutivo',
+                'DG.concepto',
+                'DG.fecha_manual',
+                'DG.created_at',
                 DB::raw("DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
                 DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                "DG.created_by",
-                "DG.updated_by",
-                "DG.anulado",
+                'DG.created_by',
+                'DG.updated_by',
+                'DG.anulado',
                 DB::raw("0 AS saldo_anterior"),
                 DB::raw("SUM(DG.debito) AS debito"),
                 DB::raw("SUM(DG.credito) AS credito"),
@@ -218,64 +212,48 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
-            ->where('anulado', 0)
-            ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
-            ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
-            ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
-				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
-			})
-            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('DG.id_nit', $this->request['id_nit']);
-			})
-            ->when($documento_referencia ? $documento_referencia : false, function ($query, $documento_referencia) {
-				$query->where('DG.documento_referencia', $documento_referencia);
-			})
-            ->when($id_nit ? $id_nit : false, function ($query, $id_nit) {
-				$query->where('DG.id_nit', $id_nit);
-			})
-            ->when($id_cuenta ? $id_cuenta : false, function ($query, $id_cuenta) {
-				$query->where('DG.id_cuenta', $id_cuenta);
-			})
+            ->where('DG.anulado', 0)
+            ->whereBetween('DG.fecha_manual', [$this->request['fecha_desde'], $this->request['fecha_hasta']])
+            ->when($this->request['id_cuenta'] ?? false, function($q) {
+                $q->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+            })
+            ->when($this->request['id_nit'] ?? false, function($q) {
+                $q->where('DG.id_nit', $this->request['id_nit']);
+            })
             ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
-
-        return $documentosQuery;
     }
 
-    private function auxiliarAnteriorQuery($documento_referencia = NULL, $id_nit = NULL, $id_cuenta = NULL)
+    protected function buildAnterioresQuery()
     {
-        $anterioresQuery = DB::connection('sam')->table('documentos_generals AS DG')
+        return DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
                 'N.id AS id_nit',
                 'N.numero_documento',
-                DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
-                    ELSE NULL
-                END) AS nombre_nit"),
-                "N.razon_social",
-                "N.apartamentos",
-                "PC.id AS id_cuenta",
-                "PC.cuenta",
-                "PC.naturaleza_cuenta",
-                "PC.auxiliar",
-                "PC.nombre AS nombre_cuenta",
-                "DG.documento_referencia",
-                "DG.id_centro_costos",
-                "CC.codigo AS codigo_cecos",
-                "CC.nombre AS nombre_cecos",
-                "CO.id AS id_comprobante",
-                "CO.codigo AS codigo_comprobante",
-                "CO.nombre AS nombre_comprobante",
-                "DG.consecutivo",
-                "DG.concepto",
-                "DG.fecha_manual",
-                "DG.created_at",
+                DB::raw("COALESCE(NULLIF(N.razon_social, ''), CONCAT_WS(' ', N.primer_nombre, N.primer_apellido)) AS nombre_nit"),
+                'N.razon_social',
+                'N.apartamentos',
+                'PC.id AS id_cuenta',
+                'PC.cuenta',
+                'PC.naturaleza_cuenta',
+                'PC.auxiliar',
+                'PC.nombre AS nombre_cuenta',
+                'DG.documento_referencia',
+                'DG.id_centro_costos',
+                'CC.codigo AS codigo_cecos',
+                'CC.nombre AS nombre_cecos',
+                'CO.id AS id_comprobante',
+                'CO.codigo AS codigo_comprobante',
+                'CO.nombre AS nombre_comprobante',
+                'DG.consecutivo',
+                'DG.concepto',
+                'DG.fecha_manual',
+                'DG.created_at',
                 DB::raw("DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
                 DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                "DG.created_by",
-                "DG.updated_by",
-                "DG.anulado",
-                DB::raw("SUM(debito) - SUM(credito) AS saldo_anterior"),
+                'DG.created_by',
+                'DG.updated_by',
+                'DG.anulado',
+                DB::raw("SUM(DG.debito) - SUM(DG.credito) AS saldo_anterior"),
                 DB::raw("0 AS debito"),
                 DB::raw("0 AS credito"),
                 DB::raw("0 AS saldo_final"),
@@ -285,171 +263,137 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
-            ->where('anulado', 0)
+            ->where('DG.anulado', 0)
             ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
-            ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
-				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
-			})
-            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('DG.id_nit', $this->request['id_nit']);
-			})
-            ->when($documento_referencia ? $documento_referencia : false, function ($query, $documento_referencia) {
-				$query->where('DG.documento_referencia', $documento_referencia);
-			})
-            ->when($id_nit ? $id_nit : false, function ($query, $id_nit) {
-				$query->where('DG.id_nit', $id_nit);
-			})
-            ->when($id_cuenta ? $id_cuenta : false, function ($query, $id_cuenta) {
-				$query->where('DG.id_cuenta', $id_cuenta);
-			})
+            ->when($this->request['id_cuenta'] ?? false, function($q) {
+                $q->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+            })
+            ->when($this->request['id_nit'] ?? false, function($q) {
+                $q->where('DG.id_nit', $this->request['id_nit']);
+            })
             ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
-            // ->groupBy('DG.id_cuenta', 'DG.id_nit', 'DG.documento_referencia');
-
-        return $anterioresQuery;
     }
 
-    private function addTotalsPadresData($auxiliares)
+    protected function processDocumento($documento)
     {
-        foreach ($auxiliares as $auxiliar) {
-            $cuentasAsociadas = $this->getCuentas($auxiliar->cuenta); //return ARRAY PADRES CUENTA
-            foreach ($cuentasAsociadas as $cuenta) {
-                if ($this->hasCuentaData($cuenta)) {
-                    $this->sumCuentaData($cuenta, $auxiliar);
-                } else {
-                    $this->newCuentaData($cuenta, $auxiliar, $cuentasAsociadas);
-                }
-            }
-        }
-    }
-
-    private function addTotalsData($auxiliares)
-    {
-        $debito = 0;
-        $credito = 0;
-        $saldo_anterior = 0;
-        $saldo_final = 0;
-
-        foreach ($auxiliares as $auxiliar) {
-            $debito+= $auxiliar->debito;
-            $credito+= $auxiliar->credito;
-            $saldo_final+= $auxiliar->saldo_final;
-            $saldo_anterior+= $auxiliar->saldo_anterior;
-        }
-
-        $this->auxiliarCollection['9999'] = [
-            'id_auxiliar' => $this->id_auxiliar,
-            'id_nit' => '',
-            'apartamento_nit' => '',
-            'numero_documento' => '',
-            'nombre_nit' => '',
-            'razon_social' => '',
-            'id_cuenta' => '',
-            'cuenta' => 'TOTALES',
-            'naturaleza_cuenta' => '',
-            'auxiliar' => '',
-            'nombre_cuenta' => '',
-            'id_centro_costos' => '',
-            'codigo_cecos' => '',
-            'nombre_cecos' =>  '',
-            'documento_referencia' => '',
-            'id_comprobante' => '',
-            'codigo_comprobante' => '',
-            'nombre_comprobante' => '',
-            'consecutivo' => '',
-            'concepto' => '',
-            'fecha_manual' => '',
-            'fecha_creacion' => NULL,
-            'fecha_edicion' => NULL,
-            'created_by' => NULL,
-            'updated_by' => NULL,
-            // 'anulado' => '',
-            'saldo_anterior' => number_format((float)$saldo_anterior, 2, '.', ''),
-            'debito' => number_format((float)$debito, 2, '.', ''),
-            'credito' => number_format((float)$credito, 2, '.', ''),
-            'saldo_final' => number_format((float)$saldo_final, 2, '.', ''),
-            'detalle' => false,
-            'detalle_group' => false,
-        ];
-    }
-
-    private function addDetilsData($auxiliares)
-    {
-        foreach ($auxiliares as $auxiliar) {
-            if($auxiliar->total_columnas > 0 ) {
-                
-                $query = $this->auxiliarDocumentosDetallesQuery($auxiliar);
-                $auxiliaresDetalle = $query->get();
-
-                $auxiliaresDetalle->each(function ($auxiliarDetalle) {
-                    $cuentaNumero = 1;
-                    $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                        $auxiliarDetalle->numero_documento.'B'.
-                        $auxiliarDetalle->documento_referencia.'B'.
-                        $cuentaNumero.'B';
-                    while ($this->hasCuentaData($cuentaNueva)) {
-                        $cuentaNumero++;
-                        $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                            $auxiliarDetalle->numero_documento.'B'.
-                            $auxiliarDetalle->documento_referencia.'B'.
-                            $cuentaNumero.'B';
-                    }
-
-                    $this->auxiliarCollection[$cuentaNueva] = [
-                        'id_auxiliar' => $this->id_auxiliar,
-                        'id_nit' => $auxiliarDetalle->id_nit,
-                        'numero_documento' => $auxiliarDetalle->numero_documento,
-                        'nombre_nit' => $auxiliarDetalle->nombre_nit,
-                        'apartamento_nit' => $auxiliarDetalle->apartamentos,
-                        'razon_social' => $auxiliarDetalle->razon_social,
-                        'id_cuenta' => $auxiliarDetalle->id_cuenta,
-                        'cuenta' => $auxiliarDetalle->cuenta,
-                        'naturaleza_cuenta' => $auxiliarDetalle->naturaleza_cuenta,
-                        'auxiliar' => $auxiliarDetalle->auxiliar,
-                        'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
-                        'documento_referencia' => $auxiliarDetalle->documento_referencia,
-                        'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
-                        'id_centro_costos' => $auxiliarDetalle->id_centro_costos,
-                        'id_comprobante' => $auxiliarDetalle->id_comprobante,
-                        'codigo_comprobante' => $auxiliarDetalle->codigo_comprobante,
-                        'nombre_comprobante' => $auxiliarDetalle->nombre_comprobante,
-                        'codigo_cecos' => $auxiliarDetalle->codigo_cecos,
-                        'nombre_cecos' =>  $auxiliarDetalle->nombre_cecos,
-                        'consecutivo' => $auxiliarDetalle->consecutivo,
-                        'concepto' => $auxiliarDetalle->concepto,
-                        'fecha_manual' => $auxiliarDetalle->fecha_manual,
-                        'fecha_creacion' => $auxiliarDetalle->fecha_creacion,
-                        'fecha_edicion' => $auxiliarDetalle->fecha_edicion,
-                        'created_by' => $auxiliarDetalle->created_by,
-                        'updated_by' => $auxiliarDetalle->updated_by,
-                        'debito' => $auxiliarDetalle->debito,
-                        'credito' => $auxiliarDetalle->credito,
-                        'saldo_final' => '0',
-                        'detalle' => false,
-                        'detalle_group' => false,
-                    ];
-                });
+        // Procesar totales por NIT
+        $this->addTotalNit($documento);
         
-            }
+        // Procesar detalles del documento si tiene movimientos
+        if ($documento->total_columnas > 0) {
+            $this->addDocumentoDetalles($documento);
+        }
+        
+        // Procesar totales por cuenta padre
+        $this->addTotalesCuentasPadres($documento);
+    }
+
+    protected function addTotalNit($documento)
+    {
+        if (substr($documento->cuenta, 0, 2) == '11' && $documento->debito == 0 && $documento->credito == 0) {
+            return;
+        }
+
+        $key = $documento->cuenta.'-'.$documento->numero_documento.'A';
+        
+        if (!isset($this->auxiliarCollection[$key])) {
+            $this->auxiliarCollection[$key] = [
+                'id_auxiliar' => $this->id_auxiliar,
+                'id_nit' => $documento->id_nit,
+                'numero_documento' => $documento->numero_documento,
+                'nombre_nit' => $documento->nombre_nit,
+                'apartamento_nit' => $documento->apartamentos,
+                'razon_social' => $documento->razon_social,
+                'id_cuenta' => $documento->id_cuenta,
+                'cuenta' => $documento->cuenta,
+                'naturaleza_cuenta' => '',
+                'auxiliar' => '',
+                'nombre_cuenta' => $documento->nombre_cuenta,
+                'documento_referencia' => '',
+                'saldo_anterior' => 0,
+                'id_centro_costos' => '',
+                'id_comprobante' => '',
+                'codigo_comprobante' => '',
+                'nombre_comprobante' => '',
+                'codigo_cecos' => '',
+                'nombre_cecos' => '',
+                'consecutivo' => '',
+                'concepto' => '',
+                'fecha_manual' => '',
+                'fecha_creacion' => null,
+                'fecha_edicion' => null,
+                'created_by' => null,
+                'updated_by' => null,
+                'debito' => 0,
+                'credito' => 0,
+                'saldo_final' => 0,
+                'detalle' => false,
+                'detalle_group' => 'nits-totales',
+            ];
+        }
+
+        $this->auxiliarCollection[$key]['saldo_anterior'] += $documento->saldo_anterior;
+        $this->auxiliarCollection[$key]['debito'] += $documento->debito;
+        $this->auxiliarCollection[$key]['credito'] += $documento->credito;
+        $this->auxiliarCollection[$key]['saldo_final'] += $documento->saldo_final;
+    }
+
+    protected function addDocumentoDetalles($documento)
+    {
+        $detalles = $this->getDocumentoDetalles($documento);
+        
+        foreach ($detalles as $index => $detalle) {
+            $key = $documento->cuenta.'-'.$documento->numero_documento.'B'.$documento->documento_referencia.'B'.($index+1).'B';
+            
+            $this->auxiliarCollection[$key] = [
+                'id_auxiliar' => $this->id_auxiliar,
+                'id_nit' => $detalle->id_nit,
+                'numero_documento' => $detalle->numero_documento,
+                'nombre_nit' => $detalle->nombre_nit,
+                'apartamento_nit' => $detalle->apartamentos,
+                'razon_social' => $detalle->razon_social,
+                'id_cuenta' => $detalle->id_cuenta,
+                'cuenta' => $detalle->cuenta,
+                'naturaleza_cuenta' => $detalle->naturaleza_cuenta,
+                'auxiliar' => $detalle->auxiliar,
+                'nombre_cuenta' => $detalle->nombre_cuenta,
+                'documento_referencia' => $detalle->documento_referencia,
+                'saldo_anterior' => $detalle->saldo_anterior,
+                'id_centro_costos' => $detalle->id_centro_costos,
+                'id_comprobante' => $detalle->id_comprobante,
+                'codigo_comprobante' => $detalle->codigo_comprobante,
+                'nombre_comprobante' => $detalle->nombre_comprobante,
+                'codigo_cecos' => $detalle->codigo_cecos,
+                'nombre_cecos' => $detalle->nombre_cecos,
+                'consecutivo' => $detalle->consecutivo,
+                'concepto' => $detalle->concepto,
+                'fecha_manual' => $detalle->fecha_manual,
+                'fecha_creacion' => $detalle->fecha_creacion,
+                'fecha_edicion' => $detalle->fecha_edicion,
+                'created_by' => $detalle->created_by,
+                'updated_by' => $detalle->updated_by,
+                'debito' => $detalle->debito,
+                'credito' => $detalle->credito,
+                'saldo_final' => 0,
+                'detalle' => false,
+                'detalle_group' => false,
+            ];
         }
     }
 
-    private function auxiliarDocumentosDetallesQuery($auxiliar)
+    protected function getDocumentoDetalles($documento)
     {
-        $documentosDetalleQuery = DB::connection('sam')->table('documentos_generals AS DG')
+        return DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
                 'N.id AS id_nit',
                 'N.numero_documento',
-                DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
-                    ELSE NULL
-                END) AS nombre_nit"),
+                DB::raw("COALESCE(NULLIF(N.razon_social, ''), CONCAT_WS(' ', N.primer_nombre, N.primer_apellido)) AS nombre_nit"),
                 'N.razon_social',
                 'N.apartamentos',
                 'PC.id AS id_cuenta',
                 'PC.cuenta',
-                "PC.naturaleza_cuenta",
-                "PC.auxiliar",
+                'PC.naturaleza_cuenta',
+                'PC.auxiliar',
                 'PC.nombre AS nombre_cuenta',
                 'DG.documento_referencia',
                 'DG.id_centro_costos',
@@ -468,300 +412,121 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 'DG.updated_by',
                 'DG.anulado',
                 DB::raw("0 AS saldo_anterior"),
-                DB::raw("DG.debito"),
-                DB::raw("DG.credito"),
+                'DG.debito',
+                'DG.credito',
                 DB::raw("DG.debito - DG.credito AS saldo_final")
             )
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
-            ->where('anulado', 0)
-            ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
-            ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
-            ->where('DG.documento_referencia', $auxiliar->documento_referencia)
-            ->where('DG.id_cuenta', $auxiliar->id_cuenta)
-            ->where('DG.id_nit', $auxiliar->id_nit)
-            // ->when($auxiliar-> ? $this->request['id_cuenta'] : false, function ($query) {
-			// 	$query->where('PC.id_cuenta', $this->request['id_cuenta']);
-			// })
-            // ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-			// 	$query->where('N.id_nit', $this->request['id_nit']);
-			// })
-            ->orderByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia, created_at');
-
-        return $documentosDetalleQuery;
-    }
-
-    private function addTotalNitsData($auxiliaresDetalle)
-    {
-        foreach ($auxiliaresDetalle as $auxiliarDetalle) {
-            if (intval($auxiliarDetalle->total_columnas < 2)) continue;
-            $cuentaNumero = 1;
-            $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                $auxiliarDetalle->numero_documento.'B'.
-                $auxiliarDetalle->documento_referencia.'B'.
-                $cuentaNumero.'A';
-            while ($this->hasCuentaData($cuentaNueva)) {
-                $cuentaNumero++;
-                $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                    $auxiliarDetalle->numero_documento.'B'.
-                    $auxiliarDetalle->documento_referencia.'B'.
-                    $cuentaNumero.'A';
-            }
-
-            if($auxiliarDetalle->documento_referencia) {
-                
-                $detalle = $this->getDetalleNits($auxiliarDetalle);
-
-                $this->auxiliarCollection[$cuentaNueva] = [
-                    'id_auxiliar' => $this->id_auxiliar,
-                    'id_nit' => $detalle[0]->id_nit,
-                    'numero_documento' => $detalle[0]->numero_documento,
-                    'nombre_nit' => $detalle[0]->nombre_nit,
-                    'apartamento_nit' => $auxiliarDetalle->apartamentos,
-                    'razon_social' => $detalle[0]->razon_social,
-                    'id_cuenta' => $detalle[0]->id_cuenta,
-                    'cuenta' => $detalle[0]->cuenta,
-                    'naturaleza_cuenta' => $detalle[0]->naturaleza_cuenta,
-                    'auxiliar' => $detalle[0]->auxiliar,
-                    'nombre_cuenta' => $detalle[0]->nombre_cuenta,
-                    'documento_referencia' => '',
-                    'saldo_anterior' => $detalle->sum('saldo_anterior'),
-                    'id_centro_costos' => $detalle[0]->documento_referencia ? $detalle[0]->id_centro_costos : '',
-                    'id_comprobante' => $detalle[0]->documento_referencia ? $detalle[0]->id_comprobante : '',
-                    'codigo_comprobante' => '',
-                    'nombre_comprobante' => '',
-                    'codigo_cecos' => $detalle[0]->documento_referencia ? $detalle[0]->codigo_cecos : '',
-                    'nombre_cecos' => $detalle[0]->documento_referencia ? $detalle[0]->nombre_cecos : '',
-                    'consecutivo' => '',
-                    'concepto' => '',
-                    'fecha_manual' => '',
-                    'fecha_creacion' => $detalle[0]->documento_referencia ? $detalle[0]->fecha_creacion : NULL,
-                    'fecha_edicion' => $detalle[0]->documento_referencia ? $detalle[0]->fecha_edicion : NULL,
-                    'created_by' => $detalle[0]->documento_referencia ? $detalle[0]->created_by : NULL,
-                    'updated_by' => $detalle[0]->documento_referencia ? $detalle[0]->updated_by : NULL,
-                    // 'anulado' => $detalle[0]->documento_referencia ? $detalle[0]->anulado : '',
-                    'debito' => $detalle->sum('debito'),
-                    'credito' => $detalle->sum('credito'),
-                    'saldo_final' => $detalle->sum('saldo_final'),
-                    'detalle' => false,
-                    'detalle_group' => 'nits',
-                ];
-
-            } else {
-                $this->auxiliarCollection[$cuentaNueva] = [
-                    'id_auxiliar' => $this->id_auxiliar,
-                    'id_nit' => $auxiliarDetalle->id_nit,
-                    'numero_documento' => $auxiliarDetalle->numero_documento,
-                    'nombre_nit' => $auxiliarDetalle->nombre_nit,
-                    'razon_social' => $auxiliarDetalle->razon_social,
-                    'apartamento_nit' => $auxiliarDetalle->apartamentos,
-                    'id_cuenta' => $auxiliarDetalle->id_cuenta,
-                    'cuenta' => $auxiliarDetalle->cuenta,
-                    'naturaleza_cuenta' => $auxiliarDetalle->naturaleza_cuenta,
-                    'auxiliar' => $auxiliarDetalle->auxiliar,
-                    'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
-                    'documento_referencia' => $auxiliarDetalle->documento_referencia,
-                    'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
-                    'id_centro_costos' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->id_centro_costos : '',
-                    'id_comprobante' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->id_comprobante : '',
-                    'codigo_comprobante' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->codigo_comprobante : '',
-                    'nombre_comprobante' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->nombre_comprobante : '',
-                    'codigo_cecos' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->codigo_cecos : '',
-                    'nombre_cecos' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->nombre_cecos : '',
-                    'consecutivo' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->consecutivo : '',
-                    'concepto' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->concepto : '',
-                    'fecha_manual' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->fecha_manual : '',
-                    'fecha_creacion' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->fecha_creacion : NULL,
-                    'fecha_edicion' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->fecha_edicion : NULL,
-                    'created_by' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->created_by : NULL,
-                    'updated_by' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->updated_by : NULL,
-                    // 'anulado' => $auxiliarDetalle->documento_referencia ? $auxiliarDetalle->anulado : '',
-                    'debito' => $auxiliarDetalle->debito,
-                    'credito' => $auxiliarDetalle->credito,
-                    'saldo_final' => $auxiliarDetalle->saldo_final,
-                    'detalle' => false,
-                    'detalle_group' => 'nits',
-                ];
-            }
-
-        }
-    }
-
-    private function getDetalleNits($auxiliar)
-    {
-        $query = $this->auxiliarDocumentosQuery($auxiliar->documento_referencia, $auxiliar->id_nit, $auxiliar->id_cuenta);
-        $query->unionAll($this->auxiliarAnteriorQuery($auxiliar->documento_referencia, $auxiliar->id_nit, $auxiliar->id_cuenta));
-
-        return DB::connection('sam')
-            ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
-            ->mergeBindings($query)
-            ->select(
-                'id_nit',
-                'numero_documento',
-                'nombre_nit',
-                'razon_social',
-                'id_cuenta',
-                'cuenta',
-                'naturaleza_cuenta',
-                'auxiliar',
-                'nombre_cuenta',
-                'documento_referencia',
-                'id_centro_costos',
-                'codigo_cecos',
-                'nombre_cecos',
-                'apartamentos',
-                'id_comprobante',
-                'codigo_comprobante',
-                'nombre_comprobante',
-                'consecutivo',
-                'concepto',
-                'fecha_manual',
-                'created_at',
-                'fecha_creacion',
-                'fecha_edicion',
-                'created_by',
-                'updated_by',
-                'anulado',
-                'saldo_anterior',
-                'debito',
-                'credito',
-                DB::raw('saldo_anterior + debito - credito AS saldo_final'),
-                'total_columnas',
-            )
-            ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            ->where('DG.anulado', 0)
+            ->whereBetween('DG.fecha_manual', [$this->request['fecha_desde'], $this->request['fecha_hasta']])
+            ->where('DG.documento_referencia', $documento->documento_referencia)
+            ->where('DG.id_cuenta', $documento->id_cuenta)
+            ->where('DG.id_nit', $documento->id_nit)
+            ->orderByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia, DG.created_at')
             ->get();
     }
 
-    private function addTotalNits($auxiliaresDetalle)
+    protected function addTotalesCuentasPadres($documento)
     {
-        $collecionTotalNits = [];
-        foreach ($auxiliaresDetalle as $auxiliarDetalle) {
-            $addItem = true;
-            if (substr($auxiliarDetalle->cuenta, 0, 2) == '11') {
-                if ($auxiliarDetalle->debito == "0.00" && $auxiliarDetalle->credito == "0.00") $addItem = false;
-            }
-            if ($addItem) {
-                $cuentaNueva = $auxiliarDetalle->cuenta.'-'.
-                    $auxiliarDetalle->numero_documento.'A';
-    
-                $collecionTotalNits[$cuentaNueva][] = [
-                    'id_nit' => $auxiliarDetalle->id_nit,
-                    'numero_documento' => $auxiliarDetalle->numero_documento,
-                    'nombre_nit' => $auxiliarDetalle->nombre_nit,
-                    'apartamentos' => $auxiliarDetalle->apartamentos,
-                    'razon_social' => $auxiliarDetalle->razon_social,
-                    'id_cuenta' => $auxiliarDetalle->id_cuenta,
-                    'cuenta' => $auxiliarDetalle->cuenta,
-                    'nombre_cuenta' => $auxiliarDetalle->nombre_cuenta,
-                    'documento_referencia' => '',
-                    'saldo_anterior' => $auxiliarDetalle->saldo_anterior,
-                    'id_centro_costos' => '',
-                    'id_comprobante' => '',
-                    'codigo_comprobante' => '',
-                    'nombre_comprobante' => '',
-                    'codigo_cecos' => '',
-                    'nombre_cecos' =>  '',
-                    'consecutivo' => '',
-                    'concepto' => '',
-                    'fecha_manual' => '',
-                    'fecha_creacion' => NULL,
-                    'fecha_edicion' => NULL,
-                    'created_by' => NULL,
-                    'updated_by' => NULL,
-                    // 'anulado' => '',
-                    'debito' => $auxiliarDetalle->debito,
-                    'credito' => $auxiliarDetalle->credito,
-                    'saldo_final' => $auxiliarDetalle->saldo_final,
-                    'detalle' => false,
-                    'detalle_group' => 'nits-totales',
-                ];
-            }
-        }
-
-        foreach ($collecionTotalNits as $key => $collecion) {
-            if(count($collecion)) {
-                $debito = 0;
-                $credito = 0;
-                $saldo_final = 0;
-                $saldo_anterior = 0;
-                foreach ($collecion as $data) {
-                    $debito+= $data['debito'];
-                    $credito+= $data['credito'];
-                    $saldo_final+= $data['saldo_final'];
-                    $saldo_anterior+= $data['saldo_anterior'];
-                }
-                $this->auxiliarCollection[$key] = [
-                    'id_auxiliar' => $this->id_auxiliar,
-                    'id_nit' => $collecion[0]['id_nit'],
-                    'numero_documento' => $collecion[0]['numero_documento'],
-                    'nombre_nit' => $collecion[0]['nombre_nit'],
-                    'razon_social' => $collecion[0]['razon_social'],
-                    'apartamento_nit' => $collecion[0]['apartamentos'],
-                    'id_cuenta' => $collecion[0]['id_cuenta'],
-                    'cuenta' => $collecion[0]['cuenta'],
-                    'naturaleza_cuenta' => '',
-                    'auxiliar' => '',
-                    'nombre_cuenta' => $collecion[0]['nombre_cuenta'],
-                    'documento_referencia' => $collecion[0]['documento_referencia'],
-                    'saldo_anterior' => $saldo_anterior,
-                    'id_centro_costos' => '',
-                    'id_comprobante' => '',
-                    'codigo_comprobante' => '',
-                    'nombre_comprobante' => '',
-                    'codigo_cecos' => '',
-                    'nombre_cecos' =>  '',
-                    'consecutivo' => '',
-                    'concepto' => '',
-                    'fecha_manual' => '',
-                    'fecha_creacion' => NULL,
-                    'fecha_edicion' => NULL,
-                    'created_by' => NULL,
-                    'updated_by' => NULL,
-                    // 'anulado' => '',
-                    'debito' => $debito,
-                    'credito' => $credito,
-                    'saldo_final' => $saldo_final,
-                    'detalle' => false,
-                    'detalle_group' => 'nits-totales',
-                ];
-            }
+        $cuentasPadres = $this->getCuentasPadres($documento->cuenta);
+        
+        foreach ($cuentasPadres as $cuentaPadre) {
+            $this->addCuentaPadre($cuentaPadre, $documento);
         }
     }
 
-    private function newCuentaData($cuenta, $auxiliar, $cuentasAsociadas)
+    protected function getCuentasPadres($cuenta)
     {
-        $detalle = false;
-        $detalleGroup = false;
-
-        if(strlen($cuenta) >= strlen($cuentasAsociadas[count($cuentasAsociadas)-1])){
-            $detalle = true;
-        }
-
-        if(strlen($cuenta) >= strlen($cuentasAsociadas[count($cuentasAsociadas)-2])){
-            $detalleGroup = true;
+        if (!isset($this->cuentasPadres[$cuenta])) {
+            $lengths = [1, 2, 4, 6];
+            $cuentas = [];
+            
+            foreach ($lengths as $length) {
+                if (strlen($cuenta) > $length) {
+                    $cuentas[] = substr($cuenta, 0, $length);
+                }
+            }
+            
+            $cuentas[] = $cuenta;
+            $this->cuentasPadres[$cuenta] = $cuentas;
         }
         
-        $cuentaData = PlanCuentas::whereCuenta($cuenta)->first();
-        if(!$cuentaData){
-            return;
+        return $this->cuentasPadres[$cuenta];
+    }
+
+    protected function addCuentaPadre($cuentaPadre, $documento)
+    {
+        if (!isset($this->auxiliarCollection[$cuentaPadre])) {
+            $cuentaData = PlanCuentas::where('cuenta', $cuentaPadre)->first();
+            
+            if (!$cuentaData) {
+                return;
+            }
+            
+            $isDetail = strlen($cuentaPadre) >= strlen($documento->cuenta);
+            $isDetailGroup = strlen($cuentaPadre) >= (strlen($documento->cuenta) - 2);
+            
+            $this->auxiliarCollection[$cuentaPadre] = [
+                'id_auxiliar' => $this->id_auxiliar,
+                'id_nit' => '',
+                'numero_documento' => '',
+                'nombre_nit' => '',
+                'razon_social' => '',
+                'id_cuenta' => $cuentaData->id,
+                'cuenta' => $cuentaData->cuenta,
+                'naturaleza_cuenta' => $cuentaData->naturaleza_cuenta,
+                'auxiliar' => $cuentaData->auxiliar,
+                'nombre_cuenta' => $cuentaData->nombre,
+                'apartamento_nit' => '',
+                'id_centro_costos' => '',
+                'codigo_cecos' => '',
+                'nombre_cecos' => '',
+                'documento_referencia' => '',
+                'id_comprobante' => '',
+                'codigo_comprobante' => '',
+                'nombre_comprobante' => '',
+                'consecutivo' => '',
+                'concepto' => '',
+                'fecha_manual' => '',
+                'fecha_creacion' => null,
+                'fecha_edicion' => null,
+                'created_by' => null,
+                'updated_by' => null,
+                'saldo_anterior' => 0,
+                'debito' => 0,
+                'credito' => 0,
+                'saldo_final' => 0,
+                'detalle' => $isDetail,
+                'detalle_group' => $isDetailGroup,
+            ];
         }
-        $this->auxiliarCollection[$cuenta] = [
+        
+        $this->auxiliarCollection[$cuentaPadre]['saldo_anterior'] += $documento->saldo_anterior;
+        $this->auxiliarCollection[$cuentaPadre]['debito'] += $documento->debito;
+        $this->auxiliarCollection[$cuentaPadre]['credito'] += $documento->credito;
+        $this->auxiliarCollection[$cuentaPadre]['saldo_final'] += $documento->saldo_final;
+    }
+
+    protected function addTotalGenerales($totals)
+    {
+        $this->auxiliarCollection['9999'] = [
             'id_auxiliar' => $this->id_auxiliar,
             'id_nit' => '',
+            'apartamento_nit' => '',
             'numero_documento' => '',
             'nombre_nit' => '',
             'razon_social' => '',
-            'id_cuenta' => $cuentaData->id,
-            'cuenta' => $cuentaData->cuenta,
-            'naturaleza_cuenta' => $cuentaData->naturaleza_cuenta,
-            'auxiliar' => $cuentaData->auxiliar,
-            'nombre_cuenta' => $cuentaData->nombre,
-            'apartamento_nit' => '',
+            'id_cuenta' => '',
+            'cuenta' => 'TOTALES',
+            'naturaleza_cuenta' => '',
+            'auxiliar' => '',
+            'nombre_cuenta' => '',
             'id_centro_costos' => '',
             'codigo_cecos' => '',
-            'nombre_cecos' =>  '',
+            'nombre_cecos' => '',
             'documento_referencia' => '',
             'id_comprobante' => '',
             'codigo_comprobante' => '',
@@ -769,69 +534,16 @@ class ProcessInformeAuxiliar implements ShouldQueue
             'consecutivo' => '',
             'concepto' => '',
             'fecha_manual' => '',
-            'fecha_creacion' => NULL,
-            'fecha_edicion' => NULL,
-            'created_by' => NULL,
-            'updated_by' => NULL,
-            // 'anulado' => '',
-            'saldo_anterior' => number_format((float)$auxiliar->saldo_anterior, 2, '.', ''),
-            'debito' => number_format((float)$auxiliar->debito, 2, '.', ''),
-            'credito' => number_format((float)$auxiliar->credito, 2, '.', ''),
-            'saldo_final' => number_format((float)$auxiliar->saldo_final, 2, '.', ''),
-            'detalle' => $detalle,
-            'detalle_group' => $detalleGroup,
+            'fecha_creacion' => null,
+            'fecha_edicion' => null,
+            'created_by' => null,
+            'updated_by' => null,
+            'saldo_anterior' => number_format((float)$totals['saldo_anterior'], 2, '.', ''),
+            'debito' => number_format((float)$totals['debito'], 2, '.', ''),
+            'credito' => number_format((float)$totals['credito'], 2, '.', ''),
+            'saldo_final' => number_format((float)$totals['saldo_final'], 2, '.', ''),
+            'detalle' => false,
+            'detalle_group' => false,
         ];
-    }
-
-    private function getCuentas($cuenta)
-    {
-        $dataCuentas = NULL;
-
-        if(strlen($cuenta) > 6){
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                mb_substr($cuenta, 0, 4),
-                mb_substr($cuenta, 0, 6),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 4) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                mb_substr($cuenta, 0, 4),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 2) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 1) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                $cuenta,
-            ];
-        } else {
-            $dataCuentas =[
-                $cuenta,
-            ];
-        }
-
-        return $dataCuentas;
-    }
-
-    private function hasCuentaData($cuenta)
-	{
-		return isset($this->auxiliarCollection[$cuenta]);
-	}
-
-    private function sumCuentaData($cuenta, $auxiliar)
-    {
-        $this->auxiliarCollection[$cuenta]['saldo_anterior']+= number_format((float)$auxiliar->saldo_anterior, 2, '.', '');
-        $this->auxiliarCollection[$cuenta]['debito']+= number_format((float)$auxiliar->debito, 2, '.', '');
-        $this->auxiliarCollection[$cuenta]['credito']+= number_format((float)$auxiliar->credito, 2, '.', '');
-        $this->auxiliarCollection[$cuenta]['saldo_final']+= number_format((float)$auxiliar->saldo_final, 2, '.', '');
     }
 }
