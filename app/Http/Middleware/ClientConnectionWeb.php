@@ -23,6 +23,11 @@ class ClientConnectionWeb
             return redirect(RouteServiceProvider::SELECT_EMPRESA);
         }
 
+        // Cerrar la conexión actual si existe
+        if (DB::connection('sam')->getDatabaseName() !== $user->has_empresa) {
+            DB::purge('sam'); // Cierra la conexión actual
+        }
+
 		Config::set('database.connections.sam.database', $user->has_empresa);
 		
         return $next($request);

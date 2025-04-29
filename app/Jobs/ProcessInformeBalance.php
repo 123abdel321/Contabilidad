@@ -4,14 +4,16 @@ namespace App\Jobs;
 
 use DB;
 use Exception;
+use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use App\Events\PrivateMessageEvent;
 //MODELS
+use App\Events\PrivateMessageEvent;
 use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -22,135 +24,144 @@ class ProcessInformeBalance implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $request;
-    public $id_usuario;
-	public $id_empresa;
-    public $id_balance;
-    public $cuentaPerdida;
-    public $cuentaUtilidad;
-    public $balances = [];
-    public $balanceCollection = [];
+    private $empresa;
+    private $request;
+    private $id_usuario;
+    private $id_empresa;
+    private $id_balance;
+    private $cuentaPerdida;
+    private $cuentaUtilidad;
+    private $connectionName;
+    private $chunkSize = 500;
 
     public function __construct($request, $id_usuario, $id_empresa)
     {
         $this->request = $request;
-		$this->id_usuario = $id_usuario;
-		$this->id_empresa = $id_empresa;
+        $this->id_usuario = $id_usuario;
+        $this->id_empresa = $id_empresa;
+        $this->connectionName = 'sam_'.Str::random(8);
     }
 
     public function handle()
     {
-		$empresa = Empresa::find($this->id_empresa);
+        $empresa = Empresa::findOrFail($this->id_empresa);
+
+        $this->empresa = $empresa;
+        $this->setDynamicConnection($empresa->token_db);
         
-        copyDBConnection('sam', 'sam');
-        setDBInConnection('sam', $empresa->token_db);
-
-        DB::connection('informes')->beginTransaction();
-
-        if ($this->request['tipo'] == '3') {
-            $this->cuentaPerdida = VariablesEntorno::whereNombre('cuenta_perdida')->first()->valor;
-            $this->cuentaUtilidad = VariablesEntorno::whereNombre('cuenta_utilidad')->first()->valor;
-
-            $this->cuentaPerdida = PlanCuentas::where('cuenta', $this->cuentaPerdida)->first();
-            $this->cuentaUtilidad = PlanCuentas::where('cuenta', $this->cuentaUtilidad)->first();
-        }
-        
-        try {
-            $balance = InfBalance::create([
-				'id_empresa' => $this->id_empresa,
-				'fecha_desde' => $this->request['fecha_desde'],
-				'fecha_hasta' => $this->request['fecha_hasta'],
-				'cuenta_hasta' => $this->request['cuenta_hasta'],
-				'cuenta_desde' => $this->request['cuenta_desde'],
-				'id_nit' => $this->request['id_nit'],
-				'tipo' => $this->request['tipo'],
-				'nivel' => $this->request['nivel'],
-			]);
-
-            $this->id_balance = $balance->id;
-
-            $this->documentosBalance();
-            if ($this->request['tipo'] == '2') $this->tercerosBalance();
-            if ($this->request['tipo'] == '3') $this->generalBalance();
-            if ($this->request['tipo'] == '3') $this->totalesGeneralBalance();
-            else $this->totalesDocumentosBalance();
+        DB::connection('informes')->transaction(function () use ($empresa) {
+            $this->createBalanceRecord();
             
-            ksort($this->balanceCollection, SORT_STRING | SORT_FLAG_CASE);
-
-            foreach (array_chunk($this->balanceCollection,233) as $balanceCollection){
-                DB::connection('informes')
-                    ->table('inf_balance_detalles')
-                    ->insert(array_values($balanceCollection));
+            if ($this->request['tipo'] == '3') {
+                $this->loadUtilityAccounts();
             }
 
-            DB::connection('informes')->commit();
+            $batchData = [];
+            $insertBatch = function ($data) {
+                DB::connection('informes')
+                    ->table('inf_balance_detalles')
+                    ->insert($data);
+            };
+            
+            switch ($this->request['tipo']) {
+                case '1':
+                    $this->processDocumentosBalance($batchData, $insertBatch);
+                    $this->processTotalesDocumentos($batchData, $insertBatch);
+                    break;
+                case '2':
+                    $this->processTercerosBalance($batchData, $insertBatch);
+                    $this->processTotalesDocumentos($batchData, $insertBatch);
+                    break;
+                case '3':
+                    $this->processGeneralBalance($batchData, $insertBatch);
+                    $this->processTotalesGeneral($batchData, $insertBatch);
+                    break;
+            }
 
-            event(new PrivateMessageEvent('informe-balance-'.$empresa->token_db.'_'.$this->id_usuario, [
-                'tipo' => 'exito',
-                'mensaje' => 'Informe generado con exito!',
-                'titulo' => 'Balance generado',
-                'id_balance' => $this->id_balance,
-                'autoclose' => false
-            ]));
+            if (!empty($batchData)) {
+                $insertBatch($batchData);
+            }
 
-        } catch (Exception $exception) {
-            DB::connection('informes')->rollback();
-
-			throw $exception;
-        }
+            event(new PrivateMessageEvent(
+                'informe-balance-'.$empresa->token_db.'_'.$this->id_usuario, 
+                $this->successMessage()
+            ));
+        });
     }
 
-    private function documentosBalance()
+    private function setDynamicConnection($database)
     {
-        $query = $this->balanceDocumentosQuery();
-        $query->unionAll($this->balanceAnteriorQuery());
-        
-        DB::connection('sam')
-            ->table(DB::raw("({$query->toSql()}) AS balance"))
-            ->mergeBindings($query)
+        Config::set("database.connections.{$this->connectionName}", [
+            'driver' => 'mysql',
+            'host' => config("database.connections.sam.host"),
+            'database' => $database,
+            'username' => config("database.connections.sam.username"),
+            'password' => config("database.connections.sam.password"),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ]);
+
+        DB::purge($this->connectionName);
+    }
+
+    private function createBalanceRecord()
+    {
+        $this->id_balance = InfBalance::create([
+            'id_empresa' => $this->id_empresa,
+            'fecha_desde' => $this->request['fecha_desde'],
+            'fecha_hasta' => $this->request['fecha_hasta'],
+            'cuenta_hasta' => $this->request['cuenta_hasta'],
+            'cuenta_desde' => $this->request['cuenta_desde'],
+            'id_nit' => $this->request['id_nit'],
+            'tipo' => $this->request['tipo'],
+            'nivel' => $this->request['nivel'],
+        ])->id;
+    }
+
+    private function loadUtilityAccounts()
+    {
+        $this->cuentaPerdida = PlanCuentas::where('cuenta', 
+            VariablesEntorno::whereNombre('cuenta_perdida')->value('valor')
+        )->first(['id', 'cuenta']);
+
+        $this->cuentaUtilidad = PlanCuentas::where('cuenta',
+            VariablesEntorno::whereNombre('cuenta_utilidad')->value('valor')
+        )->first(['id', 'cuenta']);
+    }
+
+    private function processDocumentosBalance(&$batchData, $insertBatch)
+    {
+        $query = $this->buildBaseQuery()
             ->select(
                 'id_cuenta',
                 'cuenta',
                 'nombre_cuenta',
-                'created_by',
-                'updated_by',
-                'fecha_manual',
                 DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
-                DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
                 DB::raw('SUM(documentos_totales) AS documentos_totales')
             )
-            ->groupByRaw('cuenta')
-            ->orderByRaw('cuenta')
-            ->chunk(233, function ($documentos) {
-                $documentos->each(function ($documento) {
-                    $cuentasAsociadas = $this->getCuentas($documento->cuenta); //return ARRAY PADRES CUENTA
+            ->groupBy('cuenta')
+            ->orderBy('cuenta');
 
-                    foreach ($cuentasAsociadas as $cuenta) {
-                        $addCuenta = false;
+        $this->processChunkedData($query, $batchData, $insertBatch, function ($documento) {
+            $cuentasAsociadas = $this->getCuentasPadre($documento->cuenta);
+            
+            $results = [];
+            
+            foreach ($cuentasAsociadas as $cuenta) {
+                if ($this->shouldIncludeCuenta($cuenta)) {
+                    $results[] = $this->buildCuentaData($documento, $cuenta);
+                }
+            }
 
-                        if($this->request['nivel'] == 1 && strlen($cuenta) < 3) $addCuenta = true;
-                        if($this->request['nivel'] == 2 && strlen($cuenta) < 5) $addCuenta = true;
-                        if($this->request['nivel'] == 3) $addCuenta = true;
-
-                        if($addCuenta) {
-                            if ($this->hasCuentaData($cuenta)) $this->sumCuentaData($cuenta, $documento);
-                            else $this->newCuentaData($cuenta, $documento);
-                        }
-                    }
-                });
-            });
+            return $results;
+        });
     }
 
-    private function tercerosBalance()
+    private function processTercerosBalance(&$batchData, $insertBatch)
     {
-        $query = $this->balanceDocumentosQuery();
-        $query->unionAll($this->balanceAnteriorQuery());
-
-        DB::connection('sam')
-            ->table(DB::raw("({$query->toSql()}) AS balance"))
-            ->mergeBindings($query)
+        $query = $this->buildBaseQuery()
             ->select(
                 'id_nit',
                 'numero_documento',
@@ -158,71 +169,230 @@ class ProcessInformeBalance implements ShouldQueue
                 'id_cuenta',
                 'cuenta',
                 'nombre_cuenta',
-                'created_by',
-                'updated_by',
-                'fecha_manual',
                 DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
-                DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
                 DB::raw('SUM(documentos_totales) AS documentos_totales')
             )
-            ->groupByRaw('cuenta, id_nit')
-            ->orderByRaw('nombre_nit')
-            ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
-            ->chunk(233, function ($documentos) {
-                foreach ($documentos as $nit) {
-                    $this->newNitData($nit);
-                }
-            });
+            ->groupBy(['cuenta', 'id_nit'])
+            ->orderBy('nombre_nit')
+            ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0');
+
+        $this->processChunkedData($query, $batchData, $insertBatch, function ($documento) {
+            return [$this->buildNitData($documento)];
+        });
     }
 
-    private function generalBalance()
+    private function processGeneralBalance(&$batchData, $insertBatch)
     {
-        $query = $this->balanceDocumentosGeneralQuery();
-        $query->unionAll($this->balanceAnteriorGeneralQuery());
-
-        $totales = DB::connection('sam')
-            ->table(DB::raw("({$query->toSql()}) AS balance"))
-            ->mergeBindings($query)
-            ->select(
-                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
-                DB::raw('SUM(debito) AS debito'),
-                DB::raw('SUM(credito) AS credito'),
-                DB::raw('SUM(saldo_anterior) + SUM(saldo_final) AS saldo_final'),
-                DB::raw('SUM(documentos_totales) AS documentos_totales')
-            )
-            ->orderByRaw('cuenta')
-            ->first();
-
-        if ($totales->saldo_final > 0) {
-            $cuentasAsociadas = $this->getCuentas($this->cuentaUtilidad->cuenta); //return ARRAY PADRES CUENTA
-        } else {
-            $cuentasAsociadas = $this->getCuentas($this->cuentaPerdida->cuenta); //return ARRAY PADRES CUENTA
-        }
-
-        foreach ($cuentasAsociadas as $cuenta) {
-            $addCuenta = false;
-
-            if($this->request['nivel'] == 1 && strlen($cuenta) < 3) $addCuenta = true;
-            if($this->request['nivel'] == 2 && strlen($cuenta) < 5) $addCuenta = true;
-            if($this->request['nivel'] == 3) $addCuenta = true;
-
-            if($addCuenta) {
-                if ($this->hasCuentaData($cuenta)) $this->sumCuentaData($cuenta, $totales);
-                else $this->newCuentaData($cuenta, $totales);
+        $query = $this->buildGeneralQuery();
+        $totales = $query->first();
+        
+        $cuenta = ($totales->saldo_final > 0) ? $this->cuentaUtilidad->cuenta : $this->cuentaPerdida->cuenta;
+        
+        foreach ($this->getCuentasPadre($cuenta) as $cuentaPadre) {
+            if ($this->shouldIncludeCuenta($cuentaPadre)) {
+                $batchData[] = $this->buildCuentaData($totales, $cuentaPadre);
+                $this->checkBatchSize($batchData, $insertBatch);
             }
         }
     }
 
-    private function totalesDocumentosBalance()
+    private function processTotalesDocumentos(&$batchData, $insertBatch)
     {
-        $query = $this->balanceDocumentosQuery();
-        $query->unionAll($this->balanceAnteriorQuery());
+        // Primero obtenemos los totales del período actual
+        $totalesPeriodo = DB::connection($this->connectionName)
+            ->table('documentos_generals AS DG')
+            ->join('plan_cuentas AS PC', 'DG.id_cuenta', '=', 'PC.id')
+            ->where('anulado', 0)
+            ->whereBetween('DG.fecha_manual', [$this->request['fecha_desde'], $this->request['fecha_hasta']])
+            ->select(
+                DB::raw('0 AS saldo_anterior'),
+                DB::raw('SUM(DG.debito) AS debito'),
+                DB::raw('SUM(DG.credito) AS credito'),
+                DB::raw('COUNT(*) AS documentos_totales')
+            )
+            ->first();
 
-        $totales = DB::connection('sam')
-            ->table(DB::raw("({$query->toSql()}) AS balance"))
-            ->mergeBindings($query)
+        // Luego obtenemos los saldos anteriores
+        $totalesAnterior = DB::connection($this->connectionName)
+            ->table('documentos_generals AS DG')
+            ->join('plan_cuentas AS PC', 'DG.id_cuenta', '=', 'PC.id')
+            ->where('anulado', 0)
+            ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
+            ->select(
+                DB::raw('SUM(DG.debito - DG.credito) AS saldo_anterior'),
+                DB::raw('0 AS debito'),
+                DB::raw('0 AS credito'),
+                DB::raw('COUNT(*) AS documentos_totales')
+            )
+            ->first();
+
+        // Combinamos los resultados
+        $totales = (object)[
+            'saldo_anterior' => $totalesAnterior->saldo_anterior ?? 0,
+            'debito' => $totalesPeriodo->debito ?? 0,
+            'credito' => $totalesPeriodo->credito ?? 0,
+            'documentos_totales' => ($totalesPeriodo->documentos_totales ?? 0) + ($totalesAnterior->documentos_totales ?? 0)
+        ];
+
+        $total = $totales->saldo_anterior + $totales->debito - $totales->credito;
+        
+        $batchData[] = [
+            'id_balance' => $this->id_balance,
+            'id_cuenta' => '',
+            'cuenta' => 'TOTALES',
+            'nombre_cuenta' => '',
+            'auxiliar' => '',
+            'saldo_anterior' => number_format((float)$totales->saldo_anterior, 2, '.', ''),
+            'debito' => number_format((float)$totales->debito, 2, '.', ''),
+            'credito' => number_format((float)$totales->credito, 2, '.', ''),
+            'saldo_final' => number_format((float)$total, 2, '.', ''),
+            'documentos_totales' => $totales->documentos_totales
+        ];
+    }
+
+    private function processTotalesGeneral(&$batchData, $insertBatch)
+    {
+        $totales = $this->buildGeneralQuery(true)->first();
+        
+        $batchData[] = [
+            'id_balance' => $this->id_balance,
+            'id_cuenta' => '',
+            'cuenta' => 'TOTALES',
+            'nombre_cuenta' => '',
+            'auxiliar' => '',
+            'saldo_anterior' => number_format((float)$totales->saldo_anterior, 2, '.', ''),
+            'debito' => number_format((float)$totales->debito, 2, '.', ''),
+            'credito' => number_format((float)$totales->credito, 2, '.', ''),
+            'saldo_final' => number_format((float)$totales->saldo_final, 2, '.', ''),
+            'documentos_totales' => $totales->documentos_totales,
+        ];
+    }
+
+    private function buildBaseQuery()
+    {
+        $documentosQuery = DB::connection($this->connectionName)
+            ->table('documentos_generals AS DG')
+            ->select(
+                'DG.id_cuenta',
+                'PC.cuenta',
+                'PC.nombre AS nombre_cuenta',
+                DB::raw("0 AS saldo_anterior"),
+                DB::raw("DG.debito AS debito"),
+                DB::raw("DG.credito AS credito"),
+                DB::raw("1 AS documentos_totales")
+            )
+            ->join('plan_cuentas AS PC', 'DG.id_cuenta', '=', 'PC.id')
+            ->where('anulado', 0)
+            ->whereBetween('DG.fecha_manual', [$this->request['fecha_desde'], $this->request['fecha_hasta']])
+            ->when($this->request['cuenta_desde'] ?? false, function ($q) {
+                $q->where('PC.cuenta', '>=', $this->request['cuenta_desde']);
+            })
+            ->when($this->request['cuenta_hasta'] ?? false, function ($q) {
+                $q->where('PC.cuenta', '<=', $this->request['cuenta_hasta'])
+                ->orWhere('PC.cuenta', 'LIKE', $this->request['cuenta_hasta'].'%');
+            });
+
+        $anteriorQuery = DB::connection($this->connectionName)
+            ->table('documentos_generals AS DG')
+            ->select(
+                'DG.id_cuenta',
+                'PC.cuenta',
+                'PC.nombre AS nombre_cuenta',
+                DB::raw("debito - credito AS saldo_anterior"),
+                DB::raw("0 AS debito"),
+                DB::raw("0 AS credito"),
+                DB::raw("1 AS documentos_totales")
+            )
+            ->join('plan_cuentas AS PC', 'DG.id_cuenta', '=', 'PC.id')
+            ->where('anulado', 0)
+            ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
+            ->when($this->request['cuenta_desde'] ?? false, function ($q) {
+                $q->where('PC.cuenta', '>=', $this->request['cuenta_desde']);
+            })
+            ->when($this->request['cuenta_hasta'] ?? false, function ($q) {
+                $q->where('PC.cuenta', '<=', $this->request['cuenta_hasta'])
+                ->orWhere('PC.cuenta', 'LIKE', $this->request['cuenta_hasta'].'%');
+            });
+
+        return DB::connection($this->connectionName)
+            ->table(DB::raw("({$documentosQuery->toSql()}) AS periodo"))
+            ->mergeBindings($documentosQuery)
+            ->select(
+                'id_cuenta',
+                'cuenta',
+                'nombre_cuenta',
+                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(documentos_totales) AS documentos_totales')
+            )
+            ->groupBy('id_cuenta', 'cuenta', 'nombre_cuenta')
+            ->unionAll(
+                DB::connection($this->connectionName)
+                    ->table(DB::raw("({$anteriorQuery->toSql()}) AS anterior"))
+                    ->mergeBindings($anteriorQuery)
+                    ->select(
+                        'id_cuenta',
+                        'cuenta',
+                        'nombre_cuenta',
+                        DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                        DB::raw('SUM(debito) AS debito'),
+                        DB::raw('SUM(credito) AS credito'),
+                        DB::raw('SUM(documentos_totales) AS documentos_totales')
+                    )
+                    ->groupBy('id_cuenta', 'cuenta', 'nombre_cuenta')
+            );
+    }
+
+    private function buildGeneralQuery($total = false)
+    {
+        $documentosQuery = DB::connection($this->connectionName)
+            ->table('documentos_generals AS DG')
+            ->select(
+                'PC.cuenta',
+                DB::raw("0 AS saldo_anterior"),
+                DB::raw("SUM(DG.debito) AS debito"),
+                DB::raw("SUM(DG.credito) AS credito"),
+                DB::raw("SUM(DG.debito - DG.credito) AS saldo_final"),
+                DB::raw("COUNT(*) AS documentos_totales")
+            )
+            ->join('plan_cuentas AS PC', 'DG.id_cuenta', '=', 'PC.id')
+            ->where('anulado', 0)
+            ->whereBetween('DG.fecha_manual', [$this->request['fecha_desde'], $this->request['fecha_hasta']])
+            ->when(!$total, function ($q) {
+                $q->where(function($q2) {
+                    $q2->whereBetween('PC.cuenta', ['4', '7'])
+                       ->orWhere('PC.cuenta', 'LIKE', '7%');
+                });
+            })
+            ->groupBy('PC.cuenta');
+
+        $anteriorQuery = DB::connection($this->connectionName)
+            ->table('documentos_generals AS DG')
+            ->select(
+                'PC.cuenta',
+                DB::raw("SUM(DG.debito - DG.credito) AS saldo_anterior"),
+                DB::raw("0 AS debito"),
+                DB::raw("0 AS credito"),
+                DB::raw("0 AS saldo_final"),
+                DB::raw("COUNT(*) AS documentos_totales")
+            )
+            ->join('plan_cuentas AS PC', 'DG.id_cuenta', '=', 'PC.id')
+            ->where('anulado', 0)
+            ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
+            ->when(!$total, function ($q) {
+                $q->where(function($q2) {
+                    $q2->whereBetween('PC.cuenta', ['4', '7'])
+                       ->orWhere('PC.cuenta', 'LIKE', '7%');
+                });
+            })
+            ->groupBy('PC.cuenta');
+
+        return DB::connection($this->connectionName)
+            ->table(DB::raw("({$documentosQuery->toSql()}) AS periodo"))
+            ->mergeBindings($documentosQuery)
             ->select(
                 DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
                 DB::raw('SUM(debito) AS debito'),
@@ -230,313 +400,140 @@ class ProcessInformeBalance implements ShouldQueue
                 DB::raw('SUM(saldo_final) AS saldo_final'),
                 DB::raw('SUM(documentos_totales) AS documentos_totales')
             )
-            ->orderByRaw('cuenta')
-            ->get();
-
-        $total = $totales[0]->saldo_anterior + $totales[0]->debito - $totales[0]->credito;
-        $this->balanceCollection['9999'] = [
-            'id_balance' => $this->id_balance,
-            'id_cuenta' => '',
-            'cuenta' => 'TOTALES',
-            'nombre_cuenta' => '',
-            'auxiliar' => '',
-            'saldo_anterior' => number_format((float)$totales[0]->saldo_anterior, 2, '.', ''),
-            'debito' => number_format((float)$totales[0]->debito, 2, '.', ''),
-            'credito' => number_format((float)$totales[0]->credito, 2, '.', ''),
-            'saldo_final' => number_format((float)$total, 2, '.', ''),
-            'documentos_totales' => $totales[0]->documentos_totales,
-        ];
+            ->unionAll(
+                DB::connection($this->connectionName)
+                    ->table(DB::raw("({$anteriorQuery->toSql()}) AS anterior"))
+                    ->mergeBindings($anteriorQuery)
+                    ->select(
+                        DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                        DB::raw('SUM(debito) AS debito'),
+                        DB::raw('SUM(credito) AS credito'),
+                        DB::raw('SUM(saldo_final) AS saldo_final'),
+                        DB::raw('SUM(documentos_totales) AS documentos_totales')
+                    )
+            );
     }
 
-    private function totalesGeneralBalance()
+    private function processChunkedData($query, &$batchData, $insertBatch, $processor)
     {
-        $query = $this->balanceDocumentosGeneralQuery(true);
-        $query->unionAll($this->balanceAnteriorGeneralQuery(true));
-
-        $totales = DB::connection('sam')
-            ->table(DB::raw("({$query->toSql()}) AS balance"))
-            ->mergeBindings($query)
-            ->select(
-                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
-                DB::raw('SUM(debito) AS debito'),
-                DB::raw('SUM(credito) AS credito'),
-                DB::raw('SUM(saldo_anterior) + SUM(saldo_final) AS saldo_final'),
-                DB::raw('SUM(documentos_totales) AS documentos_totales')
-            )
-            ->orderByRaw('cuenta')
-            ->get();
-
-        $this->balanceCollection['9999'] = [
-            'id_balance' => $this->id_balance,
-            'id_cuenta' => '',
-            'cuenta' => 'TOTALES',
-            'nombre_cuenta' => '',
-            'auxiliar' => '',
-            'saldo_anterior' => number_format((float)$totales[0]->saldo_anterior, 2, '.', ''),
-            'debito' => number_format((float)$totales[0]->debito, 2, '.', ''),
-            'credito' => number_format((float)$totales[0]->credito, 2, '.', ''),
-            'saldo_final' => number_format((float)$totales[0]->saldo_final, 2, '.', ''),
-            'documentos_totales' => $totales[0]->documentos_totales,
-        ];
-    }
-
-    private function balanceDocumentosQuery()
-    {
-        $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
-            ->select(
-                'N.id AS id_nit',
-                'N.numero_documento',
-                DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
-                    ELSE NULL
-                END) AS nombre_nit"),
-                "DG.id_cuenta",
-                "PC.cuenta",
-                "PC.nombre AS nombre_cuenta",
-                "DG.created_by",
-                "DG.updated_by",
-                "DG.fecha_manual",
-                DB::raw("0 AS saldo_anterior"),
-                DB::raw("DG.debito AS debito"),
-                DB::raw("DG.credito AS credito"),
-                DB::raw("DG.debito - DG.credito AS saldo_final"),
-                DB::raw("1 AS documentos_totales")
-            )
-            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
-            ->where('anulado', 0)
-            ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
-            ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
-            ->where(function ($query) {
-				$query->when(isset($this->request['cuenta_desde']), function ($query) {
-					$query->where('PC.cuenta', '>=', (string) $this->request['cuenta_desde']);
-				})
-					->when(isset($this->request['cuenta_hasta']), function ($query) {
-						$query->where('PC.cuenta', '<=', (string) $this->request['cuenta_hasta'])
-							->orWhere('PC.cuenta', 'LIKE', (string) $this->request['cuenta_hasta'] . '%');
-					});
-			})
-            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('DG.id_nit', $this->request['id_nit'].'%');
-			});
-
-        return $documentosQuery;
-    }
-
-    private function balanceAnteriorQuery()
-    {
-        $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
-            ->select(
-                'N.id AS id_nit',
-                'N.numero_documento',
-                DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
-                    ELSE NULL
-                END) AS nombre_nit"),
-                "DG.id_cuenta",
-                "PC.cuenta",
-                "PC.nombre AS nombre_cuenta",
-                "DG.created_by",
-                "DG.updated_by",
-                "DG.fecha_manual",
-                DB::raw("debito - credito AS saldo_anterior"),
-                DB::raw("0 AS debito"),
-                DB::raw("0 AS credito"),
-                DB::raw("0 AS saldo_final"),
-                DB::raw("1 AS documentos_totales")
-            )
-            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
-            ->where('anulado', 0)
-            ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
-            ->where(function ($query) {
-				$query->when(isset($this->request['cuenta_desde']), function ($query) {
-					$query->where('PC.cuenta', '>=', (string) $this->request['cuenta_desde']);
-				})
-					->when(isset($this->request['cuenta_hasta']), function ($query) {
-						$query->where('PC.cuenta', '<=', (string) $this->request['cuenta_hasta'])
-							->orWhere('PC.cuenta', 'LIKE', (string) $this->request['cuenta_hasta'] . '%');
-					});
-			})
-            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('DG.id_nit', $this->request['id_nit'].'%');
-			});
-
-        return $documentosQuery;
-    }
-
-    private function balanceDocumentosGeneralQuery($total = false)
-    {
-        $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
-            ->select(
-                'N.id AS id_nit',
-                'N.numero_documento',
-                DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
-                    ELSE NULL
-                END) AS nombre_nit"),
-                "DG.id_cuenta",
-                "PC.cuenta",
-                "PC.nombre AS nombre_cuenta",
-                "DG.created_by",
-                "DG.updated_by",
-                "DG.fecha_manual",
-                DB::raw("0 AS saldo_anterior"),
-                DB::raw("DG.debito AS debito"),
-                DB::raw("DG.credito AS credito"),
-                DB::raw("DG.debito - DG.credito AS saldo_final"),
-                DB::raw("1 AS documentos_totales")
-            )
-            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
-            ->where('anulado', 0)
-            ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
-            ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
-            ->where(function ($query) use ($total){
-                if (!$total) {
-                    $query->where('PC.cuenta', '>=', '4')
-                        ->where('PC.cuenta', '<=', '7')
-                        ->orWhere('PC.cuenta', 'LIKE', '7%');
+        $query->chunk($this->chunkSize, function ($items) use (&$batchData, $insertBatch, $processor) {
+            foreach ($items as $item) {
+                $results = $processor($item);
+                foreach ($results as $result) {
+                    $batchData[] = $result;
+                    $this->checkBatchSize($batchData, $insertBatch);
                 }
-			})
-            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('DG.id_nit', $this->request['id_nit'].'%');
-			});
-
-        return $documentosQuery;
+            }
+        });
     }
 
-    private function balanceAnteriorGeneralQuery($total = false)
+    private function checkBatchSize(&$batchData, $insertBatch)
     {
-        $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
-            ->select(
-                'N.id AS id_nit',
-                'N.numero_documento',
-                DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
-                    ELSE NULL
-                END) AS nombre_nit"),
-                "DG.id_cuenta",
-                "PC.cuenta",
-                "PC.nombre AS nombre_cuenta",
-                "DG.created_by",
-                "DG.updated_by",
-                "DG.fecha_manual",
-                DB::raw("debito - credito AS saldo_anterior"),
-                DB::raw("0 AS debito"),
-                DB::raw("0 AS credito"),
-                DB::raw("0 AS saldo_final"),
-                DB::raw("1 AS documentos_totales")
-            )
-            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
-            ->where('anulado', 0)
-            ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
-            ->where(function ($query) use ($total){
-                if (!$total) {
-                    $query->where('PC.cuenta', '>=', '4')
-                        ->where('PC.cuenta', '<=', '7')
-                        ->orWhere('PC.cuenta', 'LIKE', '7%');
-                }
-			})
-            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('DG.id_nit', $this->request['id_nit'].'%');
-			});
-
-        return $documentosQuery;
-    }
-
-    private function getCuentas($cuenta)
-    {
-        $dataCuentas = NULL;
-
-        if(strlen($cuenta) > 6){
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                mb_substr($cuenta, 0, 4),
-                mb_substr($cuenta, 0, 6),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 4) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                mb_substr($cuenta, 0, 4),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 2) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                mb_substr($cuenta, 0, 2),
-                $cuenta,
-            ];
-        } else if (strlen($cuenta) > 1) {
-            $dataCuentas =[
-                mb_substr($cuenta, 0, 1),
-                $cuenta,
-            ];
-        } else {
-            $dataCuentas =[
-                $cuenta,
-            ];
+        if (count($batchData) >= $this->chunkSize) {
+            $insertBatch($batchData);
+            $batchData = [];
         }
-
-        return $dataCuentas;
     }
 
-    private function newCuentaData($cuenta, $balance)
+    private function getCuentasPadre($cuenta)
     {
-        $cuentaData = PlanCuentas::whereCuenta($cuenta)->first();
+        $length = strlen($cuenta);
+        $cuentas = [];
 
-        if(!$cuentaData){
-            return;
-        }
+        if ($length >= 1) $cuentas[] = substr($cuenta, 0, 1);
+        if ($length >= 2) $cuentas[] = substr($cuenta, 0, 2);
+        if ($length >= 4) $cuentas[] = substr($cuenta, 0, 4);
+        if ($length >= 6) $cuentas[] = substr($cuenta, 0, 6);
+        $cuentas[] = $cuenta;
 
-        $this->balanceCollection[$cuenta] = [
+        return array_unique($cuentas);
+    }
+
+    private function shouldIncludeCuenta($cuenta)
+    {
+        $length = strlen($cuenta);
+        
+        return ($this->request['nivel'] == 1 && $length < 3) ||
+               ($this->request['nivel'] == 2 && $length < 5) ||
+               ($this->request['nivel'] == 3);
+    }
+
+    private function buildCuentaData($source, $cuenta = null)
+    {
+        $cuentaData = $cuenta ? PlanCuentas::where('cuenta', $cuenta)->first(['id', 'cuenta', 'nombre', 'auxiliar']) : null;
+
+        return [
             'id_balance' => $this->id_balance,
-            'id_cuenta' => $cuentaData->id,
-            'cuenta' => $cuentaData->cuenta,
-            'nombre_cuenta' => $cuentaData->nombre,
-            'auxiliar' => $this->request['tipo'] == '2' ? 0 : $cuentaData->auxiliar,
-            'saldo_anterior' => number_format((float)$balance->saldo_anterior, 2, '.', ''),
-            'debito' => number_format((float)$balance->debito, 2, '.', ''),
-            'credito' => number_format((float)$balance->credito, 2, '.', ''),
-            'saldo_final' => number_format((float)$balance->saldo_final, 2, '.', ''),
-            'documentos_totales' => $balance->documentos_totales
+            'id_cuenta' => $cuentaData->id ?? '',
+            'cuenta' => $cuentaData->cuenta ?? $cuenta,
+            'nombre_cuenta' => $cuentaData->nombre ?? '',
+            'auxiliar' => $this->request['tipo'] == '2' ? 0 : ($cuentaData->auxiliar ?? 0),
+            'saldo_anterior' => number_format((float)$source->saldo_anterior, 2, '.', ''),
+            'debito' => number_format((float)$source->debito, 2, '.', ''),
+            'credito' => number_format((float)$source->credito, 2, '.', ''),
+            'saldo_final' => number_format((float)($source->saldo_anterior + $source->debito - $source->credito), 2, '.', ''),
+            'documentos_totales' => $source->documentos_totales
         ];
     }
 
-    private function newNitData($data)
+    private function buildNitData($source)
     {
-        $this->balanceCollection[$data->cuenta.$data->numero_documento] = [
+        return [
             'id_balance' => $this->id_balance,
-            'id_cuenta' => $data->cuenta,
-            'cuenta' => $data->numero_documento,
-            'nombre_cuenta' => $data->nombre_nit,
+            'id_cuenta' => $source->cuenta,
+            'cuenta' => $source->numero_documento,
+            'nombre_cuenta' => $source->nombre_nit,
             'auxiliar' => 5,
-            'saldo_anterior' => number_format((float)$data->saldo_anterior, 2, '.', ''),
-            'debito' => number_format((float)$data->debito, 2, '.', ''),
-            'credito' => number_format((float)$data->credito, 2, '.', ''),
-            'saldo_final' => number_format((float)$data->saldo_final, 2, '.', ''),
-            'documentos_totales' => $data->documentos_totales
+            'saldo_anterior' => number_format((float)$source->saldo_anterior, 2, '.', ''),
+            'debito' => number_format((float)$source->debito, 2, '.', ''),
+            'credito' => number_format((float)$source->credito, 2, '.', ''),
+            'saldo_final' => number_format((float)$source->saldo_final, 2, '.', ''),
+            'documentos_totales' => $source->documentos_totales
         ];
     }
 
-    private function sumCuentaData($cuenta, $balance)
+    private function successMessage()
     {
-        $this->balanceCollection[$cuenta]['saldo_anterior']+= number_format((float)$balance->saldo_anterior, 2, '.', '');
-        $this->balanceCollection[$cuenta]['debito']+= number_format((float)$balance->debito, 2, '.', '');
-        $this->balanceCollection[$cuenta]['credito']+= number_format((float)$balance->credito, 2, '.', '');
-        $this->balanceCollection[$cuenta]['saldo_final']+= number_format((float)$balance->saldo_final, 2, '.', '');
+        return [
+            'tipo' => 'exito',
+            'mensaje' => 'Informe generado con éxito!',
+            'titulo' => 'Balance generado',
+            'id_balance' => $this->id_balance,
+            'autoclose' => false
+        ];
     }
 
-    private function hasCuentaData($cuenta)
-	{
-		return isset($this->balanceCollection[$cuenta]);
-	}
+    private function errorMessage($mensaje, $line)
+    {
+        return [
+            'tipo' => 'error',
+            'mensaje' => "$mensaje / Line: $line",
+            'titulo' => 'Balance generado con errores',
+            'id_balance' => null,
+            'autoclose' => false
+        ];
+    }
+
+    public function failed(Exception $exception)
+    {
+        DB::connection('informes')->rollBack();
+
+        $mensaje = $exception->getMessage();
+        $line = $exception->getLine();
+        
+        Log::error("$mensaje / Line: $line");
+
+        if (!$this->empresa) {
+            try {
+                $this->empresa = Empresa::find($this->id_empresa);
+            } catch (Exception $e) {
+                $token_db = 'unknown';
+            }
+        }
+
+        event(new PrivateMessageEvent(
+            'informe-balance-'.$this->empresa->token_db.'_'.$this->id_usuario, 
+            $this->errorMessage($mensaje, $line)
+        ));
+    }
 }
