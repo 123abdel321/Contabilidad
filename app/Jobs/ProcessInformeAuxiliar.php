@@ -90,8 +90,8 @@ class ProcessInformeAuxiliar implements ShouldQueue
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            Log::info("Tiempo de ejecución del informe balance: {$executionTime} segundos");
-            Log::info("Consumo de memoria del informe balance: {$memoryUsage} bytes");
+            Log::info("Tiempo de ejecución del informe auxiliar: {$executionTime} segundos");
+            Log::info("Consumo de memoria del informe auxiliar: {$memoryUsage} bytes");
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
@@ -144,7 +144,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
             ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
-                $documentos->each(function ($documento) {
+                foreach ($documentos as $documento) {
                     $this->auxiliares[] = (object)[
                         'id_nit' => $documento->id_nit,
                         'numero_documento' => $documento->numero_documento,
@@ -178,7 +178,8 @@ class ProcessInformeAuxiliar implements ShouldQueue
                         'saldo_final' => $documento->saldo_final,
                         'total_columnas' => $documento->total_columnas,
                     ];
-                });
+                }
+                unset($documentos); // Liberar memoria
             });
 
         return $this->auxiliares;
