@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Capturas;
 
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Jobs\ProcessConsultarFE;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -145,7 +146,7 @@ class PedidoController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $pedidoEditado = null;
@@ -165,7 +166,7 @@ class PedidoController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>["Pedido" => ["El pedido ya ha sido facturado"]]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         
         $request->all();
@@ -207,7 +208,7 @@ class PedidoController extends Controller
                         "success"=>false,
                         'data' => [],
                         "message"=> ['Cantidad bodega' => ['La cantidad del producto '.$productoDb->codigo. ' - ' .$productoDb->nombre. ' supera la cantidad en bodega']]
-                    ], 422);
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
 
                 //CREAR PEDIDO DETALLE
@@ -243,7 +244,7 @@ class PedidoController extends Controller
 				'success'=>	true,
 				'data' => $pedido,
 				'message'=> 'Pedido guardado con exito!'
-			], 200);
+			], Response::HTTP_OK);
 
         } catch (Exception $e) {
 
@@ -252,7 +253,7 @@ class PedidoController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -299,7 +300,7 @@ class PedidoController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $pedido = null;
@@ -314,7 +315,7 @@ class PedidoController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>["Pedido" => ["El pedido ya ha sido facturado"]]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $this->resolucion = FacResoluciones::whereId($request->get('id_resolucion'))
@@ -326,7 +327,7 @@ class PedidoController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está agotada"]]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $consecutivo = $this->getNextConsecutive($this->resolucion->comprobante->id, $request->get('fecha_manual'));
@@ -399,7 +400,7 @@ class PedidoController extends Controller
                         "success"=>false,
                         'data' => [],
                         "message"=> ['Cantidad bodega' => ['La cantidad del producto '.$productoDb->codigo. ' - ' .$productoDb->nombre. ' supera la cantidad en bodega']]
-                    ], 422);
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
 
                 //CREAR VENTA DETALLE
@@ -475,7 +476,7 @@ class PedidoController extends Controller
                                 "success"=>false,
                                 'data' => [],
                                 "message"=> [$productoDb->codigo.' - '.$productoDb->nombre => ['La cuenta '.str_replace('cuenta_venta_', '', $cuentaKey). ' no se encuentra configurada en la familia: '. $productoDb->familia->codigo. ' - '. $productoDb->familia->nombre]]
-                            ], 422);
+                            ], Response::HTTP_UNPROCESSABLE_ENTITY);
                         }
 
                         $concepto = "VENTA: {$nit->nombre_nit} - {$nit->documento} - {$venta->documento_referencia}";
@@ -558,7 +559,7 @@ class PedidoController extends Controller
                         "success"=>false,
                         'data' => [],
                         "message"=> ['Cuenta retención' => ['La cuenta '.$cuentaRetencion->cuenta. ' - ' .$cuentaRetencion->nombre. ' no tiene naturaleza en ventas']]
-                    ], 422);
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
             }
 
@@ -605,7 +606,7 @@ class PedidoController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
             if ($request->get('id_pedido')) {
@@ -656,7 +657,7 @@ class PedidoController extends Controller
 				'data' => $documentoGeneral->getRows(),
 				'impresion' => $this->resolucion->comprobante->imprimir_en_capturas ? $venta->id : '',
 				'message'=> 'Venta creada con exito!'
-			], 200);
+			], Response::HTTP_OK);
 
         } catch (Exception $e) {
 
@@ -665,7 +666,7 @@ class PedidoController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -692,14 +693,14 @@ class PedidoController extends Controller
                 "success"=>false,
                 'data' => $pedido->first(),
                 "message"=> 'Información cargada con exito!'
-            ], 200);
+            ], Response::HTTP_OK);
 
         } catch (Exception $e) {
             return response()->json([
                 "success"=>false,
                 'data' => $pedido,
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -716,7 +717,7 @@ class PedidoController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
@@ -740,7 +741,7 @@ class PedidoController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -753,7 +754,7 @@ class PedidoController extends Controller
                 'success'=>	false,
                 'data' => [],
                 'message'=> 'El pedido no existe'
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();

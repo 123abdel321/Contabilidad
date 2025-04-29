@@ -24,24 +24,23 @@ class ProcessInformeBalance implements ShouldQueue
 
     public $request;
     public $id_usuario;
-	public $id_empresa;
+    public $id_empresa;
     public $id_balance;
     public $cuentaPerdida;
     public $cuentaUtilidad;
-    public $balances = [];
     public $balanceCollection = [];
 
     public function __construct($request, $id_usuario, $id_empresa)
     {
         $this->request = $request;
-		$this->id_usuario = $id_usuario;
-		$this->id_empresa = $id_empresa;
+        $this->id_usuario = $id_usuario;
+        $this->id_empresa = $id_empresa;
     }
 
     public function handle()
     {
-		$empresa = Empresa::find($this->id_empresa);
-        
+        $empresa = Empresa::find($this->id_empresa);
+
         copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $empresa->token_db);
 
@@ -54,18 +53,18 @@ class ProcessInformeBalance implements ShouldQueue
             $this->cuentaPerdida = PlanCuentas::where('cuenta', $this->cuentaPerdida)->first();
             $this->cuentaUtilidad = PlanCuentas::where('cuenta', $this->cuentaUtilidad)->first();
         }
-        
+
         try {
             $balance = InfBalance::create([
-				'id_empresa' => $this->id_empresa,
-				'fecha_desde' => $this->request['fecha_desde'],
-				'fecha_hasta' => $this->request['fecha_hasta'],
-				'cuenta_hasta' => $this->request['cuenta_hasta'],
-				'cuenta_desde' => $this->request['cuenta_desde'],
-				'id_nit' => $this->request['id_nit'],
-				'tipo' => $this->request['tipo'],
-				'nivel' => $this->request['nivel'],
-			]);
+                'id_empresa' => $this->id_empresa,
+                'fecha_desde' => $this->request['fecha_desde'],
+                'fecha_hasta' => $this->request['fecha_hasta'],
+                'cuenta_hasta' => $this->request['cuenta_hasta'],
+                'cuenta_desde' => $this->request['cuenta_desde'],
+                'id_nit' => $this->request['id_nit'],
+                'tipo' => $this->request['tipo'],
+                'nivel' => $this->request['nivel'],
+            ]);
 
             $this->id_balance = $balance->id;
 
@@ -74,18 +73,18 @@ class ProcessInformeBalance implements ShouldQueue
             if ($this->request['tipo'] == '3') $this->generalBalance();
             if ($this->request['tipo'] == '3') $this->totalesGeneralBalance();
             else $this->totalesDocumentosBalance();
-            
+
             ksort($this->balanceCollection, SORT_STRING | SORT_FLAG_CASE);
 
-            foreach (array_chunk($this->balanceCollection,233) as $balanceCollection){
+            foreach (array_chunk($this->balanceCollection, 233) as $balanceCollection) {
                 DB::connection('informes')
                     ->table('inf_balance_detalles')
                     ->insert(array_values($balanceCollection));
             }
-
+            
             DB::connection('informes')->commit();
 
-            event(new PrivateMessageEvent('informe-balance-'.$empresa->token_db.'_'.$this->id_usuario, [
+            event(new PrivateMessageEvent('informe-balance-' . $empresa->token_db . '_' . $this->id_usuario, [
                 'tipo' => 'exito',
                 'mensaje' => 'Informe generado con exito!',
                 'titulo' => 'Balance generado',
@@ -95,8 +94,7 @@ class ProcessInformeBalance implements ShouldQueue
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
-
-			throw $exception;
+            throw $exception;
         }
     }
 
@@ -104,7 +102,7 @@ class ProcessInformeBalance implements ShouldQueue
     {
         $query = $this->balanceDocumentosQuery();
         $query->unionAll($this->balanceAnteriorQuery());
-        
+
         DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS balance"))
             ->mergeBindings($query)
@@ -124,22 +122,17 @@ class ProcessInformeBalance implements ShouldQueue
             ->groupByRaw('cuenta')
             ->orderByRaw('cuenta')
             ->chunk(233, function ($documentos) {
-                $documentos->each(function ($documento) {
-                    $cuentasAsociadas = $this->getCuentas($documento->cuenta); //return ARRAY PADRES CUENTA
+                foreach ($documentos as $documento) {
+                    $cuentasAsociadas = $this->getCuentas($documento->cuenta);
 
                     foreach ($cuentasAsociadas as $cuenta) {
-                        $addCuenta = false;
-
-                        if($this->request['nivel'] == 1 && strlen($cuenta) < 3) $addCuenta = true;
-                        if($this->request['nivel'] == 2 && strlen($cuenta) < 5) $addCuenta = true;
-                        if($this->request['nivel'] == 3) $addCuenta = true;
-
-                        if($addCuenta) {
+                        if ($this->mustAddAccount($cuenta)) {
                             if ($this->hasCuentaData($cuenta)) $this->sumCuentaData($cuenta, $documento);
                             else $this->newCuentaData($cuenta, $documento);
                         }
                     }
-                });
+                }
+                unset($documentos); // Liberar memoria
             });
     }
 
@@ -174,6 +167,7 @@ class ProcessInformeBalance implements ShouldQueue
                 foreach ($documentos as $nit) {
                     $this->newNitData($nit);
                 }
+                unset($documentos); // Liberar memoria
             });
     }
 
@@ -195,20 +189,12 @@ class ProcessInformeBalance implements ShouldQueue
             ->orderByRaw('cuenta')
             ->first();
 
-        if ($totales->saldo_final > 0) {
-            $cuentasAsociadas = $this->getCuentas($this->cuentaUtilidad->cuenta); //return ARRAY PADRES CUENTA
-        } else {
-            $cuentasAsociadas = $this->getCuentas($this->cuentaPerdida->cuenta); //return ARRAY PADRES CUENTA
-        }
+        $cuentasAsociadas = $totales->saldo_final > 0
+            ? $this->getCuentas($this->cuentaUtilidad->cuenta)
+            : $this->getCuentas($this->cuentaPerdida->cuenta);
 
         foreach ($cuentasAsociadas as $cuenta) {
-            $addCuenta = false;
-
-            if($this->request['nivel'] == 1 && strlen($cuenta) < 3) $addCuenta = true;
-            if($this->request['nivel'] == 2 && strlen($cuenta) < 5) $addCuenta = true;
-            if($this->request['nivel'] == 3) $addCuenta = true;
-
-            if($addCuenta) {
+            if ($this->mustAddAccount($cuenta)) {
                 if ($this->hasCuentaData($cuenta)) $this->sumCuentaData($cuenta, $totales);
                 else $this->newCuentaData($cuenta, $totales);
             }
@@ -308,18 +294,16 @@ class ProcessInformeBalance implements ShouldQueue
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
-            ->where(function ($query) {
-				$query->when(isset($this->request['cuenta_desde']), function ($query) {
-					$query->where('PC.cuenta', '>=', (string) $this->request['cuenta_desde']);
-				})
-					->when(isset($this->request['cuenta_hasta']), function ($query) {
-						$query->where('PC.cuenta', '<=', (string) $this->request['cuenta_hasta'])
-							->orWhere('PC.cuenta', 'LIKE', (string) $this->request['cuenta_hasta'] . '%');
-					});
-			})
-            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('DG.id_nit', $this->request['id_nit'].'%');
-			});
+            ->when(isset($this->request['cuenta_desde']), function ($query) {
+                $query->where('PC.cuenta', '>=', (string)$this->request['cuenta_desde']);
+            })
+            ->when(isset($this->request['cuenta_hasta']), function ($query) {
+                $query->where('PC.cuenta', '<=', (string)$this->request['cuenta_hasta'])
+                    ->orWhere('PC.cuenta', 'LIKE', (string)$this->request['cuenta_hasta'] . '%');
+            })
+            ->when(isset($this->request['id_nit']), function ($query) {
+                $query->where('DG.id_nit', 'LIKE', $this->request['id_nit'] . '%');
+            });
 
         return $documentosQuery;
     }
@@ -351,18 +335,16 @@ class ProcessInformeBalance implements ShouldQueue
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
-            ->where(function ($query) {
-				$query->when(isset($this->request['cuenta_desde']), function ($query) {
-					$query->where('PC.cuenta', '>=', (string) $this->request['cuenta_desde']);
-				})
-					->when(isset($this->request['cuenta_hasta']), function ($query) {
-						$query->where('PC.cuenta', '<=', (string) $this->request['cuenta_hasta'])
-							->orWhere('PC.cuenta', 'LIKE', (string) $this->request['cuenta_hasta'] . '%');
-					});
-			})
-            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('DG.id_nit', $this->request['id_nit'].'%');
-			});
+            ->when(isset($this->request['cuenta_desde']), function ($query) {
+                $query->where('PC.cuenta', '>=', (string)$this->request['cuenta_desde']);
+            })
+            ->when(isset($this->request['cuenta_hasta']), function ($query) {
+                $query->where('PC.cuenta', '<=', (string)$this->request['cuenta_hasta'])
+                    ->orWhere('PC.cuenta', 'LIKE', (string)$this->request['cuenta_hasta'] . '%');
+            })
+            ->when(isset($this->request['id_nit']), function ($query) {
+                $query->where('DG.id_nit', 'LIKE', $this->request['id_nit'] . '%');
+            });
 
         return $documentosQuery;
     }
@@ -395,16 +377,14 @@ class ProcessInformeBalance implements ShouldQueue
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
-            ->where(function ($query) use ($total){
-                if (!$total) {
-                    $query->where('PC.cuenta', '>=', '4')
-                        ->where('PC.cuenta', '<=', '7')
-                        ->orWhere('PC.cuenta', 'LIKE', '7%');
-                }
-			})
-            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('DG.id_nit', $this->request['id_nit'].'%');
-			});
+            ->when(!$total, function ($query) {
+                $query->where('PC.cuenta', '>=', '4')
+                    ->where('PC.cuenta', '<=', '7')
+                    ->orWhere('PC.cuenta', 'LIKE', '7%');
+            })
+            ->when(isset($this->request['id_nit']), function ($query) {
+                $query->where('DG.id_nit', 'LIKE', $this->request['id_nit'] . '%');
+            });
 
         return $documentosQuery;
     }
@@ -436,16 +416,14 @@ class ProcessInformeBalance implements ShouldQueue
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
-            ->where(function ($query) use ($total){
-                if (!$total) {
-                    $query->where('PC.cuenta', '>=', '4')
-                        ->where('PC.cuenta', '<=', '7')
-                        ->orWhere('PC.cuenta', 'LIKE', '7%');
-                }
-			})
-            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-				$query->where('DG.id_nit', $this->request['id_nit'].'%');
-			});
+            ->when(!$total, function ($query) {
+                $query->where('PC.cuenta', '>=', '4')
+                    ->where('PC.cuenta', '<=', '7')
+                    ->orWhere('PC.cuenta', 'LIKE', '7%');
+            })
+            ->when(isset($this->request['id_nit']), function ($query) {
+                $query->where('DG.id_nit', 'LIKE', $this->request['id_nit'] . '%');
+            });
 
         return $documentosQuery;
     }
@@ -454,34 +432,34 @@ class ProcessInformeBalance implements ShouldQueue
     {
         $dataCuentas = NULL;
 
-        if(strlen($cuenta) > 6){
-            $dataCuentas =[
+        if (strlen($cuenta) > 6) {
+            $dataCuentas = [
                 mb_substr($cuenta, 0, 1),
                 mb_substr($cuenta, 0, 2),
                 mb_substr($cuenta, 0, 4),
                 mb_substr($cuenta, 0, 6),
                 $cuenta,
             ];
-        } else if (strlen($cuenta) > 4) {
-            $dataCuentas =[
+        } elseif (strlen($cuenta) > 4) {
+            $dataCuentas = [
                 mb_substr($cuenta, 0, 1),
                 mb_substr($cuenta, 0, 2),
                 mb_substr($cuenta, 0, 4),
                 $cuenta,
             ];
-        } else if (strlen($cuenta) > 2) {
-            $dataCuentas =[
+        } elseif (strlen($cuenta) > 2) {
+            $dataCuentas = [
                 mb_substr($cuenta, 0, 1),
                 mb_substr($cuenta, 0, 2),
                 $cuenta,
             ];
-        } else if (strlen($cuenta) > 1) {
-            $dataCuentas =[
+        } elseif (strlen($cuenta) > 1) {
+            $dataCuentas = [
                 mb_substr($cuenta, 0, 1),
                 $cuenta,
             ];
         } else {
-            $dataCuentas =[
+            $dataCuentas = [
                 $cuenta,
             ];
         }
@@ -493,7 +471,7 @@ class ProcessInformeBalance implements ShouldQueue
     {
         $cuentaData = PlanCuentas::whereCuenta($cuenta)->first();
 
-        if(!$cuentaData){
+        if (!$cuentaData) {
             return;
         }
 
@@ -513,7 +491,7 @@ class ProcessInformeBalance implements ShouldQueue
 
     private function newNitData($data)
     {
-        $this->balanceCollection[$data->cuenta.$data->numero_documento] = [
+        $this->balanceCollection[$data->cuenta . $data->numero_documento] = [
             'id_balance' => $this->id_balance,
             'id_cuenta' => $data->cuenta,
             'cuenta' => $data->numero_documento,
@@ -529,14 +507,52 @@ class ProcessInformeBalance implements ShouldQueue
 
     private function sumCuentaData($cuenta, $balance)
     {
-        $this->balanceCollection[$cuenta]['saldo_anterior']+= number_format((float)$balance->saldo_anterior, 2, '.', '');
-        $this->balanceCollection[$cuenta]['debito']+= number_format((float)$balance->debito, 2, '.', '');
-        $this->balanceCollection[$cuenta]['credito']+= number_format((float)$balance->credito, 2, '.', '');
-        $this->balanceCollection[$cuenta]['saldo_final']+= number_format((float)$balance->saldo_final, 2, '.', '');
+        $this->balanceCollection[$cuenta]['saldo_anterior'] += number_format((float)$balance->saldo_anterior, 2, '.', '');
+        $this->balanceCollection[$cuenta]['debito'] += number_format((float)$balance->debito, 2, '.', '');
+        $this->balanceCollection[$cuenta]['credito'] += number_format((float)$balance->credito, 2, '.', '');
+        $this->balanceCollection[$cuenta]['saldo_final'] += number_format((float)$balance->saldo_final, 2, '.', '');
     }
 
     private function hasCuentaData($cuenta)
-	{
-		return isset($this->balanceCollection[$cuenta]);
-	}
+    {
+        return isset($this->balanceCollection[$cuenta]);
+    }
+
+    private function mustAddAccount($cuenta)
+    {
+        if ($this->request['nivel'] == 1 && strlen($cuenta) < 3) return true;
+        if ($this->request['nivel'] == 2 && strlen($cuenta) < 5) return true;
+        if ($this->request['nivel'] == 3) return true;
+        return false;
+    }
+
+    public function failed(Exception $exception)
+    {
+        DB::connection('informes')->rollBack();
+
+        // Si no tenemos la empresa, intentamos obtenerla
+        if (!$this->empresa && $this->id_empresa) {
+            $this->empresa = Empresa::find($this->id_empresa);
+        }
+
+        $token_db = $this->empresa ? $this->empresa->token_db : 'unknown';
+
+        event(new PrivateMessageEvent(
+            'informe-balance-'.$token_db.'_'.$this->id_usuario, 
+            [
+                'tipo' => 'error',
+                'mensaje' => 'Error al generar el informe: '.$exception->getMessage(),
+                'titulo' => 'Error en proceso',
+                'autoclose' => false
+            ]
+        ));
+
+        // Registrar el error en los logs
+        logger()->error("Error en ProcessInformeBalance: ".$exception->getMessage(), [
+            'exception' => $exception,
+            'request' => $this->request,
+            'user_id' => $this->id_usuario,
+            'empresa_id' => $this->id_empresa
+        ]);
+    }
 }
