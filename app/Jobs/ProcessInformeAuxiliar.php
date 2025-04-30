@@ -85,8 +85,8 @@ class ProcessInformeAuxiliar implements ShouldQueue
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            // Log::info("Tiempo de ejecución del informe auxiliar: {$executionTime} segundos");
-            // Log::info("Consumo de memoria del informe auxiliar: {$memoryUsage} bytes");
+            Log::info("Tiempo de ejecución del informe auxiliar: {$executionTime} segundos");
+            Log::info("Consumo de memoria del informe auxiliar: {$memoryUsage} bytes");
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
