@@ -200,7 +200,7 @@ return [
                 'maxProcesses' => 10,
                 'minProcesses' => 2,
                 'memory' => 128,
-                'tries' => 3,
+                'tries' => 1,
                 'timeout' => 300,
             ],
         ],
