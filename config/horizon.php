@@ -201,7 +201,7 @@ return [
                 'minProcesses' => 2,
                 'memory' => 128,
                 'tries' => 3,
-                'timeout' => 60,
+                'timeout' => 300,
             ],
         ],
 
@@ -213,7 +213,7 @@ return [
                 'maxProcesses' => 3, // Sobrescribes solo este valor
                 'memory' => 128,
                 'tries' => 1,
-                'timeout' => 60,
+                'timeout' => 300,
             ],
         ],
     ],
