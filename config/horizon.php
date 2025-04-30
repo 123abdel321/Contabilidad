@@ -185,13 +185,13 @@ return [
                 'connection' => 'redis',
                 'queue' => ['default'],
                 'balance' => 'auto',
-                'maxProcesses' => 1,
+                'maxProcesses' => 3,
                 'maxTime' => 0,
                 'maxJobs' => 0,
                 'memory' => 128,
                 'tries' => 1,
                 'nice' => 0,
-                'timeout' => 300,
+                'timeout' => 600,
             ],
             'supervisor-fast' => [
                 'connection' => 'redis',
@@ -201,7 +201,7 @@ return [
                 'minProcesses' => 2,
                 'memory' => 128,
                 'tries' => 1,
-                'timeout' => 300,
+                'timeout' => 600,
             ],
         ],
 
@@ -210,10 +210,10 @@ return [
                 'connection' => 'redis', // ¡Asegúrate de incluir esto!
                 'queue' => ['default'],
                 'balance' => 'auto',
-                'maxProcesses' => 3, // Sobrescribes solo este valor
+                'maxProcesses' => 1, // Sobrescribes solo este valor
                 'memory' => 128,
                 'tries' => 1,
-                'timeout' => 300,
+                'timeout' => 600,
             ],
         ],
     ],
