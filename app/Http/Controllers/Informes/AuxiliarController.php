@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Informes;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Exports\AuxiliarExport;
 use App\Events\PrivateMessageEvent;
 use Illuminate\Support\Facades\Bus;
@@ -31,102 +32,158 @@ class AuxiliarController extends Controller
 
     public function generate(Request $request)
     {
-        if (!$request->has('fecha_desde') && $request->get('fecha_desde')|| !$request->has('fecha_hasta') && $request->get('fecha_hasta')) {
-			return response()->json([
-                'success'=>	false,
+        try {
+
+            if (!$request->has('fecha_desde') && $request->get('fecha_desde')|| !$request->has('fecha_hasta') && $request->get('fecha_hasta')) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'Por favor ingresar un rango de fechas válido.'
+                ]);
+            }
+    
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+    
+            $auxiliar = InfAuxiliar::where('id_empresa', $empresa->id)
+                ->where('fecha_hasta', $request->get('fecha_hasta'))
+                ->where('fecha_desde', $request->get('fecha_desde'))
+                ->where('id_cuenta', $request->get('id_cuenta', null))
+                ->where('id_nit', $request->get('id_nit', null))
+                ->first();
+
+            if ($auxiliar && $auxiliar->estado == 1) {
+                return response()->json([
+                    'success'=>	true,
+                    'data' => '',
+                    'message'=> 'Generando informe de auxiliar'
+                ], Response::HTTP_OK);
+            }
+            
+            if($auxiliar) {
+                InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->delete();
+                $auxiliar->delete();
+            }
+    
+            if($request->get('id_cuenta')) {
+                $cuenta = PlanCuentas::find($request->get('id_cuenta'));
+                $request->request->add(['cuenta' => $cuenta->cuenta]);
+            }
+
+            $auxiliar = InfAuxiliar::create([
+				'id_empresa' => $empresa->id,
+				'fecha_desde' => $request->get('fecha_desde'),
+				'fecha_hasta' => $request->get('fecha_hasta'),
+				'id_cuenta' => $request->get('id_cuenta', null),
+				'id_nit' => $request->get('id_nit', null),
+                'estado' => 1
+			]);
+            
+            ProcessInformeAuxiliar::dispatch($request->all(), $request->user()->id, $empresa->id, $auxiliar->id);
+    
+            return response()->json([
+                'success'=>	true,
+                'data' => '',
+                'message'=> 'Generando informe de auxiliar'
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
                 'data' => [],
-                'message'=> 'Por favor ingresar un rango de fechas válido.'
-            ]);
-		}
-
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-
-        $auxiliar = InfAuxiliar::where('id_empresa', $empresa->id)
-            ->where('fecha_hasta', $request->get('fecha_hasta'))
-            ->where('fecha_desde', $request->get('fecha_desde'))
-            ->where('id_cuenta', $request->get('id_cuenta', null))
-            ->where('id_nit', $request->get('id_nit', null))
-			->first();
-        
-        if($auxiliar) {
-            InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->delete();
-            $auxiliar->delete();
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        if($request->get('id_cuenta')) {
-            $cuenta = PlanCuentas::find($request->get('id_cuenta'));
-            $request->request->add(['cuenta' => $cuenta->cuenta]);
-        }
-        
-        ProcessInformeAuxiliar::dispatch($request->all(), $request->user()->id, $empresa->id);
-
-        return response()->json([
-    		'success'=>	true,
-    		'data' => '',
-    		'message'=> 'Generando informe de auxiliar'
-    	]);
     }
 
     public function show(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length");
+        try {
+            $draw = $request->get('draw');
+            $start = $request->get("start");
+            $rowperpage = $request->get("length");
 
-        $auxiliar = InfAuxiliar::where('id', $request->get('id'))->first();
-        $informe = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id);
-        $total = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->orderBy('id', 'desc')->first();
-        $descuadre = false;
-        $filtros = true;
+            $auxiliar = InfAuxiliar::where('id', $request->get('id'))->first();
 
-        $informeTotals = $informe->get();
+            if (!$auxiliar) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=> 'No se encontro el informe auxiliar'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
 
-        $informePaginate = $informe->skip($start)
-            ->take($rowperpage);
-        
-        if(!$auxiliar->id_cuenta && !$auxiliar->id_nit) {
-            $filtros = false;
-            $descuadre = $total->saldo_final > 0 ? true : false;
+            $informe = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id);
+            $total = InfAuxiliarDetalle::where('id_auxiliar', $auxiliar->id)->orderBy('id', 'desc')->first();
+            $descuadre = false;
+            $filtros = true;
+
+            $informeTotals = $informe->get();
+
+            $informePaginate = $informe->skip($start)
+                ->take($rowperpage);
+            
+            if(!$auxiliar->id_cuenta && !$auxiliar->id_nit) {
+                $filtros = false;
+                $descuadre = $total->saldo_final > 0 ? true : false;
+            }
+
+            return response()->json([
+                'success'=>	true,
+                'draw' => $draw,
+                'iTotalRecords' => $informeTotals->count(),
+                'iTotalDisplayRecords' => $informeTotals->count(),
+                'data' => $informePaginate->get(),
+                'perPage' => $rowperpage,
+                'totales' => $total,
+                'filtros' => $filtros,
+                'descuadre' => $descuadre,
+                'message'=> 'Auxiliar generado con exito!'
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $informeTotals->count(),
-            'iTotalDisplayRecords' => $informeTotals->count(),
-            'data' => $informePaginate->get(),
-            'perPage' => $rowperpage,
-            'totales' => $total,
-            'filtros' => $filtros,
-            'descuadre' => $descuadre,
-            'message'=> 'Auxiliar generado con exito!'
-        ]);
     }
 
     public function find(Request $request)
     {
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        try {
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         
-        $auxiliar = InfAuxiliar::where('id_empresa', $empresa->id)
-            ->where('fecha_hasta', $request->get('fecha_hasta'))
-            ->where('fecha_desde', $request->get('fecha_desde'))
-            ->where('id_cuenta', $request->get('id_cuenta', null))
-            ->where('id_nit', $request->get('id_nit', null))
-			->first();
-        
-        if ($auxiliar) {
+            $auxiliar = InfAuxiliar::where('id_empresa', $empresa->id)
+                ->where('fecha_hasta', $request->get('fecha_hasta'))
+                ->where('fecha_desde', $request->get('fecha_desde'))
+                ->where('id_cuenta', $request->get('id_cuenta', null))
+                ->where('id_nit', $request->get('id_nit', null))
+                ->first();
+            
+            if ($auxiliar) {
+                return response()->json([
+                    'success'=>	true,
+                    'data' => $auxiliar->id,
+                    'message'=> 'Auxiliar existente'
+                ], Response::HTTP_OK);
+            }
+
             return response()->json([
                 'success'=>	true,
-                'data' => $auxiliar->id,
-                'message'=> 'Auxiliar existente'
-            ]);
-        }
+                'data' => '',
+                'message'=> 'Auxiliar no existente'
+            ], Response::HTTP_OK);
 
-        return response()->json([
-            'success'=>	true,
-            'data' => '',
-            'message'=> 'Auxiliar no existente'
-        ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     public function exportExcel(Request $request)
@@ -194,30 +251,38 @@ class AuxiliarController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
     public function showPdf(Request $request, $id)
 	{
-        $detalle = InfAuxiliarDetalle::where('id_auxiliar', $id)->get();
+        try {
 
-		if(!count($detalle)) {
-			return response()->json([
-				'success'=>	false,
-				'data' => [],
-				'message'=> 'El auxiliar no existe'
-			], 422);
-		}
+            $detalle = InfAuxiliarDetalle::where('id_auxiliar', $id)->get();
 
-		$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-		// $data = (new AuxiliarPdf($empresa, $detalle))->buildPdf()->getData();
+            if(!count($detalle)) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'El auxiliar no existe'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
 
-		// return view('pdf.informes.auxiliar.auxiliar', $data);
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+            // $data = (new AuxiliarPdf($empresa, $detalle))->buildPdf()->getData();
+            // return view('pdf.informes.auxiliar.auxiliar', $data);
+            return (new AuxiliarPdf($empresa, $detalle))
+                ->buildPdf()
+                ->showPdf();
 
-        return (new AuxiliarPdf($empresa, $detalle))
-            ->buildPdf()
-            ->showPdf();
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 	}
 
 }

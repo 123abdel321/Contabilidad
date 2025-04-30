@@ -82,19 +82,19 @@ function cargarTablasAuxiliar() {
         },
         'rowCallback': function(row, data, index){
             if(data.naturaleza_cuenta == 0 && parseInt(data.saldo_final) < 0 && data.detalle_group == 'nits') {
-                if (data.cuenta.length > 2) {
-                    var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
-                    if (!cuenta == '11') {
-                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
-                    }
+                var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
+                if (cuenta != '11') {
+                    $('td', row).css('background-color', '#ff00004d');
+                    $('td', row).css('color', 'black');
+                    return;
                 }
             }
             if(data.naturaleza_cuenta == 1 && parseInt(data.saldo_final) > 0 && data.detalle_group == 'nits') {
-                if (data.cuenta.length > 2) {
-                    var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
-                    if (!cuenta == '11') {
-                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final*-1).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
-                    }
+                var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
+                if (cuenta != '11') {
+                    $('td', row).css('background-color', '#ff00004d');
+                    $('td', row).css('color', 'black');
+                    return;
                 }
             }
             if(data.detalle_group == 'nits-totales'){
@@ -178,23 +178,41 @@ function cargarTablasAuxiliar() {
                 return row.codigo_cecos + ' - ' +row.nombre_cecos;
             }},
             { data: 'documento_referencia'},
-            { data: "saldo_anterior",render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            { "data": function (row, type, set){
+                var saldo_anterior = parseFloat(row.saldo_anterior);
+                if (row.cuenta == 'TOTALES') {
+                    return saldo_anterior.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                }
+                if(row.naturaleza_cuenta == 0 && saldo_anterior < 0) {
+                    var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
+                    if (cuenta != '11') {
+                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_anterior).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    }
+                } else if(row.naturaleza_cuenta == 1 && saldo_anterior > 0) {
+                    var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
+                    if (cuenta != '11') {
+                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_anterior).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                    }
+                }
+                return saldo_anterior.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            }, className: 'dt-body-right'},
             { data: "debito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: "credito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){
                 var saldo_final = parseFloat(row.saldo_final);
-                if(row.naturaleza_cuenta == 0 && saldo_final < 0 && row.detalle_group == 'nits') {
+                if (row.cuenta == 'TOTALES') {
+                    return saldo_final.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                }
+                if(row.naturaleza_cuenta == 0 && saldo_final < 0) {
                     var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
-                    if (!cuenta == '11') {
+                    if (cuenta != '11') {
                         return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
                     }
-                } else if(row.naturaleza_cuenta == 1 && saldo_final > 0 && row.detalle_group == 'nits') {
+                } else if(row.naturaleza_cuenta == 1 && saldo_final > 0) {
                     var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
-                    if (!cuenta == '11') {
+                    if (cuenta != '11') {
                         return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
                     }
-                } else if(row.naturaleza_cuenta == 1 && saldo_final < 0) {
-                    return (saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
                 }
                 return saldo_final.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
             }, className: 'dt-body-right'},
@@ -301,10 +319,22 @@ $(document).on('click', '#generarAuxiliar', function () {
 var channel = pusher.subscribe('informe-auxiliar-'+localStorage.getItem("notificacion_code"));
 
 channel.bind('notificaciones', function(data) {
+
+    if(data.tipo == "error"){
+        $("#generarAuxiliar").show();
+        $("#generarAuxiliarLoading").hide();
+
+        $('#generarAuxiliarUltimo').hide();
+        $('#generarAuxiliarUltimoLoading').hide();
+        agregarToast('error', 'Error al cargar informe', data.mensaje, false);
+        return;
+    }
+
     if(data.url_file){
         loadExcel(data);
         return;
     }
+
     if(data.id_auxiliar){
         $('#id_auxiliar_cargado').val(data.id_auxiliar);
         loadAuxiliarById(data.id_auxiliar);

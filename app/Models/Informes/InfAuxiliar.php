@@ -21,6 +21,7 @@ class InfAuxiliar extends Model
         'id_cuenta',
         'fecha_desde',
         'fecha_hasta',
+        'estado',
         'exporta_excel',
         'archivo_excel',
         'created_by',
