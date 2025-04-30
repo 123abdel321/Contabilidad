@@ -27,6 +27,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
     public $id_usuario;
 	public $id_empresa;
     public $id_auxiliar;
+    public $timeout = 300;
     public $auxiliares = [];
     public $auxiliarCollection = [];
 

@@ -189,9 +189,9 @@ return [
                 'maxTime' => 0,
                 'maxJobs' => 0,
                 'memory' => 128,
-                'tries' => 1,
+                'tries' => 3,
                 'nice' => 0,
-                'timeout' => 600,
+                'timeout' => 300,
             ],
             'supervisor-fast' => [
                 'connection' => 'redis',
@@ -200,8 +200,8 @@ return [
                 'maxProcesses' => 10,
                 'minProcesses' => 2,
                 'memory' => 128,
-                'tries' => 1,
-                'timeout' => 600,
+                'tries' => 3,
+                'timeout' => 300,
             ],
         ],
 
@@ -212,8 +212,8 @@ return [
                 'balance' => 'auto',
                 'maxProcesses' => 1, // Sobrescribes solo este valor
                 'memory' => 128,
-                'tries' => 1,
-                'timeout' => 600,
+                'tries' => 3,
+                'timeout' => 300,
             ],
         ],
     ],
