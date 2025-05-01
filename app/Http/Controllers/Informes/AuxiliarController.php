@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Informes;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Exports\AuxiliarExport;
@@ -52,8 +53,16 @@ class AuxiliarController extends Controller
                 ->first();
 
             if ($auxiliar && $auxiliar->estado == 1) {
+
+                $created = Carbon::parse($auxiliar->created_at);
+                $now = Carbon::now();
+
+                $diffInSeconds = $created->diffInSeconds($now);
+                $diffFormatted = floor($diffInSeconds / 60) . 'm ' . ($diffInSeconds % 60) . 's';
+
                 return response()->json([
                     'success'=>	true,
+                    'time' => $created->format('Y-m-d H:i') . " ({$diffFormatted})",
                     'data' => '',
                     'message'=> 'Generando informe de auxiliar'
                 ], Response::HTTP_OK);
@@ -82,6 +91,7 @@ class AuxiliarController extends Controller
     
             return response()->json([
                 'success'=>	true,
+                'time' => null,
                 'data' => '',
                 'message'=> 'Generando informe de auxiliar'
             ], Response::HTTP_OK);
@@ -164,9 +174,13 @@ class AuxiliarController extends Controller
                 ->first();
             
             if ($auxiliar) {
+
+                $created = Carbon::parse($auxiliar->created_at);
+
                 return response()->json([
                     'success'=>	true,
-                    'data' => $auxiliar->id,
+                    'time' => $created->format('Y-m-d H:i'),
+                    'data' => $auxiliar,
                     'message'=> 'Auxiliar existente'
                 ], Response::HTTP_OK);
             }

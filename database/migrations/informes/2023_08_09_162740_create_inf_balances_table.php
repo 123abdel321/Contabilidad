@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('tipo')->nullable();
             $table->integer('nivel')->nullable();
             $table->integer('exporta_excel')->nullable()->comment('1: Exportando, 2: Exportado');
+            $table->integer('estado')->nullable()->comment('0: Error; 1: Proceso; 2: Generado;');
             $table->string('archivo_excel')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();

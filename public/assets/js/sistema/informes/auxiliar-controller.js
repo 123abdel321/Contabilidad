@@ -286,6 +286,9 @@ $(document).on('click', '#generarAuxiliar', function () {
     url+= '&generar='+generarAuxiliar;
     
     auxiliar_table.ajax.url(url).load(function(res) {
+        $("#generarAuxiliar").show();
+        $("#generarAuxiliarLoading").hide();
+        $("#generarAuxiliarUltimoLoading").hide();
         if(res.success) {
             if(res.data){
                 Swal.fire({
@@ -302,7 +305,6 @@ $(document).on('click', '#generarAuxiliar', function () {
                 }).then((result) => {
                     if (result.value){
                         $('#id_auxiliar_cargado').val(res.data);
-                        console.log('auxiliares load: ',res.data);
                         loadAuxiliarById(res.data);
                     } else {
                         generarAuxiliar = true;
@@ -310,8 +312,14 @@ $(document).on('click', '#generarAuxiliar', function () {
                     }
                 })
             } else {
-                agregarToast('info', 'Generando auxiliar', 'En un momento se le notificará cuando el informe esté generado...', true );
+                if (res.time) {
+                    agregarToast('info', 'Generando auxiliar', 'El informe se esta generando desde las '+res.time+' se le notificará cuando el informe esté generado...', false );
+                } else {
+                    agregarToast('info', 'Generando auxiliar', 'En un momento se le notificará cuando el informe esté generado...', true );
+                }
             }
+        }  else {
+            agregarToast('error', 'Informe auxiliar', res.message, false );
         }
     });
 });
@@ -486,6 +494,7 @@ function findAuxiliar() {
         if(res.data){
             auxiliarExistente = res.data;
             $('#generarAuxiliarUltimo').show();
+            $('#generarAuxiliarUltimo').text("CARGAR INFORME GENERADO EL: "+res.time);
         }
     }).fail((err) => {
         $('#generarAuxiliarUltimoLoading').hide();

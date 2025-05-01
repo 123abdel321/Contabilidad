@@ -25,6 +25,7 @@ class InfBalance extends Model
         'cuenta_hasta',
         'exporta_excel',
         'archivo_excel',
+        'estado',
         'tipo',
         'nivel',
         'created_by',

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Informes;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Exports\BalanceExport;
 use App\Events\PrivateMessageEvent;
 use Illuminate\Support\Facades\Bus;
@@ -27,79 +29,121 @@ class BalanceController extends Controller
 
     public function generate(Request $request)
     {
-        if (!$request->has('fecha_desde') && $request->get('fecha_desde')|| !$request->has('fecha_hasta') && $request->get('fecha_hasta')) {
-			return response()->json([
-                'success'=>	false,
-                'data' => [],
-                'message'=> 'Por favor ingresar un rango de fechas válido.'
-            ]);
-		}
+        try {
 
-        if ($request->get('tipo') == '3') {
-            $cuentaPerdida = VariablesEntorno::whereNombre('cuenta_perdida')->first();
-            $cuentaPerdida = $cuentaPerdida ? $cuentaPerdida->valor : '';
-            $cuentaUtilidad = VariablesEntorno::whereNombre('cuenta_utilidad')->first();
-            $cuentaUtilidad = $cuentaUtilidad ? $cuentaUtilidad->valor : '';
-    
-            if (!$cuentaPerdida && !$cuentaUtilidad) {
+            if (!$request->has('fecha_desde') && $request->get('fecha_desde')|| !$request->has('fecha_hasta') && $request->get('fecha_hasta')) {
                 return response()->json([
                     'success'=>	false,
                     'data' => [],
-                    'message'=> 'Se necesita configurar cuenta utilidad y cuenta perdida en el entorno.'
+                    'message'=> 'Por favor ingresar un rango de fechas válido.'
                 ]);
             }
     
-            $cuentaPerdida = PlanCuentas::where('cuenta', $cuentaPerdida)->first();
-            $cuentaUtilidad = PlanCuentas::where('cuenta', $cuentaUtilidad)->first();
-    
-            if (!$cuentaPerdida && !$cuentaUtilidad) {
-                return response()->json([
-                    'success'=>	false,
-                    'data' => [],
-                    'message'=> 'La cuenta utilidad y la cuenta perdida no existen en el plan de cuentas.'
-                ]);
-            }
-    
-            if (!$cuentaPerdida) {
-                return response()->json([
-                    'success'=>	false,
-                    'data' => [],
-                    'message'=> 'La cuenta perdida no existen en el plan de cuentas.'
-                ]);
-            }
-    
-            if (!$cuentaUtilidad) {
-                return response()->json([
-                    'success'=>	false,
-                    'data' => [],
-                    'message'=> 'La cuenta utilidad no existen en el plan de cuentas.'
-                ]);
-            }
-        }
-
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+            if ($request->get('tipo') == '3') {
+                $cuentaPerdida = VariablesEntorno::whereNombre('cuenta_perdida')->first();
+                $cuentaPerdida = $cuentaPerdida ? $cuentaPerdida->valor : '';
+                $cuentaUtilidad = VariablesEntorno::whereNombre('cuenta_utilidad')->first();
+                $cuentaUtilidad = $cuentaUtilidad ? $cuentaUtilidad->valor : '';
         
-        $balance = InfBalance::where('id_empresa', $empresa->id)
-            ->where('fecha_hasta', $request->get('fecha_hasta'))
-            ->where('fecha_desde', $request->get('fecha_desde'))
-            ->where('cuenta_hasta', $request->get('cuenta_hasta'))
-            ->where('cuenta_desde', $request->get('cuenta_desde'))
-            ->where('tipo', $request->get('tipo', null))
-            ->where('nivel', $request->get('nivel', null))
-			->first();
+                if (!$cuentaPerdida && !$cuentaUtilidad) {
+                    return response()->json([
+                        'success'=>	false,
+                        'data' => [],
+                        'message'=> 'Se necesita configurar cuenta utilidad y cuenta perdida en el entorno.'
+                    ]);
+                }
+        
+                $cuentaPerdida = PlanCuentas::where('cuenta', $cuentaPerdida)->first();
+                $cuentaUtilidad = PlanCuentas::where('cuenta', $cuentaUtilidad)->first();
+        
+                if (!$cuentaPerdida && !$cuentaUtilidad) {
+                    return response()->json([
+                        'success'=>	false,
+                        'data' => [],
+                        'message'=> 'La cuenta utilidad y la cuenta perdida no existen en el plan de cuentas.'
+                    ]);
+                }
+        
+                if (!$cuentaPerdida) {
+                    return response()->json([
+                        'success'=>	false,
+                        'data' => [],
+                        'message'=> 'La cuenta perdida no existen en el plan de cuentas.'
+                    ]);
+                }
+        
+                if (!$cuentaUtilidad) {
+                    return response()->json([
+                        'success'=>	false,
+                        'data' => [],
+                        'message'=> 'La cuenta utilidad no existen en el plan de cuentas.'
+                    ]);
+                }
+            }
+    
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+            
+            $balance = InfBalance::where('id_empresa', $empresa->id)
+                ->where('fecha_hasta', $request->get('fecha_hasta'))
+                ->where('fecha_desde', $request->get('fecha_desde'))
+                ->where('cuenta_hasta', $request->get('cuenta_hasta'))
+                ->where('cuenta_desde', $request->get('cuenta_desde'))
+                ->where('id_nit', $request->get('id_nit', null))
+                ->where('tipo', $request->get('tipo', null))
+                ->where('nivel', $request->get('nivel', null))
+                ->first();
+    
+            if ($balance && $balance->estado == 1) {
 
-        if($balance) {
-            InfBalanceDetalle::where('id_balance', $balance->id)->delete();
-            $balance->delete();
+                $created = Carbon::parse($balance->created_at);
+                $now = Carbon::now();
+
+                $diffInSeconds = $created->diffInSeconds($now);
+                $diffFormatted = floor($diffInSeconds / 60) . 'm ' . ($diffInSeconds % 60) . 's';
+
+                return response()->json([
+                    'success'=>	true,
+                    'time' => $created->format('Y-m-d H:i') . " ({$diffFormatted})",
+                    'data' => '',
+                    'message'=> 'Generando informe de balance'
+                ], Response::HTTP_OK);
+            }
+    
+            if($balance) {
+                InfBalanceDetalle::where('id_balance', $balance->id)->delete();
+                $balance->delete();
+            }
+
+            $balance = InfBalance::create([
+                'id_empresa' => $empresa->id,
+                'fecha_desde' => $request->get('fecha_desde'),
+                'fecha_hasta' => $request->get('fecha_hasta'),
+                'cuenta_hasta' => $request->get('cuenta_hasta'),
+                'cuenta_desde' => $request->get('cuenta_desde'),
+                'estado' => 1,
+                'id_nit' => $request->get('id_nit', null),
+                'tipo' => $request->get('tipo', null),
+                'nivel' => $request->get('nivel', null)
+            ]);
+    
+            ProcessInformeBalance::dispatch($request->all(), $request->user()->id, $empresa->id, $balance->id);
+    
+            return response()->json([
+                'success'=>	true,
+                'time' => null,
+                'data' => '',
+                'message'=> 'Generando informe de balance'
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        ProcessInformeBalance::dispatch($request->all(), $request->user()->id, $empresa->id);
-
-        return response()->json([
-    		'success'=>	true,
-    		'data' => '',
-    		'message'=> 'Generando informe de balance'
-    	]);
     }
 
     public function show (Request $request)

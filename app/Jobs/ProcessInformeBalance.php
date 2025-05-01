@@ -27,15 +27,17 @@ class ProcessInformeBalance implements ShouldQueue
     public $id_usuario;
     public $id_empresa;
     public $id_balance;
+    public $timeout = 300;
     public $cuentaPerdida;
     public $cuentaUtilidad;
     public $balanceCollection = [];
 
-    public function __construct($request, $id_usuario, $id_empresa)
+    public function __construct($request, $id_usuario, $id_empresa, $id_balance)
     {
         $this->request = $request;
         $this->id_usuario = $id_usuario;
         $this->id_empresa = $id_empresa;
+        $this->id_balance = $id_balance;
     }
 
     public function handle()
@@ -59,18 +61,6 @@ class ProcessInformeBalance implements ShouldQueue
         }
 
         try {
-            $balance = InfBalance::create([
-                'id_empresa' => $this->id_empresa,
-                'fecha_desde' => $this->request['fecha_desde'],
-                'fecha_hasta' => $this->request['fecha_hasta'],
-                'cuenta_hasta' => $this->request['cuenta_hasta'],
-                'cuenta_desde' => $this->request['cuenta_desde'],
-                'id_nit' => $this->request['id_nit'],
-                'tipo' => $this->request['tipo'],
-                'nivel' => $this->request['nivel'],
-            ]);
-
-            $this->id_balance = $balance->id;
 
             $this->documentosBalance();
             if ($this->request['tipo'] == '2') $this->tercerosBalance();
@@ -84,6 +74,10 @@ class ProcessInformeBalance implements ShouldQueue
                     ->table('inf_balance_detalles')
                     ->insert(array_values($balanceCollection));
             }
+
+            InfBalance::where('id', $this->id_balance)->update([
+                'estado' => 2
+            ]);
             
             DB::connection('informes')->commit();
 
@@ -101,8 +95,7 @@ class ProcessInformeBalance implements ShouldQueue
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            Log::info("Tiempo de ejecución del informe auxiliar: {$executionTime} segundos");
-            Log::info("Consumo de memoria del informe auxiliar: {$memoryUsage} bytes");
+            Log::info("Informe balance ejecutado en {$executionTime} segundos, usando {$memoryUsage} bytes de memoria.");
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
@@ -548,6 +541,10 @@ class ProcessInformeBalance implements ShouldQueue
         }
 
         $token_db = $this->empresa ? $this->empresa->token_db : 'unknown';
+
+        InfBalance::where('id', $this->id_balance)->update([
+            'estado' => 0
+        ]);
 
         event(new PrivateMessageEvent(
             'informe-balance-'.$token_db.'_'.$this->id_usuario, 

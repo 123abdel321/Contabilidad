@@ -199,6 +199,9 @@ function generarConsultaBalance() {
     url+= '&generar='+generarBalance;
 
     balance_table.ajax.url(url).load(function(res) {
+        $("#generarBalance").show();
+        $("#generarBalanceLoading").hide();
+        $("#generarBalanceUltimoLoading").hide();
         if(res.success) {
             if(res.data){
                 Swal.fire({
@@ -222,12 +225,13 @@ function generarConsultaBalance() {
                     }
                 })
             } else {
-                agregarToast('info', 'Generando balance', 'En un momento se le notificará cuando el informe esté generado...', true );
+                if (res.time) {
+                    agregarToast('info', 'Generando balance', 'El informe se esta generando desde las '+res.time+' se le notificará cuando el informe esté generado...', false );
+                } else {
+                    agregarToast('info', 'Generando balance', 'En un momento se le notificará cuando el informe esté generado...', true );
+                }
             }
         } else {
-            $("#generarBalance").show();
-            $("#generarBalanceLoading").hide();
-            $("#generarBalanceUltimoLoading").hide();
             agregarToast('error', 'Informe balance', res.message, false );
         }
     });
