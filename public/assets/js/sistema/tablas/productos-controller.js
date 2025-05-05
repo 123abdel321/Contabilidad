@@ -229,6 +229,10 @@ function productosInit() {
                 $('#default_produc_img').show();
             }
 
+            $("#div-tipo-tiempo").hide();
+            $("#div-tipo-tiempo").hide();
+            $("#div-tipo-vehiculo").hide();
+            $("#div-fraccion_hora").hide();
             $("#botton-agregar-bodega").hide();
             $("#searchInputProductos").hide();
             $('#producto-inventario').hide();
@@ -256,6 +260,7 @@ function productosInit() {
             document.getElementById("producto_variantes2").disabled = false;
             document.getElementById("tipo_producto_producto").disabled = false;
             document.getElementById("tipo_producto_servicio").disabled = false;
+            document.getElementById("tipo_producto_parqueadero").disabled = false;
 
             if (dataProducto.id_padre && tipo_producto == 0) {
                 document.getElementById('producto_variantes1').click();
@@ -304,6 +309,7 @@ function productosInit() {
             if (dataProducto.id_padre || dataProducto.hijos.length > 0 || dataProducto.utilizado_captura) {
                 document.getElementById("tipo_producto_producto").disabled = true;
                 document.getElementById("tipo_producto_servicio").disabled = true;
+                document.getElementById("tipo_producto_parqueadero").disabled = true;
             }
 
             if (dataProducto.familia && dataProducto.familia.cuenta_venta_iva && dataProducto.familia.cuenta_venta_iva.impuesto) {
@@ -344,13 +350,13 @@ function productosInit() {
                 generarBodegas();
             }
 
-            if (nuevoProducto.fraccion_hora) $('#fraccion_hora').prop('checked', true);
-            else $('#fraccion_hora').prop('checked', false);
+            // if (nuevoProducto.fraccion_hora) $('#fraccion_hora').prop('checked', true);
+            // else $('#fraccion_hora').prop('checked', false);
 
-            $("#tipo_tiempo_producto").val(nuevoProducto.tipo_tiempo).change();
-            $("#tipo_vehiculo_producto").val(nuevoProducto.tipo_vehiculo).change();
+            // $("#tipo_tiempo_producto").val(nuevoProducto.tipo_tiempo).change();
+            // $("#tipo_vehiculo_producto").val(nuevoProducto.tipo_vehiculo).change();
 
-            $('.dtfh-floatingparent').hide();
+            // $('.dtfh-floatingparent').hide();
         });
 
         productos_table.on('dblclick', 'tr', function () {
