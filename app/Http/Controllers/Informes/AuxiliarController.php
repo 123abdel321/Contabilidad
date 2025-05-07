@@ -221,7 +221,7 @@ class AuxiliarController extends Controller
                 ]);
             }
 
-            $fileName = 'auxiliar_'.uniqid().'.xlsx';
+            $fileName = 'export/auxiliar_'.uniqid().'.xlsx';
             $url = $fileName;
 
             $informeAuxiliar->exporta_excel = 1;

@@ -150,7 +150,7 @@ class CarteraController extends Controller
                 ]);
             }
 
-            $fileName = 'cartera_'.uniqid().'.xlsx';
+            $fileName = 'export/cartera_'.uniqid().'.xlsx';
             $url = $fileName;
 
             // $informeCartera->exporta_excel = 1;
@@ -174,7 +174,7 @@ class CarteraController extends Controller
                         'tipo' => 'exito',
                         'mensaje' => 'Excel de Cartera generado con exito!',
                         'titulo' => 'Excel generado',
-                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/export/'.$url,
                         'autoclose' => false
                     ]));
                     

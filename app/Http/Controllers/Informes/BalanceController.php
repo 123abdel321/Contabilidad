@@ -232,7 +232,7 @@ class BalanceController extends Controller
                 ]);
             }
 
-            $fileName = 'balance_'.uniqid().'.xlsx';
+            $fileName = 'export/balance_'.uniqid().'.xlsx';
             $url = $fileName;
 
             $informeBalance->exporta_excel = 1;

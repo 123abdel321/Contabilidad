@@ -265,7 +265,7 @@ class DocumentosGeneralesController extends Controller
                 ]);
             }
 
-            $fileName = 'documento_general_'.uniqid().'.xlsx';
+            $fileName = 'export/documento_general_'.uniqid().'.xlsx';
             
             $url = $fileName;
 

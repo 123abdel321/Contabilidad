@@ -110,7 +110,7 @@ class ResumenComprobantesController extends Controller
                 ]);
             }
 
-            $fileName = 'resumen_comprobante_'.uniqid().'.xlsx';
+            $fileName = 'export/resumen_comprobante_'.uniqid().'.xlsx';
             
             $url = $fileName;
 

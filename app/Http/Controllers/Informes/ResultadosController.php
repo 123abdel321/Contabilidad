@@ -147,7 +147,7 @@ class ResultadosController extends Controller
                 ]);
             }
 
-            $fileName = 'resultado_'.uniqid().'.xlsx';
+            $fileName = 'export/resultado_'.uniqid().'.xlsx';
             $url = $fileName;
 
             $informeResultado->exporta_excel = 1;
