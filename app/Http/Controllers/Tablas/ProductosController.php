@@ -196,14 +196,18 @@ class ProductosController extends Controller
             ]);
 
             if($request->imagen) {
+                $empresaId = request()->user()->id_empresa;
+
                 $image = $request->imagen;
                 $ext = explode(";", explode("/",explode(",", $image)[0])[1])[0];
                 $image = str_replace('data:image/'.$ext.';base64,', '', $image);
                 $image = str_replace(' ', '+', $image);
                 $imageName = 'producto_'.$request->get('codigo').'_'.uniqid().'.'. $ext;
+
+                $urlImage = "imagen/{$empresaId}/productos/{$imageName}";
                 
-                Storage::disk('do_spaces')->put('imagen/productos/'.$imageName, base64_decode($image), 'public');
-                $productoPadre->imagen = 'imagen/productos/'.$imageName;
+                Storage::disk('do_spaces')->put($urlImage, base64_decode($image), 'public');
+                $productoPadre->imagen = $urlImage;
                 $productoPadre->save();
             }
 

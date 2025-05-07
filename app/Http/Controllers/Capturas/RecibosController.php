@@ -1130,7 +1130,7 @@ class RecibosController extends Controller
             $image = str_replace(' ', '+', $image);
             $imageName = 'comprobante_'.uniqid().'.'. $ext;
 
-            $urlImagen = "imagen/recibos_pagos/{$empresaId}/{$imageName}";
+            $urlImagen = "imagen/{$empresaId}/recibos_pagos/{$imageName}";
             
             Storage::disk('do_spaces')->put($urlImagen, base64_decode($image), 'public');
 
