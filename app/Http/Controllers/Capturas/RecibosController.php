@@ -1124,16 +1124,19 @@ class RecibosController extends Controller
 
         if($request->comprobante) {
             $image = $request->comprobante;
+            $empresaId = request()->user()->id_empresa;
             $ext = explode(";", explode("/",explode(",", $image)[0])[1])[0];
             $image = str_replace('data:image/'.$ext.';base64,', '', $image);
             $image = str_replace(' ', '+', $image);
             $imageName = 'comprobante_'.uniqid().'.'. $ext;
+
+            $urlImagen = "imagen/recibos_pagos/{$empresaId}/{$imageName}";
             
-            Storage::disk('do_spaces')->put('imagen/recibos_pagos/'.$imageName, base64_decode($image), 'public');
+            Storage::disk('do_spaces')->put($urlImagen, base64_decode($image), 'public');
 
             $archivo = new ArchivosGenerales([
                 'tipo_archivo' => 'imagen',
-                'url_archivo' => 'imagen/recibos_pagos/'.$imageName,
+                'url_archivo' => $urlImagen,
                 'estado' => 1,
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id
