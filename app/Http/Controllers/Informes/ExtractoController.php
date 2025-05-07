@@ -77,18 +77,12 @@ class ExtractoController extends Controller
             $this->addTotalNitsData($extractos);
     
             ksort($this->carteraCollection, SORT_STRING | SORT_FLAG_CASE);
-            // dd($this->carteraCollection);
+
             return response()->json([
                 'success'=>	true,
                 'data' => array_values($this->carteraCollection),
                 'message'=> 'Extracto generado con exito!'
             ]);
-    
-            // $extracto = (new Extracto(
-            //     $request->get('id_nit', null),
-            //     $request->get('id_tipo_cuenta', null),
-            //     $request->get('documento_referencia', null)
-            // ))->actual2()->get();
     
             return response()->json([
                 'success'=>	true,
@@ -116,26 +110,23 @@ class ExtractoController extends Controller
             'data' => [],
             'message'=> 'Extracto consultados con exito!'
         ]);
-
     }
 
-    public function extractoActicipos(Request $request)
+    public function extractoAnticipos(Request $request)
     {
         $tiposCuentas = 8;
         if ($request->get('id_tipo_cuenta')) {
             $tiposCuentas = $request->get('id_tipo_cuenta');
         }
-
+        
         $extracto = (new Extracto(
             $request->get('id_nit'),
-            $tiposCuentas,
-            null,
-            Carbon::now()->format('Y-m-d H:i:s')
+            $tiposCuentas
         ))->anticipos();
 
         return response()->json([
             'success'=>	true,
-            'data' => $extracto->first(),
+            'data' => $extracto->get(),
             'message'=> 'Anticipos consultados con exito!'
         ]);
     }

@@ -417,32 +417,56 @@ class PagosController extends Controller
 
             //AGREGAR FORMAS DE PAGO
             foreach ($request->get('pagos') as $pagoItem) {
+
                 $pagoItem = (object)$pagoItem;
                 $totalPagos-= $pagoItem->valor;
                 $formaPago = $this->findFormaPago($pagoItem->id);
                 $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $nit->id);
+                //CRUSAR ANTICIPOS
+                if (count($documentoReferenciaAnticipos)) {
 
-                ConPagoPagos::create([
-                    'id_pago' => $pago->id,
-                    'id_forma_pago' => $pagoItem->id,
-                    'valor' => $pagoItem->valor,
-                    'saldo' => $totalPagos,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
+                    $pagoAnticipos = $pagoItem->valor;
+                    $contador = 0;
+                    foreach ($documentoReferenciaAnticipos as $anticipos) {
 
-                $doc = new DocumentosGeneral([
-                    'id_cuenta' => $formaPago->cuenta->id,
-                    'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
-                    'id_centro_costos' => null,
-                    'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$nit->nombre_nit.' - '.$pago->consecutivo : null,
-                    'documento_referencia' => $documentoReferenciaAnticipos,
-                    'debito' => $pagoItem->valor,
-                    'credito' => $pagoItem->valor,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
-                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_egresos);
+                        if (!$pagoAnticipos) {
+                            break;
+                        }
+                        
+                        $anticipoUsado = 0;
+                        $anticipoDisponible = floatval($anticipos->saldo);
+
+                        if ($anticipoDisponible >= $pagoAnticipos) {
+                            $anticipoUsado = $pagoAnticipos;
+                        } else {
+                            $anticipoUsado = $anticipoDisponible;
+                        }
+
+                        $pagoAnticipos-= $anticipoUsado;
+
+                        $doc = $this->addFormaPago(
+                            $anticipos->documento_referencia,
+                            $formaPago,
+                            $nit,
+                            $pagoItem,
+                            $pago,
+                            $anticipoUsado,
+                            $totalPagos
+                        );
+                        $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_egresos);
+                    }
+                } else {
+                    $doc = $this->addFormaPago(
+                        null,
+                        $formaPago,
+                        $nit,
+                        $pagoItem,
+                        $pago,
+                        $pagoItem->valor,
+                        $totalPagos
+                    );
+                    $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_egresos);
+                }
             }
 
             if (!$request->get('id_pago')) {
@@ -984,6 +1008,32 @@ class PagosController extends Controller
             ->showPdf();
     }
 
+    private function addFormaPago($documentoReferencia, $formaPago, $nit, $pagoItem, $pago, $valor, $saldo)
+    {
+        ConPagoPagos::create([
+            'id_pago' => $pago->id,
+            'id_forma_pago' => $pagoItem->id,
+            'valor' => $valor,
+            'saldo' => $saldo,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        $doc = new DocumentosGeneral([
+            'id_cuenta' => $formaPago->cuenta->id,
+            'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
+            'id_centro_costos' => null,
+            'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$nit->nombre_nit.' - '.$pago->consecutivo : null,
+            'documento_referencia' => $documentoReferencia,
+            'debito' => $valor,
+            'credito' => $valor,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        return $doc;
+    }
+
     private function formatExtracto($extracto)
     {
         $editando = property_exists($extracto, 'edit') ? true : false;
@@ -1189,17 +1239,19 @@ class PagosController extends Controller
     {
         $tiposCuenta = $formaPago->cuenta->tipos_cuenta;
         foreach ($tiposCuenta as $tipoCuenta) {
-            if ($tipoCuenta->id_tipo_cuenta == 4 || $tipoCuenta->id_tipo_cuenta == 8) {
+            if ($tipoCuenta->id_tipo_cuenta == 3 || $tipoCuenta->id_tipo_cuenta == 7) {
                 $anticipoCuenta = (new Extracto(
                     $idNit,
                     null,
                     null,
                     Carbon::now()->format('Y-m-d H:i:s'),
                     $formaPago->cuenta->id
-                ))->anticipos()->first();
-                return $anticipoCuenta ? $anticipoCuenta->documento_referencia : null;
+                ))->anticiposDiscriminados()->get();
+
+                return $anticipoCuenta;
             }
         }
-        return null;
+
+        return [];
     }
 }

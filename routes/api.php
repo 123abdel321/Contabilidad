@@ -116,7 +116,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
         //INFORMES
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
-        Route::get('extracto-anticipos', 'App\Http\Controllers\Informes\ExtractoController@extractoActicipos');
+        Route::get('extracto-anticipos', 'App\Http\Controllers\Informes\ExtractoController@extractoAnticipos');
         Route::get('existe-factura', 'App\Http\Controllers\Informes\ExtractoController@existeFactura');
         //DOCUMENTOS CAPTURADOS
         Route::get('documento', 'App\Http\Controllers\Informes\DocumentoController@generate');

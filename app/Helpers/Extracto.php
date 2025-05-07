@@ -105,7 +105,7 @@ class Extracto
                 DB::raw('IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) AS saldo'),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
             )
-            ->groupByRaw('id_nit')
+            ->groupByRaw('id_nit, id_cuenta')
             ->havingRaw("IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) != 0")
             ->where('fecha_manual', '<=', $fecha);
 
@@ -134,7 +134,8 @@ class Extracto
                 DB::raw('IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) AS saldo'),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
             )
-            ->groupByRaw('id_nit')
+            ->groupByRaw('id_nit, id_cuenta, documento_referencia')
+            ->havingRaw("IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) != 0")
             ->where('fecha_manual', '<=', $fecha);
 
         return $anticipo;

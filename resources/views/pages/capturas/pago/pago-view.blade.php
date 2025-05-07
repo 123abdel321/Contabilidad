@@ -134,7 +134,7 @@
                     <table class="table table-bordered table-captura-ventas" width="100%" style="margin-top: 12px;">
                         <tbody>
                             <tr id="pago_anticipo_disp_view" style="display: none;">
-                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500; color: #0bb19e; display: flex; cursor: pointer;"><div><i class="fas fa-eye"></i></div>&nbsp;ANTICIPOS DISP: </h6></td>
+                                <td><h6 id="show-anticipos-pagos" style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500; color: #0bb19e; display: flex; cursor: pointer;"><div><i class="fas fa-eye"></i></div>&nbsp;ANTICIPOS DISP: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem; color: #0bb19e;" id="pago_anticipo_disp">0.00</h6></td>
                             </tr>
                             <tr>
@@ -181,6 +181,8 @@
 
         </div>
     </div>
+
+    @include('pages.capturas.pago.pago-anticipos')
 
     <script>
         var pagoFecha = @json(auth()->user()->can("pago fecha"));
