@@ -1,4 +1,4 @@
-var fecha = null;
+var fechaCompra = null;
 var compra_table = null;
 var compra_table_pagos = null;
 var validarFacturaCompra = null;
@@ -16,8 +16,8 @@ let hotCompras = null;
 
 function compraInit () {
     
-    fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    $('#fecha_manual_compra').val(fecha);
+    fechaCompra = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    $('#fecha_manual_compra').val(fechaCompra);
 
     const container = document.getElementById('compraTable');
     hotCompras = new Handsontable(container, {

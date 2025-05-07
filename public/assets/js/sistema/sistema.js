@@ -957,6 +957,7 @@ function arreglarMensajeError(mensaje) {
 }
 
 function redondear(valor, redondeo_valor = null) {
+    if (redondeo_valor == '') redondeo_valor = null;
     if (!redondeo_valor && redondeo_valor != 0) return valor;
     redondeo_valor = parseFloat(redondeo_valor);
     if (!valor) return valor; //Sin valor a redondear

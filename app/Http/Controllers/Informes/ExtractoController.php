@@ -121,9 +121,14 @@ class ExtractoController extends Controller
 
     public function extractoActicipos(Request $request)
     {
+        $tiposCuentas = 8;
+        if ($request->get('id_tipo_cuenta')) {
+            $tiposCuentas = $request->get('id_tipo_cuenta');
+        }
+
         $extracto = (new Extracto(
             $request->get('id_nit'),
-            8,
+            $tiposCuentas,
             null,
             Carbon::now()->format('Y-m-d H:i:s')
         ))->anticipos();

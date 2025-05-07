@@ -141,7 +141,7 @@ function pagoInit () {
                     var tiposCuentas = row.cuenta.tipos_cuenta;
                     for (let index = 0; index < tiposCuentas.length; index++) {
                         const tipoCuenta = tiposCuentas[index];
-                        if (tipoCuenta.id_tipo_cuenta == 8) {
+                        if (tipoCuenta.id_tipo_cuenta == 7 || tipoCuenta.id_tipo_cuenta == 3) {
                             anticipos = true;
                             className = 'anticipos'
                         }
@@ -297,13 +297,13 @@ function reloadTablePagos() {
         mostrarValoresPagos();
 
         if (!factura) {
-            // loadAnticiposPago();
-            // var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresPagos();
-            // $("#total_abono_pago").val(new Intl.NumberFormat("ja-JP").format(totalSaldo));
-            // setTimeout(function(){
-            //     $("#total_abono_pago").focus();
-            //     $("#total_abono_pago").select();
-            // },80);
+            loadAnticiposPago();
+            var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresPagos();
+            $("#total_abono_pago").val(new Intl.NumberFormat("ja-JP").format(totalSaldo));
+            setTimeout(function(){
+                $("#total_abono_pago").focus();
+                $("#total_abono_pago").select();
+            },80);
         }
     });
 }
@@ -320,6 +320,7 @@ $(document).on('change', '#id_nit_pago', function () {
     let data = $('#id_nit_pago').select2('data')[0];
     if (data && !noBuscarDatosPago) {
         document.getElementById('iniciarCapturaPago').click();
+        loadAnticiposPago();
     }
     if (!noBuscarDatosPago) {
         noBuscarDatosPago = false;
@@ -362,6 +363,7 @@ function savePago() {
             window.open("/pago-print/"+res.impresion, '_blank');
         }
     }).fail((err) => {
+        disabledFormasPagoPago(false);
         // consecutivoSiguientePago();
         $('#iniciarCapturaPago').show();
         $('#cancelarCapturaPago').show();
@@ -774,7 +776,7 @@ function loadAnticiposPago() {
     
     let data = {
         id_nit: $('#id_nit_pago').val(),
-        id_tipo_cuenta: 8
+        id_tipo_cuenta: [3,7]
     }
 
     $.ajax({
