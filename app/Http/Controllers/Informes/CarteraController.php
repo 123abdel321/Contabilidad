@@ -174,7 +174,7 @@ class CarteraController extends Controller
                         'tipo' => 'exito',
                         'mensaje' => 'Excel de Cartera generado con exito!',
                         'titulo' => 'Excel generado',
-                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/export/'.$url,
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
                         'autoclose' => false
                     ]));
                     
