@@ -128,7 +128,7 @@ function reciboInit () {
             type: "GET",
             headers: headers,
             data: {
-                type: 'ventas'
+                type: 'ingresos'
             },
             url: base_url + 'forma-pago/combo-forma-pago',
         },

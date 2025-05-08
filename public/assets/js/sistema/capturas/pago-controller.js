@@ -165,7 +165,31 @@ function pagoInit () {
             url: base_url + 'forma-pago/combo-forma-pago',
         },
         columns: [
-            {"data":'nombre'},
+            {"data": function (row, type, set){
+                console.log(row);
+                let className = '';
+                let styles = "margin-bottom: 0px; font-size: 13px;";
+                let dataToggle = '';
+                let dataContent = `Cuenta: ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                if (row.cuenta.tipos_cuenta.length > 0) {
+                    var tiposCuentas = row.cuenta.tipos_cuenta;
+                    for (let index = 0; index < tiposCuentas.length; index++) {
+                        const tipoCuenta = tiposCuentas[index];
+                        if (tipoCuenta.id_tipo_cuenta == 7 || tipoCuenta.id_tipo_cuenta == 3) {
+                            className = 'anticipos'
+                            styles+= " color: #0bb19e; font-weight: 600;"
+                            dataToggle = "popover";
+                            dataContent = `Anticipos cuenta: ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                        }
+                    }
+                }
+                return `<p 
+                    style="${styles}" 
+                    title="${dataContent}"
+                    title="Anticipo">
+                        ${row.nombre}
+                    </p>`;
+            }},
             {"data": function (row, type, set){
                 let anticipos = false;
                 let id_cuenta = row.cuenta.id;
@@ -265,6 +289,12 @@ function pagoInit () {
 
     if (pagoUpdate) $("#documento_referencia_pago").prop('disabled', false);
     else $("#documento_referencia_pago").prop('disabled', true);
+
+    $('[data-toggle="popover"]').popover({
+        trigger: 'hover', // Activa con mouseover
+        html: true,       // Permite HTML en el contenido
+        placement: 'top'  // Posición: top, bottom, left, right
+    });
 
     loadFormasPagoPagos();
 }
@@ -668,6 +698,8 @@ function focusFormaPagoPago(idFormaPago, anticipo = false, id_cuenta = null) {
                 return;
             }
         }
+
+        return;
     }
 
     if (!saldoFormaPago) {
@@ -765,8 +797,8 @@ function changeFormaPagoPago(idFormaPago, event, anticipo, id_cuenta) {
         if (anticipo) {
 
             let cuentaExistente = encontrarCuenta(id_cuenta);
-
             if (cuentaExistente) {
+
                 let totalSaldoAnticipos = cuentaExistente[id_cuenta].saldo;
                 if (totalCXP > totalSaldoAnticipos) {
                     var [totalPagos, totalCXP] = totalFormasPagoPagos(idFormaPago);
@@ -1004,6 +1036,12 @@ function focusNextFormasPagoPagos(idFormaPago) {
 
     for (let index = 0; index < dataCompraPagos.length; index++) {
         const dataPagoPago = dataCompraPagos[index];
+        const input = document.getElementById("pago_forma_pago_"+dataPagoPago.id);
+
+        if (input.disabled) {
+            continue;
+        }
+
         if (obtenerFormaPago) {
             idFormaPagoFocus = dataPagoPago.id;
             obtenerFormaPago = false;
@@ -1159,13 +1197,6 @@ function consecutivoSiguientePago() {
 }
 
 function loadFormasPagoPagos() {
-    var totalRows = pago_table_pagos.rows().data().length;
-    if(pago_table_pagos.rows().data().length){
-        pago_table_pagos.clear([]).draw();
-        for (let index = 0; index < totalRows; index++) {
-            pago_table_pagos.row(0).remove().draw();
-        }
-    }
     pago_table_pagos.ajax.reload(function(res) {
         disabledFormasPagoPago(true);
     });
@@ -1180,6 +1211,11 @@ function disabledFormasPagoPago(estado = true) {
             const formaPago = dataFormasPago[index];
             const tiposCuentas = formaPago.cuenta.tipos_cuenta;
 
+            if (!tiposCuentas.length) {
+                $('#pago_forma_pago_'+formaPago.id).prop('disabled', estado);
+                continue;
+            }
+
             for (let index = 0; index < tiposCuentas.length; index++) {
                 let isAnticipo = false;
                 const tipoCuenta = tiposCuentas[index];
@@ -1192,7 +1228,7 @@ function disabledFormasPagoPago(estado = true) {
                     let cuentaExistente = encontrarCuenta(formaPago.cuenta.id);
     
                     if (cuentaExistente) {
-                        let totalSaldoAnticipos = cuentaExistente[id_cuenta].saldo;
+                        let totalSaldoAnticipos = cuentaExistente[formaPago.cuenta.id].saldo;
                         if (totalSaldoAnticipos) {
                             $('#pago_forma_pago_'+formaPago.id).prop('disabled', estado);
                         }
