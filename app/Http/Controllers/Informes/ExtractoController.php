@@ -94,7 +94,7 @@ class ExtractoController extends Controller
                 $request->get('id_nit', null),
                 $request->get('id_tipo_cuenta', null),
                 $request->get('documento_referencia', null),
-                $request->get('fecha_manual', Carbon::now()->format('Y-m-d H:i:s')),
+                $request->get('fecha_manual', null),
                 $request->get('id_cuenta', null),
             ))->actual();
 
@@ -114,7 +114,7 @@ class ExtractoController extends Controller
 
     public function extractoAnticipos(Request $request)
     {
-        $tiposCuentas = 8;
+        $tiposCuentas = [4,8];
         if ($request->get('id_tipo_cuenta')) {
             $tiposCuentas = $request->get('id_tipo_cuenta');
         }

@@ -166,7 +166,6 @@ function pagoInit () {
         },
         columns: [
             {"data": function (row, type, set){
-                console.log(row);
                 let className = '';
                 let styles = "margin-bottom: 0px; font-size: 13px;";
                 let dataToggle = '';
@@ -289,12 +288,6 @@ function pagoInit () {
 
     if (pagoUpdate) $("#documento_referencia_pago").prop('disabled', false);
     else $("#documento_referencia_pago").prop('disabled', true);
-
-    $('[data-toggle="popover"]').popover({
-        trigger: 'hover', // Activa con mouseover
-        html: true,       // Permite HTML en el contenido
-        placement: 'top'  // Posición: top, bottom, left, right
-    });
 
     loadFormasPagoPagos();
 }
@@ -688,8 +681,8 @@ function focusFormaPagoPago(idFormaPago, anticipo = false, id_cuenta = null) {
     var saldoFormaPago = stringToNumberFloat($('#pago_forma_pago_'+idFormaPago).val());
 
     if (anticipo) {
-        let cuentaExistente = encontrarCuenta(id_cuenta);
 
+        let cuentaExistente = encontrarCuentaPago(id_cuenta);
         if (cuentaExistente) {
             let totalSaldoAnticipos = cuentaExistente[id_cuenta].saldo;
             if ((totalSaldoAnticipos - totalCXP) < totalFactura) {
@@ -698,7 +691,6 @@ function focusFormaPagoPago(idFormaPago, anticipo = false, id_cuenta = null) {
                 return;
             }
         }
-
         return;
     }
 
@@ -796,7 +788,7 @@ function changeFormaPagoPago(idFormaPago, event, anticipo, id_cuenta) {
 
         if (anticipo) {
 
-            let cuentaExistente = encontrarCuenta(id_cuenta);
+            let cuentaExistente = encontrarCuentaPago(id_cuenta);
             if (cuentaExistente) {
 
                 let totalSaldoAnticipos = cuentaExistente[id_cuenta].saldo;
@@ -845,13 +837,11 @@ function validateSavePagos() {
 }
 
 function loadAnticiposPago() {
-
     totalAnticiposPago = 0;
     $('#input_anticipos_pago').hide();
     $('#pago_anticipo_disp_view').hide();
     $('#saldo_anticipo_pago').val(0);
     $('#pago_anticipo_disp').text('0.00');
-    
 
     if(!$('#id_nit_pago').val()) return;
     
@@ -878,7 +868,7 @@ function loadAnticiposPago() {
                     const anticipo = anticiposDisponibles[index];
 
                     let idCuenta = anticipo.id_cuenta;
-                    let cuentaExistente = encontrarCuenta(idCuenta);
+                    let cuentaExistente = encontrarCuentaPago(idCuenta);
                     
                     totalAnticiposPago+= parseFloat(anticipo.saldo);
 
@@ -908,7 +898,7 @@ function loadAnticiposPago() {
     });
 }
 
-function encontrarCuenta(idCuenta) {
+function encontrarCuentaPago(idCuenta) {
     if (totalAnticiposPagoCuenta && totalAnticiposPagoCuenta.length) {
         return totalAnticiposPagoCuenta.find(item => item[idCuenta]);
     }
@@ -970,7 +960,6 @@ function changeDocumentoRefePagoRow(idRow, event) {
             });
         },300);
     }
-
 }
 
 function focusOutDocumentoReferencia(idRow) {
@@ -1182,7 +1171,6 @@ function consecutivoSiguientePago() {
             dataType: 'json',
         }).done((res) => {
             if(res.success){
-
                 $("#documento_referencia_pago").val(res.data);
                 setTimeout(function(){
                     reloadTablePagos();
@@ -1225,7 +1213,7 @@ function disabledFormasPagoPago(estado = true) {
                 }
 
                 if (isAnticipo) {
-                    let cuentaExistente = encontrarCuenta(formaPago.cuenta.id);
+                    let cuentaExistente = encontrarCuentaPago(formaPago.cuenta.id);
     
                     if (cuentaExistente) {
                         let totalSaldoAnticipos = cuentaExistente[formaPago.cuenta.id].saldo;

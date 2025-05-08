@@ -129,7 +129,7 @@
             
             <div class="row justify-content-between">
                 
-                <div class="card mb-4 col-12 col-sm-7 col-md-12 ml-auto">
+                <div class="card mb-4 col-12 col-sm-12 col-md-12 ml-auto">
 
                     <table class="table table-bordered table-captura-ventas" width="100%" style="margin-top: 12px;">
                         <tbody>

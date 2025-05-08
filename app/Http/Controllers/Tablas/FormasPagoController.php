@@ -231,55 +231,19 @@ class FormasPagoController extends Controller
             });
             
             switch ($request->get("type")) {
-
                 case 'compras':
-                    $formasPago->where(function($query) use ($request) {
-                        $query->whereDoesntHave('cuenta')
-                              ->orWhereHas('cuenta', function($query) use ($request) {
-                                  $query->whereDoesntHave('tipos_cuenta')
-                                        ->orWhereHas('tipos_cuenta', function($query) use ($request) {
-                                            $query->whereNotIn('id_tipo_cuenta', [4, 8]);
-                                        });
-                              });
-                    });
+                    $this->filterTiposCuenta($formasPago, [4, 8]);
                     break;
-
                 case 'egresos':
-                    $formasPago->where(function($query) use ($request) {
-                        $query->whereDoesntHave('cuenta')
-                              ->orWhereHas('cuenta', function($query) use ($request) {
-                                  $query->whereDoesntHave('tipos_cuenta')
-                                        ->orWhereHas('tipos_cuenta', function($query) use ($request) {
-                                            $query->whereNotIn('id_tipo_cuenta', [4, 8]);
-                                        });
-                              });
-                    });
+                    $this->filterTiposCuenta($formasPago, [4, 8]);
                     break;
-
                 case 'ingresos':
-                    $formasPago->where(function($query) use ($request) {
-                        $query->whereDoesntHave('cuenta')
-                                ->orWhereHas('cuenta', function($query) use ($request) {
-                                    $query->whereDoesntHave('tipos_cuenta')
-                                        ->orWhereHas('tipos_cuenta', function($query) use ($request) {
-                                            $query->whereNotIn('id_tipo_cuenta', [3, 7]);
-                                        });
-                                });
-                    });
+                    $this->filterTiposCuenta($formasPago, [3, 7]);
                     break;
-
                 case 'ventas':
-                    $formasPago->where(function($query) use ($request) {
-                        $query->whereDoesntHave('cuenta')
-                                ->orWhereHas('cuenta', function($query) use ($request) {
-                                    $query->whereDoesntHave('tipos_cuenta')
-                                        ->orWhereHas('tipos_cuenta', function($query) use ($request) {
-                                            $query->whereNotIn('id_tipo_cuenta', [3, 7]);
-                                        });
-                                });
-                    });
+                    $this->filterTiposCuenta($formasPago, [3, 7]);
                     break;
-                
+                    
                 default:
                     # code...
                     break;
@@ -302,6 +266,19 @@ class FormasPagoController extends Controller
         }
 
         return $tipoFormasPago->paginate(40);
+    }
+
+    private function filterTiposCuenta($query, array $tiposCuentaExcluir)
+    {
+        $query->where(function($q) use ($tiposCuentaExcluir) {
+            $q->whereDoesntHave('cuenta')
+            ->orWhereHas('cuenta', function($q) use ($tiposCuentaExcluir) {
+                $q->whereDoesntHave('tipos_cuenta')
+                    ->orWhereHas('tipos_cuenta', function($q) use ($tiposCuentaExcluir) {
+                        $q->whereNotIn('id_tipo_cuenta', $tiposCuentaExcluir);
+                    });
+            });
+        });
     }
 
 }
