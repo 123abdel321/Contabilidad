@@ -85,8 +85,7 @@ class Extracto
 
     public function anticipos()
     {
-        $fecha = Carbon::now();
-
+        $this->fecha = $this->fecha ?? Carbon::now();
         $query = $this->queryAnticipos();
 
         $anticipo = DB::connection('sam')
@@ -106,8 +105,7 @@ class Extracto
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
             )
             ->groupByRaw('id_nit, id_cuenta')
-            ->havingRaw("IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) != 0")
-            ->where('fecha_manual', '<=', $fecha);
+            ->havingRaw("IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) != 0");
 
         return $anticipo;
     }
@@ -296,6 +294,9 @@ class Extracto
                 if (is_array($this->id_tipo_cuenta)) $query->whereIn('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
                 else $query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
 			})
+            ->when($this->fecha ? $this->fecha : false, function ($query) {
+				$query->where('DG.fecha_manual', '<', $this->fecha);
+			})
             ->when($this->id_cuenta ? $this->id_cuenta : false, function ($query) {
                 if (is_array($this->id_cuenta)) $query->whereIn('PC.id', $this->id_cuenta);
                 else $query->where('PC.id', $this->id_cuenta);
@@ -382,7 +383,7 @@ class Extracto
 				$query->where('DG.documento_referencia', $this->documento_referencia);
 			})
             ->when($this->fecha ? $this->fecha : false, function ($query) {
-				$query->where('DG.fecha_manual', '<=', $this->fecha);
+				$query->where('DG.fecha_manual', '<', $this->fecha);
 			})
             ->when($this->documento_referencia ? false : true, function ($query) {
                 $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) != 0");

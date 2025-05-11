@@ -302,14 +302,6 @@ function reciboInit () {
     else $("#documento_referencia_recibo").prop('disabled', true);
 
     loadFormasPagoRecibos();
-
-    $('[data-toggle="popover"]').popover({
-        trigger: 'hover',
-        html: true,
-        placement: 'top',
-        container: 'body',
-        customClass: 'mi-popover-custom'
-    });
 }
 
 function buscarFacturaRecibos(event) {
@@ -320,14 +312,35 @@ function buscarFacturaRecibos(event) {
 }
 
 function agregarRecibos(pagos) {
-    if (pagos.length) {
-        let ultimoPago;
-        pagos.forEach(pago => {
-            ultimoPago = pago.id_forma_pago;
-            $("#recibo_forma_pago_"+pago.id_forma_pago).val(new Intl.NumberFormat("ja-JP").format(pago.valor));
-        });
-        calcularRecibosPagos(ultimoPago);
-    }
+    if (!pagos.length) return;
+
+    const sumasPorFormaPago = {};
+
+    pagos.forEach(pago => {
+        const formaPagoId = pago.id_forma_pago;
+        const valor = parseFloat(pago.valor);
+
+        if (!sumasPorFormaPago[formaPagoId]) {
+            sumasPorFormaPago[formaPagoId] = 0;
+        }
+
+        sumasPorFormaPago[formaPagoId] += valor;
+    });
+
+    Object.entries(sumasPorFormaPago).forEach(([formaPagoId, total]) => {
+        const input = $("#recibo_forma_pago_" + formaPagoId);
+
+        input.val(new Intl.NumberFormat("ja-JP").format(total));
+        
+        if (total > 0) {
+            setTimeout(function(){
+                input.prop("disabled", false);
+            },100);
+        }
+    });
+
+    const ultimoPago = pagos[pagos.length - 1].id_forma_pago;
+    calcularRecibosPagos(ultimoPago);
 }
 
 $(document).on('change', '#id_comprobante_recibo', function () {
@@ -373,6 +386,7 @@ function reloadTableRecibos() {
             $('#fecha_manual_recibo').val(factura.fecha_manual);
             $('#total_abono_recibo').val(factura.total_abono);
             agregarRecibos(factura.pagos);
+            loadAnticiposRecibo(factura.fecha_manual);
         }
 
         mostrarValoresRecibos();
@@ -497,6 +511,10 @@ function getMovimientoRecibo() {
 }
 
 function cancelarRecibo() {
+
+    const dateNow = new Date;
+    const fechaRecibo = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+
     $comboNitRecibos.val(0).trigger('change');
     totalAnticiposRecibo = 0;
     recibo_table_pagos.clear().draw();
@@ -504,6 +522,8 @@ function cancelarRecibo() {
 
     consecutivoSiguienteRecibo();
     clearFormasPagoRecibo();
+    
+    $('#fecha_manual_recibo').val(fechaRecibo);
     $('#total_abono_recibo').val('0.00');
     $('#saldo_anticipo_recibo').val('0');
     $('#recibo_anticipo_disp').text('0');
@@ -526,17 +546,18 @@ function clearFormasPagoRecibo() {
 }
 
 function changeTotalAbonoRecibo(event) {
-    var dataRecibos = recibo_table.rows().data();
+    const dataRecibos = recibo_table.rows().data();
     if(event.keyCode == 13 && dataRecibos.length) {
-        var totalAbono = stringToNumberFloat($('#total_abono_recibo').val());
-        var dataAnticipo = {
+        let totalAbono = stringToNumberFloat($('#total_abono_recibo').val());
+        let dataAnticipo = {
             'index': null,
             'recibo': null
         };
-        var totalSaldo = 0;
+        let totalSaldo = 0;
 
         for (let index = 0; index < dataRecibos.length; index++) {
-            var recibo = dataRecibos[index];
+
+            const recibo = dataRecibos[index];
 
             if (!recibo.cuenta_recibo) {
                 if (!dataAnticipo.recibo) {
@@ -605,9 +626,20 @@ function changeTotalAbonoRecibo(event) {
 
         mostrarValoresRecibos();
 
-        var dataPagoRecibo = recibo_table_pagos.rows().data();
+        const dataPagoRecibo = recibo_table_pagos.rows().data();
         if(dataPagoRecibo.length) {
-            focusFormaPagoRecibo(dataPagoRecibo[0].id);
+            for (let index = 0; index < dataPagoRecibo.length; index++) {
+
+                const formaPago = dataPagoRecibo[index];
+                const input = document.getElementById("recibo_forma_pago_"+formaPago.id);
+
+                if (input.disabled) {
+                    continue;
+                }
+
+                focusFormaPagoRecibo(formaPago.id);
+                break;
+            }
         }
     }
 }
@@ -860,7 +892,7 @@ function validateSaveRecibos() {
     }
 }
 
-function loadAnticiposRecibo() {
+function loadAnticiposRecibo(fecha_manual = null) {
     totalAnticiposRecibo = 0;
     $('#input_anticipos_recibo').hide();
     $('#recibo_anticipo_disp_view').hide();
@@ -871,7 +903,8 @@ function loadAnticiposRecibo() {
     
     let data = {
         id_nit: $('#id_nit_recibo').val(),
-        id_tipo_cuenta: [4,8]
+        id_tipo_cuenta: [4,8],
+        fecha_manual: fecha_manual
     }
 
     $.ajax({

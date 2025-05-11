@@ -70,7 +70,7 @@ class RecibosController extends Controller
         $idNit = $request->get('id_nit');
         $consecutivo = $request->get('consecutivo');
         $idComprobante = $request->get('id_comprobante');
-
+        
         if (!$idNit && !$idComprobante) {
 			return response()->json([
                 'success'=>	true,
@@ -83,13 +83,19 @@ class RecibosController extends Controller
         $fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual', null) : Carbon::now();
         
         try {
-
+            $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+            
             if ($idComprobante && $consecutivo && $editarRecibos) {
 
                 $reciboEdit = ConRecibos::with('detalles', 'pagos', 'nit')
                     ->where('id_comprobante', $idComprobante)
-                    ->where('consecutivo', $consecutivo)
-                    ->first();
+                    ->where('consecutivo', $consecutivo);
+
+                if ($comprobanteRecibo->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
+                    $this->filterCapturaMensual($reciboEdit, $request->get('fecha_manual'));
+                }
+
+                $reciboEdit = $reciboEdit->first();
 
                 if ($reciboEdit) {
                     $reciboEdit = $reciboEdit->toArray();
@@ -110,8 +116,7 @@ class RecibosController extends Controller
                 $idNit,
                 [3,7],
                 null,
-                $fechaManual,
-                // $reciboEdit ? $consecutivo : null
+                $fechaManual
             ))->actual()->get();
             
             if (!count($extractos) && !$idNit && !$reciboEdit) {
@@ -132,7 +137,6 @@ class RecibosController extends Controller
                         if (($indice || $indice == 0) && array_key_exists($indice, $detalles)) {
                             $encontrado = $detalles[$indice];
                             $extractos[$key] = $this->formatExtractoEdit($extracto, $encontrado);
-                            // dd($extractos);
                             unset($detalles[$indice]);
                         }
                     }
@@ -160,7 +164,7 @@ class RecibosController extends Controller
             $cxcAnticipos = PlanCuentas::where('auxiliar', 1)
                 ->where('exige_documento_referencia', 1)
                 ->whereHas('tipos_cuenta', function ($query) {
-                    $query->whereIn('id_tipo_cuenta', [8]);
+                    $query->whereIn('id_tipo_cuenta', [4,8]);
                 })
                 ->orderBy('cuenta', 'ASC')
                 ->get();

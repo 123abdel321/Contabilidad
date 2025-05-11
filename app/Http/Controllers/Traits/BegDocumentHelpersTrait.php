@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Traits;
 
 use ZipArchive;
+use Carbon\Carbon;
 use App\Mail\GeneralEmail;
 use App\Helpers\BegEmailSender;
 use Illuminate\Support\Facades\File;
@@ -127,5 +128,14 @@ trait BegDocumentHelpersTrait
 			return true;
 		}
 		return false;
+	}
+
+	private function filterCapturaMensual($captura, $fecha_manual)
+	{
+		$fecha = Carbon::parse($fecha_manual);
+		$startOfMonth = $fecha->copy()->startOfMonth();
+		$endOfMonth = $fecha->copy()->endOfMonth();
+
+		$captura->whereBetween('fecha_manual', [$startOfMonth, $endOfMonth]);
 	}
 }

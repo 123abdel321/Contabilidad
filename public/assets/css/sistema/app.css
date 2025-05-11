@@ -735,4 +735,7 @@ div.dataTables_processing {
 
 .popover-formas-pagos .popover-header {
     font-size: 14px;
+    background-color: #FFF;
+    border: solid 2px #378cff;
+    border-radius: 10px;
 }

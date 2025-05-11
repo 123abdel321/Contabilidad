@@ -312,14 +312,35 @@ function buscarFacturaPagos(event) {
 }
 
 function agregarPagos(pagos) {
-    if (pagos.length) {
-        let ultimoPago;
-        pagos.forEach(pago => {
-            ultimoPago = pago.id_forma_pago;
-            $("#pago_forma_pago_"+pago.id_forma_pago).val(new Intl.NumberFormat("ja-JP").format(pago.valor));
-        });
-        totalFormasPagoPagos(ultimoPago);
-    }
+    if (!pagos.length) return;
+
+    const sumasPorFormaPago = {};
+
+    pagos.forEach(pago => {
+        const formaPagoId = pago.id_forma_pago;
+        const valor = parseFloat(pago.valor);
+
+        if (!sumasPorFormaPago[formaPagoId]) {
+            sumasPorFormaPago[formaPagoId] = 0;
+        }
+
+        sumasPorFormaPago[formaPagoId] += valor;
+    });
+
+    Object.entries(sumasPorFormaPago).forEach(([formaPagoId, total]) => {
+        const input = $("#pago_forma_pago_" + formaPagoId);
+
+        input.val(new Intl.NumberFormat("ja-JP").format(total));
+        
+        if (total > 0) {
+            setTimeout(function(){
+                input.prop("disabled", false);
+            },100);
+        }
+    });
+
+    const ultimoPago = pagos[pagos.length - 1].id_forma_pago;
+    calcularPagosPagos(ultimoPago);
 }
 
 $(document).on('change', '#id_comprobante_pago', function () {
@@ -365,6 +386,7 @@ function reloadTablePagos() {
             $('#fecha_manual_pago').val(factura.fecha_manual);
             $('#total_abono_pago').val(factura.total_abono);
             agregarPagos(factura.pagos);
+            loadAnticiposPago(factura.fecha_manual);
         }
 
         mostrarValoresPagos();
@@ -489,6 +511,10 @@ function getMovimientoPago() {
 }
 
 function cancelarPago() {
+
+    const dateNow = new Date;
+    const fechaPago = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    
     $comboNitPagos.val(0).trigger('change');
     totalAnticiposPago = 0;
     pago_table.clear().draw();
@@ -496,6 +522,8 @@ function cancelarPago() {
 
     consecutivoSiguientePago();
     clearFormasPagoPago();
+
+    $('#fecha_manual_pago').val(fechaPago);
     $('#total_abono_pago').val('0.00');
     $('#saldo_anticipo_pago').val('0');
     $('#pago_anticipo_disp').text('0');
@@ -864,7 +892,7 @@ function validateSavePagos() {
     }
 }
 
-function loadAnticiposPago() {
+function loadAnticiposPago(fecha_manual = null) {
     totalAnticiposPago = 0;
     $('#input_anticipos_pago').hide();
     $('#pago_anticipo_disp_view').hide();
@@ -875,7 +903,8 @@ function loadAnticiposPago() {
     
     let data = {
         id_nit: $('#id_nit_pago').val(),
-        id_tipo_cuenta: [3,7]
+        id_tipo_cuenta: [3,7],
+        fecha_manual: fecha_manual
     }
 
     $.ajax({

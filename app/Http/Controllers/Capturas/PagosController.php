@@ -83,13 +83,19 @@ class PagosController extends Controller
         $fechaManual = request()->user()->can('pago fecha') ? $request->get('fecha_manual', null) : Carbon::now();
         
         try {
+            $comprobantePago = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
             if ($idComprobante && $consecutivo && $editarPagos) {
 
                 $pagoEdit = ConPagos::with('detalles', 'pagos', 'nit')
                     ->where('id_comprobante', $idComprobante)
-                    ->where('consecutivo', $consecutivo)
-                    ->first();
+                    ->where('consecutivo', $consecutivo);
+
+                if ($comprobantePago->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
+                    $this->filterCapturaMensual($pagoEdit, $request->get('fecha_manual'));
+                }
+
+                $pagoEdit = $pagoEdit->first();
 
                 if ($pagoEdit) {
                     $pagoEdit = $pagoEdit->toArray();
@@ -110,8 +116,7 @@ class PagosController extends Controller
                 $idNit,
                 [4,8],
                 null,
-                $fechaManual,
-                // $pagoEdit ? $consecutivo : null
+                $fechaManual
             ))->actual()->get();
 
             if (!count($extractos) && !$idNit && !$pagoEdit) {
@@ -132,7 +137,6 @@ class PagosController extends Controller
                         if (($indice || $indice == 0) && array_key_exists($indice, $detalles)) {
                             $encontrado = $detalles[$indice];
                             $extractos[$key] = $this->formatExtractoEdit($extracto, $encontrado);
-                            // dd($extractos);
                             unset($detalles[$indice]);
                         }
                     }
@@ -160,7 +164,7 @@ class PagosController extends Controller
             $cxpAnticipos = PlanCuentas::where('auxiliar', 1)
                 ->where('exige_documento_referencia', 1)
                 ->whereHas('tipos_cuenta', function ($query) {
-                    $query->whereIn('id_tipo_cuenta', [7]);
+                    $query->whereIn('id_tipo_cuenta', [3,7]);
                 })
                 ->orderBy('cuenta', 'ASC')
                 ->get();
