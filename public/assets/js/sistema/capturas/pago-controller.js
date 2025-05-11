@@ -370,6 +370,10 @@ function reloadTablePagos() {
         mostrarValoresPagos();
 
         if (!factura) {
+            let data = $('#id_nit_pago').select2('data')[0];
+            if (data) {
+                $('#cancelarCapturaPago').show();
+            }
             // loadAnticiposPago();
             // var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresPagos();
             // $("#total_abono_pago").val(new Intl.NumberFormat("ja-JP").format(totalSaldo));
@@ -487,6 +491,7 @@ function getMovimientoPago() {
 function cancelarPago() {
     $comboNitPagos.val(0).trigger('change');
     totalAnticiposPago = 0;
+    pago_table.clear().draw();
     totalAnticiposPagoCuenta = [];
 
     consecutivoSiguientePago();

@@ -378,6 +378,10 @@ function reloadTableRecibos() {
         mostrarValoresRecibos();
 
         if (!factura) {
+            let data = $('#id_nit_recibo').select2('data')[0];
+            if (data) {
+                $('#cancelarCapturaRecibo').show();
+            }
             // loadAnticiposRecibo();
             // var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresRecibos();
             // $("#total_abono_recibo").val(new Intl.NumberFormat("ja-JP").format(totalSaldo));
@@ -495,6 +499,7 @@ function getMovimientoRecibo() {
 function cancelarRecibo() {
     $comboNitRecibos.val(0).trigger('change');
     totalAnticiposRecibo = 0;
+    recibo_table_pagos.clear().draw();
     totalAnticiposReciboCuenta = [];
 
     consecutivoSiguienteRecibo();
