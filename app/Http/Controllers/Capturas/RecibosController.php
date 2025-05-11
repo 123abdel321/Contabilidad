@@ -108,7 +108,7 @@ class RecibosController extends Controller
             
             $extractos = (new Extracto(
                 $idNit,
-                3,
+                [3,7],
                 null,
                 $fechaManual,
                 // $reciboEdit ? $consecutivo : null
@@ -215,72 +215,83 @@ class RecibosController extends Controller
 
     public function generateComprobante(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length");
+        try {
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $draw = $request->get('draw');
+            $start = $request->get("start");
+            $rowperpage = $request->get("length");
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+            $columnIndex_arr = $request->get('order');
+            $columnName_arr = $request->get('columns');
+            $order_arr = $request->get('order');
+            $search_arr = $request->get('search');
 
-        $recibos = ConRecibos::orderBy('id','DESC')
-            ->with('nit', 'archivos', 'pagos')
-            ->where('total_abono', '>', 0)
-            ->select(
-                '*',
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                'created_by',
-                'updated_by'
-            );
+            $columnIndex = $columnIndex_arr[0]['column']; // Column index
+            $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+            $columnSortOrder = $order_arr[0]['dir']; // asc or desc
 
-        if ($request->get('estado') || $request->get('estado') == 0) {
-            if ($request->get('estado') != 'todos') {
-                $recibos->where('estado', $request->get('estado'));
+            $recibos = ConRecibos::orderBy('id','DESC')
+                ->with('nit', 'archivos', 'pagos')
+                ->where('total_abono', '>', 0)
+                ->select(
+                    '*',
+                    DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                    DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                    'created_by',
+                    'updated_by'
+                );
+
+            if ($request->get('estado') || $request->get('estado') == 0) {
+                if ($request->get('estado') != 'todos') {
+                    $recibos->where('estado', $request->get('estado'));
+                }
             }
+
+            if ($request->get('search')) {
+                $recibos->orWhereHas('nit', function ($query) use ($request){
+                    $query->orWhere('primer_apellido', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('razon_social', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('email', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('numero_documento', 'LIKE', '%' . $request->get("search") . '%');
+                });
+            }
+
+            $recibos ->when($request->get('fecha_desde') && $request->get('fecha_hasta'), function ($query) use($request) {
+                    $query->whereBetween('fecha_manual', [$request->get('fecha_desde'), $request->get('fecha_hasta')]);
+                })
+                ->where('total_abono', '>', 0);
+
+            $recibosTotals = $recibos->get();
+
+            $recibosPaginate = $recibos->skip($start)
+                ->take($rowperpage);
+
+            return response()->json([
+                'success'=>	true,
+                'draw' => $draw,
+                'iTotalRecords' => $recibosTotals->count(),
+                'iTotalDisplayRecords' => $recibosTotals->count(),
+                'data' => $recibosPaginate->get(),
+                'perPage' => $rowperpage,
+                'message'=> 'Recibos comprobantes generados con exito!'
+            ]);
+            
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        if ($request->get('search')) {
-            $recibos->orWhereHas('nit', function ($query) use ($request){
-                $query->orWhere('primer_apellido', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('razon_social', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('email', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('numero_documento', 'LIKE', '%' . $request->get("search") . '%');
-            });
-        }
-
-        $recibos ->when($request->get('fecha_desde') && $request->get('fecha_hasta'), function ($query) use($request) {
-                $query->whereBetween('fecha_manual', [$request->get('fecha_desde'), $request->get('fecha_hasta')]);
-            })
-            ->where('total_abono', '>', 0);
-
-        $recibosTotals = $recibos->get();
-
-        $recibosPaginate = $recibos->skip($start)
-            ->take($rowperpage);
-
-        return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $recibosTotals->count(),
-            'iTotalDisplayRecords' => $recibosTotals->count(),
-            'data' => $recibosPaginate->get(),
-            'perPage' => $rowperpage,
-            'message'=> 'Recibos comprobantes generados con exito!'
-        ]);
     }
 
     public function create (Request $request)
     {
-
         $rules = [
             'id_nit' => 'required|exists:sam.nits,id',
             'id_comprobante' => 'required|exists:sam.comprobantes,id',
@@ -422,33 +433,57 @@ class RecibosController extends Controller
             $totalRecibos = $this->totalesFactura['total_pagado'];
 
             //AGREGAR FORMAS DE PAGO
-            foreach ($request->get('pagos') as $pago) {
-                $pago = (object)$pago;
-                $totalRecibos-= $pago->valor;
-                $formaPago = $this->findFormaPago($pago->id);
+            foreach ($request->get('pagos') as $pagoItem) {
+
+                $pagoItem = (object)$pagoItem;
+                $totalRecibos-= $pagoItem->valor;
+                $formaPago = $this->findFormaPago($pagoItem->id);
                 $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $nit->id);
+                //CRUSAR ANTICIPOS
+                if (count($documentoReferenciaAnticipos)) {
 
-                ConReciboPagos::create([
-                    'id_recibo' => $recibo->id,
-                    'id_forma_pago' => $pago->id,
-                    'valor' => $pago->valor,
-                    'saldo' => $totalRecibos,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
+                    $pagoAnticipos = $pagoItem->valor;
 
-                $doc = new DocumentosGeneral([
-                    'id_cuenta' => $formaPago->cuenta->id,
-                    'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
-                    'id_centro_costos' => null,
-                    'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL RECIBO: '.$nit->nombre_nit.' - '.$recibo->consecutivo : null,
-                    'documento_referencia' => $documentoReferenciaAnticipos,
-                    'debito' => $pago->valor,
-                    'credito' => $pago->valor,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
-                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
+                    foreach ($documentoReferenciaAnticipos as $anticipos) {
+
+                        if (!$pagoAnticipos) {
+                            break;
+                        }
+                        
+                        $anticipoUsado = 0;
+                        $anticipoDisponible = floatval($anticipos->saldo);
+
+                        if ($anticipoDisponible >= $pagoAnticipos) {
+                            $anticipoUsado = $pagoAnticipos;
+                        } else {
+                            $anticipoUsado = $anticipoDisponible;
+                        }
+
+                        $pagoAnticipos-= $anticipoUsado;
+
+                        $doc = $this->addFormaPago(
+                            $anticipos->documento_referencia,
+                            $formaPago,
+                            $nit,
+                            $pagoItem,
+                            $recibo,
+                            $anticipoUsado,
+                            $totalRecibos
+                        );
+                        $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ingresos);
+                    }
+                } else {
+                    $doc = $this->addFormaPago(
+                        null,
+                        $formaPago,
+                        $nit,
+                        $pagoItem,
+                        $recibo,
+                        $pagoItem->valor,
+                        $totalRecibos
+                    );
+                    $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ingresos);
+                }
             }
 
             if (!$request->get('id_recibo')) {
@@ -1001,6 +1036,32 @@ class RecibosController extends Controller
             ->showPdf();
     }
 
+    private function addFormaPago($documentoReferencia, $formaPago, $nit, $pagoItem, $recibo, $valor, $saldo)
+    {
+        $pagoRecibo = ConReciboPagos::create([
+            'id_recibo' => $recibo->id,
+            'id_forma_pago' => $pagoItem->id,
+            'valor' => $valor,
+            'saldo' => $saldo,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        $doc = new DocumentosGeneral([
+            'id_cuenta' => $formaPago->cuenta->id,
+            'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
+            'id_centro_costos' => null,
+            'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$nit->nombre_nit.' - '.$recibo->consecutivo : null,
+            'documento_referencia' => $documentoReferencia,
+            'debito' => $valor,
+            'credito' => $valor,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        return $doc; 
+    }
+
     private function formatExtracto($extracto)
     {
         $editando = property_exists($extracto, 'edit') ? true : false;
@@ -1212,10 +1273,11 @@ class RecibosController extends Controller
                     null,
                     Carbon::now()->format('Y-m-d H:i:s'),
                     $formaPago->cuenta->id
-                ))->anticipos()->first();
-                return $anticipoCuenta ? $anticipoCuenta->documento_referencia : null;
+                ))->anticiposDiscriminados()->get();
+
+                return $anticipoCuenta;
             }
         }
-        return null;
+        return [];
     }
 }

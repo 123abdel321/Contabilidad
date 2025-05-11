@@ -166,27 +166,33 @@ function pagoInit () {
         },
         columns: [
             {"data": function (row, type, set){
-                let className = '';
                 let styles = "margin-bottom: 0px; font-size: 13px;";
-                let dataToggle = '';
-                let dataContent = `Cuenta: ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                let stylesInfo = null;
+                let naturaleza = 'Credito - Egreso';
+                if (!row.cuenta.naturaleza_egresos) {
+                    naturaleza = 'Error de naturaleza en egreso';
+                    stylesInfo = "border: solid 1px red !important; color: red !important;"
+                }
+                let dataContent = `<b>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                 if (row.cuenta.tipos_cuenta.length > 0) {
                     var tiposCuentas = row.cuenta.tipos_cuenta;
                     for (let index = 0; index < tiposCuentas.length; index++) {
                         const tipoCuenta = tiposCuentas[index];
                         if (tipoCuenta.id_tipo_cuenta == 7 || tipoCuenta.id_tipo_cuenta == 3) {
-                            className = 'anticipos'
                             styles+= " color: #0bb19e; font-weight: 600;"
-                            dataToggle = "popover";
-                            dataContent = `Anticipos cuenta: ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                            dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                         }
                     }
                 }
-                return `<p 
-                    style="${styles}" 
-                    title="${dataContent}"
-                    title="Anticipo">
-                        ${row.nombre}
+                return `<p style="${styles}">
+                            <i
+                                class="fas fa-info icon-info"
+                                style="${stylesInfo}";
+                                title="${dataContent}"
+                                data-toggle="popover"
+                                data-html="true"
+                            >
+                        </i> ${row.nombre}
                     </p>`;
             }},
             {"data": function (row, type, set){
@@ -217,6 +223,13 @@ function pagoInit () {
                     blur: function() {
                         formatCurrency($(this), "blur");
                     }
+                });
+                $('[data-toggle="popover"]').popover({
+                    trigger: 'hover',
+                    html: true,
+                    placement: 'top',
+                    container: 'body',
+                    customClass: 'popover-formas-pagos'
                 });
             });
         }
@@ -279,8 +292,7 @@ function pagoInit () {
             text: comprobantesPagos[0].codigo + ' - ' + comprobantesPagos[0].nombre
         };
         var newOption = new Option(dataComprobante.text, dataComprobante.id, false, false);
-        $comboComprobantePagos.append(newOption).trigger('change');
-        $comboComprobantePagos.val(dataComprobante.id).trigger('change');
+        $comboComprobantePagos.append(newOption).val(dataComprobante.id).trigger('change');
     }
 
     if (pagoFecha) $('#fecha_manual_pago').prop('disabled', false);
@@ -414,7 +426,6 @@ function savePago() {
         dataType: 'json',
     }).done((res) => {
         cancelarPago();
-        consecutivoSiguientePago();
         $('#iniciarCapturaPago').show();
         $('#iniciarCapturaPagoLoading').hide();
         agregarToast('exito', 'Creación exitosa', 'Pago creado con exito!', true);
@@ -502,17 +513,18 @@ function clearFormasPagoPago() {
 }
 
 function changeTotalAbonoPago(event) {
-    var dataPagos = pago_table.rows().data();
+    const dataPagos = pago_table.rows().data();
     if(event.keyCode == 13 && dataPagos.length) {
-        var totalAbono = stringToNumberFloat($('#total_abono_pago').val());
-        var dataAnticipo = {
+        let totalAbono = stringToNumberFloat($('#total_abono_pago').val());
+        let dataAnticipo = {
             'index': null,
             'pago': null
         };
-        var totalSaldo = 0;
+        let totalSaldo = 0;
 
         for (let index = 0; index < dataPagos.length; index++) {
-            var pago = dataPagos[index];
+
+            const pago = dataPagos[index];
 
             if (!pago.cuenta_pago) {
                 if (!dataAnticipo.pago) {
@@ -581,9 +593,20 @@ function changeTotalAbonoPago(event) {
 
         mostrarValoresPagos();
 
-        var dataPagoPagado = pago_table_pagos.rows().data();
+        const dataPagoPagado = pago_table_pagos.rows().data();
         if(dataPagoPagado.length) {
-            focusFormaPagoPago(dataPagoPagado[0].id);
+            for (let index = 0; index < dataPagoPagado.length; index++) {
+
+                const formaPago = dataPagoPagado[index];
+                const input = document.getElementById("pago_forma_pago_"+formaPago.id);
+
+                if (input.disabled) {
+                    continue;
+                }
+
+                focusFormaPagoPago(formaPago.id);
+                break;
+            }
         }
     }
 }
@@ -1018,7 +1041,7 @@ function focusOutDocumentoReferencia(idRow) {
 
 function focusNextFormasPagoPagos(idFormaPago) {
     var dataCompraPagos = pago_table_pagos.rows().data();
-    var idFormaPagoFocus = dataCompraPagos[0].id;
+    var idFormaPagoFocus = primeraFormaPago(dataCompraPagos, "pago_forma_pago")
     var obtenerFormaPago = false;
 
     if(!dataCompraPagos.length > 0) return;

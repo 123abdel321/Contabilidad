@@ -160,7 +160,7 @@
                         <table id="pagoFormaPago" class="table table-bordered display responsive table-captura-pago" width="100%">
                             <thead>
                                 <tr style="border: 0px !important;">
-                                    <th style="border-radius: 15px 0px 0px 0px !important;">Pagos</th>
+                                    <th style="border-radius: 15px 0px 0px 0px !important;">Formas de Pago</th>
                                     <th style="border-radius: 0px 15px 0px 0px !important;">Total</th>
                                 </tr>
                             </thead>

@@ -166,27 +166,33 @@ function reciboInit () {
         },
         columns: [
             {"data": function (row, type, set){
-                let className = '';
                 let styles = "margin-bottom: 0px; font-size: 13px;";
-                let dataToggle = '';
-                let dataContent = `Cuenta: ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                let stylesInfo = null;
+                let naturaleza = 'Debito - Ingreso';
+                if (row.cuenta.naturaleza_ingresos) {
+                    naturaleza = 'Error de naturaleza en ingresos';
+                    stylesInfo = "border: solid 1px red !important; color: red !important;"
+                }
+                let dataContent = `<b>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                 if (row.cuenta.tipos_cuenta.length > 0) {
                     var tiposCuentas = row.cuenta.tipos_cuenta;
                     for (let index = 0; index < tiposCuentas.length; index++) {
                         const tipoCuenta = tiposCuentas[index];
                         if (tipoCuenta.id_tipo_cuenta == 8 || tipoCuenta.id_tipo_cuenta == 4) {
-                            className = 'anticipos'
                             styles+= " color: #0bb19e; font-weight: 600;"
-                            dataToggle = "popover";
-                            dataContent = `Anticipos cuenta: ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                            dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                         }
                     }
                 }
-                return `<p 
-                    style="${styles}" 
-                    title="${dataContent}"
-                    title="Anticipo">
-                        ${row.nombre}
+                return `<p style="${styles}">
+                            <i
+                                class="fas fa-info icon-info"
+                                style="${stylesInfo}";
+                                title="${dataContent}"
+                                data-toggle="popover"
+                                data-html="true"
+                            >
+                        </i> ${row.nombre}
                     </p>`;
             }},
             {"data": function (row, type, set){
@@ -217,6 +223,13 @@ function reciboInit () {
                     blur: function() {
                         formatCurrency($(this), "blur");
                     }
+                });
+                $('[data-toggle="popover"]').popover({
+                    trigger: 'hover',
+                    html: true,
+                    placement: 'top',
+                    container: 'body',
+                    customClass: 'popover-formas-pagos'
                 });
             });
         }
@@ -279,8 +292,7 @@ function reciboInit () {
             text: comprobantesRecibos[0].codigo + ' - ' + comprobantesRecibos[0].nombre
         };
         var newOption = new Option(dataComprobante.text, dataComprobante.id, false, false);
-        $comboComprobanteRecibos.append(newOption).trigger('change');
-        $comboComprobanteRecibos.val(dataComprobante.id).trigger('change');
+        $comboComprobanteRecibos.append(newOption).val(dataComprobante.id).trigger('change');
     }
 
     if (reciboFecha) $('#fecha_manual_recibo').prop('disabled', false);
@@ -290,6 +302,14 @@ function reciboInit () {
     else $("#documento_referencia_recibo").prop('disabled', true);
 
     loadFormasPagoRecibos();
+
+    $('[data-toggle="popover"]').popover({
+        trigger: 'hover',
+        html: true,
+        placement: 'top',
+        container: 'body',
+        customClass: 'mi-popover-custom'
+    });
 }
 
 function buscarFacturaRecibos(event) {
@@ -414,7 +434,6 @@ function saveRecibo() {
         dataType: 'json',
     }).done((res) => {
         cancelarRecibo();
-        consecutivoSiguienteRecibo();
         $('#iniciarCapturaRecibo').show();
         $('#iniciarCapturaReciboLoading').hide();
         agregarToast('exito', 'Creación exitosa', 'Recibo creado con exito!', true);
@@ -1018,7 +1037,7 @@ function focusOutDocumentoReferencia(idRow) {
 
 function focusNextFormasPagoRecibos(idFormaPago) {
     var dataCompraRecibos = recibo_table_pagos.rows().data();
-    var idFormaPagoFocus = dataCompraRecibos[0].id;
+    var idFormaPagoFocus = primeraFormaPago(dataCompraRecibos, "recibo_forma_pago")
     var obtenerFormaPago = false;
 
     if(!dataCompraRecibos.length > 0) return;
@@ -1155,7 +1174,7 @@ function consecutivoSiguienteRecibo() {
     var id_comprobante = $('#id_comprobante_recibo').val();
     var fecha_manual = $('#fecha_manual_recibo').val();
     var fecha_manual_hoy = fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-
+    console.log('cargando consecutivo');
     if(id_comprobante && fecha_manual) {
 
         let data = {

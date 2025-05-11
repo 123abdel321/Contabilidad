@@ -720,3 +720,19 @@ td{
 div.dataTables_processing {
     z-index: 99 !important;
 }
+
+.icon-info {
+    border: solid 1px #378cff;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    font-size: 10px;
+    border-radius: 11px;
+    color: #378cff;
+    cursor: help;
+}
+
+.popover-formas-pagos .popover-header {
+    font-size: 14px;
+}

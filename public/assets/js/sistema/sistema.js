@@ -965,3 +965,17 @@ function redondear(valor, redondeo_valor = null) {
     if (redondeo_valor === 0) return Math.floor(valor); // Quitar decimales (redondear hacia abajo)
     return Math.round(valor / redondeo_valor) * redondeo_valor; // Redondear al múltiplo más cercano
 }
+
+function primeraFormaPago(formasPagos, nombreInput) {
+    for (let index = 0; index < formasPagos.length; index++) {
+
+        const formaPago = formasPagos[index];
+        const input = document.getElementById(`${nombreInput}_${formaPago.id}`);
+
+        if (input.disabled) {
+            continue;
+        }
+
+        return formaPago.id
+    }
+}

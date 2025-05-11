@@ -111,7 +111,7 @@ class PagosController extends Controller
                 [4,8],
                 null,
                 $fechaManual,
-                $pagoEdit ? $consecutivo : null
+                // $pagoEdit ? $consecutivo : null
             ))->actual()->get();
 
             if (!count($extractos) && !$idNit && !$pagoEdit) {
@@ -145,7 +145,17 @@ class PagosController extends Controller
                 }
             }
 
-            $extractos = $extractos->sortBy('cuenta')->values();
+            if ($request->get('orden_cuentas')) {
+
+                $ordenFacturacion = $request->get('orden_cuentas');
+                asort($ordenFacturacion);
+
+                $extractos = $extractos->sortBy(function ($item) use ($ordenFacturacion) {
+                    return $ordenFacturacion[$item->id_cuenta] ?? 9999;
+                })->values();
+            } else {
+                $extractos = $extractos->sortBy('cuenta')->values();
+            }
 
             $cxpAnticipos = PlanCuentas::where('auxiliar', 1)
                 ->where('exige_documento_referencia', 1)
@@ -270,26 +280,6 @@ class PagosController extends Controller
 
     public function create (Request $request)
     {
-        $comprobantePago = Comprobantes::where('id', $request->get('id_comprobante'))->first();
-
-        $this->fechaManual = request()->user()->can('pago fecha') ? $request->get('fecha_manual') : Carbon::now();
-
-        if(!$comprobantePago) {
-
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=> ['Comprobante pago' => ['El Comprobante del pago es incorrecto!']]
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-
-        } else if (!$request->get('id_pago')){
-
-            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
-            $request->request->add([
-                'consecutivo' => $consecutivo
-            ]);
-        }
-
         $rules = [
             'id_nit' => 'required|exists:sam.nits,id',
             'id_comprobante' => 'required|exists:sam.comprobantes,id',
@@ -312,6 +302,25 @@ class PagosController extends Controller
                 'data' => [],
                 "message"=>$validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $comprobantePago = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+
+        $this->fechaManual = request()->user()->can('pago fecha') ? $request->get('fecha_manual') : Carbon::now();
+
+        if(!$comprobantePago) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=> ['Comprobante pago' => ['El Comprobante del pago es incorrecto!']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        } else if (!$request->get('id_pago')){
+
+            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
+            $request->request->add([
+                'consecutivo' => $consecutivo
+            ]);
         }
 
         $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
@@ -348,6 +357,9 @@ class PagosController extends Controller
                 $pago->pagos()->delete();
                 $pago->delete();
             }
+        } else {
+            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
+            $request->request->add(['consecutivo' => $consecutivo]);
         }
 
         $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
@@ -426,7 +438,7 @@ class PagosController extends Controller
                 if (count($documentoReferenciaAnticipos)) {
 
                     $pagoAnticipos = $pagoItem->valor;
-                    $contador = 0;
+                    
                     foreach ($documentoReferenciaAnticipos as $anticipos) {
 
                         if (!$pagoAnticipos) {

@@ -99,7 +99,6 @@
     .form-control.is-invalid {
         background-position: left 0.5rem center !important;
     }
-
 </style>
 
 <div class="container-fluid py-2">
@@ -160,7 +159,7 @@
                         <table id="reciboFormaPago" class="table table-bordered display responsive table-captura-recibo" width="100%">
                             <thead>
                                 <tr style="border: 0px !important;">
-                                    <th style="border-radius: 15px 0px 0px 0px !important;">Pagos</th>
+                                    <th style="border-radius: 15px 0px 0px 0px !important;">Formas de pago</th>
                                     <th style="border-radius: 0px 15px 0px 0px !important;">Total</th>
                                 </tr>
                             </thead>
