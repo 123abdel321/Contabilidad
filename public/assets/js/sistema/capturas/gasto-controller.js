@@ -5,7 +5,7 @@ var fechaGasto = null;
 var gasto_table = null;
 var gastos_anticipos = null;
 var editandoGasto = false;
-var calculandoDatos = false;
+var calculandoDatos = true;
 var gasto_pagos_table = null;
 var totalAnticiposGasto = null;
 var $comboNitGastos = null;
@@ -890,11 +890,12 @@ function changeValorGasto (idGasto, event = null) {
     if (editandoGasto) return;
 
     if(!event || event.keyCode == 13){
+        
         var valorGasto = stringToNumberFloat($("#gastovalor_"+idGasto).val());
         if (!valorGasto) return;
         if (!calculandoDatos) return;
         calculandoDatos = false;
-
+        console.log('pase por aca');
         valorGasto = redondear(valorGasto, redondeoGastos);
         
         var baseAIU = 0;
@@ -946,7 +947,7 @@ function changeValorGasto (idGasto, event = null) {
 
         updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
         mostrarValoresGastos();
-
+        console.log('heejasdk');
         var focusNext = '#gastoobservacion_';
         
         if (dataGasto[indexGasto].editar_iva)  focusNext = '#gasto_no_iva_valor_';
@@ -1415,9 +1416,7 @@ $(document).on('change', '#id_nit_gasto', function () {
         $('#documento_referencia_gasto').focus().select();
     },10);
 
-    if (!calculandoDatos) {
-        loadAnticiposGasto();
-    }
+    loadAnticiposGasto();
 
     if (!calculandoDatos) {
         calculandoDatos = false;
