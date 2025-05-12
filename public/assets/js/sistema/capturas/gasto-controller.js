@@ -3,8 +3,9 @@ var idGastoTable = 0;
 var sumarAIU = false;
 var fechaGasto = null;
 var gasto_table = null;
+var gastos_anticipos = null;
 var editandoGasto = false;
-var calculandoDatos = true;
+var calculandoDatos = false;
 var gasto_pagos_table = null;
 var totalAnticiposGasto = null;
 var $comboNitGastos = null;
@@ -159,6 +160,36 @@ function gastoInit () {
                 });
             });
         }
+    });
+
+    gastos_anticipos = $('#gastoAnticipos').DataTable({
+        dom: '',
+        paging: false,
+        responsive: false,
+        processing: true,
+        serverSide: true,
+        deferLoading: 0,
+        initialLoad: false,
+        language: lenguajeDatatable,
+        sScrollX: "100%",
+        scrollX: true,
+        ordering: false,
+        ajax:  {
+            type: "GET",
+            headers: headers,
+            url: base_url + 'extracto',
+            data: function ( d ) {
+                d.id_nit = $('#id_nit_pago').val();
+                d.id_tipo_cuenta = [7];
+            }
+        },
+        columns: [
+            {"data":'cuenta'},
+            {"data":'nombre_cuenta'},
+            {"data":'fecha_manual'},
+            {"data":'documento_referencia'},
+            {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+        ]
     });
 
     gasto_pagos_table = $('#gastoFormaPago').DataTable({
@@ -1396,6 +1427,11 @@ $(document).on('change', '#id_nit_gasto', function () {
 
 $(document).on('change', '#id_comprobante_gasto', function () {
     consecutivoSiguienteGasto();
+});
+
+$(document).on('click', '#show-anticipos-gasto', function () {
+    $("#gastosFormModal").modal('show');
+    gastos_anticipos.ajax.reload();
 });
 
 $(document).on('click', '#iniciarCapturaGasto', function () {

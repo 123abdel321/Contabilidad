@@ -209,6 +209,8 @@
         </div>
     </div>
 
+    @include('pages.capturas.gasto.gasto-anticipos')
+
     <script>
         var gastoIva = @json(auth()->user()->can("gasto iva"));
         var gastoAIU = @json(auth()->user()->can("gasto aiu"));
