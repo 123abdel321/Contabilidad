@@ -100,6 +100,7 @@ class Extracto
                 "consecutivo",
                 "documento_referencia",
                 "naturaleza_cuenta",
+                "forma_pago_id",
                 DB::raw('IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono'),
                 DB::raw('IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) AS saldo'),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
@@ -282,10 +283,12 @@ class Extracto
                 "DG.credito",
                 "DG.concepto",
                 "DG.anulado",
-                "PC.naturaleza_cuenta"
+                "PC.naturaleza_cuenta",
+                "FP.id AS forma_pago_id"
             )
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('plan_cuentas_tipos AS PCT', 'DG.id_cuenta', 'PCT.id_cuenta')
+            ->leftJoin('fac_formas_pagos AS FP', 'PC.id', 'FP.id_cuenta')
             ->where('anulado', 0)
             ->when($this->id_nit ? $this->id_nit : false, function ($query) {
 				$query->where('DG.id_nit', $this->id_nit);
@@ -295,7 +298,7 @@ class Extracto
                 else $query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
 			})
             ->when($this->fecha ? $this->fecha : false, function ($query) {
-				$query->where('DG.fecha_manual', '<', $this->fecha);
+				$query->where('DG.fecha_manual', '<=', $this->fecha);
 			})
             ->when($this->id_cuenta ? $this->id_cuenta : false, function ($query) {
                 if (is_array($this->id_cuenta)) $query->whereIn('PC.id', $this->id_cuenta);

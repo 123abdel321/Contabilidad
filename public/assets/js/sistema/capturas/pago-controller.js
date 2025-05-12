@@ -39,7 +39,21 @@ function pagoInit () {
             }
         },
         columns: [
-            {"data":'codigo_cuenta'},
+            {
+                "data": function (row, type, set, col){
+                    if (!row.cuenta_pago && !row.id_forma_pago) {
+                        return `<i
+                                class="fas fa-info icon-info"
+                                style="border: solid 1px #e29300 !important; color: #e29300 !important;";
+                                title="Cuenta de anticipo sin forma de pago registrada"
+                                data-toggle="popover"
+                                data-html="true"
+                            ></i>
+                            ${row.codigo_cuenta}`;
+                    }
+                    return row.codigo_cuenta;
+                }
+            },
             {
                 "data": function (row, type, set, col){
                     if (!row.cuenta_pago) {
@@ -110,6 +124,13 @@ function pagoInit () {
                         formatCurrency($(this), "blur");
                     }
                 });
+                $('[data-toggle="popover"]').popover({
+                    trigger: 'hover',
+                    html: true,
+                    placement: 'top',
+                    container: 'body',
+                    customClass: 'popover-formas-pagos'
+                });
             });
         }
     });
@@ -132,7 +153,7 @@ function pagoInit () {
             url: base_url + 'extracto',
             data: function ( d ) {
                 d.id_nit = $('#id_nit_pago').val();
-                d.id_tipo_cuenta = [3,7];
+                d.id_tipo_cuenta = [7];
             }
         },
         columns: [
@@ -178,7 +199,7 @@ function pagoInit () {
                     var tiposCuentas = row.cuenta.tipos_cuenta;
                     for (let index = 0; index < tiposCuentas.length; index++) {
                         const tipoCuenta = tiposCuentas[index];
-                        if (tipoCuenta.id_tipo_cuenta == 7 || tipoCuenta.id_tipo_cuenta == 3) {
+                        if (tipoCuenta.id_tipo_cuenta == 7) {
                             styles+= " color: #0bb19e; font-weight: 600;"
                             dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                         }
@@ -301,6 +322,10 @@ function pagoInit () {
     if (pagoUpdate) $("#documento_referencia_pago").prop('disabled', false);
     else $("#documento_referencia_pago").prop('disabled', true);
 
+    setTimeout(function(){
+        $comboNitPagos.select2("open");
+    },10);
+
     loadFormasPagoPagos();
 }
 
@@ -311,7 +336,7 @@ function buscarFacturaPagos(event) {
     document.getElementById('iniciarCapturaPago').click();
 }
 
-function agregarPagos(pagos) {
+function agregarPagosPagos(pagos) {
     if (!pagos.length) return;
 
     const sumasPorFormaPago = {};
@@ -385,7 +410,7 @@ function reloadTablePagos() {
 
             $('#fecha_manual_pago').val(factura.fecha_manual);
             $('#total_abono_pago').val(factura.total_abono);
-            agregarPagos(factura.pagos);
+            agregarPagosPagos(factura.pagos);
             loadAnticiposPago(factura.fecha_manual);
         }
 
@@ -903,7 +928,7 @@ function loadAnticiposPago(fecha_manual = null) {
     
     let data = {
         id_nit: $('#id_nit_pago').val(),
-        id_tipo_cuenta: [3,7],
+        id_tipo_cuenta: [7],
         fecha_manual: fecha_manual
     }
 
@@ -927,7 +952,7 @@ function loadAnticiposPago(fecha_manual = null) {
                     let idCuenta = anticipo.id_cuenta;
                     let cuentaExistente = encontrarCuentaPago(idCuenta);
                     
-                    totalAnticiposPago+= parseFloat(anticipo.saldo);
+                    totalAnticiposPago+= Math.abs(parseFloat(anticipo.saldo));
 
                     if (cuentaExistente) {
                         cuentaExistente[idCuenta].saldo = (cuentaExistente[idCuenta].saldo || 0) + parseFloat(anticipo.saldo);
@@ -935,7 +960,7 @@ function loadAnticiposPago(fecha_manual = null) {
                         let nuevoObj = {};
                         nuevoObj[idCuenta] = {
                             'id_cuenta': idCuenta,
-                            'saldo': parseFloat(anticipo.saldo)
+                            'saldo': Math.abs(parseFloat(anticipo.saldo))
                         };
                         totalAnticiposPagoCuenta.push(nuevoObj);
                     }

@@ -115,7 +115,7 @@ class ExtractoController extends Controller
     public function extractoAnticipos(Request $request)
     {
         $fechaManual = null;
-        $tiposCuentas = [4,8];
+        $tiposCuentas = [8];
 
         if ($request->get('id_tipo_cuenta')) {
             $tiposCuentas = $request->get('id_tipo_cuenta');

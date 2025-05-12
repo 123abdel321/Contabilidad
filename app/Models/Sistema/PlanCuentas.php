@@ -50,6 +50,11 @@ class PlanCuentas extends Model
         return $this->belongsTo(PlanCuentas::class, "id_padre");
     }
 
+    public function forma_pago()
+    {
+        return $this->hasOne(FacFormasPago::class, "id_cuenta", "id");
+	}
+
 	public function tipos_cuenta()
     {
         return $this->hasMany(PlanCuentasTipo::class, "id_cuenta");

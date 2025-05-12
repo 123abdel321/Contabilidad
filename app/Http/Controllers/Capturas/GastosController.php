@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Capturas;
 
 use DB;
 use Carbon\Carbon;
+use App\Helpers\Extracto;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -190,12 +191,15 @@ class GastosController extends Controller
                 $movimiento = (object)$movimiento;
                 
                 $conceptoGasto = ConConceptoGastos::with(
-                    'cuenta_gasto',
-                    'cuenta_reteica',
-                    'cuenta_descento',
+                    'cuenta_gasto.tipos_cuenta',
+                    'cuenta_reteica.tipos_cuenta',
+                    'cuenta_descento.tipos_cuenta',
                     'cuenta_iva.impuesto',
                     'cuenta_retencion.impuesto',
                     'cuenta_retencion_declarante.impuesto',
+                    'cuenta_iva.tipos_cuenta',
+                    'cuenta_retencion.tipos_cuenta',
+                    'cuenta_retencion_declarante.tipos_cuenta',
                 )->find($movimiento->id_concepto);
 
                 $porcentajeRetencion = $this->totalesFactura['porcentaje_rete_fuente'];
@@ -265,10 +269,21 @@ class GastosController extends Controller
                 ]);
 
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
+
                     $cuentaRecord = $conceptoGasto->{$cuentaKey};
-                    
                     if (!$cuentaRecord) continue;
                     
+                    $naturalezaCuenta = $cuentaRecord->naturaleza_compras;
+
+                    if (count($cuentaRecord->tipos_cuenta)) {
+                        foreach ($cuentaRecord->tipos_cuenta as $tipoCuenta) {
+                            if ($tipoCuenta->id_tipo_cuenta == 7) {
+                                $naturalezaCuenta = $cuentaRecord->naturaleza_cuenta;
+                                break;
+                            }
+                        }
+                    }
+
                     $keyValorItem = $cuenta["valor"];
                     $valorTotal = $detalleGasto->{$keyValorItem};
 
@@ -283,7 +298,7 @@ class GastosController extends Controller
                         "created_by" => request()->user()->id,
                         "updated_by" => request()->user()->id
                     ]);
-                    $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_compras);
+                    $documentoGeneral->addRow($doc, $naturalezaCuenta);
                 }
             }
             //AGREGAR RETE FUENTE
@@ -314,33 +329,57 @@ class GastosController extends Controller
             }
             //AGREGAR FORMAS DE PAGO
             $totalGasto = $this->totalesFactura['total_pagado'];
-            foreach ($request->get('pagos') as $pago) {
-                $pago = (object)$pago;
+            foreach ($request->get('pagos') as $pagoItem) {
 
-                $formaPago = $this->findFormaPago($pago->id);
-                $totalGasto-= $pago->valor;
+                $pagoItem = (object)$pagoItem;
+                $totalGasto-= $pagoItem->valor;
+                $formaPago = $this->findFormaPago($pagoItem->id);
+                $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $this->proveedor->id);
+                //CRUSAR ANTICIPOS
+                if (count($documentoReferenciaAnticipos)) {
 
-                ConGastoPagos::create([
-                    'id_gasto' => $gasto->id,
-                    'id_forma_pago' => $formaPago->id,
-                    'valor' => $pago->valor,
-                    'saldo' => $totalGasto,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
+                    $pagoAnticipos = $pagoItem->valor;
 
-                $doc = new DocumentosGeneral([
-                    'id_cuenta' => $formaPago->cuenta->id,
-                    'id_nit' => $formaPago->cuenta->exige_nit ? $gasto->id_proveedor : null,
-                    'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $gasto->id_centro_costos : null,
-                    'concepto' => $formaPago->cuenta->exige_concepto ? 'GASTO: PAGO' : null,
-                    'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $gasto->documento_referencia : null,
-                    'debito' => $pago->valor,
-                    'credito' => $pago->valor,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
-                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_compras);
+                    foreach ($documentoReferenciaAnticipos as $anticipos) {
+
+                        if (!$pagoAnticipos) {
+                            break;
+                        }
+
+                        $anticipoUsado = 0;
+                        $anticipoDisponible = floatval($anticipos->saldo);
+
+                        if ($anticipoDisponible >= $pagoAnticipos) {
+                            $anticipoUsado = $pagoAnticipos;
+                        } else {
+                            $anticipoUsado = $anticipoDisponible;
+                        }
+
+                        $pagoAnticipos-= $anticipoUsado;
+
+                        $doc = $this->addFormaPago(
+                            $anticipos->documento_referencia,
+                            $formaPago,
+                            $this->proveedor,
+                            $pagoItem,
+                            $gasto,
+                            $anticipoUsado,
+                            $totalGasto
+                        );
+                        $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_egresos);
+                    }
+                } else {
+                    $doc = $this->addFormaPago(
+                        null,
+                        $formaPago,
+                        $this->proveedor,
+                        $pagoItem,
+                        $gasto,
+                        $pagoItem->valor,
+                        $totalGasto
+                    );
+                    $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_egresos);
+                }
             }
 
             if (!$request->get('editing_gasto')) {
@@ -402,10 +441,7 @@ class GastosController extends Controller
             ->where('consecutivo', $request->get('consecutivo'));
 
         if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
-            $fecha = $request->get('fecha_manual');
-        
-            $gasto->whereMonth('fecha_manual', Carbon::parse($fecha)->month)
-                ->whereYear('fecha_manual', Carbon::parse($fecha)->year);
+            $this->filterCapturaMensual($gasto, $request->get('fecha_manual'));
         }
 
         return response()->json([
@@ -603,6 +639,32 @@ class GastosController extends Controller
             ->first();
     }
 
+    private function addFormaPago($documentoReferencia, $formaPago, $nit, $pagoItem, $gasto, $valor, $saldo)
+    {
+        ConGastoPagos::create([
+            'id_gasto' => $gasto->id,
+            'id_forma_pago' => $pagoItem->id,
+            'valor' => abs($valor),
+            'saldo' => $saldo,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        $doc = new DocumentosGeneral([
+            'id_cuenta' => $formaPago->cuenta->id,
+            'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
+            'id_centro_costos' => null,
+            'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$nit->nombre_nit.' - '.$gasto->consecutivo : null,
+            'documento_referencia' => $documentoReferencia,
+            'debito' => abs($valor),
+            'credito' => abs($valor),
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        return $doc;
+    }
+
     private function findFormaPago ($id_forma_pago)
     {
         return FacFormasPago::where('id', $id_forma_pago)
@@ -628,6 +690,27 @@ class GastosController extends Controller
         if ($redondeo_valor === null) return $valor; // No redondear
         if ($redondeo_valor == 0) return floor($valor); // Quitar decimales (redondear hacia abajo)
         return round($valor / $redondeo_valor) * $redondeo_valor; // Redondear al múltiplo más cercano
+    }
+
+
+    private function isAnticiposDocumentoRefe($formaPago, $idNit)
+    {
+        $tiposCuenta = $formaPago->cuenta->tipos_cuenta;
+        foreach ($tiposCuenta as $tipoCuenta) {
+            if ($tipoCuenta->id_tipo_cuenta == 7) {
+                $anticipoCuenta = (new Extracto(
+                    $idNit,
+                    null,
+                    null,
+                    Carbon::now()->format('Y-m-d H:i:s'),
+                    $formaPago->cuenta->id
+                ))->anticiposDiscriminados()->get();
+
+                return $anticipoCuenta;
+            }
+        }
+
+        return [];
     }
 
 }

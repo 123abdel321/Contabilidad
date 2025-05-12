@@ -39,7 +39,21 @@ function reciboInit () {
             }
         },
         columns: [
-            {"data":'codigo_cuenta'},
+            {
+                "data": function (row, type, set, col){
+                    if (!row.cuenta_recibo && !row.id_forma_pago) {
+                        return `<i
+                                class="fas fa-info icon-info"
+                                style="border: solid 1px #e29300 !important; color: #e29300 !important;";
+                                title="Cuenta de anticipo sin forma de pago registrada"
+                                data-toggle="popover"
+                                data-html="true"
+                            ></i>
+                            ${row.codigo_cuenta}`;
+                    }
+                    return row.codigo_cuenta;
+                }
+            },
             {
                 "data": function (row, type, set, col){
                     if (!row.cuenta_recibo) {
@@ -110,6 +124,13 @@ function reciboInit () {
                         formatCurrency($(this), "blur");
                     }
                 });
+                $('[data-toggle="popover"]').popover({
+                    trigger: 'hover',
+                    html: true,
+                    placement: 'top',
+                    container: 'body',
+                    customClass: 'popover-formas-pagos'
+                });
             });
         }
     });
@@ -132,7 +153,7 @@ function reciboInit () {
             url: base_url + 'extracto',
             data: function ( d ) {
                 d.id_nit = $('#id_nit_recibo').val();
-                d.id_tipo_cuenta = [4,8];
+                d.id_tipo_cuenta = [8];
             }
         },
         columns: [
@@ -903,7 +924,7 @@ function loadAnticiposRecibo(fecha_manual = null) {
     
     let data = {
         id_nit: $('#id_nit_recibo').val(),
-        id_tipo_cuenta: [4,8],
+        id_tipo_cuenta: [8],
         fecha_manual: fecha_manual
     }
 
@@ -927,7 +948,7 @@ function loadAnticiposRecibo(fecha_manual = null) {
                     let idCuenta = anticipo.id_cuenta;
                     let cuentaExistente = encontrarCuentaRecibo(idCuenta);
                     
-                    totalAnticiposRecibo+= parseFloat(anticipo.saldo);
+                    totalAnticiposRecibo+= Math.abs(parseFloat(anticipo.saldo));
 
                     if (cuentaExistente) {
                         cuentaExistente[idCuenta].saldo = (cuentaExistente[idCuenta].saldo || 0) + parseFloat(anticipo.saldo);
@@ -935,7 +956,7 @@ function loadAnticiposRecibo(fecha_manual = null) {
                         let nuevoObj = {};
                         nuevoObj[idCuenta] = {
                             'id_cuenta': idCuenta,
-                            'saldo': parseFloat(anticipo.saldo)
+                            'saldo': Math.abs(parseFloat(anticipo.saldo))
                         };
                         totalAnticiposReciboCuenta.push(nuevoObj);
                     }
@@ -1212,7 +1233,7 @@ function consecutivoSiguienteRecibo() {
     var id_comprobante = $('#id_comprobante_recibo').val();
     var fecha_manual = $('#fecha_manual_recibo').val();
     var fecha_manual_hoy = fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    console.log('cargando consecutivo');
+
     if(id_comprobante && fecha_manual) {
 
         let data = {

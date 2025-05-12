@@ -161,10 +161,11 @@ class RecibosController extends Controller
                 $extractos = $extractos->sortBy('cuenta')->values();
             }
 
-            $cxcAnticipos = PlanCuentas::where('auxiliar', 1)
+            $cxcAnticipos = PlanCuentas::with('forma_pago')
+                ->where('auxiliar', 1)
                 ->where('exige_documento_referencia', 1)
                 ->whereHas('tipos_cuenta', function ($query) {
-                    $query->whereIn('id_tipo_cuenta', [4,8]);
+                    $query->whereIn('id_tipo_cuenta', [8]);
                 })
                 ->orderBy('cuenta', 'ASC')
                 ->get();
@@ -400,6 +401,16 @@ class RecibosController extends Controller
             foreach ($request->get('movimiento') as $movimiento) {
                 $movimiento = (object)$movimiento;
                 $cuentaRecord = PlanCuentas::find($movimiento->id_cuenta);
+                $naturalezaCuenta = $cuentaRecord->naturaleza_ingresos;
+                
+                if (count($cuentaRecord->tipos_cuenta)) {
+                    foreach ($cuentaRecord->tipos_cuenta as $tipoCuenta) {
+                        if ($tipoCuenta->id_tipo_cuenta == 8) {
+                            $naturalezaCuenta = $cuentaRecord->naturaleza_cuenta;
+                            break;
+                        }
+                    }
+                }
 
                 //CREAR RECIBO DETALLE
                 ConReciboDetalles::create([
@@ -431,7 +442,7 @@ class RecibosController extends Controller
                     "created_by" => request()->user()->id,
                     "updated_by" => request()->user()->id
                 ]);
-                $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_ingresos);
+                $documentoGeneral->addRow($doc, $naturalezaCuenta);
             }
 
             $totalRecibos = $this->totalesFactura['total_pagado'];
@@ -1124,16 +1135,10 @@ class RecibosController extends Controller
     private function formatCuentaAnticipo($cuenta, $idNit)
     {
         $this->id_recibo++;
-        $anticipoCuenta = (new Extracto(
-            $idNit,
-            null,
-            null,
-            Carbon::now()->format('Y-m-d H:i:s'),
-            $cuenta->id
-        ))->anticipos()->first();
 
         return [
             'id' => $this->id_recibo,
+            'id_forma_pago' => $cuenta->forma_pago ? $cuenta->forma_pago->id : null,
             'id_cuenta' =>  $cuenta->id,
             'codigo_cuenta' => $cuenta->cuenta,
             'nombre_cuenta' => $cuenta->nombre,

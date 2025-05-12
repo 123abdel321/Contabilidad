@@ -134,75 +134,75 @@
         <div id="tabla-captura-gasto" class="card mb-4 col-12 col-sm-12 col-md-9 ml-auto">
             <div id="card-gasto" class="card-body" style="content-visibility: auto; overflow: auto; border-radius: 20px;">
 
-            @include('pages.capturas.gasto.gasto-table')
+                @include('pages.capturas.gasto.gasto-table')
                 <div style="padding: 8px;"></div>
 
             </div>
         </div>
 
-        <div class="col-12 col-sm-12 col-md-3 ml-auto card mb-4" style="padding-left: 0.2rem;padding-right: 0.2rem;">
+        <div class="col-12 col-sm-12 col-md-3 ml-auto">
             
-            <div class="justify-content-between">
-                
-                <div class="mb-4 ml-auto">
+            <div class="row justify-content-between">
+
+                <div class="card mb-4 col-12 col-sm-12 col-md-12 ml-auto">
+
+                    <table class="table table-bordered table-captura-totales" width="100%" style="margin-top: 12px;">
+                        <tbody>
+                            <tr id="gasto_anticipo_disp_view" style="display: none;">
+                                <td><h6 id="show-anticipos-gasto" style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500; color: #0bb19e; display: flex; cursor: pointer;"><div><i class="fas fa-eye"></i></div>&nbsp;ANTICIPOS DISP: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem; color: #0bb19e;" id="gasto_anticipo_disp">0.00</h6></td>
+                            </tr>
+                            <tr id="gasto_descuento_disp_view" style="display: none;">
+                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">DESCUENTO: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_descuento">0.00</h6></td>
+                            </tr>
+                            <tr>
+                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500; ">SUB TOTAL: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_sub_total">0.00</h6></td>
+                            </tr>
+                            <tr id="gasto_aiu_disp_view" style="display: none;">
+                                <td><h6 id="texto_gasto_aiu" style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">AIU: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_aiu">0.00</h6></td>
+                            </tr>
+                            <tr id="gasto_iva_disp_view" style="display: none;">
+                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">IVA: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_iva">0.00</h6></td>
+                            </tr>
+                            <tr id="gasto_retencion_disp_view" style="display: none;">
+                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">RETENCIÓN: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_retencion">0.00</h6></td>
+                            </tr>
+                            <tr id="gasto_reteica_disp_view" style="display: none;">
+                                <td><h6 id="texto_gasto_reteica" style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">RETEICA: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_reteica">0.00</h6></td>
+                            </tr>
+                            <tr>
+                                <td><h6 style="margin-bottom: 0px; font-weight: bold;">TOTAL: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-weight: bold;" id="gasto_total">0.00</h6></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="overflow: auto;">
+                        <table id="gastoFormaPago" class="table table-bordered display responsive table-captura-gasto" width="100%">
+                            <thead>
+                                <tr style="border: 0px !important;">
+                                    <th style="border-radius: 15px 0px 0px 0px !important;">Pagos</th>
+                                    <th style="border-radius: 0px 15px 0px 0px !important;">Total</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
                     <div class="row">
-                        <div class="col-12 col-sm-6 col-md-12" style="place-content: center;">
-                            <table class="table table-bordered table-captura-totales" width="100%" style="margin-top: 9px;">
-                                <tbody>
-                                    <tr id="gasto_descuento_disp_view" style="display: none;">
-                                        <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">DESCUENTO: </h6></td>
-                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_descuento">0.00</h6></td>
-                                    </tr>
-                                    <tr>
-                                        <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500; ">SUB TOTAL: </h6></td>
-                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_sub_total">0.00</h6></td>
-                                    </tr>
-                                    <tr id="gasto_aiu_disp_view" style="display: none;">
-                                        <td><h6 id="texto_gasto_aiu" style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">AIU: </h6></td>
-                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_aiu">0.00</h6></td>
-                                    </tr>
-                                    <tr id="gasto_iva_disp_view" style="display: none;">
-                                        <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">IVA: </h6></td>
-                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_iva">0.00</h6></td>
-                                    </tr>
-                                    <tr id="gasto_retencion_disp_view" style="display: none;">
-                                        <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">RETENCIÓN: </h6></td>
-                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_retencion">0.00</h6></td>
-                                    </tr>
-                                    <tr id="gasto_reteica_disp_view" style="display: none;">
-                                        <td><h6 id="texto_gasto_reteica" style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">RETEICA: </h6></td>
-                                        <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_reteica">0.00</h6></td>
-                                    </tr>
-                                    <tr>
-                                        <td><h6 style="margin-bottom: 0px; font-weight: bold;">TOTAL: </h6></td>
-                                        <td><h6 style="margin-bottom: 0px; float: right; font-weight: bold;" id="gasto_total">0.00</h6></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="col-6">
+                            <h6 id="total_faltante_gasto_text" style="margin-bottom: 0px; font-weight: bold; margin-left: 4px; text-wrap: nowrap;">FALTANTE: </h6>
                         </div>
-    
-                        <div class="col-12 col-sm-6 col-md-12">
-                            <div style="overflow: auto;">
-                                <table id="gastoFormaPago" class="table table-bordered display responsive table-captura-gasto" width="100%">
-                                    <thead>
-                                        <tr style="border: 0px !important;">
-                                            <th style="border-radius: 15px 0px 0px 0px !important;">Pagos</th>
-                                            <th style="border-radius: 0px 15px 0px 0px !important;">Total</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <div class="row" id="gasto_faltante_view" style="display: none;">
-                                <div class="col-6">
-                                    <h6 id="total_faltante_gasto_text" style="margin-bottom: 0px; font-weight: bold; margin-left: 4px; text-wrap: nowrap; color: #fd7e14;">FALTANTE: </h6>
-                                </div>
-                                <div class="col-6" style="text-align: end; text-wrap: nowrap;">
-                                    <h6 id="total_faltante_gasto" style="margin-bottom: 0px; font-weight: bold; margin-right: 25px;">0.00</h6>
-                                </div>
-                            </div>
+                        <div class="col-6" style="text-align: end; text-wrap: nowrap;">
+                            <h6 id="total_faltante_gasto" style="margin-bottom: 0px; font-weight: bold; margin-right: 25px;">0.00</h6>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
 
