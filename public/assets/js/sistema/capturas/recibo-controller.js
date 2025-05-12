@@ -45,7 +45,7 @@ function reciboInit () {
                         return `<i
                                 class="fas fa-info icon-info"
                                 style="border: solid 1px #e29300 !important; color: #e29300 !important;";
-                                title="Cuenta de anticipo sin forma de pago registrada"
+                                title="<b>Anticipos cuenta</b> <br/> Sin forma de pago registrada"
                                 data-toggle="popover"
                                 data-html="true"
                             ></i>
