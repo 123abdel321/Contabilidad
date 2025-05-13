@@ -226,10 +226,12 @@ class FormasPagoController extends Controller
         }
 
         if ($request->has("type")) {
-            //QUITAR A FUTURO Y BUSCAR LAS CUENTAS TIPO 2: Caja - Bancos
-            $formasPago->whereHas('cuenta', function ($query) use ($request) {
-                $query->whereNotNull('naturaleza_'.$request->get("type"));
-            });
+            if ($request->get("type") != 'gasto') {
+                //QUITAR A FUTURO Y BUSCAR LAS CUENTAS TIPO 2: Caja - Bancos
+                $formasPago->whereHas('cuenta', function ($query) use ($request) {
+                    $query->whereNotNull('naturaleza_'.$request->get("type"));
+                });
+            }
             
             switch ($request->get("type")) {
                 case 'gasto':
