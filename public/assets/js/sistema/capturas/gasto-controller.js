@@ -208,7 +208,7 @@ function gastoInit () {
             type: "GET",
             headers: headers,
             data: {
-                type: 'compras'
+                type: 'gasto'
             },
             url: base_url + 'forma-pago/combo-forma-pago',
         },
