@@ -342,6 +342,16 @@ class GastosController extends Controller
 
                     foreach ($documentoReferenciaAnticipos as $anticipos) {
 
+                        $naturaleza = $formaPago->cuenta->naturaleza_egresos;
+
+                        if ($formaPago->cuenta?->tipos_cuenta) {
+                            foreach ($formaPago->cuenta->tipos_cuenta as $tipos_cuenta) {
+                                if ($tipos_cuenta == 7) {
+                                    $naturaleza = $formaPago->cuenta->naturaleza_compras;
+                                }
+                            }
+                        }
+
                         if (!$pagoAnticipos) {
                             break;
                         }
@@ -366,9 +376,19 @@ class GastosController extends Controller
                             $anticipoUsado,
                             $totalGasto
                         );
-                        $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_egresos);
+                        $documentoGeneral->addRow($doc, $naturaleza);
                     }
                 } else {
+                    $naturaleza = $formaPago->cuenta->naturaleza_egresos;
+
+                    if ($formaPago->cuenta?->tipos_cuenta) {
+                            foreach ($formaPago->cuenta->tipos_cuenta as $tipos_cuenta) {
+                                if ($tipos_cuenta == 4) {
+                                    $naturaleza = $formaPago->cuenta->naturaleza_compras;
+                                }
+                            }
+                        }
+
                     $doc = $this->addFormaPago(
                         null,
                         $formaPago,
@@ -378,7 +398,7 @@ class GastosController extends Controller
                         $pagoItem->valor,
                         $totalGasto
                     );
-                    $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_egresos);
+                    $documentoGeneral->addRow($doc, $naturaleza);
                 }
             }
 
@@ -669,7 +689,7 @@ class GastosController extends Controller
     {
         return FacFormasPago::where('id', $id_forma_pago)
             ->with(
-                'cuenta'
+                'cuenta.tipos_cuenta',
             )
             ->first();
     }

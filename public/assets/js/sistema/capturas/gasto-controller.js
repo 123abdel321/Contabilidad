@@ -217,6 +217,8 @@ function gastoInit () {
                 let styles = "margin-bottom: 0px; font-size: 13px;";
                 let stylesInfo = null;
                 let naturaleza = 'Credito - Egreso';
+                let anticipos7 = false;
+                let anticipos4 = false;
                 if (!row.cuenta.naturaleza_egresos) {
                     naturaleza = 'Error de naturaleza en egreso';
                     stylesInfo = "border: solid 1px red !important; color: red !important;"
@@ -226,12 +228,33 @@ function gastoInit () {
                     var tiposCuentas = row.cuenta.tipos_cuenta;
                     for (let index = 0; index < tiposCuentas.length; index++) {
                         const tipoCuenta = tiposCuentas[index];
-                        if (tipoCuenta.id_tipo_cuenta == 7 || tipoCuenta.id_tipo_cuenta == 4) {
+                        if (tipoCuenta.id_tipo_cuenta == 7) {
+                            anticipos7 = true;
+                            styles+= " color: #0bb19e; font-weight: 600;"
+                            dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                        }
+                        if (tipoCuenta.id_tipo_cuenta == 4) {
+                            anticipos4 = true;
                             styles+= " color: #0bb19e; font-weight: 600;"
                             dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                         }
                     }
                 }
+
+                if (anticipos7) {
+                    naturaleza = 'Credito - Compra';
+                    stylesInfo = null;
+                    styles+= " color: #0bb19e; font-weight: 600;"
+                    dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                }
+
+                if (anticipos4) {
+                    naturaleza = 'Credito - Compra';
+                    stylesInfo = null;
+                    styles+= null;
+                    dataContent = `<b>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                }
+
                 return `<p style="${styles}">
                             <i
                                 class="fas fa-info icon-info"
@@ -251,7 +274,7 @@ function gastoInit () {
                     var tiposCuentas = row.cuenta.tipos_cuenta;
                     for (let index = 0; index < tiposCuentas.length; index++) {
                         const tipoCuenta = tiposCuentas[index];
-                        if (tipoCuenta.id_tipo_cuenta == 7 || tipoCuenta.id_tipo_cuenta == 4) {
+                        if (tipoCuenta.id_tipo_cuenta == 7) {
                             anticipos = true;
                             className = 'anticipos'
                         }
@@ -1193,7 +1216,7 @@ function loadAnticiposGasto(fecha_manual = null) {
     
     let data = {
         id_nit: $('#id_nit_gasto').val(),
-        id_tipo_cuenta: [7,4],
+        id_tipo_cuenta: [7],
         fecha_manual: fecha_manual
     }
 
