@@ -235,8 +235,6 @@ function gastoInit () {
                         }
                         if (tipoCuenta.id_tipo_cuenta == 4) {
                             anticipos4 = true;
-                            styles+= " color: #0bb19e; font-weight: 600;"
-                            dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                         }
                     }
                 }
@@ -244,14 +242,14 @@ function gastoInit () {
                 if (anticipos7) {
                     naturaleza = 'Credito - Compra';
                     stylesInfo = null;
-                    styles+= " color: #0bb19e; font-weight: 600;"
+                    styles = " color: #0bb19e; font-weight: 600;"
                     dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                 }
 
                 if (anticipos4) {
                     naturaleza = 'Credito - Compra';
                     stylesInfo = null;
-                    styles+= null;
+                    styles = null;
                     dataContent = `<b>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                 }
 

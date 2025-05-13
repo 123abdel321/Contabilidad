@@ -390,7 +390,7 @@ class GastosController extends Controller
                     }
 
                     $doc = $this->addFormaPago(
-                        null,
+                        $request->get('documento_referencia'),
                         $formaPago,
                         $this->proveedor,
                         $pagoItem,
@@ -675,7 +675,7 @@ class GastosController extends Controller
             'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
             'id_centro_costos' => null,
             'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$nit->nombre_nit.' - '.$gasto->consecutivo : null,
-            'documento_referencia' => $documentoReferencia,
+            'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $documentoReferencia : null,
             'debito' => abs($valor),
             'credito' => abs($valor),
             'created_by' => request()->user()->id,
