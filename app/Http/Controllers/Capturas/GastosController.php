@@ -330,12 +330,13 @@ class GastosController extends Controller
             //AGREGAR FORMAS DE PAGO
             $totalGasto = $this->totalesFactura['total_pagado'];
             foreach ($request->get('pagos') as $pagoItem) {
-
+                
                 $pagoItem = (object)$pagoItem;
                 $totalGasto-= $pagoItem->valor;
                 $formaPago = $this->findFormaPago($pagoItem->id);
                 $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $this->proveedor->id);
                 //CRUSAR ANTICIPOS
+                
                 if (count($documentoReferenciaAnticipos)) {
 
                     $pagoAnticipos = $pagoItem->valor;
@@ -346,7 +347,7 @@ class GastosController extends Controller
 
                         if ($formaPago->cuenta?->tipos_cuenta) {
                             foreach ($formaPago->cuenta->tipos_cuenta as $tipos_cuenta) {
-                                if ($tipos_cuenta->id == 7) {
+                                if ($tipos_cuenta->id_tipo_cuenta == 7) {
                                     $naturaleza = $formaPago->cuenta->naturaleza_compras;
                                 }
                             }
@@ -380,10 +381,11 @@ class GastosController extends Controller
                     }
                 } else {
                     $naturaleza = $formaPago->cuenta->naturaleza_egresos;
-
+                    
                     if ($formaPago->cuenta?->tipos_cuenta) {
+                        
                         foreach ($formaPago->cuenta->tipos_cuenta as $tipos_cuenta) {
-                            if ($tipos_cuenta->id == 4) {
+                            if ($tipos_cuenta->id_tipo_cuenta == 4) {
                                 $naturaleza = $formaPago->cuenta->naturaleza_compras;
                             }
                         }
@@ -400,6 +402,7 @@ class GastosController extends Controller
                     );
                     $documentoGeneral->addRow($doc, $naturaleza);
                 }
+                dd('afuera');
             }
 
             if (!$request->get('editing_gasto')) {
