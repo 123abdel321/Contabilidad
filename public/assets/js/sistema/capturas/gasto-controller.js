@@ -249,7 +249,6 @@ function gastoInit () {
                 if (anticipos4) {
                     naturaleza = 'Credito - Compra';
                     stylesInfo = null;
-                    styles = null;
                     dataContent = `<b>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                 }
 
@@ -1308,8 +1307,6 @@ function saveGasto () {
         }
 
         dataGasto = [];
-
-        
 
         setTimeout(function(){
             $('#id_nit_gasto').focus();
