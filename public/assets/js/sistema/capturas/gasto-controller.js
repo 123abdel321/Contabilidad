@@ -1317,7 +1317,8 @@ function saveGasto () {
         },10);
     }).fail((err) => {
         guardandoGasto = false;
-
+        
+        disabledFormasPagoGasto(false);
         $("#agregarGasto").show();
         $("#crearCapturaGasto").show();
         $("#cancelarCapturaGasto").show();
