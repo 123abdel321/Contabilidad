@@ -346,7 +346,7 @@ class GastosController extends Controller
 
                         if ($formaPago->cuenta?->tipos_cuenta) {
                             foreach ($formaPago->cuenta->tipos_cuenta as $tipos_cuenta) {
-                                if ($tipos_cuenta == 7) {
+                                if ($tipos_cuenta->id == 7) {
                                     $naturaleza = $formaPago->cuenta->naturaleza_compras;
                                 }
                             }
@@ -382,12 +382,12 @@ class GastosController extends Controller
                     $naturaleza = $formaPago->cuenta->naturaleza_egresos;
 
                     if ($formaPago->cuenta?->tipos_cuenta) {
-                            foreach ($formaPago->cuenta->tipos_cuenta as $tipos_cuenta) {
-                                if ($tipos_cuenta == 4) {
-                                    $naturaleza = $formaPago->cuenta->naturaleza_compras;
-                                }
+                        foreach ($formaPago->cuenta->tipos_cuenta as $tipos_cuenta) {
+                            if ($tipos_cuenta->id == 4) {
+                                $naturaleza = $formaPago->cuenta->naturaleza_compras;
                             }
                         }
+                    }
 
                     $doc = $this->addFormaPago(
                         null,
