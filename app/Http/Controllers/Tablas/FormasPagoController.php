@@ -228,10 +228,9 @@ class FormasPagoController extends Controller
         if ($request->has("type")) {
             $tipoCuenta = $request->get("type");
             if ($request->get("type") == 'gastos') $tipoCuenta = 'compras';
-            
             //QUITAR A FUTURO Y BUSCAR LAS CUENTAS TIPO 2: Caja - Bancos
-            $formasPago->whereHas('cuenta', function ($query) use ($request) {
-                $query->whereNotNull('naturaleza_'.$request->get("type"));
+            $formasPago->whereHas('cuenta', function ($query) use ($tipoCuenta) {
+                $query->whereNotNull('naturaleza_'.$tipoCuenta);
             });
             
             switch ($request->get("type")) {
