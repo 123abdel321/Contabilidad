@@ -242,7 +242,6 @@ function gastoInit () {
                 if (anticipos7) {
                     naturaleza = 'Credito - Compra';
                     stylesInfo = null;
-                    styles = " color: #0bb19e; font-weight: 600;"
                     dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                 }
 
