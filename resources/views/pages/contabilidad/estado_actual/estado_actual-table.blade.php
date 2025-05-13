@@ -5,9 +5,12 @@
             <th>Año</th>
             <th>Comprobantes</th>
             <th>Registros</th>
-            <th>Documentos</th>
-            <th>Debito</th>
-            <th>Credito</th>
+            <th>Fecha manual</th>
+            <th>Cedúla</th>
+            <th>Nit</th>
+            <th>Documento</th>
+            <th>Débito</th>
+            <th>Crédito</th>
             <th>Diferencia</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Errores</th>
         </tr>

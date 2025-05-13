@@ -90,6 +90,12 @@ class ProcessInformeEstadoActual implements ShouldQueue
             ->select(
                 'DG.fecha_manual',
                 'DG.id_comprobante',
+                'N.numero_documento',
+                DB::raw("(CASE
+                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    ELSE NULL
+                END) AS nombre_nit"),
                 DB::raw("0 AS documentos"),
                 DB::raw("CONCAT(CO.codigo, ' - ', CO.nombre) AS comprobantes"),
                 DB::raw("DATE_FORMAT(fecha_manual, '%m') AS mes"),
@@ -100,6 +106,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 DB::raw('SUM(debito) - SUM(credito) AS diferencia'),
                 DB::raw("COUNT(DG.id) registros")
             )
+            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
             ->when($this->request['year'] ? $this->request['year'] : false, function ($query) {
@@ -356,6 +363,9 @@ class ProcessInformeEstadoActual implements ShouldQueue
         foreach($this->estadoActualCollection as $estadoActual){
 			$ordenado[] = [
                 'id_estado_actual' => $this->id_estado_actual,
+                'fecha_manual' => !$estadoActual->total ? $estadoActual->fecha_manual : null,
+                'numero_documento' => !$estadoActual->total ? $estadoActual->numero_documento : null,
+                'nombre_nit' => !$estadoActual->total ? $estadoActual->nombre_nit : null,
                 'documentos' => $estadoActual->documentos,
                 'comprobantes' => $estadoActual->comprobantes,
                 'mes' => $estadoActual->total == 2 || $estadoActual->total == 4 ? $estadoActual->mes : '',
@@ -373,6 +383,9 @@ class ProcessInformeEstadoActual implements ShouldQueue
 
         $ordenado[] = [
             'id_estado_actual' => $this->id_estado_actual,
+            'fecha_manual' => '',
+            'numero_documento' => '',
+            'nombre_nit' => '',
             'documentos' => $estadoActual->documentos,
             'comprobantes' => $estadoActual->comprobantes,
             'mes' => $estadoActual->total == 2 || $estadoActual->total == 4 ? $estadoActual->mes : '',
@@ -414,6 +427,12 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 'DG.fecha_manual',
                 'DG.id_comprobante',
                 'DG.consecutivo AS documentos',
+                'N.numero_documento',
+                DB::raw("(CASE
+                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    ELSE NULL
+                END) AS nombre_nit"),
                 DB::raw("'' AS comprobantes"),
                 DB::raw("'' AS mes"),
                 DB::raw("DATE_FORMAT(fecha_manual, '%Y') AS year"),
@@ -423,6 +442,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 DB::raw('SUM(debito) - SUM(credito) AS diferencia'),
                 DB::raw("COUNT(DG.id) registros")
             )
+            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->where(function ($query) use ($inicioMes, $finMes) {
                 $query->where('DG.fecha_manual', '>=', $inicioMes.'-01')
                     ->where('DG.fecha_manual', '<=', $finMes);
@@ -443,6 +463,9 @@ class ProcessInformeEstadoActual implements ShouldQueue
                         $this->estadoActualCollection[$inicioMes.'-A_'.$documento->id_comprobante.'_'.$this->consecutivoActual + 1] = (object)[
                             'id_comprobante' => '',
                             'comprobantes' => '',
+                            'fecha_manual' => '',
+                            'numero_documento' => '',
+                            'nombre_nit' => '',
                             'mes' => '',
                             'year' => $documento->year,
                             'meses' => '',

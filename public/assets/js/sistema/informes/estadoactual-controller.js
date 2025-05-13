@@ -90,6 +90,9 @@ function estadoactualInit() {
             { data: 'year'},
             { data: 'comprobantes'},
             { data: 'registros'},
+            { data: 'fecha_manual'},
+            { data: 'numero_documento'},
+            { data: 'nombre_nit'},
             { data: 'documentos'},
             { data: 'debito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: 'credito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
@@ -131,6 +134,8 @@ function estadoactualInit() {
             }
         }
     });
+
+    actualizarColumnasEstadoActual();
 }
 
 var channel = pusher.subscribe('informe-estado-actual-'+localStorage.getItem("notificacion_code"));
@@ -162,11 +167,30 @@ $(document).on('click', '#generarEstadoActual', function () {
 
     estado_actual_table.ajax.url(url).load(function(res) {
         if(res.success) {
+            actualizarColumnasEstadoActual();
             agregarToast('info', 'Generando estado actual', 'En un momento se le notificará cuando el informe esté generado...', true );
         }
     });
 
 });
+
+function actualizarColumnasEstadoActual() {
+    const nivel = parseInt(getDellarEstadoActual());
+    
+    const columnFechaManual = estado_actual_table.column(4);
+    const columnCedula = estado_actual_table.column(5);
+    const columnNit = estado_actual_table.column(6);
+
+    if (nivel == 1) {
+        columnFechaManual.visible(true);
+        columnCedula.visible(true);
+        columnNit.visible(true);
+    } else {
+        columnFechaManual.visible(false);
+        columnCedula.visible(false);
+        columnNit.visible(false);
+    }
+}
 
 function loadEstadoActualById(id_estado_actual) {
     estado_actual_table.ajax.url(base_url + 'estado-actual-show?id='+id_estado_actual).load(function(res) {

@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('year', 20)->nullable();
             $table->string('comprobantes', 20)->nullable();
             $table->string('registros', 20)->nullable();
+            $table->string('fecha_manual', 200)->nullable();
+            $table->string('numero_documento', 50)->nullable();
+            $table->string('nombre_nit', 100)->nullable();
             $table->string('errores', 20)->nullable();
             $table->string('documentos', 20)->nullable();
             $table->string('total', 20)->nullable();
