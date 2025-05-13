@@ -7,11 +7,12 @@
             <th>Registros</th>
             <th>Fecha manual</th>
             <th>Cedúla</th>
-            <th>Nit</th>
+            <th>Nombre</th>
             <th>Documento</th>
             <th>Débito</th>
             <th>Crédito</th>
             <th>Diferencia</th>
+            <th>Concepto</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Errores</th>
         </tr>
     </thead>

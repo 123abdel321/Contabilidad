@@ -104,6 +104,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
                 DB::raw('SUM(debito) - SUM(credito) AS diferencia'),
+                'DG.concepto',
                 DB::raw("COUNT(DG.id) registros")
             )
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
@@ -156,6 +157,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
                 DB::raw('SUM(debito) - SUM(credito) AS diferencia'),
+                'DG.concepto',
                 DB::raw("COUNT(DG.id) registros")
             )
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
@@ -374,6 +376,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 'credito' => $estadoActual->credito,
                 'diferencia' => $estadoActual->diferencia,
                 'registros' => $estadoActual->registros,
+                'concepto' => !$estadoActual->total ? $estadoActual->concepto : null,
                 'errores' => $estadoActual->errores,
                 'total' => $estadoActual->total,
             ];
@@ -394,6 +397,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
             'credito' => $estadoActual->credito,
             'diferencia' => $estadoActual->diferencia,
             'registros' => $estadoActual->registros,
+            'concepto' => '',
             'errores' => $estadoActual->errores,
             'total' => $estadoActual->total,
         ];
@@ -440,6 +444,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
                 DB::raw('SUM(debito) - SUM(credito) AS diferencia'),
+                'DG.concepto',
                 DB::raw("COUNT(DG.id) registros")
             )
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
@@ -472,6 +477,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
                             'debito' => '',
                             'credito' => '',
                             'diferencia' => '',
+                            'concepto' => '',
                             'registros' => '',
                             'total' => '3',
                             'mes' => '',

@@ -44,6 +44,11 @@ function estadoactualInit() {
         'rowCallback': function(row, data, index){
             var mes = data.mes;
             var detalleActual = parseInt(getDellarEstadoActual());
+            if (data.total == 0 && (data.diferencia > 0 || data.diferencia < 0)) {
+                $('td', row).css('background-color', '#ff00004d');
+                $('td', row).css('color', 'black');
+                return;
+            }
             if(data.total == 4){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
                 $('td', row).css('font-weight', 'bold');
@@ -96,7 +101,14 @@ function estadoactualInit() {
             { data: 'documentos'},
             { data: 'debito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: 'credito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            { data: 'diferencia', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){
+                var diferencia = parseFloat(row.diferencia);
+                if(row.total == 0 && (diferencia > 0 || diferencia < 0)){
+                    return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(diferencia).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
+                }
+                return diferencia.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            }},
+            { data: 'concepto'},
             { data: 'errores'}
         ]
     });
@@ -180,15 +192,18 @@ function actualizarColumnasEstadoActual() {
     const columnFechaManual = estado_actual_table.column(4);
     const columnCedula = estado_actual_table.column(5);
     const columnNit = estado_actual_table.column(6);
+    const columnConcepto = estado_actual_table.column(11);
 
     if (nivel == 1) {
         columnFechaManual.visible(true);
         columnCedula.visible(true);
         columnNit.visible(true);
+        columnConcepto.visible(true);
     } else {
         columnFechaManual.visible(false);
         columnCedula.visible(false);
         columnNit.visible(false);
+        columnConcepto.visible(false);
     }
 }
 
