@@ -1159,7 +1159,7 @@ function actualizarInfoRetencion() {
         }
     });
 
-    $("#nombre_info_retencion").html(`RETENCIÓN ${porcentaje}:`);
+    $("#nombre_info_retencion").html(`RETENCIÓN %${porcentaje}:`);
 
     let baseformat = new Intl.NumberFormat('ja-JP').format(base);
     let valorSubtotal = new Intl.NumberFormat('ja-JP').format(gasto_sub_total);
