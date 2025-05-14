@@ -168,8 +168,19 @@
                                 <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">IVA: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_iva">0.00</h6></td>
                             </tr>
-                            <tr id="gasto_retencion_disp_view" style="display: none;">
-                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">RETENCIÓN: </h6></td>
+                            <tr >
+                                <td>
+                                    <h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">
+                                        <i
+                                            id="icon_info_retencion"
+                                            class="fas fa-info icon-info"
+                                            title="<b>Base:</b> 0<br/> <b>Subtotal:</b> 0"
+                                            data-toggle="popover"
+                                            data-html="true"
+                                        ></i>
+                                        <b id="nombre_info_retencion" style="font-weight: 500;">RETENCIÓN:</b>
+                                    </h6>
+                                </td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_retencion">0.00</h6></td>
                             </tr>
                             <tr id="gasto_reteica_disp_view" style="display: none;">
