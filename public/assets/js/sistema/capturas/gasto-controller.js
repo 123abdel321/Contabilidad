@@ -615,6 +615,8 @@ function changeConceptoGasto(idGasto) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion_declarante.impuesto.id);
             if (!existe || existe < 0) {
                 retencionesGasto.push({
+                    cuenta: data.cuenta_retencion_declarante.cuenta,
+                    nombre: data.cuenta_retencion_declarante.nombre,
                     id_retencion: data.cuenta_retencion_declarante.impuesto.id,
                     porcentaje: parseFloat(data.cuenta_retencion_declarante.impuesto.porcentaje),
                     base: parseFloat(data.cuenta_retencion_declarante.impuesto.base),
@@ -626,6 +628,8 @@ function changeConceptoGasto(idGasto) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion.impuesto.id);
             if (!existe || existe < 0) {
                 retencionesGasto.push({
+                    cuenta: data.cuenta_retencion.cuenta,
+                    nombre: data.cuenta_retencion.nombre,
                     id_retencion: data.cuenta_retencion.impuesto.id,
                     porcentaje: parseFloat(data.cuenta_retencion.impuesto.porcentaje),
                     base: parseFloat(data.cuenta_retencion.impuesto.base),
@@ -1143,12 +1147,14 @@ function actualizarInfoRetencion() {
     var [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total, gasto_aiu] = totalValoresGastos();
     var porcentaje = 0;
     var base = 0;
+    var nombre = '';
 
     retencionesGasto.forEach(retencion => {
         if (retencion.base > base ) {
             if (retencion.porcentaje > porcentaje) {
                 porcentaje = retencion.porcentaje;
                 base = retencion.base;
+                nombre = `${retencion.cuenta} - ${retencion.nombre}`;
             }
         }
     });
@@ -1165,6 +1171,7 @@ function actualizarInfoRetencion() {
     }
 
     const nuevoTitulo = `
+        <b>Cuenta:</b> ${nombre}<br/>
         <b>Base:</b> ${baseformat}<br/>
         <b>Subtotal:</b> ${valorSubtotal}<br/>
         ${aiuNombre}
@@ -1715,6 +1722,8 @@ function addRowGastosData(detalle, nit) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == detalle.cuenta_retencion_declarante.impuesto.id);
             if (!existe || existe < 0) {
                 retencionesGasto.push({
+                    cuenta: detalle.cuenta_retencion_declarante.cuenta,
+                    nombre: detalle.cuenta_retencion_declarante.nombre,
                     id_retencion: detalle.cuenta_retencion_declarante.impuesto.id,
                     porcentaje: parseFloat(detalle.cuenta_retencion_declarante.impuesto.porcentaje),
                     base: parseFloat(detalle.cuenta_retencion_declarante.impuesto.base),
@@ -1726,6 +1735,8 @@ function addRowGastosData(detalle, nit) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == detalle.cuenta_retencion.impuesto.id);
             if (!existe || existe < 0) {
                 retencionesGasto.push({
+                    cuenta: detalle.cuenta_retencion.cuenta,
+                    nombre: detalle.cuenta_retencion.nombre,
                     id_retencion: detalle.cuenta_retencion.impuesto.id,
                     porcentaje: parseFloat(detalle.cuenta_retencion.impuesto.porcentaje),
                     base: parseFloat(detalle.cuenta_retencion.impuesto.base),
