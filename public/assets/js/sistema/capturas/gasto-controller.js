@@ -1573,7 +1573,7 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
                     }
 
                     if (porcentajeReteica) {
-                        $("#texto_gasto_reteica").html(`RETEICA ${porcentajeReteica}: `);
+                        $("#texto_gasto_reteica").html(`RETEICA %${porcentajeReteica}: `);
                         $("#gasto_reteica_disp_view").show();
                     } else {
                         $("#gasto_reteica_disp_view").hide();
