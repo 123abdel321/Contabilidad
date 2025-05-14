@@ -199,7 +199,7 @@ function reciboInit () {
                     var tiposCuentas = row.cuenta.tipos_cuenta;
                     for (let index = 0; index < tiposCuentas.length; index++) {
                         const tipoCuenta = tiposCuentas[index];
-                        if (tipoCuenta.id_tipo_cuenta == 8 || tipoCuenta.id_tipo_cuenta == 4) {
+                        if (tipoCuenta.id_tipo_cuenta == 8) {
                             styles+= " color: #0bb19e; font-weight: 600;"
                             dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                         }
@@ -224,7 +224,7 @@ function reciboInit () {
                     var tiposCuentas = row.cuenta.tipos_cuenta;
                     for (let index = 0; index < tiposCuentas.length; index++) {
                         const tipoCuenta = tiposCuentas[index];
-                        if (tipoCuenta.id_tipo_cuenta == 8 || tipoCuenta.id_tipo_cuenta == 4) {
+                        if (tipoCuenta.id_tipo_cuenta == 8) {
                             anticipos = true;
                             className = 'anticipos'
                         }

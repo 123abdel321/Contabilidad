@@ -129,7 +129,6 @@ class GastosController extends Controller
             DB::connection('sam')->beginTransaction();
             
             $comprobanteGasto = Comprobantes::where('id', $request->get('id_comprobante'))->first();
-
             $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
             $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
             
@@ -335,8 +334,8 @@ class GastosController extends Controller
                 $totalGasto-= $pagoItem->valor;
                 $formaPago = $this->findFormaPago($pagoItem->id);
                 $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $this->proveedor->id);
+
                 //CRUSAR ANTICIPOS
-                
                 if (count($documentoReferenciaAnticipos)) {
 
                     $pagoAnticipos = $pagoItem->valor;
@@ -383,7 +382,6 @@ class GastosController extends Controller
                     $naturaleza = $formaPago->cuenta->naturaleza_egresos;
                     
                     if ($formaPago->cuenta?->tipos_cuenta) {
-                        
                         foreach ($formaPago->cuenta->tipos_cuenta as $tipos_cuenta) {
                             if ($tipos_cuenta->id_tipo_cuenta == 4) {
                                 $naturaleza = $formaPago->cuenta->naturaleza_compras;
@@ -402,7 +400,6 @@ class GastosController extends Controller
                     );
                     $documentoGeneral->addRow($doc, $naturaleza);
                 }
-                dd('afuera');
             }
 
             if (!$request->get('editing_gasto')) {
@@ -410,7 +407,6 @@ class GastosController extends Controller
             }
             
             if (!$documentoGeneral->save()) {
-
 				DB::connection('sam')->rollback();
 				return response()->json([
 					'success'=>	false,
