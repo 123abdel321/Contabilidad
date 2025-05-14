@@ -85,10 +85,10 @@ class RecibosPdf extends AbstractPrinterPdf
 		))->actual()->get();
 
 		$fechaAnterior = Carbon::parse($this->recibo->fecha_manual); 
-
+		
 		$extractoAnterior = (new Extracto(
 			$getNit->id,
-			3,
+			[3],
 			null,
 			$fechaAnterior
 		))->actual()->get();
@@ -98,7 +98,7 @@ class RecibosPdf extends AbstractPrinterPdf
 				$saldo+= floatval($extracto->saldo);
 			}
 		}
-
+		
 		if (count($extractoAnterior)) {
 			foreach ($extractoAnterior as $extracto) {
 				$saldoAnterior+= floatval($extracto->saldo);
@@ -112,9 +112,10 @@ class RecibosPdf extends AbstractPrinterPdf
 			'detalles' => $this->recibo->detalles,
 			'pagos' => $this->recibo->pagos,
 			'saldo' => $saldo,
-			'saldoAnterior' => $saldoAnterior + $this->recibo->total_abono,
+			'saldoAnterior' => $saldoAnterior,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user() ? request()->user()->username : 'MaximoPH'
 		];
     }
 }
+
