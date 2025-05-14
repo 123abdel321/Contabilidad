@@ -427,13 +427,16 @@ $(document).on('click', '#descargarExcelCartera', function () {
         dataType: 'json',
     }).done((res) => {
         if(res.success){
-            setTimeout(function(){
-                if(res.url_file){
+            if(res.url_file){
+                setTimeout(function(){
                     window.open('https://'+res.url_file, "_blank");
-                    return; 
-                }
+                    agregarToast('info', 'Generando excel', res.message, true);
+                    return;
+                },300);
+                
+            } else {
                 agregarToast('info', 'Generando excel', res.message, true);
-            },100);
+            }
         }
     }).fail((err) => {
         var errorsMsg = "";
