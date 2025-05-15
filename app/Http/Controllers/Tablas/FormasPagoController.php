@@ -229,25 +229,26 @@ class FormasPagoController extends Controller
             $tipoCuenta = $request->get("type");
             if ($request->get("type") == 'gastos') $tipoCuenta = 'compras';
             //QUITAR A FUTURO Y BUSCAR LAS CUENTAS TIPO 2: Caja - Bancos
-            $formasPago->whereHas('cuenta', function ($query) use ($tipoCuenta) {
-                $query->whereNotNull('naturaleza_'.$tipoCuenta);
-            });
+            // dd('naturaleza_'.$tipoCuenta);
+            // $formasPago->whereHas('cuenta', function ($query) use ($tipoCuenta) {
+            //     $query->whereNotNull('naturaleza_'.$tipoCuenta);
+            // });
             
             switch ($request->get("type")) {
                 case 'gasto':
                     $this->filterTiposCuenta($formasPago, [2, 4, 7]);
                     break;
                 case 'compras':
-                    $this->filterTiposCuenta($formasPago, [4, 8]);
+                    $this->filterTiposCuenta($formasPago, [2, 4, 8]);
                     break;
                 case 'egresos':
-                    $this->filterTiposCuenta($formasPago, [4, 8]);
+                    $this->filterTiposCuenta($formasPago, [2, 4, 8]);
                     break;
                 case 'ingresos':
-                    $this->filterTiposCuenta($formasPago, [3, 7]);
+                    $this->filterTiposCuenta($formasPago, [2, 3, 7]);
                     break;
                 case 'ventas':
-                    $this->filterTiposCuenta($formasPago, [3, 7]);
+                    $this->filterTiposCuenta($formasPago, [2, 3, 7]);
                     break;
                     
                 default:
