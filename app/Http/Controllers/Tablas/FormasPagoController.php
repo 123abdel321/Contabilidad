@@ -277,15 +277,11 @@ class FormasPagoController extends Controller
 
     private function filterTiposCuenta($query, array $tiposCuentaExcluir)
     {
-        $query->where(function($q) use ($tiposCuentaExcluir) {
-            $q->whereDoesntHave('cuenta')
-            ->orWhereHas('cuenta', function($q) use ($tiposCuentaExcluir) {
-                $q->whereDoesntHave('tipos_cuenta')
-                    ->orWhereHas('tipos_cuenta', function($q) use ($tiposCuentaExcluir) {
-                        $q->whereNotIn('id_tipo_cuenta', $tiposCuentaExcluir);
-                    });
+        if (!empty($tiposCuentaExcluir)) {
+            $query->whereHas('cuenta.tipos_cuenta', function ($q) use ($tiposCuentaExcluir) {
+                $q->whereIn('id_tipo_cuenta', $tiposCuentaExcluir);
             });
-        });
+        }
     }
 
 }
