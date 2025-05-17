@@ -163,7 +163,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                     $this->resultadoCarteraCollection[$documento->id_nit]["cuenta_$columnaCuenta"] = $documento->saldo_final;
                     $this->resultadoCarteraCollection[$documento->id_nit]["saldo_final"]+= $documento->saldo_final;
 
-                    if ($mora > 0 && $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"] > $mora) {
+                    if ($mora > 0 && $mora > $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"]) {
                         $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"] = $mora;
                     }
                 }
