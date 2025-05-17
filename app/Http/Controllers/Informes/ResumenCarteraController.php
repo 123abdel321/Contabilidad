@@ -36,7 +36,7 @@ class ResumenCarteraController extends Controller
 
         if($resumenCartera) {
             InfResumenCartera::where('id', $resumenCartera->id)->delete();
-            $cartera->delete();
+            $resumenCartera->delete();
         }
 
         $resumenCartera = InfResumenCartera::create([
