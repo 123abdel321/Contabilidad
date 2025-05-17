@@ -92,7 +92,8 @@ var moduloCreado = {
     'pedido': false,
     'parqueadero': false,
     'reserva': false,
-    'exogena': false
+    'exogena': false,
+    'resumencartera': false
 };
 
 var moduloRoute = {
@@ -143,6 +144,7 @@ var moduloRoute = {
     'parqueadero': 'capturas',
     'reserva': 'capturas',
     'exogena': 'informes',
+    'resumencartera': 'informes',
 }
 
 function iniciarCanalesDeNotificacion () {

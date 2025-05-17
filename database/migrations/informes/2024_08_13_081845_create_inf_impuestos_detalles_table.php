@@ -29,7 +29,6 @@ return new class extends Migration
             $table->decimal('total_abono', 15)->nullable();
             $table->decimal('saldo_anterior', 15)->nullable();
             $table->decimal('credito', 15)->nullable();
-            $table->decimal('total_abono', 15)->nullable();
             $table->decimal('saldo', 15)->nullable();            
             $table->string('codigo_comprobante', 50)->nullable();
             $table->string('nombre_comprobante', 100)->nullable();

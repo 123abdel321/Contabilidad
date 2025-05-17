@@ -25,6 +25,7 @@ use App\Http\Controllers\Tablas\CargueDescargueController;
 //INFORMES
 use App\Http\Controllers\Informes\ResultadosController;
 use App\Http\Controllers\Informes\EstadoActualController;
+use App\Http\Controllers\Informes\ResumenCarteraController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
 use App\Http\Controllers\Informes\ResumenComprobantesController;
 //CAPTURAS
@@ -154,6 +155,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('estado-actual', 'generate');
             Route::get('estado-actual-show', 'show');
             Route::get('estado-actual-find', 'find');
+        });
+        //INFORME RESUMEN CARTERA
+        Route::controller(ResumenCarteraController::class)->group(function () {
+            Route::get('resumen-cartera', 'generate');
+            Route::get('resumen-cartera-show', 'show');
+            // Route::get('resumen-cartera-find', 'find');
         });
         //INFORME ESTADO COMPROBANTE
         Route::controller(EstadoComprobanteController::class)->group(function () {

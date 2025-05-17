@@ -17,6 +17,7 @@ use App\Http\Controllers\Informes\ImpuestosController;
 use App\Http\Controllers\Informes\DocumentoController;
 use App\Http\Controllers\Informes\ResultadosController;
 use App\Http\Controllers\Informes\EstadoActualController;
+use App\Http\Controllers\Informes\ResumenCarteraController;
 use App\Http\Controllers\Informes\VentasGeneralesController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
 use App\Http\Controllers\Informes\DocumentosGeneralesController;
@@ -209,6 +210,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/ventasgenerales', [VentasGeneralesController::class, 'index']);
 		//ESTADO ACTUAL
 		Route::get('/estadoactual', [EstadoActualController::class, 'index']);
+		//RESUMEN CARTERA
+		Route::get('/resumencartera', [ResumenCarteraController::class, 'index']);
 		//ESTADO COMPROBANTE
 		Route::get('/estadocomprobante', [EstadoComprobanteController::class, 'index']);
 		
