@@ -125,6 +125,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private function addResumenCartera()
     {
+        $fechaActual = Carbon::now();
         $query = $this->resumenCarteraQuery();
 
         DB::connection('sam')
@@ -138,9 +139,9 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 'apartamentos',
                 'id_cuenta',
                 'cuenta',
-                'dias_mora',
                 'anulado',
                 'plazo',
+                DB::raw("DATEDIFF('{$fechaActual}', fecha_manual) AS dias_mora"),
                 DB::raw("SUM(debito) - SUM(credito) AS saldo_final"),
                 DB::raw("COUNT(id) AS total_columnas")
             )
@@ -156,13 +157,15 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
                     if (!$this->hasCuentaData($documento->id_nit)) {
                         $this->newCuentaData($documento);
-
-                        $mora = $documentos->first()->dias_mora -  $documentos->first()->plazo;
-                        $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"] = $mora;
                     }
 
+                    $mora = $documento->dias_mora - $documento->plazo;
                     $this->resultadoCarteraCollection[$documento->id_nit]["cuenta_$columnaCuenta"] = $documento->saldo_final;
                     $this->resultadoCarteraCollection[$documento->id_nit]["saldo_final"]+= $documento->saldo_final;
+
+                    if ($mora > 0 && $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"] > $mora) {
+                        $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"] = $mora;
+                    }
                 }
                 
                 unset($documentos);
@@ -211,8 +214,6 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private function resumenCarteraQuery()
     {
-        $fechaActual = Carbon::now();
-
         return DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
                 "DG.id",
@@ -229,7 +230,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 "PC.id AS id_cuenta",
                 "PC.cuenta",
                 "PC.nombre AS nombre_cuenta",
-                DB::raw("DATEDIFF('{$fechaActual}', DG.fecha_manual) AS dias_mora"),
+                "DG.fecha_manual",
                 "DG.anulado",
                 "DG.debito",
                 "DG.credito"
