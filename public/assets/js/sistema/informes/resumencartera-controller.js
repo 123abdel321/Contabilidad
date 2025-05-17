@@ -84,19 +84,6 @@ function resumencarteraInit() {
         const newIndex = index + 3;
         resultados_table.column(newIndex).visible(false);
     }
-
-    var url = base_url + 'resumen-cartera-show?id=1';
-
-    resultados_table.ajax.url(url).load(function(res) {
-        if(res.success){
-            const cuentas = res.cuentas;
-            mostrarCuentas(cuentas);
-
-            // $('#descargarExcelResumenCartera').hide();
-            // $('#descargarExcelResumenCarteraDisabled').hide();
-            agregarToast('exito', 'Resumen cartera cargado', 'Informe cargado con exito!', true);
-        }
-    });
 }
 
 function mostrarCuentas(cuentas) {
