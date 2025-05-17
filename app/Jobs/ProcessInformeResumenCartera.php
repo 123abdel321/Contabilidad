@@ -150,7 +150,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             ->havingRaw('saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 foreach ($documentos as $documento) {
-                    
+
                     $columnaCuenta = $this->buscarCuenta($documento->cuenta);
 
                     if (!$columnaCuenta) continue;
@@ -189,7 +189,6 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 'apartamentos',
                 'id_cuenta',
                 'cuenta',
-                'dias_mora',
                 'anulado',
                 'plazo',
                 DB::raw("SUM(debito) - SUM(credito) AS saldo_final"),
