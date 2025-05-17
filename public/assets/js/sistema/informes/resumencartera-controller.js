@@ -131,6 +131,8 @@ $(document).on('click', '#resumenCarteraGenerales', function () {
     url+= '?fecha_hasta='+$('#fecha_hasta_resumen_cartera').val();
 
     resultados_table.ajax.url(url).load(function(res) {
+        $('#resumenCarteraGenerales').show();
+        $('#resumenCarteraGeneralesLoading').hide();
         if(res.success) {
             agregarToast('info', 'Generando resumen de cartera', 'En un momento se le notificará cuando el informe esté generado...', true );
         }
