@@ -58,9 +58,10 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             $this->addCuentasOrden();
             $this->addResumenCartera();
             $this->addTotalResumenCartera();
-
+            
             ksort($this->resultadoCarteraCollection, SORT_STRING | SORT_FLAG_CASE);
             foreach (array_chunk($this->resultadoCarteraCollection,233) as $resultadoCarteraCollection){
+                
                 DB::connection('informes')
                     ->table('inf_resumen_cartera_detalles')
                     ->insert(array_values($resultadoCarteraCollection));
@@ -150,6 +151,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 foreach ($documentos as $documento) {
                     
                     $columnaCuenta = $this->buscarCuenta($documento->cuenta);
+
+                    if (!$columnaCuenta) continue;
 
                     if (!$this->hasCuentaData($documento->id_nit)) {
                         $this->newCuentaData($documento);
@@ -352,7 +355,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
         InfResumenCartera::where('id', $this->id_resultado_cartera)->update([
             'estado' => 0
         ]);
-
+        
         event(new PrivateMessageEvent(
             'informe-resumen-cartera-'.$token_db.'_'.$this->id_usuario, 
             [
