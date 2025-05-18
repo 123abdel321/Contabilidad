@@ -166,12 +166,11 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                     $this->newCuentaData($documento);
                 }
 
-                $mora = $documento->dias_mora - $documento->plazo;
                 $this->resultadoCarteraCollection[$documento->id_nit]["cuenta_$columnaCuenta"] = $documento->saldo_final;
                 $this->resultadoCarteraCollection[$documento->id_nit]["saldo_final"]+= $documento->saldo_final;
 
-                if ($mora > 0 && $mora > $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"]) {
-                    $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"] = $mora;
+                if ($documento->dias_mora > $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"]) {
+                    $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"] = $documento->dias_mora;
                 }
             }
             
@@ -268,7 +267,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             'nombre_nit' => $documento->nombre_nit, 
             'numero_documento' => $documento->numero_documento, 
             'saldo_final' => 0, 
-            'dias_mora' => 0, 
+            'dias_mora' => $documento->dias_mora, 
             'ubicacion' => $documento->apartamentos, 
             'cuenta_1' => 0, 
             'cuenta_2' => 0, 
