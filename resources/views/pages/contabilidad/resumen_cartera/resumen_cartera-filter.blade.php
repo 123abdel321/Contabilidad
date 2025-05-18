@@ -13,9 +13,15 @@
                 <form id="documentosGeneralesFilterForm" class="needs-validation" style="margin-top: 10px;" novalidate>
                     <div class="row">
                         <input name="id_documento_general_cargado" id="id_documento_general_cargado" class="form-control form-control-sm" type="text" style="display: none;">
+
                         <div class="form-group col-6 col-sm-3 col-md-4">
                             <label for="example-text-input" class="form-control-label">Fecha hasta<span style="color: red">*</span></label>
                             <input name="fecha_hasta_resumen_cartera" id="fecha_hasta_resumen_cartera" class="form-control form-control-sm" type="date" require>
+                        </div>
+
+                        <div class="form-group col-6 col-sm-3 col-md-4">
+                            <label for="example-text-input" class="form-control-label">Días mora<span style="color: red">*</span></label>
+                            <input name="mora_resumen_cartera" id="mora_resumen_cartera" class="form-control form-control-sm" type="number" require>
                         </div>
 
                         @if ($ubicacion_maximoph)

@@ -874,7 +874,6 @@ function changeFormaPagoPago(idFormaPago, event, anticipo, id_cuenta) {
 
                 let totalSaldoAnticipos = cuentaExistente[id_cuenta].saldo;
                 if (totalCXP > totalSaldoAnticipos) {
-                    var [totalPagos, totalCXP] = totalFormasPagoPagos(idFormaPago);
                     $('#pago_forma_pago_'+idFormaPago).val(totalSaldoAnticipos);
                     $('#pago_forma_pago_'+idFormaPago).select();
                     calcularPagosPagos();

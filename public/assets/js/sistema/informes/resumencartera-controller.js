@@ -65,9 +65,16 @@ function resumencarteraInit() {
             data: function ( d ) {
                 d.fecha_hasta = $('#fecha_hasta_resumen_cartera').val();
                 d.ubicaciones = getUbicacionesResumenCartera();
+                d.dias_mora = $('#mora_resumen_cartera').val();
             }
         },
+        
         "rowCallback": function(row, data, index){
+            if (parseFloat(data.saldo_final) < 0) {
+                $('td', row).css('background-color', '#ff00004d');
+                $('td', row).css('color', 'black');
+                return;
+            }
             if(data.nombre_nit == "TOTAL"){
                 $('td', row).css('background-color', 'rgb(28 69 135)');
                 $('td', row).css('font-weight', 'bold');

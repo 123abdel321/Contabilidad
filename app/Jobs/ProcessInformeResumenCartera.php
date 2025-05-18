@@ -126,9 +126,11 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     private function addResumenCartera()
     {
         $fechaActual = Carbon::now();
+        $diasMora = $this->request['dias_mora'];
+
         $query = $this->resumenCarteraQuery();
 
-        DB::connection('sam')
+        $consulta = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
             ->mergeBindings($query)
             ->select(
@@ -141,35 +143,40 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 'cuenta',
                 'anulado',
                 'plazo',
-                DB::raw("DATEDIFF('{$fechaActual}', fecha_manual) AS dias_mora"),
+                DB::raw("GREATEST(DATEDIFF('{$fechaActual}', fecha_manual) - plazo, 0) AS dias_mora"),
                 DB::raw("SUM(debito) - SUM(credito) AS saldo_final"),
                 DB::raw("COUNT(id) AS total_columnas")
             )
             ->groupByRaw('id_nit, id_cuenta')
-            ->orderByRaw('cuenta')
-            ->havingRaw('saldo_final != 0')
-            ->chunk(233, function ($documentos) {
-                foreach ($documentos as $documento) {
+            ->orderByRaw('apartamentos')
+        ->havingRaw('saldo_final != 0');
 
-                    $columnaCuenta = $this->buscarCuenta($documento->cuenta);
+        if ($diasMora) {
+            $consulta->havingRaw('dias_mora >= ?', [$diasMora]);
+        }
 
-                    if (!$columnaCuenta) continue;
+        $consulta->chunk(233, function ($documentos) {
+            foreach ($documentos as $documento) {
 
-                    if (!$this->hasCuentaData($documento->id_nit)) {
-                        $this->newCuentaData($documento);
-                    }
+                $columnaCuenta = $this->buscarCuenta($documento->cuenta);
 
-                    $mora = $documento->dias_mora - $documento->plazo;
-                    $this->resultadoCarteraCollection[$documento->id_nit]["cuenta_$columnaCuenta"] = $documento->saldo_final;
-                    $this->resultadoCarteraCollection[$documento->id_nit]["saldo_final"]+= $documento->saldo_final;
+                if (!$columnaCuenta) continue;
 
-                    if ($mora > 0 && $mora > $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"]) {
-                        $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"] = $mora;
-                    }
+                if (!$this->hasCuentaData($documento->id_nit)) {
+                    $this->newCuentaData($documento);
                 }
-                
-                unset($documentos);
-            });
+
+                $mora = $documento->dias_mora - $documento->plazo;
+                $this->resultadoCarteraCollection[$documento->id_nit]["cuenta_$columnaCuenta"] = $documento->saldo_final;
+                $this->resultadoCarteraCollection[$documento->id_nit]["saldo_final"]+= $documento->saldo_final;
+
+                if ($mora > 0 && $mora > $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"]) {
+                    $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"] = $mora;
+                }
+            }
+            
+            unset($documentos);
+        });
     }
 
     private function addTotalResumenCartera()

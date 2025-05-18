@@ -12,7 +12,7 @@
 
                 <form id="ventaFilterForm" class="needs-validation row" style="margin-top: 10px;" novalidate>
                     
-                    <div class="col-6 col-sm-4 col-md-3">
+                    <div class="col-6 col-sm-5 col-md-3">
                         <label for="id_cliente_venta">Cliente<span style="color: red">*</span></label>
                         <div class="input-group">
                             <select name="id_cliente_venta" id="id_cliente_venta" class="form-control form-control-sm" style="font-size: 13px;" required>
@@ -27,7 +27,7 @@
                     </div>
 
                     @if ($vendedores_ventas)
-                        <div class="form-group col-6 col-sm-4 col-md-3">
+                        <div class="form-group col-6 col-sm-3 col-md-2">
                             <label for="id_vendedor_venta">Vendedor<span style="color: red">*</span></label>
                             <select name="id_vendedor_venta" id="id_vendedor_venta" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
@@ -38,7 +38,7 @@
                         </div>
                     @endif
 
-                    <div class="form-group col-6 col-sm-4 col-md-3">
+                    <div class="form-group col-6 col-sm-3 col-md-2">
                         <label for="id_resolucion_venta">Resolucion<span style="color: red">*</span></label>
                         <select name="id_resolucion_venta" id="id_resolucion_venta" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
@@ -48,7 +48,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-4 col-md-3">
+                    <div class="form-group col-6 col-sm-3 col-md-2">
                         <label for="id_bodega_venta">Bodega<span style="color: red">*</span></label>
                         <select name="id_bodega_venta" id="id_bodega_venta" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
@@ -58,12 +58,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-4 col-md-3">
-                        <label for="observacion_venta" class="form-control-label">Observación </label>
-                        <input type="text" class="form-control form-control-sm" name="observacion_venta" id="observacion_venta">
-                    </div>
-
-                    <div class="form-group col-6 col-sm-4 col-md-2">
+                    <div class="form-group col-6 col-sm-3 col-md-1">
                         <label for="fecha_manual_venta" class="form-control-label">Fecha <span style="color: red">*</span></label>
                         <input name="fecha_manual_venta" id="fecha_manual_venta" class="form-control form-control-sm" type="date" required disabled>
                         <div class="invalid-feedback">
@@ -71,13 +66,18 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-4 col-md-2">
+                    <div class="form-group col-6 col-sm-3 col-md-1">
                         <label for="documento_referencia_venta" class="form-control-label">No. factura <span style="color: red">*</span></label>
                         <input type="text" class="form-control form-control-sm" name="documento_referencia_venta" id="documento_referencia_venta" required disabled>
                         <i class="fa fa-spinner fa-spin fa-fw venta-load" id="documento_referencia_venta_loading" style="display: none;"></i>
                         <div class="invalid-feedback" id="error_documento_referencia_venta">
                             El No. factura requerida
                         </div>
+                    </div>
+
+                    <div class="form-group col-6 col-sm-5 col-md-3">
+                        <label for="observacion_venta" class="form-control-label">Observación </label>
+                        <input type="text" class="form-control form-control-sm" name="observacion_venta" id="observacion_venta">
                     </div>
 
                     <div id="input-anticipos-venta" class="form-group col-6 col-sm-4 col-md-2" style="display: none;">
