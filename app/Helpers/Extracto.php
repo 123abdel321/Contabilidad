@@ -388,7 +388,7 @@ class Extracto
 				$query->where('DG.documento_referencia', $this->documento_referencia);
 			})
             ->when($this->fecha ? $this->fecha : false, function ($query) {
-				$query->where('DG.fecha_manual', '<', $this->fecha);
+				$query->where('DG.fecha_manual', '<=', $this->fecha);
 			})
             ->when($this->documento_referencia ? false : true, function ($query) {
                 $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) != 0");
