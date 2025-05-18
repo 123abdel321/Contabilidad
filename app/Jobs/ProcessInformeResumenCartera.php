@@ -237,6 +237,9 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('plan_cuentas_tipos AS PCT', 'DG.id_cuenta', 'PCT.id_cuenta')
+            ->when($this->request['ubicaciones'], function ($query) {
+                $query->whereNotNull('N.apartamentos');
+            })
             ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
             ->where('anulado', 0);
     }

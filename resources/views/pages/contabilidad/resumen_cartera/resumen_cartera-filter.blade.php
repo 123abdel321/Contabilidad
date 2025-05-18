@@ -18,6 +18,25 @@
                             <input name="fecha_hasta_resumen_cartera" id="fecha_hasta_resumen_cartera" class="form-control form-control-sm" type="date" require>
                         </div>
 
+                        @if ($ubicacion_maximoph)
+                            <div class="form-group col-6 col-sm-2 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                                <label for="example-text-input" class="form-control-label">Ubicaciones</label>
+                                <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                    <input class="form-check-input" type="radio" name="ubicaciones_resumen_cartera" id="ubicaciones_resumen_cartera0" style="font-size: 11px;">
+                                    <label class="form-check-label" for="ubicaciones_resumen_cartera0" style="font-size: 11px;">
+                                        No
+                                    </label>
+                                </div>
+                                <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                    <input class="form-check-input" type="radio" name="ubicaciones_resumen_cartera" id="ubicaciones_resumen_cartera1" style="font-size: 11px;" checked>
+                                    <label class="form-check-label" for="ubicaciones_resumen_cartera1" style="font-size: 11px;">
+                                        Si
+                                    </label>
+                                </div>
+                            </div>
+                        @endif
+
+
                         <!-- <div class="form-group col-6 col-sm-6 col-md-6">
                             <label>Cedula/Nit</label>
                             <select name="id_nit_resumen_cartera" id="id_nit_resumen_cartera" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">

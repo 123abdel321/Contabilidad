@@ -64,6 +64,7 @@ function resumencarteraInit() {
             headers: headers,
             data: function ( d ) {
                 d.fecha_hasta = $('#fecha_hasta_resumen_cartera').val();
+                d.ubicaciones = getUbicacionesResumenCartera();
             }
         },
         "rowCallback": function(row, data, index){
@@ -113,7 +114,9 @@ function loadResumenCarteraById(id_resumen_cartera) {
     resultados_table.ajax.url(url).load(function(res) {
         if(res.success){
             const cuentas = res.cuentas;
-            mostrarCuentas(cuentas);
+            if (cuentas && cuentas.length) {
+                mostrarCuentas(cuentas);
+            }
 
             // $('#descargarExcelResumenCartera').hide();
             // $('#descargarExcelResumenCarteraDisabled').hide();
@@ -152,3 +155,10 @@ channelResumenComprobante.bind('notificaciones', function(data) {
         return;
     }
 });
+
+function getUbicacionesResumenCartera() {
+    if($("input[type='radio']#ubicaciones_resumen_cartera0").is(':checked')) return '';
+    if($("input[type='radio']#ubicaciones_resumen_cartera1").is(':checked')) return 1;
+
+    return '';
+}

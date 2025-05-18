@@ -13,7 +13,7 @@
 
         <div class="card mb-4">
             <div class="card-body" style="padding: 0 !important;">
-                @include('pages.contabilidad.resumen_cartera.resumen_cartera-filter')
+                @include('pages.contabilidad.resumen_cartera.resumen_cartera-filter', ['ubicacion_maximoph' => $ubicacion_maximoph])
             </div>
         </div>
         
