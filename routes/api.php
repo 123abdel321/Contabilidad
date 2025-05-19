@@ -160,7 +160,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(ResumenCarteraController::class)->group(function () {
             Route::get('resumen-cartera', 'generate');
             Route::get('resumen-cartera-show', 'show');
-            // Route::get('resumen-cartera-find', 'find');
+            Route::post('resumen-cartera-excel', 'exportExcel');
         });
         //INFORME ESTADO COMPROBANTE
         Route::controller(EstadoComprobanteController::class)->group(function () {

@@ -25,7 +25,7 @@
                         </div>
 
                         @if ($ubicacion_maximoph)
-                            <div class="form-group col-6 col-sm-2 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                            <div class="form-group col-6 col-sm-3 col-md-4 row" style="margin-bottom: 0.1rem !important;">
                                 <label for="example-text-input" class="form-control-label">Ubicaciones</label>
                                 <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                     <input class="form-check-input" type="radio" name="ubicaciones_resumen_cartera" id="ubicaciones_resumen_cartera0" style="font-size: 11px;">
@@ -62,7 +62,7 @@
                         <b style="vertical-align: text-top;">BUSCANDO</b>
                     </span>&nbsp;
                     <!-- BOTON EXCEL -->
-                    <!-- <span id="descargarExcelResumenCartera" class="btn badge bg-gradient-dark btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
+                    <span id="descargarExcelResumenCartera" class="btn badge bg-gradient-dark btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">EXCEL</b>
                     </span>
@@ -70,7 +70,7 @@
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>
                         <b style="vertical-align: text-top;">EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
-                    </span> -->
+                    </span>
                 </div>
             </div>
         </div>

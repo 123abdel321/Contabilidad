@@ -70,11 +70,11 @@ function resumencarteraInit() {
         },
         
         "rowCallback": function(row, data, index){
-            if (parseFloat(data.saldo_final) < 0) {
-                $('td', row).css('background-color', '#ff00004d');
-                $('td', row).css('color', 'black');
-                return;
-            }
+            // if (parseFloat(data.saldo_final) < 0) {
+            //     $('td', row).css('background-color', '#ff00004d');
+            //     $('td', row).css('color', 'black');
+            //     return;
+            // }
             if(data.nombre_nit == "TOTAL"){
                 $('td', row).css('background-color', 'rgb(28 69 135)');
                 $('td', row).css('font-weight', 'bold');
@@ -116,8 +116,10 @@ function mostrarCuentas(cuentas) {
 }
 
 function loadResumenCarteraById(id_resumen_cartera) {
-    var url = base_url + 'resumen-cartera-show?id='+id_resumen_cartera;
+    
+    $('#id_documento_general_cargado').val(id_resumen_cartera);
 
+    var url = base_url + 'resumen-cartera-show?id='+id_resumen_cartera;
     resultados_table.ajax.url(url).load(function(res) {
         if(res.success){
             const cuentas = res.cuentas;
@@ -125,19 +127,54 @@ function loadResumenCarteraById(id_resumen_cartera) {
                 mostrarCuentas(cuentas);
             }
 
-            // $('#descargarExcelResumenCartera').hide();
-            // $('#descargarExcelResumenCarteraDisabled').hide();
+            $('#descargarExcelResumenCartera').show();
+            $('#descargarExcelResumenCarteraDisabled').hide();
             agregarToast('exito', 'Resumen cartera cargado', 'Informe cargado con exito!', true);
         }
     });
 }
 
+$(document).on('click', '#descargarExcelResumenCartera', function () {
+
+    $.ajax({
+        url: base_url + 'resumen-cartera-excel',
+        method: 'POST',
+        data: JSON.stringify({id: $('#id_documento_general_cargado').val()}),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            if(res.url_file){
+                window.open('https://'+res.url_file, "_blank");
+                return; 
+            }
+            agregarToast('info', 'Generando excel', res.message, true);
+        }
+    }).fail((err) => {
+        var errorsMsg = "";
+        var mensaje = err.responseJSON.message;
+        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
+            for (field in mensaje) {
+                var errores = mensaje[field];
+                for (campo in errores) {
+                    errorsMsg += "- "+errores[campo]+" <br>";
+                }
+            };
+        } else {
+            errorsMsg = mensaje
+        }
+        agregarToast('error', 'Error al generar excel', errorsMsg);
+    });
+});
+
 $(document).on('click', '#resumenCarteraGenerales', function () {
     $('#resumenCarteraGenerales').hide();
     $('#resumenCarteraGeneralesLoading').show();
 
-    var url = base_url + 'resumen-cartera';
+    $("#descargarExcelResumenCartera").hide();
+    $("#descargarExcelResumenCarteraDisabled").show();
 
+    var url = base_url + 'resumen-cartera';
     url+= '?fecha_hasta='+$('#fecha_hasta_resumen_cartera').val();
 
     resultados_table.ajax.url(url).load(function(res) {

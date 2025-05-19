@@ -20347,34 +20347,42 @@ label,
 }
 
 .bg-gradient-primary {
+  background-color: black;
   background-image: linear-gradient(310deg, var(--bs-primary) 0%, var(--bs-primary-second) 100%);
 }
 
 .bg-gradient-secondary {
+  background-color: black;
   background-image: linear-gradient(310deg, #627594 0%, #a8b8d8 100%);
 }
 
 .bg-gradient-success {
+  background-color: black;
   background-image: linear-gradient(310deg, #2dce89 0%, #2dcecc 100%);
 }
 
 .bg-gradient-info {
+  background-color: black;
   background-image: linear-gradient(310deg, #1171ef 0%, #11cdef 100%);
 }
 
 .bg-gradient-warning {
+  background-color: black;
   background-image: linear-gradient(310deg, #fb6340 0%, #fbb140 100%);
 }
 
 .bg-gradient-danger {
+  background-color: black;
   background-image: linear-gradient(310deg, #f5365c 0%, #f56036 100%);
 }
 
 .bg-gradient-light {
+  background-color: black;
   background-image: linear-gradient(310deg, #CED4DA 0%, #EBEFF4 100%);
 }
 
 .bg-gradient-dark {
+  background-color: black;
   background-image: linear-gradient(310deg, #212229 0%, #212529 100%);
 }
 

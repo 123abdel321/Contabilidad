@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Informes;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Bus;
 use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
+use App\Exports\ResumenCarteraExport;
 use App\Jobs\ProcessInformeResumenCartera;
 //MODELS
 use App\Models\Empresas\Empresa;
@@ -90,6 +92,75 @@ class ResumenCarteraController extends Controller
                 'message'=> 'Resumen cartera generado con exito!'
             ], Response::HTTP_OK);
 
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public function exportExcel(Request $request)
+    {
+        try {
+            $informeResumenCartera = InfResumenCartera::find($request->get('id'));
+
+            if($informeResumenCartera && $informeResumenCartera->exporte == 1) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => '',
+                    'message'=> 'Actualmente se esta generando el excel de auxiliar'
+                ]);
+            }
+
+            if($informeResumenCartera && $informeResumenCartera->exporte == 2) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => $informeResumenCartera->url_excel,
+                    'message'=> ''
+                ]);
+            }
+
+            $fileName = 'export/resumencartera_'.uniqid().'.xlsx';
+            $url = $fileName;
+
+            $informeResumenCartera->exporte = 1;
+            $informeResumenCartera->url_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
+            $informeResumenCartera->save();
+
+            $has_empresa = $request->user()['has_empresa'];
+            $user_id = $request->user()->id;
+            $id_informe = $request->get('id');
+
+            Bus::chain([
+                function () use ($id_informe, &$fileName) {
+                    // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
+                    (new ResumenCarteraExport($id_informe))->store($fileName, 'do_spaces', null, [
+                        'visibility' => 'public'
+                    ]);
+                },
+                function () use ($user_id, $has_empresa, $url, $informeResumenCartera) {
+                    // Lanza el evento cuando el proceso termine
+                    event(new PrivateMessageEvent('informe-resumen-cartera-'.$has_empresa.'_'.$user_id, [
+                        'tipo' => 'exito',
+                        'mensaje' => 'Excel de Resumen cartera generado con exito!',
+                        'titulo' => 'Excel generado',
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
+                        'autoclose' => false
+                    ]));
+                    
+                    // Actualiza el informe auxiliar
+                    $informeResumenCartera->exporte = 2;
+                    $informeResumenCartera->save();
+                }
+            ])->dispatch();
+
+            return response()->json([
+                'success'=>	true,
+                'url_file' => '',
+                'message'=> 'Se le notificará cuando el informe haya finalizado'
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 "success"=>false,
