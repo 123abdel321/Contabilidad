@@ -432,34 +432,34 @@ class VentaController extends Controller
             $hasCufe = false;
 
             //FACTURAR ELECTRONICAMENTE
-            // if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
-            //     $ventaElectronica = (new VentaElectronicaSender($venta))->send();
+            if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
+                $ventaElectronica = (new VentaElectronicaSender($venta))->send();
 
-            //     if ($ventaElectronica["status"] >= 400) {
-            //         if ($ventaElectronica["zip_key"]) {
-            //             $venta->fe_zip_key = $ventaElectronica["zip_key"];
-            //             $venta->save();
+                if ($ventaElectronica["status"] >= 400) {
+                    if ($ventaElectronica["zip_key"]) {
+                        $venta->fe_zip_key = $ventaElectronica["zip_key"];
+                        $venta->save();
     
-            //             if ($ventaElectronica["message_object"] == 'Batch en proceso de validación.') {
-            //                 //JOB CONSULTAR FACTURA EN 1MN
-            //                 info('Batch en proceso de validación.');
-            //                 ProcessConsultarFE::dispatch($venta->id, $ventaElectronica["zip_key"], $request->user()->id, $empresa->id)->delay(now()->addSeconds(10));
-            //             }
-            //         }
-            //     }
+                        if ($ventaElectronica["message_object"] == 'Batch en proceso de validación.') {
+                            //JOB CONSULTAR FACTURA EN 1MN
+                            info('Batch en proceso de validación.');
+                            ProcessConsultarFE::dispatch($venta->id, $ventaElectronica["zip_key"], $request->user()->id, $empresa->id)->delay(now()->addSeconds(10));
+                        }
+                    }
+                }
 
-            //     if ($ventaElectronica['status'] == 200) {
-            //         $feSended = $ventaElectronica['status'] == 200;
-            //         $hasCufe = (isset($ventaElectronica['cufe']) && $ventaElectronica['cufe']);
+                if ($ventaElectronica['status'] == 200) {
+                    $feSended = $ventaElectronica['status'] == 200;
+                    $hasCufe = (isset($ventaElectronica['cufe']) && $ventaElectronica['cufe']);
     
-            //         if($feSended || $hasCufe){
-            //             $ventaElectronica['status'] = 200;
-            //             $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
-            //             $venta->fe_zip_key = $ventaElectronica['zip_key'];
-            //             $venta->save();
-            //         }
-            //     }
-            // }
+                    if($feSended || $hasCufe){
+                        $ventaElectronica['status'] = 200;
+                        $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
+                        $venta->fe_zip_key = $ventaElectronica['zip_key'];
+                        $venta->save();
+                    }
+                }
+            }
 
             DB::connection('sam')->commit();
 
