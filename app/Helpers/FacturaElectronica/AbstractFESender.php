@@ -12,7 +12,8 @@ abstract class AbstractFESender
 	protected $pagos;
 	protected $cliente;
 	protected $detalles;
-	protected $url = 'http://localhost:6666/api/ubl2.1';
+	protected $softwareProviderId;
+	protected $url = 'https://fe.portafolioerp.com/api/ubl2.1';
 
 	public function __construct($factura)
 	{
@@ -33,17 +34,24 @@ abstract class AbstractFESender
 
 	private function getConfigApiFe(): array
 	{
-		$entorno = VariablesEntorno::whereIn('nombre', ['token_key_fe', 'set_test_id_fe'])->get();
+		$entorno = VariablesEntorno::whereIn('nombre', ['token_key_fe', 'set_test_id_fe', 'software_provider_id'])->get();
+
+		$softwareProviderId = '';
 		$bearerToken = '';
 		$setTestId = '';
 
 		if (count($entorno)) {
 			$bearerToken = $entorno->firstWhere('nombre', 'token_key_fe');
-			$bearerToken = $bearerToken ? $bearerToken->valor	: '';
+			$bearerToken = $bearerToken ? $bearerToken->valor : '';
 
 			$setTestId = $entorno->firstWhere('nombre', 'set_test_id_fe');
 			$setTestId = $setTestId && $setTestId->valor ? '/' . $setTestId->valor	: '';
+
+			$softwareProviderId = $entorno->firstWhere('nombre', 'software_provider_id');
+			$softwareProviderId = $softwareProviderId ? $softwareProviderId->valor : '';
 		}
+
+		$this->softwareProviderId =  $softwareProviderId;
 
 		return [$bearerToken, $setTestId];
 	}
@@ -71,7 +79,7 @@ abstract class AbstractFESender
 		$data = (object) $response->json();
 		
 		info(json_encode($data));
-
+		
 		if ($data->status == 200) {
 			return [
 				"status" => $data->status,
@@ -82,7 +90,6 @@ abstract class AbstractFESender
 		}
 
 		if (!property_exists($data, 'data')) {
-			dd($data);
 			return [
 				"status" => $data->status,
 				"message_object" => $data->message,
@@ -94,7 +101,7 @@ abstract class AbstractFESender
 		if ($data->status >= 500) {
 			return [
 				"status" => 500,
-				"message_object" => ["Error interno: https://facelect.portafolioerp.com"]
+				"message_object" => ["Error interno: https://fe.portafolioerp.com"]
 			];
 		}
 
@@ -142,21 +149,22 @@ abstract class AbstractFESender
 			'date' => date_format(date_create($this->factura->fecha_manual), 'Y-m-d'),
 			'time' => date_format(date_create($this->factura->created_at), 'H:i:s'),
 			'software-provider' => [
-				'provider_id' => '6c8521e5-8f75-4041-93a9-045ed5912e4a'
+				'provider_id' => $this->softwareProviderId
 			],
 			'allowance_charges' => [], // Cargos por subsidio
 			'tax_totals' => $this->taxTotals([1, 5]), // Total impuestos
 			'legal_monetary_totals' => [ // Legal monetary totals
 				'line_extension_amount' => number_format($this->factura->subtotal, 2, '.', ''), // Total con Impuestos
 				'tax_exclusive_amount' => number_format($this->factura->subtotal, 2, '.', ''), // Total sin impuestos pero con descuentos
-				'tax_inclusive_amount' => $this->factura->total_factura, // Total con Impuestos
+				// 'tax_inclusive_amount' => $this->factura->subtotal + $this->factura->total_iva,
+				'tax_inclusive_amount' => $this->factura->total_factura + $this->factura->total_rete_fuente, // Total con Impuestos
 				'allowance_total_amount' => "0.00", // Descuentos nivel de factura
 				'charge_total_amount' => "0.00", // Cargos
-				'payable_amount' => $this->factura->total_factura, // Valor total a pagar
+				'payable_amount' => $this->factura->total_factura + $this->factura->total_rete_fuente, // Valor total a pagar
 			],
 			"holding_tax_totals" => $this->taxTotals([6]),
 		);
-
+		
 		if (empty($params["holding_tax_totals"])) unset($params["holding_tax_totals"]);
 
 		return array_merge($params, $this->getExtraParams());
@@ -224,6 +232,7 @@ abstract class AbstractFESender
 				}
 			}
 		}
+
 		//AGREGAR TOTALES
 		foreach ($dataTaxTotals as $key => $impuestos) {
 			$data = null;
@@ -311,21 +320,20 @@ abstract class AbstractFESender
 			[
 				"tax_id" => 1, //IVA
 				"tax_amount" => $detalle->iva_valor,
-				"percent" => $detalle->iva_porcentaje,
+				"percent" => $detalle->iva_porcentaje ?? "0.00",
 				"taxable_amount" => number_format($this->iva_inluido ? $detalle->subtotal - $detalle->iva_valor : $detalle->subtotal, 2, '.', '')
 			],
 			[
 				"tax_id" => 5, // RETE IVA
 				"tax_amount" => "0.00",
-				// "tax_amount" => $detalle->valor_rete_iva,
-				"percent" => "0.00",
-				// "percent" => $detalle->porcentaje_rete_iva,
+				"tax_amount" => $detalle->valor_rete_iva ?? "0.00",
+				"percent" => $detalle->porcentaje_rete_iva ?? "0.00",
 				"taxable_amount" => number_format($detalle->subtotal, 2, '.', '')
 			],
 			[
 				"tax_id" => 6, // RETE FUENTE
 				"tax_amount" => $this->factura->total_rete_fuente,
-				"percent" => $detalle->porcentaje_rete_fuente,
+				"percent" => $detalle->porcentaje_rete_fuente ?? "0.00",
 				"taxable_amount" => number_format($detalle->subtotal, 2, '.', '')
 			],
 		];
