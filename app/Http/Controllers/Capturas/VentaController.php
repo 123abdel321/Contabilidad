@@ -185,7 +185,8 @@ class VentaController extends Controller
         try {
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA VENTA
-            $venta = $this->createFacturaVenta($request); 
+            $venta = $this->createFacturaVenta($request);
+            $nit = $this->findCliente($venta->id_nit);
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE VENTAS
             $documentoGeneral = new Documento(
@@ -358,39 +359,63 @@ class VentaController extends Controller
                 }
             }
 
-            $totalProductos = $this->totalesFactura['total_factura'];
-
+            $totalPagos = $this->totalesFactura['total_factura'];
+            
             //AGREGAR FORMAS DE PAGO
-            foreach ($request->get('pagos') as $pago) {
-                $pago = (object)$pago;
-                $pagoValor = $pago->id == 1 ? $pago->valor - $this->totalesPagos['total_cambio'] : $pago->valor;
+            foreach ($request->get('pagos') as $pagoItem) {
 
-                $formaPago = $this->findFormaPago($pago->id);
-                $totalProductos-= $pagoValor;
+                $pagoItem = (object)$pagoItem;
+                $pagoValor = $pagoItem->id == 1 ? $pagoItem->valor - $this->totalesPagos['total_cambio'] : $pagoItem->valor;
+                $totalPagos-= $pagoValor;
+                $formaPago = $this->findFormaPago($pagoItem->id);
+                $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $venta->id_nit);
+                //CRUSAR ANTICIPOS
+                if (count($documentoReferenciaAnticipos)) {
 
-                FacVentaPagos::create([
-                    'id_venta' => $venta->id,
-                    'id_forma_pago' => $formaPago->id,
-                    'valor' => $pagoValor,
-                    'saldo' => $totalProductos,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
+                    $pagoAnticipos = $pagoItem->valor;
 
-                $doc = new DocumentosGeneral([
-                    'id_cuenta' => $formaPago->cuenta->id,
-                    'id_nit' => $formaPago->cuenta->exige_nit ? $venta->id_cliente : null,
-                    'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $venta->id_centro_costos : null,
-                    'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
-                    'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $venta->documento_referencia : null,
-                    'debito' => $formaPago->cuenta->naturaleza_ventas == PlanCuentas::DEBITO ? $pagoValor : 0,
-                    'credito' => $formaPago->cuenta->naturaleza_ventas == PlanCuentas::CREDITO ? $pagoValor : 0,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
-                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
+                    foreach ($documentoReferenciaAnticipos as $anticipos) {
+
+                        if (!$pagoAnticipos) {
+                            break;
+                        }
+
+                        $anticipoUsado = 0;
+                        $anticipoDisponible = floatval($anticipos->saldo);
+
+                        if ($anticipoDisponible >= $pagoAnticipos) {
+                            $anticipoUsado = $pagoAnticipos;
+                        } else {
+                            $anticipoUsado = $anticipoDisponible;
+                        }
+
+                        $pagoAnticipos-= $anticipoUsado;
+
+                        $doc = $this->addFormaPago(
+                            $anticipos->documento_referencia,
+                            $formaPago,
+                            $nit,
+                            $pagoItem,
+                            $venta,
+                            $anticipoUsado,
+                            $totalPagos
+                        );
+                        $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
+                    }
+                } else {
+                    $doc = $this->addFormaPago(
+                        null,
+                        $formaPago,
+                        $nit,
+                        $pagoItem,
+                        $venta,
+                        $pagoItem->valor,
+                        $totalPagos
+                    );
+                    $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
+                }
             }
-
+            
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 
             if (!$documentoGeneral->save()) {
@@ -407,34 +432,34 @@ class VentaController extends Controller
             $hasCufe = false;
 
             //FACTURAR ELECTRONICAMENTE
-            if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
-                $ventaElectronica = (new VentaElectronicaSender($venta))->send();
+            // if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
+            //     $ventaElectronica = (new VentaElectronicaSender($venta))->send();
 
-                if ($ventaElectronica["status"] >= 400) {
-                    if ($ventaElectronica["zip_key"]) {
-                        $venta->fe_zip_key = $ventaElectronica["zip_key"];
-                        $venta->save();
+            //     if ($ventaElectronica["status"] >= 400) {
+            //         if ($ventaElectronica["zip_key"]) {
+            //             $venta->fe_zip_key = $ventaElectronica["zip_key"];
+            //             $venta->save();
     
-                        if ($ventaElectronica["message_object"] == 'Batch en proceso de validación.') {
-                            //JOB CONSULTAR FACTURA EN 1MN
-                            info('Batch en proceso de validación.');
-                            ProcessConsultarFE::dispatch($venta->id, $ventaElectronica["zip_key"], $request->user()->id, $empresa->id)->delay(now()->addSeconds(10));
-                        }
-                    }
-                }
+            //             if ($ventaElectronica["message_object"] == 'Batch en proceso de validación.') {
+            //                 //JOB CONSULTAR FACTURA EN 1MN
+            //                 info('Batch en proceso de validación.');
+            //                 ProcessConsultarFE::dispatch($venta->id, $ventaElectronica["zip_key"], $request->user()->id, $empresa->id)->delay(now()->addSeconds(10));
+            //             }
+            //         }
+            //     }
 
-                if ($ventaElectronica['status'] == 200) {
-                    $feSended = $ventaElectronica['status'] == 200;
-                    $hasCufe = (isset($ventaElectronica['cufe']) && $ventaElectronica['cufe']);
+            //     if ($ventaElectronica['status'] == 200) {
+            //         $feSended = $ventaElectronica['status'] == 200;
+            //         $hasCufe = (isset($ventaElectronica['cufe']) && $ventaElectronica['cufe']);
     
-                    if($feSended || $hasCufe){
-                        $ventaElectronica['status'] = 200;
-                        $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
-                        $venta->fe_zip_key = $ventaElectronica['zip_key'];
-                        $venta->save();
-                    }
-                }
-            }
+            //         if($feSended || $hasCufe){
+            //             $ventaElectronica['status'] = 200;
+            //             $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
+            //             $venta->fe_zip_key = $ventaElectronica['zip_key'];
+            //             $venta->save();
+            //         }
+            //     }
+            // }
 
             DB::connection('sam')->commit();
 
@@ -623,6 +648,32 @@ class VentaController extends Controller
                 }
             }
         }
+    }
+
+    private function addFormaPago($documentoReferencia, $formaPago, $nit, $pagoItem, $venta, $valor, $saldo)
+    {
+        FacVentaPagos::create([
+            'id_venta' => $venta->id,
+            'id_forma_pago' => $pagoItem->id,
+            'valor' => $valor,
+            'saldo' => $saldo,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        $doc = new DocumentosGeneral([
+            'id_cuenta' => $formaPago->cuenta->id,
+            'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
+            'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $venta->id_centro_costos : null,
+            'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
+            'documento_referencia' => $documentoReferencia,
+            'debito' => $valor,
+            'credito' => $valor,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        return $doc;
     }
 
     public function read(Request $request)
@@ -814,7 +865,7 @@ class VentaController extends Controller
 
         try {
             DB::connection('sam')->beginTransaction();
-
+            
             if ($venta->fe_zip_key) {
 
                 $url = "http://localhost:6666/api/ubl2.1/status/zip/{$venta->fe_zip_key}";
@@ -850,7 +901,7 @@ class VentaController extends Controller
             }
 
             $ventaElectronica = (new VentaElectronicaSender($venta))->send();
-
+            
             if ($ventaElectronica["status"] >= 400) {
                 if ($ventaElectronica["zip_key"]) {
                     $venta->fe_zip_key = $ventaElectronica["zip_key"];
@@ -973,6 +1024,26 @@ class VentaController extends Controller
             ], 422);
         }
 	}
+
+    private function isAnticiposDocumentoRefe($formaPago, $idNit)
+    {
+        $tiposCuenta = $formaPago->cuenta->tipos_cuenta;
+        foreach ($tiposCuenta as $tipoCuenta) {
+            if ($tipoCuenta->id_tipo_cuenta == 8) {
+                $anticipoCuenta = (new Extracto(
+                    $idNit,
+                    null,
+                    null,
+                    Carbon::now()->format('Y-m-d H:i:s'),
+                    $formaPago->cuenta->id
+                ))->anticiposDiscriminados()->get();
+
+                return $anticipoCuenta;
+            }
+        }
+
+        return [];
+    }
 
     private function calcularTotales ($productos)
     {

@@ -141,6 +141,10 @@
                 <div id="totales-venta-card" class="card col-12 col-sm-5 col-md-12 ml-auto" style="height: min-content; margin-bottom: 0.5rem !important;">
                     <table class="table table-bordered table-captura-ventas" width="100%" style="margin-top: 12px;">
                         <tbody>
+                            <tr id="venta_anticipo_disp_view" style="display: none;">
+                                <td><h6 id="show-anticipos-venta" style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500; color: #0bb19e; display: flex; cursor: pointer;"><div><i class="fas fa-eye"></i></div>&nbsp;ANTICIPOS DISP: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem; color: #0bb19e;" id="venta_anticipo_disp">0.00</h6></td>
+                            </tr>
                             <tr>
                                 <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">SUB TOTAL: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_sub_total">0.00</h6></td>
