@@ -744,7 +744,7 @@ function loadExcel(data) {
         console.log('setTimeout');
         window.open('https://'+data.url_file, "_blank");
         agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
-    },1000);
+    },5000);
 }
 
 $(document).on('click', '#descargarPlantilla', function () {
