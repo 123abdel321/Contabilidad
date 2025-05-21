@@ -53,7 +53,7 @@ trait BegDocumentHelpersTrait
 	{
 		$bearerToken = VariablesEntorno::where('nombre', 'token_key_fe')->first();
         $bearerToken = $bearerToken ? $bearerToken->valor	: '';
-		$url = 'http://localhost:6666/api/ubl2.1/invoice/xml?number='.$documento->documento_referencia_fe;;
+		$url = 'https://fe.portafolioerp.com/api/ubl2.1/invoice/xml?number='.$documento->documento_referencia_fe;;
 
 		$response = Http::withHeaders([
 			'Content-Type' => 'application/json',
