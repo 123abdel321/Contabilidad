@@ -98,7 +98,7 @@ class ProcessProvisionedDatabase implements ShouldQueue
 			
 			return $this->dbName;
 		} catch (Exception $exception) {
-			Log::error('Error al generar base de datos', ['message' => $exception]);
+			Log::error('Error al generar base de datos', ['message' => $exception->getMessage()]);
 
 			$this->dropDb($this->dbName);
 		}
@@ -134,8 +134,8 @@ class ProcessProvisionedDatabase implements ShouldQueue
 			'primer_nombre' => $empresa->primer_nombre,
 			'otros_nombres' => $empresa->otros_nombres,
 			'razon_social' => $empresa->razon_social,
-			// 'direccion' => $request->get('direccion'),
-			// 'email' => $request->get('email'),
+			'direccion' => 'NINGUNA',
+			'email' => 'CONSUMIDOR@FINAL.COM',
 			'telefono_1' => $empresa->telefono,
 			// 'id_ciudad' => $request->get('id_ciudad'),
 			// 'observaciones' => $request->get('observaciones'),

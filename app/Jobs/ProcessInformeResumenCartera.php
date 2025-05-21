@@ -106,6 +106,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             ->select(
                 'cuenta',
                 'nombre_cuenta',
+                'naturaleza_cuenta',
                 DB::raw("SUM(debito) - SUM(credito) AS saldo_final")
             )
             ->groupByRaw('id_cuenta')
@@ -116,6 +117,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                     $this->cuentas_orden[] = (object)[
                         'cuenta' => $documento->cuenta,
                         'nombre_cuenta' => $documento->nombre_cuenta,
+                        'naturaleza_cuenta' => $documento->naturaleza_cuenta,
                     ];
                 }
                 unset($documentos);
@@ -235,6 +237,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 "PC.id AS id_cuenta",
                 "PC.cuenta",
                 "PC.nombre AS nombre_cuenta",
+                "PC.naturaleza_cuenta",
                 "DG.fecha_manual",
                 "DG.anulado",
                 "DG.debito",
@@ -246,6 +249,9 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             ->when($this->request['ubicaciones'], function ($query) {
                 $query->whereNotNull('N.apartamentos');
             })
+            ->when($this->request['fecha_hasta'], function ($query) {
+				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
+			})
             ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
             ->where('anulado', 0);
     }
