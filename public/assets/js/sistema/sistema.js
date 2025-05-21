@@ -739,12 +739,11 @@ function removejscssfile(filename, filetype){
 }
 
 function loadExcel(data) {
-    console.log('aca mismo');
     setTimeout(function(){
         console.log('setTimeout');
         window.open('https://'+data.url_file, "_blank");
         agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
-    },300);
+    },1000);
 }
 
 $(document).on('click', '#descargarPlantilla', function () {
