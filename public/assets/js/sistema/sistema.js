@@ -739,6 +739,7 @@ function removejscssfile(filename, filetype){
 }
 
 function loadExcel(data) {
+    console.log('setTimeout asds');
     setTimeout(function(){
         console.log('setTimeout');
         window.open('https://'+data.url_file, "_blank");
