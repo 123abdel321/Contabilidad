@@ -14,20 +14,18 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Database\Seeders\PropiedadesHorizontalesSeeder;
-use App\Http\Controllers\Traits\BegConsecutiveTrait;
 //MODELS
 use App\Models\User;
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
+use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacDocumentos;
 use App\Models\Sistema\DocumentosGeneral;
 
 class ProcessGenerarDocumentos implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-	use BegConsecutiveTrait;
 
     public $timeout = 300;
 	public $id_empresa;
@@ -70,7 +68,12 @@ class ProcessGenerarDocumentos implements ShouldQueue
 
 			foreach($documentosGroup as $docGroup) {
 
-				$consecutivo = $this->getNextConsecutive($docGroup[0]->id_comprobante, $docGroup[0]->fecha_manual);
+				$comprobante = Comprobantes::find($docGroup[0]->id_comprobante);
+				$consecutivo = $comprobante->consecutivo_siguiente;
+
+				if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
+					$consecutivo = $this->getLastConsecutive($comprobante->id, $fecha) + 1;
+				}
 
 				$facDocumento = FacDocumentos::create([
 					'id_nit' => $docGroup[0]->id_nit,
@@ -153,7 +156,9 @@ class ProcessGenerarDocumentos implements ShouldQueue
 					], 401);
 				}
 	
-				$this->updateConsecutivo($docGroup[0]->id_comprobante, $consecutivo);
+				//ACTUALIZAR CONSECUTIVO
+				$comprobante->consecutivo_siguiente++;
+				$comprobante->save();
 			}
 
 			DB::connection('sam')->commit();
@@ -197,5 +202,16 @@ class ProcessGenerarDocumentos implements ShouldQueue
 			'saldo' => 0,
 			'documento_referencia' => ''
 		];
+	}
+
+	public function getLastConsecutive($id_comprobante, $fecha)
+	{
+		$castConsecutivo = 'MAX(CAST(consecutivo AS SIGNED)) AS consecutivo';
+		$lastConsecutivo = DocumentosGeneral::select(DB::raw($castConsecutivo))
+			->where('id_comprobante', $id_comprobante)
+			->where('fecha_manual', 'like', substr($fecha, 0, 7) . '%')
+			->first();
+
+		return $lastConsecutivo ? $lastConsecutivo->consecutivo : 0;
 	}
 }
