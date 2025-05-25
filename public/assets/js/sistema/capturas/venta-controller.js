@@ -16,6 +16,7 @@ let venta_table_pagos = null;
 var totalAnticiposVenta = null;
 let validarFacturaVenta = null;
 let porcentajeRetencionVenta = 0;
+let responsabilidadesVenta = [];
 let abrirFormasPagoVentas = false;
 let totalAnticiposDisponibles = 0;
 var totalAnticiposVentaCuenta = null;
@@ -264,14 +265,14 @@ function ventaInit () {
                     naturaleza = 'Error de naturaleza en egreso';
                     stylesInfo = "border: solid 1px red !important; color: red !important;"
                 }
-                let dataContent = `<b>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                let dataContent = `<b class='titulo-popover'>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                 if (row.cuenta.tipos_cuenta.length > 0) {
                     var tiposCuentas = row.cuenta.tipos_cuenta;
                     for (let index = 0; index < tiposCuentas.length; index++) {
                         const tipoCuenta = tiposCuentas[index];
                         if (tipoCuenta.id_tipo_cuenta == 8) {
                             styles+= " color: #0bb19e; font-weight: 600;"
-                            dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                            dataContent = `<b class='titulo-popover'>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                         }
                     }
                 }
@@ -518,6 +519,9 @@ function ventaInit () {
         if(data.length){
             loadAnticiposCliente();
             clearFormasPagoVenta();
+            responsabilidadesVenta = getResponsabilidades(data[0].id_responsabilidades);
+            actualizarInfoRetencionVentas();
+            
             if (vendedoresVentas) loadVendedorCliente();
         }
     });
@@ -548,6 +552,8 @@ function ventaInit () {
         var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
         $comboCliente.append(newOption).trigger('change');
         $comboCliente.val(dataCliente.id).trigger('change');
+        responsabilidadesVenta = getResponsabilidades(primeraNit.id_responsabilidades);
+        actualizarInfoRetencionVentas();
 
         if (primeraNit.vendedor) {
             var dataVendedor = {
@@ -568,6 +574,14 @@ function ventaInit () {
             $comboCliente.select2("open");
         },10);
     }
+
+    $('[data-toggle="popover"]').popover({
+        trigger: 'hover',
+        html: true,
+        placement: 'top',
+        container: 'body',
+        customClass: 'popover-formas-pagos'
+    });
 }
 
 function focusCantidadVenta (idRow) {
@@ -859,6 +873,7 @@ function deleteProductoVenta (idRow) {
         }
     }
     mostrarValoresVentas();
+    actualizarInfoRetencionVentas();
 }
 
 $(document).on('click', '#agregarVentaProducto', function () {
@@ -906,7 +921,8 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
     
     $('#venta_total_'+idRow).val(formatCurrencyValue(totalProducto));
 
-    mostrarValoresVentas ();
+    mostrarValoresVentas();
+    actualizarInfoRetencionVentas();
 }
 
 function validarExistencias (idRow) {
@@ -1045,9 +1061,6 @@ function mostrarValoresVentas () {
     if (descuento) $('#totales_descuento').show();
     else $('#totales_descuento').hide();
 
-    if (retencion) $('#totales_retencion').show();
-    else $('#totales_retencion').hide();
-
     if (total) disabledFormasPagoVenta(false);
     else disabledFormasPagoVenta();
 
@@ -1097,10 +1110,10 @@ function totalValoresVentas() {
         if (ivaIncluidoVentas) valorBruto-= iva;
 
         total = ivaIncluidoVentas ? valorBruto : valorBruto + iva;
+        retencion = calcularRetencionVentas(valorBruto, total);
 
-        if (total >= topeRetencionVenta) {
-            retencion = porcentajeRetencionVenta ? (valorBruto * porcentajeRetencionVenta) / 100 : 0;
-            retencion = retencion;
+        if (retencion) {
+            total = total - retencion;
         }
 
         if (redondearFactura) {
@@ -1135,6 +1148,90 @@ function totalValoresVentas() {
     return [iva, retencion, descuento, total, valorBruto, redondeo];
 }
 
+function calcularRetencionVentas(valorBruto, total) {
+
+    retencion = 0;
+
+    if (responsabilidadesVenta.includes('7')) {
+        [base, porcentaje] = obtenerDatosRetencionVenta(valorBruto);
+    
+        if (total >= base && porcentaje) {
+            retencion = valorBruto * (porcentaje  / 100);
+        }
+    }
+
+    return retencion;
+}
+
+function obtenerDatosRetencionVenta(valorSubtotal) {
+    porcentaje = 0;
+    base = 0;
+
+    retencionesVentas.forEach(retencion => {
+        if (retencion.base <= valorSubtotal) {
+            if (retencion.base > base ) {
+                if (retencion.porcentaje > porcentaje) {
+                    porcentaje = retencion.porcentaje;
+                    base = retencion.base;
+                }
+            }
+        }
+    });
+
+    return [base, porcentaje];
+}
+
+function actualizarInfoRetencionVentas() {
+    const iconInfo = document.getElementById('icon_info_retencion_venta');
+    var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
+
+    var porcentaje = 0;
+    var base = 0;
+    var nombre = 'Sin cuenta con retención';
+    let total_uvt = 0;
+
+    retencionesVentas.forEach(retencion => {
+        if (retencion.base > base ) {
+            if (retencion.porcentaje > porcentaje) {
+                porcentaje = retencion.porcentaje;
+                base = retencion.base;
+                total_uvt = retencion.total_uvt;
+                nombre = `${retencion.cuenta} - ${retencion.nombre}`;
+            }
+        }
+    });
+
+    $("#nombre_info_retencion_venta").html(`RETENCIÓN %${porcentaje}:`);
+
+    let baseformat = new Intl.NumberFormat('ja-JP').format(base);
+    let totalUVTs = new Intl.NumberFormat('ja-JP').format(valor_uvt);
+    let valorSubtotal = new Intl.NumberFormat('ja-JP').format(subtotal);
+    let responsableRetencion = '';
+
+    if (responsabilidadesVenta.includes('7')) {
+        responsableRetencion = `<b class='titulo-popover'>Con responsablidad:</b> 07 => Calcula retención en la fuente`;
+    } else {
+        responsableRetencion = `<b class='titulo-popover'>Sin responsablidad:</b> 07 => No calcula retención en la fuente`;
+    }
+
+    const nuevoTitulo = `
+        <b class='titulo-popover'>Cuenta:</b> ${nombre}<br/>
+        <b class='titulo-popover'>UVT:</b> ${total_uvt} X ${totalUVTs} = ${baseformat}<br/>
+        <b class='titulo-popover'>Subtotal:</b> ${valorSubtotal}<br/>
+        ${responsableRetencion}
+    `;
+
+    iconInfo.setAttribute('title', nuevoTitulo);
+    $(iconInfo).popover('dispose'); // Destruye el actual
+    $(iconInfo).popover({
+        trigger: 'hover',
+        html: true,
+        placement: 'top',
+        container: 'body',
+        customClass: 'popover-formas-pagos'
+    });
+}
+
 function changeProductoVenta (idRow) {
 
     var data = $('#venta_producto_'+idRow).select2('data');
@@ -1156,12 +1253,15 @@ function changeProductoVenta (idRow) {
     if (data.familia.cuenta_venta_retencion && data.familia.cuenta_venta_retencion.impuesto) {
 
         var existe = retencionesVentas.findIndex(item => item.id_retencion == data.familia.cuenta_venta_retencion.impuesto.id);
-
-        var impuestoPorcentaje = parseFloat(data.familia.cuenta_venta_retencion.impuesto.porcentaje);
-        var topeValor = parseFloat(data.familia.cuenta_venta_retencion.impuesto.base);
-        if (impuestoPorcentaje > porcentajeRetencionVenta) {
-            porcentajeRetencionVenta = impuestoPorcentaje;
-            topeRetencionVenta = topeValor;
+        if (!existe || existe < 0) {
+            retencionesVentas.push({
+                cuenta: data.familia.cuenta_venta_retencion.cuenta,
+                nombre: data.familia.cuenta_venta_retencion.nombre,
+                id_retencion: data.familia.cuenta_venta_retencion.impuesto.id,
+                porcentaje: parseFloat(data.familia.cuenta_venta_retencion.impuesto.porcentaje),
+                base: parseFloat(data.familia.cuenta_venta_retencion.impuesto.base),
+                total_uvt: parseFloat(data.familia.cuenta_venta_retencion.impuesto.total_uvt)
+            })
         }
     }
 
@@ -1178,8 +1278,6 @@ function changeProductoVenta (idRow) {
     $('#venta_cantidad_'+idRow).prop('disabled', false);
     $('#venta_costo_'+idRow).prop('disabled', false);
     $('#venta_concepto_'+idRow).prop('disabled', false);
-    
-    document.getElementById('venta_texto_retencion').innerHTML = 'RETENCIÓN '+ porcentajeRetencionVenta+'%';
         
     calcularProductoVenta(idRow);
     clearFormasPagoVenta();
@@ -1252,6 +1350,7 @@ function cancelarVenta() {
             venta_table.row(0).remove().draw();
         }
         mostrarValoresVentas();
+        actualizarInfoRetencionVentas();
     }
 
     $("#id_bodega_venta").prop('disabled', false);

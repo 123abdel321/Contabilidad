@@ -157,8 +157,19 @@
                                 <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">DESCUENTO: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_total_descuento">0.00</h6></td>
                             </tr>
-                            <tr id="totales_retencion" style="display: none;">
-                                <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;" id="venta_texto_retencion">RETENCION: </h6></td>
+                            <tr id="totales_retencion">
+                                <td>
+                                    <h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">
+                                        <i
+                                            id="icon_info_retencion_venta"
+                                            class="fas fa-info icon-info"
+                                            title="<b class='titulo-popover'>Base:</b> 0<br/> <b class='titulo-popover'>Subtotal:</b> 0 <br/> <b class='titulo-popover'>Sin responsablidad:</b> 07 => Retención en la fuente a título de renta"
+                                            data-toggle="popover"
+                                            data-html="true"
+                                        ></i>
+                                        <b id="nombre_info_retencion_venta" style="font-weight: 500;">RETENCIÓN:</b>
+                                    </h6>
+                                </td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_total_retencion">0.00</h6></td>
                             </tr>
                             <tr>
@@ -225,6 +236,7 @@
         let ivaIncluidoVentas = @json($iva_incluido);
         let vendedoresVentas = @json($vendedores_ventas);
         let primeraNit = @json($cliente);
+        let valor_uvt = @json($valor_uvt);
 
     </script>
     

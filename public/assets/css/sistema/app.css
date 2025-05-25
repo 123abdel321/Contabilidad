@@ -733,9 +733,17 @@ div.dataTables_processing {
     cursor: help;
 }
 
-.popover-formas-pagos .popover-header {
+/* .popover-formas-pagos .popover-header {
     font-size: 14px;
     background-color: #FFF;
     border: solid 2px #378cff;
+    border-radius: 10px;
+} */
+
+.popover-formas-pagos .popover-header {
+    font-size: 14px;
+    color: rgb(221, 221, 221);
+    background-color: #202020;
+    border: solid 2px #000000;
     border-radius: 10px;
 }

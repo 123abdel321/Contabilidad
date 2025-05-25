@@ -41,6 +41,7 @@ class VentaController extends Controller
     use BegDocumentHelpersTrait;
     use BegFacturacionElectronica;
 
+    protected $nit = null;
     protected $bodega = null;
     protected $resolucion = null;
 	protected $messages = null;
@@ -85,6 +86,7 @@ class VentaController extends Controller
             ->where('id_empresa', request()->user()->id_empresa)
             ->first();
 
+        $valorUVT = VariablesEntorno::where('nombre', 'valor_uvt')->first();
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
         $vendedorVentas = VariablesEntorno::where('nombre', 'vendedores_ventas')->first();
 
@@ -96,7 +98,8 @@ class VentaController extends Controller
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
             'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get(),
             'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : '',
-            'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : ''
+            'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : '',
+            'valor_uvt' => $valorUVT ? $valorUVT->valor : 0
         ];
 
         return view('pages.capturas.venta.venta-view', $data);
@@ -185,8 +188,8 @@ class VentaController extends Controller
         try {
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA VENTA
+            $this->nit = $this->findCliente($request->get('id_cliente'));
             $venta = $this->createFacturaVenta($request);
-            $nit = $this->findCliente($venta->id_nit);
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE VENTAS
             $documentoGeneral = new Documento(
@@ -199,7 +202,6 @@ class VentaController extends Controller
             //AGREGAR DETALLE DE PRODUCTOS
             foreach ($request->get('productos') as $producto) {
                 $producto = (object)$producto;
-                $nit = $this->findCliente($venta->id_cliente);
                 $productoDb = $this->findProducto($producto->id_producto);
                 $producto->costo_total = $productoDb->precio_inicial * $producto->cantidad;
 
@@ -275,7 +277,7 @@ class VentaController extends Controller
                             ], 422);
                         }
 
-                        $concepto = "VENTA: {$nit->nombre_nit} - {$nit->documento} - {$venta->documento_referencia}";
+                        $concepto = "VENTA: {$this->nit->nombre_nit} - {$this->nit->documento} - {$venta->documento_referencia}";
                         if ($producto->concepto) {
                             $concepto.= " - {$producto->concepto}";
                         }
@@ -341,7 +343,7 @@ class VentaController extends Controller
                         "id_cuenta" => $cuentaRetencion->id,
                         "id_nit" => $cuentaRetencion->exige_nit ? $venta->id_cliente : null,
                         "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $venta->id_centro_costos : null,
-                        "concepto" => 'TOTAL: '.$cuentaRetencion->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
+                        "concepto" => 'TOTAL: '.$cuentaRetencion->exige_concepto ? $this->nit->nombre_nit.' - '.$venta->documento_referencia : null,
                         "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $venta->documento_referencia : null,
                         "debito" => $this->totalesFactura['total_rete_fuente'],
                         "credito" => $this->totalesFactura['total_rete_fuente'],
@@ -394,7 +396,7 @@ class VentaController extends Controller
                         $doc = $this->addFormaPago(
                             $anticipos->documento_referencia,
                             $formaPago,
-                            $nit,
+                            $this->nit,
                             $pagoItem,
                             $venta,
                             $anticipoUsado,
@@ -406,7 +408,7 @@ class VentaController extends Controller
                     $doc = $this->addFormaPago(
                         null,
                         $formaPago,
-                        $nit,
+                        $this->nit,
                         $pagoItem,
                         $venta,
                         $pagoItem->valor,
@@ -1049,6 +1051,7 @@ class VentaController extends Controller
     {
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
         $ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
+        $responsabilidades = $this->getResponsabilidades();
         
         foreach ($productos as $producto) {
             $producto = (object)$producto;
@@ -1062,6 +1065,7 @@ class VentaController extends Controller
                 )
                 ->first();
             
+            //BUSCAR BASE Y PORCENTAJE RETENCIÓN
             $cuentaRetencion = $productoDb->familia->cuenta_venta_retencion;
             if ($cuentaRetencion && $cuentaRetencion->impuesto) {
                 $impuesto = $cuentaRetencion->impuesto;
@@ -1071,7 +1075,7 @@ class VentaController extends Controller
                     $this->totalesFactura['id_cuenta_rete_fuente'] = $cuentaRetencion->id;
                 }
             }
-
+            
             $iva = 0;
             $costo = $producto->costo;
             $totalPorCantidad = $producto->cantidad * $costo;
@@ -1102,13 +1106,26 @@ class VentaController extends Controller
             $this->totalesFactura['total_factura']+= $subtotal + $iva;
         }
 
-        if ($this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] && $this->totalesFactura['porcentaje_rete_fuente'] > 0) {
-            $total_rete_fuente = $ivaIncluido ? $this->totalesFactura['total_factura'] * ($this->totalesFactura['porcentaje_rete_fuente'] / 100) : $this->totalesFactura['subtotal'] * ($this->totalesFactura['porcentaje_rete_fuente'] / 100);
-            $this->totalesFactura['total_rete_fuente'] = round($total_rete_fuente);
-            $this->totalesFactura['total_factura'] = round($this->totalesFactura['total_factura'] - $total_rete_fuente, 1);
+        //CALCULAR RETENCIÓN EN LA FUENTE
+        if (in_array('7', $responsabilidades) &&
+            $this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] &&
+            $this->totalesFactura['porcentaje_rete_fuente'] > 0
+        ) {
+                $total_rete_fuente = $ivaIncluido ? $this->totalesFactura['total_factura'] * ($this->totalesFactura['porcentaje_rete_fuente'] / 100) : $this->totalesFactura['subtotal'] * ($this->totalesFactura['porcentaje_rete_fuente'] / 100);
+                $this->totalesFactura['total_rete_fuente'] = round($total_rete_fuente);
+                $this->totalesFactura['total_factura'] = round($this->totalesFactura['total_factura'] - $total_rete_fuente, 1);
         } else {
             $this->totalesFactura['id_cuenta_rete_fuente'] = null;
         }
+
+    }
+
+    private function getResponsabilidades()
+    {
+        if ($this->nit->id_responsabilidades) {
+            return explode(",", $this->nit->id_responsabilidades);
+        }
+        return [];
     }
 
     private function findCliente ($id_cliente)
@@ -1120,7 +1137,8 @@ class VentaController extends Controller
                     WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
                     WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
                     ELSE NULL
-                END AS nombre_nit")
+                END AS nombre_nit"),
+                'id_responsabilidades'
             )
             ->first();
     }
