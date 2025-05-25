@@ -14,6 +14,7 @@ var retencionesGasto = [];
 var porcentajeAIUGastos = 0;
 var porcentajeReteica = 0;
 var validandoDatosIva = false;
+let responsabilidadesGasto = [];
 var validarFacturaGastos = false;
 var abrirFormasPagoGastos = false;
 var $comboCentroCostoGastos = null;
@@ -223,7 +224,7 @@ function gastoInit () {
                     naturaleza = 'Error de naturaleza en egreso';
                     stylesInfo = "border: solid 1px red !important; color: red !important;"
                 }
-                let dataContent = `<b>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                let dataContent = `<b class='titulo-popover'>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                 if (row.cuenta.tipos_cuenta.length > 0) {
                     var tiposCuentas = row.cuenta.tipos_cuenta;
                     for (let index = 0; index < tiposCuentas.length; index++) {
@@ -231,7 +232,7 @@ function gastoInit () {
                         if (tipoCuenta.id_tipo_cuenta == 7) {
                             anticipos7 = true;
                             styles+= " color: #0bb19e; font-weight: 600;"
-                            dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                            dataContent = `<b class='titulo-popover'>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                         }
                         if (tipoCuenta.id_tipo_cuenta == 4) {
                             anticipos4 = true;
@@ -242,13 +243,13 @@ function gastoInit () {
                 if (anticipos7) {
                     naturaleza = 'Credito - Compra';
                     stylesInfo = null;
-                    dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                    dataContent = `<b class='titulo-popover'>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                 }
 
                 if (anticipos4) {
                     naturaleza = 'Credito - Compra';
                     stylesInfo = null;
-                    dataContent = `<b>Cuentas por pagar:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                    dataContent = `<b class='titulo-popover'>Cuentas por pagar:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                 }
 
                 return `<p style="${styles}">
@@ -402,12 +403,14 @@ function gastoInit () {
         if (dataNit && dataNit.length) {
             dataNit = dataNit[0];
             sumarAIU = dataNit.sumar_aiu ? true : false;
+            responsabilidadesGasto = getResponsabilidades(dataNit.id_responsabilidades);
             if (dataNit.porcentaje_reteica) {
                 porcentajeReteica = parseFloat(dataNit.porcentaje_reteica);
                 columnValReteIca.visible(true);
             } else {
                 columnValReteIca.visible(false);
             }
+            actualizarInfoRetencionGastos();
         } else {
             porcentajeReteica = 0;
             columnValReteIca.visible(false);
@@ -620,6 +623,7 @@ function changeConceptoGasto(idGasto) {
                     id_retencion: data.cuenta_retencion_declarante.impuesto.id,
                     porcentaje: parseFloat(data.cuenta_retencion_declarante.impuesto.porcentaje),
                     base: parseFloat(data.cuenta_retencion_declarante.impuesto.base),
+                    total_uvt: parseFloat(data.cuenta_retencion_declarante.impuesto.total_uvt),
                 });
             }
         }
@@ -633,6 +637,7 @@ function changeConceptoGasto(idGasto) {
                     id_retencion: data.cuenta_retencion.impuesto.id,
                     porcentaje: parseFloat(data.cuenta_retencion.impuesto.porcentaje),
                     base: parseFloat(data.cuenta_retencion.impuesto.base),
+                    total_uvt: parseFloat(data.cuenta_retencion.impuesto.total_uvt),
                 });
             }
         }
@@ -782,7 +787,7 @@ function changeValorDescuentoGasto (idGasto, event = null) {
 
         updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
         mostrarValoresGastos();
-        actualizarInfoRetencion();
+        actualizarInfoRetencionGastos();
         setTimeout(function(){
             calculandoDatos = true;
         },50);
@@ -910,7 +915,7 @@ function changePorcentajeDescuentoGasto (idGasto, event = null) {
         updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
         
         mostrarValoresGastos();
-        actualizarInfoRetencion();
+        actualizarInfoRetencionGastos();
         setTimeout(function(){
             calculandoDatos = true;
         },50);
@@ -984,7 +989,7 @@ function changeValorGasto (idGasto, event = null) {
 
         setTimeout(function(){
             calculandoDatos = true;
-            actualizarInfoRetencion();
+            actualizarInfoRetencionGastos();
             setTimeout(function(){
                 $('#gastoTable tr').find(focusNext+idGasto).focus();
                 $('#gastoTable tr').find(focusNext+idGasto).select();
@@ -1112,19 +1117,21 @@ function calcularRetencion (valorSubtotal = null, valorGastoRow, baseAIU = 0, id
         });
     }
 
-    [base, porcentaje] = obtenerDatosRetencion(valorSubtotal);
+    [base, porcentaje] = obtenerDatosRetencionGastos(valorSubtotal);
 
-    if (baseAIU) {
-        totalRetencion = baseAIU * (porcentaje / 100);
-    } else {
-        if (!calcularRow && porcentaje) totalRetencion = valorSubtotal * (porcentaje / 100);
-        if (calcularRow && porcentaje) totalRetencion = valorGastoRow * (porcentaje / 100);
+    if (responsabilidadesGasto.includes('7')) {
+        if (baseAIU) {
+            totalRetencion = baseAIU * (porcentaje / 100);
+        } else {
+            if (!calcularRow && porcentaje) totalRetencion = valorSubtotal * (porcentaje / 100);
+            if (calcularRow && porcentaje) totalRetencion = valorGastoRow * (porcentaje / 100);
+        }
     }
 
     return [totalRetencion, porcentaje];
 }
 
-function obtenerDatosRetencion(valorSubtotal) {
+function obtenerDatosRetencionGastos(valorSubtotal) {
     porcentaje = 0;
     base = 0;
 
@@ -1142,39 +1149,57 @@ function obtenerDatosRetencion(valorSubtotal) {
     return [base, porcentaje];
 }
 
-function actualizarInfoRetencion() {
+function actualizarInfoRetencionGastos() {
     const iconInfo = document.getElementById('icon_info_retencion');
     var [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total, gasto_aiu] = totalValoresGastos();
+
     var porcentaje = 0;
     var base = 0;
-    var nombre = '';
+    var nombre = 'Sin cuenta con retención';
+    let total_uvt = 0;
 
     retencionesGasto.forEach(retencion => {
         if (retencion.base > base ) {
             if (retencion.porcentaje > porcentaje) {
                 porcentaje = retencion.porcentaje;
                 base = retencion.base;
+                total_uvt = retencion.total_uvt;
                 nombre = `${retencion.cuenta} - ${retencion.nombre}`;
             }
         }
     });
 
-    $("#nombre_info_retencion").html(`RETENCIÓN %${porcentaje}:`);
+    $("#nombre_info_retencion_gasto").html(`RETENCIÓN %${porcentaje}:`);
 
     let baseformat = new Intl.NumberFormat('ja-JP').format(base);
+    let totalUVTs = new Intl.NumberFormat('ja-JP').format(valor_uvt);
     let valorSubtotal = new Intl.NumberFormat('ja-JP').format(gasto_sub_total);
     let aiuNombre = '';
+    let responsableRetencion = '';
+    let declaranteRenta = '';
+
+    if (responsabilidadesGasto.includes('7')) {
+        responsableRetencion = `<b class='titulo-popover'>Con responsablidad:</b> 07 => Calcula retención en la fuente`;
+    } else {
+        responsableRetencion = `<b class='titulo-popover'>Sin responsablidad:</b> 07 => No calcula retención en la fuente`;
+    }
+
+    if (responsabilidadesGasto.includes('5')) {
+        declaranteRenta = `<b class='titulo-popover'>Declarante de renta:</b> 05 => Impuesto sobre la renta y complementarios régimen ordinario`;
+    }
 
     if (porcentajeAIUGastos) {
         aiuValor = new Intl.NumberFormat('ja-JP').format(gasto_aiu);
-        aiuNombre = `<b>AIU:</b> ${aiuValor}<br/>`;
+        aiuNombre = `<b class='titulo-popover'>AIU:</b> ${aiuValor}<br/>`;
     }
 
     const nuevoTitulo = `
-        <b>Cuenta:</b> ${nombre}<br/>
-        <b>Base:</b> ${baseformat}<br/>
-        <b>Subtotal:</b> ${valorSubtotal}<br/>
+        <b class='titulo-popover'>Cuenta:</b> ${nombre}<br/>
+        <b class='titulo-popover'>UVT:</b> ${total_uvt} X ${totalUVTs} = ${baseformat}<br/>
+        <b class='titulo-popover'>Subtotal:</b> ${valorSubtotal}<br/>
         ${aiuNombre}
+        ${responsableRetencion}
+        ${declaranteRenta}
     `;
 
     iconInfo.setAttribute('title', nuevoTitulo);
@@ -1187,7 +1212,6 @@ function actualizarInfoRetencion() {
         customClass: 'popover-formas-pagos'
     });
 }
-
 
 function changeFormaPagoGasto (idFormaPago, event, anticipo, id_cuenta) {
     if(event.keyCode == 13){
@@ -1717,7 +1741,7 @@ function addRowGastosData(detalle, nit) {
     };
     
     //RETENCION
-    if (!nit.declarante) {
+    if (responsabilidadesGasto.includes('5')) {
         if (detalle.cuenta_retencion_declarante && detalle.cuenta_retencion_declarante.impuesto) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == detalle.cuenta_retencion_declarante.impuesto.id);
             if (!existe || existe < 0) {
@@ -1727,6 +1751,7 @@ function addRowGastosData(detalle, nit) {
                     id_retencion: detalle.cuenta_retencion_declarante.impuesto.id,
                     porcentaje: parseFloat(detalle.cuenta_retencion_declarante.impuesto.porcentaje),
                     base: parseFloat(detalle.cuenta_retencion_declarante.impuesto.base),
+                    total_uvt: parseFloat(detalle.cuenta_retencion_declarante.impuesto.total_uvt),
                 });
             }
         }
@@ -1740,6 +1765,7 @@ function addRowGastosData(detalle, nit) {
                     id_retencion: detalle.cuenta_retencion.impuesto.id,
                     porcentaje: parseFloat(detalle.cuenta_retencion.impuesto.porcentaje),
                     base: parseFloat(detalle.cuenta_retencion.impuesto.base),
+                    total_uvt: parseFloat(detalle.cuenta_retencion.impuesto.total_uvt),
                 });
             }
         }

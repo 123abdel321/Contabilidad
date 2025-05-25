@@ -74,11 +74,13 @@ class GastosController extends Controller
     {
         $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
         $redondeo_gastos = VariablesEntorno::where('nombre', 'redondeo_gastos')->first();
+        $valor_uvt = VariablesEntorno::where('nombre', 'valor_uvt')->first();
 
         $data = [
+            'comprobantes' => Comprobantes::where('tipo_comprobante', Comprobantes::TIPO_GASTOS)->get(),
             'porcentaje_iva_aiu' => $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0,
             'redondeo_gastos' => $redondeo_gastos ? $redondeo_gastos->valor : NULL,
-            'comprobantes' => Comprobantes::where('tipo_comprobante', Comprobantes::TIPO_GASTOS)->get(),
+            'valor_uvt' => $valor_uvt ? $valor_uvt->valor : 0,
             'centro_costos' => CentroCostos::get(),
         ];
 
@@ -133,7 +135,11 @@ class GastosController extends Controller
             $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
             
             $this->proveedor = $this->findProveedor($request->get('id_proveedor'));
-            if (!$this->proveedor->declarante) $this->tipoRetencion = 'cuenta_retencion_declarante';
+            $responsabilidades = $this->getResponsabilidades($this->proveedor->id_responsabilidades);
+
+            if (in_array('5', $responsabilidades)) {
+                $this->tipoRetencion = 'cuenta_retencion_declarante';
+            }
 
             if ($request->get('editing_gasto')) {
 
@@ -530,6 +536,7 @@ class GastosController extends Controller
         $redondeo_gastos = $redondeo_gastos ? floatval($redondeo_gastos->valor) : null;
         
         $nit = Nits::find($idNit);
+        $responsabilidades = $this->getResponsabilidades($nit->id_responsabilidades);
 
         foreach ($gastos as $gasto) {
             $gasto = (object)$gasto;
@@ -608,12 +615,16 @@ class GastosController extends Controller
             if ($baseAIU) {
                 $porcentajeIva = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
                 $porcentajeIva = $porcentajeIva ? floatval($porcentajeIva->valor) : 0;
-
-                $valorRetencion = $porcentajeRetencion ? ($baseAIU - $gasto->no_valor_iva) * ($porcentajeRetencion / 100) : 0;
+                
+                if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
+                    $valorRetencion = ($baseAIU - $gasto->no_valor_iva) * ($porcentajeRetencion / 100);
+                }
                 $valorReteIca = $porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0;
                 $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
             } else {
-                $valorRetencion = $porcentajeRetencion ? ($subtotalGasto - $gasto->no_valor_iva) * ($porcentajeRetencion / 100) : 0;
+                if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
+                    $valorRetencion = ($subtotalGasto - $gasto->no_valor_iva) * ($porcentajeRetencion / 100);
+                }
                 $valorReteIca = $porcentajeReteIca ? ($subtotalGasto - $gasto->no_valor_iva) * ($porcentajeReteIca / 1000) : 0;
                 $ivaGasto = $porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0;
             }
@@ -642,6 +653,14 @@ class GastosController extends Controller
             $this->totalesFactura['porcentaje_rete_ica']+= $porcentajeReteIca;
             $this->totalesFactura['total_gasto']+= round($valorTotal, 2);
         }
+    }
+
+    private function getResponsabilidades($id_responsabilidades)
+    {
+        if ($id_responsabilidades) {
+            return explode(",", $id_responsabilidades);
+        }
+        return [];
     }
 
     private function findProveedor ($id_proveedor)

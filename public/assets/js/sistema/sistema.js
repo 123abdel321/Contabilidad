@@ -739,7 +739,6 @@ function removejscssfile(filename, filetype){
 }
 
 function loadExcel(data) {
-    console.log('setTimeout asds');
     setTimeout(function(){
         console.log('setTimeout');
         window.open('https://'+data.url_file, "_blank");
@@ -983,3 +982,17 @@ function primeraFormaPago(formasPagos, nombreInput) {
         return formaPago.id
     }
 }
+
+function getResponsabilidades(id_responsabilidades) {
+    if (id_responsabilidades) {
+        return id_responsabilidades.split(',');
+    }
+    return [];
+}
+
+$(document).on('shown.bs.popover', function() {
+    $('.popover b.titulo-popover').css({
+        'color': '#72ffff',
+        'font-weight': 'bold'
+    });
+});

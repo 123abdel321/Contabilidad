@@ -194,14 +194,14 @@ function reciboInit () {
                     naturaleza = 'Error de naturaleza en ingresos';
                     stylesInfo = "border: solid 1px red !important; color: red !important;"
                 }
-                let dataContent = `<b>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                let dataContent = `<b class='titulo-popover'>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                 if (row.cuenta.tipos_cuenta.length > 0) {
                     var tiposCuentas = row.cuenta.tipos_cuenta;
                     for (let index = 0; index < tiposCuentas.length; index++) {
                         const tipoCuenta = tiposCuentas[index];
                         if (tipoCuenta.id_tipo_cuenta == 8) {
                             styles+= " color: #0bb19e; font-weight: 600;"
-                            dataContent = `<b>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
+                            dataContent = `<b class='titulo-popover'>Anticipos cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;
                         }
                     }
                 }

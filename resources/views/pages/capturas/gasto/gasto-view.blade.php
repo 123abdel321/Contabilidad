@@ -174,11 +174,11 @@
                                         <i
                                             id="icon_info_retencion"
                                             class="fas fa-info icon-info"
-                                            title="<b>Base:</b> 0<br/> <b>Subtotal:</b> 0"
+                                            title="<b class='titulo-popover'>Base:</b> 0<br/> <b class='titulo-popover'>Subtotal:</b> 0"
                                             data-toggle="popover"
                                             data-html="true"
                                         ></i>
-                                        <b id="nombre_info_retencion" style="font-weight: 500;">RETENCIÓN:</b>
+                                        <b id="nombre_info_retencion_gasto" style="font-weight: 500;">RETENCIÓN:</b>
                                     </h6>
                                 </td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_retencion">0.00</h6></td>
@@ -223,14 +223,16 @@
     @include('pages.capturas.gasto.gasto-anticipos')
 
     <script>
-        var gastoIva = @json(auth()->user()->can("gasto iva"));
-        var gastoAIU = @json(auth()->user()->can("gasto aiu"));
-        var gastoDescuento = @json(auth()->user()->can("gasto descuento"));
-        var gastoUpdate = @json(auth()->user()->can("gasto update"));
-        var comprobantesGastos = @json($comprobantes);
-        var centrosCostosGastos = @json($centro_costos);
-        var porcentajeIvaAIU = @json($porcentaje_iva_aiu);
-        var redondeoGastos = @json($redondeo_gastos);
+        let gastoIva = @json(auth()->user()->can("gasto iva"));
+        let gastoAIU = @json(auth()->user()->can("gasto aiu"));
+        let gastoDescuento = @json(auth()->user()->can("gasto descuento"));
+        let gastoUpdate = @json(auth()->user()->can("gasto update"));
+        
+        let comprobantesGastos = @json($comprobantes);
+        let centrosCostosGastos = @json($centro_costos);
+        let porcentajeIvaAIU = @json($porcentaje_iva_aiu);
+        let redondeoGastos = @json($redondeo_gastos);
+        let valor_uvt = @json($valor_uvt);
     </script>
     
 </div>
