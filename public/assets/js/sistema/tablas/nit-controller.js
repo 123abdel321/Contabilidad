@@ -168,11 +168,11 @@ function nitInit() {
                 $comboCiudad.val(dataCiudad.id).trigger('change');
             }
         
-            if (data.declarante) {
-                $('#declarante_nit').prop('checked', true);
-            } else {
-                $('#declarante_nit').prop('checked', false);
-            }
+            // if (data.declarante) {
+            //     $('#declarante_nit').prop('checked', true);
+            // } else {
+            //     $('#declarante_nit').prop('checked', false);
+            // }
 
             if (data.sumar_aiu) {
                 $('#sumar_aiu_nits').prop('checked', true);
@@ -491,7 +491,7 @@ $(document).on('click', '#updateNit', function () {
             porcentaje_reteica: $('#porcentaje_reteica').val(),
             id_responsabilidades: $("#id_responsabilidades").val(),
             id_actividad_economica: $("#id_actividad_economica_nit").val(),
-            declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
+            // declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
@@ -565,7 +565,7 @@ $(document).on('click', '#saveNit', function () {
             porcentaje_reteica: $('#porcentaje_reteica').val(),
             id_responsabilidades: $("#id_responsabilidades").val(),
             id_actividad_economica: $("#id_actividad_economica_nit").val(),
-            declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
+            // declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
@@ -632,7 +632,7 @@ function clearFormNits(){
     $('#default_avatar').show();
     $('#new_avatar').hide();
     $("#id_actividad_economica_nit").val('').change();
-    $("#id_responsabilidades").val('').change();
+    $("#id_responsabilidades").val([5,7]).change();
     
     $("#div_sumar_aiu").hide();
     $("#div_declarante").hide();

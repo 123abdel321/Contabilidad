@@ -179,7 +179,7 @@ class NitController extends Controller
 			'no_calcular_iva' => 'nullable|boolean',
             'porcentaje_aiu' => 'nullable|numeric',
 			'inactivar' => 'nullable',
-            'declarante' => 'nullable'
+            // 'declarante' => 'nullable'
 		];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -221,7 +221,7 @@ class NitController extends Controller
                 'porcentaje_reteica' => $request->get('porcentaje_reteica'),
                 'id_ciudad' => $request->get('id_ciudad'),
                 'observaciones' => $request->get('observaciones'),
-                'declarante' => $request->get('declarante'),
+                // 'declarante' => $request->get('declarante'),
                 'sumar_aiu' => $request->get('sumar_aiu'),
                 'plazo' => 0,
                 'created_by' => request()->user()->id,
@@ -299,7 +299,7 @@ class NitController extends Controller
                 'observaciones' => $request->get('observaciones'),
                 'porcentaje_aiu' => $request->get('porcentaje_aiu'),
                 'porcentaje_reteica' => $request->get('porcentaje_reteica'),
-                'declarante' => $request->get('declarante'),
+                // 'declarante' => $request->get('declarante'),
                 'sumar_aiu' => $request->get('sumar_aiu'),
                 'updated_by' => request()->user()->id,
             ]);
@@ -365,11 +365,13 @@ class NitController extends Controller
         $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
         $ubicacion_maximoph ? $ubicacion_maximoph->valor : null;
         $totalRows = $request->has("totalRows") ? $request->get("totalRows") : 20;
+        
         $text = \DB::raw("(CASE
                 WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)
                 WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( numero_documento, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
                 ELSE NULL
             END) AS text");
+
         if ($ubicacion_maximoph) {
             $text = \DB::raw("(CASE
                 WHEN apartamentos IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(razon_social, ' - ', apartamentos)
@@ -388,11 +390,12 @@ class NitController extends Controller
             'primer_apellido',
             'segundo_apellido',
             'email',
-            'declarante',
+            // 'declarante',
             'sumar_aiu',
             'porcentaje_aiu',
             'porcentaje_reteica',
             'apartamentos',
+            'id_responsabilidades',
             \DB::raw('telefono_1 AS telefono'),
             $text
         );
