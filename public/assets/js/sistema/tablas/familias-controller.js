@@ -58,130 +58,82 @@ function familiasInit() {
             {"data":'nombre'},
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_venta){
-                        return row.cuenta_venta.cuenta + ' - ' + row.cuenta_venta.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_venta);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_venta_retencion){
-                        return row.cuenta_venta_retencion.cuenta + ' - ' + row.cuenta_venta_retencion.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_venta_retencion);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_venta_devolucion){
-                        return row.cuenta_venta_devolucion.cuenta + ' - ' + row.cuenta_venta_devolucion.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_venta_devolucion);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_venta_iva){
-                        return row.cuenta_venta_iva.cuenta + ' - ' + row.cuenta_venta_iva.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_venta_iva);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_venta_impuestos){
-                        return row.cuenta_venta_impuestos.cuenta + ' - ' + row.cuenta_venta_impuestos.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_venta_impuestos);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_venta_descuento){
-                        return row.cuenta_venta_descuento.cuenta + ' - ' + row.cuenta_venta_descuento.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_venta_descuento);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_venta_devolucion_iva){
-                        return row.cuenta_venta_devolucion_iva.cuenta + ' - ' + row.cuenta_venta_devolucion_iva.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_venta_devolucion_iva);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_inventario){
-                        return row.cuenta_inventario.cuenta + ' - ' + row.cuenta_inventario.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_inventario);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_costos){
-                        return row.cuenta_costos.cuenta + ' - ' + row.cuenta_costos.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_costos);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_compra){
-                        return row.cuenta_compra.cuenta + ' - ' + row.cuenta_compra.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_compra);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_compra_retencion){
-                        return row.cuenta_compra_retencion.cuenta + ' - ' + row.cuenta_compra_retencion.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_compra_retencion);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_compra_devolucion){
-                        return row.cuenta_compra_devolucion.cuenta + ' - ' + row.cuenta_compra_devolucion.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_compra_devolucion);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_compra_iva){
-                        return row.cuenta_compra_iva.cuenta + ' - ' + row.cuenta_compra_iva.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_compra_iva);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_compra_impuestos){
-                        return row.cuenta_compra_impuestos.cuenta + ' - ' + row.cuenta_compra_impuestos.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_compra_impuestos);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_compra_descuento){
-                        return row.cuenta_compra_descuento.cuenta + ' - ' + row.cuenta_compra_descuento.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_compra_descuento);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_compra_devolucion_iva){
-                        return row.cuenta_compra_devolucion_iva.cuenta + ' - ' + row.cuenta_compra_devolucion_iva.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatFamilias(row.cuenta_compra_devolucion_iva);
                 }
             },
             {"data": function (row, type, set){  
@@ -1044,6 +996,25 @@ function familiasInit() {
 
     $('.water').hide();
     familias_table.ajax.reload();
+}
+
+function getCuentaDataFormatFamilias(cuenta) {
+    let cuentaFormat = ``;
+    const cuentaData = cuenta;
+
+    if (!cuentaData) {
+        return cuentaFormat;
+    }
+
+    cuentaFormat = `<b style="font-weight: 600;">${cuentaData.cuenta}</b> - ${cuentaData.nombre}`;
+    
+    if (cuentaData.impuesto) {
+        const porcentaje = cuentaData.impuesto.porcentaje;
+        const base = new Intl.NumberFormat('ja-JP').format(cuentaData.impuesto.base);
+        cuentaFormat+= ` - <b style="font-weight: 600;">PORCENTAJE:</b> ${porcentaje} - <b style="font-weight: 600;">BASE:</b> ${base}`;
+    }
+
+    return cuentaFormat;
 }
 
 $('.form-control').keyup(function() {

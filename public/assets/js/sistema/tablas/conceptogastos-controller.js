@@ -46,42 +46,27 @@ function conceptogastosInit() {
             {"data":'nombre'},
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_gasto){
-                        return row.cuenta_gasto.cuenta + ' - ' + row.cuenta_gasto.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatConceptoGastos(row.cuenta_gasto);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_iva){
-                        return row.cuenta_iva.cuenta + ' - ' + row.cuenta_iva.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatConceptoGastos(row.cuenta_iva);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_retencion){
-                        return row.cuenta_retencion.cuenta + ' - ' + row.cuenta_retencion.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatConceptoGastos(row.cuenta_retencion);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_retencion_declarante){
-                        return row.cuenta_retencion_declarante.cuenta + ' - ' + row.cuenta_retencion_declarante.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatConceptoGastos(row.cuenta_retencion_declarante);
                 }
             },
             {
                 "data": function (row, type, set){
-                    if(row.cuenta_reteica){
-                        return row.cuenta_reteica.cuenta + ' - ' + row.cuenta_reteica.nombre;
-                    }
-                    return '';
+                    return getCuentaDataFormatConceptoGastos(row.cuenta_reteica);
                 }
             },
             {"data": function (row, type, set){  
@@ -455,6 +440,25 @@ function conceptogastosInit() {
 
     $('.water').hide();
     conceptos_gastos_table.ajax.reload();
+}
+
+function getCuentaDataFormatConceptoGastos(cuenta) {
+    let cuentaFormat = ``;
+    const cuentaData = cuenta;
+
+    if (!cuentaData) {
+        return cuentaFormat;
+    }
+
+    cuentaFormat = `<b style="font-weight: 600;">${cuentaData.cuenta}</b> - ${cuentaData.nombre}`;
+    
+    if (cuentaData.impuesto) {
+        const porcentaje = cuentaData.impuesto.porcentaje;
+        const base = new Intl.NumberFormat('ja-JP').format(cuentaData.impuesto.base);
+        cuentaFormat+= ` - <b style="font-weight: 600;">PORCENTAJE:</b> ${porcentaje} - <b style="font-weight: 600;">BASE:</b> ${base}`;
+    }
+
+    return cuentaFormat;
 }
 
 $('.form-control').keyup(function() {
