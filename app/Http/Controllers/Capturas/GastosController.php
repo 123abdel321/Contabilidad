@@ -137,7 +137,7 @@ class GastosController extends Controller
             $this->proveedor = $this->findProveedor($request->get('id_proveedor'));
             $responsabilidades = $this->getResponsabilidades($this->proveedor->id_responsabilidades);
 
-            if (in_array('5', $responsabilidades)) {
+            if (!in_array('5', $responsabilidades)) {
                 $this->tipoRetencion = 'cuenta_retencion_declarante';
             }
 
