@@ -611,9 +611,8 @@ function changeConceptoGasto(idGasto) {
             dataGasto[indexGasto].porcentaje_reteica = porcentajeReteica
         }
     }
-
     //RETENCION
-    if (!proveedor.declarante) {
+    if (!responsabilidadesGasto.includes('5')) {
         if (data.cuenta_retencion_declarante && data.cuenta_retencion_declarante.impuesto) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion_declarante.impuesto.id);
             if (!existe || existe < 0) {
@@ -1155,7 +1154,7 @@ function actualizarInfoRetencionGastos() {
 
     var porcentaje = 0;
     var base = 0;
-    var nombre = 'Sin cuenta con retención';
+    var nombre = 'Sin cuenta';
     let total_uvt = 0;
 
     retencionesGasto.forEach(retencion => {
@@ -1190,15 +1189,15 @@ function actualizarInfoRetencionGastos() {
 
     if (porcentajeAIUGastos) {
         aiuValor = new Intl.NumberFormat('ja-JP').format(gasto_aiu);
-        aiuNombre = `<b class='titulo-popover'>AIU:</b> ${aiuValor}<br/>`;
+        aiuNombre = `<b class='titulo-popover'>AIU:</b> ${aiuValor}`;
     }
 
     const nuevoTitulo = `
         <b class='titulo-popover'>Cuenta:</b> ${nombre}<br/>
         <b class='titulo-popover'>UVT:</b> ${total_uvt} X ${totalUVTs} = ${baseformat}<br/>
         <b class='titulo-popover'>Subtotal:</b> ${valorSubtotal}<br/>
-        ${aiuNombre}
-        ${responsableRetencion}
+        ${aiuNombre}<br/>
+        ${responsableRetencion}<br/>
         ${declaranteRenta}
     `;
 
@@ -1739,9 +1738,8 @@ function addRowGastosData(detalle, nit) {
         "total_valor_gasto": detalle.total,
         'observacion': detalle.observacion,
     };
-    
     //RETENCION
-    if (responsabilidadesGasto.includes('5')) {
+    if (!responsabilidadesGasto.includes('5')) {
         if (detalle.cuenta_retencion_declarante && detalle.cuenta_retencion_declarante.impuesto) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == detalle.cuenta_retencion_declarante.impuesto.id);
             if (!existe || existe < 0) {
