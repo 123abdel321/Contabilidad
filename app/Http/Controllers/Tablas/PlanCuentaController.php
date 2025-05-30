@@ -438,6 +438,7 @@ class PlanCuentaController extends Controller
                     case 1:
                         $naturaleza = "naturaleza_egresos";
                         break;
+                    case 5:
                     case 2:
                         $naturaleza = "naturaleza_compras";
                         break;
