@@ -1297,7 +1297,11 @@ function cargarNuevoConsecutivo() {
         }
         mostrarValores();
     }
-    $('#fecha_manual_documento').val(fecha);
+
+    const dateNow = new Date;
+    const fechaGeneral = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+
+    $('#fecha_manual_documento').val(fechaGeneral);
     $("#iniciarCapturaDocumentos").show();
     $("#agregarDocumentos").hide();
     $("#cancelarCapturaDocumentos").hide();
