@@ -156,15 +156,16 @@ class RecibosController extends Controller
                 }
             }
 
-            if ($request->get('orden_cuentas')) {
+            // if ($request->get('orden_cuentas')) {
 
-                $ordenFacturacion = $request->get('orden_cuentas');
-                asort($ordenFacturacion);
+            //     $ordenFacturacion = $request->get('orden_cuentas');
+            //     asort($ordenFacturacion);
 
-                $dataRecibos = $dataRecibos->sortBy(function ($item) use ($ordenFacturacion) {
-                    return $ordenFacturacion[$item->id_cuenta] ?? 999999;
-                })->values();
-            }
+
+            //     $dataRecibos = $dataRecibos->sortBy(function ($item) use ($ordenFacturacion) {
+            //         return $ordenFacturacion[$item->id_cuenta] ?? 999999;
+            //     })->values();
+            // }
 
             if (!isset($dataRecibos)) {
                 $this->id_recibo++;
