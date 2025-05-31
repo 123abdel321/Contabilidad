@@ -319,33 +319,42 @@ class RecibosController extends Controller
                 "message"=>$validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+        
+        try {
+            DB::connection('sam')->beginTransaction();
 
-        $actualizarConsecutivo = true;
-        $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+            $actualizarConsecutivo = true;
 
-        $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual') : Carbon::now();
+            $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+            if(!$comprobanteRecibo) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+            
+            // Verificar fecha manual
+            if (!$request->get('fecha_manual')) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=>['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
 
-        if(!$comprobanteRecibo) {
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+            // Verificar si se encuentra en una fecha cerrada
+            $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
+            if ($isFechaCierreLimit) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+                ], 200);
+            }
 
-        $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
-
-        if ($isFechaCierreLimit) {
-			return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
-            ], 200);
-		}
-
-        if ($request->get('id_recibo')) {
-            $recibo = ConRecibos::where('id', $request->get('id_recibo'))->first();
-
+            // Verificar si el consecutivo está en uso (con o sin recibo)
+            $recibo = $request->get('id_recibo') ? ConRecibos::find($request->get('id_recibo')) : null;
             $consecutivoUsado = $this->consecutivoUsado(
                 $comprobanteRecibo,
                 $request->get('consecutivo'),
@@ -355,64 +364,41 @@ class RecibosController extends Controller
 
             if ($consecutivoUsado) {
                 return response()->json([
-                    "success"=>false,
+                    "success" => false,
                     'data' => [],
-                    "message"=> "El consecutivo {$request->get('consecutivo')} ya está en uso."
+                    "message" => "El consecutivo {$request->get('consecutivo')} ya está en uso."
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
-            
+
+            // Eliminar datos del recibo anterior
             if ($recibo) {
                 $recibo->documentos()->delete();
                 $recibo->detalles()->delete();
                 $recibo->pagos()->delete();
                 $recibo->delete();
             }
-        } else {
-            $consecutivoUsado = $this->consecutivoUsado(
-                $comprobanteRecibo,
-                $request->get('consecutivo'),
-                $request->get('fecha_manual')
-            );
+            
+            $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual') : Carbon::now();
+            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
 
-            if ($consecutivoUsado) {
-                return response()->json([
-                    "success"=>false,
-                    'data' => [],
-                    "message"=> "El consecutivo {$request->get('consecutivo')} ya está en uso."
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            if (!auth()->user()->can("recibo update")) {
+                $request->request->add(['consecutivo' => $consecutivo]);
+            } else if ($consecutivo != $request->get('consecutivo')) {
+                $actualizarConsecutivo = false;
             }
-        }
-        
-        $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
 
-        if (!auth()->user()->can("recibo update")) {
-            $request->request->add(['consecutivo' => $consecutivo]);
-        } else if ($consecutivo != $request->get('consecutivo')) {
-            $actualizarConsecutivo = false;
-        }
+            if (!$request->get('id_recibo')) {
+                $actualizarConsecutivo = false;
+            }
 
-        if (!$request->get('id_recibo')) {
-            $actualizarConsecutivo = false;
-        }
-
-        $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
-		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
-
-        if (!$request->get('fecha_manual')) {
-			return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-		}
-        
-        try {
-            DB::connection('sam')->beginTransaction();
+            $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
+            $fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
+            
             //CREAR FACTURA RECIBO
             $recibo = $this->createFacturaRecibo($request);
             $nit = $this->findNit($recibo->id_nit);
             $centro_costos = CentroCostos::first();
-
+            
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE RECIBOS
             $documentoGeneral = new Documento(
                 $request->get('id_comprobante'),
