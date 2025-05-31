@@ -1102,7 +1102,7 @@ function focusNextFormasPagoRecibos(idFormaPago) {
     if(!dataCompraRecibos.length > 0) return;
 
     for (let index = 0; index < dataCompraRecibos.length; index++) {
-        const dataPagoRecibo = dataCompraPagos[index];
+        const dataPagoRecibo = dataCompraRecibos[index];
         const input = document.getElementById("recibo_forma_pago_"+dataPagoPago.id);
         
         if (input.disabled) {

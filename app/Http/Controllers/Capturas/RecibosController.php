@@ -126,25 +126,32 @@ class RecibosController extends Controller
                     'message'=> 'Recibo generado con exito!'
                 ], Response::HTTP_OK);
             }
+
+            $extractos = $extractos->sortBy('cuenta')->values();
+
+            $dataRecibos = [];
             
             if ($reciboEdit) {
                 $detalles = $reciboEdit['detalles'];
-                
-                if (count($extractos)) {
+
+                if (isset($detalles)) {
+                    foreach ($detalles as $detalle) {
+                        $dataRecibos[] = $this->formatExtractoEdit($detalle);
+                    } 
+                }
+
+                if (isset($extractos)) {
                     foreach ($extractos as $key => $extracto) {
                         $indice = array_search($extracto->documento_referencia, array_column($detalles, 'documento_referencia'));
-                        
-                        if (($indice || $indice == 0) && array_key_exists($indice, $detalles)) {
-                            $encontrado = $detalles[$indice];
-                            $extractos[$key] = $this->formatExtractoEdit($extracto, $encontrado);
-                            unset($detalles[$indice]);
+                        if (!$indice) {
+                            $dataRecibos[] = $this->formatExtracto($extracto);
                         }
                     }
                 }
-                
-                if (count($detalles)) {
-                    foreach ($detalles as $detalle) {
-                        $extractos[] = $this->addExtractoData($detalle);
+            } else {
+                if (isset($extractos)) {
+                    foreach ($extractos as $extracto) {
+                        $dataRecibos[] = $this->formatExtracto($extracto);
                     }
                 }
             }
@@ -154,29 +161,12 @@ class RecibosController extends Controller
                 $ordenFacturacion = $request->get('orden_cuentas');
                 asort($ordenFacturacion);
 
-                $extractos = $extractos->sortBy(function ($item) use ($ordenFacturacion) {
-                    return $ordenFacturacion[$item->id_cuenta] ?? 9999;
+                $dataRecibos = $dataRecibos->sortBy(function ($item) use ($ordenFacturacion) {
+                    return $ordenFacturacion[$item->id_cuenta] ?? 999999;
                 })->values();
-            } else {
-                $extractos = $extractos->sortBy('cuenta')->values();
             }
 
-            $cxcAnticipos = PlanCuentas::with('forma_pago')
-                ->where('auxiliar', 1)
-                ->where('exige_documento_referencia', 1)
-                ->whereHas('tipos_cuenta', function ($query) {
-                    $query->whereIn('id_tipo_cuenta', [8]);
-                })
-                ->orderBy('cuenta', 'ASC')
-                ->get();
-            
-            $dataRecibos = [];
-
-            if (count($extractos)) {
-                foreach ($extractos as $extracto) {
-                    $dataRecibos[] = $this->formatExtracto($extracto);
-                }
-            } else {
+            if (!isset($dataRecibos)) {
                 $this->id_recibo++;
                 $dataRecibos[] = [
                     'id' => $this->id_recibo,
@@ -195,6 +185,15 @@ class RecibosController extends Controller
                     'cuenta_recibo' => 'sin_deuda',
                 ];
             }
+
+            $cxcAnticipos = PlanCuentas::with('forma_pago')
+                ->where('auxiliar', 1)
+                ->where('exige_documento_referencia', 1)
+                ->whereHas('tipos_cuenta', function ($query) {
+                    $query->whereIn('id_tipo_cuenta', [8]);
+                })
+                ->orderBy('cuenta', 'ASC')
+                ->get();
 
             foreach ($cxcAnticipos as $cxcAnticipo) {
                 $dataRecibos[] = $this->formatCuentaAnticipo($cxcAnticipo, $request->get('id_nit'));
@@ -310,7 +309,7 @@ class RecibosController extends Controller
             'pagos.*.id' => 'required|exists:sam.fac_formas_pagos,id',
             'pagos.*.valor' => 'required',
         ];
-
+        
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
 		if ($validator->fails()){
@@ -321,6 +320,7 @@ class RecibosController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        $actualizarConsecutivo = true;
         $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
         $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual') : Carbon::now();
@@ -368,8 +368,31 @@ class RecibosController extends Controller
                 $recibo->delete();
             }
         } else {
-            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
+            $consecutivoUsado = $this->consecutivoUsado(
+                $comprobanteRecibo,
+                $request->get('consecutivo'),
+                $request->get('fecha_manual')
+            );
+
+            if ($consecutivoUsado) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=> "El consecutivo {$request->get('consecutivo')} ya está en uso."
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
+        
+        $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
+
+        if (!auth()->user()->can("recibo update")) {
             $request->request->add(['consecutivo' => $consecutivo]);
+        } else if ($consecutivo != $request->get('consecutivo')) {
+            $actualizarConsecutivo = false;
+        }
+
+        if (!$request->get('id_recibo')) {
+            $actualizarConsecutivo = false;
         }
 
         $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
@@ -501,7 +524,7 @@ class RecibosController extends Controller
                 }
             }
 
-            if (!$request->get('id_recibo')) {
+            if ($actualizarConsecutivo) {
                 $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
             }
 
@@ -1077,10 +1100,8 @@ class RecibosController extends Controller
         return $doc; 
     }
 
-    private function formatExtracto($extracto)
+    private function formatExtracto($extracto, $editando = false)
     {
-        $editando = property_exists($extracto, 'edit') ? true : false;
-        
         $this->id_recibo++;
         return [
             'id' => $this->id_recibo,
@@ -1100,16 +1121,27 @@ class RecibosController extends Controller
         ];
     }
 
-    private function formatExtractoEdit($extracto, $recibo)
+    private function formatExtractoEdit($detalle)
     {
-        $extracto->total_abono = $recibo['total_abono'];
-        $extracto->total_saldo = $extracto->saldo;
-        $extracto->concepto = $recibo['concepto'];
-        $extracto->nuevo_saldo = $recibo['nuevo_saldo'];
-        $extracto->valor_recibido = $recibo['total_abono'];
-        $extracto->edit = true;
-        
-        return $extracto;
+        $this->id_recibo++;
+        $detalle = (object)$detalle;
+        $cuentaData = PlanCuentas::find($detalle->id_cuenta);
+        return [
+            'id' => $this->id_recibo,
+            'id_cuenta' =>  $detalle->id_cuenta,
+            'codigo_cuenta' => $cuentaData->cuenta,
+            'nombre_cuenta' => $cuentaData->nombre,
+            'fecha_manual' => $detalle->fecha_manual,
+            'dias_cumplidos' => 0,
+            'plazo' => 0,
+            'documento_referencia' => $detalle->documento_referencia,
+            'saldo' => $detalle->total_saldo,
+            'valor_recibido' => $detalle->total_abono,
+            'nuevo_saldo' => $detalle->nuevo_saldo,
+            'total_abono' => $detalle->total_abono,
+            'concepto' => $detalle->concepto,
+            'cuenta_recibo' => true,
+        ];
     }
 
     private function addExtractoData($detalle)
