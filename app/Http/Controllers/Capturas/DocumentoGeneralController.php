@@ -396,14 +396,17 @@ class DocumentoGeneralController extends Controller
 			$facDocumento = null;
 
 			$tokenFactura = $request->get('token_factura') ? $request->get('token_factura') : $this->generateTokenDocumento();
-			
+
 			if($request->get('editing_documento')) {
 				$facDocumento = DocumentosGeneral::with('relation')
 					->where('id_comprobante', $request->get('id_comprobante'))
-					->where('consecutivo', $request->get('consecutivo'))
-					->where('fecha_manual', $request->get('fecha_manual'))
-					->first();
-					
+					->where('consecutivo', $request->get('consecutivo'));
+
+				if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
+                    $this->filterCapturaMensual($facDocumento, $request->get('fecha_manual'));
+                }
+
+				$facDocumento = $facDocumento->first();
 				$facDocumento = $facDocumento->relation;
 				
 				DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
