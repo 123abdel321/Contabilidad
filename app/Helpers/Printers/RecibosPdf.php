@@ -91,18 +91,22 @@ class RecibosPdf extends AbstractPrinterPdf
 			[3],
 			null,
 			$fechaAnterior
-		))->actualFechaAntes()->get();
+		))->actual()->get();
 
-		if (count($extractos)) {
+		if (isset($extractos)) {
 			foreach ($extractos as $extracto) {
 				$saldo+= floatval($extracto->saldo);
 			}
 		}
 		
-		if (count($extractoAnterior)) {
+		if (isset($extractoAnterior)) {
 			foreach ($extractoAnterior as $extracto) {
 				$saldoAnterior+= floatval($extracto->saldo);
 			}
+		}
+
+		if ($saldoAnterior == 0) {
+			$saldoAnterior = $this->recibo->total_abono;
 		}
 
         return [
