@@ -161,7 +161,7 @@
 									</p>
 								</td>
 								<td class="empresa padding5">
-									<h1>{{ $empresa->razon_social }}</h1>
+									<h1 style="font-size: 24px; line-height: 1.2; word-break: break-word; margin: 0; text-align: center; padding: 5px;">{{ $empresa->razon_social }}</h1>
 									<span>NIT: {{ $empresa->nit }}-{{ $empresa->dv }}</span><br>
 									@if ($empresa->direccion)
 										<span>DIRECCION:{{ $empresa->direccion }}</span><br>

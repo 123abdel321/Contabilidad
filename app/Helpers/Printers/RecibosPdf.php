@@ -91,7 +91,7 @@ class RecibosPdf extends AbstractPrinterPdf
 			[3],
 			null,
 			$fechaAnterior
-		))->actual()->get();
+		))->actualFechaAntes()->get();
 
 		if (count($extractos)) {
 			foreach ($extractos as $extracto) {
