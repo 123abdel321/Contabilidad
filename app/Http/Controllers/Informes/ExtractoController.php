@@ -116,6 +116,7 @@ class ExtractoController extends Controller
     {
         $fechaManual = null;
         $tiposCuentas = [8];
+        $sin_documento = null;
 
         if ($request->get('id_tipo_cuenta')) {
             $tiposCuentas = $request->get('id_tipo_cuenta');
@@ -124,13 +125,17 @@ class ExtractoController extends Controller
         if ($request->has('fecha_manual')) {
             $fechaManual = $request->get('fecha_manual');
         }
+
+        if ($request->has('sin_documento')) {
+            $sin_documento = $request->get('sin_documento');
+        }
         
         $extracto = (new Extracto(
             $request->get('id_nit'),
             $tiposCuentas,
             null,
             $fechaManual
-        ))->anticipos();
+        ))->anticipos($sin_documento);
 
         return response()->json([
             'success'=>	true,

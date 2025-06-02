@@ -87,7 +87,7 @@ class RecibosController extends Controller
             
             if ($idComprobante && $consecutivo && $editarRecibos) {
 
-                $reciboEdit = ConRecibos::with('detalles', 'pagos', 'nit')
+                $reciboEdit = ConRecibos::with('detalles.cuenta.tipos_cuenta', 'pagos', 'nit')
                     ->where('id_comprobante', $idComprobante)
                     ->where('consecutivo', $consecutivo);
 
@@ -127,16 +127,42 @@ class RecibosController extends Controller
                 ], Response::HTTP_OK);
             }
 
-            $extractos = $extractos->sortBy('cuenta')->values();
+            if ($request->get('orden_cuentas')) {
+
+                $ordenFacturacion = $request->get('orden_cuentas');
+                asort($ordenFacturacion);
+
+                $extractos = $extractos->sortBy(function ($item) use ($ordenFacturacion) {
+                    return $ordenFacturacion[$item->id_cuenta] ?? 9999;
+                })->values();
+            } else {
+                $extractos = $extractos->sortBy('cuenta')->values();
+            }
 
             $dataRecibos = [];
+            $dataRecibosAnticipos = [];
             
             if ($reciboEdit) {
                 $detalles = $reciboEdit['detalles'];
 
                 if (isset($detalles)) {
                     foreach ($detalles as $detalle) {
-                        $dataRecibos[] = $this->formatExtractoEdit($detalle);
+                        $esAnticipo = false;
+
+                        // Verificar si tiene tipos_cuenta y si alguno es 4 u 8
+                        if (isset($detalle['cuenta']['tipos_cuenta'])) {
+                            foreach ($detalle['cuenta']['tipos_cuenta'] as $tipoCuenta) {
+                                if (in_array($tipoCuenta['id_tipo_cuenta'], [4, 8])) {
+                                    $esAnticipo = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if ($esAnticipo) {
+                            $dataRecibosAnticipos[$detalle['id_cuenta']] = (object)$detalle;
+                        } else {
+                            $dataRecibos[] = $this->formatExtractoEdit($detalle);
+                        }
                     } 
                 }
 
@@ -155,17 +181,6 @@ class RecibosController extends Controller
                     }
                 }
             }
-
-            // if ($request->get('orden_cuentas')) {
-
-            //     $ordenFacturacion = $request->get('orden_cuentas');
-            //     asort($ordenFacturacion);
-
-
-            //     $dataRecibos = $dataRecibos->sortBy(function ($item) use ($ordenFacturacion) {
-            //         return $ordenFacturacion[$item->id_cuenta] ?? 999999;
-            //     })->values();
-            // }
 
             if (!isset($dataRecibos)) {
                 $this->id_recibo++;
@@ -197,13 +212,23 @@ class RecibosController extends Controller
                 ->get();
 
             foreach ($cxcAnticipos as $cxcAnticipo) {
-                $dataRecibos[] = $this->formatCuentaAnticipo($cxcAnticipo, $request->get('id_nit'));
+                $dataEdit = array_key_exists($cxcAnticipo->id, $dataRecibosAnticipos) ? $dataRecibosAnticipos[$cxcAnticipo->id] : null;
+                $dataRecibos[] = $this->formatCuentaAnticipo($cxcAnticipo, $request->get('id_nit'), $dataEdit);
+            }
+
+            $anticipos = [];
+            if (isset($dataRecibosAnticipos)) {
+                $dataRecibosAnticipos = array_values($dataRecibosAnticipos);
+                foreach ($dataRecibosAnticipos as $anticipo) {
+                    $anticipos[] = $anticipo->documento_referencia;
+                }
             }
 
             return response()->json([
                 'success'=>	true,
                 'data' => $dataRecibos,
                 'edit' => $reciboEdit,
+                'anticipos' => $anticipos,
                 'message'=> 'Recibo generado con exito!'
             ], Response::HTTP_OK);
 
@@ -320,65 +345,58 @@ class RecibosController extends Controller
                 "message"=>$validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+
+        $actualizarConsecutivo = true;
+
+        // Verificar que exista el comprobante
+        $comprobanteRecibo = Comprobantes::find($request->get('id_comprobante'))->first();
+        if(!$comprobanteRecibo) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Verificar fecha manual
+        if (!$request->get('fecha_manual')) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Verificar si se encuentra en una fecha cerrada
+        $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
+        if ($isFechaCierreLimit) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+            ], 200);
+        }
+
+        // Verificar si el consecutivo está en uso (con o sin recibo)
+        $recibo = $request->get('id_recibo') ? ConRecibos::find($request->get('id_recibo')) : null;
+        $consecutivoUsado = $this->consecutivoUsado(
+            $comprobanteRecibo,
+            $request->get('consecutivo'),
+            $request->get('fecha_manual'),
+            $recibo
+        );
+
+        if ($consecutivoUsado) {
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => "El consecutivo {$request->get('consecutivo')} ya está en uso."
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         
         try {
             DB::connection('sam')->beginTransaction();
 
-            $actualizarConsecutivo = true;
-
-            $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
-            if(!$comprobanteRecibo) {
-                return response()->json([
-                    "success"=>false,
-                    'data' => [],
-                    "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-            
-            // Verificar fecha manual
-            if (!$request->get('fecha_manual')) {
-                return response()->json([
-                    "success"=>false,
-                    'data' => [],
-                    "message"=>['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
-            // Verificar si se encuentra en una fecha cerrada
-            $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
-            if ($isFechaCierreLimit) {
-                return response()->json([
-                    "success"=>false,
-                    'data' => [],
-                    "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
-                ], 200);
-            }
-
-            // Verificar si el consecutivo está en uso (con o sin recibo)
-            $recibo = $request->get('id_recibo') ? ConRecibos::find($request->get('id_recibo')) : null;
-            $consecutivoUsado = $this->consecutivoUsado(
-                $comprobanteRecibo,
-                $request->get('consecutivo'),
-                $request->get('fecha_manual'),
-                $recibo
-            );
-
-            if ($consecutivoUsado) {
-                return response()->json([
-                    "success" => false,
-                    'data' => [],
-                    "message" => "El consecutivo {$request->get('consecutivo')} ya está en uso."
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
-            // Eliminar datos del recibo anterior
-            if ($recibo) {
-                $recibo->documentos()->delete();
-                $recibo->detalles()->delete();
-                $recibo->pagos()->delete();
-                $recibo->delete();
-            }
-            
             $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual') : Carbon::now();
             $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
 
@@ -388,8 +406,13 @@ class RecibosController extends Controller
                 $actualizarConsecutivo = false;
             }
 
-            if (!$request->get('id_recibo')) {
+            // Eliminar datos del recibo anterior
+            if ($recibo) {
                 $actualizarConsecutivo = false;
+                $recibo->documentos()->delete();
+                $recibo->detalles()->delete();
+                $recibo->pagos()->delete();
+                $recibo->delete();
             }
 
             $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
@@ -1151,7 +1174,7 @@ class RecibosController extends Controller
         ];
     }
 
-    private function formatCuentaAnticipo($cuenta, $idNit)
+    private function formatCuentaAnticipo($cuenta, $idNit, $dataEdit)
     {
         $this->id_recibo++;
 
@@ -1164,12 +1187,12 @@ class RecibosController extends Controller
             'fecha_manual' => Carbon::now()->format('Y-m-d'),
             'dias_cumplidos' => '',
             'plazo' => '',
-            'documento_referencia' => '',
+            'documento_referencia' => $dataEdit ? $dataEdit->documento_referencia : 0,
             'saldo' => 0,
-            'valor_recibido' => 0,
+            'valor_recibido' => $dataEdit ? $dataEdit->total_anticipo : 0,
             'nuevo_saldo' => 0,
             'total_abono' => 0,
-            'concepto' => '',
+            'concepto' => $dataEdit ? $dataEdit->concepto : '',
             'cuenta_recibo' => false,
         ];
     }

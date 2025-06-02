@@ -14,6 +14,7 @@ class Extracto
     public $consecutivo;
     public $id_tipo_cuenta;
     public $documento_referencia;
+    public $sin_documento_referencia;
 
     public function __construct($id_nit = null, $id_tipo_cuenta = null, $documento_referencia = null, $fecha = null, $id_cuenta = null, $consecutivo = null)
     {
@@ -84,9 +85,11 @@ class Extracto
         return $extracto;
     }
 
-    public function anticipos()
+    public function anticipos($sinDocumentos = null)
     {
         $this->fecha = $this->fecha ?? Carbon::now();
+        $this->sin_documento_referencia = $sinDocumentos;
+
         $query = $this->queryAnticipos();
 
         $anticipo = DB::connection('sam')
@@ -300,6 +303,10 @@ class Extracto
 			})
             ->when($this->fecha ? $this->fecha : false, function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->fecha);
+			})
+            ->when($this->sin_documento_referencia ? $this->sin_documento_referencia : false, function ($query) {
+                if (is_array($this->sin_documento_referencia)) $query->whereNotIn('DG.documento_referencia', $this->sin_documento_referencia);
+                else $query->where('DG.documento_referencia', $this->sin_documento_referencia);
 			})
             ->when($this->id_cuenta ? $this->id_cuenta : false, function ($query) {
                 if (is_array($this->id_cuenta)) $query->whereIn('PC.id', $this->id_cuenta);

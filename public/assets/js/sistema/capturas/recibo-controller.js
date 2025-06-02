@@ -393,6 +393,8 @@ function reloadTableRecibos() {
 
         if (factura) {
             $('#cancelarCapturaRecibo').show();
+            const anticiposEditados = res.anticipos;
+            console.log('anticiposEditados: ',anticiposEditados);
             noBuscarDatosRecibo = true;
             $("#id_recibo_up").val(factura.id);
 
@@ -407,7 +409,7 @@ function reloadTableRecibos() {
             $('#fecha_manual_recibo').val(factura.fecha_manual);
             $('#total_abono_recibo').val(factura.total_abono);
             agregarRecibos(factura.pagos);
-            loadAnticiposRecibo(factura.fecha_manual);
+            loadAnticiposRecibo(factura.fecha_manual, anticiposEditados);
         }
 
         mostrarValoresRecibos();
@@ -440,7 +442,6 @@ $(document).on('change', '#id_nit_recibo', function () {
     let data = $('#id_nit_recibo').select2('data')[0];
     if (data && !noBuscarDatosRecibo) {
         document.getElementById('iniciarCapturaRecibo').click();
-        loadAnticiposRecibo();
     }
     if (!noBuscarDatosRecibo) {
         noBuscarDatosRecibo = false;
@@ -913,7 +914,7 @@ function validateSaveRecibos() {
     }
 }
 
-function loadAnticiposRecibo(fecha_manual = null) {
+function loadAnticiposRecibo(fecha_manual = null, anticiposEditados = null) {
     totalAnticiposRecibo = 0;
     $('#input_anticipos_recibo').hide();
     $('#recibo_anticipo_disp_view').hide();
@@ -925,7 +926,8 @@ function loadAnticiposRecibo(fecha_manual = null) {
     let data = {
         id_nit: $('#id_nit_recibo').val(),
         id_tipo_cuenta: [8],
-        fecha_manual: fecha_manual
+        fecha_manual: fecha_manual,
+        sin_documento: anticiposEditados
     }
 
     $.ajax({
