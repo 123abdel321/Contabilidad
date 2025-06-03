@@ -205,7 +205,7 @@ function loadResumenComprobanteById(id_resumen_comprobante) {
                 tabla.column(3).visible(false);// NOMBRE  NIT
                 tabla.column(4).visible(true);// UBICACION
                 tabla.column(5).visible(false);// CONSECUTIVO
-                tabla.column(6).visible(false);// FECHA MANUAL
+                // tabla.column(6).visible(false);// FECHA MANUAL
                 tabla.column(10).visible(false);// CONCEPTO
                 
                 switch (agrupado) {
@@ -227,7 +227,7 @@ function loadResumenComprobanteById(id_resumen_comprobante) {
                         if (ubicacion_maximoph_resumen) columnUbicacionMaximoPH.visible(true);
                         else columnUbicacionMaximoPH.visible(false);
                         tabla.column(5).visible(true);
-                        tabla.column(6).visible(false);
+                        // tabla.column(6).visible(false);
                         tabla.column(10).visible(false);
                         break;
                     default:
@@ -235,7 +235,7 @@ function loadResumenComprobanteById(id_resumen_comprobante) {
                         if (ubicacion_maximoph_resumen) columnUbicacionMaximoPH.visible(true);
                         else columnUbicacionMaximoPH.visible(false);
                         tabla.column(5).visible(true);
-                        tabla.column(6).visible(false);
+                        // tabla.column(6).visible(false);
                         tabla.column(10).visible(false);
                         break;
                 }
