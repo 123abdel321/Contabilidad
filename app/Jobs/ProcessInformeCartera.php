@@ -155,6 +155,7 @@ class ProcessInformeCartera implements ShouldQueue
             )
             ->groupByRaw($this->request['agrupar_cartera'].', id_tipo_cuenta')
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $key = '';
@@ -260,6 +261,7 @@ class ProcessInformeCartera implements ShouldQueue
             )
             ->groupByRaw($this->request['agrupar_cartera'].', id_tipo_cuenta')
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $key = '';
@@ -525,7 +527,6 @@ class ProcessInformeCartera implements ShouldQueue
             )
             ->groupByRaw($this->groupString(3))
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
-            
             ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
@@ -639,6 +640,7 @@ class ProcessInformeCartera implements ShouldQueue
             )
             ->groupByRaw('id_tipo_cuenta')
             ->orderByRaw('created_at')
+            ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')   
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $key = '99999999999';
@@ -927,10 +929,10 @@ class ProcessInformeCartera implements ShouldQueue
             'updated_by' => '',
             'dias_cumplidos' => '',
             'mora' => '',
-            'saldo_anterior' => 'SALDO ANTERIOR',
-            'total_facturas' => $tipo ? 'FACTURA' : 'COMPENSAR',
-            'total_abono' => $tipo ? 'ABONOS' : 'MAS ANTICIPOS',
-            'saldo' => 'SALDO FINAL',
+            'saldo_anterior' => '',
+            'total_facturas' => '',
+            'total_abono' => '',
+            'saldo' => '',
             'nivel' => 1,
             'errores' => '',
         ];
