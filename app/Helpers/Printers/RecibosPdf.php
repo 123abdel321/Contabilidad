@@ -99,15 +99,8 @@ class RecibosPdf extends AbstractPrinterPdf
 			}
 		}
 		
-		if (isset($extractoAnterior)) {
-			foreach ($extractoAnterior as $extracto) {
-				$saldoAnterior+= floatval($extracto->saldo);
-			}
-		}
-
-		if ($saldoAnterior == 0) {
-			$saldoAnterior = $this->recibo->total_abono;
-		}
+		$saldoAnterior = $this->recibo->total_abono - $saldo;
+		$saldoAnterior = $saldoAnterior < 0 ? $saldoAnterior * -1 : $saldoAnterior;
 
         return [
 			'empresa' => $this->empresa,
