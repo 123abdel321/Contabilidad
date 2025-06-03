@@ -461,8 +461,8 @@ class ProcessInformeCartera implements ShouldQueue
                         'fecha_edicion' => $documento->fecha_edicion,
                         'created_by' => $documento->created_by,
                         'updated_by' => $documento->updated_by,
-                        'dias_cumplidos' => $documento->dias_cumplidos,
-                        'mora' => $mora < 0 ? 0 : $mora,
+                        'dias_cumplidos' => '',
+                        'mora' => '',
                         'saldo_anterior' => $documento->saldo_anterior,
                         'total_abono' => $documento->total_abono,
                         'total_facturas' => $documento->total_facturas,
@@ -902,6 +902,7 @@ class ProcessInformeCartera implements ShouldQueue
 
     private function agregarCabezaAmbos($key, $tipo = false)
     {
+        return;
         $this->carteraCollection[$key] = [
             'id_cartera' => $this->id_cartera,
             'id_nit' => '',

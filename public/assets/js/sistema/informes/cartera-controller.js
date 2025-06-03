@@ -198,13 +198,13 @@ function carteraInit() {
                     }
                 }
                 if (agrupado == 'id_nit') {
-                    if (row.nivel == 1) {
+                    if (row.nivel == 9) {
                         return row.apartamento_nit;
                     } else {
                         return '';
                     }
                 }
-                return '';
+                return row.apartamento_nit;
             }},
             {data: 'documento_referencia'},
             {data: 'fecha_manual'},
