@@ -30,7 +30,7 @@ function documentogeneralInit() {
         timePickerSeconds: false, // ponlo en true si también quieres segundos
         startDate: moment().startOf('second'),
         locale: {
-            format: 'YYYY-MM-DD hh:mm:ss A',
+            format: 'YYYY-MM-DD',
             applyLabel: 'Aplicar',
             cancelLabel: 'Cancelar',
             fromLabel: 'Desde',

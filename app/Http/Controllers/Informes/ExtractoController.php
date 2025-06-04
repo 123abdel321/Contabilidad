@@ -107,9 +107,7 @@ class ExtractoController extends Controller
                 $request->get('id_tipo_cuenta', null),
                 $request->get('documento_referencia', null),
                 $fechaManual,
-                $request->get('id_cuenta', null),
-                null,
-                $horaManual
+                $request->get('id_cuenta', null)
             ))->actual();
             
             return response()->json([
