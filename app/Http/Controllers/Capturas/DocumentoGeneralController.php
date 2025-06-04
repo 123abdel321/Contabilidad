@@ -345,9 +345,8 @@ class DocumentoGeneralController extends Controller
         }
 
 		$fechaHora = Carbon::parse($request->get('fecha_manual'));
-		$fechaManual = $fechaHora->toDateString();
-		$horaManual = $fechaHora->format('H:i:s');
-
+		$fechaManual = "{$fechaHora->toDateString()} {$fechaHora->format('H:i:s')}";
+		
 		$isFechaCierreLimit = $this->isFechaCierreLimit($fechaManual);
 
         if ($isFechaCierreLimit) {
@@ -427,7 +426,6 @@ class DocumentoGeneralController extends Controller
 					'id_comprobante' => $request->get('id_comprobante'),
 					'id_nit' => $request->get('id_nit'),
 					'fecha_manual' => $fechaManual,
-					'hora_manual' => $horaManual,
 					'consecutivo' => $request->get('consecutivo'),
 					'token_factura' => $tokenFactura,
 					'debito' => $debito,

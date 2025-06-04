@@ -81,13 +81,11 @@ class Documento
 
         $fechaHora = Carbon::parse($fecha);
 		$fechaManual = $fechaHora->toDateString();
-		$horaManual = $fechaHora->format('H:i:s');
 
         $this->captura = $captura;
         $this->head = [
             "id_comprobante" => $id_comprobante,
             "fecha" => $fechaManual,
-            "hora" => $horaManual,
             "consecutivo" => $consecutivo,
         ];
     }
@@ -322,7 +320,6 @@ class Documento
         $row->id_centro_costos = $cuenta->exige_centro_costos ? $row->id_centro_costos : null;
         $row->concepto = $cuenta->exige_concepto ? ($row->concepto ?: $this->conceptoDefault) : null;
         $row->fecha_manual = $this->head['fecha'];
-        $row->hora_manual = $this->head['hora'];
         $row->consecutivo = $this->head['consecutivo'];
         $row->id_comprobante = $this->head['id_comprobante'];
         $row->debito = $naturaleza === PlanCuentas::DEBITO ? round($row->debito, 2) : 0;

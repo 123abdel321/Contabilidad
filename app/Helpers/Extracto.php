@@ -418,7 +418,6 @@ class Extracto
                 "DG.consecutivo",
                 "DG.concepto",
                 "DG.fecha_manual",
-                "DG.hora_manual",
                 "DG.created_at",
                 "PC.naturaleza_ingresos",
                 "PC.naturaleza_egresos",
@@ -463,9 +462,6 @@ class Extracto
 			})
             ->when($this->fecha ? $this->fecha : false, function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->fecha);
-			})
-            ->when($this->hora ? $this->hora : false, function ($query) {
-				$query->where('DG.hora_manual', '<', $this->hora);
 			})
             ->when($this->documento_referencia ? false : true, function ($query) {
                 $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) != 0");
