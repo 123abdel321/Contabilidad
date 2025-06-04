@@ -30,8 +30,25 @@ function documentogeneralInit() {
         timePickerSeconds: false, // ponlo en true si también quieres segundos
         startDate: moment().startOf('second'),
         locale: {
-            format: 'YYYY-MM-DD hh:mm:ss A'
-        }
+            format: 'YYYY-MM-DD hh:mm:ss A',
+            applyLabel: 'Aplicar',
+            cancelLabel: 'Cancelar',
+            fromLabel: 'Desde',
+            toLabel: 'Hasta',
+            customRangeLabel: 'Personalizado',
+            weekLabel: 'S',
+            daysOfWeek: [
+                'Do', 'Lu', 'Ma', 'Mi',
+                'Ju', 'Vi', 'Sa'
+            ],
+            monthNames: [
+                'Enero', 'Febrero', 'Marzo',
+                'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre',
+                'Octubre', 'Noviembre', 'Diciembre'
+            ],
+            firstDay: 1
+        },
     });
     //ABRIR COMBO COMPROBANTE
     setTimeout(function(){

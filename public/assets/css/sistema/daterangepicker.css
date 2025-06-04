@@ -284,6 +284,7 @@
   font-size: 12px;
   font-weight: bold;
   padding: 4px 8px;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 }
 
 .daterangepicker.show-ranges.single.rtl .drp-calendar.left {
@@ -407,4 +408,12 @@
   .daterangepicker .drp-calendar.left {
     clear: none !important;
   }
+}
+
+.daterangepicker th.prev.available {
+  background-color: white !important;
+}
+
+.daterangepicker th.next.available {
+  background-color: white !important;
 }
