@@ -90,14 +90,28 @@ class ExtractoController extends Controller
                 'message'=> 'Extracto generado con exito!'
             ]);
         } else {
+
+            $editando = $request->has('editando') ? $request->get('editando') : false;
+
+            $fechaHora = Carbon::parse($request->get('fecha_manual'));
+            $fechaManual = $fechaHora->toDateString();
+            $horaManual = null;
+
+            $request->get('fecha_manual', null);
+            if ($editando) {
+                $horaManual = $fechaHora->format('H:i:s');
+            }
+
             $extracto = (new Extracto(
                 $request->get('id_nit', null),
                 $request->get('id_tipo_cuenta', null),
                 $request->get('documento_referencia', null),
-                $request->get('fecha_manual', null),
+                $fechaManual,
                 $request->get('id_cuenta', null),
+                null,
+                $horaManual
             ))->actual();
-
+            
             return response()->json([
                 'success'=>	true,
                 'data' => $extracto->get(),

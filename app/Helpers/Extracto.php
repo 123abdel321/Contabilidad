@@ -8,6 +8,7 @@ use App\Models\Sistema\DocumentosGeneral;
 
 class Extracto
 {
+    public $hora;
     public $fecha;
     public $id_nit;
     public $id_cuenta;
@@ -16,7 +17,7 @@ class Extracto
     public $documento_referencia;
     public $sin_documento_referencia;
 
-    public function __construct($id_nit = null, $id_tipo_cuenta = null, $documento_referencia = null, $fecha = null, $id_cuenta = null, $consecutivo = null)
+    public function __construct($id_nit = null, $id_tipo_cuenta = null, $documento_referencia = null, $fecha = null, $id_cuenta = null, $consecutivo = null, $hora = null)
     {
         $this->id_nit = $id_nit;
         $this->id_cuenta = $id_cuenta;
@@ -24,6 +25,7 @@ class Extracto
         $this->documento_referencia = $documento_referencia;
         $this->fecha_dias = $fecha ?: Carbon::now();
         $this->fecha = $fecha;
+        $this->hora = $hora;
         $this->consecutivo = $consecutivo;
     }
 
@@ -384,7 +386,7 @@ class Extracto
     public function queryActual()
     {
         $fecha = Carbon::now();
-        
+
         $queryActual = DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
                 "N.id AS id_nit",
@@ -416,6 +418,7 @@ class Extracto
                 "DG.consecutivo",
                 "DG.concepto",
                 "DG.fecha_manual",
+                "DG.hora_manual",
                 "DG.created_at",
                 "PC.naturaleza_ingresos",
                 "PC.naturaleza_egresos",
@@ -458,16 +461,16 @@ class Extracto
             ->when($this->documento_referencia ? $this->documento_referencia : false, function ($query) {
 				$query->where('DG.documento_referencia', $this->documento_referencia);
 			})
-            ->when($this->documento_referencia ? $this->documento_referencia : false, function ($query) {
-				$query->where('DG.documento_referencia', $this->documento_referencia);
-			})
             ->when($this->fecha ? $this->fecha : false, function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->fecha);
+			})
+            ->when($this->hora ? $this->hora : false, function ($query) {
+				$query->where('DG.hora_manual', '<', $this->hora);
 			})
             ->when($this->documento_referencia ? false : true, function ($query) {
                 $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) != 0");
 			})
-            ->when($this->consecutivo, function ($query) {
+            ->when($this->consecutivo ? true : false, function ($query) {
                 $query->where('DG.consecutivo', $this->consecutivo);
 			})
             ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');

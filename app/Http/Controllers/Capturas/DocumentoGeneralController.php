@@ -344,7 +344,11 @@ class DocumentoGeneralController extends Controller
             ], Response::HTTP_OK);
         }
 
-		$isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
+		$fechaHora = Carbon::parse($request->get('fecha_manual'));
+		$fechaManual = $fechaHora->toDateString();
+		$horaManual = $fechaHora->format('H:i:s');
+
+		$isFechaCierreLimit = $this->isFechaCierreLimit($fechaManual);
 
         if ($isFechaCierreLimit) {
 			return response()->json([
@@ -371,17 +375,17 @@ class DocumentoGeneralController extends Controller
 			$comprobante = Comprobantes::whereId($request->get('id_comprobante'))->first();
 
 			if(!$request->has('consecutivo')){
-				$consecutivo = $this->getNextConsecutive($comprobante->id, $request->get('fecha_manual'));
+				$consecutivo = $this->getNextConsecutive($comprobante->id, $fechaManual);
 
 				$request->merge([
 					'consecutivo' => $consecutivo
 				]);
 			} 
-
+			
 			if(!$request->get('editing_documento')) {
 				$consecutivoUsado = DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
-					->where('fecha_manual', $request->get('fecha_manual'))
+					->where('fecha_manual', $fechaManual)
 					->count();
 
 				if ($consecutivoUsado) {
@@ -403,7 +407,7 @@ class DocumentoGeneralController extends Controller
 					->where('consecutivo', $request->get('consecutivo'));
 
 				if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
-                    $this->filterCapturaMensual($facDocumento, $request->get('fecha_manual'));
+                    $this->filterCapturaMensual($facDocumento, $fechaManual);
                 }
 
 				$facDocumento = $facDocumento->first();
@@ -411,18 +415,19 @@ class DocumentoGeneralController extends Controller
 				
 				DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
-					->where('fecha_manual', $request->get('fecha_manual'))
+					->where('fecha_manual', $fechaManual)
 					->delete();
 			} else {
 				DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
-					->where('fecha_manual', $request->get('fecha_manual'))
+					->where('fecha_manual', $fechaManual)
 					->delete();
 
 				$facDocumento = FacDocumentos::create([
 					'id_comprobante' => $request->get('id_comprobante'),
 					'id_nit' => $request->get('id_nit'),
-					'fecha_manual' => $request->get('fecha_manual'),
+					'fecha_manual' => $fechaManual,
+					'hora_manual' => $horaManual,
 					'consecutivo' => $request->get('consecutivo'),
 					'token_factura' => $tokenFactura,
 					'debito' => $debito,
@@ -436,7 +441,7 @@ class DocumentoGeneralController extends Controller
 			$documentoGeneral = new Documento($facDocumento->id_comprobante, $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
 
 			foreach ($documento as $doc) {
-				// dd($doc);
+
 				$naturaleza = null;
 
 				if (array_key_exists('debito', $doc) && $doc['debito']) {
@@ -521,7 +526,7 @@ class DocumentoGeneralController extends Controller
 			'fecha_manual' => 'required|date',
 			'consecutivo' => 'required',
         ];
-		
+
 		$validator = Validator::make($request->all(), $rules, $this->messages);
 
 		if ($validator->fails()){
@@ -542,7 +547,7 @@ class DocumentoGeneralController extends Controller
 		
 		$comprobante = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
-		$documento = DocumentosGeneral::with(['centro_costos', 'cuenta', 'nit'])
+		$documento = DocumentosGeneral::with(['centro_costos', 'cuenta.tipos_cuenta', 'nit'])
 			->where('id_comprobante', $request->get('id_comprobante'))
 			->where('consecutivo', $request->get('consecutivo'));
 

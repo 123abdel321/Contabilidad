@@ -17,6 +17,7 @@ class FacDocumentos extends Model
         'id_comprobante',
         'id_nit',
         'fecha_manual',
+        'hora_manual',
         'consecutivo',
         'token_factura',
         'debito',

@@ -2,8 +2,9 @@
 namespace App\Helpers;
 
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use Exception;
 use stdClass;
 use DB;
 //MODELS
@@ -73,17 +74,20 @@ class Documento
     {
 
 		$this->setCreatedAt(date('Y-m-d H:i:s'));
-        $fecha = $fecha ?: date('y-m-d');
-
+        $fecha = $fecha ?: date('Y-m-d H:i:s');
 
 		$this->shouldUpdateConsecutivo = !$consecutivo;
-
         $consecutivo = isset($captura->consecutivo) ? $captura->consecutivo : $consecutivo;
+
+        $fechaHora = Carbon::parse($fecha);
+		$fechaManual = $fechaHora->toDateString();
+		$horaManual = $fechaHora->format('H:i:s');
 
         $this->captura = $captura;
         $this->head = [
             "id_comprobante" => $id_comprobante,
-            "fecha" => $fecha,
+            "fecha" => $fechaManual,
+            "hora" => $horaManual,
             "consecutivo" => $consecutivo,
         ];
     }
@@ -318,6 +322,7 @@ class Documento
         $row->id_centro_costos = $cuenta->exige_centro_costos ? $row->id_centro_costos : null;
         $row->concepto = $cuenta->exige_concepto ? ($row->concepto ?: $this->conceptoDefault) : null;
         $row->fecha_manual = $this->head['fecha'];
+        $row->hora_manual = $this->head['hora'];
         $row->consecutivo = $this->head['consecutivo'];
         $row->id_comprobante = $this->head['id_comprobante'];
         $row->debito = $naturaleza === PlanCuentas::DEBITO ? round($row->debito, 2) : 0;

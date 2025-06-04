@@ -22,6 +22,17 @@ function documentogeneralInit() {
     initTablaDocumentoGeneral();
     initTablaDocumentoGeneralExtracto();
     initCombosActionDocumentoGeneral();
+    //Iniciar fecha manual
+    $('#fecha_manual_documento').daterangepicker({
+        singleDatePicker: true,
+        timePicker: true,
+        timePicker24Hour: false, // ponlo en true si quieres formato 24 horas
+        timePickerSeconds: false, // ponlo en true si también quieres segundos
+        startDate: moment().startOf('second'),
+        locale: {
+            format: 'YYYY-MM-DD hh:mm:ss A'
+        }
+    });
     //ABRIR COMBO COMPROBANTE
     setTimeout(function(){
         $comboComprobante.select2("open");
@@ -470,7 +481,11 @@ function deleteRow(idRow) {
 function changeCuentaRow(idRow) {
     // 1. Obtener datos y ejecutar acciones iniciales
     const data = $('#combo_cuenta_' + idRow).select2('data')[0];
-    console.log('data:', data);
+
+    if (!data) {
+        return;
+    }
+
     setDisabledRows(data, idRow);
     clearRows(data, idRow);
     mostrarValores();
@@ -517,8 +532,6 @@ function handleDocumentoReferenciaUI(idRow, naturalezasDiferentes, tieneTipoCuen
     const contenButton = $(`#conten_button_${idRow}`);
     const inputDocRef = $(`#documento_referencia_${idRow}`);
 
-    console.log(naturalezasDiferentes, tieneTipoCuentaEspecial);
-
     if (tieneTipoCuentaEspecial?.length) {
         contenButton.show();
         inputDocRef.removeClass("normal_input").prop("readonly", false);
@@ -550,8 +563,7 @@ function handleAutoFillBanco(data, idRow) {
     const inputDebito = $(`#debito_${idRow}`);
     const inputCredito = $(`#credito_${idRow}`);
     const inputConcepto = $(`#concepto_${idRow}`);
-    console.log('data: ',data);
-    console.log('tipo_comprobante: ',tipo_comprobante);
+
     if (tipo_comprobante !== 4) {
         if (data.naturaleza_cuenta === 1) {
             // Si la cuenta es Débito, la contrapartida usualmente es Crédito
@@ -950,7 +962,7 @@ function focusNextRow(columnIndex, rowId) {
             found = true; // Detener el bucle después de procesar el combo
         } else {
             const cuentaData = $(`#combo_cuenta_${rowId}`).select2('data')[0];
-            console.log<(cuentaData);
+
             if (cuentaData) {
                 //BUSCAR EXTRACTOS
                 if (inputIds[nextColumn] === "#documento_referencia") {
@@ -1052,8 +1064,6 @@ $(document).on('click', '.select-documento', function () {
     const dataCuenta = $('#combo_cuenta_'+rowExtracto).select2('data')[0];
     const tiposCuenta = checkTipoCuentaEspecial(dataCuenta.tipos_cuenta);
 
-    // console.log('dataCuenta', dataCuenta);
-
     $('#texto_extracto_'+rowExtracto).html("Factura seleccionada");
     $('#documento_referencia_'+rowExtracto).removeClass("is-invalid");
     $('#documento_referencia_'+rowExtracto).addClass("is-valid");
@@ -1100,12 +1110,18 @@ function buscarExtractoDg(idRow) {
 
         documento_extracto.rows().remove().draw();
 
+        const fechaHora = $("#fecha_manual_documento").val();
+        const momento = moment(fechaHora, "YYYY-MM-DD hh:mm:ss A");
+        const fechaHoraManual = momento.format("YYYY-MM-DD HH:mm:ss"); 
+
         $.ajax({
             url: base_url + 'extracto',
             method: 'GET',
             data: {
+                editando: editandoCaptura,
                 id_tipo_cuenta: id_tipo_cuenta,
                 id_nit: $('#combo_nits_'+idRow).val(),
+                fecha_manual: fechaHoraManual,
             },
             headers: headers,
             dataType: 'json',
@@ -1233,12 +1249,17 @@ function searchCaptura() {
                 $("#crearCapturaDocumentos").show();
 
                 if(data.length > 0){
-                    var fechaManual = data[0].fecha_manual;
+                    const fechaManual = data[0].fecha_manual;
+                    const horaManual = data[0].hora_manual;
+
                     editandoCaptura = true;
                     idDocumento = 0;
                     for (let index = 0; index < data.length; index++) {
                         addRow(false);
-                        let documento = data[index];
+                        const documento = data[index];
+                        const tipoCuenta = checkTipoCuentaEspecial(documento.cuenta.tipos_cuenta);
+
+                        $('#combo_cuenta_' + index).attr('data-cuenta', JSON.stringify(documento.cuenta));
 
                         var dataCuenta = {
                             id: documento.cuenta.id,
@@ -1299,14 +1320,30 @@ function searchCaptura() {
                         }
 
                         $('#concepto_'+index).val(documento.concepto);
-
                         
                         setDisabledRows(documento.cuenta, index);
+
+                        const inputDocRef = $(`#documento_referencia_${index}`);
+                        if (tipoCuenta.length) {
+                            inputDocRef.removeClass("normal_input").prop("readonly", false);
+                            inputDocRef.removeClass("normal_input").prop("disabled", false);
+                        } else {
+                            $(`#conten_button_${index}`).hide();
+                            inputDocRef.addClass("normal_input").prop("readonly", false);
+                        }
                     }
-                    $('#fecha_manual_documento').val(fechaManual);
+
+                    const fechaHora = moment(`${fechaManual} ${horaManual}`);
+                    $('#fecha_manual_documento')
+                        .val(fechaHora.format('YYYY-MM-DD hh:mm:ss A'))
+                        .data('daterangepicker')
+                        .setStartDate(fechaHora);
+
                     $("#editing_documento").val("1");
                     agregarToast('exito', 'Documentos encontrados', 'Documentos cargados con exito!', true );
                     mostrarValores();
+                    addRow();
+                    
                 } else {
                     editandoCaptura = false;
                     $("#crearCapturaDocumentos").hide();
@@ -1683,12 +1720,16 @@ function saveDocumentos() {
     $("#cancelarCapturaDocumentos").hide();
     $("#crearCapturaDocumentosDisabled").hide();
     $("#iniciarCapturaDocumentosLoading").show();
+
+    const fechaHora = $("#fecha_manual_documento").val();
+    const momento = moment(fechaHora, "YYYY-MM-DD hh:mm:ss A");
+    const fechaHoraManual = momento.format("YYYY-MM-DD HH:mm:ss"); 
     
     let data = {
         documento: getDocumentos(),
+        fecha_manual: fechaHoraManual,
         id_comprobante: $("#id_comprobante").val(),
         consecutivo: $("#consecutivo").val(),
-        fecha_manual: $("#fecha_manual_documento").val(),
         editing_documento: $("#editing_documento").val(),
     }
 

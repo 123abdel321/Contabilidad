@@ -33,6 +33,8 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@15.0/styles/ht-theme-horizon.css" /> 
     <!-- quill -->
     <link href="assets/css/sistema/quill.snow.css" rel="stylesheet" />
+    <!-- DATAPICKER -->
+    <link href="assets/css/sistema/daterangepicker.css" rel="stylesheet" />
     
 </head>
 
@@ -220,6 +222,9 @@
     <script src="assets/js/sistema/handsontable.full.min.js"></script>
     <!-- FULL CALENDER -->
     <script src="assets/js/sistema/fullcalendar.min.js"></script>
+    <!-- DATAPICKER -->
+    <script src="assets/js/sistema/moment.min.js"></script>
+    <script src="assets/js/sistema/daterangepicker.min.js"></script>
 
     <!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js" rel="stylesheet"></script> -->
     
