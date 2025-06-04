@@ -10,6 +10,8 @@
             <table id="documentoExtractoTable" class="table nowrap table-bordered display responsive" width="100%">
                 <thead>
                     <tr>
+                        <th>Cuenta</th>
+                        <th>Nombre</th>
                         <th>Dcto</th>
                         <th>Factura</th>
                         <th>Abono</th>

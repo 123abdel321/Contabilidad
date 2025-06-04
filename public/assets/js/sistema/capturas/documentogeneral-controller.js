@@ -1,15 +1,19 @@
 var idDocumento = 0;
-var editandoCaptura = 0;
 var rowExtracto = '';
+var cambiarNit = true;
+var editandoCaptura = 0;
 var tipo_comprobante = '';
 var validarFactura = null;
-var cambiarNit = true;
 var calcularCabeza = true;
+var nuevaFacturaDG = false; 
+var cuentaExtractoDg = null
 var askSaveDocumentos = true;
-var documento_general_table = null;
-var documento_extracto = null;
 var $comboComprobante = null;
+var documento_extracto = null;
+var guardarDocumentoDG = false;
+var documento_general_table = null;
 var guardarDocumentoGeneral = false;
+var ignoreChangeEventGeneral = false;
 
 
 function documentogeneralInit() {
@@ -254,6 +258,8 @@ function initTablaDocumentoGeneralExtracto() {
             right : 1,
         },
         columns: [
+            {"data":'cuenta'}, 
+            {"data":'nombre_cuenta'},
             {"data":'documento_referencia'},
             {"data":'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data":'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
@@ -263,7 +269,9 @@ function initTablaDocumentoGeneralExtracto() {
             {
                 "data": function (row, type, set){
                     var html = ``;
-                    if (!row.capturando) html+= `<span href="javascript:void(0)" id="documentoextracto_${row.documento_referencia}_${row.saldo}" class="btn badge bg-gradient-primary select-documento" style="margin-bottom: 0rem !important">Seleccionar</span>&nbsp;`;
+                    if (row.cuenta != cuentaExtractoDg) {
+                        return `<span href="javascript:void(0)" class="btn badge bg-gradient-primary disabled" style="margin-bottom: 0rem !important; box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 0px 0px 0px rgb(0 0 0 / 57%);">Seleccionar</span>&nbsp;`;
+                    } else if (!row.capturando) html+= `<span href="javascript:void(0)" id="documentoextracto@${row.documento_referencia}@${row.saldo}" class="btn badge bg-gradient-primary select-documento" style="margin-bottom: 0rem !important">Seleccionar</span>&nbsp;`;
                     else html+= `<span href="javascript:void(0)" class="btn badge bg-gradient-secondary disabled" style="margin-bottom: 0rem !important">Capturando</span>&nbsp;`
                     return html;
                 }
@@ -384,13 +392,13 @@ function renderComboCecosDG() {
 function renderDocRefeDG() {
     return `
         <div class="input-group" style="width: 180px; height: 30px;">
-            <input type="text" class="form-control form-control-sm documento_referencia_row" id="documento_referencia_${idDocumento}" onkeydown="buscarFactura(${idDocumento}, event)" onkeypress="changeDctoRow(${idDocumento}, event)" keyup style="height: 33px;" value="" disabled readonly>
-            <i class="fa fa-spinner fa-spin fa-fw documento-load" id="documento_load_'+idDocumento+'" style="display: none;"></i>
-            <div class="valid-feedback info-factura">Nueva factura</div>
+            <input type="text" class="form-control form-control-sm documento_referencia_row" id="documento_referencia_${idDocumento}" onkeydown="buscarFactura(${idDocumento}, event)" onkeypress="changeDctoRow(${idDocumento}, event)" keyup style="height: 30px;" value="" disabled readonly>
+            <i class="fa fa-spinner fa-spin fa-fw documento-load" id="documento_load_${idDocumento}" style="display: none;"></i>
+            <div id="texto_extracto_${idDocumento}" class="valid-feedback info-factura">Nueva factura</div>
             <div class="invalid-feedback info-factura">Factura existente</div>
                 <div class="input-group-append button-group" id="conten_button_${idDocumento}">
-                    <span href="javascript:void(0)" id="button_extracto_${idDocumento}" class="btn badge bg-gradient-secondary btn-group btn-documento-extracto" style="min-width: 40px; margin-right: 3px; border-radius: 0px 7px 7px 0px; height: 33px;">
-                        <i class="fas fa-search" style="font-size: 17px; margin-top: 3px;"></i>
+                    <span href="javascript:void(0)" id="button_extracto_${idDocumento}" class="btn badge bg-gradient-secondary btn-group btn-documento-extracto" style="min-width: 40px; margin-right: 3px; border-radius: 0px 7px 7px 0px; height: 30px;">
+                        <i class="fas fa-search" style="font-size: 17px; margin-top: 1px;"></i>
                         <b style="vertical-align: text-top;"></b>
                     </span>
                 </div>
@@ -400,11 +408,11 @@ function renderDocRefeDG() {
 }
 
 function renderDebitoDG() {
-    return `<input type="text" data-type="currency" class="form-control form-control-sm input_number debito_input" id="debito_${idDocumento}" onkeypress="changeDebitoRow(${idDocumento}, event)" onfocusout="mostrarValores()" onfocus="this.select();" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
+    return `<input type="text" data-type="currency" class="form-control form-control-sm input_number debito_input" id="debito_${idDocumento}" onkeypress="changeDebitoRow(${idDocumento}, event)" onfocusout="validarMax(${idDocumento}, 'debito')" onfocus="this.select();" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
 }
 
 function renderCreditoDG() {
-    return `<input type="text" data-type="currency" class="form-control form-control-sm input_number credito_input" id="credito_${idDocumento}" onkeypress="changeCreditoRow(${idDocumento}, event)" onfocusout="mostrarValores()" onfocus="this.select();" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
+    return `<input type="text" data-type="currency" class="form-control form-control-sm input_number credito_input" id="credito_${idDocumento}" onkeypress="changeCreditoRow(${idDocumento}, event)" onfocusout="validarMax(${idDocumento}, 'credito')" onfocus="this.select();" style="width: 130px !important; text-align: right;" min="0" value="0" disabled>`;
 }
 
 function renderConceptoDG() {
@@ -460,12 +468,14 @@ function deleteRow(idRow) {
 }
 
 function changeCuentaRow(idRow) {
-
     // 1. Obtener datos y ejecutar acciones iniciales
     const data = $('#combo_cuenta_' + idRow).select2('data')[0];
+    console.log('data:', data);
     setDisabledRows(data, idRow);
     clearRows(data, idRow);
     mostrarValores();
+
+    $('#combo_cuenta_' + idRow).attr('data-cuenta', JSON.stringify(data));
 
     if (!data?.cuenta) { // Salir si no hay datos o no hay propiedad 'cuenta'
         focusNextRow(0, idRow); // Mover foco si se deselecciona
@@ -491,20 +501,28 @@ function changeCuentaRow(idRow) {
 
 function checkTipoCuentaEspecial(tiposCuenta) {
     if (!tiposCuenta || !Array.isArray(tiposCuenta)) {
-        return false;
+        return [];
     }
-    return tiposCuenta.some(tc =>
-        tc.id_tipo_cuenta === 3 || tc.id_tipo_cuenta === 4
-    );
+    return tiposCuenta
+        .filter(
+            tc => tc.id_tipo_cuenta === 3
+            ||tc.id_tipo_cuenta === 4
+            || tc.id_tipo_cuenta === 7
+            || tc.id_tipo_cuenta === 8
+        )
+        .map(tc => tc.id_tipo_cuenta);
 }
 
 function handleDocumentoReferenciaUI(idRow, naturalezasDiferentes, tieneTipoCuentaEspecial) {
     const contenButton = $(`#conten_button_${idRow}`);
     const inputDocRef = $(`#documento_referencia_${idRow}`);
 
-    if (naturalezasDiferentes && tieneTipoCuentaEspecial) {
+    console.log(naturalezasDiferentes, tieneTipoCuentaEspecial);
+
+    if (tieneTipoCuentaEspecial?.length) {
         contenButton.show();
-        inputDocRef.removeClass("normal_input").prop("readonly", true);
+        inputDocRef.removeClass("normal_input").prop("readonly", false);
+        inputDocRef.removeClass("normal_input").prop("disabled", false);
     } else {
         contenButton.hide();
         inputDocRef.addClass("normal_input").prop("readonly", false);
@@ -532,22 +550,23 @@ function handleAutoFillBanco(data, idRow) {
     const inputDebito = $(`#debito_${idRow}`);
     const inputCredito = $(`#credito_${idRow}`);
     const inputConcepto = $(`#concepto_${idRow}`);
-
+    console.log('data: ',data);
+    console.log('tipo_comprobante: ',tipo_comprobante);
     if (tipo_comprobante !== 4) {
         if (data.naturaleza_cuenta === 1) {
             // Si la cuenta es Débito, la contrapartida usualmente es Crédito
-            inputCredito.val(formatCurrency(diferencia));
-            inputDebito.val(formatCurrency(0)); // Asegurarse que el otro campo quede en 0 formateado
+            inputCredito.val(formatCurrencyValue(diferencia));
+            inputDebito.val(formatCurrencyValue(0)); // Asegurarse que el otro campo quede en 0 formateado
         } else {
             // Si la cuenta es Crédito, la contrapartida usualmente es Débito
-            inputDebito.val(formatCurrency(diferencia));
-            inputCredito.val(formatCurrency(0)); // Asegurarse que el otro campo quede en 0 formateado
+            inputDebito.val(formatCurrencyValue(diferencia));
+            inputCredito.val(formatCurrencyValue(0)); // Asegurarse que el otro campo quede en 0 formateado
         }
         inputConcepto.val(conceptoAnterior);
         focusNextRow(0, idRow); // Mover el foco como antes
     } else {
         // Lógica específica para Nota Crédito (Tipo 4)
-        inputDebito.val(formatCurrency(0)); // Iniciar débito en 0
+        inputDebito.val(formatCurrencyValue(0)); // Iniciar débito en 0
         // inputCredito.val(formatCurrency(0)); // Quizás también el crédito? Depende del flujo deseado
         inputConcepto.val(conceptoAnterior);
         // Foco específico en débito para tipo 4
@@ -575,6 +594,8 @@ function changeNitRow(idRow) {
 }
 
 function changeCecosRow(idRow) {
+    if (ignoreChangeEventGeneral) return;
+
     if($('#combo_cecos_'+idRow).val()){
         focusNextRow(2, idRow);
     }
@@ -586,8 +607,7 @@ function changeConsecutivo(event) {
     }
 }
 
-function changeDctoRow(idRow, event, eso) {
-
+function changeDctoRow(idRow, event) {
     if(event.keyCode == 13){
         if(!$('#concepto_'+idRow).val() && tipo_comprobante != 4){
             var nit = $('#combo_nits_'+idRow).select2('data');
@@ -597,47 +617,85 @@ function changeDctoRow(idRow, event, eso) {
                 $('#concepto_'+idRow).val(nit[0].text + fac);
             }
         }
-        focusNextRow(3, idRow);
     }
 }
 
 function buscarFactura(idRow, event) {
 
     var dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
-    if(dataCuenta.cuenta.slice(0, 1) == '2' || dataCuenta.cuenta.slice(0, 2) == '13') {
-        if(dataCuenta.naturaleza_cuenta == dataCuenta.naturaleza_origen) {
-            $('#documento_load_'+idRow).show();
-            if (validarFactura) {
-                validarFactura.abort();
-            }
-            var botonPrecionado = event.key.length == 1 ? event.key : '';
-            var documento_referencia = $('#documento_referencia_'+idRow).val()+''+botonPrecionado;
-            if(event.key == 'Backspace') documento_referencia = documento_referencia.slice(0, -1);
-            setTimeout(function(){
-                validarFactura = $.ajax({
-                    url: base_url + 'existe-factura',
-                    method: 'GET',
-                    data: {documento_referencia: documento_referencia},
-                    headers: headers,
-                    dataType: 'json',
-                }).done((res) => {
-                    validarFactura = null;
-                    $('#documento_load_'+idRow).hide();
-                    if(res.data == 0){
-                        $('#documento_referencia_'+idRow).removeClass("is-invalid");
-                        $('#documento_referencia_'+idRow).addClass("is-valid");
-                    }else {
-                        $('#documento_referencia_'+idRow).removeClass("is-valid");
-                        $('#documento_referencia_'+idRow).addClass("is-invalid");
-                    }
-                }).fail((err) => {
-                    validarFactura = null;
-                    if(err.statusText != "abort") {
-                        $('#documento_load_'+idRow).hide();
-                    }
-                });
-            },300);
+    const tipoCuenta = checkTipoCuentaEspecial(dataCuenta.tipos_cuenta);
+    if (!tipoCuenta.length) {
+        return 
+    }
+
+    if(dataCuenta.naturaleza_cuenta == dataCuenta.naturaleza_origen) {
+        $('#documento_load_'+idRow).show();
+        if (validarFactura) {
+            validarFactura.abort();
         }
+
+        $('#documento_referencia_'+idRow).removeClass("is-valid");
+        $('#documento_referencia_'+idRow).removeClass("is-invalid");
+
+        const botonPrecionado = event.key.length == 1 ? event.key : '';
+
+        let id_nit = $('#combo_nits_'+idRow).val();
+        let id_cuenta = $('#combo_cuenta_'+idRow).val();
+        let fecha_manual = $('#fecha_manual_documento').val();
+        let documento_referencia = $('#documento_referencia_'+idRow).val()+''+botonPrecionado;
+
+        if(event.key == 'Backspace') documento_referencia = documento_referencia.slice(0, -1);
+
+        setTimeout(function(){
+            validarFactura = $.ajax({
+                
+                url: base_url + 'existe-factura',
+                method: 'GET',
+                data: {
+                    documento_referencia: documento_referencia,
+                    fecha_manual: fecha_manual,
+                    id_cuenta: id_cuenta,
+                    id_nit: id_nit
+                },
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                validarFactura = null;
+                $('#documento_load_'+idRow).hide();
+                if(res.data){
+                    $('#documento_referencia_'+idRow).addClass("is-invalid");
+                }else {
+                    $('#documento_referencia_'+idRow).addClass("is-valid");
+                    $('#texto_extracto_'+idRow).html("Nueva factura");
+
+                    let focusValorTexto = 'debito';
+                    const dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
+                    const tiposCuenta = checkTipoCuentaEspecial(dataCuenta.tipos_cuenta);
+                    
+                    if (tiposCuenta.includes(3) || tiposCuenta.includes(7)) {
+                        if (dataCuenta.naturaleza_cuenta == 1) {
+                            focusValorTexto = 'credito';
+                        }
+                    } else if (tiposCuenta.includes(4) || tiposCuenta.includes(8)) {
+                        if (dataCuenta.naturaleza_cuenta == 1) {
+                            focusValorTexto = 'credito';
+                        }
+                    }
+
+                    document.getElementById(`debito_${idRow}`).max = 0;
+                    document.getElementById(`credito_${idRow}`).max = 0;
+
+                    setTimeout(function(){
+                        $('#documentoReferenciaTable tr').find(`#${focusValorTexto}_${idRow}`).select();
+                    },10);
+                }
+            }).fail((err) => {
+                validarFactura = null;
+                if(err.statusText != "abort") {
+                    $('#documento_load_'+idRow).hide();
+                }
+            });
+        },300);
     }
 }
 
@@ -648,6 +706,7 @@ function changeDebitoRow(idRow, event) {
             if (valorDebito) $('#credito_'+idRow).val(0);
         }
         focusNextRow(4, idRow);
+        mostrarValores()
     }
 }
 
@@ -655,7 +714,8 @@ function changeCreditoRow(idRow, event) {
     if(event.keyCode == 13){
         var inputCreditoMax = parseInt($("#credito_"+idRow)[0].max);
         var inputCreditoValue = parseInt($("#credito_"+idRow).val());
-        if (inputCreditoValue > inputCreditoMax) {
+        
+        if (inputCreditoMax > 0 && inputCreditoValue > inputCreditoMax) {
             setTimeout(function(){
                 if (tipo_comprobante != 4) $("#credito_"+idRow).val(inputCreditoMax);
                 $("#credito_"+idRow).focus();
@@ -668,6 +728,7 @@ function changeCreditoRow(idRow, event) {
             if (valorCredito) $('#debito_'+idRow).val(0);
         }
         focusNextRow(5, idRow);
+        mostrarValores()
     }
 }
 
@@ -830,8 +891,10 @@ function setDisabledRows(data, idRow) {
         };
 
         if (comboCecos.find(`option[value='${dataCecos.id}']`).length === 0) {
+            ignoreChangeEventGeneral = true;
             const newOptionCecos = new Option(dataCecos.text, dataCecos.id, true, true); // Marcar como seleccionado
             comboCecos.append(newOptionCecos).trigger('change');
+            ignoreChangeEventGeneral = false;
         }
     }
 
@@ -879,62 +942,70 @@ function focusNextRow(columnIndex, rowId) {
                     const option = new Option(nitData[0].text, nitData[0].id, false, false);
                     $input.append(option).trigger('change');
                     $(`#concepto_${rowId}`).val($(`#concepto_${prevRow}`).val());
-                    scrollTo(250);
+                    scrollToDG(250);
                 }
-                setTimeout(() => $input.select2('open'), 10);
             } else {
                 setTimeout(() => $input.select2('open'), 10);
             }
             found = true; // Detener el bucle después de procesar el combo
         } else {
             const cuentaData = $(`#combo_cuenta_${rowId}`).select2('data')[0];
-            //BUSCAR EXTRACTOS
-            if (inputIds[nextColumn] === "#documento_referencia") {
-                const tipoCuenta = cuentaData?.tipos_cuenta?.find(tc =>
-                    [3, 4, 8].includes(tc.id_tipo_cuenta)
-                );
-
-                if (cuentaData.naturaleza_cuenta !== cuentaData.naturaleza_origen && tipoCuenta) {
-                    buscarExtracto(rowId);
+            console.log<(cuentaData);
+            if (cuentaData) {
+                //BUSCAR EXTRACTOS
+                if (inputIds[nextColumn] === "#documento_referencia") {
+                    const tipoCuenta = checkTipoCuentaEspecial(cuentaData.tipos_cuenta);
+                    if (tipoCuenta.length) {
+                        buscarExtractoDg(rowId);
+                    }
+                }
+                //COMPROBANTE OTROS
+                if (tipo_comprobante == 4) {
+    
+                    const valorCredito = stringToNumberFloat($(`#credito_${rowId}`).val());
+                    const valorDebito = stringToNumberFloat($(`#debito_${rowId}`).val());
+                    const naturaleza = cuentaData.naturaleza_cuenta === 1 ? 'credito' : 'debito';
+    
+                    const isCampo = campo => inputIds[nextColumn] === `#${campo}`;
+                    const scrollAndFocus = (id, scrollX = 0) => {
+                        scrollToDG(scrollX);
+                        setTimeout(() => {
+                            $(`#documentoReferenciaTable tr`).find(`#${id}_${rowId}`).focus().select?.();
+                        }, 10);
+                    };
+    
+                    let debito = false;
+                    let credito = false;
+    
+                    if (isCampo('debito') && !valorDebito && naturaleza === 'credito') {
+                        scrollAndFocus('credito', 910);
+                        credito = true;
+                        found = true;
+                    } else if (isCampo('debito') && valorDebito && naturaleza === 'credito') {
+                        scrollAndFocus('debito', 800);
+                        debito = true;
+                        found = true;
+                    } else if (isCampo('debito') && naturaleza === 'debito') {
+                        scrollAndFocus('debito', 800);
+                        debito = true;
+                        found = true;
+                    } else if (isCampo('credito') && valorDebito) {
+                        scrollAndFocus('concepto', 1200);
+                        found = true;
+                    } else if (isCampo('credito') && !valorDebito) {
+                        scrollAndFocus('credito', 910);
+                        credito = true;
+                        found = true;
+                    } else if (isCampo('documento_referencia')) {
+                        scrollAndFocus('documento_referencia', 604);
+                        found = true;
+                    } else if (isCampo('concepto')) {
+                        scrollAndFocus('concepto', 1200);
+                        found = true;
+                    }
                 }
             }
-            //COMPROBANTE OTROS
-            if (tipo_comprobante == 4) {
-                const valorCredito = stringToNumberFloat($(`#credito_${rowId}`).val());
-                const valorDebito = stringToNumberFloat($(`#debito_${rowId}`).val());
-                const naturaleza = cuentaData.naturaleza_cuenta === 1 ? 'credito' : 'debito';
 
-                const isCampo = campo => inputIds[nextColumn] === `#${campo}`;
-                const scrollAndFocus = (id, scrollX = 0) => {
-                    scrollToDG(scrollX);
-                    setTimeout(() => {
-                        $(`#documentoReferenciaTable tr`).find(`#${id}_${rowId}`).focus().select?.();
-                    }, 10);
-                };
-
-                if (isCampo('debito') && !valorDebito && naturaleza === 'credito') {
-                    scrollAndFocus('credito', 910);
-                    found = true;
-                } else if (isCampo('debito') && valorDebito && naturaleza === 'credito') {
-                    scrollAndFocus('debito', 800);
-                    found = true;
-                } else if (isCampo('debito') && naturaleza === 'debito') {
-                    scrollAndFocus('debito', 800);
-                    found = true;
-                } else if (isCampo('credito') && valorDebito) {
-                    scrollAndFocus('concepto', 1200);
-                    found = true;
-                } else if (isCampo('credito') && !valorDebito) {
-                    scrollAndFocus('credito', 910);
-                    found = true;
-                } else if (isCampo('documento_referencia')) {
-                    scrollAndFocus('documento_referencia', 604);
-                    found = true;
-                } else if (isCampo('concepto')) {
-                    scrollAndFocus('concepto', 1200);
-                    found = true;
-                }
-            }
         }
 
         nextColumn++;
@@ -963,78 +1034,66 @@ $(document).on('keydown', '.custom-documentogeneral_nit .select2-search__field',
     
 });
 
-$(document).on('keydown', '.custom-documentogeneral_cuenta .select2-search__field', function (event) {
-    var dataInputSearch = $('.select2-search__field').val();
-    var [debito, credito] = totalValores();
-
-    if (event.keyCode == 96 && dataInputSearch.length == 1) {
-        guardarDocumentoGeneral = true;
-    } else if (event.keyCode == 13){
-        if ((debito + credito) > 0) {
-            if (guardarDocumentoGeneral) {
-                guardarDocumentoGeneral = false;
-                $(".combo_cuenta").select2('close');
-                document.getElementById('crearCapturaDocumentos').click();
-            }
-        }
-    } else {
-        guardarDocumentoGeneral = false;
-    }
-});
-
-
-
 $(document).on('click', '#iniciarCapturaDocumentos', function () {
     searchCaptura();
 });
 
 $(document).on('click', '.btn-documento-extracto', function () {
     var idRow = this.id.split('_')[2];
-    buscarExtracto(idRow);
+    buscarExtractoDg(idRow);
 });
 
 $(document).on('click', '.select-documento', function () {
-    var totalLengh = this.id.split('_').length;
-    var saldo = totalLengh == 4 ? parseInt(this.id.split('_')[3]) : parseInt(this.id.split('_')[2]);
 
-    var documentoReferencia = this.id.split('_')[1];
-    let dataNit = $('#combo_nits_'+rowExtracto).select2('data')[0];
-    
-    $('#documento_referencia_'+rowExtracto).val(documentoReferencia);
+    const documentoReferencia = this.id.split('@')[1];
+    const dataSplit = this.id.split('@');
+
+    const dataNit = $('#combo_nits_'+rowExtracto).select2('data')[0];
+    const dataCuenta = $('#combo_cuenta_'+rowExtracto).select2('data')[0];
+    const tiposCuenta = checkTipoCuentaEspecial(dataCuenta.tipos_cuenta);
+
+    // console.log('dataCuenta', dataCuenta);
+
+    $('#texto_extracto_'+rowExtracto).html("Factura seleccionada");
+    $('#documento_referencia_'+rowExtracto).removeClass("is-invalid");
+    $('#documento_referencia_'+rowExtracto).addClass("is-valid");
+
+    $('#documento_referencia_'+rowExtracto).val(dataSplit[1]);
     $("#modalDocumentoExtracto").modal('hide');
     if (tipo_comprobante != 4) $('#concepto_'+rowExtracto).val(dataNit.text + ' - FACTURA: ' + documentoReferencia);
 
-    if($('#debito_'+rowExtracto).is(":disabled")){
-        $('#credito_'+rowExtracto).val(saldo);
-        document.getElementById("credito_"+rowExtracto).max = saldo;
-        setTimeout(function(){
-            $('#documentoReferenciaTable tr').find('#credito_'+rowExtracto).select();
-        },10);
-    } else {
-        $('#debito_'+rowExtracto).val(saldo);
-        document.getElementById("debito_"+rowExtracto).max = saldo;
-        setTimeout(function(){
-            $('#documentoReferenciaTable tr').find('#debito_'+rowExtracto).select();
-        },10);
+    const saldo = dataSplit[2] ? parseFloat(dataSplit[2]) : 0;
+    let focusValorTexto = 'debito';
+    
+    if (tiposCuenta.includes(3) || tiposCuenta.includes(7)) {
+        if (dataCuenta.naturaleza_cuenta == 0) {
+            focusValorTexto = 'credito';
+        }
+    } else if (tiposCuenta.includes(4) || tiposCuenta.includes(8)) {
+        if (dataCuenta.naturaleza_cuenta == 0) {
+            focusValorTexto = 'credito';
+        }
     }
+
+    document.getElementById(`${focusValorTexto}_${rowExtracto}`).max = saldo;
+    $(`#${focusValorTexto}_${rowExtracto}`).val(saldo);
+    setTimeout(function(){
+        $('#documentoReferenciaTable tr').find(`#${focusValorTexto}_${rowExtracto}`).select();
+    },10);
     // focusNextRow(3, rowExtracto);
 });
 
-function buscarExtracto(idRow) {
-
+function buscarExtractoDg(idRow) {
+    
     if (!documento_extracto) initDatatableExtracto();
     if ($('#combo_nits_'+idRow).val()) {
         let dataNit = $('#combo_nits_'+idRow).select2('data')[0];
-        let dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
+
+        const dataCuenta = JSON.parse($('#combo_cuenta_'+idRow).attr('data-cuenta'));
         rowExtracto = idRow;
 
-        var id_tipo_cuenta = null;
-        
-        dataCuenta.tipos_cuenta.forEach(tipo_cuenta => {
-            if (tipo_cuenta.id_tipo_cuenta == 3 || tipo_cuenta.id_tipo_cuenta == 4) {
-                id_tipo_cuenta = tipo_cuenta.id_tipo_cuenta;
-            }
-        });
+        var id_tipo_cuenta = checkTipoCuentaEspecial(dataCuenta.tipos_cuenta);
+        cuentaExtractoDg = dataCuenta.cuenta;
 
         $('#modal-title-documento-extracto').html(dataNit.text);
         $("#modalDocumentoExtracto").modal('show');
@@ -1066,6 +1125,21 @@ function buscarExtracto(idRow) {
             var errorsMsg = arreglarMensajeError(mensaje);
             agregarToast('error', 'Creación errada', errorsMsg);
         });
+    }
+}
+
+function validarMax(id, type) {
+    // Obtener el input mediante su id
+    const input = document.getElementById(`${type}_${id}`);
+    
+    // Obtener el valor máximo permitido
+    const max = input.getAttribute('max');
+    const inputValue = stringToNumberFloat(input.value);
+
+    // Verificar si el valor del campo es mayor que el máximo
+    if (parseFloat(inputValue) > parseFloat(max)) {
+        input.value = max;  // Establecer el valor al máximo permitido
+        mostrarValores();
     }
 }
 
@@ -1436,6 +1510,24 @@ $("#id_cuenta").on('change', function(e) {
     };
 });
 
+$(document).on('keydown', '.custom-documentogeneral_cuenta .select2-search__field', function (event) {
+
+    const dataSearch = $('.select2-search__field').val();
+
+    if (event.keyCode == 96 && !dataSearch.length) {
+        guardarDocumentoDG = true;
+    } else if (event.keyCode == 13){
+        if (guardarDocumentoDG) {
+            guardarDocumentoDG = false;
+            askSaveDocumentos = false;
+            $('.combo_cuenta').select2('close');
+            capturarDcoumentosGenerales();
+        }
+    } else {
+        guardarDocumentoDG = false;
+    }
+});
+
 $(document).on('click', '#saveDocumentoGeneral', function () {
 
     var nit = $('#id_nit').select2('data');
@@ -1547,6 +1639,7 @@ function capturarDcoumentosGenerales() {
 
     var texto = 'Desea guardar documento en la tabla?';
     var type = 'question';
+    var titulo = 'Guardar documento?';
 
     if (!capturarDocumentosDescuadrados && diferencia != 0) {
         agregarToast('warning', 'Documentos descuadrados', 'Para guardarlos debe activar la opción en Configuración > Empresa "Capturar documentos descuadrados".', false);
@@ -1554,7 +1647,8 @@ function capturarDcoumentosGenerales() {
     }
 
     if (diferencia != 0) {
-        texto = "Documento descuadrado, desea guardarlo en la tabla?";
+        titulo = "Documento descuadrado";
+        texto = "Desea guardar un documento descuadrado?";
         type = "warning";
     } else if (debito == 0 && credito == 0) {
         agregarToast('warning', 'Creación errada', 'Sin datos para guardar en la tabla', true);
@@ -1564,7 +1658,7 @@ function capturarDcoumentosGenerales() {
     if(askSaveDocumentos) {
 
         Swal.fire({
-            title: 'Guardar documento?',
+            title: titulo,
             text: texto,
             icon: type,
             showCancelButton: true,
@@ -1589,6 +1683,7 @@ function saveDocumentos() {
     $("#cancelarCapturaDocumentos").hide();
     $("#crearCapturaDocumentosDisabled").hide();
     $("#iniciarCapturaDocumentosLoading").show();
+    
     let data = {
         documento: getDocumentos(),
         id_comprobante: $("#id_comprobante").val(),
@@ -1596,6 +1691,7 @@ function saveDocumentos() {
         fecha_manual: $("#fecha_manual_documento").val(),
         editing_documento: $("#editing_documento").val(),
     }
+
     $.ajax({
         url: base_url + 'documentos',
         method: 'POST',
@@ -1666,6 +1762,7 @@ function getDocumentos(){
                 var cuenta = $('#combo_cuenta_'+idDocumento).val();
                 var nit = $('#combo_nits_'+idDocumento).val();
                 var cecos = $('#combo_cecos_'+idDocumento).val();
+                var crearDocumento = $('#texto_extracto_'+idDocumento).text() == "Nueva factura" ? true : false;
 
                 if (id_cuenta && (debito + credito) > 0) {
                     data.push({
@@ -1676,6 +1773,7 @@ function getDocumentos(){
                         debito: debito ? parseFloat(debito) : 0,
                         credito: credito ? parseFloat(credito) : 0,
                         concepto: concepto ? concepto : '',
+                        crear_documento: crearDocumento
                     });
                 }
 

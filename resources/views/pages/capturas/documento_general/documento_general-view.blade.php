@@ -44,18 +44,22 @@
 
     .documento-load {
         position: absolute;
-        margin-left: 160px !important;
+        margin-left: 109px !important;
         margin-top: 9px;
         z-index: 99;
         font-size: 12px;
+        color: #004cb3;
     }
 
     .info-factura {
-        margin-top: -16px;
-        z-index: 999;
-        margin-left: 80px !important;
+        position: absolute;
+        margin-top: 23px;
+        margin-left: 6px !important;
+        background-color: white;
+        width: 115px;
+        border-radius: 15px;
+        z-index: 3;
     }
-
 </style>
 
 <div class="container-fluid py-2">

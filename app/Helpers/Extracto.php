@@ -157,6 +157,8 @@ class Extracto
                 "id_cuenta",
                 "id_comprobante",
                 "id_centro_costos",
+                "cuenta",
+                "nombre",
                 "fecha_manual",
                 "consecutivo",
                 "documento_referencia",
@@ -186,6 +188,8 @@ class Extracto
                 "id_cuenta",
                 "id_comprobante",
                 "id_centro_costos",
+                "cuenta",
+                "nombre",
                 "fecha_manual",
                 "consecutivo",
                 "documento_referencia",
@@ -345,6 +349,8 @@ class Extracto
                 "DG.concepto",
                 "DG.anulado",
                 "PC.naturaleza_cuenta",
+                "PC.cuenta",
+                "PC.nombre",
                 "FP.id AS forma_pago_id"
             )
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
@@ -363,7 +369,11 @@ class Extracto
 			})
             ->when($this->sin_documento_referencia ? $this->sin_documento_referencia : false, function ($query) {
                 if (is_array($this->sin_documento_referencia)) $query->whereNotIn('DG.documento_referencia', $this->sin_documento_referencia);
-                else $query->where('DG.documento_referencia', $this->sin_documento_referencia);
+                else $query->whereNot('DG.documento_referencia', $this->sin_documento_referencia);
+			})
+            ->when($this->documento_referencia ? $this->documento_referencia : false, function ($query) {
+                if (is_array($this->documento_referencia)) $query->whereIn('DG.documento_referencia', $this->sin_documento_referencia);
+                else $query->where('DG.documento_referencia', $this->documento_referencia);
 			})
             ->when($this->id_cuenta ? $this->id_cuenta : false, function ($query) {
                 if (is_array($this->id_cuenta)) $query->whereIn('PC.id', $this->id_cuenta);

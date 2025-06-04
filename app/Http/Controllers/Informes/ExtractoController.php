@@ -146,12 +146,31 @@ class ExtractoController extends Controller
 
     public function existeFactura(Request $request)
     {
-        $documento = DocumentosGeneral::where('documento_referencia', $request->get('documento_referencia'))
-            ->where('id_comprobante', $request->get('id_comprobante'));
+        $query = DocumentosGeneral::query();
+
+        if ($request->has('documento_referencia')) {
+            $query->where('documento_referencia', $request->get('documento_referencia'));
+        }
+
+        if ($request->has('id_comprobante')) {
+            $query->where('id_comprobante', $request->get('id_comprobante'));
+        }
+
+        // if ($request->has('fecha_manual')) {
+        //     $query->where('fecha_manual', $request->get('fecha_manual'));
+        // }
+
+        if ($request->has('id_cuenta')) {
+            $query->where('id_cuenta', $request->get('id_cuenta'));
+        }
+
+        if ($request->has('id_nit')) {
+            $query->where('id_nit', $request->get('id_nit'));
+        }
 
         return response()->json([
             'success'=>	true,
-            'data' => $documento->count(),
+            'data' => $query->first(),
             'message'=> 'Factura consultada con exito!'
         ]);
     }
