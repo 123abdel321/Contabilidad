@@ -16,6 +16,7 @@ use Database\Seeders\Provisionada\CentroCostosSeeder;
 use Database\Seeders\Provisionada\ComprobantesSeeder;
 use Database\Seeders\Provisionada\TipoImpuestosSeeder;
 use Database\Seeders\Provisionada\TipoDocumentosSeeder;
+use Database\Seeders\Provisionada\AdministradorasSeeder;
 use Database\Seeders\Provisionada\TiposFormasPagosSeeder;
 use Database\Seeders\Provisionada\PlanCuentasTiposSeeder;
 use Database\Seeders\Provisionada\ExogenaFormatosProvisionalSeeder;
@@ -47,6 +48,7 @@ class ProvisionadaSeeder extends Seeder
         $this->call(TipoCuentasSeeder::class);
         $this->call(TipoImpuestosSeeder::class);
         $this->call(TipoDocumentosSeeder::class);
+        $this->call(AdministradorasSeeder::class);
         $this->call(TiposFormasPagosSeeder::class);
         $this->call(ExogenaFormatosProvisionalSeeder::class);
         $this->call(ExogenaFormatoColumnasProvisionalSeeder::class);

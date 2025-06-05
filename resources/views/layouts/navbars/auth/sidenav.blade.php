@@ -61,7 +61,7 @@
         <ul class="dropdown-menu" aria-labelledby="dropdownTiposMenu" style="margin-left: 40px;">
             <li id="dropdown-item-facturacion"><a onclick="selectMenu('facturacion')" class="dropdown-item" style="color: black;">Facturación</a></li>
             <li id="dropdown-item-contabilidad"><a onclick="selectMenu('contabilidad')" class="dropdown-item" style="color: black;">Contabilidad</a></li>
-            <li id="dropdown-item-nomina"><a class="dropdown-item disabled" aria-disabled="true" >Nomina (Proxi...)</a></li>
+            <li id="dropdown-item-nomina"><a onclick="selectMenu('nomina')" class="dropdown-item" style="color: black;">Nomina</a></li>
         </ul>
     </div>
 

@@ -93,7 +93,8 @@ var moduloCreado = {
     'parqueadero': false,
     'reserva': false,
     'exogena': false,
-    'resumencartera': false
+    'resumencartera': false,
+    'administradoras': false,
 };
 
 var moduloRoute = {
@@ -145,6 +146,7 @@ var moduloRoute = {
     'reserva': 'capturas',
     'exogena': 'informes',
     'resumencartera': 'informes',
+    'administradoras': 'tablas',
 }
 
 function iniciarCanalesDeNotificacion () {
@@ -784,6 +786,10 @@ function selectMenu(menu) {
         nombre = 'Contabilidad';
         
         tipoMenu = 1;
+    } else if (menu == 'nomina') {
+        nombre = 'Nomina';
+
+        tipoMenu = 3;
     }
 
     hideAllMenus();

@@ -22,6 +22,7 @@ use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
 use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
+use App\Http\Controllers\Tablas\Nomina\AdministradorasController;
 //INFORMES
 use App\Http\Controllers\Informes\ResultadosController;
 use App\Http\Controllers\Informes\EstadoActualController;
@@ -316,6 +317,15 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('presupuesto', 'update');
             Route::put('presupuesto-valor', 'updateValor');
             Route::put('presupuesto-grupo', 'grupo');
+        });
+        //ADMINISTRADORAS -> NOMINA
+        Route::controller(AdministradorasController::class)->group(function () {
+            Route::get('administradoras', 'generate');
+            Route::post('administradoras', 'create');
+            Route::put('administradoras', 'update');
+            Route::delete('administradoras', 'delete');
+            Route::post('administradoras-sincronizar', 'sincronizar');
+            
         });
         
         //CAPTURA GENERAL

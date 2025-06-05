@@ -45,55 +45,55 @@
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                 <div class="accordion-body row">
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Venta</label>
+                                        <label for="id_cuenta_venta">Venta</label>
                                         <select name="id_cuenta_venta" id="id_cuenta_venta" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Retención</label>
+                                        <label for="id_cuenta_venta_retencion">Retención</label>
                                         <select name="id_cuenta_venta_retencion" id="id_cuenta_venta_retencion" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Devolución venta</label>
+                                        <label for="id_cuenta_venta_devolucion">Devolución venta</label>
                                         <select name="id_cuenta_venta_devolucion" id="id_cuenta_venta_devolucion" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Iva</label>
+                                        <label for="id_cuenta_venta_iva">Iva</label>
                                         <select name="id_cuenta_venta_iva" id="id_cuenta_venta_iva" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Otros Impuestos venta</label>
+                                        <label for="id_cuenta_impuestos_venta">Otros Impuestos venta</label>
                                         <select name="id_cuenta_impuestos_venta" id="id_cuenta_impuestos_venta" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Devolución iva</label>
+                                        <label for="id_cuenta_venta_devolucion_iva">Devolución iva</label>
                                         <select name="id_cuenta_venta_devolucion_iva" id="id_cuenta_venta_devolucion_iva" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Descuento</label>
+                                        <label for="id_cuenta_venta_descuento">Descuento</label>
                                         <select name="id_cuenta_venta_descuento" id="id_cuenta_venta_descuento" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6" id="input-familia-inventario">
-                                        <label for="exampleFormControlSelect1">Inventario</label>
+                                        <label for="id_cuenta_inventario">Inventario</label>
                                         <select name="id_cuenta_inventario" id="id_cuenta_inventario" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6" id="input-familia-costos">
-                                        <label for="exampleFormControlSelect1">Costos</label>
+                                        <label for="id_cuenta_costos">Costos</label>
                                         <select name="id_cuenta_costos" id="id_cuenta_costos" class="form-control form-control-sm">
                                         </select>
                                     </div>
@@ -109,43 +109,43 @@
                             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                             <div class="accordion-body row">
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Compra</label>
+                                        <label for="id_cuenta_compra">Compra</label>
                                         <select name="id_cuenta_compra" id="id_cuenta_compra" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Retención</label>
+                                        <label for="id_cuenta_compra_retencion">Retención</label>
                                         <select name="id_cuenta_compra_retencion" id="id_cuenta_compra_retencion" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Devolución compra</label>
+                                        <label for="id_cuenta_compra_devolucion">Devolución compra</label>
                                         <select name="id_cuenta_compra_devolucion" id="id_cuenta_compra_devolucion" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Iva</label>
+                                        <label for="id_cuenta_compra_iva">Iva</label>
                                         <select name="id_cuenta_compra_iva" id="id_cuenta_compra_iva" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Otros Impuestos compra</label>
+                                        <label for="id_cuenta_impuestos_compra">Otros Impuestos compra</label>
                                         <select name="id_cuenta_impuestos_compra" id="id_cuenta_impuestos_compra" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Devolución iva</label>
+                                        <label for="id_cuenta_compra_devolucion_iva">Devolución iva</label>
                                         <select name="id_cuenta_compra_devolucion_iva" id="id_cuenta_compra_devolucion_iva" class="form-control form-control-sm">
                                         </select>
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
-                                        <label for="exampleFormControlSelect1">Descuento</label>
+                                        <label for="id_cuenta_compra_descuento">Descuento</label>
                                         <select name="id_cuenta_compra_descuento" id="id_cuenta_compra_descuento" class="form-control form-control-sm">
                                         </select>
                                     </div>
