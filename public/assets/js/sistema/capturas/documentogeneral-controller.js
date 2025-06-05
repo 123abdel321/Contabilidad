@@ -30,9 +30,8 @@ function documentogeneralInit() {
 }
 
 function initConfigDocumentoGeneral() {
-    var dateNow = new Date();
-    // Formatear a YYYY-MM-DDTHH:MM (formato que espera datetime-local)
-    var fechaHoraDG = dateNow.getFullYear() + '-' + 
+    const dateNow = new Date();
+    const fechaHoraDG = dateNow.getFullYear() + '-' + 
         ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
         ("0" + dateNow.getDate()).slice(-2) + 'T' + 
         ("0" + dateNow.getHours()).slice(-2) + ':' + 
@@ -1406,10 +1405,13 @@ function cargarNuevoConsecutivo() {
         mostrarValores();
     }
 
-    const dateNow = new Date;
-    const fechaGeneral = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-
-    $('#fecha_manual_documento').val(fechaGeneral);
+    const dateNow = new Date();
+    const fechaHoraDG = dateNow.getFullYear() + '-' + 
+        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
+        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
+        ("0" + dateNow.getHours()).slice(-2) + ':' + 
+        ("0" + dateNow.getMinutes()).slice(-2);
+    $('#fecha_manual_documento').val(fechaHoraDG);
     $("#iniciarCapturaDocumentos").show();
     $("#agregarDocumentos").hide();
     $("#cancelarCapturaDocumentos").hide();
