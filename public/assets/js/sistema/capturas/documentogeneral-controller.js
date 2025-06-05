@@ -1334,8 +1334,8 @@ function searchCaptura() {
                             inputDocRef.addClass("normal_input").prop("readonly", false);
                         }
                     }
-
-                    $('#fecha_manual_recibo').val(fechaManual);
+                    
+                    $('#fecha_manual_documento').val(fechaManual);
                     $("#editing_documento").val("1");
                     agregarToast('exito', 'Documentos encontrados', 'Documentos cargados con exito!', true );
                     mostrarValores();
