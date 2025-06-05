@@ -87,7 +87,7 @@ class PagosController extends Controller
 
             if ($idComprobante && $consecutivo && $editarPagos) {
 
-                $pagoEdit = ConPagos::with('detalles', 'pagos', 'nit')
+                $pagoEdit = ConPagos::with('detalles.cuenta.tipos_cuenta', 'pagos', 'nit')
                     ->where('id_comprobante', $idComprobante)
                     ->where('consecutivo', $consecutivo);
 
@@ -127,28 +127,6 @@ class PagosController extends Controller
                 ], Response::HTTP_OK);
             }
 
-            if ($pagoEdit) {
-                $detalles = $pagoEdit['detalles'];
-                
-                if (count($extractos)) {
-                    foreach ($extractos as $key => $extracto) {
-                        $indice = array_search($extracto->documento_referencia, array_column($detalles, 'documento_referencia'));
-                        
-                        if (($indice || $indice == 0) && array_key_exists($indice, $detalles)) {
-                            $encontrado = $detalles[$indice];
-                            $extractos[$key] = $this->formatExtractoEdit($extracto, $encontrado);
-                            unset($detalles[$indice]);
-                        }
-                    }
-                }
-                
-                if (count($detalles)) {
-                    foreach ($detalles as $detalle) {
-                        $extractos[] = $this->addExtractoData($detalle);
-                    }
-                }
-            }
-
             if ($request->get('orden_cuentas')) {
 
                 $ordenFacturacion = $request->get('orden_cuentas');
@@ -161,22 +139,50 @@ class PagosController extends Controller
                 $extractos = $extractos->sortBy('cuenta')->values();
             }
 
-            $cxpAnticipos = PlanCuentas::with('forma_pago')
-                ->where('auxiliar', 1)
-                ->where('exige_documento_referencia', 1)
-                ->whereHas('tipos_cuenta', function ($query) {
-                    $query->whereIn('id_tipo_cuenta', [7]);
-                })
-                ->orderBy('cuenta', 'ASC')
-                ->get();
-            
             $dataPagos = [];
+            $dataPagosAnticipos = [];
 
-            if (count($extractos)) {
-                foreach ($extractos as $extracto) {
-                    $dataPagos[] = $this->formatExtracto($extracto);
+            if ($pagoEdit) {
+                $detalles = $pagoEdit['detalles'];
+                
+                if (isset($detalles)) {
+                    foreach ($detalles as $detalle) {
+                        $esAnticipo = false;
+                        
+                        // Verificar si tiene tipos_cuenta y si alguno es 3 u 7
+                        if (isset($detalle['cuenta']['tipos_cuenta'])) {
+                            foreach ($detalle['cuenta']['tipos_cuenta'] as $tipoCuenta) {
+                                if (in_array($tipoCuenta['id_tipo_cuenta'], [3, 7])) {
+                                    $esAnticipo = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if ($esAnticipo) {
+                            $dataPagosAnticipos[$detalle['id_cuenta']] = (object)$detalle;
+                        } else {
+                            $dataPagos[] = $this->formatExtractoEdit($detalle);
+                        }
+                    }
+                }
+                if (isset($extractos)) {
+                    foreach ($extractos as $key => $extracto) {
+                        $indice = array_search($extracto->documento_referencia, array_column($detalles, 'documento_referencia'));
+                        if (!$indice && $indice != 0) {
+                            $dataPagos[] = $this->formatExtracto($extracto);
+                        }
+                    }
                 }
             } else {
+                if (isset($extractos)) {
+                    foreach ($extractos as $extracto) {
+                        $dataPagos[] = $this->formatExtracto($extracto);
+                    }
+                }
+            }
+
+            if (!isset($dataPagos)) {
                 $this->id_pago++;
                 $dataPagos[] = [
                     'id' => $this->id_pago,
@@ -196,14 +202,33 @@ class PagosController extends Controller
                 ];
             }
 
-            foreach ($cxpAnticipos as $cxcAnticipo) {
-                $dataPagos[] = $this->formatCuentaAnticipo($cxcAnticipo, $request->get('id_nit'));
+            $cxpAnticipos = PlanCuentas::with('forma_pago')
+                ->where('auxiliar', 1)
+                ->where('exige_documento_referencia', 1)
+                ->whereHas('tipos_cuenta', function ($query) {
+                    $query->whereIn('id_tipo_cuenta', [7]);
+                })
+                ->orderBy('cuenta', 'ASC')
+                ->get();
+
+            foreach ($cxpAnticipos as $cxpAnticipo) {
+                $dataEdit = array_key_exists($cxpAnticipo->id, $dataPagosAnticipos) ? $dataPagosAnticipos[$cxpAnticipo->id] : null;
+                $dataPagos[] = $this->formatCuentaAnticipo($cxpAnticipo, $request->get('id_nit'), $dataEdit);
+            }
+
+            $anticipos = [];
+            if (isset($dataPagosAnticipos)) {
+                $dataPagosAnticipos = array_values($dataPagosAnticipos);
+                foreach ($dataPagosAnticipos as $anticipo) {
+                    $anticipos[] = $anticipo->documento_referencia;
+                }
             }
 
             return response()->json([
                 'success'=>	true,
                 'data' => $dataPagos,
                 'edit' => $pagoEdit,
+                'anticipos' => $anticipos,
                 'message'=> 'Pago generado con exito!'
             ], Response::HTTP_OK);
 
@@ -220,67 +245,79 @@ class PagosController extends Controller
 
     public function generateComprobante(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length");
+        try {
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+            $draw = $request->get('draw');
+            $start = $request->get("start");
+            $rowperpage = $request->get("length");
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+            $columnIndex_arr = $request->get('order');
+            $columnName_arr = $request->get('columns');
+            $order_arr = $request->get('order');
+            $search_arr = $request->get('search');
 
-        $pagos = ConPagos::orderBy('id','DESC')
-            ->with('nit', 'archivos', 'pagos')
-            ->where('total_abono', '>', 0)
-            ->select(
-                '*',
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                'created_by',
-                'updated_by'
-            );
+            $columnIndex = $columnIndex_arr[0]['column']; // Column index
+            $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+            $columnSortOrder = $order_arr[0]['dir']; // asc or desc
 
-        if ($request->get('estado') || $request->get('estado') == 0) {
-            if ($request->get('estado') != 'todos') {
-                $pagos->where('estado', $request->get('estado'));
+            $pagos = ConPagos::orderBy('id','DESC')
+                ->with('nit', 'archivos', 'pagos')
+                ->where('total_abono', '>', 0)
+                ->select(
+                    '*',
+                    DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                    DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                    'created_by',
+                    'updated_by'
+                );
+
+            if ($request->get('estado') || $request->get('estado') == 0) {
+                if ($request->get('estado') != 'todos') {
+                    $pagos->where('estado', $request->get('estado'));
+                }
             }
+
+            if ($request->get('search')) {
+                $pagos->orWhereHas('nit', function ($query) use ($request){
+                    $query->orWhere('primer_apellido', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('razon_social', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('email', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('numero_documento', 'LIKE', '%' . $request->get("search") . '%');
+                });
+            }
+
+            $pagos ->when($request->get('fecha_desde') && $request->get('fecha_hasta'), function ($query) use($request) {
+                    $query->whereBetween('fecha_manual', [$request->get('fecha_desde'), $request->get('fecha_hasta')]);
+                })
+                ->where('total_abono', '>', 0);
+
+            $pagosTotals = $pagos->get();
+
+            $pagosPaginate = $pagos->skip($start)
+                ->take($rowperpage);
+
+            return response()->json([
+                'success'=>	true,
+                'draw' => $draw,
+                'iTotalRecords' => $pagosTotals->count(),
+                'iTotalDisplayRecords' => $pagosTotals->count(),
+                'data' => $pagosPaginate->get(),
+                'perPage' => $rowperpage,
+                'message'=> 'Pagos comprobantes generados con exito!'
+            ]);
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        if ($request->get('search')) {
-            $pagos->orWhereHas('nit', function ($query) use ($request){
-                $query->orWhere('primer_apellido', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('razon_social', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('email', 'LIKE', '%' . $request->get("search") . '%')
-                ->orWhere('numero_documento', 'LIKE', '%' . $request->get("search") . '%');
-            });
-        }
-
-        $pagos ->when($request->get('fecha_desde') && $request->get('fecha_hasta'), function ($query) use($request) {
-                $query->whereBetween('fecha_manual', [$request->get('fecha_desde'), $request->get('fecha_hasta')]);
-            })
-            ->where('total_abono', '>', 0);
-
-        $pagosTotals = $pagos->get();
-
-        $pagosPaginate = $pagos->skip($start)
-            ->take($rowperpage);
-
-        return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $pagosTotals->count(),
-            'iTotalDisplayRecords' => $pagosTotals->count(),
-            'data' => $pagosPaginate->get(),
-            'perPage' => $rowperpage,
-            'message'=> 'Pagos comprobantes generados con exito!'
-        ]);
     }
 
     public function create (Request $request)
@@ -309,77 +346,78 @@ class PagosController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $comprobantePago = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+        $actualizarConsecutivo = true;
 
-        $this->fechaManual = request()->user()->can('pago fecha') ? $request->get('fecha_manual') : Carbon::now();
-
+        // Verificar que exista el comprobante
+        $comprobantePago = Comprobantes::find($request->get('id_comprobante'));
         if(!$comprobantePago) {
             return response()->json([
                 "success"=>false,
                 'data' => [],
                 "message"=> ['Comprobante pago' => ['El Comprobante del pago es incorrecto!']]
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
-
-        } else if (!$request->get('id_pago')){
-
-            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
-            $request->request->add([
-                'consecutivo' => $consecutivo
-            ]);
         }
 
-        $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
+        // Verificar fecha manual
+        if (!$request->get('fecha_manual')) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
+        // Verificar si se encuentra en una fecha cerrada
+        $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
         if ($isFechaCierreLimit) {
-			return response()->json([
+            return response()->json([
                 "success"=>false,
                 'data' => [],
                 "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
             ], 200);
-		}
+        }
+        
+        // Verificar si el consecutivo está en uso (con o sin pagos)
+        $pago = $request->get('id_pago') ? ConPagos::find($request->get('id_pago')) : null;
+        $consecutivoUsado = $this->consecutivoUsado(
+            $comprobantePago,
+            $request->get('consecutivo'),
+            $request->get('fecha_manual'),
+            $pago
+        );
 
-        if ($request->get('id_pago')) {
-            $pago = ConPagos::where('id', $request->get('id_pago'))->first();
+        if ($consecutivoUsado) {
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => "El consecutivo {$request->get('consecutivo')} ya está en uso."
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        
+        try {
+            DB::connection('sam')->beginTransaction();
 
-            $consecutivoUsado = $this->consecutivoUsado(
-                $comprobantePago,
-                $request->get('consecutivo'),
-                $request->get('fecha_manual'),
-                $pago,
-            );
+            $this->fechaManual = request()->user()->can('recibo fecha') ? $request->get('fecha_manual') : Carbon::now();
+            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
 
-            if ($consecutivoUsado) {
-                return response()->json([
-                    "success"=>false,
-                    'data' => [],
-                    "message"=> "El consecutivo {$request->get('consecutivo')} ya está en uso."
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            if (!auth()->user()->can("pago update")) {
+                $request->request->add(['consecutivo' => $consecutivo]);
+            } else if ($consecutivo != $request->get('consecutivo')) {
+                $actualizarConsecutivo = false;
             }
-            
+
+            // Eliminar datos del pago anterior
             if ($pago) {
+                $actualizarConsecutivo = false;
                 $pago->documentos()->delete();
                 $pago->detalles()->delete();
                 $pago->pagos()->delete();
                 $pago->delete();
             }
-        } else {
-            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $this->fechaManual);
-            $request->request->add(['consecutivo' => $consecutivo]);
-        }
 
-        $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
-		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
+            $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
+            $fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
 
-        if (!$request->get('fecha_manual')) {
-			return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-		}
-        
-        try {
-            DB::connection('sam')->beginTransaction();
             //CREAR FACTURA RECIBO
             $pago = $this->createFacturaPago($request);
             $nit = $this->findNit($pago->id_nit);
@@ -392,7 +430,7 @@ class PagosController extends Controller
                 $request->get('fecha_manual'),
                 $request->get('consecutivo')
             );
-            
+
             foreach ($request->get('movimiento') as $movimiento) {
                 $movimiento = (object)$movimiento;
                 $cuentaRecord = PlanCuentas::with('tipos_cuenta')->where('id', $movimiento->id_cuenta)->first();
@@ -496,7 +534,7 @@ class PagosController extends Controller
                 }
             }
 
-            if (!$request->get('id_pago')) {
+            if ($actualizarConsecutivo) {
                 $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
             }
 
@@ -599,15 +637,16 @@ class PagosController extends Controller
             ]);
 
             if ($request->get('valor_comprobante')) {
-
                 DB::connection('sam')->commit();
-
+                //ACTIVAR SOLO COMPROBANTES
                 return response()->json([
                     "success"=>true,
                     'data' => [],
                     "message"=>'Comprobante enviado con exito'
                 ], Response::HTTP_OK);
             }
+
+            $consecutivo = $this->getNextConsecutive($recibo->id_comprobante, $recibo->fecha_manual);
 
             $extractos = (new Extracto(
                 $nit->id,
@@ -625,6 +664,7 @@ class PagosController extends Controller
             );
 
             $valorPagado = $request->get('valor_pago');
+            $centro_costos = CentroCostos::first();
             
             //BUSCAMOS CUENTAS POR COBRAR
             foreach ($extractos as $extracto) {
@@ -1061,10 +1101,8 @@ class PagosController extends Controller
         return $doc;
     }
 
-    private function formatExtracto($extracto)
+    private function formatExtracto($extracto, $editando = false)
     {
-        $editando = property_exists($extracto, 'edit') ? true : false;
-
         $this->id_pago++;
         return [
             'id' => $this->id_pago,
@@ -1084,16 +1122,27 @@ class PagosController extends Controller
         ];
     }
 
-    private function formatExtractoEdit($extracto, $recibo)
+    private function formatExtractoEdit($detalle)
     {
-        $extracto->total_abono = $recibo['total_abono'];
-        $extracto->total_saldo = $extracto->saldo;
-        $extracto->concepto = $recibo['concepto'];
-        $extracto->nuevo_saldo = $recibo['nuevo_saldo'];
-        $extracto->valor_recibido = $recibo['total_abono'];
-        $extracto->edit = true;
-        
-        return $extracto;
+        $this->id_pago++;
+        $detalle = (object)$detalle;
+        $cuentaData = PlanCuentas::find($detalle->id_cuenta);
+        return [
+            'id' => $this->id_pago,
+            'id_cuenta' =>  $detalle->id_cuenta,
+            'codigo_cuenta' => $cuentaData->cuenta,
+            'nombre_cuenta' => $cuentaData->nombre,
+            'fecha_manual' => $detalle->fecha_manual,
+            'dias_cumplidos' => 0,
+            'plazo' => 0,
+            'documento_referencia' => $detalle->documento_referencia,
+            'saldo' => $detalle->total_saldo,
+            'valor_recibido' => $detalle->total_abono,
+            'nuevo_saldo' => $detalle->nuevo_saldo,
+            'total_abono' => $detalle->total_abono,
+            'concepto' => $detalle->concepto,
+            'cuenta_pago' => true,
+        ];
     }
 
     private function addExtractoData($detalle)
@@ -1116,7 +1165,7 @@ class PagosController extends Controller
         ];
     }
 
-    private function formatCuentaAnticipo($cuenta, $idNit)
+    private function formatCuentaAnticipo($cuenta, $idNit, $dataEdit)
     {
         $this->id_pago++;
 
@@ -1129,12 +1178,12 @@ class PagosController extends Controller
             'fecha_manual' => Carbon::now()->format('Y-m-d'),
             'dias_cumplidos' => '',
             'plazo' => '',
-            'documento_referencia' => '',
+            'documento_referencia' => $dataEdit ? $dataEdit->documento_referencia : 0,
             'saldo' => 0,
-            'valor_recibido' => 0,
+            'valor_recibido' => $dataEdit ? $dataEdit->total_anticipo : 0,
             'nuevo_saldo' => 0,
             'total_abono' => 0,
-            'concepto' => '',
+            'concepto' => $dataEdit ? $dataEdit->concepto : '',
             'cuenta_pago' => false,
         ];
     }
@@ -1272,7 +1321,6 @@ class PagosController extends Controller
                 return $anticipoCuenta;
             }
         }
-
         return [];
     }
 }

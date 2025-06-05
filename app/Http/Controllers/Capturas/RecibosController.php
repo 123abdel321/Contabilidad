@@ -169,7 +169,7 @@ class RecibosController extends Controller
                 if (isset($extractos)) {
                     foreach ($extractos as $key => $extracto) {
                         $indice = array_search($extracto->documento_referencia, array_column($detalles, 'documento_referencia'));
-                        if (!$indice) {
+                        if (!$indice && $indice != 0) {
                             $dataRecibos[] = $this->formatExtracto($extracto);
                         }
                     }
@@ -349,7 +349,7 @@ class RecibosController extends Controller
         $actualizarConsecutivo = true;
 
         // Verificar que exista el comprobante
-        $comprobanteRecibo = Comprobantes::find($request->get('id_comprobante'))->first();
+        $comprobanteRecibo = Comprobantes::find($request->get('id_comprobante'));
         if(!$comprobanteRecibo) {
             return response()->json([
                 "success"=>false,
@@ -477,7 +477,7 @@ class RecibosController extends Controller
                 ]);
                 $documentoGeneral->addRow($doc, $naturalezaCuenta);
             }
-
+            
             $totalRecibos = $this->totalesFactura['total_pagado'];
 
             //AGREGAR FORMAS DE PAGO
@@ -638,7 +638,7 @@ class RecibosController extends Controller
 
             if ($request->get('valor_comprobante')) {
                 DB::connection('sam')->commit();
-                // //ACTIVAR SOLO COMPROBANTES
+                //ACTIVAR SOLO COMPROBANTES
                 return response()->json([
                     "success"=>true,
                     'data' => [],

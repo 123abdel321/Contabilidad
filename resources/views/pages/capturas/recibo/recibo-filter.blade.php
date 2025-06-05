@@ -41,7 +41,7 @@
 
                     <div class="form-group col-12 col-sm-4 col-md-2">
                         <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
-                        <input name="fecha_manual_recibo" id="fecha_manual_recibo" class="form-control form-control-sm" type="date" required>
+                        <input name="fecha_manual_recibo" id="fecha_manual_recibo" class="form-control form-control-sm" type="datetime-local" required>
                         <div class="invalid-feedback">
                             La fecha es requerido
                         </div>

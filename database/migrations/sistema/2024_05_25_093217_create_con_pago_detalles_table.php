@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('id_pago')->nullable();
             $table->integer('id_cuenta')->nullable();
             $table->integer('id_nit')->nullable();
-            $table->date('fecha_manual')->nullable();
+            $table->dateTime('fecha_manual')->nullable();
             $table->string('documento_referencia', 20)->nullable();
             $table->string('consecutivo', 20)->nullable();
             $table->string('concepto', 600)->nullable();

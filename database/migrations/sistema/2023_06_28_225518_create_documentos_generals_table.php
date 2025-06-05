@@ -23,8 +23,7 @@ class CreateDocumentosGeneralsTable extends Migration
             $table->integer('relation_id');
             $table->integer('relation_type');
             $table->integer('auxiliar')->default(0)->comment('0:no, 1:si');
-            $table->date('fecha_manual')->nullable();
-            $table->time('hora_manual')->default(Carbon::now()->toTimeString());
+            $table->dateTime('fecha_manual')->nullable();
             $table->string('consecutivo', 20);
             $table->string('documento_referencia', 20)->nullable();
             $table->decimal('debito', 15)->default(0);

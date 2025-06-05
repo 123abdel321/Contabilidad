@@ -30,7 +30,7 @@ function documentogeneralInit() {
         timePickerSeconds: false, // ponlo en true si también quieres segundos
         startDate: moment().startOf('second'),
         locale: {
-            format: 'YYYY-MM-DD',
+            format: 'YYYY-MM-DD hh:mm:ss A',
             applyLabel: 'Aplicar',
             cancelLabel: 'Cancelar',
             fromLabel: 'Desde',
@@ -1267,8 +1267,6 @@ function searchCaptura() {
 
                 if(data.length > 0){
                     const fechaManual = data[0].fecha_manual;
-                    const horaManual = data[0].hora_manual;
-
                     editandoCaptura = true;
                     idDocumento = 0;
                     for (let index = 0; index < data.length; index++) {
@@ -1350,7 +1348,7 @@ function searchCaptura() {
                         }
                     }
 
-                    const fechaHora = moment(`${fechaManual} ${horaManual}`);
+                    const fechaHora = moment(`${fechaManual}`);
                     $('#fecha_manual_documento')
                         .val(fechaHora.format('YYYY-MM-DD hh:mm:ss A'))
                         .data('daterangepicker')

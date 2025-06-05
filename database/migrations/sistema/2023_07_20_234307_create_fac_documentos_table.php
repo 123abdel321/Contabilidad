@@ -16,8 +16,7 @@ return new class extends Migration
             $table->id();
             $table->integer('id_comprobante')->index();
             $table->integer('id_nit')->nullable();
-            $table->date('fecha_manual');
-            $table->time('hora_manual')->default(Carbon::now()->toTimeString());
+            $table->dateTime('fecha_manual');
             $table->string('token_factura', 255)->nullable();
             $table->string('consecutivo', 20);
             $table->decimal('debito', 15);

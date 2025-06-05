@@ -11,9 +11,14 @@ var $comboComprobanteRecibos = null;
 var totalAnticiposReciboCuenta = null;
 
 function reciboInit () {
-    var dateNow = new Date;
-    var fechaRecibo = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    $('#fecha_manual_recibo').val(fechaRecibo);
+    var dateNow = new Date();
+    // Formatear a YYYY-MM-DDTHH:MM (formato que espera datetime-local)
+    var fechaHoraRecibo = dateNow.getFullYear() + '-' + 
+        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
+        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
+        ("0" + dateNow.getHours()).slice(-2) + ':' + 
+        ("0" + dateNow.getMinutes()).slice(-2);
+    $('#fecha_manual_recibo').val(fechaHoraRecibo);
 
     recibo_table = $('#reciboTable').DataTable({
         dom: '',
@@ -394,7 +399,7 @@ function reloadTableRecibos() {
         if (factura) {
             $('#cancelarCapturaRecibo').show();
             const anticiposEditados = res.anticipos;
-            console.log('anticiposEditados: ',anticiposEditados);
+            
             noBuscarDatosRecibo = true;
             $("#id_recibo_up").val(factura.id);
 
@@ -441,6 +446,7 @@ $(document).on('click', '#crearCapturaRecibo', function () {
 $(document).on('change', '#id_nit_recibo', function () {
     let data = $('#id_nit_recibo').select2('data')[0];
     if (data && !noBuscarDatosRecibo) {
+        noBuscarDatosRecibo = false;
         document.getElementById('iniciarCapturaRecibo').click();
     }
     if (!noBuscarDatosRecibo) {
@@ -460,7 +466,7 @@ function saveRecibo() {
         movimiento: getMovimientoRecibo(),
         id_nit: $("#id_nit_recibo").val(),
         id_comprobante: $("#id_comprobante_recibo").val(),
-        fecha_manual: $("#fecha_manual_recibo").val(),
+        fecha_manual: $('#fecha_manual_recibo').val().replace('T', ' ') + ':00',
         consecutivo: $("#documento_referencia_recibo").val(),
     }
 
@@ -534,8 +540,7 @@ function getMovimientoRecibo() {
 
 function cancelarRecibo() {
 
-    const dateNow = new Date;
-    const fechaRecibo = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    const dateNow = new Date();
 
     $comboNitRecibos.val(0).trigger('change');
     totalAnticiposRecibo = 0;
@@ -545,7 +550,13 @@ function cancelarRecibo() {
     consecutivoSiguienteRecibo();
     clearFormasPagoRecibo();
     
-    $('#fecha_manual_recibo').val(fechaRecibo);
+    var fechaHoraRecibo = dateNow.getFullYear() + '-' + 
+        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
+        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
+        ("0" + dateNow.getHours()).slice(-2) + ':' + 
+        ("0" + dateNow.getMinutes()).slice(-2);
+
+    $('#fecha_manual_recibo').val(fechaHoraRecibo);
     $('#total_abono_recibo').val('0.00');
     $('#saldo_anticipo_recibo').val('0');
     $('#recibo_anticipo_disp').text('0');
@@ -871,7 +882,6 @@ function changeFormaPagoRecibo(idFormaPago, event, anticipo, id_cuenta) {
 
                 let totalSaldoAnticipos = cuentaExistente[id_cuenta].saldo;
                 if (totalCXP > totalSaldoAnticipos) {
-                    var [totalPagos, totalCXP] = totalFormasPagoRecibos(idFormaPago);
                     $('#recibo_forma_pago_'+idFormaPago).val(totalSaldoAnticipos);
                     $('#recibo_forma_pago_'+idFormaPago).select();
                     calcularRecibosPagos();

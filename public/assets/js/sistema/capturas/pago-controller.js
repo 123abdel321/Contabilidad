@@ -11,9 +11,14 @@ var $comboComprobantePagos = null;
 var totalAnticiposPagoCuenta = null;
 
 function pagoInit () {
-    var dateNow = new Date;
-    var fechaPago = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    $('#fecha_manual_pago').val(fechaPago);
+    var dateNow = new Date();
+    // Formatear a YYYY-MM-DDTHH:MM (formato que espera datetime-local)
+    var fechaHoraPago = dateNow.getFullYear() + '-' + 
+        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
+        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
+        ("0" + dateNow.getHours()).slice(-2) + ':' + 
+        ("0" + dateNow.getMinutes()).slice(-2);
+    $('#fecha_manual_pago').val(fechaHoraPago);
 
     pago_table = $('#pagoTable').DataTable({
         dom: '',
@@ -322,10 +327,6 @@ function pagoInit () {
     if (pagoUpdate) $("#documento_referencia_pago").prop('disabled', false);
     else $("#documento_referencia_pago").prop('disabled', true);
 
-    setTimeout(function(){
-        $comboNitPagos.select2("open");
-    },10);
-
     loadFormasPagoPagos();
 }
 
@@ -397,6 +398,8 @@ function reloadTablePagos() {
 
         if (factura) {
             $('#cancelarCapturaPago').show();
+            const anticiposEditados = res.anticipos;
+
             noBuscarDatosPago = true;
             $("#id_pago_up").val(factura.id);
 
@@ -411,7 +414,7 @@ function reloadTablePagos() {
             $('#fecha_manual_pago').val(factura.fecha_manual);
             $('#total_abono_pago').val(factura.total_abono);
             agregarPagosPagos(factura.pagos);
-            loadAnticiposPago(factura.fecha_manual);
+            loadAnticiposPago(factura.fecha_manual, anticiposEditados);
         }
 
         mostrarValoresPagos();
@@ -443,8 +446,8 @@ $(document).on('click', '#crearCapturaPago', function () {
 $(document).on('change', '#id_nit_pago', function () {
     let data = $('#id_nit_pago').select2('data')[0];
     if (data && !noBuscarDatosPago) {
+        noBuscarDatosPago = false;
         document.getElementById('iniciarCapturaPago').click();
-        loadAnticiposPago();
     }
     if (!noBuscarDatosPago) {
         noBuscarDatosPago = false;
@@ -463,7 +466,7 @@ function savePago() {
         movimiento: getMovimientoPago(),
         id_nit: $("#id_nit_pago").val(),
         id_comprobante: $("#id_comprobante_pago").val(),
-        fecha_manual: $("#fecha_manual_pago").val(),
+        fecha_manual: $('#fecha_manual_pago').val().replace('T', ' ') + ':00',
         consecutivo: $("#documento_referencia_pago").val(),
     }
 
@@ -538,7 +541,6 @@ function getMovimientoPago() {
 function cancelarPago() {
 
     const dateNow = new Date;
-    const fechaPago = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
     
     $comboNitPagos.val(0).trigger('change');
     totalAnticiposPago = 0;
@@ -548,7 +550,13 @@ function cancelarPago() {
     consecutivoSiguientePago();
     clearFormasPagoPago();
 
-    $('#fecha_manual_pago').val(fechaPago);
+    var fechaHoraPago = dateNow.getFullYear() + '-' + 
+        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
+        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
+        ("0" + dateNow.getHours()).slice(-2) + ':' + 
+        ("0" + dateNow.getMinutes()).slice(-2);
+
+    $('#fecha_manual_pago').val(fechaHoraPago);
     $('#total_abono_pago').val('0.00');
     $('#saldo_anticipo_pago').val('0');
     $('#pago_anticipo_disp').text('0');
@@ -916,7 +924,7 @@ function validateSavePagos() {
     }
 }
 
-function loadAnticiposPago(fecha_manual = null) {
+function loadAnticiposPago(fecha_manual = null, anticiposEditados = null) {
     totalAnticiposPago = 0;
     $('#input_anticipos_pago').hide();
     $('#pago_anticipo_disp_view').hide();
@@ -928,7 +936,8 @@ function loadAnticiposPago(fecha_manual = null) {
     let data = {
         id_nit: $('#id_nit_pago').val(),
         id_tipo_cuenta: [7],
-        fecha_manual: fecha_manual
+        fecha_manual: fecha_manual,
+        sin_documento: anticiposEditados
     }
 
     $.ajax({

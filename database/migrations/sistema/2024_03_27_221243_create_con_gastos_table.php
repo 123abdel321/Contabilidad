@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('id_comprobante')->nullable();
             $table->integer('id_centro_costos')->nullable();
             $table->integer('id_cuenta_rete_fuente')->nullable();
-            $table->date('fecha_manual')->nullable();
+            $table->dateTime('fecha_manual')->nullable();
             $table->string('consecutivo', 20);
             $table->string('documento_referencia', 50);
             $table->decimal('subtotal', 15);

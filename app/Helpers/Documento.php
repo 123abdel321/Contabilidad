@@ -75,17 +75,14 @@ class Documento
 
 		$this->setCreatedAt(date('Y-m-d H:i:s'));
         $fecha = $fecha ?: date('Y-m-d H:i:s');
-
+        
 		$this->shouldUpdateConsecutivo = !$consecutivo;
         $consecutivo = isset($captura->consecutivo) ? $captura->consecutivo : $consecutivo;
-
-        $fechaHora = Carbon::parse($fecha);
-		$fechaManual = $fechaHora->toDateString();
 
         $this->captura = $captura;
         $this->head = [
             "id_comprobante" => $id_comprobante,
-            "fecha" => $fechaManual,
+            "fecha" => $fecha,
             "consecutivo" => $consecutivo,
         ];
     }
