@@ -343,10 +343,8 @@ class DocumentoGeneralController extends Controller
                 "message"=>$validator->errors()
             ], Response::HTTP_OK);
         }
-
-		$fechaHora = Carbon::parse($request->get('fecha_manual'));
-		$fechaManual = "{$fechaHora->toDateString()} {$fechaHora->format('H:i:s')}";
 		
+		$fechaManual = $request->get('fecha_manual');
 		$isFechaCierreLimit = $this->isFechaCierreLimit($fechaManual);
 
         if ($isFechaCierreLimit) {

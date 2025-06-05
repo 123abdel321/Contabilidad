@@ -22,34 +22,7 @@ function documentogeneralInit() {
     initTablaDocumentoGeneral();
     initTablaDocumentoGeneralExtracto();
     initCombosActionDocumentoGeneral();
-    //Iniciar fecha manual
-    $('#fecha_manual_documento').daterangepicker({
-        singleDatePicker: true,
-        timePicker: true,
-        timePicker24Hour: false, // ponlo en true si quieres formato 24 horas
-        timePickerSeconds: false, // ponlo en true si también quieres segundos
-        startDate: moment().startOf('second'),
-        locale: {
-            format: 'YYYY-MM-DD hh:mm:ss A',
-            applyLabel: 'Aplicar',
-            cancelLabel: 'Cancelar',
-            fromLabel: 'Desde',
-            toLabel: 'Hasta',
-            customRangeLabel: 'Personalizado',
-            weekLabel: 'S',
-            daysOfWeek: [
-                'Do', 'Lu', 'Ma', 'Mi',
-                'Ju', 'Vi', 'Sa'
-            ],
-            monthNames: [
-                'Enero', 'Febrero', 'Marzo',
-                'Abril', 'Mayo', 'Junio',
-                'Julio', 'Agosto', 'Septiembre',
-                'Octubre', 'Noviembre', 'Diciembre'
-            ],
-            firstDay: 1
-        },
-    });
+
     //ABRIR COMBO COMPROBANTE
     setTimeout(function(){
         $comboComprobante.select2("open");
@@ -57,9 +30,14 @@ function documentogeneralInit() {
 }
 
 function initConfigDocumentoGeneral() {
-    var dateNow = new Date;
-    var fechaDocumentoGeneral = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    $('#fecha_manual_documento').val(fechaDocumentoGeneral);
+    var dateNow = new Date();
+    // Formatear a YYYY-MM-DDTHH:MM (formato que espera datetime-local)
+    var fechaHoraDG = dateNow.getFullYear() + '-' + 
+        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
+        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
+        ("0" + dateNow.getHours()).slice(-2) + ':' + 
+        ("0" + dateNow.getMinutes()).slice(-2);
+    $('#fecha_manual_documento').val(fechaHoraDG);
 }
 
 function initTablaDocumentoGeneral() {
@@ -961,18 +939,23 @@ function focusNextRow(columnIndex, rowId) {
             continue;
         }
 
-        const prevRow = rowId - 1;
-
         if (["#combo_nits", "#combo_cecos"].includes(inputIds[nextColumn])) {
             // Autocompletar NIT desde fila anterior si está vacío
             if (inputIds[nextColumn] === "#combo_nits" && !$input.val() && rowId > 0) {
-                const nitData = $(`#combo_nits_${prevRow}`).select2('data');
-                if (nitData && nitData.length > 0) {
-                    const option = new Option(nitData[0].text, nitData[0].id, false, false);
-                    $input.append(option).trigger('change');
-                    $(`#concepto_${rowId}`).val($(`#concepto_${prevRow}`).val());
-                    scrollToDG(250);
+                
+                let prevRow = rowId;
+                for (let index = 0; index < rowId; index++) {
+                    prevRow--;
+                    const nitData = $(`#combo_nits_${prevRow}`).select2('data');
+                    if (nitData && nitData.length > 0) {
+                        const option = new Option(nitData[0].text, nitData[0].id, false, false);
+                        $input.append(option).trigger('change');
+                        $(`#concepto_${rowId}`).val($(`#concepto_${prevRow}`).val());
+                        scrollToDG(250);
+                        break;
+                    }
                 }
+                
             } else {
                 setTimeout(() => $input.select2('open'), 10);
             }
@@ -1169,6 +1152,10 @@ function validarMax(id, type) {
     const max = input.getAttribute('max');
     const inputValue = stringToNumberFloat(input.value);
 
+    if (parseFloat(max) == 0) {
+        return;
+    }
+
     // Verificar si el valor del campo es mayor que el máximo
     if (parseFloat(inputValue) > parseFloat(max)) {
         input.value = max;  // Establecer el valor al máximo permitido
@@ -1348,12 +1335,7 @@ function searchCaptura() {
                         }
                     }
 
-                    const fechaHora = moment(`${fechaManual}`);
-                    $('#fecha_manual_documento')
-                        .val(fechaHora.format('YYYY-MM-DD hh:mm:ss A'))
-                        .data('daterangepicker')
-                        .setStartDate(fechaHora);
-
+                    $('#fecha_manual_recibo').val(fechaManual);
                     $("#editing_documento").val("1");
                     agregarToast('exito', 'Documentos encontrados', 'Documentos cargados con exito!', true );
                     mostrarValores();
