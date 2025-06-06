@@ -996,6 +996,21 @@ function getResponsabilidades(id_responsabilidades) {
     return [];
 }
 
+function normalizarFecha(fecha) {
+    // Si ya tiene hora (es decir, espacio y algo más), no tocamos nada
+    if (fecha.includes(' ')) {
+        return fecha;
+    }
+
+    // Si no tiene hora, le agregamos la hora actual
+    const ahora = new Date();
+    const hora = ahora.getHours().toString().padStart(2, '0');
+    const minutos = ahora.getMinutes().toString().padStart(2, '0');
+    const segundos = ahora.getSeconds().toString().padStart(2, '0');
+
+    return `${fecha} ${hora}:${minutos}:${segundos}`;
+}
+
 $(document).on('shown.bs.popover', function() {
     $('.popover b.titulo-popover').css({
         'color': '#72ffff',

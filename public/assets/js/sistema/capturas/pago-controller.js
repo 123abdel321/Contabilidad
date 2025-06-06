@@ -411,7 +411,7 @@ function reloadTablePagos() {
             $comboNitPagos.append(newOption).trigger('change');
             $comboNitPagos.val(dataFormato.id).trigger('change');
 
-            $('#fecha_manual_pago').val(factura.fecha_manual);
+            $('#fecha_manual_pago').val(normalizarFecha(factura.fecha_manual));
             $('#total_abono_pago').val(factura.total_abono);
             agregarPagosPagos(factura.pagos);
             loadAnticiposPago(factura.fecha_manual, anticiposEditados);
