@@ -384,22 +384,23 @@ class ProcessInformeEstadoActual implements ShouldQueue
 
         $estadoActual = $this->totalYearsEstadoActual();
 
+
         $ordenado[] = [
             'id_estado_actual' => $this->id_estado_actual,
             'fecha_manual' => '',
             'numero_documento' => '',
             'nombre_nit' => '',
-            'documentos' => $estadoActual->documentos,
-            'comprobantes' => $estadoActual->comprobantes,
-            'mes' => $estadoActual->total == 2 || $estadoActual->total == 4 ? $estadoActual->mes : '',
-            'year' => $estadoActual->year,
-            'debito' => $estadoActual->debito,
-            'credito' => $estadoActual->credito,
-            'diferencia' => $estadoActual->diferencia,
-            'registros' => $estadoActual->registros,
+            'documentos' => isset($estadoActual) ? $estadoActual->documentos : '',
+            'comprobantes' => isset($estadoActual) ? $estadoActual->comprobantes : '',
+            'mes' => isset($estadoActual) ? $estadoActual->total == 2 || $estadoActual->total == 4 ? $estadoActual->mes : '' : '',
+            'year' => isset($estadoActual) ? $estadoActual->year : '',
+            'debito' => isset($estadoActual) ? $estadoActual->debito : '',
+            'credito' => isset($estadoActual) ? $estadoActual->credito : '',
+            'diferencia' => isset($estadoActual) ? $estadoActual->diferencia : '',
+            'registros' => isset($estadoActual) ? $estadoActual->registros : '',
             'concepto' => '',
-            'errores' => $estadoActual->errores,
-            'total' => $estadoActual->total,
+            'errores' => isset($estadoActual) ? $estadoActual->errores : '',
+            'total' => isset($estadoActual) ? $estadoActual->total : '',
         ];
 
 		return $ordenado;
