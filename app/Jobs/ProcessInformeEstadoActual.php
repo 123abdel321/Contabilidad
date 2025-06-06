@@ -227,7 +227,7 @@ class ProcessInformeEstadoActual implements ShouldQueue
             $total->total = 1;
             return $total;
         } else {
-            return [];
+            return null;
         }
     }
 
