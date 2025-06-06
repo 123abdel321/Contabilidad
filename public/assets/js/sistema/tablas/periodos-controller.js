@@ -149,6 +149,7 @@ function clearFormPeriodos() {
     $("#savePeriodosLoading").hide();
 
     $("#id_periodos_up").val('');
+    $("#nombre_periodo").val('');
     $("#dias_salario").val('');
     $("#horas_dia").val('');
     $("#horas_periodo").val('');
