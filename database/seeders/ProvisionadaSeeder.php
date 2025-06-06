@@ -53,6 +53,8 @@ class ProvisionadaSeeder extends Seeder
         $this->call(ExogenaFormatosProvisionalSeeder::class);
         $this->call(ExogenaFormatoColumnasProvisionalSeeder::class);
         $this->call(ExogenaFormatoConceptosProvisionalSeeder::class);
+        //NOMINA
+        $this->call(NomPeriodosSeeder::class);
 
         DB::statement('SET foreign_key_checks = 1');
     }

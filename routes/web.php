@@ -38,6 +38,7 @@ use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
 use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
+use App\Http\Controllers\Tablas\Nomina\PeriodosController;
 use App\Http\Controllers\Tablas\Nomina\AdministradorasController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
@@ -196,6 +197,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/productos', [ProductosController::class, 'index'])->name('productos');
 		//ADMINISTRADORAS
 		Route::get('/administradoras', [AdministradorasController::class, 'index'])->name('administradoras');
+		//PERIODOS
+		Route::get('/periodos', [PeriodosController::class, 'index'])->name('periodos');
 		//CARGUE DESCARGUE
 		Route::get('/carguedescargue', [CargueDescargueController::class, 'index']);
 		//CONCEPTO GASTOS

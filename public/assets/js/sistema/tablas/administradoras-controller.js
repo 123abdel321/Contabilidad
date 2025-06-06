@@ -84,7 +84,7 @@ function cargarTablasAdministradoras() {
         administradora_table.on('click', '.drop-administradora', function() {
             var id = this.id.split('_')[1];
             var data = getDataById(id, administradora_table);
-            console.log('data: ',data);
+            
             Swal.fire({
                 title: `Eliminar administradora: ${data.codigo} - ${data.descripcion}?`,
                 text: "No se podrá revertir!",

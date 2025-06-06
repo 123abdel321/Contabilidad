@@ -95,6 +95,7 @@ var moduloCreado = {
     'exogena': false,
     'resumencartera': false,
     'administradoras': false,
+    'periodos': false,
 };
 
 var moduloRoute = {
@@ -147,6 +148,7 @@ var moduloRoute = {
     'exogena': 'informes',
     'resumencartera': 'informes',
     'administradoras': 'tablas',
+    'periodos': 'tablas',
 }
 
 function iniciarCanalesDeNotificacion () {
@@ -1011,9 +1013,25 @@ function normalizarFecha(fecha) {
     return `${fecha} ${hora}:${minutos}:${segundos}`;
 }
 
+function focusNexInput(e, inputId, type = null) {
+    if (!e.keyCode) {
+        if (type == 'select') {
+            document.getElementById(inputId).focus();
+        }
+    }
+    if (e.key === 'Enter' || e.keyCode === 13) {
+        document.getElementById(inputId).focus();
+    }
+}
+
 $(document).on('shown.bs.popover', function() {
     $('.popover b.titulo-popover').css({
         'color': '#72ffff',
+        'font-weight': 'bold'
+    });
+
+    $('.popover b.mensaje-blanco').css({
+        'color': '#FFF',
         'font-weight': 'bold'
     });
 });

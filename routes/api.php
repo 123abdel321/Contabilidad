@@ -22,6 +22,7 @@ use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
 use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
+use App\Http\Controllers\Tablas\Nomina\PeriodosController;
 use App\Http\Controllers\Tablas\Nomina\AdministradorasController;
 //INFORMES
 use App\Http\Controllers\Informes\ResultadosController;
@@ -325,6 +326,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('administradoras', 'update');
             Route::delete('administradoras', 'delete');
             Route::post('administradoras-sincronizar', 'sincronizar');
+            
+        });
+        //PERIODOS -> NOMINA
+        Route::controller(PeriodosController::class)->group(function () {
+            Route::get('periodos', 'generate');
+            Route::post('periodos', 'create');
+            Route::put('periodos', 'update');
+            Route::delete('periodos', 'delete');
             
         });
         
