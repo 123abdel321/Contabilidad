@@ -687,7 +687,7 @@ function buscarFacturaCompra(event) {
         }).done((res) => {
             validarFacturaCompra = null;
             $('#documento_referencia_compra_loading').hide();
-            if(res.data == 0){
+            if(!res.data){
                 $('#documento_referencia_compra').removeClass("is-invalid");
                 $('#documento_referencia_compra').addClass("is-valid");
             }else {
