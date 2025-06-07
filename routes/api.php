@@ -24,6 +24,7 @@ use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
 use App\Http\Controllers\Tablas\Nomina\PeriodosController;
 use App\Http\Controllers\Tablas\Nomina\AdministradorasController;
+use App\Http\Controllers\Tablas\Nomina\ConceptosNominaController;
 //INFORMES
 use App\Http\Controllers\Informes\ResultadosController;
 use App\Http\Controllers\Informes\EstadoActualController;
@@ -326,7 +327,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('administradoras', 'update');
             Route::delete('administradoras', 'delete');
             Route::post('administradoras-sincronizar', 'sincronizar');
-            
         });
         //PERIODOS -> NOMINA
         Route::controller(PeriodosController::class)->group(function () {
@@ -334,9 +334,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('periodos', 'create');
             Route::put('periodos', 'update');
             Route::delete('periodos', 'delete');
-            
         });
-        
+        //CONCEPTOS -> NOMINA
+        Route::controller(ConceptosNominaController::class)->group(function () {
+            Route::get('conceptos-nomina', 'generate');
+            Route::post('conceptos-nomina', 'create');
+            Route::put('conceptos-nomina', 'update');
+            Route::delete('conceptos-nomina', 'delete');
+        });
         //CAPTURA GENERAL
         Route::controller(DocumentoGeneralController::class)->group(function () {
             Route::get('consecutivo', 'getConsecutivo');

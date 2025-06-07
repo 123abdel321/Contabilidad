@@ -96,6 +96,7 @@ var moduloCreado = {
     'resumencartera': false,
     'administradoras': false,
     'periodos': false,
+    'conceptosnomina': false,
 };
 
 var moduloRoute = {
@@ -149,6 +150,7 @@ var moduloRoute = {
     'resumencartera': 'informes',
     'administradoras': 'tablas',
     'periodos': 'tablas',
+    'conceptosnomina': 'tablas',
 }
 
 function iniciarCanalesDeNotificacion () {
