@@ -1872,7 +1872,7 @@ function buscarFacturaGasto(event) {
         }).done((res) => {
             validarFacturaGastos= null;
             $('#documento_referencia_gasto_loading').hide();
-            if(res.data == 0){
+            if(!res.data){
                 $('#documento_referencia_gasto').removeClass("is-invalid");
                 $('#documento_referencia_gasto').addClass("is-valid");
             }else {
