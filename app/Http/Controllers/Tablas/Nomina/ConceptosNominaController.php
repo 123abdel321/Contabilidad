@@ -104,7 +104,7 @@ class ConceptosNominaController extends Controller
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
-        $rowperpage = 20;
+        $rowperpage = $request->get("length");
 
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');

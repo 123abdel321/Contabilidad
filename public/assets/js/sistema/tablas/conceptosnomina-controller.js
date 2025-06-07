@@ -23,7 +23,7 @@ function conceptosnominaInit() {
 
 function cargarTablasConceptosNomina() {
     conceptos_nomina_table = $('#conceptosNominaTable').DataTable({
-        pageLength: 15,
+        pageLength: 50,
         dom: 'Brtip',
         paging: true,
         responsive: false,
@@ -77,7 +77,10 @@ function cargarTablasConceptosNomina() {
                 return '';
             }},
             {"data": function (row, type, set){  
-                return parseInt(row.porcentaje);
+                if (row.porcentaje) {
+                    return parseInt(row.porcentaje);
+                }
+                return '';
             }},
             {"data":'id_concepto_porcentaje'},
             {"data": function (row, type, set){
