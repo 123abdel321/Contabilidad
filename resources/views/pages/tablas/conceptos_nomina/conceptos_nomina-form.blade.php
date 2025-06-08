@@ -12,7 +12,7 @@
                     <div class="row">
                         <input type="text" class="form-control" name="id_conceptos_nomina_up" id="id_conceptos_nomina_up" style="display: none;">
 
-                        <h6 style="">1. General</h6>
+                        <h6 class="section-title bg-light p-2 mb-3">1. Información General</h6>
 
                         <div class="form-group col-12 col-sm-6 col-md-6">
                             <label for="tipo_concepto_nomina">Tipo concepto <span style="color: red">*</span></label>
@@ -62,7 +62,7 @@
                             <input type="text" class="form-control form-control-sm" name="nombre_concepto_nomina" id="nombre_concepto_nomina" placeholder="Nombre concepto" onkeypress="focusNexInput(event, 'dias_salario')" required>
                         </div>
 
-                        <h6 style="">2. Cuentas contables <i
+                        <h6 class="section-title bg-light p-2 mb-3" style="">2. Cuentas contables <i
                             class="fas fa-info icon-info" 
                             style=""
                             title="<b class='titulo-popover'>Cuenta Contable:</b> Asocie cada concepto a la cuenta correspondiente según el área:<br>
@@ -98,7 +98,7 @@
                             </select>
                         </div>
 
-                        <h6 style="">3. Comportamiento</h6>
+                        <h6 class="section-title bg-light p-2 mb-3">3. Comportamiento</h6>
 
                         <div class="form-group col-12 col-sm-6 col-md-6">
                             <label for="porcentaje_concepto_nomina" class="form-control-label">Porcentaje <span style="color: red">*</span></label>
@@ -166,7 +166,7 @@
                             </select>
                         </div>
 
-                        <h6 style="">4. Bases</h6>
+                        <h6 class="section-title bg-light p-2 mb-3">4. Bases</h6>
 
                         <div class="col-12 row" style="margin-top: 5px; padding-left: 25px;">
                             <div class="form-check form-switch col-6">
@@ -176,9 +176,9 @@
                                     class="fas fa-info icon-info"
                                     style="float: inline-end;"
                                     title="<b class='titulo-popover'>Base Retención en la Fuente (Art. 383 ET):</b><br>
-                                            <b class='mensaje-blanco'>Incluir:</b> Salario básico, horas extras, bonificaciones habituales<br>
-                                            <b class='mensaje-blanco'>Excluir:</b> Auxilio de transporte, prestaciones sociales, viáticos<br>
-                                            <b class='mensaje-blanco'>Normativa:</b> Artículo 383 del Estatuto Tributario (Modificado por Ley 2155 de 2021)"
+                                        <b class='mensaje-blanco'>Incluir:</b> Salario básico, horas extras, bonificaciones habituales<br>
+                                        <b class='mensaje-blanco'>Excluir:</b> Auxilio de transporte, prestaciones sociales, viáticos<br>
+                                        <b class='mensaje-blanco'>Normativa:</b> Artículo 383 del Estatuto Tributario (Modificado por Ley 2155 de 2021)"
                                     data-toggle="popover"
                                     data-html="true"
                                 ></i>

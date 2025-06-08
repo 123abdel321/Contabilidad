@@ -23,6 +23,7 @@ use App\Http\Controllers\Tablas\ResolucionesController;
 use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
 use App\Http\Controllers\Tablas\Nomina\PeriodosController;
+use App\Http\Controllers\Tablas\Nomina\ContratosController;
 use App\Http\Controllers\Tablas\Nomina\AdministradorasController;
 use App\Http\Controllers\Tablas\Nomina\ConceptosNominaController;
 //INFORMES
@@ -326,6 +327,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('administradoras', 'create');
             Route::put('administradoras', 'update');
             Route::delete('administradoras', 'delete');
+            Route::get('administradoras-combo', 'combo');
             Route::post('administradoras-sincronizar', 'sincronizar');
         });
         //PERIODOS -> NOMINA
@@ -334,14 +336,24 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('periodos', 'create');
             Route::put('periodos', 'update');
             Route::delete('periodos', 'delete');
+            Route::get('periodos-combo', 'combo');
         });
         //CONCEPTOS -> NOMINA
         Route::controller(ConceptosNominaController::class)->group(function () {
             Route::get('conceptos-nomina', 'generate');
             Route::post('conceptos-nomina', 'create');
             Route::put('conceptos-nomina', 'update');
+            Route::get('conceptos-combo', 'combo');
             Route::delete('conceptos-nomina', 'delete');
         });
+        //CONTRATOS -> NOMINA
+        Route::controller(ContratosController::class)->group(function () {
+            Route::get('contratos', 'generate');
+            Route::post('contratos', 'create');
+            Route::put('contratos', 'update');
+            Route::delete('contratos', 'delete');
+        });
+        
         //CAPTURA GENERAL
         Route::controller(DocumentoGeneralController::class)->group(function () {
             Route::get('consecutivo', 'getConsecutivo');

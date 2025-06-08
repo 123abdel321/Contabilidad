@@ -174,10 +174,14 @@ function enterPeriodo(e) {
 }
 
 function guardarPeriodo() {
-    var form = document.querySelector('#periodosForm');
+    const form = document.querySelector('#periodosForm');
 
     if(!form.checkValidity()){
         form.classList.add('was-validated');
+        const firstInvalidInput = form.querySelector(':invalid');
+        if (firstInvalidInput) {
+            firstInvalidInput.focus();
+        }
         return;
     }
 
@@ -221,10 +225,14 @@ function guardarPeriodo() {
 }
 
 function actualizarPeriodo() {
-    var form = document.querySelector('#periodosForm');
+    const form = document.querySelector('#periodosForm');
 
     if(!form.checkValidity()){
         form.classList.add('was-validated');
+        const firstInvalidInput = form.querySelector(':invalid');
+        if (firstInvalidInput) {
+            firstInvalidInput.focus();
+        }
         return;
     }
 

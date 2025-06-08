@@ -97,6 +97,7 @@ var moduloCreado = {
     'administradoras': false,
     'periodos': false,
     'conceptosnomina': false,
+    'contratos': false,
 };
 
 var moduloRoute = {
@@ -151,6 +152,7 @@ var moduloRoute = {
     'administradoras': 'tablas',
     'periodos': 'tablas',
     'conceptosnomina': 'tablas',
+    'contratos': 'tablas',
 }
 
 function iniciarCanalesDeNotificacion () {

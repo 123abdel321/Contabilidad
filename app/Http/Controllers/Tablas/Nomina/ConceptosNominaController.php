@@ -345,4 +345,25 @@ class ConceptosNominaController extends Controller
             ], 422);
         }
     }
+
+    public function combo(Request $request)
+    {
+        $nomConceptos = NomConceptos::select(
+            \DB::raw('*'),
+            \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
+        );
+
+        if ($request->get("tipo_concepto")) {
+            $nomConceptos->where('tipo_concepto', $request->get("tipo_concepto"));
+        }
+
+        if ($request->get("q")) {
+            $nomConceptos->where(function($query) use ($request) {
+                $query->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+            });
+        }
+
+        return $nomConceptos->paginate(40);
+    }
 }

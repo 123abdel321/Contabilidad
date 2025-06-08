@@ -254,65 +254,18 @@ class PeriodosController extends Controller
         }
     }
 
-    public function sincronizar (Request $request)
+    public function combo(Request $request)
     {
-        try {
-            DB::connection('sam')->beginTransaction();
+        $nomPeriodos = NomPeriodos::select(
+            \DB::raw('*'),
+            \DB::raw("nombre as text")
+        );
 
-            $urlFile = Storage::disk('do_spaces')->url('import/nom_periodos.csv');
-            $csvFile = fopen($urlFile, "r");
-
-            $count = 0;
-            $dataPeriodos = [];
-
-            while (($data = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
-                $dataDocumento = explode("-", $data[2]);
-                $numero_documento = count($dataDocumento) > 1 ? $dataDocumento[0] : $data[2];
-
-                $nit = Nits::where('numero_documento', $numero_documento)->first();
-
-                if (!$nit) {
-                    $nit = Nits::create([
-                        'numero_documento' => count($dataDocumento) > 1 ? $dataDocumento[0] : $data[2],
-                        'digito_verificacion' => count($dataDocumento) > 1 ? $dataDocumento[1] : NULL,
-                        'razon_social' => $data[3],
-                        'id_tipo_documento' => 6,
-                        'id_ciudad' => 1,
-                        'id_departamento' => 1,
-                        'id_pais' => 53,
-                        'tipo_contribuyente' => 1,
-                        'direccion' => 1,
-                        'email_recepcion_factura_electronica' => 1,
-                        'tipo_cuenta_banco' => 1,
-                        'no_calcular_iva' => 1
-                    ]);
-                }
-                $dataNew = $this->dataPeriodos($data, $nit->id);
-
-                if (isset($dataNew)) {
-                    $count++;
-                    NomPeriodos::create($dataNew);
-                }
-            }
-            
-            DB::connection('sam')->commit();
-
-            return response()->json([
-                'success'=>	true,
-                'data' => "",
-                'count' => $count,
-                'message'=> 'Periodo sincronizada con exito!'
-            ]);
-
-
-        } catch (Exception $e) {
-            DB::connection('sam')->rollback();
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$e->getMessage()
-            ], 422);
+        if ($request->get("q")) {
+            $nomPeriodos->where('nombre', 'LIKE', '%' . $request->get("q") . '%');
         }
+
+        return $nomPeriodos->paginate(40);
     }
 
     private function dataPeriodos($data, $id_nit)
@@ -328,6 +281,5 @@ class PeriodosController extends Controller
         }
         return null;
 	}
-
 
 }

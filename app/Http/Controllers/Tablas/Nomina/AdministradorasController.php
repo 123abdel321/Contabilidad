@@ -283,6 +283,27 @@ class AdministradorasController extends Controller
         }
     }
 
+    public function combo(Request $request)
+    {
+        $nomAdministradoras = NomAdministradoras::select(
+            \DB::raw('*'),
+            \DB::raw("CONCAT(codigo, ' - ', descripcion) as text")
+        );
+
+        if ($request->has("tipo")) {
+            $nomAdministradoras->where('tipo', $request->get("tipo"));
+        }
+
+        if ($request->get("search")) {
+            $nomAdministradoras->where(function($query) use ($request) {
+                $query->where('codigo', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('descripcion', 'LIKE', '%' . $request->get("search") . '%');
+            });
+        }
+
+        return $nomAdministradoras->paginate(40);
+    }
+
     private function dataAdministradoras($data, $id_nit)
 	{
         $nomAdministradorasExist = NomAdministradoras::where('codigo', $data[1])->first();

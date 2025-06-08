@@ -436,10 +436,14 @@ function enterPeriodo(e) {
 }
 
 function guardarConceptosNomina() {
-    var form = document.querySelector('#conceptosNominaForm');
+    const form = document.querySelector('#conceptosNominaForm');
 
     if(!form.checkValidity()){
         form.classList.add('was-validated');
+        const firstInvalidInput = form.querySelector(':invalid');
+        if (firstInvalidInput) {
+            firstInvalidInput.focus();
+        }
         return;
     }
 
@@ -504,10 +508,14 @@ function getDataConceptosNomina() {
 }
 
 function actualizarConceptosNomina() {
-    var form = document.querySelector('#conceptosNominaForm');
+    const form = document.querySelector('#conceptosNominaForm');
 
     if(!form.checkValidity()){
         form.classList.add('was-validated');
+        const firstInvalidInput = form.querySelector(':invalid');
+        if (firstInvalidInput) {
+            firstInvalidInput.focus();
+        }
         return;
     }
 
