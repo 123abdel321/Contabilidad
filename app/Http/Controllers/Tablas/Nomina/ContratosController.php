@@ -107,7 +107,7 @@ class ContratosController extends Controller
 			"tipo_cotizante" => "nullable|in:1,12,19",
 			"subtipo_cotizante" => "nullable|in:1,3,9",
 			"auxilio_transporte" => "nullable|in:0,1",
-			"metodo_retencion_compensacion" => "nullable|in:0,1",
+			"metodo_retencion_compensacion" => "required|in:0,1",
 			"nivel_riesgo_arl_compensacion" => "nullable|in:0,1,2,3,4,5",
 			"id_centro_costo" => "required|exists:sam.centro_costos,id",
 		];

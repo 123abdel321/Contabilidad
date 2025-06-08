@@ -716,7 +716,7 @@ function clearFormContratos() {
     $("#id_fondo_caja_compensacion_contrato_nomina").val('').trigger('change');
     $("#id_fondo_arl_compensacion_contrato_nomina").val('').trigger('change');
     $("#nivel_riesgo_arl_compensacion_contrato_nomina").val('1').trigger('change');
-    $("#metodo_retencion_compensacion_contrato_nomina").val('').trigger('change');
+    $("#metodo_retencion_compensacion_contrato_nomina").val('0').trigger('change');
     $("#porcentaje_fijo_contrato_nomina").val(0);
     $("#disminucion_defecto_retencion_contrato_nomina").val(0);
     $("#auxilio_transporte_contrato_nomina").val("1").trigger('change');

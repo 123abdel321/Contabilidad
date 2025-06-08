@@ -417,7 +417,7 @@
                                 <b class='mensaje-blanco'>Mensual:</b> cálculo periodo a periodo (Art. 383 ET)<br>
                                 <b class='mensaje-blanco'>Anual:</b> cálculo sobre ingreso anual proyectado"
                             data-toggle="popover" data-html="true"></i>
-                            <select name="metodo_retencion_compensacion_contrato_nomina" id="metodo_retencion_compensacion_contrato_nomina" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
+                            <select name="metodo_retencion_compensacion_contrato_nomina" id="metodo_retencion_compensacion_contrato_nomina" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                                 <option value="">Ninguno</option>
                                 <option value="0">Método 1 (Mensual)</option>
                                 <option value="1">Método 2 (Anual)</option>
