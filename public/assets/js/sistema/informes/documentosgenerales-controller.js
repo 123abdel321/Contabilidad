@@ -4,10 +4,38 @@ var agrupadoPorDocumento = false;
 
 function documentosgeneralesInit() {
 
-    fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    const start = moment().startOf("month");
+    const end = moment().endOf("month");
+    
+    $("#fecha_manual_documentos_generales").daterangepicker({
+        startDate: start,
+        endDate: end,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " - ",
+            applyLabel: "Aplicar",
+            cancelLabel: "Cancelar",
+            fromLabel: "Desde",
+            toLabel: "Hasta",
+            customRangeLabel: "Personalizado",
+            daysOfWeek: moment.weekdaysMin(),
+            monthNames: moment.months(),
+            firstDay: 1
+        },
+        ranges: {
+            "Hoy": [moment(), moment()],
+            "Ayer": [moment().subtract(1, "days"), moment().subtract(1, "days")],
+            "Últimos 7 días": [moment().subtract(6, "days"), moment()],
+            "Últimos 30 días": [moment().subtract(29, "days"), moment()],
+            "Este mes": [moment().startOf("month"), moment().endOf("month")],
+            "Mes anterior": [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")]
+        }
+    }, formatoFecha);
 
-    $('#fecha_desde_documentos_generales').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-    $('#fecha_hasta_documentos_generales').val(fechaDesde);
+    formatoFecha(start, end, "fecha_manual_documentos_generales");
 
     documentos_generales_table = $('#documentosGeneralesInformeTable').DataTable({
         pageLength: 100,
@@ -421,9 +449,13 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
     var id_cuenta= $('#id_cuenta_documentos_generales').val();
     var id_usuario= $('#id_usuario_documentos_generales').val();
 
+    const picker = $('#fecha_manual_documentos_generales').data('daterangepicker');
+    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
+    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
+
     var url = base_url + 'documentos-generales';
-    url+= '?fecha_desde='+$('#fecha_desde_documentos_generales').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_documentos_generales').val();
+    url+= '?fecha_desde='+fecha_desde;
+    url+= '&fecha_hasta='+fecha_hasta;
     url+= '&precio_desde='+$('#precio_desde_documentos_generales').val();
     url+= '&precio_hasta='+$('#precio_hasta_documentos_generales').val();
     url+= '&id_nit='+ id_nit;

@@ -13,19 +13,10 @@
                 <form id="documentosGeneralesFilterForm" class="needs-validation" style="margin-top: 10px;" novalidate>
                     <div class="row">
                         <input name="id_documento_general_cargado" id="id_documento_general_cargado" class="form-control form-control-sm" type="text" style="display: none;">
-                        <div class="form-group col-6 col-sm-3 col-md-2">
-                            <label for="example-text-input" class="form-control-label">Fecha desde<span style="color: red">*</span></label>
-                            <input name="fecha_desde_documentos_generales" id="fecha_desde_documentos_generales" class="form-control form-control-sm" type="date" require>
-                        </div>
 
                         <div class="form-group col-6 col-sm-3 col-md-2">
-                            <label for="example-text-input" class="form-control-label">Fecha hasta<span style="color: red">*</span></label>
-                            <input name="fecha_hasta_documentos_generales" id="fecha_hasta_documentos_generales" class="form-control form-control-sm" type="date" require>
-                        </div>
-
-                        <div class="form-group col-6 col-sm-3 col-md-2">
-                            <label for="example-text-input" class="form-control-label">Valor desde</label>
-                            <input name="precio_desde_documentos_generales" id="precio_desde_documentos_generales" class="form-control form-control-sm" type="number">
+                            <label for="example-text-input" class="form-control-label">Fecha<span style="color: red">*</span></label>
+                            <input name="fecha_manual_documentos_generales" id="fecha_manual_documentos_generales" class="form-control form-control-sm" require>
                         </div>
 
                         <div class="form-group col-6 col-sm-3 col-md-2">
@@ -41,6 +32,11 @@
                         <div class="form-group col-6 col-sm-3 col-md-2">
                             <label for="example-text-input" class="form-control-label">Consecutivo</label>
                             <input name="consecutivo_documentos_generales" id="consecutivo_documentos_generales" class="form-control form-control-sm" type="text">
+                        </div>
+
+                        <div class="form-group col-6 col-sm-3 col-md-4">
+                            <label for="example-text-input" class="form-control-label">Concepto</label>
+                            <input name="concepto_documentos_generales" id="concepto_documentos_generales" class="form-control form-control-sm" type="text">
                         </div>
 
                         <div class="form-group col-6 col-sm-4 col-md-3">
@@ -73,11 +69,6 @@
                             </select>
                         </div> -->
 
-                        <div class="form-group col-6 col-sm-3 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Concepto</label>
-                            <input name="concepto_documentos_generales" id="concepto_documentos_generales" class="form-control form-control-sm" type="text">
-                        </div>
-                        
                         <div class="form-group form-group col-12 col-sm-3 col-md-3">
                             <label for="exampleFormControlSelect1">Agrupar por:</label>
                             <select class="form-control form-control-sm" id="agrupar_documentos_generales" name="agrupar_documentos_generales[]" multiple="multiple">

@@ -1028,6 +1028,10 @@ function focusNexInput(e, inputId, type = null) {
     }
 }
 
+function formatoFecha(start, end, input) {
+    $("#"+input).html(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"));
+}
+
 $(document).on('shown.bs.popover', function() {
     $('.popover b.titulo-popover').css({
         'color': '#72ffff',
