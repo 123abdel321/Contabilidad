@@ -14,12 +14,8 @@
                     <div class="row">
                         <input name="id_auxiliar_cargado" id="id_auxiliar_cargado" class="form-control form-control-sm" type="text" style="display: none;">
                         <div class="form-group col-12 col-sm-3 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Fecha desde</label>
-                            <input name="fecha_desde_auxiliar" id="fecha_desde_auxiliar" class="form-control form-control-sm" type="date" require>
-                        </div>
-                        <div class="form-group col-12 col-sm-3 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Fecha hasta</label>
-                            <input name="fecha_hasta_auxiliar" id="fecha_hasta_auxiliar" class="form-control form-control-sm" type="date" require>
+                            <label for="example-text-input" class="form-control-label">Fecha</label>
+                            <input name="fecha_manual_auxiliar" id="fecha_manual_auxiliar" class="form-control form-control-sm" require>
                         </div>
                         <div class="form-group col-12 col-sm-3 col-md-3">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Cuenta</label>
