@@ -415,6 +415,8 @@ function reloadTableRecibos() {
             $('#total_abono_recibo').val(factura.total_abono);
             agregarRecibos(factura.pagos);
             loadAnticiposRecibo(factura.fecha_manual, anticiposEditados);
+        } else {
+            loadAnticiposRecibo();
         }
 
         mostrarValoresRecibos();
