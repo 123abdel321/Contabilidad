@@ -92,9 +92,9 @@ class ExtractoController extends Controller
         } else {
 
             $editando = $request->has('editando') ? $request->get('editando') : false;
-
             $fechaHora = Carbon::parse($request->get('fecha_manual'));
-            $fechaManual = $fechaHora->toDateString();
+            $fechaManual = $fechaHora->toDateTimeString();
+
             $horaManual = null;
 
             $request->get('fecha_manual', null);

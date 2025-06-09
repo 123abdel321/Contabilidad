@@ -481,7 +481,7 @@ class DocumentoGeneralController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], Response::HTTP_OK);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
 			if(!$request->get('editing_documento')) {

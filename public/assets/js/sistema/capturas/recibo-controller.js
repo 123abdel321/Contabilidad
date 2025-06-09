@@ -159,6 +159,7 @@ function reciboInit () {
             data: function ( d ) {
                 d.id_nit = $('#id_nit_recibo').val();
                 d.id_tipo_cuenta = [8];
+                d.fecha_manual = $('#fecha_manual_recibo').val().replace('T', ' ') + ':00';
             }
         },
         columns: [
