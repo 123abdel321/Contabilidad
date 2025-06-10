@@ -1,10 +1,23 @@
 
+
+var $comboComprobanteNomina = null;
+var $comboComprobanteParafiscales = null;
+var $comboComprobanteSeguridadSocial = null;
+var $comboComprobantePrestacionesSociales = null;
+
 function entornoInit() {
 
+    cargarPopoverGeneral();
+    cargarVariablesDeEntorno();
+    cargarSelect2VariablesDeEntorno();
+
+}
+
+function cargarVariablesDeEntorno() {
     for (let index = 0; index < variablesEntorno.length; index++) {
         const variable = variablesEntorno[index];
 
-        var checksEntorno = [
+        const checksEntorno = [
             'iva_incluido',
             'capturar_documento_descuadrado',
             'vendedores_ventas',
@@ -13,10 +26,30 @@ function entornoInit() {
             'no_exonerado_parafiscales',
         ];
 
+        const select2Comprobantes = [
+            'id_comprobante_nomina',
+            'id_comprobante_parafiscales',
+            'id_comprobante_seguridad_social',
+            'id_comprobante_prestaciones_sociales',
+        ];
+
         checksEntorno.forEach(entorno => {
             if (variable.nombre == entorno) {
                 if (variable.valor == '1') $('#'+entorno).prop('checked', true);
                 else $('#'+entorno).prop('checked', false);
+            }
+        });
+
+        select2Comprobantes.forEach(entorno => {
+            if (variable.nombre == entorno) {
+                if (variable.comprobante) {
+                    const dataComprobante = {
+                        id: variable.comprobante.id,
+                        text: variable.comprobante.codigo + ' - ' + variable.comprobante.nombre
+                    };
+                    const newOption = new Option(dataComprobante.text, dataComprobante.id, false, false);
+                    $('#'+entorno).append(newOption).val(dataComprobante.id).trigger('change');
+                }
             }
         });
 
@@ -85,9 +118,117 @@ function entornoInit() {
             continue;
         }
     }
-
-    cargarPopoverGeneral();
 }
+
+function cargarSelect2VariablesDeEntorno() {
+    $comboComprobanteNomina = $('#id_comprobante_nomina').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione un comprobante para nomina",
+        allowClear: true,
+        ajax: {
+            url: 'api/comprobantes/combo-comprobante',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_comprobante: 4,
+                    _type: 'query'
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboComprobanteParafiscales= $('#id_comprobante_parafiscales').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione un comprobante para nomina",
+        allowClear: true,
+        ajax: {
+            url: 'api/comprobantes/combo-comprobante',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_comprobante: 4,
+                    _type: 'query'
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboComprobanteSeguridadSocial= $('#id_comprobante_seguridad_social').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione un comprobante para nomina",
+        allowClear: true,
+        ajax: {
+            url: 'api/comprobantes/combo-comprobante',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_comprobante: 4,
+                    _type: 'query'
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboComprobantePrestacionesSociales= $('#id_comprobante_prestaciones_sociales').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione un comprobante para nomina",
+        allowClear: true,
+        ajax: {
+            url: 'api/comprobantes/combo-comprobante',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_comprobante: 4,
+                    _type: 'query'
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+}
+
+var quill = new Quill('#editor-container', {
+    theme: 'snow',
+    placeholder: 'Escribe algo aquí...',
+    modules: {
+        toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], ['link']]
+    }
+});
 
 $(document).on('click', '#updateEntorno', function () {
     $("#updateEntornoLoading").show();
@@ -112,6 +253,10 @@ $(document).on('click', '#updateEntorno', function () {
         cuenta_contable_pago_nomina: $("#cuenta_contable_pago_nomina").val(),
         cuenta_bancaria_nomina: $("#cuenta_bancaria_nomina").val(),
         tipo_cuenta_banco: $("#tipo_cuenta_banco").val(),
+        id_comprobante_nomina: $("#id_comprobante_nomina").val(),
+        id_comprobante_parafiscales: $("#id_comprobante_parafiscales").val(),
+        id_comprobante_seguridad_social: $("#id_comprobante_seguridad_social").val(),
+        id_comprobante_prestaciones_sociales: $("#id_comprobante_prestaciones_sociales").val(),
     };
 
     $.ajax({
@@ -144,14 +289,6 @@ $(document).on('click', '#updateEntorno', function () {
         }
         agregarToast('error', 'Actualización errada', errorsMsg);
     });
-});
-
-var quill = new Quill('#editor-container', {
-    theme: 'snow',
-    placeholder: 'Escribe algo aquí...',
-    modules: {
-        toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], ['link']]
-    }
 });
 
 $("input[data-type='currency']").on({

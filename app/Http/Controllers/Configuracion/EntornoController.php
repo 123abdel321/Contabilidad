@@ -32,7 +32,7 @@ class EntornoController extends Controller
     public function index(Request $request)
     {
         $data = [
-            'variables_entorno' => VariablesEntorno::get()
+            'variables_entorno' => VariablesEntorno::with('comprobante')->get()
         ];
         
         return view('pages.configuracion.entorno.entorno-view', $data);
@@ -66,7 +66,11 @@ class EntornoController extends Controller
                 'no_exonerado_parafiscales',
                 'cuenta_contable_pago_nomina',
                 'cuenta_bancaria_nomina',
-                'tipo_cuenta_banco'
+                'tipo_cuenta_banco',
+                'id_comprobante_nomina',
+                'id_comprobante_parafiscales',
+                'id_comprobante_seguridad_social',
+                'id_comprobante_prestaciones_sociales',
             ];
             
             foreach ($variablesEntorno as $variable) {

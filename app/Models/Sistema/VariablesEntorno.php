@@ -19,4 +19,9 @@ class VariablesEntorno extends Model
         'created_by',
         'updated_by'
     ];
+
+    public function comprobante()
+	{
+		return $this->belongsTo(Comprobantes::class, 'valor');
+	}
 }

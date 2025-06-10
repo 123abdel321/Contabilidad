@@ -160,6 +160,30 @@
                                 </select>
                             </div>
 
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="id_comprobante_nomina" class="form-control-label">Comprobante nomina </label>
+                                <select name="id_comprobante_nomina" id="id_comprobante_nomina" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="id_comprobante_parafiscales" class="form-control-label">Comprobante parafiscales </label>
+                                <select name="id_comprobante_parafiscales" id="id_comprobante_parafiscales" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="id_comprobante_seguridad_social" class="form-control-label">Comprobante seguridad social </label>
+                                <select name="id_comprobante_seguridad_social" id="id_comprobante_seguridad_social" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="id_comprobante_prestaciones_sociales" class="form-control-label">Comprobante prestaciones sociales </label>
+                                <select name="id_comprobante_prestaciones_sociales" id="id_comprobante_prestaciones_sociales" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
+                                </select>
+                            </div>
+
                             <div class="form-check form-switch col-12 col-sm-6 col-md-4">
                                 <input class="form-check-input" type="checkbox" name="no_exonerado_parafiscales" id="no_exonerado_parafiscales" style="height: 20px;">
                                 &nbsp;&nbsp;
