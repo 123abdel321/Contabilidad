@@ -16,6 +16,9 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="facturacion-tab" data-bs-toggle="tab" data-bs-target="#facturacion" type="button" role="tab" aria-controls="facturacion" aria-selected="false">Facturación</button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="nomina-tab" data-bs-toggle="tab" data-bs-target="#nomina" type="button" role="tab" aria-controls="nomina" aria-selected="false">Nomina</button>
+                    </li>
                     <!-- 
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contact</button>
@@ -103,7 +106,53 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+                    <div class="tab-pane fade" id="nomina" role="tabpanel" aria-labelledby="nomina-tab">
+                        <div class="row" style="margin-top: 10px; padding-left: 10px;">
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="salario_minimo" class="form-control-label">Valor Salario minimo </label>
+                                <input type="text" data-type="currency" class="form-control form-control-sm" name="salario_minimo" id="salario_minimo" style="text-align: right;">
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="subsidio_transporte" class="form-control-label">Valor Subsidio transporte </label>
+                                <input type="text" data-type="currency" class="form-control form-control-sm" name="subsidio_transporte" id="subsidio_transporte" style="text-align: right;">
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="cuenta_x_pagar_empleados" class="form-control-label">Cuenta por pagar empleados </label>
+                                <input type="text" class="form-control form-control-sm" name="cuenta_x_pagar_empleados" id="cuenta_x_pagar_empleados">
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="cuenta_contable_pago_nomina" class="form-control-label">Cuenta contable pago </label>
+                                <input type="text" class="form-control form-control-sm" name="cuenta_contable_pago_nomina" id="cuenta_contable_pago_nomina">
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="cuenta_bancaria_nomina" class="form-control-label">Numero cuenta bancaria </label>
+                                <input type="text" class="form-control form-control-sm" name="cuenta_bancaria_nomina" id="cuenta_bancaria_nomina">
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="tipo_cuenta_banco" class="form-control-label">Tipo cuenta banco </label>
+                                <select name="tipo_cuenta_banco" id="tipo_cuenta_banco" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
+                                    <option value="ahorros">Ahorros</option>
+                                    <option value="corrientes">Corrientes</option>
+                                </select>
+                            </div>
+
+                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
+                                <input class="form-check-input" type="checkbox" name="no_exonerado_parafiscales" id="no_exonerado_parafiscales" style="height: 20px;">
+                                <label class="form-check-label" for="no_exonerado_parafiscales">
+                                    No exonerado parafiscales
+                                </label>
+                            </div>
+
+                            <br/><br/><br/>
+
+                        </div> 
+                    </div>
                 </div>
                 <div style="background-color: white;">
                     <button type="button" class="btn btn-primary btn-sm" id="updateEntorno">Actualizar datos</button>

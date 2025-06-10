@@ -10,6 +10,7 @@ function entornoInit() {
             'vendedores_ventas',
             'ubicacion_maximoph',
             'fecha_ultimo_cierre',
+            'no_exonerado_parafiscales',
         ];
 
         checksEntorno.forEach(entorno => {
@@ -53,6 +54,36 @@ function entornoInit() {
             quill.root.innerHTML = variable.valor;
             continue;
         }
+
+        if (variable.nombre == 'salario_minimo') {
+            $('#salario_minimo').val(new Intl.NumberFormat('ja-JP').format(variable.valor));
+            continue;
+        }
+
+        if (variable.nombre == 'subsidio_transporte') {
+            $('#subsidio_transporte').val(new Intl.NumberFormat('ja-JP').format(variable.valor));
+            continue;
+        }
+
+        if (variable.nombre == 'cuenta_x_pagar_empleados') {
+            $('#cuenta_x_pagar_empleados').val(variable.valor);
+            continue;
+        }
+
+        if (variable.nombre == 'cuenta_contable_pago_nomina') {
+            $('#cuenta_contable_pago_nomina').val(variable.valor);
+            continue;
+        }
+
+        if (variable.nombre == 'cuenta_bancaria_nomina') {
+            $('#cuenta_bancaria_nomina').val(variable.valor);
+            continue;
+        }
+
+        if (variable.nombre == 'tipo_cuenta_banco') {
+            $('#tipo_cuenta_banco').val(variable.valor).trigger('change');
+            continue;
+        }
     }
 }
 
@@ -72,6 +103,13 @@ $(document).on('click', '#updateEntorno', function () {
         capturar_documento_descuadrado: $("input[type='checkbox']#capturar_documento_descuadrado").is(':checked') ? '1' : '0',
         vendedores_ventas: $("input[type='checkbox']#vendedores_ventas").is(':checked') ? '1' : '',
         ubicacion_maximoph: $("input[type='checkbox']#ubicacion_maximoph").is(':checked') ? '1' : '',
+        salario_minimo: stringToNumberFloat($("#salario_minimo").val()),
+        subsidio_transporte: stringToNumberFloat($("#subsidio_transporte").val()),
+        cuenta_x_pagar_empleados: $("#cuenta_x_pagar_empleados").val(),
+        no_exonerado_parafiscales: $("input[type='checkbox']#no_exonerado_parafiscales").is(':checked') ? '1' : '',
+        cuenta_contable_pago_nomina: $("#cuenta_contable_pago_nomina").val(),
+        cuenta_bancaria_nomina: $("#cuenta_bancaria_nomina").val(),
+        tipo_cuenta_banco: $("#tipo_cuenta_banco").val(),
     };
 
     $.ajax({
@@ -111,5 +149,16 @@ var quill = new Quill('#editor-container', {
     placeholder: 'Escribe algo aquí...',
     modules: {
         toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], ['link']]
+    }
+});
+
+$("input[data-type='currency']").on({
+    keyup: function(event) {
+        if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+            formatCurrency($(this));
+        }
+    },
+    blur: function() {
+        formatCurrency($(this), "blur");
     }
 });

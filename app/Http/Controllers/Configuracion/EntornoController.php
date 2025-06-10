@@ -59,7 +59,14 @@ class EntornoController extends Controller
                 'cuenta_utilidad',
                 'cuenta_perdida',
                 'observacion_venta',
-                'fecha_ultimo_cierre'
+                'fecha_ultimo_cierre',
+                'salario_minimo',
+                'subsidio_transporte',
+                'cuenta_x_pagar_empleados',
+                'no_exonerado_parafiscales',
+                'cuenta_contable_pago_nomina',
+                'cuenta_bancaria_nomina',
+                'tipo_cuenta_banco'
             ];
             
             foreach ($variablesEntorno as $variable) {
