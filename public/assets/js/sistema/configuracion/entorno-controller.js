@@ -85,6 +85,8 @@ function entornoInit() {
             continue;
         }
     }
+
+    cargarPopoverGeneral();
 }
 
 $(document).on('click', '#updateEntorno', function () {
