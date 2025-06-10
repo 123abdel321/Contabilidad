@@ -116,6 +116,7 @@ class ConfiguracionProvisiones extends Controller
             $nomConfiguracionProvisiones->id_cuenta_ventas = $request->get('id_cuenta_ventas');
             $nomConfiguracionProvisiones->id_cuenta_otros = $request->get('id_cuenta_otros');
             $nomConfiguracionProvisiones->id_cuenta_por_pagar = $request->get('id_cuenta_por_pagar');
+            $nomConfiguracionProvisiones->updated_by = request()->user()->id;
 
             $nomConfiguracionProvisiones->save();
 

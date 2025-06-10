@@ -24,6 +24,7 @@ class NomConfiguracionProvisiones extends Model
         'id_cuenta_ventas',
         'id_cuenta_otros',
         'id_cuenta_por_pagar',
+        'updated_by',
     ];
 
     public function cuenta_administrativos()
