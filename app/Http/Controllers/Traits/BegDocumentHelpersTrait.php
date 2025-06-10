@@ -123,7 +123,7 @@ trait BegDocumentHelpersTrait
 		}
 
 		$fechaCierre = DateTimeImmutable::createFromFormat('Y-m-d', $fechaCierre);
-        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
+        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $fecha_manual);
 
 		if ($fechaManual < $fechaCierre) {
 			return true;
