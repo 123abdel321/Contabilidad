@@ -13,17 +13,17 @@
                 <form id="auxiliarInformeForm" style="margin-top: 10px;">
                     <div class="row">
                         <input name="id_auxiliar_cargado" id="id_auxiliar_cargado" class="form-control form-control-sm" type="text" style="display: none;">
-                        <div class="form-group col-12 col-sm-3 col-md-3">
+                        <div class="form-group col-12 col-sm-4 col-md-4">
                             <label for="example-text-input" class="form-control-label">Fecha</label>
                             <input name="fecha_manual_auxiliar" id="fecha_manual_auxiliar" class="form-control form-control-sm" require>
                         </div>
-                        <div class="form-group col-12 col-sm-3 col-md-3">
+                        <div class="form-group col-12 col-sm-4 col-md-4">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Cuenta</label>
                             <select name="id_cuenta_auxiliar" id="id_cuenta_auxiliar" class="form-control form-control-sm">
                                 <option value="">Ninguna</option>
                             </select>
                         </div>
-                        <div class="form-group col-12 col-sm-3 col-md-3">
+                        <div class="form-group col-12 col-sm-4 col-md-4">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Nit</label>
                             <select class="form-control form-control-sm" name="id_nit_auxiliar" id="id_nit_auxiliar">
                                 <option value="">Ninguno</option>

@@ -533,7 +533,7 @@ class Documento
 
 		if ($this->captura) {
 			foreach ($this->rows as $row) {
-				$row->created_at = $this->created_at;
+				$row->created_at = $row->created_at ? $row->created_at : $this->created_at;
 				unset($row->naturaleza);
 				$row->relation()->associate($this->captura);
 
@@ -547,7 +547,7 @@ class Documento
 			}
 		} else if (!$this->captura) {
 			foreach ($this->rows as $row) {
-				$row->created_at = $this->created_at;
+				$row->created_at = $row->created_at ? $row->created_at : $this->created_at;
 
 				unset($row->naturaleza);
 

@@ -433,6 +433,7 @@ class DocumentoGeneralController extends Controller
 					'updated_by' => request()->user()->id,
 				]);
 			}
+			
 			$primerIdNit = null;
 			$documentoGeneral = new Documento($facDocumento->id_comprobante, $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
 
@@ -466,9 +467,10 @@ class DocumentoGeneralController extends Controller
 					if(!$primerIdNit) $primerIdNit = $doc['id_nit'];
 				}
 
-				$doc['created_by'] = request()->user()->id;
+				$doc['created_by'] = $facDocumento->created_by;
+				$doc['created_at'] = $facDocumento->created_at;
 				$doc['updated_by'] = request()->user()->id;
-				
+
 				$doc['consecutivo'] = $request->get('consecutivo');
 				$doc = new DocumentosGeneral($doc);
 				$documentoGeneral->addRow($doc, $naturaleza);
