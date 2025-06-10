@@ -98,6 +98,7 @@ var moduloCreado = {
     'periodos': false,
     'conceptosnomina': false,
     'contratos': false,
+    'configuracionprovisiones': false,
 };
 
 var moduloRoute = {
@@ -153,6 +154,7 @@ var moduloRoute = {
     'periodos': 'tablas',
     'conceptosnomina': 'tablas',
     'contratos': 'tablas',
+    'configuracionprovisiones': 'tablas',
 }
 
 function iniciarCanalesDeNotificacion () {
@@ -969,6 +971,16 @@ function arreglarMensajeError(mensaje) {
         errorsMsg = mensaje;
     }
     return errorsMsg;
+}
+
+function cargarPopoverGeneral() {
+    $('[data-toggle="popover"]').popover({
+        trigger: 'hover',
+        html: true,
+        placement: 'top',
+        container: 'body',
+        customClass: 'popover-formas-pagos'
+    });
 }
 
 function redondear(valor, redondeo_valor = null) {

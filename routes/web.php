@@ -40,8 +40,10 @@ use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
 use App\Http\Controllers\Tablas\Nomina\PeriodosController;
 use App\Http\Controllers\Tablas\Nomina\ContratosController;
+use App\Http\Controllers\Tablas\Nomina\ConfiguracionProvisiones;
 use App\Http\Controllers\Tablas\Nomina\ConceptosNominaController;
 use App\Http\Controllers\Tablas\Nomina\AdministradorasController;
+
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\PagosController;
@@ -199,6 +201,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/productos', [ProductosController::class, 'index'])->name('productos');
 		//ADMINISTRADORAS
 		Route::get('/administradoras', [AdministradorasController::class, 'index'])->name('administradoras');
+		//ADMINISTRADORAS
+		Route::get('/configuracionprovisiones', [ConfiguracionProvisiones::class, 'index'])->name('configuracionprovisiones');
 		//PERIODOS
 		Route::get('/periodos', [PeriodosController::class, 'index'])->name('periodos');
 		//CONCEPTOS NOMINA

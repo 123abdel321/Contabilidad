@@ -564,4 +564,4 @@ $(document).on('click', '#saveConceptosNomina', function () {
 
 $(document).on('click', '#updateConceptosNomina', function () {
     actualizarConceptosNomina();
-});0
+});

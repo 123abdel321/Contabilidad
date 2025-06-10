@@ -24,6 +24,7 @@ use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
 use App\Http\Controllers\Tablas\Nomina\PeriodosController;
 use App\Http\Controllers\Tablas\Nomina\ContratosController;
+use App\Http\Controllers\Tablas\Nomina\ConfiguracionProvisiones;
 use App\Http\Controllers\Tablas\Nomina\AdministradorasController;
 use App\Http\Controllers\Tablas\Nomina\ConceptosNominaController;
 //INFORMES
@@ -352,6 +353,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('contratos', 'create');
             Route::put('contratos', 'update');
             Route::delete('contratos', 'delete');
+        });
+        //CONFIGURACION -> NOMINA
+        Route::controller(ConfiguracionProvisiones::class)->group(function () {
+            Route::get('configuracion-provisiones', 'generate');
+            Route::put('configuracion-provisiones', 'update');
         });
         
         //CAPTURA GENERAL
