@@ -173,8 +173,8 @@ function cargarTablasAuxiliar() {
             url: base_url + 'auxiliares',
             headers: headers,
             data: function ( d ) {
-                d.fecha_desde = $('#fecha_desde_auxiliar').val();
-                d.fecha_hasta = $('#fecha_hasta_auxiliar').val();
+                d.fecha_desde = $('#fecha_manual_auxiliar').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
+                d.fecha_hasta = $('#fecha_manual_auxiliar').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
                 d.id_cuenta = $('#id_cuenta_auxiliar').val();
                 d.id_nit = $('#id_nit_auxiliar').val();
                 d.generar = generarAuxiliar;
@@ -437,7 +437,7 @@ function cambiarColorTotales(color) {
 
 function GenerateAuxiliar() {
 
-    const picker = $('#fecha_manual_documentos_generales').data('daterangepicker');
+    const picker = $('#fecha_manual_auxiliar').data('daterangepicker');
     const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
     const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
 
