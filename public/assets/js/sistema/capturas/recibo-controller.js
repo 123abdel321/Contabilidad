@@ -411,8 +411,8 @@ function reloadTableRecibos() {
             var newOption = new Option(dataFormato.text, dataFormato.id, false, false);
             $comboNitRecibos.append(newOption).trigger('change');
             $comboNitRecibos.val(dataFormato.id).trigger('change');
-
-            $('#fecha_manual_recibo').val(factura.fecha_manual);
+            
+            $('#fecha_manual_recibo').val(normalizarFecha(res.fecha_manual));
             $('#total_abono_recibo').val(factura.total_abono);
             agregarRecibos(factura.pagos);
             loadAnticiposRecibo(factura.fecha_manual, anticiposEditados);

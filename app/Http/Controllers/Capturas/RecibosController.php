@@ -84,7 +84,7 @@ class RecibosController extends Controller
         
         try {
             $comprobanteRecibo = Comprobantes::where('id', $request->get('id_comprobante'))->first();
-            
+
             if ($idComprobante && $consecutivo && $editarRecibos) {
 
                 $reciboEdit = ConRecibos::with('detalles.cuenta.tipos_cuenta', 'pagos', 'nit')
@@ -100,7 +100,7 @@ class RecibosController extends Controller
                 if ($reciboEdit) {
                     $reciboEdit = $reciboEdit->toArray();
                     $idNit = $reciboEdit['id_nit'];
-                    $fechaManual = $reciboEdit['fecha_manual'];
+                    $fechaManual = isset($reciboEdit['detalles']) ? $reciboEdit['detalles'][0]['fecha_manual'] : $reciboEdit['fecha_manual'];
                 }
             }
 
@@ -229,6 +229,7 @@ class RecibosController extends Controller
                 'data' => $dataRecibos,
                 'edit' => $reciboEdit,
                 'anticipos' => $anticipos,
+                'fecha_manual' => $fechaManual,
                 'message'=> 'Recibo generado con exito!'
             ], Response::HTTP_OK);
 

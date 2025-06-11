@@ -99,6 +99,7 @@ var moduloCreado = {
     'conceptosnomina': false,
     'contratos': false,
     'configuracionprovisiones': false,
+    'novedadesgenerales': false,
 };
 
 var moduloRoute = {
@@ -155,6 +156,7 @@ var moduloRoute = {
     'conceptosnomina': 'tablas',
     'contratos': 'tablas',
     'configuracionprovisiones': 'tablas',
+    'novedadesgenerales': 'capturas',
 }
 
 function iniciarCanalesDeNotificacion () {
@@ -1052,6 +1054,15 @@ function focusNexInput(e, inputId, type = null) {
 
 function formatoFecha(start, end, input) {
     $("#"+input).html(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"));
+}
+
+function normalizarFecha(fecha) {
+    // Si la fecha no tiene parte de hora, agregamos 'T00:00'
+    if (fecha && fecha.length === 10) {
+        return fecha + 'T00:00';
+    }
+    // Si ya tiene hora, la dejamos tal cual
+    return fecha;
 }
 
 $(document).on('shown.bs.popover', function() {
