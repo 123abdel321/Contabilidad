@@ -268,5 +268,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 	Route::get('/sign-in-static', [PageController::class, 'signin'])->name('sign-in-static');
 	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static'); 
 	Route::get('/{page}', [PageController::class, 'index'])->name('page');
-	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+	Route::post('logout-api', [LoginController::class, 'logoutApi'])->name('logout-api');
 });

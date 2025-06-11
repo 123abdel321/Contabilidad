@@ -224,8 +224,19 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        return view('auth.login');
+    }
+
+    public function logoutApi(Request $request)
+    {
+        $user =  User::find(Auth::user()->id);
+        $user->tokens()->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return response()->json([
-    		'success'=>	false,
+    		'success'=>	true,
     		'data' => '',
     		'message'=> 'logout true'
     	], 200);
