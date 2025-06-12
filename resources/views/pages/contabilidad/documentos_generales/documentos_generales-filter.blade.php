@@ -15,50 +15,50 @@
                         <input name="id_documento_general_cargado" id="id_documento_general_cargado" class="form-control form-control-sm" type="text" style="display: none;">
 
                         <div class="form-group col-6 col-sm-3 col-md-2">
-                            <label for="example-text-input" class="form-control-label">Fecha<span style="color: red">*</span></label>
+                            <label for="fecha_manual_documentos_generales" class="form-control-label">Fecha<span style="color: red">*</span></label>
                             <input name="fecha_manual_documentos_generales" id="fecha_manual_documentos_generales" class="form-control form-control-sm" require>
                         </div>
 
                         <div class="form-group col-6 col-sm-3 col-md-2">
-                            <label for="example-text-input" class="form-control-label">Valor hasta</label>
+                            <label for="precio_hasta_documentos_generales" class="form-control-label">Valor hasta</label>
                             <input name="precio_hasta_documentos_generales" id="precio_hasta_documentos_generales" class="form-control form-control-sm" type="number">
                         </div>
 
                         <div class="form-group col-6 col-sm-3 col-md-2">
-                            <label for="example-text-input" class="form-control-label">No. factura</label>
+                            <label for="factura_documentos_generales" class="form-control-label">No. factura</label>
                             <input name="factura_documentos_generales" id="factura_documentos_generales" class="form-control form-control-sm" type="text">
                         </div>
 
                         <div class="form-group col-6 col-sm-3 col-md-2">
-                            <label for="example-text-input" class="form-control-label">Consecutivo</label>
+                            <label for="consecutivo_documentos_generales" class="form-control-label">Consecutivo</label>
                             <input name="consecutivo_documentos_generales" id="consecutivo_documentos_generales" class="form-control form-control-sm" type="text">
                         </div>
 
                         <div class="form-group col-6 col-sm-3 col-md-4">
-                            <label for="example-text-input" class="form-control-label">Concepto</label>
+                            <label for="concepto_documentos_generales" class="form-control-label">Concepto</label>
                             <input name="concepto_documentos_generales" id="concepto_documentos_generales" class="form-control form-control-sm" type="text">
                         </div>
 
                         <div class="form-group col-6 col-sm-4 col-md-3">
-                            <label>Cedula/Nit</label>
+                            <label for="id_nit_documentos_generales">Cedula/Nit</label>
                             <select name="id_nit_documentos_generales" id="id_nit_documentos_generales" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
                         </div>
 
                         <div class="form-group col-6 col-sm-4 col-md-3">
-                            <label>Comprobante</label>
+                            <label for="id_comprobante_documentos_generales">Comprobante</label>
                             <select name="id_comprobante_documentos_generales" id="id_comprobante_documentos_generales" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
                         </div>
 
                         <div class="form-group col-6 col-sm-4 col-md-3">
-                            <label>Centro costos</label>
+                            <label for="id_cecos_documentos_generales">Centro costos</label>
                             <select name="id_cecos_documentos_generales" id="id_cecos_documentos_generales" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
                         </div>
 
                         <div class="form-group col-6 col-sm-4 col-md-3">
-                            <label>Cuenta</label>
+                            <label for="id_cuenta_documentos_generales">Cuenta</label>
                             <select name="id_cuenta_documentos_generales" id="id_cuenta_documentos_generales" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
                         </div>
@@ -70,7 +70,7 @@
                         </div> -->
 
                         <div class="form-group form-group col-12 col-sm-3 col-md-3">
-                            <label for="exampleFormControlSelect1">Agrupar por:</label>
+                            <label for="agrupar_documentos_generales">Agrupar por:</label>
                             <select class="form-control form-control-sm" id="agrupar_documentos_generales" name="agrupar_documentos_generales[]" multiple="multiple">
                                 <option value="id_cuenta">Cuenta</option>
                                 <option value="id_nit">Cedula/Nits</option>

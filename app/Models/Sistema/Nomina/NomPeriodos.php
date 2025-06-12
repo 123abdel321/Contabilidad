@@ -9,6 +9,9 @@ class NomPeriodos extends Model
 {
     use HasFactory;
 
+    const TIPO_DIA_PAGO_ORDINAL = 0;
+	const TIPO_DIA_PAGO_CALENDARIO = 1;
+
     protected $connection = 'sam';
 
     protected $table = "nom_periodos";
@@ -23,5 +26,10 @@ class NomPeriodos extends Model
         'created_by',
         'updated_by'
     ];
+
+    public function contratos()
+	{
+		return $this->hasMany(NomContratos::class, 'id_periodo', 'id');
+	}
     
 }

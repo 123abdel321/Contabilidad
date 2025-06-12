@@ -45,6 +45,9 @@ use App\Http\Controllers\Capturas\ParqueaderoController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
+
+use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
+use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
 //IMPORTADORES
 use App\Http\Controllers\Importador\NitsImportadorController;
 use App\Http\Controllers\Importador\ProductoImportadorController;
@@ -230,6 +233,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('nit/combo-nit', 'comboNit');
             Route::get('nit/combo-tipo-documento', 'comboTipoDocumento');
             Route::get('nit/informacion', 'getNitInfo');
+            Route::get('nit/empleado-activo', 'comboEmpleado');
         });
         //FAMILIAS
         Route::controller(FamiliasController::class)->group(function () {
@@ -444,6 +448,18 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('ubicaciones', 'update');
             Route::delete('ubicaciones', 'delete');
             Route::get('ubicaciones-combo-general', 'comboUbicacion');
+        });
+
+        //CAPTURA NOVEDADES GENERALES
+        Route::controller(NovedadesGeneralesController::class)->group(function () {
+            Route::get('novedades-generales', 'generate');
+            Route::put('novedades-generales', 'update');
+            Route::post('novedades-generales', 'create');
+            Route::delete('novedades-generales', 'delete');
+        });
+        //CAUSAR NOMINA GENERALES
+        Route::controller(CausarNominaController::class)->group(function () {
+            Route::get('periodos-pagos-combo', 'comboPeriodoPago');
         });
         
         

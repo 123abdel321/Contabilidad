@@ -4,6 +4,8 @@ namespace App\Models\Sistema;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+//MODELS
+use App\Models\Sistema\Nomina\NomContratos;
 
 class Nits extends Model
 {
@@ -99,5 +101,10 @@ class Nits extends Model
 
 		return "$this->primer_nombre $this->otros_nombres $this->primer_apellido $this->segundo_apellido";
 	}
+
+	public function contrato()
+    {
+        return $this->belongsTo(NomContratos::class, "id", "id_empleado");
+    }
 
 }

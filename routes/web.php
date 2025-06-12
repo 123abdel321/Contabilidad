@@ -57,6 +57,8 @@ use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\DocumentoEliminarController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
+use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
+
 //CONFIGURACION
 use App\Http\Controllers\InstaladorController;
 use App\Http\Controllers\Configuracion\EntornoController;
@@ -145,6 +147,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/eliminardocumentos', [DocumentoEliminarController::class, 'index'])->name('eliminar-documentos');
 		//MOVIMIENTO INVENTARIO
 		Route::get('/movimientoinventario', [MovimientoInventarioController::class, 'index']);
+		//NOVEDADES GENERALES -> NOMINA
+		Route::get('/novedadesgenerales', [NovedadesGeneralesController::class, 'index']);
+		
 		//COMPRAS
 		Route::get('/compra', [CompraController::class, 'index'])->name('compra');
 		Route::get('/compras', [CompraController::class, 'indexInforme'])->name('compras');
