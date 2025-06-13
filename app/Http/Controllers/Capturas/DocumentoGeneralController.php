@@ -409,11 +409,13 @@ class DocumentoGeneralController extends Controller
 
 				$facDocumento = $facDocumento->first();
 				$facDocumento = $facDocumento->relation;
+				$fechaManual = $facDocumento->fecha_manual;
 				
-				DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
+				$documetnos = DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
 					->where('fecha_manual', $fechaManual)
 					->delete();
+
 			} else {
 				DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
