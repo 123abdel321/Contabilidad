@@ -260,10 +260,18 @@ function mostrarTotalesExtracto(data) {
     if (!data) {
         return;
     }
-    $("#saldo_anterior_extracto").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_anterior));
-    $("#debito_extracto").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.debito));
-    $("#credito_extracto").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.credito));
-    $("#saldo_final_extracto").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_final));
+
+    var countA = new CountUp('saldo_anterior_extracto', 0, data.saldo_anterior, 2, 0.5);
+        countA.start();
+
+    var countB = new CountUp('debito_extracto', 0, data.debito, 2, 0.5);
+        countB.start();
+
+    var countC = new CountUp('credito_extracto', 0, data.credito, 2, 0.5);
+        countC.start();
+
+    var countD = new CountUp('saldo_final_extracto', 0, data.saldo_final, 2, 0.5);
+        countD.start();
 }
 
 extractoInformeChanel.bind('notificaciones', function(data) {
