@@ -52,9 +52,16 @@ function balanceInit() {
                 moment().subtract(1, "month").endOf("month").endOf("day")
             ]
         }
-    }, formatoFecha);
+    }, function(start, end) {
+        formatoFecha(start, end, "fecha_manual_balance");
+    });
 
     formatoFecha(start, end, "fecha_manual_balance");
+
+    $("#fecha_manual_balance").on('change blur', function() {
+        console.log('adasdsss');
+        parseManualInput($(this).val(), "fecha_manual_balance");
+    });
 
     balance_table = $('#balanceInformeTable').DataTable({
         pageLength: 100,
@@ -234,8 +241,9 @@ function generarConsultaBalance() {
     if (tipoInformeBalance == '2') balance_table.column(1).visible(true);
 
     var url = base_url + 'balances';
-    url+= '?fecha_desde='+$('#fecha_desde_balance').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_balance').val();
+    url+= '?fecha_desde='+$('#fecha_manual_balance').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
+    url+= '&fecha_hasta='+$('#fecha_manual_balance').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
+    
     url+= '&cuenta_desde='+$('#cuenta_desde_balance').val();
     url+= '&cuenta_hasta='+$('#cuenta_hasta_balance').val();
     url+= '&tipo='+$('#tipo_informe_balance').val();

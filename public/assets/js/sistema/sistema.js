@@ -1055,7 +1055,42 @@ function focusNexInput(e, inputId, type = null) {
 }
 
 function formatoFecha(start, end, input) {
-    $("#"+input).html(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"));
+    // Verificar si las horas no han sido modificadas manualmente (00:00:00 y 23:59:59)
+    var isStartTimeDefault = start.hours() === 0 && start.minutes() === 0 && start.seconds() === 0;
+    var isEndTimeDefault = end.hours() === 23 && end.minutes() === 59 && end.seconds() === 59;
+    
+    // Si es una selección nueva (no edición manual de horas), ajustamos las horas
+    if (isStartTimeDefault && isEndTimeDefault) {
+        start.startOf('day');    // 00:00:00
+        end.endOf('day');        // 23:59:59
+    }
+    
+    // Formatear y mostrar las fechas
+    $("#"+input).html(start.format("MMMM D, YYYY HH:mm:ss") + " - " + end.format("MMMM D, YYYY HH:mm:ss"));
+    
+    // Aquí puedes agregar cualquier otra lógica que necesites con las fechas
+    // Por ejemplo, actualizar campos ocultos o hacer una llamada AJAX
+}
+
+function parseManualInput(value, input) {
+    var parts = value.split(' - ');
+    if (parts.length === 2) {
+        var start = moment(parts[0], "YYYY-MM-DD HH:mm:ss");
+        var end = moment(parts[1], "YYYY-MM-DD HH:mm:ss");
+        
+        if (start.isValid() && end.isValid()) {
+            // Si no se especificó hora, establecer valores por defecto
+            if (parts[0].length <= 10) start.startOf('day');
+            if (parts[1].length <= 10) end.endOf('day');
+            
+            // Actualizar el datepicker
+            $("#"+input).data('daterangepicker').setStartDate(start);
+            $("#"+input).data('daterangepicker').setEndDate(end);
+            
+            // Llamar a formatoFecha con los nuevos valores
+            formatoFecha(start, end, input);
+        }
+    }
 }
 
 function normalizarFecha(fecha) {
