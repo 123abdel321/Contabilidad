@@ -1334,7 +1334,8 @@ function searchCaptura() {
                         }
                     }
                     
-                    $('#fecha_manual_documento').val(fechaManual);
+                    $('#fecha_manual_documento').val(normalizarFecha(fechaManual));
+
                     $("#editing_documento").val("1");
                     agregarToast('exito', 'Documentos encontrados', 'Documentos cargados con exito!', true );
                     mostrarValores();

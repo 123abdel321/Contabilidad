@@ -6,12 +6,18 @@ use DB;
 use Carbon\Carbon;
 use App\Helpers\Extracto;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessInformeExtracto;
 use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\Nits;
+use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
+use App\Models\Informes\InfExtracto;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
+use App\Models\Informes\InfExtractoDetalle;
 
 class ExtractoController extends Controller
 {
@@ -32,6 +38,131 @@ class ExtractoController extends Controller
 			'array' => 'El campo :attribute debe ser un arreglo.',
 			'formas_pago.required' => 'Seleccione las formas de pago.'
         ];
+    }
+
+    public function index ()
+    {
+        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first('valor')->valor ?? '0';
+
+        return view('pages.contabilidad.extracto.extracto-view', [
+            'ubicacion_maximoph' => $ubicacion_maximoph
+        ]);
+    }
+
+    public function generateInforme(Request $request)
+    {
+        try {
+
+            if (!$request->has('fecha_desde') || !$request->has('fecha_hasta')) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=>"Por favor ingresar un rango de fechas válido"
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+            $extracto = InfExtracto::where('id_empresa', $empresa->id)
+                ->where('fecha_hasta', $request->get('fecha_hasta'))
+                ->where('fecha_desde', $request->get('fecha_desde'))
+                ->where('id_nit', $request->get('id_nit', null))
+                ->where('errores', $request->get('errores', null))
+                ->first();
+
+            if ($extracto && $extracto->estado == 1) {
+
+                $created = Carbon::parse($extracto->created_at);
+                $now = Carbon::now();
+
+                $diffInSeconds = $created->diffInSeconds($now);
+                $diffFormatted = floor($diffInSeconds / 60) . 'm ' . ($diffInSeconds % 60) . 's';
+
+                return response()->json([
+                    'success'=>	true,
+                    'time' => $created->format('Y-m-d H:i') . " ({$diffFormatted})",
+                    'data' => '',
+                    'message'=> 'Generando informe de extracto'
+                ], Response::HTTP_OK);
+            }
+            
+            if($extracto) {
+                InfExtractoDetalle::where('id_extracto', $extracto->id)->delete();
+                $extracto->delete();
+            }
+
+            $extracto = InfExtracto::create([
+                'id_empresa' => $empresa->id,
+                'fecha_desde' => $request->get('fecha_desde'),
+                'fecha_hasta' => $request->get('fecha_hasta'),
+                'id_nit' => $request->get('id_nit', null),
+                'errores' => $request->get('errores', null),
+                'estado' => 0
+            ]);
+            
+            ProcessInformeExtracto::dispatch($request->all(), $request->user()->id, $empresa->id, $extracto->id);
+    
+            return response()->json([
+                'success'=>	true,
+                'time' => null,
+                'data' => '',
+                'message'=> 'Generando informe de extracto'
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public function show(Request $request)
+    {
+        try {
+            $draw = $request->get('draw');
+            $start = $request->get("start");
+            $rowperpage = $request->get("length");
+
+            $extracto = InfExtracto::where('id', $request->get('id'))->first();
+
+            if (!$extracto) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=> 'No se encontro el informe extracto'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $informe = InfExtractoDetalle::where('id_extracto', $extracto->id);
+            $total = InfExtractoDetalle::where('id_extracto', $extracto->id)->orderBy('id', 'DESC')->first();
+
+            $informeTotals = $informe->get();
+
+            $informePaginate = $informe->skip($start)
+                ->take($rowperpage);
+
+            return response()->json([
+                'success'=>	true,
+                'draw' => $draw,
+                'iTotalRecords' => $informeTotals->count(),
+                'iTotalDisplayRecords' => $informeTotals->count(),
+                'data' => $informePaginate->get(),
+                'perPage' => $rowperpage,
+                'totales' => $total,
+                'message'=> 'Extracto generado con exito!'
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     public function extracto(Request $request)

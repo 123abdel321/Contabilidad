@@ -408,6 +408,15 @@ class DocumentoGeneralController extends Controller
                 }
 
 				$facDocumento = $facDocumento->first();
+
+				if (!$facDocumento) {
+					return response()->json([
+						'success'=>	false,
+						'data' => [],
+						'message'=> 'El documento no existe'
+					], Response::HTTP_UNPROCESSABLE_ENTITY);
+				}
+
 				$facDocumento = $facDocumento->relation;
 				$fechaManual = $facDocumento->fecha_manual;
 				

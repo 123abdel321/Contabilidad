@@ -127,6 +127,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
         Route::get('extracto-anticipos', 'App\Http\Controllers\Informes\ExtractoController@extractoAnticipos');
         Route::get('existe-factura', 'App\Http\Controllers\Informes\ExtractoController@existeFactura');
+        Route::get('extractos-informe', 'App\Http\Controllers\Informes\ExtractoController@generateInforme');
+        Route::get('extractos-show', 'App\Http\Controllers\Informes\ExtractoController@show');
+
         //DOCUMENTOS CAPTURADOS
         Route::get('documento', 'App\Http\Controllers\Informes\DocumentoController@generate');
         Route::get('documento-print', 'App\Http\Controllers\Informes\DocumentoController@print');
@@ -460,6 +463,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //CAUSAR NOMINA GENERALES
         Route::controller(CausarNominaController::class)->group(function () {
             Route::get('periodos-pagos-combo', 'comboPeriodoPago');
+            Route::get('meses-combo', 'comboMeses');
         });
         
         

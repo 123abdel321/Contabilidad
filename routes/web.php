@@ -13,6 +13,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Informes\CarteraController;
 use App\Http\Controllers\Informes\BalanceController;
 use App\Http\Controllers\Informes\AuxiliarController;
+use App\Http\Controllers\Informes\ExtractoController;
 use App\Http\Controllers\Informes\ImpuestosController;
 use App\Http\Controllers\Informes\DocumentoController;
 use App\Http\Controllers\Informes\ResultadosController;
@@ -136,7 +137,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		//CUENTAS POR COBRAR
 		Route::get('/cartera', [CarteraController::class, 'index'])->name('cartera');
 		//IMPUESTOS
-		Route::get('/impuestos', [ImpuestosController::class, 'index'])->name('impuestos');		
+		Route::get('/impuestos', [ImpuestosController::class, 'index'])->name('impuestos');	
+		//EXTRACTOS
+		Route::get('/extracto', [ExtractoController::class, 'index'])->name('extractos');	
 		//CUENTAS POR COBRAR
 		Route::get('/resumencomprobante', [ResumenComprobantesController::class, 'index'])->name('resumencomprobante');
 		//CUENTAS POR COBRAR

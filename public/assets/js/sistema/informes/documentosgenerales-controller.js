@@ -464,13 +464,9 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
     var id_cuenta= $('#id_cuenta_documentos_generales').val();
     var id_usuario= $('#id_usuario_documentos_generales').val();
 
-    const picker = $('#fecha_manual_documentos_generales').data('daterangepicker');
-    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
-    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
-
     var url = base_url + 'documentos-generales';
-    url+= '?fecha_desde='+fecha_desde;
-    url+= '&fecha_hasta='+fecha_hasta;
+    url+= '?fecha_desde='+$('#fecha_manual_documentos_generales').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
+    url+= '&fecha_hasta='+$('#fecha_manual_documentos_generales').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
     url+= '&precio_desde='+$('#precio_desde_documentos_generales').val();
     url+= '&precio_hasta='+$('#precio_hasta_documentos_generales').val();
     url+= '&id_nit='+ id_nit;

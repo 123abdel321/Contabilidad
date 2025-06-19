@@ -94,7 +94,7 @@ function estadoactualInit() {
             { data: 'mes'},
             { data: 'year'},
             { data: 'comprobantes'},
-            { data: 'registros'},
+            { data: 'registros', className: 'dt-body-right'},
             { data: 'fecha_manual'},
             { data: 'numero_documento'},
             { data: 'nombre_nit'},
@@ -107,9 +107,9 @@ function estadoactualInit() {
                     return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(diferencia).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
                 }
                 return diferencia.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-            }},
+            }, className: 'dt-body-right'},
             { data: 'concepto'},
-            { data: 'errores'}
+            { data: 'errores', className: 'dt-body-right'}
         ]
     });
 

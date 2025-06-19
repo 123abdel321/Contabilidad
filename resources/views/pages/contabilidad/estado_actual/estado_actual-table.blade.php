@@ -6,7 +6,7 @@
             <th>Comprobantes</th>
             <th>Registros</th>
             <th>Fecha manual</th>
-            <th>Cedúla</th>
+            <th>Cédula</th>
             <th>Nombre</th>
             <th>Documento</th>
             <th>Débito</th>
