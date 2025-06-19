@@ -5,12 +5,56 @@ var balance_table = null;
 
 function balanceInit() {
 
-    fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
     generarBalance = false;
     balanceExistente = false;
 
-    $('#fecha_desde_balance').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-    $('#fecha_hasta_balance').val(fechaDesde);
+    const start = moment().startOf("month");
+    const end = moment().endOf("month");
+
+    $("#fecha_manual_balance").daterangepicker({
+        startDate: start,
+        endDate: end,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " - ",
+            applyLabel: "Aplicar",
+            cancelLabel: "Cancelar",
+            fromLabel: "Desde",
+            toLabel: "Hasta",
+            customRangeLabel: "Personalizado",
+            daysOfWeek: moment.weekdaysMin(),
+            monthNames: moment.months(),
+            firstDay: 1
+        },
+        ranges: {
+            "Hoy": [moment().startOf('day'), moment().endOf('day')],
+            "Ayer": [
+                moment().subtract(1, "days").startOf("day"),
+                moment().subtract(1, "days").endOf("day")
+            ],
+            "Últimos 7 días": [
+                moment().subtract(6, "days").startOf("day"),
+                moment().endOf("day")
+            ],
+            "Últimos 30 días": [
+                moment().subtract(29, "days").startOf("day"),
+                moment().endOf("day")
+            ],
+            "Este mes": [
+                moment().startOf("month").startOf("day"),
+                moment().endOf("month").endOf("day")
+            ],
+            "Mes anterior": [
+                moment().subtract(1, "month").startOf("month").startOf("day"),
+                moment().subtract(1, "month").endOf("month").endOf("day")
+            ]
+        }
+    }, formatoFecha);
+
+    formatoFecha(start, end, "fecha_manual_balance");
 
     balance_table = $('#balanceInformeTable').DataTable({
         pageLength: 100,
@@ -80,8 +124,8 @@ function balanceInit() {
             url: base_url + 'balances',
             headers: headers,
             data: function ( d ) {
-                d.fecha_desde = $('#fecha_desde_balance').val();
-                d.fecha_hasta = $('#fecha_hasta_balance').val();
+                d.fecha_desde = $('#fecha_manual_balance').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
+                d.fecha_hasta = $('#fecha_manual_balance').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
                 d.cuenta_desde = $('#cuenta_desde_balance').val();
                 d.cuenta_hasta = $('#cuenta_hasta_balance').val();
                 d.tipo = $('#tipo_informe_balance').val();

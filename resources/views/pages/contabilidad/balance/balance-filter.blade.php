@@ -14,7 +14,7 @@
                     <input name="id_balance_cargado" id="id_balance_cargado" class="form-control form-control-sm" type="text" style="display: none;">
                     <div class="row">
                         <div class="form-group form-group col-12 col-sm-4 col-md-3">
-                            <label for="exampleFormControlSelect1">Tipo informe</label>
+                            <label for="tipo_informe_balance">Tipo informe</label>
                             <select class="form-control form-control-sm tipo_cartera" id="tipo_informe_balance" name="tipo_informe_balance">
                                 <option value="1">De prueba</option>
                                 <option value="2">De terceros</option>
@@ -22,25 +22,21 @@
                             </select>
                         </div>
                         <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="exampleFormControlSelect1">Cuenta desde</label>
+                            <label for="cuenta_desde_balance">Cuenta desde</label>
                             <input name="cuenta_desde_balance" id="cuenta_desde_balance" onfocus="this.select()" class="form-control form-control-sm" type="text">
                         </div>
                         <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="exampleFormControlSelect1">Cuenta hasta</label>
+                            <label for="cuenta_hasta_balance">Cuenta hasta</label>
                             <input name="cuenta_hasta_balance" id="cuenta_hasta_balance" onfocus="this.select()" class="form-control form-control-sm" type="text">
                         </div>
                         <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="exampleFormControlSelect1">Cedula / Nit</label>
+                            <label for="id_nit_balance">Cedula / Nit</label>
                             <select name="id_nit_balance" id="id_nit_balance" class="form-control form-control-sm">
                             </select>
                         </div>
                         <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Fecha desde</label>
-                            <input name="fecha_desde_balance" id="fecha_desde_balance" class="form-control form-control-sm" type="date" require>
-                        </div>
-                        <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Fecha hasta</label>
-                            <input name="fecha_hasta_balance" id="fecha_hasta_balance" class="form-control form-control-sm" type="date" require>
+                            <label for="fecha_manual_balance" class="form-control-label">Fecha</label>
+                            <input name="fecha_manual_balance" id="fecha_manual_balance" class="form-control form-control-sm" require>
                         </div>
                         <div class="form-group col-12 col-sm-4 col-md-3 row" style="margin-bottom: 0.1rem !important;">
                             <label for="example-text-input" class="form-control-label">Niveles</label>
