@@ -14,32 +14,32 @@
                     <div class="row">
                         <input name="id_documento_general_cargado" id="id_documento_general_cargado" class="form-control form-control-sm" type="text" style="display: none;">
 
-                        <div class="form-group col-6 col-sm-3 col-md-2">
+                        <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="fecha_manual_documentos_generales" class="form-control-label">Fecha<span style="color: red">*</span></label>
                             <input name="fecha_manual_documentos_generales" id="fecha_manual_documentos_generales" class="form-control form-control-sm" require>
                         </div>
 
-                        <div class="form-group col-6 col-sm-3 col-md-2">
+                        <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="example-text-input" class="form-control-label">Valor desde</label>
                             <input name="precio_desde_documentos_generales" id="precio_desde_documentos_generales" class="form-control form-control-sm" type="number">
                         </div>
 
-                        <div class="form-group col-6 col-sm-3 col-md-2">
+                        <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="example-text-input" class="form-control-label">Valor hasta</label>
                             <input name="precio_hasta_documentos_generales" id="precio_hasta_documentos_generales" class="form-control form-control-sm" type="number">
                         </div>
 
-                        <div class="form-group col-6 col-sm-3 col-md-2">
+                        <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="factura_documentos_generales" class="form-control-label">No. factura</label>
                             <input name="factura_documentos_generales" id="factura_documentos_generales" class="form-control form-control-sm" type="text">
                         </div>
 
-                        <div class="form-group col-6 col-sm-3 col-md-2">
+                        <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="consecutivo_documentos_generales" class="form-control-label">Consecutivo</label>
                             <input name="consecutivo_documentos_generales" id="consecutivo_documentos_generales" class="form-control form-control-sm" type="text">
                         </div>
 
-                        <div class="form-group col-6 col-sm-3 col-md-4">
+                        <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="concepto_documentos_generales" class="form-control-label">Concepto</label>
                             <input name="concepto_documentos_generales" id="concepto_documentos_generales" class="form-control form-control-sm" type="text">
                         </div>
@@ -85,7 +85,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-6 col-sm-3 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                        <div class="form-group col-6 col-sm-3 col-md-3 row" style="margin-bottom: 0.1rem !important;">
                             <label for="example-text-input" class="form-control-label">Agrupado</label>
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                 <input class="form-check-input" type="radio" name="agrupado_documentos_generales" id="agrupado_documentos_generales0" style="font-size: 11px;" checked>
@@ -101,7 +101,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-6 col-sm-3 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                        <div class="form-group col-6 col-sm-3 col-md-3 row" style="margin-bottom: 0.1rem !important;">
                             <label for="example-text-input" class="form-control-label">Documento</label>
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                 <input class="form-check-input" type="radio" name="anulado_documentos_generales" id="anulado_documentos_generales0" style="font-size: 11px;" checked>

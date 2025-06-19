@@ -48,14 +48,19 @@ function documentosgeneralesInit() {
                 moment().subtract(1, "month").endOf("month").endOf("day")
             ]
         }
-    }, formatoFecha);
+    }, function(start, end) {
+        formatoFecha(start, end, "fecha_manual_documentos_generales");
+    });
 
     formatoFecha(start, end, "fecha_manual_documentos_generales");
+
+    $("#fecha_manual_documentos_generales").on('change blur', function() {
+        parseManualInput($(this).val(), "fecha_manual_documentos_generales");
+    });
 
     documentos_generales_table = $('#documentosGeneralesInformeTable').DataTable({
         pageLength: 100,
         dom: 'Brtip',
-        
         paging: true,
         colReorder: true,
         responsive: false,
