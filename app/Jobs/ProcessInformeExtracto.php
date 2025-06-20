@@ -60,9 +60,9 @@ class ProcessInformeExtracto
             
             $this->addMesesData();
             $this->addCuentasData();
-            $this->addNitsCuentasData();
+            // $this->addNitsCuentasData();
             $this->addNitsCuentasDetalleData();
-            $this->addTotalData();
+            // $this->addTotalData();
 
             ksort($this->extractoCollection, SORT_STRING | SORT_FLAG_CASE);
 
@@ -357,8 +357,10 @@ class ProcessInformeExtracto
                     foreach ($documentos as $documento) {
                         $query = $this->extractoDocumentosDetallesQuery($documento, $extractoMes);
                         $query->chunk(377, function ($detalles) use($extractoMes) {
+                            $totalDetalles = count($detalles);
                             foreach ($detalles as $detalle) {
                                 $cuentaNumero = 1;
+                                $totalDetalles--;
 
                                 $inicioMes = date('Y-m', strtotime($extractoMes->fecha_desde));
                                 $cuentaNueva = "{$inicioMes}-B{$detalle->cuenta}";
@@ -374,7 +376,14 @@ class ProcessInformeExtracto
                                     }
                                     $cuentaNueva.= "-A{$cuentaNumero}";
                                 }
-                                $this->extractoCollection[$cuentaNueva] = $this->getFormatDetailDocumentoCollection($detalle);
+
+                                $cuentaData = $this->getFormatDetailDocumentoCollection($detalle);
+
+                                if (!$totalDetalles) {
+                                    $cuentaData['nivel'] = 6;
+                                }
+
+                                $this->extractoCollection[$cuentaNueva] = $cuentaData;
                             }
                             unset($detalles);//Liberar memoria
                         });
@@ -776,10 +785,10 @@ class ProcessInformeExtracto
         if(strlen($cuenta) > 6){
             $dataCuentas =[
                 $cuenta,
-                mb_substr($cuenta, 0, 6),
-                mb_substr($cuenta, 0, 4),
-                mb_substr($cuenta, 0, 2),
-                mb_substr($cuenta, 0, 1),
+                // mb_substr($cuenta, 0, 6),
+                // mb_substr($cuenta, 0, 4),
+                // mb_substr($cuenta, 0, 2),
+                // mb_substr($cuenta, 0, 1),
             ];
         } else if (strlen($cuenta) > 4) {
             $dataCuentas =[

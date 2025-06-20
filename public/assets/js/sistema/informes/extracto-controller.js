@@ -1,4 +1,5 @@
 var extracto_informe_table = null;
+var initExtracto = true;
 var extractoInformeChanel = pusher.subscribe('informe-extracto-'+localStorage.getItem("notificacion_code"));
 
 function extractoInit() {
@@ -53,6 +54,7 @@ function extractoInit() {
     }, formatoFecha);
 
     formatoFecha(start, end, "fecha_manual_extracto");
+    initExtracto = false;
 }
 
 function initTablesExtractos() {
@@ -84,41 +86,30 @@ function initTablesExtractos() {
         columns: [
             { data:'cuenta'},
             { data:'nombre_cuenta'},
-            { data: function (row, type, set){
-                if(!row.numero_documento){
-                    return '';
-                }
-                var nombre = row.numero_documento + ' - ' +row.nombre_nit;
-                if(row.razon_social){
-                    nombre = row.numero_documento +' - '+ row.razon_social;
-                }
+            // { data: function (row, type, set){
+            //     if(!row.numero_documento){
+            //         return '';
+            //     }
+            //     var nombre = row.numero_documento + ' - ' +row.nombre_nit;
+            //     if(row.razon_social){
+            //         nombre = row.numero_documento +' - '+ row.razon_social;
+            //     }
                 
-                var html = '<div class="button-user" onclick="showNit('+row.id_nit+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
-                return html;
-            }},
-            { data: 'apartamento_nit'},
-            { data: function (row, type, set){
-                if(!row.codigo_cecos){
-                    return '';
-                }
-                return row.codigo_cecos + ' - ' +row.nombre_cecos;
-            }},
+            //     var html = '<div class="button-user" onclick="showNit('+row.id_nit+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
+            //     return html;
+            // }},
+            // { data: 'apartamento_nit'},
+            // { data: function (row, type, set){
+            //     if(!row.codigo_cecos){
+            //         return '';
+            //     }
+            //     return row.codigo_cecos + ' - ' +row.nombre_cecos;
+            // }},
             { data: 'documento_referencia'},
             { data: function (row, type, set){
                 var saldo_anterior = parseFloat(row.saldo_anterior);
                 if (row.cuenta == 'TOTALES') {
                     return saldo_anterior.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-                }
-                if(row.naturaleza_cuenta == 0 && saldo_anterior < 0) {
-                    var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
-                    if (cuenta != '11') {
-                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_anterior).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
-                    }
-                } else if(row.naturaleza_cuenta == 1 && saldo_anterior > 0) {
-                    var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
-                    if (cuenta != '11') {
-                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_anterior).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
-                    }
                 }
                 return saldo_anterior.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
             }, className: 'dt-body-right'},
@@ -128,17 +119,6 @@ function initTablesExtractos() {
                 var saldo_final = parseFloat(row.saldo_final);
                 if (row.cuenta == 'TOTALES') {
                     return saldo_final.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-                }
-                if(row.naturaleza_cuenta == 0 && saldo_final < 0) {
-                    var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
-                    if (cuenta != '11') {
-                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
-                    }
-                } else if(row.naturaleza_cuenta == 1 && saldo_final > 0) {
-                    var cuenta = row.cuenta.charAt(0)+row.cuenta.charAt(1);
-                    if (cuenta != '11') {
-                        return '<div class=""><i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;'+(saldo_final).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+'</div>';
-                    }
                 }
                 return saldo_final.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
             }, className: 'dt-body-right'},
@@ -166,7 +146,7 @@ function initTablesExtractos() {
         ],
         'rowCallback': function(row, data, index){
             if(data.nivel == 1){
-                $('td', row).css('background-color', 'rgb(0 80 188)');
+                $('td', row).css('background-color', '#000');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
@@ -197,14 +177,19 @@ function initTablesExtractos() {
                 return;
             }
             if(data.nivel == 3){//
-                $('td', row).css('background-color', 'rgb(57 126 219 / 10%)');
-                $('td', row).css('font-weight', '500');
+                $('td', row).css('background-color', 'rgb(196 221 255)');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if (data.nivel == 5) {
-                $('td', row).css('background-color', 'rgb(0 80 188)');
+                $('td', row).css('background-color', '#000');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
+                return;
+            }
+            if(data.nivel == 6){//
+                console.log('nivel 6');
+                $('td', row).css('borderBottom', '1px solid #bababa');
                 return;
             }
         }
@@ -295,6 +280,11 @@ extractoInformeChanel.bind('notificaciones', function(data) {
 });
 
 $(document).on('click', '#reloadExtracto', function () {
+
+    if (initExtracto) {
+        return;
+    }
+
     $("#reloadExtractosIconNormal").hide();
     $("#reloadExtractosIconLoading").show();
 
