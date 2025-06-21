@@ -62,7 +62,7 @@ class ProcessInformeExtracto
             $this->addCuentasData();
             // $this->addNitsCuentasData();
             $this->addNitsCuentasDetalleData();
-            // $this->addTotalData();
+            $this->addTotalData();
 
             ksort($this->extractoCollection, SORT_STRING | SORT_FLAG_CASE);
 
