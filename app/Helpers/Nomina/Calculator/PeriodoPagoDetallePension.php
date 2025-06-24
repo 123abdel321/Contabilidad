@@ -23,6 +23,7 @@ class PeriodoPagoDetallePension extends AbstractPeriodoPagoDetalle
 			'id_concepto' => $concepto->id,
 			'tipo_unidad' => $concepto->unidad,
 			'observacion' => $concepto->nombre,
+            'porcentaje' => $concepto->porcentaje,
 			'unidades' => null,
 			'valor' => $valor,
 			'base' => $this->base

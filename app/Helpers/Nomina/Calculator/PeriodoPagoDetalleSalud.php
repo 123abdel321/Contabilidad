@@ -18,12 +18,13 @@ class PeriodoPagoDetalleSalud extends AbstractPeriodoPagoDetalle
 
 		$concepto = $this->getSaludConcepto();
 		$valor = $this->calcularValorSalud($concepto);
-
+		
 		return new NomPeriodoPagoDetalles([
 			'id_concepto' => $concepto->id,
 			'tipo_unidad' => $concepto->unidad,
-			'unidades' => null,
 			'observacion' => $concepto->nombre,
+			'porcentaje' => $concepto->porcentaje,
+			'unidades' => null,
 			'valor' => $valor,
 			'base' => $this->base
 		]);
