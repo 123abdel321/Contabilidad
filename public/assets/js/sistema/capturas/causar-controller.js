@@ -97,25 +97,25 @@ function initTablesCausar() {
             {
                 "data": function (row, type, set){
                     if (row.sum_detalles) {
-                        return `<b style="">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.devengados)}</b>`;
+                        return `<b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.devengados)}</b>`;
                     }
-                    return `<b style="">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                    return `<b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
                 }, className: 'dt-body-right'
             },
             {
                 "data": function (row, type, set){
                     if (row.sum_detalles) {
-                        return `<b style="">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.deducciones)}</b>`;
+                        return `<b style="color: red;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.deducciones)}</b>`;
                     }
-                    return `<b style="">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                    return `<b style="color: red;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
                 }, className: 'dt-body-right'
             },
             {
                 "data": function (row, type, set){
                     if (row.sum_detalles) {
-                        return `<b style="">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.neto)}</b>`;
+                        return `<b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.neto)}</b>`;
                     }
-                    return `<b style="">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                    return `<b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
                 }, className: 'dt-body-right'
             },
             {
@@ -169,9 +169,9 @@ function initTablesCausar() {
                         const footerRow = $(`
                             <tr class="group-footer" style="background-color: white; font-weight: bold;">
                                 <td colspan="5" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
-                                <td class="text-end"><b style="">${new Intl.NumberFormat('ja-JP').format(groupTotals.devengado)}</b></td>
-                                <td class="text-end"><b style="">${new Intl.NumberFormat('ja-JP').format(groupTotals.deduccion)}</b></td>
-                                <td class="text-end"><b style="">${new Intl.NumberFormat('ja-JP').format(groupTotals.neto)}</b></td>
+                                <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.devengado)}</b></td>
+                                <td class="text-end"><b style="color: red;">${new Intl.NumberFormat('ja-JP').format(groupTotals.deduccion)}</b></td>
+                                <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.neto)}</b></td>
                                 <td></td>
                             </tr>
                         `);
@@ -206,9 +206,9 @@ function initTablesCausar() {
                 const footerRow = $(`
                     <tr class="group-footer" style="background-color: white; font-weight: bold;">
                         <td colspan="5" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
-                        <td class="text-end"><b style="">${new Intl.NumberFormat('ja-JP').format(groupTotals.devengado)}</b></td>
-                        <td class="text-end"><b style="">${new Intl.NumberFormat('ja-JP').format(groupTotals.deduccion)}</b></td>
-                        <td class="text-end"><b style="">${new Intl.NumberFormat('ja-JP').format(groupTotals.neto)}</b></td>
+                        <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.devengado)}</b></td>
+                        <td class="text-end"><b style="color: red;">${new Intl.NumberFormat('ja-JP').format(groupTotals.deduccion)}</b></td>
+                        <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.neto)}</b></td>
                         <td></td>
                     </tr>
                 `);
