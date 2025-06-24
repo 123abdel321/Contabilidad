@@ -58,6 +58,7 @@ use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\DocumentoEliminarController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
+use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
 use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
 
 //CONFIGURACION
@@ -152,6 +153,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/movimientoinventario', [MovimientoInventarioController::class, 'index']);
 		//NOVEDADES GENERALES -> NOMINA
 		Route::get('/novedadesgenerales', [NovedadesGeneralesController::class, 'index']);
+		//CAUSAR -> NOMINA
+		Route::get('/causar', [CausarNominaController::class, 'index']);
 		
 		//COMPRAS
 		Route::get('/compra', [CompraController::class, 'index'])->name('compra');

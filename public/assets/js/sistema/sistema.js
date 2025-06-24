@@ -101,6 +101,7 @@ var moduloCreado = {
     'configuracionprovisiones': false,
     'novedadesgenerales': false,
     'extracto': false,
+    'causar': false,
 };
 
 var moduloRoute = {
@@ -159,6 +160,8 @@ var moduloRoute = {
     'configuracionprovisiones': 'tablas',
     'novedadesgenerales': 'capturas',
     'extracto': 'informes',
+    'causar': 'capturas',
+
 }
 
 function iniciarCanalesDeNotificacion () {

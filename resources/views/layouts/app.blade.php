@@ -203,6 +203,8 @@
     <script src="assets/js/sistema/responsive.bootstrap5.min.js"></script>
     <script src="assets/js/sistema/dataTables.fixedHeader.min.js"></script>
     <script src="assets/js/sistema/dataTables.fixedColumns.min.js"></script>
+    <script src="assets/js/sistema/rowGroup.dataTables.js"></script>
+    <script src="assets/js/sistema/dataTables.rowGroup.js"></script>
     <!-- QUILL -->
     <script src="assets/js/sistema/quill.min.js"></script>
 

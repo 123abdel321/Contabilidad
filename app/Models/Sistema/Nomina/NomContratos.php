@@ -16,6 +16,28 @@ class NomContratos extends Model
 
     protected $table = "nom_contratos";
 
+    public const TIPOS_EMPLEADO = [
+		'administrativos',
+		'operativos',
+		'ventas',
+		'otros',
+	];
+
+    const ESTADO_INACTIVO = 0;
+	const ESTADO_ACTIVO = 1;
+	const ESTADO_FINALIZADO = 2;
+
+    const TIPO_SALARIO_NORMAL = 0;
+	const TIPO_SALARIO_HONORARIOS = 1;
+	const TIPO_SALARIO_INTEGRAL = 2;
+	const TIPO_SALARIO_SERVICIOS = 3;
+	const TIPO_SALARIO_PRACTICANTE = 4;
+
+    const TIPO_EMPLEADO_ADMINISTRATIVO = 0;
+	const TIPO_EMPLEADO_OPERATIVO = 1;
+	const TIPO_EMPLEADO_VENTAS = 2;
+	const TIPO_EMPLEADO_OTROS = 3;
+
     protected $fillable = [
         'id_empleado',
         'id_periodo',
@@ -59,6 +81,11 @@ class NomContratos extends Model
     public function periodo()
     {
         return $this->belongsTo(NomPeriodos::class, 'id_periodo');
+	}
+
+    public function periodo_pago()
+    {
+        return $this->belongsTo(NomPeriodoPagos::class, 'id', 'id_contrato');
 	}
 
     public function concepto_basico()

@@ -195,6 +195,7 @@ function cargarSelect2Novedades() {
     $comboNitNovedades = $('#id_empleado_novedades_generales').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        dropdownParent: $('#novedadesGeneralesFormModal'),
         language: {
             noResults: function() {
                 createNewNit = true;
@@ -223,6 +224,7 @@ function cargarSelect2Novedades() {
     $comboConceptoNovedades = $('#id_concepto_novedades_generales').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        dropdownParent: $('#novedadesGeneralesFormModal'),
         language: {
             noResults: function() {
                 createNewNit = true;
@@ -400,7 +402,7 @@ function mostrarDatosNovedadesGenerales(novedadGeneral) {
     const fechaHastaInput = $("#fecha_hasta_novedades_generales");
     const horaDesdeInput = $("#hora_desde_novedades_generales");
     const horaHastaInput = $("#hora_hasta_novedades_generales");
-
+    console.log('novedadGeneral: ',novedadGeneral);
     if (novedadGeneral.unidad == 0) {
         unidadesDiv.show();
         unidadesLabel.html("Horas <span style='color: red'>*</span>");
@@ -453,7 +455,7 @@ $(document).on('click', '#createNovedadGeneral', function () {
 $(document).on('change', '#id_concepto_novedades_generales', function () {
     const novedadGeneral = producto = $('#id_concepto_novedades_generales').select2('data')[0];
     if (!novedadGeneral) return;
-
+    
     mostrarDatosNovedadesGenerales(novedadGeneral);
 });
 

@@ -462,8 +462,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         });
         //CAUSAR NOMINA GENERALES
         Route::controller(CausarNominaController::class)->group(function () {
+            Route::get('causar-periodos-pago', 'generate');
+            Route::get('causar-meses-combo', 'comboMeses');
+            Route::get('detalle-periodo', 'detallePeriodo');
+            Route::post('calcular-nomina', 'calcularNomina');
             Route::get('periodos-pagos-combo', 'comboPeriodoPago');
-            Route::get('meses-combo', 'comboMeses');
         });
         
         
