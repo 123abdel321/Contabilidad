@@ -184,22 +184,32 @@ class CausarNominaController extends Controller
     public function detallePeriodo(Request $request)
     {
         $detallePeriodoPago = NomPeriodoPagoDetalles::select([
-			'*',
-			DB::raw('IF (valor >= 0, valor, 0) AS devengados'),
-			DB::raw('IF (valor < 0, valor, 0) AS deducciones'),
-		])
-        ->with([
-            'concepto:id,codigo,nombre',
-            'periodoPago:id,id_empleado,estado',
-            'periodoPago.empleado:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido,numero_documento,digito_verificacion',
-        ])
-        ->when($request->has('id_periodo_pago'), function ($q) use ($request) {
-            $q->where('id_periodo_pago', $request->get('id_periodo_pago'));
-        });
+                '*',
+                DB::raw('IF (valor >= 0, valor, 0) AS devengados'),
+                DB::raw('IF (valor < 0, valor, 0) AS deducciones'),
+            ])
+            ->with([
+                'concepto:id,codigo,nombre',
+                'periodoPago:id,id_empleado,estado',
+                'periodoPago.empleado:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido,numero_documento,digito_verificacion',
+            ])
+            ->when($request->has('id_periodo_pago'), function ($q) use ($request) {
+                $q->where('id_periodo_pago', $request->get('id_periodo_pago'));
+            })
+            ->get();
+
+        $sumDevengados = $detallePeriodoPago->sum('devengados');
+        $sumDeducciones = abs($detallePeriodoPago->sum('deducciones'));
+        $neto = $sumDevengados - $sumDeducciones;
 
         return response()->json([
             'success'=>	true,
-            'data' => $detallePeriodoPago->get(),
+            'data' => $detallePeriodoPago,
+            'totales' => (object)[
+                'devengados' => $sumDevengados,
+                'deducciones' => $sumDeducciones,
+                'neto' => $neto,
+            ],
             'message'=> 'Periodo pago generados con exito!'
         ]);
     }

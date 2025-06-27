@@ -3,7 +3,6 @@ var periodo_pago_detalle_table = null;
 var id_periodo_pago = null
 
 function causarInit() {
-
     initSelect2Causar();
     initTablesCausar();
 }
@@ -97,25 +96,25 @@ function initTablesCausar() {
             {
                 "data": function (row, type, set){
                     if (row.sum_detalles) {
-                        return `<b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.devengados)}</b>`;
+                        return `<b style="color: #08cc08; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.devengados)}</b>`;
                     }
-                    return `<b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                    return `<b style="color: #08cc08; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
                 }, className: 'dt-body-right'
             },
             {
                 "data": function (row, type, set){
                     if (row.sum_detalles) {
-                        return `<b style="color: red;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.deducciones)}</b>`;
+                        return `<b style="color: red; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.deducciones * -1)}</b>`;
                     }
-                    return `<b style="color: red;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                    return `<b style="color: red; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
                 }, className: 'dt-body-right'
             },
             {
                 "data": function (row, type, set){
                     if (row.sum_detalles) {
-                        return `<b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.neto)}</b>`;
+                        return `<b style="color: #08cc08; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.neto)}</b>`;
                     }
-                    return `<b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                    return `<b style="color: #08cc08; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
                 }, className: 'dt-body-right'
             },
             {
@@ -131,7 +130,7 @@ function initTablesCausar() {
                     html+= `
                         <span id="detallenomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-info detalle-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Ver detalle</span>
                         <span id="detallandonomina_${row.id}" class="badge bg-gradient-info" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
-                            <b style="opacity: 0.3; text-transform: capitalize;">Ver detalle</b>
+                            <b style="opacity: 0.3; text-transform: math-auto;">Ver detalle</b>
                             <i style="position: absolute; color: white; font-size: 15px; margin-left: -35px; margin-top: -2px;" class="fas fa-spinner fa-spin"></i>
                         </span>
                         &nbsp;`;
@@ -170,7 +169,7 @@ function initTablesCausar() {
                             <tr class="group-footer" style="background-color: white; font-weight: bold;">
                                 <td colspan="5" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                                 <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.devengado)}</b></td>
-                                <td class="text-end"><b style="color: red;">${new Intl.NumberFormat('ja-JP').format(groupTotals.deduccion)}</b></td>
+                                <td class="text-end"><b style="color: red;">${new Intl.NumberFormat('ja-JP').format(groupTotals.deduccion * -1)}</b></td>
                                 <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.neto)}</b></td>
                                 <td></td>
                             </tr>
@@ -207,7 +206,7 @@ function initTablesCausar() {
                     <tr class="group-footer" style="background-color: white; font-weight: bold;">
                         <td colspan="5" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                         <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.devengado)}</b></td>
-                        <td class="text-end"><b style="color: red;">${new Intl.NumberFormat('ja-JP').format(groupTotals.deduccion)}</b></td>
+                        <td class="text-end"><b style="color: red;">${new Intl.NumberFormat('ja-JP').format(groupTotals.deduccion * -1)}</b></td>
                         <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.neto)}</b></td>
                         <td></td>
                     </tr>
@@ -269,10 +268,10 @@ function initTablesCausar() {
                 return '';
             }},
             {"data": function (row, type, set){  
-                return `<b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(row.devengados)}</b>`;
+                return `<b style="color: #08cc08; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.devengados)}</b>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){  
-                return `<b style="color: red;">${new Intl.NumberFormat('ja-JP').format(row.deducciones)}</b>`;
+                return `<b style="color: red; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.deducciones * -1)}</b>`;
             }, className: 'dt-body-right'},
             {
                 "data": "unidades",
@@ -356,13 +355,42 @@ function initTablesCausar() {
                 $(`#detallenomina_${id}`).show();
                 $(`#detallandonomina_${id}`).hide();
 
-                $("#periodoPagoDetalleModal").modal('show');
-                setTimeout(function(){
-                    $('#periodoPagoDetalleTable').DataTable().columns.adjust();
-                },200);
+                if (res.success) {
+
+                    const dataPeriodo = res.data.length ? res.data[0].periodo_pago : null;
+                    if (dataPeriodo.empleado) {
+                        $("#textPeriodoPagoDetalle").html(`${dataPeriodo.empleado.numero_documento} - ${dataPeriodo.empleado.nombre_completo}`);
+                    }
+
+                    const totalesDetalle = res.totales;
+
+                    $("#devengado_detalle_total").html(new Intl.NumberFormat('ja-JP').format(totalesDetalle.devengados));
+                    $("#deduccion_detalle_total").html(new Intl.NumberFormat('ja-JP').format(totalesDetalle.deducciones));
+                    $("#neto_detalle_total").html(new Intl.NumberFormat('ja-JP').format(totalesDetalle.neto));
+
+                    $("#periodoPagoDetalleModal").modal('show');
+                    setTimeout(function(){
+                        $('#periodoPagoDetalleTable').DataTable().columns.adjust();
+                    },200);
+
+                } else {
+                    agregarToast('error', 'Consulta errada', 'Error al consultar detalle');
+                }
             });
         });
     }
+
+    // Obtener fecha actual
+    const fecha = new Date();
+    const anio = fecha.getFullYear();
+    const mes = fecha.getMonth(); // 0-11
+    const mesStr = (mes + 1).toString().padStart(2, '0'); // "06"
+    const valor = `${anio}-${mesStr}`;
+    const texto = `${anio} - ${meses[mes]}`;
+
+    // Crear la opción y asignarla al select2
+    const nuevaOpcion = new Option(texto, valor, false, false);
+    $('#meses_causar_nomina_filter').append(nuevaOpcion).val(valor).trigger('change');
 }
 
 $(document).on('click', '#recalcularPeriodos', function () {

@@ -182,6 +182,11 @@ $imagenes = [
     'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_10.jpg'
 ];
 
+const meses = [
+    "enero", "febrero", "marzo", "abril", "mayo", "junio",
+    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+];
+
 var urlImgFondo = $imagenes[getRandomInt($imagenes.length)];
 
 // if (localStorage.getItem("fondo_sistema") != 'null' && localStorage.getItem("fondo_sistema") != '') {

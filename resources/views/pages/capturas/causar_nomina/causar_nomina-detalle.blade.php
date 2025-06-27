@@ -6,29 +6,48 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
+
             <div class="modal-body">
 
-            <table id="periodoPagoDetalleTable" class="table table-bordered display responsive" width="100%">
-                <thead style="background-color: #7ea1ff2b;">
-                    <tr>
-                        <th style="border-radius: 15px 0px 0px 0px !important;">Código</th>
-                        <th>Concepto</th>
-                        <th>Devengado</th>
-                        <th>Deducción</th>
-                        <th>Horas</th>
-                        <th>Días</th>
-                        <th>Observación</th>
-                        <th>%</th>
-                        <th>Base %</th>
-                        <th>Fecha inicio</th>
-                        <th>Fecha fin</th>
-                        <th>Hora inicio</th>
-                        <th style="border-radius: 0px 15px 0px 0px !important;">Hora fin</th>
-                    </tr>
-                </thead>
-            </table>
+                <table id="periodoPagoDetalleTable" class="table table-bordered display responsive" width="100%">
+                    <thead style="background-color: #7ea1ff2b;">
+                        <tr>
+                            <th style="border-radius: 15px 0px 0px 0px !important;">Código</th>
+                            <th>Concepto</th>
+                            <th>Devengado</th>
+                            <th>Deducción</th>
+                            <th>Horas</th>
+                            <th>Días</th>
+                            <th>Observación</th>
+                            <th>%</th>
+                            <th>Base %</th>
+                            <th>Fecha inicio</th>
+                            <th>Fecha fin</th>
+                            <th>Hora inicio</th>
+                            <th style="border-radius: 0px 15px 0px 0px !important;">Hora fin</th>
+                        </tr>
+                    </thead>
+                </table>
 
             </div>
+
+            <div class="modal-footer" style="padding: 0px;">
+                <div class="row" style="width: 100%;">
+                    <div class="col-12 col-sm-4 col-md-4" style="text-align: -webkit-center;">
+                        <b style="color: #4d4d4d; font-size: 15px;">Devengado</b><br>
+                        <b style="color: #08cc08;" id="devengado_detalle_total">0</b>
+                    </div>
+                    <div class="col-12 col-sm-4 col-md-4" style="text-align: -webkit-center;">
+                        <b style="color: #4d4d4d; font-size: 15px;">Deducción</b><br>
+                        <b style="color: #ff0000;" id="deduccion_detalle_total">0</b>
+                    </div>
+                    <div class="col-12 col-sm-4 col-md-4" style="text-align: -webkit-center;">
+                        <b style="color: #4d4d4d; font-size: 15px;">Neto</b><br>
+                        <b style="color: #08cc08;" id="neto_detalle_total">0</b>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
