@@ -81,7 +81,9 @@ class RecibosPdf extends AbstractPrinterPdf
 		
 		$extractos = (new Extracto(
 			$getNit->id,
-			3
+			3,
+			null,
+			$this->recibo->documentos[0]->fecha_manual
 		))->actual()->get();
 
 		$fechaAnterior = Carbon::parse($this->recibo->documentos[0]->fecha_manual)->subMinute(); 
