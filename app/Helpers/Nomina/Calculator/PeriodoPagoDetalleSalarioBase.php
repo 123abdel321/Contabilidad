@@ -46,7 +46,7 @@ class PeriodoPagoDetalleSalarioBase extends AbstractPeriodoPagoDetalle
 
 	private function calculateValorSalarioBase(NomConceptos $concepto, float $base): float
     {
-        if ($concepto->valor_mensual !== null) {
+        if ((float)$concepto->valor_mensual) {
             return (float)$concepto->valor_mensual;
         }
 

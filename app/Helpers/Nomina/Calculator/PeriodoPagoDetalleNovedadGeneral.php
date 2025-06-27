@@ -65,7 +65,7 @@ class PeriodoPagoDetalleNovedadGeneral extends AbstractPeriodoPagoDetalle
 
 	private function calculateBaseValue(): float
     {
-        if ($this->novedad->valor !== null) {
+        if ((float)$this->novedad->valor) {
             return (float)$this->novedad->valor;
         }
 
