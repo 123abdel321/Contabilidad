@@ -4,11 +4,13 @@ namespace Database\Seeders;
 
 use DB;
 use Illuminate\Database\Seeder;
+
 use Database\Seeders\Provisionada\NitsSeeder;
 use Database\Seeders\Provisionada\BodegasSeeder;
 use Database\Seeders\Provisionada\FamiliasSeeder;
 use Database\Seeders\Provisionada\ImpuestosSeeder;
 use Database\Seeders\Provisionada\FormasPagosSeeder;
+use Database\Seeders\Provisionada\NomPeriodosSeeder;
 use Database\Seeders\Provisionada\PlanCuentasSeeder;
 use Database\Seeders\Provisionada\TipoCuentasSeeder;
 use Database\Seeders\Provisionada\NomConceptosSeeder;
