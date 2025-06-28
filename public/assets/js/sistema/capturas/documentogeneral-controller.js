@@ -627,81 +627,95 @@ function changeDctoRow(idRow, event) {
 }
 
 function buscarFactura(idRow, event) {
-
-    var dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
-    const tipoCuenta = checkTipoCuentaEspecial(dataCuenta.tipos_cuenta);
-    if (!tipoCuenta.length) {
-        return 
+    // 1. Verificar si la tecla presionada es "Enter" (código 13)
+    if (event.key !== "Enter") {
+        return; // Salir si no es Enter
     }
 
-    if(dataCuenta.naturaleza_cuenta == dataCuenta.naturaleza_origen) {
-        $('#documento_load_'+idRow).show();
-        if (validarFactura) {
+    // 2. Evitar el comportamiento por defecto del Enter (como enviar formularios)
+    event.preventDefault();
+
+    // 3. Declarar validarFactura en el ámbito adecuado
+    let validarFactura = window.validarFactura || null;
+
+    var dataCuenta = $('#combo_cuenta_' + idRow).select2('data')[0];
+    const tipoCuenta = checkTipoCuentaEspecial(dataCuenta.tipos_cuenta);
+    if (!tipoCuenta.length) {
+        return;
+    }
+
+    if (dataCuenta.naturaleza_cuenta == dataCuenta.naturaleza_origen) {
+        $('#documento_load_' + idRow).show();
+
+        // 4. Cancelar petición anterior si existe
+        if (validarFactura && validarFactura.readyState !== 4) {
             validarFactura.abort();
         }
 
-        $('#documento_referencia_'+idRow).removeClass("is-valid");
-        $('#documento_referencia_'+idRow).removeClass("is-invalid");
+        $('#documento_referencia_' + idRow).removeClass("is-valid is-invalid");
 
-        const botonPrecionado = event.key.length == 1 ? event.key : '';
+        let documento_referencia = $('#documento_referencia_' + idRow).val();
 
-        let id_nit = $('#combo_nits_'+idRow).val();
-        let id_cuenta = $('#combo_cuenta_'+idRow).val();
+        // 5. Validación mínima antes de hacer la petición
+        if (!documento_referencia || documento_referencia.trim().length < 1) {
+            $('#documento_load_' + idRow).hide();
+            return;
+        }
+
+        let id_nit = $('#combo_nits_' + idRow).val();
+        let id_cuenta = $('#combo_cuenta_' + idRow).val();
         let fecha_manual = $('#fecha_manual_documento').val();
-        let documento_referencia = $('#documento_referencia_'+idRow).val()+''+botonPrecionado;
 
-        if(event.key == 'Backspace') documento_referencia = documento_referencia.slice(0, -1);
+        // 6. Hacer la petición AJAX
+        validarFactura = $.ajax({
+            url: base_url + 'existe-factura',
+            method: 'GET',
+            data: {
+                documento_referencia: documento_referencia,
+                fecha_manual: fecha_manual,
+                id_cuenta: id_cuenta,
+                id_nit: id_nit
+            },
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            validarFactura = null;
+            $('#documento_load_' + idRow).hide();
+            if (res.data) {
+                $('#documento_referencia_' + idRow).addClass("is-invalid");
+            } else {
+                $('#documento_referencia_' + idRow).addClass("is-valid");
+                $('#texto_extracto_' + idRow).html("Nueva factura");
 
-        setTimeout(function(){
-            validarFactura = $.ajax({
-                
-                url: base_url + 'existe-factura',
-                method: 'GET',
-                data: {
-                    documento_referencia: documento_referencia,
-                    fecha_manual: fecha_manual,
-                    id_cuenta: id_cuenta,
-                    id_nit: id_nit
-                },
-                headers: headers,
-                dataType: 'json',
-            }).done((res) => {
-                validarFactura = null;
-                $('#documento_load_'+idRow).hide();
-                if(res.data){
-                    $('#documento_referencia_'+idRow).addClass("is-invalid");
-                }else {
-                    $('#documento_referencia_'+idRow).addClass("is-valid");
-                    $('#texto_extracto_'+idRow).html("Nueva factura");
+                let focusValorTexto = 'debito';
+                const dataCuenta = $('#combo_cuenta_' + idRow).select2('data')[0];
+                const tiposCuenta = checkTipoCuentaEspecial(dataCuenta.tipos_cuenta);
 
-                    let focusValorTexto = 'debito';
-                    const dataCuenta = $('#combo_cuenta_'+idRow).select2('data')[0];
-                    const tiposCuenta = checkTipoCuentaEspecial(dataCuenta.tipos_cuenta);
-                    
-                    if (tiposCuenta.includes(3) || tiposCuenta.includes(7)) {
-                        if (dataCuenta.naturaleza_cuenta == 1) {
-                            focusValorTexto = 'credito';
-                        }
-                    } else if (tiposCuenta.includes(4) || tiposCuenta.includes(8)) {
-                        if (dataCuenta.naturaleza_cuenta == 1) {
-                            focusValorTexto = 'credito';
-                        }
+                if (tiposCuenta.includes(3) || tiposCuenta.includes(7)) {
+                    if (dataCuenta.naturaleza_cuenta == 1) {
+                        focusValorTexto = 'credito';
                     }
-
-                    document.getElementById(`debito_${idRow}`).max = 0;
-                    document.getElementById(`credito_${idRow}`).max = 0;
-
-                    setTimeout(function(){
-                        $('#documentoReferenciaTable tr').find(`#${focusValorTexto}_${idRow}`).select();
-                    },10);
+                } else if (tiposCuenta.includes(4) || tiposCuenta.includes(8)) {
+                    if (dataCuenta.naturaleza_cuenta == 1) {
+                        focusValorTexto = 'credito';
+                    }
                 }
-            }).fail((err) => {
-                validarFactura = null;
-                if(err.statusText != "abort") {
-                    $('#documento_load_'+idRow).hide();
-                }
-            });
-        },300);
+
+                document.getElementById(`debito_${idRow}`).max = 0;
+                document.getElementById(`credito_${idRow}`).max = 0;
+
+                // 7. Enfocar el campo correspondiente después de validar
+                setTimeout(function() {
+                    $(`#${focusValorTexto}_${idRow}`).select();
+                }, 10);
+            }
+        }).fail((err) => {
+            validarFactura = null;
+            $('#documento_load_' + idRow).hide();
+            if (err.statusText !== "abort") {
+                console.error("Error al buscar factura:", err);
+            }
+        });
     }
 }
 
