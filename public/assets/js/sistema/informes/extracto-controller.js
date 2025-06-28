@@ -78,7 +78,7 @@ function initTablesExtractos() {
             data: function ( d ) {
                 d.fecha_desde = $('#fecha_manual_extracto').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
                 d.fecha_hasta = $('#fecha_manual_extracto').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
-                d.documento_referencia = $('#documento_referencia_extracto').val();
+                d.documento_referencia = $('#factura_documentos_extracto').val();
                 d.id_nit = $('#id_nit_extracto').val();
                 d.errores = getErroresExtracto();
             }
@@ -289,8 +289,8 @@ $(document).on('click', '#reloadExtracto', function () {
     $("#reloadExtractosIconLoading").show();
 
     let documento_referencia = "";
-    if ($('#documento_referencia_extracto').val()) {
-        documento_referencia = $('#documento_referencia_extracto').val();
+    if ($('#factura_documentos_extracto').val()) {
+        documento_referencia = $('#factura_documentos_extracto').val();
     }
 
     var url = base_url + 'extractos-informe';

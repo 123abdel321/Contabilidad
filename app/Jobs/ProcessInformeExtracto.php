@@ -793,9 +793,9 @@ class ProcessInformeExtracto
         } else if (strlen($cuenta) > 4) {
             $dataCuentas =[
                 $cuenta,
-                mb_substr($cuenta, 0, 4),
-                mb_substr($cuenta, 0, 2),
-                mb_substr($cuenta, 0, 1),
+                // mb_substr($cuenta, 0, 4),
+                // mb_substr($cuenta, 0, 2),
+                // mb_substr($cuenta, 0, 1),
             ];
         } else if (strlen($cuenta) > 2) {
             $dataCuentas =[
