@@ -48,6 +48,7 @@ use App\Http\Controllers\Capturas\MovimientoInventarioController;
 
 use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
 use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
+use App\Http\Controllers\Capturas\Nomina\PrestacionesSocialesController;
 //IMPORTADORES
 use App\Http\Controllers\Importador\NitsImportadorController;
 use App\Http\Controllers\Importador\ProductoImportadorController;
@@ -467,6 +468,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('detalle-periodo', 'detallePeriodo');
             Route::post('calcular-nomina', 'calcularNomina');
             Route::get('periodos-pagos-combo', 'comboPeriodoPago');
+        });
+        //CAUSAR PRESTACIONES SOCIALES
+        Route::controller(PrestacionesSocialesController::class)->group(function () {
+            Route::get('prestaciones-sociales', 'generate');
+            Route::post('prestaciones-sociales', 'causar');
         });
         
         

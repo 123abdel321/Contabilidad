@@ -1,37 +1,46 @@
 var causar_nomina_table = null;
 var periodo_pago_detalle_table = null;
+var prestaciones_sociales_table = null;
 var id_periodo_pago = null
+var activar_prestaciones = false;
 
 function causarInit() {
+
+    activar_prestaciones = false;
+
     initSelect2Causar();
     initTablesCausar();
+    initComboMes('meses_causar_nomina_filter');
 }
 
 function initSelect2Causar() {
-    $('#meses_causar_nomina_filter').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        language: {
-            noResults: function() {
-                return "No hay resultado";        
+    const comboMeses = ['meses_causar_nomina_filter', 'meses_prestaciones_sociales_filter'];
+    comboMeses.forEach(combo => {
+        $(`#${combo}`).select2({
+            theme: 'bootstrap-5',
+            delay: 250,
+            language: {
+                noResults: function() {
+                    return "No hay resultado";        
+                },
+                searching: function() {
+                    return "Buscando..";
+                },
+                inputTooShort: function () {
+                    return "Por favor introduce 1 o más caracteres";
+                }
             },
-            searching: function() {
-                return "Buscando..";
-            },
-            inputTooShort: function () {
-                return "Por favor introduce 1 o más caracteres";
+            ajax: {
+                url: 'api/causar-meses-combo',
+                headers: headers,
+                dataType: 'json',
+                processResults: function (data) {
+                    return {
+                        results: data.data
+                    };
+                }
             }
-        },
-        ajax: {
-            url: 'api/causar-meses-combo',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
+        });
     });
 }
 
@@ -46,7 +55,12 @@ function initTablesCausar() {
         fixedHeader: true,
         deferLoading: 0,
         initialLoad: false,
-        language: lenguajeDatatable,
+        language: {
+            ...lenguajeDatatable,
+            info: "",
+            infoEmpty: "",
+            infoFiltered: "",
+        },
         ordering: false,
         sScrollX: "100%",
         scrollX: true,
@@ -96,26 +110,35 @@ function initTablesCausar() {
             {
                 "data": function (row, type, set){
                     if (row.sum_detalles) {
-                        return `<b style="color: #08cc08; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.devengados)}</b>`;
+                        const formatted = new Intl.NumberFormat('ja-JP').format(row.sum_detalles.devengados);
+                        const parts = formatted.split('.');
+                        return `<b style="color: #01a401; font-weight: 600;" ${parts.length > 1 ? `data-decimal=".${parts[1]}"` : ''}>${parts[0]}</b>`;
                     }
-                    return `<b style="color: #08cc08; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
-                }, className: 'dt-body-right'
+                    return `<b style="color: #01a401; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                }, 
+                className: 'dt-body-right'
             },
             {
                 "data": function (row, type, set){
                     if (row.sum_detalles) {
-                        return `<b style="color: red; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.deducciones * -1)}</b>`;
+                        const formatted = new Intl.NumberFormat('ja-JP').format(row.sum_detalles.deducciones ? row.sum_detalles.deducciones * -1 : 0);
+                        const parts = formatted.split('.');
+                        return `<b style="color: red; font-weight: 600;" ${parts.length > 1 ? `data-decimal=".${parts[1]}"` : ''}>${parts[0]}</b>`;
                     }
                     return `<b style="color: red; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
-                }, className: 'dt-body-right'
+                }, 
+                className: 'dt-body-right'
             },
             {
                 "data": function (row, type, set){
                     if (row.sum_detalles) {
-                        return `<b style="color: #08cc08; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.sum_detalles.neto)}</b>`;
+                        const formatted = new Intl.NumberFormat('ja-JP').format(row.sum_detalles.neto);
+                        const parts = formatted.split('.');
+                        return `<b style="color: #01a401; font-weight: 600;" ${parts.length > 1 ? `data-decimal=".${parts[1]}"` : ''}>${parts[0]}</b>`;
                     }
-                    return `<b style="color: #08cc08; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
-                }, className: 'dt-body-right'
+                    return `<b style="color: #01a401; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                }, 
+                className: 'dt-body-right'
             },
             {
                 "data": function (row, type, set){
@@ -168,9 +191,9 @@ function initTablesCausar() {
                         const footerRow = $(`
                             <tr class="group-footer" style="background-color: white; font-weight: bold;">
                                 <td colspan="5" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
-                                <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.devengado)}</b></td>
-                                <td class="text-end"><b style="color: red;">${new Intl.NumberFormat('ja-JP').format(groupTotals.deduccion * -1)}</b></td>
-                                <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.neto)}</b></td>
+                                <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(groupTotals.devengado)}</b></td>
+                                <td class="text-end"><b style="color: red;">${formatNumberWithSmallDecimals(groupTotals.deduccion * -1)}</b></td>
+                                <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(groupTotals.neto)}</b></td>
                                 <td></td>
                             </tr>
                         `);
@@ -205,9 +228,9 @@ function initTablesCausar() {
                 const footerRow = $(`
                     <tr class="group-footer" style="background-color: white; font-weight: bold;">
                         <td colspan="5" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
-                        <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.devengado)}</b></td>
-                        <td class="text-end"><b style="color: red;">${new Intl.NumberFormat('ja-JP').format(groupTotals.deduccion * -1)}</b></td>
-                        <td class="text-end"><b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(groupTotals.neto)}</b></td>
+                        <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(groupTotals.devengado)}</b></td>
+                        <td class="text-end"><b style="color: red;">${formatNumberWithSmallDecimals(groupTotals.deduccion * -1)}</b></td>
+                        <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(groupTotals.neto)}</b></td>
                         <td></td>
                     </tr>
                 `);
@@ -232,6 +255,8 @@ function initTablesCausar() {
 
     periodo_pago_detalle_table = $('#periodoPagoDetalleTable').DataTable({
         pageLength: -1,
+        deferRender: true,
+        deferLoading: true,
         dom: 'Brtip',
         paging: false,
         responsive: false,
@@ -239,7 +264,12 @@ function initTablesCausar() {
         serverSide: false,
         fixedHeader: true,
         deferLoading: 0,
-        language: lenguajeDatatable,
+        lalanguage: {
+            ...lenguajeDatatable,
+            info: "",
+            infoEmpty: "",
+            infoFiltered: "",
+        },
         ordering: false,
         scrollX: true,
         scrollCollapse: true,
@@ -268,10 +298,11 @@ function initTablesCausar() {
                 return '';
             }},
             {"data": function (row, type, set){  
-                return `<b style="color: #08cc08; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.devengados)}</b>`;
+                return `<b style="color: #01a401; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.devengados)}</b>`;
             }, className: 'dt-body-right'},
             {"data": function (row, type, set){  
-                return `<b style="color: red; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.deducciones * -1)}</b>`;
+                const deducciones = parseInt(row.deducciones) ? row.deducciones * -1 : 0;
+                return `<b style="color: red; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(deducciones)}</b>`;
             }, className: 'dt-body-right'},
             {
                 "data": "unidades",
@@ -288,7 +319,7 @@ function initTablesCausar() {
             {"data":'observacion'},
             {"data":'porcentaje', render: $.fn.dataTable.render.number(',', '.', 0, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){  
-                return `<b style="color: #08cc08;">${new Intl.NumberFormat('ja-JP').format(row.base)}</b>`;
+                return `<b style="color: #01a401;">${new Intl.NumberFormat('ja-JP').format(row.base)}</b>`;
             }, className: 'dt-body-right'},
             {"data": "fecha_inicio", defaultContent: ""},
             {"data": "fecha_fin", defaultContent: ""},
@@ -324,23 +355,6 @@ function initTablesCausar() {
             }).fail((res) => {
                 agregarToast('error', 'Causación errada', res.message);
             });
-
-            // Swal.fire({
-            //     title: 'Causar nómina',
-            //     html: `Se va a causar la nómina del empleado <b>${empleado.numero_documento} - ${empleado.nombre_completo}</b>`,
-            //     type: 'warning',
-            //     icon: 'warning',
-            //     showCancelButton: true,
-            //     confirmButtonColor: '#3085d6',
-            //     cancelButtonColor: '#d33',
-            //     confirmButtonText: 'Causar!',
-            //     reverseButtons: true,
-            // }).then((result) => {
-            //     if (result.value){
-
-                    
-            //     }
-            // });
         });
 
         causar_nomina_table.on('click', '.detalle-nomina', function() {
@@ -379,7 +393,9 @@ function initTablesCausar() {
             });
         });
     }
+}
 
+function initComboMes(inputId) {
     // Obtener fecha actual
     const fecha = new Date();
     const anio = fecha.getFullYear();
@@ -390,7 +406,205 @@ function initTablesCausar() {
 
     // Crear la opción y asignarla al select2
     const nuevaOpcion = new Option(texto, valor, false, false);
-    $('#meses_causar_nomina_filter').append(nuevaOpcion).val(valor).trigger('change');
+    $(`#${inputId}`).append(nuevaOpcion).val(valor).trigger('change'); 
+}
+
+function formatNumberWithSmallDecimals(number) {
+    const formatted = new Intl.NumberFormat('ja-JP').format(number);
+    const parts = formatted.split('.');
+    if (parts.length > 1) {
+        return `<span class="integer-part">${parts[0]}</span><span class="decimal-part">.${parts[1]}</span>`;
+    }
+    return formatted;
+}
+
+function initPrestacionesSociales() {
+    prestaciones_sociales_table = $('#prestacionesSocialesTable').DataTable({
+        dom: 'Brtip',
+        paging: false,
+        responsive: false,
+        processing: true,
+        serverSide: true,
+        fixedHeader: true,
+        deferLoading: 0,
+        initialLoad: false,
+        language: {
+            ...lenguajeDatatable,
+            info: "",
+            infoEmpty: "",
+            infoFiltered: "",
+        },
+        ordering: false,
+        sScrollX: "100%",
+        scrollX: true,
+        fixedColumns : {
+            left: 0,
+            right : 1,
+        },
+        ajax:  {
+            type: "GET",
+            headers: headers,
+            url: base_url + 'prestaciones-sociales',
+            data: function ( d ) {
+                d.meses = $('#meses_prestaciones_sociales_filter').val();
+            }
+        },
+        columns: [
+            {"data":'id_empleado'},
+            {"data":'concepto'},
+            {
+                "data": function (row, type, set){
+                    if (row.base) {
+                        const formatted = new Intl.NumberFormat('ja-JP').format(row.base);
+                        const parts = formatted.split('.');
+                        return `<b style="color: #01a401; font-weight: 600;" ${parts.length > 1 ? `data-decimal=".${parts[1]}"` : ''}>${parts[0]}</b>`;
+                    }
+                    return `<b style="color: #01a401; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                }, 
+                className: 'dt-body-right'
+            },
+            {"data":'porcentaje', render: $.fn.dataTable.render.number(',', '.', 4, ''), className: 'dt-body-right'},
+            {
+                "data": function (row, type, set){
+                    if (row.provision) {
+                        const formatted = new Intl.NumberFormat('ja-JP').format(row.provision);
+                        const parts = formatted.split('.');
+                        return `<b style="color: #01a401; font-weight: 600;" ${parts.length > 1 ? `data-decimal=".${parts[1]}"` : ''}>${parts[0]}</b>`;
+                    }
+                    return `<b style="color: #01a401; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                }, 
+                className: 'dt-body-right'
+            },
+            {"data":'fondo'},
+            {"data":'cuenta_debito'},
+            {"data":'cuenta_credito'},
+            {
+                "data": function (row, type, set){
+                    if (row.editado) {
+                        return `<b>Si</b>`;
+                    }
+                    return 'No';
+                }
+            },
+            {
+                "data": function (row, type, set){
+                    var html = '';
+                    html+= '<span id="editprestaciones_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-prestaciones" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    return html;
+                }
+            },
+        ],
+        rowGroup: {
+            dataSrc: 'fecha_periodo',
+            startRender: null // Desactiva la fila de grupo automática
+        },
+        columnDefs: [
+            { 
+                targets: '_all', // Aplica a todas las columnas
+                searchable: false,
+                orderable: false
+            },
+            { targets: 0, visible: false } // Oculta la columna del "Empleado"
+        ],
+        drawCallback: function () {
+            const api = this.api();
+            const rows = api.rows({ page: 'current' }).nodes();
+            const data = api.rows({ page: 'current' }).data();
+
+            let lastGroup = null;
+            let provision = 0;
+            let $lastGroupRow = null;
+
+            // $('.group-header').remove(); // Limpia grupos anteriores
+            $('.group-header-prestaciones-sociales, .group-footer-prestaciones-sociales').remove();
+
+            data.each(function (row, i) {
+
+                const groupKey = row.id_empleado;
+                const $row = $(rows[i]);
+
+                // Si se detecta nuevo grupo
+                if (lastGroup !== groupKey) {
+                    // Si había un grupo anterior, insertar su footer al final de sus datos
+                    if (lastGroup !== null && $lastGroupRow) {
+                        const footerRow = $(`
+                            <tr class="group-footer-prestaciones-sociales" style="background-color: white; font-weight: bold;">
+                                <td colspan="3" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
+                                <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(provision)}</b></td>
+                                <td colspan="4"></td>
+                            </tr>
+                        `);
+                        $lastGroupRow.after(footerRow);
+                    }
+
+                    const groupRow = $(`
+                        <tr class="group-header-prestaciones-sociales" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
+                            <td colspan="9">
+                                <i class="fas fa-minus-square toggle-icon" style="margin-right: 5px; color: #003883;"></i>
+                                <b style="font-size: 14px;">${row.numero_documento} - ${row.empleado}</b></b>
+                            </td>
+                        </tr>
+                    `);
+                    $row.before(groupRow);
+
+                    lastGroup = groupKey;
+                    provision = 0;
+                }
+
+                // Sumar los valores
+                provision += parseFloat(row.provision);
+
+                // Guardar referencia a la última fila del grupo
+                $lastGroupRow = $row;
+            });
+
+            // Agregar footer del último grupo
+            if (lastGroup !== null && $lastGroupRow) {
+                const footerRow = $(`
+                    <tr class="group-footer-prestaciones-sociales" style="background-color: white; font-weight: bold;">
+                        <td colspan="3" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
+                        <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(provision)}</b></td>
+                        <td colspan="4"></td>
+                    </tr>
+                `);
+                $lastGroupRow.after(footerRow);
+            }
+
+            // Manejo de colapsar/expandir grupos
+            $('.group-header-prestaciones-sociales').off('click').on('click', function () {
+                const $this = $(this);
+                const $icon = $this.find('.toggle-icon');
+                let $next = $this.next();
+
+                while ($next.length && !$next.hasClass('group-header-prestaciones-sociales')) {
+                    if (!$next.hasClass('group-footer-prestaciones-sociales')) $next.toggle();
+                    $next = $next.next();
+                }
+
+                $icon.toggleClass('fa-minus-square fa-plus-square');
+            });
+        }
+    });
+
+    if (prestaciones_sociales_table) {
+        prestaciones_sociales_table.on('click', '.edit-prestaciones', function() {
+            var tr = $(this).closest('tr');
+            var row = prestaciones_sociales_table.row(tr);
+            var rowData = row.data();
+
+            $('#id_prestaciones_sociales_up').val(row.index());
+            $('#nombre_prestaciones_sociales').val(rowData.concepto);
+            $('#base_prestaciones_sociales').val(new Intl.NumberFormat('ja-JP').format(rowData.base));
+            $('#porcentaje_prestaciones_sociales').val(new Intl.NumberFormat('ja-JP').format(rowData.porcentaje));
+            $('#provision_prestaciones_sociales').val(new Intl.NumberFormat('ja-JP').format(rowData.provision));
+
+            $("#textprestacionesSociales").html(`${rowData.numero_documento} - ${rowData.empleado}`);
+            $('#prestacionesSocialesModal').modal('show');
+        });
+    }
+
+    initComboMes('meses_prestaciones_sociales_filter');
+    activar_prestaciones = true;
 }
 
 $(document).on('click', '#recalcularPeriodos', function () {
@@ -429,5 +643,100 @@ $(document).on('change', '#meses_causar_nomina_filter', function () {
     const meses = $('#meses_causar_nomina_filter').val();
     if (meses) {
         causar_nomina_table.ajax.reload();
+    }
+});
+
+$(document).on('change', '#meses_prestaciones_sociales_filter', function () {
+    const meses = $('#meses_prestaciones_sociales_filter').val();
+    if (meses) {
+        prestaciones_sociales_table.ajax.reload();
+    }
+});
+
+$(document).on('click', '#prestaciones-sociales-tab', function () {
+    if (activar_prestaciones) {
+        return
+    }
+
+    initPrestacionesSociales();
+});
+
+$(document).on('click', '#savePrestacionesSociales', function () {
+    var rowIndex = $('#id_prestaciones_sociales_up').val();
+
+    var row = prestaciones_sociales_table.row(rowIndex);
+    var rowData = row.data();
+
+    rowData.base = stringToNumberFloat($('#base_prestaciones_sociales').val()) || 0;
+    rowData.porcentaje = stringToNumberFloat($('#porcentaje_prestaciones_sociales').val()) || 0;
+    rowData.provision = stringToNumberFloat($('#provision_prestaciones_sociales').val()) || 0;
+    rowData.editado = true;
+    row.data(rowData);
+
+    // prestaciones_sociales_table.cell(rowIndex, 2).data(rowData.base);
+    // prestaciones_sociales_table.cell(rowIndex, 3).data(rowData.porcentaje);
+    // prestaciones_sociales_table.cell(rowIndex, 4).data(rowData.provision);
+    // prestaciones_sociales_table.cell(rowIndex, 8).data(rowData.editado);
+
+    $('#prestacionesSocialesModal').modal('hide');
+
+    agregarToast('exito', 'Cambios guardados', 'Cambios guardados localmente!', true );
+})
+
+$(document).on('click', '#causarPrestaciones', function () {
+    Swal.fire({
+        title: 'Causar prestaciones sociales',
+        html: `Se van a causar las prestaciones sociales, ¿Desea continuar? </b>`,
+        type: 'warning',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Causar!',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.value){
+
+            $("#causarPrestaciones").hide();
+            $("#causarPrestacionesLoading").show();
+            
+            var prestacionesSocialesData = prestaciones_sociales_table.rows().data().toArray();
+
+            $.ajax({
+                url: base_url + 'prestaciones-sociales',
+                method: 'POST',
+                data: JSON.stringify({
+                    fecha: $('#meses_prestaciones_sociales_filter').val(),
+                    prestaciones: JSON.stringify(prestacionesSocialesData)
+                }),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                $("#causarPrestaciones").show();
+                $("#causarPrestacionesLoading").hide();
+
+                if(res.success){
+                    agregarToast('exito', 'Causación exitosa', 'Causación de prestaciones sociales generados con exito!', true );
+                } else {
+                    agregarToast('error', 'Causación errada', res.message);
+                }
+            }).fail((res) => {
+                $("#causarPrestaciones").show();
+                $("#causarPrestacionesLoading").hide();
+
+                agregarToast('error', 'Causación errada', res.message);
+            });
+        }
+    });
+});
+
+$("input[data-type='currency']").on({
+    keyup: function(event) {
+        if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+            formatCurrency($(this));
+        }
+    },
+    blur: function() {
+        formatCurrency($(this), "blur");
     }
 });

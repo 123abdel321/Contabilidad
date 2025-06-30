@@ -44,7 +44,17 @@ class CausarNominaController extends Controller
             DB::raw("CONCAT(fecha_inicio_periodo, ' al ', fecha_fin_periodo) as text")
         );
 
-        return $periodoPago->orderBy('id', 'DESC')->paginate(20);
+        if ($request->has('mes')) {
+            $periodoPago->where(function($query) use ($request) {
+                $query->where(DB::raw("DATE_FORMAT(fecha_inicio_periodo, '%Y-%m')"), '<=', $request->get('mes'))
+                    ->where(DB::raw("DATE_FORMAT(fecha_fin_periodo, '%Y-%m')"), '>=', $request->get('mes'));
+            });
+        }
+
+        return $periodoPago
+            ->groupByRaw('fecha_inicio_periodo, fecha_fin_periodo')
+            ->orderBy('id', 'DESC')
+            ->paginate(20);
     }
 
     public function comboMeses(Request $request)
@@ -183,35 +193,47 @@ class CausarNominaController extends Controller
 
     public function detallePeriodo(Request $request)
     {
-        $detallePeriodoPago = NomPeriodoPagoDetalles::select([
-                '*',
-                DB::raw('IF (valor >= 0, valor, 0) AS devengados'),
-                DB::raw('IF (valor < 0, valor, 0) AS deducciones'),
-            ])
-            ->with([
-                'concepto:id,codigo,nombre',
-                'periodoPago:id,id_empleado,estado',
-                'periodoPago.empleado:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido,numero_documento,digito_verificacion',
-            ])
-            ->when($request->has('id_periodo_pago'), function ($q) use ($request) {
-                $q->where('id_periodo_pago', $request->get('id_periodo_pago'));
-            })
-            ->get();
+        try {
 
-        $sumDevengados = $detallePeriodoPago->sum('devengados');
-        $sumDeducciones = abs($detallePeriodoPago->sum('deducciones'));
-        $neto = $sumDevengados - $sumDeducciones;
+            $detallePeriodoPago = NomPeriodoPagoDetalles::select([
+                    '*',
+                    DB::raw('IF (valor >= 0, valor, 0) AS devengados'),
+                    DB::raw('IF (valor < 0, valor, 0) AS deducciones'),
+                ])
+                ->with([
+                    'concepto:id,codigo,nombre',
+                    'periodoPago:id,id_empleado,estado',
+                    'periodoPago.empleado:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido,numero_documento,digito_verificacion',
+                ])
+                ->when($request->has('id_periodo_pago'), function ($q) use ($request) {
+                    $q->where('id_periodo_pago', $request->get('id_periodo_pago'));
+                })
+                ->orderBy('id_concepto')
+                ->get();
 
-        return response()->json([
-            'success'=>	true,
-            'data' => $detallePeriodoPago,
-            'totales' => (object)[
-                'devengados' => $sumDevengados,
-                'deducciones' => $sumDeducciones,
-                'neto' => $neto,
-            ],
-            'message'=> 'Periodo pago generados con exito!'
-        ]);
+            $sumDevengados = $detallePeriodoPago->sum('devengados');
+            $sumDeducciones = abs($detallePeriodoPago->sum('deducciones'));
+            $neto = $sumDevengados - $sumDeducciones;
+
+            return response()->json([
+                'success'=>	true,
+                'data' => $detallePeriodoPago,
+                'totales' => (object)[
+                    'devengados' => $sumDevengados,
+                    'deducciones' => $sumDeducciones,
+                    'neto' => $neto,
+                ],
+                'message'=> 'Periodo pago generados con exito!'
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
 }
