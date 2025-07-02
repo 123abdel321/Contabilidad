@@ -46,14 +46,25 @@ function reciboInit () {
         columns: [
             {
                 "data": function (row, type, set, col){
+                    const saldo = parseInt(row.saldo);
+                    if (saldo < 0) {
+                        return `<i
+                            class="fas fa-info icon-info"
+                            style="border: solid 1px red !important; color: red !important;";
+                            title="<b class='titulo-popover-error'>Documento referencia</b> <br/> Error en el cruce de los documentos de referencia"
+                            data-toggle="popover"
+                            data-html="true">
+                            </i>
+                        ${row.codigo_cuenta}`;
+                    }
                     if (!row.cuenta_recibo && !row.id_forma_pago) {
                         return `<i
                                 class="fas fa-info icon-info"
                                 style="border: solid 1px #e29300 !important; color: #e29300 !important;";
-                                title="<b>Anticipos cuenta</b> <br/> Sin forma de pago registrada"
+                                title="<b class='titulo-popover-error'>Anticipos cuenta</b> <br/> Sin forma de pago registrada"
                                 data-toggle="popover"
-                                data-html="true"
-                            ></i>
+                                data-html="true">
+                                </i>
                             ${row.codigo_cuenta}`;
                     }
                     return row.codigo_cuenta;
@@ -86,11 +97,23 @@ function reciboInit () {
                     `;
                 }, className: 'dt-body-left'
             },
-            {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {//VALOR RECIBIDO
                 "data": function (row, type, set, col){
+                    const saldo = parseInt(row.saldo);
+                    if (saldo < 0) {
+                        return `<p style="margin-bottom: 0px; font-size: 13px; color: red;">${new Intl.NumberFormat("ja-JP").format(row.saldo * -1)}</p>`;
+                    }
+                    return new Intl.NumberFormat("ja-JP").format(row.saldo);
+                }, className: 'dt-body-right'   
+            },
+            {//VALOR RECIBIDO
+                "data": function (row, type, set, col){
+                    const saldo = parseInt(row.saldo);
+                    if (saldo < 0) {
+                        return '';
+                    }
                     if (row.cuenta_recibo == 'sin_deuda') {
-                        return
+                        return '';
                     }
                     return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right; padding: 0.05rem 0.5rem !important;" id="recibo_valor_${row.id}" value="${new Intl.NumberFormat("ja-JP").format(row.valor_recibido)}" onkeypress="changeValorRecibidoReciboRow(${row.id}, event)" onfocusout="focusOutValorReciboRow(${row.id})" onfocus="focusValorRecibido(${row.id})" style="min-width: 100px;">`;
                 }
@@ -98,8 +121,12 @@ function reciboInit () {
             {"data":'nuevo_saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {//CONCEPTO
                 "data": function (row, type, set, col){
+                    const saldo = parseInt(row.saldo);
+                    if (saldo < 0) {
+                        return '';
+                    }
                     if (row.cuenta_recibo == 'sin_deuda') {
-                        return
+                        return '';
                     }
                     return `<input type="text" class="form-control form-control-sm" id="recibo_concepto_${row.id}" placeholder="SIN OBSERVACIÓN" value="${row.concepto}" onkeypress="changeConceptoReciboRow(${row.id}, event)" style="width: 150px !important; padding: 0.05rem 0.5rem !important;" onfocus="this.select();">`;
                 }
