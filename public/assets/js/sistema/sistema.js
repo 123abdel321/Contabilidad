@@ -1116,6 +1116,11 @@ $(document).on('shown.bs.popover', function() {
         'font-weight': 'bold'
     });
 
+    $('.popover b.titulo-popover-error').css({
+        'color': 'red',
+        'font-weight': 'bold'
+    });
+
     $('.popover b.mensaje-blanco').css({
         'color': '#FFF',
         'font-weight': 'bold'
