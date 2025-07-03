@@ -354,6 +354,35 @@ class DocumentoGeneralController extends Controller
                 "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
             ], Response::HTTP_OK);
 		}
+
+		// Verificar que exista el comprobante
+        $comprobante = Comprobantes::find($request->get('id_comprobante'));
+        if(!$comprobante) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+		// Verificar fecha manual
+        if (!$request->get('fecha_manual')) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+		// Verificar si se encuentra en una fecha cerrada
+        $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
+        if ($isFechaCierreLimit) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+            ], 200);
+        }
 		
 		try {
 
@@ -369,21 +398,20 @@ class DocumentoGeneralController extends Controller
 				$credito+= $doc['credito'];
 			}
 
-			$comprobante = Comprobantes::whereId($request->get('id_comprobante'))->first();
-
 			if(!$request->has('consecutivo')){
 				$consecutivo = $this->getNextConsecutive($comprobante->id, $fechaManual);
 
 				$request->merge([
 					'consecutivo' => $consecutivo
 				]);
-			} 
-			
+			}
+
 			if(!$request->get('editing_documento')) {
-				$consecutivoUsado = DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
-					->where('consecutivo', $request->get('consecutivo'))
-					->where('fecha_manual', $fechaManual)
-					->count();
+				$consecutivoUsado = $this->consecutivoUsado(
+					$comprobante,
+					$request->get('consecutivo'),
+					$request->get('fecha_manual')
+				);
 
 				if ($consecutivoUsado) {
 					return response()->json([
@@ -395,7 +423,6 @@ class DocumentoGeneralController extends Controller
 			}
 
 			$facDocumento = null;
-
 			$tokenFactura = $request->get('token_factura') ? $request->get('token_factura') : $this->generateTokenDocumento();
 
 			if($request->get('editing_documento')) {
@@ -419,11 +446,8 @@ class DocumentoGeneralController extends Controller
 
 				$facDocumento = $facDocumento->relation;
 				$fechaManual = $facDocumento->fecha_manual;
-				
-				$documetnos = DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
-					->where('consecutivo', $request->get('consecutivo'))
-					->where('fecha_manual', $fechaManual)
-					->delete();
+
+				$facDocumento->documentos()->delete();
 
 			} else {
 				DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
