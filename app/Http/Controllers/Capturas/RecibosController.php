@@ -139,6 +139,7 @@ class RecibosController extends Controller
                 $extractos = $extractos->sortBy('cuenta')->values();
             }
 
+            $hasError = false;
             $dataRecibos = [];
             $dataRecibosAnticipos = [];
             
@@ -177,6 +178,7 @@ class RecibosController extends Controller
             } else {
                 if (isset($extractos)) {
                     foreach ($extractos as $extracto) {
+                        if ($extracto->saldo < 0) $hasError = true;
                         $dataRecibos[] = $this->formatExtracto($extracto);
                     }
                 }
@@ -226,6 +228,7 @@ class RecibosController extends Controller
 
             return response()->json([
                 'success'=>	true,
+                'errores' => $hasError,
                 'data' => $dataRecibos,
                 'edit' => $reciboEdit,
                 'anticipos' => $anticipos,

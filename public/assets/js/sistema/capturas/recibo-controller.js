@@ -97,11 +97,11 @@ function reciboInit () {
                     `;
                 }, className: 'dt-body-left'
             },
-            {//VALOR RECIBIDO
+            {//SALDO
                 "data": function (row, type, set, col){
                     const saldo = parseInt(row.saldo);
                     if (saldo < 0) {
-                        return `<p style="margin-bottom: 0px; font-size: 13px; color: red;">${new Intl.NumberFormat("ja-JP").format(row.saldo * -1)}</p>`;
+                        return `<p style="margin-bottom: 0px; font-size: 13px; color: red; font-weight: 600;">${new Intl.NumberFormat("ja-JP").format(row.saldo * -1)}</p>`;
                     }
                     return new Intl.NumberFormat("ja-JP").format(row.saldo);
                 }, className: 'dt-body-right'   
@@ -109,22 +109,24 @@ function reciboInit () {
             {//VALOR RECIBIDO
                 "data": function (row, type, set, col){
                     const saldo = parseInt(row.saldo);
-                    if (saldo < 0) {
-                        return '';
-                    }
                     if (row.cuenta_recibo == 'sin_deuda') {
                         return '';
                     }
                     return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right; padding: 0.05rem 0.5rem !important;" id="recibo_valor_${row.id}" value="${new Intl.NumberFormat("ja-JP").format(row.valor_recibido)}" onkeypress="changeValorRecibidoReciboRow(${row.id}, event)" onfocusout="focusOutValorReciboRow(${row.id})" onfocus="focusValorRecibido(${row.id})" style="min-width: 100px;">`;
                 }
             },
-            {"data":'nuevo_saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {//CONCEPTO
+            {//NUEVO SALDO
                 "data": function (row, type, set, col){
                     const saldo = parseInt(row.saldo);
                     if (saldo < 0) {
-                        return '';
+                        return `<p style="margin-bottom: 0px; font-size: 13px; color: red; font-weight: 600;">${new Intl.NumberFormat("ja-JP").format(row.nuevo_saldo * -1)}</p>`;
                     }
+                    return new Intl.NumberFormat("ja-JP").format(row.nuevo_saldo);
+                }, className: 'dt-body-right'   
+            },
+            {//CONCEPTO
+                "data": function (row, type, set, col){
+                    const saldo = parseInt(row.saldo);
                     if (row.cuenta_recibo == 'sin_deuda') {
                         return '';
                     }
@@ -421,6 +423,7 @@ function reloadTableRecibos() {
         $('#iniciarCapturaRecibo').show();
         $('#crearCapturaReciboDisabled').show();
         $('#iniciarCapturaReciboLoading').hide();
+        $('#total_abono_recibo').prop('disabled', false);
 
         let factura = res.edit;
 
@@ -448,6 +451,14 @@ function reloadTableRecibos() {
         }
 
         mostrarValoresRecibos();
+
+        if (res.errores) {
+            disabledInputs();
+            disabledFormasPagoRecibo(false);
+            $('#crearCapturaRecibo').hide();
+            $('#total_abono_recibo').prop('disabled', true);
+            agregarToast('error', 'Recibo con errores', 'Error en el cruce de los documentos de referencia');
+        }
 
         if (!factura) {
             let data = $('#id_nit_recibo').select2('data')[0];
@@ -1308,6 +1319,19 @@ function loadFormasPagoRecibos() {
     recibo_table_pagos.ajax.reload(function(res) {
         disabledFormasPagoRecibo(true);
     });
+}
+
+function disabledInputs(estado = true) {
+    const dataRecibos = recibo_table.rows().data();
+
+    if (dataRecibos.length) {
+        for (let index = 0; index < dataRecibos.length; index++) {
+            const recibo = dataRecibos[index];
+
+            $('#recibo_valor_'+recibo.id).prop('disabled', estado);
+            $('#recibo_concepto_'+recibo.id).prop('disabled', estado);
+        }
+    }
 }
 
 function disabledFormasPagoRecibo(estado = true) {
