@@ -16,9 +16,9 @@ use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 use App\Models\Empresas\BackupEmpresa;
 
 
-class BackupDatabaseJob
+class BackupDatabaseJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $empresa;
     protected $maxBackups = 10;
