@@ -28,10 +28,15 @@ class BackupDatabases extends Command
      */
     public function handle()
     {
-        $empresas = Empresa::where('estado', 1)->first();
+        $empresasActivas = Empresa::where('estado', 1)->first();
+        BackupDatabaseJob::dispatch($empresasActivas);
 
-        BackupDatabaseJob::dispatch($empresas->token_db);
-        // foreach ($empresas as $empresa) {
+        // $empresasActivas = Empresa::where('estado', 1)->get();
+    
+        // foreach ($empresasActivas as $empresa) {
+        //     BackupDatabaseJob::dispatch($empresa);
         // }
+        
+        $this->info("Se han programado backups para {$empresasActivas->count()} empresas");
     }
 }
