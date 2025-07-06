@@ -159,7 +159,7 @@ function cargarTablasConfiguracionProvisiones() {
 function cargarSelect2ConfiguracionProvisiones() {
     $cuentaAdministrativosCP = $('#id_cuenta_administrativos_configuracion_provisiones').select2({
         theme: 'bootstrap-5',
-        dropdownParent: $('#conceptosNominaForm'),
+        dropdownParent: $('#configuracionProvisionesFormModal'),
         delay: 250,
         placeholder: "Seleccione una cuenta",
         allowClear: true,
@@ -184,7 +184,7 @@ function cargarSelect2ConfiguracionProvisiones() {
 
     $cuentaOperativosCP = $('#id_cuenta_operativos_configuracion_provisiones').select2({
         theme: 'bootstrap-5',
-        dropdownParent: $('#conceptosNominaForm'),
+        dropdownParent: $('#configuracionProvisionesFormModal'),
         delay: 250,
         placeholder: "Seleccione una cuenta",
         allowClear: true,
@@ -209,7 +209,7 @@ function cargarSelect2ConfiguracionProvisiones() {
 
     $cuentaVentasCP = $('#id_cuenta_venta_configuracion_provisiones').select2({
         theme: 'bootstrap-5',
-        dropdownParent: $('#conceptosNominaForm'),
+        dropdownParent: $('#configuracionProvisionesFormModal'),
         delay: 250,
         placeholder: "Seleccione una cuenta",
         allowClear: true,
@@ -234,7 +234,7 @@ function cargarSelect2ConfiguracionProvisiones() {
 
     $cuentaOtrasCP = $('#id_cuenta_otros_configuracion_provisiones').select2({
         theme: 'bootstrap-5',
-        dropdownParent: $('#conceptosNominaForm'),
+        dropdownParent: $('#configuracionProvisionesFormModal'),
         delay: 250,
         placeholder: "Seleccione una cuenta",
         allowClear: true,
@@ -259,7 +259,7 @@ function cargarSelect2ConfiguracionProvisiones() {
 
     $cuentaXPagarCP = $('#id_cuenta_por_pagar_configuracion_provisiones').select2({
         theme: 'bootstrap-5',
-        dropdownParent: $('#conceptosNominaForm'),
+        dropdownParent: $('#configuracionProvisionesFormModal'),
         delay: 250,
         placeholder: "Seleccione una cuenta",
         allowClear: true,

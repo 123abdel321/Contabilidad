@@ -10,7 +10,7 @@ use Database\Seeders\Provisionada\BodegasSeeder;
 use Database\Seeders\Provisionada\FamiliasSeeder;
 use Database\Seeders\Provisionada\ImpuestosSeeder;
 use Database\Seeders\Provisionada\FormasPagosSeeder;
-use Database\Seeders\Provisionada\NomPeriodosSeeder;
+// use Database\Seeders\Provisionada\NomPeriodosSeeder;
 use Database\Seeders\Provisionada\PlanCuentasSeeder;
 use Database\Seeders\Provisionada\TipoCuentasSeeder;
 use Database\Seeders\Provisionada\NomConceptosSeeder;
@@ -58,7 +58,7 @@ class ProvisionadaSeeder extends Seeder
         $this->call(ExogenaFormatoColumnasProvisionalSeeder::class);
         $this->call(ExogenaFormatoConceptosProvisionalSeeder::class);
         //NOMINA
-        $this->call(NomPeriodosSeeder::class);
+        // $this->call(NomPeriodosSeeder::class);
 
         DB::statement('SET foreign_key_checks = 1');
     }

@@ -14,7 +14,7 @@
 
                     <input type="text" class="form-control" name="id_familia_up" id="id_familia_up" style="display: none;">
 
-                    <div class="form-group col-12 col-sm-6 col-12 col-sm-6 col-md-6" >
+                    <div class="form-group col-12 col-sm-6 col-md-6" >
                         <label for="example-text-input" class="form-control-label">Código</label>
                         <input type="text" class="form-control form-control-sm" name="codigo_familia" id="codigo_familia">
                         <div class="invalid-feedback">
@@ -22,7 +22,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-6 col-12 col-sm-6 col-md-6" >
+                    <div class="form-group col-12 col-sm-6 col-md-6" >
                         <label for="example-text-input" class="form-control-label">Nombre</label>
                         <input type="text" class="form-control form-control-sm" name="nombre_familia" id="nombre_familia">
                         <div class="invalid-feedback">
