@@ -31,7 +31,9 @@ class BackupDatabases extends Command
         // $empresasActivas = Empresa::where('estado', 1)->first();
         // BackupDatabaseJob::dispatch($empresasActivas);
 
-        $empresasActivas = Empresa::where('estado', 1)->get();
+        $empresasActivas = Empresa::where('estado', 1)
+            ->orderBy('id', 'ASC')
+            ->get();
     
         foreach ($empresasActivas as $empresa) {
             BackupDatabaseJob::dispatch($empresa);
