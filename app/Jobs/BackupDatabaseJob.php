@@ -6,79 +6,82 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\File as HttpFile;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 //MODEL
 use App\Models\Empresas\BackupEmpresa;
 
 
-class BackupDatabaseJob implements ShouldQueue
-
+class BackupDatabaseJob
 {
-    use Dispatchable, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, SerializesModels;
 
     protected $empresa;
     protected $maxBackups = 10;
 
-    public function __construct($empresas)
+    public function __construct($empresa)
     {
-        $this->empresa = $empresas;
+        $this->empresa = $empresa;
     }
 
-    public function handle(): void
+    public function handle()
     {
+        // 1. Configurar conexión a la BD
         copyDBConnection('sam', $this->empresa->token_db);
         setDBInConnection('sam', $this->empresa->token_db);
 
-        // Asegurar que el directorio temporal exista
+        // 2. Crear directorio temporal si no existe
         $tempDir = storage_path('app/temp');
         if (!File::exists($tempDir)) {
             File::makeDirectory($tempDir, 0755, true);
         }
 
-        // Nombre del archivo con fecha y hora
+        // 3. Generar nombre de archivo
         $filename = "{$this->empresa->token_db}_" . date('Y_m_d_H_i_s') . ".sql.gz";
-        $filePath = "{$tempDir}/{$filename}";
-
-        // Ejecutar mysqldump con manejo de credenciales más seguro
+        $filePath = $tempDir . '/' . $filename;
+        
+        // 4. Ejecutar mysqldump
         $dbConfig = config("database.connections.sam");
-
-        // Usar variables de entorno para evitar el warning de password en command line
-        putenv("MYSQL_PWD={$dbConfig['password']}");
-        $command = "mysqldump --host={$dbConfig['host']} --user={$dbConfig['username']} {$this->empresa->token_db} | gzip > {$filePath}";
-
+        $command = sprintf(
+            'mysqldump --host=%s --user=%s --password=%s %s | gzip > %s',
+            escapeshellarg($dbConfig['host']),
+            escapeshellarg($dbConfig['username']),
+            escapeshellarg($dbConfig['password']),
+            escapeshellarg($this->empresa->token_db),
+            escapeshellarg($filePath)
+        );
+        
         exec($command, $output, $resultCode);
-        putenv("MYSQL_PWD");
 
         if ($resultCode !== 0) {
-            \Log::error("Error al generar el backup para {$this->empresa->token_db}", [
-                'output' => $output,
-                'resultCode' => $resultCode
-            ]);
-            return;
+            throw new \RuntimeException("Falló mysqldump: " . implode("\n", $output));
         }
+
+        // 5. Subir a Digital Ocean Spaces (CORRECCIÓN CLAVE)
+        $fileToUpload = new SymfonyFile($filePath); // Usar SymfonyFile aquí
         
-        // Subir a Digital Ocean Spaces
-        $remotePath = "backups-portafolioerp/{$filename}";
-        Storage::disk('do_spaces')->putFileAs("backups-portafolioerp", new File($filePath), $filename, 'public');
+        Storage::disk('do_spaces')->putFileAs(
+            'backups-portafolioerp',
+            $fileToUpload, // Pasar la instancia de archivo, no la facade
+            $filename,
+            ['visibility' => 'public']
+        );
 
-        // Obtener URL pública
-        $url = Storage::disk('do_spaces')->url($remotePath);
+        // 6. Registrar en base de datos
+        $this->registerBackup(
+            $filename,
+            Storage::disk('do_spaces')->url("backups-portafolioerp/{$filename}")
+        );
 
-        // Registrar en la base de datos
-        $this->registerBackup($filename, $url);
-
-        // Limpiar backups antiguos si es necesario
+        // 7. Limpiar backups antiguos
         $this->cleanOldBackups();
 
-        // Eliminar archivo temporal
-        unlink($filePath);
-
-        \Log::info("Backup completado para {$this->empresa->token_db}");
+        // 8. Eliminar archivo temporal
+        File::delete($filePath);
     }
 
     protected function registerBackup($filename, $url)
@@ -101,14 +104,15 @@ class BackupDatabaseJob implements ShouldQueue
             
             foreach ($oldestBackups as $backup) {
                 try {
-                    // Eliminar del almacenamiento
-                    $path = str_replace(Storage::disk('do_spaces')->url(''), '', $backup->url_file);
+                    $path = str_replace(
+                        Storage::disk('do_spaces')->url(''),
+                        '',
+                        $backup->url_file
+                    );
                     Storage::disk('do_spaces')->delete($path);
-                    
-                    // Eliminar registro
                     $backup->delete();
                 } catch (\Exception $e) {
-                    \Log::error("Error al eliminar backup antiguo: " . $e->getMessage());
+                    \Log::error("Error eliminando backup antiguo: " . $e->getMessage());
                 }
             }
         }
