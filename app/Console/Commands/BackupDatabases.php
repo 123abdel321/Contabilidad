@@ -37,6 +37,6 @@ class BackupDatabases extends Command
         //     BackupDatabaseJob::dispatch($empresa);
         // }
         
-        $this->info("Se han programado backups para {$empresasActivas->count()} empresas");
+        \Log::info("Se han programado backups para {$empresasActivas->count()} empresas");
     }
 }
