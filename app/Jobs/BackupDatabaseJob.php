@@ -15,9 +15,10 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 use App\Models\Empresas\BackupEmpresa;
 
 
-class BackupDatabaseJob
+class BackupDatabaseJob implements ShouldQueue
+
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable, Queueable, SerializesModels;
 
     protected $empresa;
     protected $maxBackups = 10;
@@ -32,21 +33,31 @@ class BackupDatabaseJob
         copyDBConnection('sam', $this->empresa->token_db);
         setDBInConnection('sam', $this->empresa->token_db);
 
-        $tables = DB::connection('sam')->select('SHOW TABLES');
-        $tables = array_map(fn($table) => reset($table), $tables);
+        // Asegurar que el directorio temporal exista
+        $tempDir = storage_path('app/temp');
+        if (!File::exists($tempDir)) {
+            File::makeDirectory($tempDir, 0755, true);
+        }
 
         // Nombre del archivo con fecha y hora
         $filename = "{$this->empresa->token_db}_" . date('Y_m_d_H_i_s') . ".sql.gz";
-        $filePath = storage_path("app/temp/{$filename}");
+        $filePath = "{$tempDir}/{$filename}";
 
-        // Configuración de la base de datos
+        // Ejecutar mysqldump con manejo de credenciales más seguro
         $dbConfig = config("database.connections.sam");
-        $command = "mysqldump --host={$dbConfig['host']} --user={$dbConfig['username']} --password={$dbConfig['password']} {$this->empresa->token_db} | gzip > {$filePath}";
+
+        // Usar variables de entorno para evitar el warning de password en command line
+        putenv("MYSQL_PWD={$dbConfig['password']}");
+        $command = "mysqldump --host={$dbConfig['host']} --user={$dbConfig['username']} {$this->empresa->token_db} | gzip > {$filePath}";
 
         exec($command, $output, $resultCode);
+        putenv("MYSQL_PWD");
 
         if ($resultCode !== 0) {
-            \Log::error("Error al generar el backup para {$this->empresa->token_db}");
+            \Log::error("Error al generar el backup para {$this->empresa->token_db}", [
+                'output' => $output,
+                'resultCode' => $resultCode
+            ]);
             return;
         }
         
