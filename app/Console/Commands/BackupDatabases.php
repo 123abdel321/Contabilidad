@@ -28,14 +28,14 @@ class BackupDatabases extends Command
      */
     public function handle()
     {
-        // $empresasActivas = Empresa::where('estado', 1)->first();
-        // BackupDatabaseJob::dispatch($empresasActivas);
+        $empresasActivas = Empresa::where('estado', 1)->first();
+        BackupDatabaseJob::dispatch($empresasActivas);
 
-        $empresasActivas = Empresa::where('estado', 1)->get();
+        // $empresasActivas = Empresa::where('estado', 1)->get();
     
-        foreach ($empresasActivas as $empresa) {
-            BackupDatabaseJob::dispatch($empresa);
-        }
+        // foreach ($empresasActivas as $empresa) {
+        //     BackupDatabaseJob::dispatch($empresa);
+        // }
         
         \Log::info("Se han programado backups para {$empresasActivas->count()} empresas");
     }
