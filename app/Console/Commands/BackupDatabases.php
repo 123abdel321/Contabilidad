@@ -28,9 +28,6 @@ class BackupDatabases extends Command
      */
     public function handle()
     {
-        // $empresasActivas = Empresa::where('estado', 1)->first();
-        // BackupDatabaseJob::dispatch($empresasActivas);
-
         $empresasActivas = Empresa::where('estado', 1)
             ->orderBy('id', 'ASC')
             ->get();
