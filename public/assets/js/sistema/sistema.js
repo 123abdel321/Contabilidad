@@ -102,6 +102,7 @@ var moduloCreado = {
     'novedadesgenerales': false,
     'extracto': false,
     'causar': false,
+    'liquidaciondefinitiva': false,
 };
 
 var moduloRoute = {
@@ -161,7 +162,7 @@ var moduloRoute = {
     'novedadesgenerales': 'capturas',
     'extracto': 'informes',
     'causar': 'capturas',
-
+    'liquidaciondefinitiva': 'capturas',
 }
 
 function iniciarCanalesDeNotificacion () {
@@ -1108,6 +1109,15 @@ function normalizarFecha(fecha) {
     }
     // Si ya tiene hora, la dejamos tal cual
     return fecha;
+}
+
+function formatNumberWithSmallDecimals(number) {
+    const formatted = new Intl.NumberFormat('ja-JP').format(number);
+    const parts = formatted.split('.');
+    if (parts.length > 1) {
+        return `<span class="integer-part">${parts[0]}</span><span class="decimal-part">.${parts[1]}</span>`;
+    }
+    return formatted;
 }
 
 $(document).on('shown.bs.popover', function() {

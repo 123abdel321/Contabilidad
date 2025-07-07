@@ -424,15 +424,6 @@ function initComboMes(inputId) {
     $(`#${inputId}`).append(nuevaOpcion).val(valor).trigger('change'); 
 }
 
-function formatNumberWithSmallDecimals(number) {
-    const formatted = new Intl.NumberFormat('ja-JP').format(number);
-    const parts = formatted.split('.');
-    if (parts.length > 1) {
-        return `<span class="integer-part">${parts[0]}</span><span class="decimal-part">.${parts[1]}</span>`;
-    }
-    return formatted;
-}
-
 function initPrestacionesSociales() {
     prestaciones_sociales_table = $('#prestacionesSocialesTable').DataTable({
         dom: 'Brtip',

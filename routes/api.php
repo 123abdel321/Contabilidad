@@ -49,6 +49,7 @@ use App\Http\Controllers\Capturas\MovimientoInventarioController;
 use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
 use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
 use App\Http\Controllers\Capturas\Nomina\CausarProvicionadaController;
+use App\Http\Controllers\Capturas\Nomina\LiquidacionDefinitivaController;
 //IMPORTADORES
 use App\Http\Controllers\Importador\NitsImportadorController;
 use App\Http\Controllers\Importador\ProductoImportadorController;
@@ -478,7 +479,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('parafiscales', 'generateParafiscales');
             Route::post('parafiscales', 'causarParafiscales');
         });
-        
+        //CAUSAR LIQUIDACIÓN DEFINITIVA
+        Route::controller(LiquidacionDefinitivaController::class)->group(function () {
+            Route::get('liquidacion-definitiva', 'generate');
+        });
         
     });
     
