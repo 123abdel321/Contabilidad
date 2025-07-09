@@ -145,7 +145,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 'cuenta',
                 'anulado',
                 'plazo',
-                DB::raw("GREATEST(DATEDIFF('{$fechaActual}', fecha_manual) - plazo, 0) AS dias_mora"),
+                DB::raw('DATEDIFF(NOW(), fecha_manual) - plazo AS dias_mora'),
                 DB::raw("SUM(debito) - SUM(credito) AS saldo_final"),
                 DB::raw("COUNT(id) AS total_columnas")
             )

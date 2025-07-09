@@ -4,7 +4,7 @@
             <div class="row" style="z-index: 9;">
                 <div class="col-12 col-md-6 col-sm-6">
                     @can('contratos create')
-                        <button type="button" class="btn btn-primary btn-sm" id="createContratos">Agregar <i class="fas fa-plus-circle"></i></button>
+                        <button type="button" class="btn btn-primary btn-sm" id="createContratos">Agregar contrato <i class="fas fa-plus-circle"></i></button>
                     @endcan
                 </div>
                 <div class="col-12 col-md-6 col-sm-6">

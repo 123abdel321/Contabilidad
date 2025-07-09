@@ -29,8 +29,8 @@ trait BegDocumentHelpersTrait
 			$zip = $this->generateZip($factura->documento_referencia_fe, $pdf, $xml);
 
 			Mail::to($email)
-				->cc('noreply@maximoph.com')
-				->bcc('bcc@maximoph.com')
+				->cc('abdel.portafolioerp@gmail.com')
+				->bcc('abdel.portafolioerp@gmail.com')
 				->send(new GeneralEmail($empresa->razon_social, 'emails.capturas.factura', [
 					'cliente' => $factura->cliente,
 					'factura' => $factura,
@@ -38,8 +38,8 @@ trait BegDocumentHelpersTrait
 				], $zip));
 		} else {
 			Mail::to($email)
-				->cc('noreply@maximoph.com')
-				->bcc('bcc@maximoph.com')
+				->cc('abdel.portafolioerp@gmail.com')
+				->bcc('abdel.portafolioerp@gmail.com')
 				->send(new GeneralEmail($empresa->razon_social, 'emails.capturas.factura', [
 					'cliente' => $factura->cliente,
 					'factura' => $factura,

@@ -35,15 +35,15 @@
                 <div class="row" style="width: 100%;">
                     <div class="col-12 col-sm-4 col-md-4" style="text-align: -webkit-center;">
                         <b style="color: #4d4d4d; font-size: 15px;">Devengado</b><br>
-                        <b style="color: #08cc08;" id="devengado_detalle_total">0</b>
+                        <b style="color: #08cc08; font-size: 15px;" id="devengado_detalle_total">0</b>
                     </div>
                     <div class="col-12 col-sm-4 col-md-4" style="text-align: -webkit-center;">
                         <b style="color: #4d4d4d; font-size: 15px;">Deducción</b><br>
-                        <b style="color: #ff0000;" id="deduccion_detalle_total">0</b>
+                        <b style="color: #ff0000; font-size: 15px;" id="deduccion_detalle_total">0</b>
                     </div>
                     <div class="col-12 col-sm-4 col-md-4" style="text-align: -webkit-center;">
                         <b style="color: #4d4d4d; font-size: 15px;">Neto</b><br>
-                        <b style="color: #08cc08;" id="neto_detalle_total">0</b>
+                        <b style="color: #08cc08; font-size: 15px;" id="neto_detalle_total">0</b>
                     </div>
                 </div>
             </div>

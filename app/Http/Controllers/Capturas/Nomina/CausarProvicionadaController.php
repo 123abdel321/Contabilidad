@@ -45,7 +45,7 @@ class CausarProvicionadaController extends Controller
             'required' => 'El campo :attribute es requerido.',
             'exists' => 'El :attribute es inválido.',
             'numeric' => 'El campo :attribute debe ser un valor numérico.',
-            'string' => 'El camNipo :attribute debe ser texto',
+            'string' => 'El campo :attribute debe ser texto',
             'array' => 'El campo :attribute debe ser un arreglo.',
             'date' => 'El campo :attribute debe ser una fecha válida.',
         ];
