@@ -138,18 +138,23 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             ->select(
                 'id_nit',
                 'numero_documento',
+                'documento_referencia',
                 'nombre_nit',
                 'razon_social',
+                'fecha_manual',
                 'apartamentos',
                 'id_cuenta',
                 'cuenta',
                 'anulado',
                 'plazo',
+                'debito',
+                'credito',
+                'saldo_final',
+                'total_columnas',
                 DB::raw('DATEDIFF(NOW(), fecha_manual) - plazo AS dias_mora'),
-                DB::raw("SUM(debito) - SUM(credito) AS saldo_final"),
-                DB::raw("COUNT(id) AS total_columnas")
+                DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos')
             )
-            ->groupByRaw('id_nit, id_cuenta')
+            
             ->orderByRaw('apartamentos')
         ->havingRaw('saldo_final != 0');
 
@@ -159,7 +164,6 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
         $consulta->chunk(233, function ($documentos) {
             foreach ($documentos as $documento) {
-
                 $columnaCuenta = $this->buscarCuenta($documento->cuenta);
 
                 if (!$columnaCuenta) continue;
@@ -170,10 +174,6 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
                 $this->resultadoCarteraCollection[$documento->id_nit]["cuenta_$columnaCuenta"] = $documento->saldo_final;
                 $this->resultadoCarteraCollection[$documento->id_nit]["saldo_final"]+= $documento->saldo_final;
-
-                if ($documento->dias_mora > $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"]) {
-                    $this->resultadoCarteraCollection[$documento->id_nit]["dias_mora"] = $documento->dias_mora;
-                }
             }
             
             unset($documentos);
@@ -238,10 +238,14 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 "PC.cuenta",
                 "PC.nombre AS nombre_cuenta",
                 "PC.naturaleza_cuenta",
+                "PCT.id_tipo_cuenta",
+                "DG.documento_referencia",
                 "DG.fecha_manual",
                 "DG.anulado",
-                "DG.debito",
-                "DG.credito"
+                DB::raw("COUNT(DG.id) AS total_columnas"),
+                DB::raw("SUM(DG.debito) AS debito"),
+                DB::raw("SUM(DG.credito) AS credito"),
+                DB::raw("SUM(DG.debito) - SUM(DG.credito) AS saldo_final"),
             )
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
@@ -253,7 +257,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
 			})
             ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
-            ->where('anulado', 0);
+            ->where('anulado', 0)
+            ->groupByRaw('id_nit, id_cuenta, documento_referencia');
     }
 
     private function buscarCuenta($buscarCuenta)
@@ -273,7 +278,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             'nombre_nit' => $documento->nombre_nit, 
             'numero_documento' => $documento->numero_documento, 
             'saldo_final' => 0, 
-            'dias_mora' => $documento->dias_mora, 
+            'dias_mora' => $documento->dias_mora < 0 ? 0 : $documento->dias_mora, 
             'ubicacion' => $documento->apartamentos, 
             'cuenta_1' => 0, 
             'cuenta_2' => 0, 
