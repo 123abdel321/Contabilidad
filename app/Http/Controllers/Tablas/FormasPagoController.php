@@ -247,7 +247,7 @@ class FormasPagoController extends Controller
                     $this->filterTiposCuenta($formasPago, [2, 8]);
                     break;
                 case 'ventas':
-                    $this->filterTiposCuenta($formasPago, [2, 8]);
+                    $this->filterTiposCuenta($formasPago, [2, 3, 8]);
                     break;
                 default:
                     break;
