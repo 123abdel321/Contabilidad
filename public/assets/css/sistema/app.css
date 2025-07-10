@@ -747,3 +747,32 @@ div.dataTables_processing {
     border: solid 2px #000000;
     border-radius: 10px;
 }
+
+/* START DECIMAL FORMATO */
+.dt-body-right b {
+    font-size: 1em;
+    position: relative;
+}
+.dt-body-right b::after {
+    content: attr(data-decimal);
+    font-size: 0.8em;
+    opacity: 0.8;
+}
+
+.value-div b {
+    position: relative;
+}
+.value-div b::after {
+    content: attr(data-decimal);
+    font-size: 0.8em;
+    opacity: 0.8;
+}
+
+.integer-part {
+    font-size: inherit;
+}
+.decimal-part {
+    font-size: 0.8em;
+    opacity: 0.8;
+}
+/* END DECIMAL FORMATO */

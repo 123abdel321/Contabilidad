@@ -8,10 +8,10 @@
 
     <div class="col-12 col-sm-6 col-md-8" style="margin-top: 15px;">
         @can('liquidacion_definitiva create')
-            <button type="button" class="btn btn-primary btn-sm" id="causarParafiscales" style="float: inline-end;">Guardar liquidación definitiva</button>
-            <button type="button" class="btn btn-primary btn-sm" id="causarParafiscalesLoading" style="opacity: 1; box-shadow: none; display: none; float: inline-end;" disabled>
+            <button type="button" class="btn btn-primary btn-sm" id="causarLiquidacionDefinitiva" style="float: inline-end;">Guardar liquidación definitiva</button>
+            <button type="button" class="btn btn-primary btn-sm" id="causarLiquidacionDefinitivaLoading" style="opacity: 1; box-shadow: none; display: none; float: inline-end;" disabled>
                 <b style="opacity: 0.3; text-transform: capitalize;">Guardar liquidación definitiva</b>
-                <i style="position: absolute; color: white; font-size: 15px; margin-left: -55px; margin-top: 1px;" class="fas fa-spinner fa-spin"></i>
+                <i style="position: absolute; color: white; font-size: 15px; margin-left: -90px; margin-top: 1px;" class="fas fa-spinner fa-spin"></i>
             </button>
         @endcan
     </div>

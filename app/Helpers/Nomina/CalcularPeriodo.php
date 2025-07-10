@@ -18,7 +18,7 @@ class CalcularPeriodo
         $this->periodoPagoDetalleFactory = new PeriodoPagoDetalleFactory();
 	}
 
-    public function calcularNominas($fechaPeriodo = null, $idsEmpleados = null, $idsPeriodos = null)
+    public function calcularNominas(string $fechaPeriodo = null, array $idsEmpleados = null, array $idsPeriodos = null)
     {
         $periodoPagos = [];
         
@@ -114,10 +114,10 @@ class CalcularPeriodo
 		$novedades = $periodoPago->novedades->sortBy(function($novedad, $key) {
 			return $novedad->concepto->id_concepto_porcentaje;
 		});
-
+        
         foreach ($novedades as $novedad) {
-            if(count(explode("liquidacion_: ",$novedad->observacion)) > 1) {
-				// $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleNovedadGeneralLiquidacion($novedad);
+            if(count(explode("liquidacion/:",$novedad->observacion)) > 1) {
+				$periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleNovedadGeneralLiquidacion($novedad);
 			} else {
 				$periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleNovedadGeneral($contrato, $periodoPago, $novedad, $periodoPagoDetalles);
 			}

@@ -7,25 +7,6 @@
         text-transform: uppercase;
     }
 
-    .dt-body-right b {
-        font-size: 1em;
-        position: relative;
-    }
-
-    .dt-body-right b::after {
-        content: attr(data-decimal);
-        font-size: 0.8em;
-        opacity: 0.8;
-    }
-
-    .integer-part {
-        font-size: inherit;
-    }
-    .decimal-part {
-        font-size: 0.8em;
-        opacity: 0.8;
-    }
-
 </style>
 
 <div class="container-fluid py-2">

@@ -26,7 +26,7 @@ function initCombosLiquidacionDefinitiva() {
             }
         },
         ajax: {
-            url: 'api/nit/combo-nit',
+            url: 'api/nit/empleado-activo',
             headers: headers,
             dataType: 'json',
             processResults: function (data) {
@@ -112,7 +112,7 @@ function initTablesLiquidacionDefinitiva() {
             {
                 "data": function (row, type, set){
                     var html = '';
-                    html+= '<span href="javascript:void(0)" class="btn badge bg-gradient-success edit-prestaciones" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    html+= '<span href="javascript:void(0)" class="btn badge bg-gradient-success edit-liquidacion" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
                     return html;
                 }
             },
@@ -146,7 +146,7 @@ function initTablesLiquidacionDefinitiva() {
                     // Si había un grupo anterior, insertar su footer al final de sus datos
                     if (lastGroup !== null && $lastGroupRow) {
                         const footerRow = $(`
-                            <tr class="group-footer-liquidacion_definitiva" style="background-color: white; font-weight: bold;">
+                            <tr class="group-footer-liquidacion_definitiva" data-group="${groupKey}" style="background-color: white; font-weight: bold;">
                                 <td colspan="6" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                                 <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(totals)}</b></td>
                                 <td colspan="2"></td>
@@ -203,6 +203,24 @@ function initTablesLiquidacionDefinitiva() {
             });
         }
     });
+
+    if (liquidacion_definitiva_table) {
+        liquidacion_definitiva_table.on('click', '.edit-liquidacion', function() {
+            var tr = $(this).closest('tr');
+            var row = liquidacion_definitiva_table.row(tr);
+            var rowData = row.data();
+
+            $('#id_liquidacion_definitiva_up').val(row.index());
+            $('#nombre_liquidacion_definitiva').val(rowData.concepto);
+            $('#base_liquidacion_definitiva').val(new Intl.NumberFormat('ja-JP').format(rowData.base));
+            $('#promedio_liquidacion_definitiva').val(new Intl.NumberFormat('ja-JP').format(rowData.promedio));
+            $('#total_liquidacion_definitiva').val(new Intl.NumberFormat('ja-JP').format(rowData.total));
+            $('#observacion_liquidacion_definitiva').val(rowData.observacion);
+
+            $("#textLiquidacionDefinitiva").html(`${rowData.numero_documento} - ${rowData.empleado}`);
+            $('#liquidacionDefinitivaModal').modal('show');
+        });
+    }
 }
 
 $(document).on('change', '#id_empleado_liquidacion_definitiva_filter', function () {
@@ -210,4 +228,87 @@ $(document).on('change', '#id_empleado_liquidacion_definitiva_filter', function 
     if (empleado) {
         liquidacion_definitiva_table.ajax.reload();
     }
+});
+
+$(document).on('click', '#saveLiquidacionDefinitiva', function () {
+    var rowIndex = $('#id_liquidacion_definitiva_up').val();
+
+    var row = liquidacion_definitiva_table.row(rowIndex);
+    var rowData = row.data();
+
+    // Guardar el valor anterior para calcular la diferencia
+    var oldTotal = parseFloat(rowData.total) || 0;
+
+    rowData.base = stringToNumberFloat($('#base_liquidacion_definitiva').val()) || 0;
+    rowData.promedio = stringToNumberFloat($('#promedio_liquidacion_definitiva').val()) || 0;
+    rowData.total = stringToNumberFloat($('#total_liquidacion_definitiva').val()) || 0;
+    rowData.observacion = $("#observacion_liquidacion_definitiva").val();
+    row.data(rowData);
+
+    // Calcular la diferencia
+    var newTotal = parseFloat(rowData.total) || 0;
+    var difference = newTotal - oldTotal;
+
+    // Actualizar el footer correspondiente
+    var groupKey = `${rowData.id_empleado} - ${rowData.fecha_fin_periodo_formatted}`;
+    var $footer = $(`.group-footer-liquidacion_definitiva[data-group="${groupKey}"]`);
+    
+    if ($footer.length) {
+        var currentTotalText = $footer.find('td:eq(1) b').text();
+        var currentTotal = parseFloat(currentTotalText.replace(/[^0-9.-]/g, '')) || 0;
+        var updatedTotal = currentTotal + difference;
+        
+        $footer.find('td:eq(1) b').text(formatNumberWithSmallDecimals(updatedTotal));
+    }
+
+    $('#liquidacionDefinitivaModal').modal('hide');
+    agregarToast('exito', 'Cambios guardados', 'Cambios guardados localmente!', true );
+});
+
+$(document).on('click', '#causarLiquidacionDefinitiva', function () {
+    Swal.fire({
+        title: 'Guardar liquidación definitiva',
+        html: `Se va a guardar la liquidación definitiva, ¿Desea continuar? </b>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Guardar!',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.value){
+
+            $("#causarLiquidacionDefinitiva").hide();
+            $("#causarLiquidacionDefinitivaLoading").show();
+            
+            var liquidacionDefinitivaData = liquidacion_definitiva_table.rows().data().toArray();
+
+            $.ajax({
+                url: base_url + 'liquidacion-definitiva',
+                method: 'POST',
+                data: JSON.stringify({
+                    id_empleado: $('#id_empleado_liquidacion_definitiva_filter').val(),
+                    novedades: JSON.stringify(liquidacionDefinitivaData)
+                }),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                $("#causarLiquidacionDefinitiva").show();
+                $("#causarLiquidacionDefinitivaLoading").hide();
+
+                if(res.success){
+                    agregarToast('exito', 'Guardado exitoso', 'Se guardó la liquidación definitiva con exito!', true );
+                } else {
+                    agregarToast('error', 'Guardado errado', res.message);
+                }
+            }).fail((err) => {
+                $("#causarLiquidacionDefinitiva").show();
+                $("#causarLiquidacionDefinitivaLoading").hide();
+
+                var mensaje = err.responseJSON.message;
+                var errorsMsg = arreglarMensajeError(mensaje);
+                agregarToast('error', 'Guardado errado', errorsMsg);
+            });
+        }
+    });
 });

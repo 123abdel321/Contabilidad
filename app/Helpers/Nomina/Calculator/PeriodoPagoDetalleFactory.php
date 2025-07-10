@@ -74,4 +74,17 @@ class PeriodoPagoDetalleFactory
 			->setBase($base)
 			->getInstance();
 	}
+
+	public function createPeriodoPagoDetalleNovedadGeneralLiquidacion(NomNovedadesGenerales $novedad)
+	{
+		return new NomPeriodoPagoDetalles([
+			'id_concepto' => $novedad->concepto->id,
+			'tipo_unidad' => $novedad->concepto->unidad,
+			'porcentaje' => $novedad->porcentaje ? $novedad->porcentaje : '0,0000',
+			'observacion' => $novedad->observacion,
+			'unidades' => $novedad->unidades,
+			'valor' => $novedad->valor,
+			'base' => $novedad->base
+		]);
+	}
 }

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Helpers\Nomina\CalcularPeriodo;
 use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\Nits;
@@ -37,7 +38,7 @@ class LiquidacionDefinitivaController extends Controller
             'required' => 'El campo :attribute es requerido.',
             'exists' => 'El :attribute es inválido.',
             'numeric' => 'El campo :attribute debe ser un valor numérico.',
-            'string' => 'El camNipo :attribute debe ser texto',
+            'string' => 'El campo :attribute debe ser texto',
             'array' => 'El campo :attribute debe ser un arreglo.',
             'date' => 'El campo :attribute debe ser una fecha válida.',
         ];
@@ -51,6 +52,8 @@ class LiquidacionDefinitivaController extends Controller
     public function generate (Request $request)
     {
         try {
+
+            DB::connection('sam')->beginTransaction();
 
             if (!$empleado = $this->validarEmpleado($request)) {
                 return response()->json([
@@ -78,13 +81,102 @@ class LiquidacionDefinitivaController extends Controller
             ], Response::HTTP_OK);
 
         } catch (Exception $e) {
-
+            
             return response()->json([
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+    }
+
+    public function create(Request $request)
+    {
+        $rules = [
+            'id_empleado' => 'required|exists:sam.nits,id',
+            'novedades' => 'required|json'
+        ];
+        
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => $validator->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        
+        try {
+            DB::connection('sam')->beginTransaction();
+
+            $novedades = json_decode($request->get('novedades'));
+
+            $periodoPagos = NomPeriodoPagos::where('id_empleado', $novedades[0]->id_empleado)
+                ->where('estado', NomPeriodoPagos::ESTADO_PENDIENTE)
+                ->latest('id')
+                ->firstOrFail();
+
+            NomNovedadesGenerales::where('id_periodo_pago', $periodoPagos->id)
+                ->where('observacion', 'LIKE', 'liquidacion/:'.$novedades[0]->id_empleado.'%')
+                ->delete();
+
+            $novedadesData = [];
+
+            foreach ($novedades as $novedad) {
+
+                if (!$novedad->total) {
+                    continue;
+                }
+
+                $observacion = $novedad->observacion ? $novedad->observacion : 'LIQUIDACION DEFINITIVA';
+                
+                $novedadesData[] = [
+                    "id_empleado" => $novedad->id_empleado,
+                    "id_periodo_pago" => $periodoPagos->id,
+                    "id_concepto" => $novedad->id_concepto,
+                    "tipo_unidad" => 2,
+                    "unidades" => '',
+                    "valor" => $novedad->total,
+                    "porcentaje" => '',
+                    "base" => $novedad->base,
+                    "observacion" => "liquidacion/:{$novedad->id_empleado} {$observacion}",
+                    "fecha_inicio" => $novedad->fecha_inicio,
+                    "fecha_fin" => $novedad->fecha_fin,
+                    "hora_inicio" => '',
+                    "hora_fin" => '',
+                    "created_by" => request()->user()->id,
+                    "updated_by" => request()->user()->id,
+                    "created_at" => now(),
+                    "updated_at" => now()
+                ];
+            }
+
+            NomNovedadesGenerales::insert($novedadesData);
+
+            (new CalcularPeriodo())->calcularNominas(
+                CarbonImmutable::parse($periodoPagos->fecha_fin_periodo)->format('Y-m'),
+                [$novedad->id_empleado],
+                [$periodoPagos->id]
+            );
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => [],
+                'message'=> 'Liquidación definitiva guardada con éxito!'
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
     }
 
     protected function calcularDiasLaborados($idEmpleado, $fechaInicio, $fechaFin)
@@ -281,7 +373,13 @@ class LiquidacionDefinitivaController extends Controller
 
     protected function calcularDiasIndemnizacion($contrato, $fechaInicioContrato, $fechaFin)
     {
-        $salarioMinimo = VariablesEntorno::whereNombre('salario_minimo')->first()->valor;
+        $salarioMinimo = VariablesEntorno::whereNombre('salario_minimo')->first();
+        $salarioMinimo = $salarioMinimo ? $salarioMinimo->valor : null;
+
+        if (!$salarioMinimo) {
+            throw new \Exception('El salario minimo no se encuentra configurado en el entorno.', 400);
+        }
+
         $diasTotales = $fechaInicioContrato->diffInDays($fechaFin);
         $diasIndemnizacion = 0;
 

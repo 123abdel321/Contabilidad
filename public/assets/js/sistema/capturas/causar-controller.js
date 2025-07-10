@@ -312,13 +312,29 @@ function initTablesCausar() {
                 }
                 return '';
             }},
-            {"data": function (row, type, set){  
-                return `<b style="color: #01a401; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(row.devengados)}</b>`;
-            }, className: 'dt-body-right'},
-            {"data": function (row, type, set){  
-                const deducciones = parseInt(row.deducciones) ? row.deducciones * -1 : 0;
-                return `<b style="color: red; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(deducciones)}</b>`;
-            }, className: 'dt-body-right'},
+            {
+                "data": function (row, type, set){
+                    if (row.devengados) {
+                        const formatted = new Intl.NumberFormat('ja-JP').format(row.devengados);
+                        const parts = formatted.split('.');
+                        return `<b style="color: #01a401; font-weight: 600;" ${parts.length > 1 ? `data-decimal=".${parts[1]}"` : ''}>${parts[0]}</b>`;
+                    }
+                    return `<b style="color: #01a401; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                }, 
+                className: 'dt-body-right'
+            },
+            {
+                "data": function (row, type, set){
+                    const deducciones = parseInt(row.deducciones) ? row.deducciones * -1 : 0;
+                    if (deducciones) {
+                        const formatted = new Intl.NumberFormat('ja-JP').format(deducciones);
+                        const parts = formatted.split('.');
+                        return `<b style="color: red; font-weight: 600;" ${parts.length > 1 ? `data-decimal=".${parts[1]}"` : ''}>${parts[0]}</b>`;
+                    }
+                    return `<b style="color: red; font-weight: 600;">${new Intl.NumberFormat('ja-JP').format(0)}</b>`;
+                }, 
+                className: 'dt-body-right'
+            },
             {
                 "data": "unidades",
                 render: function(data, type, row) {
@@ -393,9 +409,21 @@ function initTablesCausar() {
 
                     const totalesDetalle = res.totales;
 
-                    $("#devengado_detalle_total").html(new Intl.NumberFormat('ja-JP').format(totalesDetalle.devengados));
-                    $("#deduccion_detalle_total").html(new Intl.NumberFormat('ja-JP').format(totalesDetalle.deducciones));
-                    $("#neto_detalle_total").html(new Intl.NumberFormat('ja-JP').format(totalesDetalle.neto));
+                    const formattedDevengados = new Intl.NumberFormat('ja-JP').format(totalesDetalle.devengados);
+                    const partsDevengados = formattedDevengados.split('.');
+                    console.log('formattedDevengados: ',formattedDevengados);
+                    $("#devengado_detalle_total").html(partsDevengados[0]);
+                    $("#devengado_detalle_total").attr("data-decimal", partsDevengados[1] ? '.'+partsDevengados[1] : '');
+
+                    const formattedDeducciones = new Intl.NumberFormat('ja-JP').format(totalesDetalle.deducciones);
+                    const partsDeducciones = formattedDeducciones.split('.');
+                    $("#deduccion_detalle_total").html(partsDeducciones[0]);
+                    $("#deduccion_detalle_total").attr("data-decimal", partsDeducciones[1] ? '.'+partsDeducciones[1] : '');
+
+                    const formattedNeto = new Intl.NumberFormat('ja-JP').format(totalesDetalle.neto);
+                    const partsNeto = formattedNeto.split('.');
+                    $("#neto_detalle_total").html(partsNeto[0]);
+                    $("#neto_detalle_total").attr("data-decimal", partsNeto[1] ? '.'+partsNeto[1] : '');
 
                     $("#periodoPagoDetalleModal").modal('show');
                     setTimeout(function(){

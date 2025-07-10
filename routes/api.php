@@ -482,6 +482,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //CAUSAR LIQUIDACIÓN DEFINITIVA
         Route::controller(LiquidacionDefinitivaController::class)->group(function () {
             Route::get('liquidacion-definitiva', 'generate');
+            Route::post('liquidacion-definitiva', 'create');
         });
         
     });
