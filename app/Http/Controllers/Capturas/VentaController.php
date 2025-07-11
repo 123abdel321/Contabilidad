@@ -251,7 +251,7 @@ class VentaController extends Controller
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
                     $cuentaRecord = $productoDb->familia->{$cuentaKey};
                     $keyTotalItem = $cuenta["valor"];
-
+                    
                     //VALIDAR PRODUCTO INVENTARIO
                     if ($productoDb->tipo_producto == 1 && $cuentaKey == 'cuenta_inventario') {
                         continue;
@@ -263,6 +263,10 @@ class VentaController extends Controller
 
                     //VALIDAR COSTO PRODUCTO
                     if ($productoDb->precio_inicial <= 0 && $cuentaKey == 'cuenta_costos') {
+                        continue;
+                    }
+
+                    if (!$cuentaRecord && $cuentaKey == 'cuenta_inventario') {
                         continue;
                     }
 
