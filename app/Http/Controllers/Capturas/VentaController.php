@@ -266,7 +266,7 @@ class VentaController extends Controller
                         continue;
                     }
 
-                    if (!$cuentaRecord && $cuentaKey == 'cuenta_inventario') {
+                    if (!$productoDb->familia->id_cuenta_inventario && $cuentaKey == 'cuenta_inventario') {
                         continue;
                     }
 
