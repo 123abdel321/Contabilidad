@@ -303,11 +303,13 @@ class ProcessInformeBalance implements ShouldQueue
                 $query->where('PC.cuenta', '>=', (string)$this->request['cuenta_desde']);
             })
             ->when(isset($this->request['cuenta_hasta']), function ($query) {
-                $query->where('PC.cuenta', '<=', (string)$this->request['cuenta_hasta'])
+                $query->where(function ($q) {
+                    $q->where('PC.cuenta', '<=', (string)$this->request['cuenta_hasta'])
                     ->orWhere('PC.cuenta', 'LIKE', (string)$this->request['cuenta_hasta'] . '%');
+                });
             })
             ->when(isset($this->request['id_nit']), function ($query) {
-                $query->where('DG.id_nit', 'LIKE', $this->request['id_nit'] . '%');
+                $query->where('DG.id_nit', $this->request['id_nit']);
             });
 
         return $documentosQuery;
@@ -344,11 +346,13 @@ class ProcessInformeBalance implements ShouldQueue
                 $query->where('PC.cuenta', '>=', (string)$this->request['cuenta_desde']);
             })
             ->when(isset($this->request['cuenta_hasta']), function ($query) {
-                $query->where('PC.cuenta', '<=', (string)$this->request['cuenta_hasta'])
+                $query->where(function ($q) {
+                    $q->where('PC.cuenta', '<=', (string)$this->request['cuenta_hasta'])
                     ->orWhere('PC.cuenta', 'LIKE', (string)$this->request['cuenta_hasta'] . '%');
+                });
             })
             ->when(isset($this->request['id_nit']), function ($query) {
-                $query->where('DG.id_nit', 'LIKE', $this->request['id_nit'] . '%');
+                $query->where('DG.id_nit', $this->request['id_nit']);
             });
 
         return $documentosQuery;

@@ -142,7 +142,13 @@ function balanceInit() {
         "columns": [
             {"data": function (row, type, set){
                 if(row.cuenta && row.auxiliar != 5){
-                    return row.cuenta +' - '+ row.nombre_cuenta;
+                    return row.cuenta;
+                }
+                return '';
+            }},
+            {"data": function (row, type, set){
+                if(row.cuenta && row.auxiliar != 5){
+                    return row.nombre_cuenta;
                 }
                 return '';
             }},
@@ -174,7 +180,7 @@ function balanceInit() {
             },
         ]
     });
-    balance_table.column(1).visible(false);
+    balance_table.column(2).visible(false);
 
     $('#id_nit_balance').select2({
         theme: 'bootstrap-5',
@@ -237,8 +243,8 @@ function generarConsultaBalance() {
     $("#balance_diferencia").text('$0');
 
     var tipoInformeBalance = $("#tipo_informe_balance").val();
-    balance_table.column(1).visible(false);
-    if (tipoInformeBalance == '2') balance_table.column(1).visible(true);
+    balance_table.column(2).visible(false);
+    if (tipoInformeBalance == '2') balance_table.column(2).visible(true);
 
     var url = base_url + 'balances';
     url+= '?fecha_desde='+$('#fecha_manual_balance').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');

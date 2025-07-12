@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
+            <th>Nombre</th>
             <th>Nit</th>
             <th>Saldo anterior</th>
             <th>Debito</th>
