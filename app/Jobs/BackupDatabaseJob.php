@@ -104,13 +104,12 @@ class BackupDatabaseJob implements ShouldQueue
             
             foreach ($oldestBackups as $backup) {
                 try {
-                    $path = str_replace(
-                        Storage::disk('do_spaces')->url(''),
-                        '',
-                        $backup->url_file
-                    );
+                    // Construir la ruta directamente usando el prefijo y el nombre de archivo
+                    $path = 'backups-portafolioerp/' . $backup->file_name;
+                    
                     Storage::disk('do_spaces')->delete($path);
                     $backup->delete();
+                    
                 } catch (\Exception $e) {
                     \Log::error("Error eliminando backup antiguo: " . $e->getMessage());
                 }
