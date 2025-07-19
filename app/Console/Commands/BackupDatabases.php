@@ -30,6 +30,7 @@ class BackupDatabases extends Command
     {
         $empresasActivas = Empresa::where('estado', 1)
             ->orderBy('id', 'ASC')
+            ->take(10)
             ->get();
     
         foreach ($empresasActivas as $empresa) {
