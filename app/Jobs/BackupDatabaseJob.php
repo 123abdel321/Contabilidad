@@ -117,7 +117,6 @@ class BackupDatabaseJob implements ShouldQueue
                     if (Storage::disk('do_spaces')->exists($path)) {
                         Storage::disk('do_spaces')->delete($path);
                         $backup->delete();
-                        \Log::info("Backup eliminado: {$path}");
                     } else {
                         \Log::warning("Archivo no encontrado en Spaces: {$path}");
                         $backup->delete(); // Eliminar el registro de todos modos
