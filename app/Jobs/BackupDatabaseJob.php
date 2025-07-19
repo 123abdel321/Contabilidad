@@ -106,9 +106,22 @@ class BackupDatabaseJob implements ShouldQueue
                 try {
                     // Construir la ruta directamente usando el prefijo y el nombre de archivo
                     $path = 'backups-portafolioerp/' . $backup->file_name;
+
+                    // Validación adicional
+                    if (empty(trim($path))) {
+                        \Log::error("Path vacío para backup ID: {$backup->id}");
+                        continue;
+                    }
                     
-                    Storage::disk('do_spaces')->delete($path);
-                    $backup->delete();
+                    // Verificar si el archivo existe antes de intentar borrarlo
+                    if (Storage::disk('do_spaces')->exists($path)) {
+                        Storage::disk('do_spaces')->delete($path);
+                        $backup->delete();
+                        \Log::info("Backup eliminado: {$path}");
+                    } else {
+                        \Log::warning("Archivo no encontrado en Spaces: {$path}");
+                        $backup->delete(); // Eliminar el registro de todos modos
+                    }
                     
                 } catch (\Exception $e) {
                     \Log::error("Error eliminando backup antiguo: " . $e->getMessage());
