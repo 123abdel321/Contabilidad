@@ -264,7 +264,7 @@ class NotaCreditoController extends Controller
                 $documentoGeneral->addRow($docDevolucion, $cuentaDevolucion->naturaleza_ventas);
 
                 //AGREGAR COSTO
-                if ($totalesProducto->subtotal) {
+                if ($totalesProducto->subtotal && $productoDb->familia->cuenta_compra) {
                     $cuentaCosto = $productoDb->familia->cuenta_compra;
                     $cuentaOpuestoCosto = PlanCuentas::CREDITO == $cuentaCosto->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
 
@@ -283,7 +283,7 @@ class NotaCreditoController extends Controller
                 }
 
                 //AGREGAR DESCUENTO
-                if ($totalesProducto->descuento) {
+                if ($totalesProducto->descuento && $productoDb->familia->cuenta_venta_descuento) {
                     $cuentaDescuento = $productoDb->familia->cuenta_venta_descuento;
                     $cuentaOpuestoDescuento = PlanCuentas::CREDITO == $cuentaDescuento->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
 
@@ -302,7 +302,7 @@ class NotaCreditoController extends Controller
                 }
 
                 //AGREGAR IVA
-                if ($totalesProducto->iva) {
+                if ($totalesProducto->iva && $productoDb->familia->cuenta_venta_devolucion_iva) {
                     $cuentaIva = $productoDb->familia->cuenta_venta_devolucion_iva;
 
                     $docDevolucion = new DocumentosGeneral([
@@ -320,22 +320,24 @@ class NotaCreditoController extends Controller
                 }
 
                 //AGREGAR RETE FUENTE
-                if ($this->totalesFactura['total_rete_fuente']) {
+                if ($this->totalesFactura['total_rete_fuente'] && $this->totalesFactura['id_cuenta_rete_fuente']) {
                     $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
-                    $cuentaOpuestoRetencion = PlanCuentas::CREDITO == $cuentaRetencion->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-
-                    $doc = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaRetencion->id,
-                        "id_nit" => $cuentaRetencion->exige_nit ? $notaCredito->id_cliente : null,
-                        "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                        "concepto" => $cuentaRetencion->exige_concepto ? 'TOTAL: '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
-                        "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $notaCredito->documento_referencia : null,
-                        "debito" => $cuentaRetencion->naturaleza_ventas == PlanCuentas::DEBITO ? $this->totalesFactura['total_rete_fuente'] : 0,
-                        "credito" => $cuentaRetencion->naturaleza_ventas == PlanCuentas::CREDITO ? $this->totalesFactura['total_rete_fuente'] : 0,
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($doc, $cuentaOpuestoRetencion);
+                    if ($cuentaRetencion) {
+                        $cuentaOpuestoRetencion = PlanCuentas::CREDITO == $cuentaRetencion->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
+    
+                        $doc = new DocumentosGeneral([
+                            "id_cuenta" => $cuentaRetencion->id,
+                            "id_nit" => $cuentaRetencion->exige_nit ? $notaCredito->id_cliente : null,
+                            "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $notaCredito->id_centro_costos : null,
+                            "concepto" => $cuentaRetencion->exige_concepto ? 'TOTAL: '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
+                            "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $notaCredito->documento_referencia : null,
+                            "debito" => $cuentaRetencion->naturaleza_ventas == PlanCuentas::DEBITO ? $this->totalesFactura['total_rete_fuente'] : 0,
+                            "credito" => $cuentaRetencion->naturaleza_ventas == PlanCuentas::CREDITO ? $this->totalesFactura['total_rete_fuente'] : 0,
+                            "created_by" => request()->user()->id,
+                            "updated_by" => request()->user()->id
+                        ]);
+                        $documentoGeneral->addRow($doc, $cuentaOpuestoRetencion);
+                    }
                 }
 
                 $totalProductos = $this->totalesFactura['total_factura'];
