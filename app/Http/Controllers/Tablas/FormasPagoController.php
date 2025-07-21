@@ -235,19 +235,37 @@ class FormasPagoController extends Controller
             
             switch ($request->get("type")) {
                 case 'gasto':
-                    $this->filterTiposCuenta($formasPago, [2, 4, 7]);
+                    $this->filterTiposCuenta($formasPago, [
+                        FacFormasPago::TIPO_CUENTA_CAJA_BANCOS,
+                        FacFormasPago::TIPO_CUENTA_CXP,
+                        FacFormasPago::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC
+                    ]);
                     break;
                 case 'compras':
-                    $this->filterTiposCuenta($formasPago, [2, 7]);
+                    $this->filterTiposCuenta($formasPago, [
+                        FacFormasPago::TIPO_CUENTA_CAJA_BANCOS,
+                        FacFormasPago::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC
+                    ]);
                     break;
                 case 'egresos':
-                    $this->filterTiposCuenta($formasPago, [2, 3, 7]);
+                    $this->filterTiposCuenta($formasPago, [
+                        FacFormasPago::TIPO_CUENTA_CAJA_BANCOS,
+                        FacFormasPago::TIPO_CUENTA_CXC,
+                        FacFormasPago::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC
+                    ]);
                     break;
                 case 'ingresos':
-                    $this->filterTiposCuenta($formasPago, [2, 8]);
+                    $this->filterTiposCuenta($formasPago, [
+                        FacFormasPago::TIPO_CUENTA_CAJA_BANCOS,
+                        FacFormasPago::TIPO_CUENTA_ANTICIPO_CLIENTES_XP
+                    ]);
                     break;
                 case 'ventas':
-                    $this->filterTiposCuenta($formasPago, [2, 3, 8]);
+                    $this->filterTiposCuenta($formasPago, [
+                        FacFormasPago::TIPO_CUENTA_CAJA_BANCOS,
+                        FacFormasPago::TIPO_CUENTA_CXC,
+                        FacFormasPago::TIPO_CUENTA_ANTICIPO_CLIENTES_XP
+                    ]);
                     break;
                 default:
                     break;

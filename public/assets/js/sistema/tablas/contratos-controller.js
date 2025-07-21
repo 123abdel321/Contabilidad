@@ -12,15 +12,8 @@ var $comboAdministradoraRiesgoContrato = null;
 function contratosInit() {
 
     cargarTablasContratos();
-    cargarSelect2Contratos();
-
-    $('[data-toggle="popover"]').popover({
-        trigger: 'hover',
-        html: true,
-        placement: 'top',
-        container: 'body',
-        customClass: 'popover-formas-pagos'
-    });
+    cargarCombosContratos();
+    cargarPopoverContratos();
 
     $('.water').hide();
 }
@@ -366,7 +359,7 @@ function cargarTablasContratos() {
     contrato_table.ajax.reload();
 }
 
-function cargarSelect2Contratos() {
+function cargarCombosContratos() {
     $comboNitContrato = $('#id_empleado_contrato_nomina').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -681,6 +674,16 @@ function cargarSelect2Contratos() {
                 };
             }
         }
+    });
+}
+
+function cargarPopoverContratos() {
+    $('[data-toggle="popover"]').popover({
+        trigger: 'hover',
+        html: true,
+        placement: 'top',
+        container: 'body',
+        customClass: 'popover-formas-pagos'
     });
 }
 

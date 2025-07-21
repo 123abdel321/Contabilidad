@@ -761,9 +761,12 @@ $('.form-control').keyup(function() {
 
 $(document).on('click', '#createProducto', function () {
     clearFormProductos();
-    
+
     if (primeraBodegas.length == 1) addBodegaToProduct(primeraBodegas[0], false);
-    else addBodegaToProduct(primeraBodegas[0]);
+    else {
+        agregarToast('error', 'Error al crear producto', 'No se encontraron bodegas en el sistema', true);
+        return;
+    };
     
     $("#botton-agregar-bodega").show();
     $('#input-iva-porcentaje').hide();

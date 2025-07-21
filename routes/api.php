@@ -46,6 +46,7 @@ use App\Http\Controllers\Capturas\NotaCreditoController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
 
+use App\Http\Controllers\Capturas\Nomina\VacacionesController;
 use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
 use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
 use App\Http\Controllers\Capturas\Nomina\CausarProvicionadaController;
@@ -483,6 +484,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(LiquidacionDefinitivaController::class)->group(function () {
             Route::get('liquidacion-definitiva', 'generate');
             Route::post('liquidacion-definitiva', 'create');
+        });
+        //CAUSAR VACACIONES
+        Route::controller(VacacionesController::class)->group(function () {
+            Route::get('vacaciones', 'generate');
+            Route::get('vacaciones-calcular', 'calcular');
+            Route::post('vacaciones', 'create');
+            Route::delete('vacaciones', 'delete');
         });
         
     });

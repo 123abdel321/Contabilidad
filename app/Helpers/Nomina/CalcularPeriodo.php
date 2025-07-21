@@ -199,7 +199,7 @@ class CalcularPeriodo
         return $periodos;
     }
 
-    protected function getPeriodoPago ($contrato, $fecha)
+    public function getPeriodoPago ($contrato, $fecha)
     {
         $periodo = $contrato->periodo;
 

@@ -90,7 +90,7 @@ class NomContratos extends Model
 
     public function periodo_pago()
     {
-        return $this->belongsTo(NomPeriodoPagos::class, 'id', 'id_contrato');
+        return $this->hasMany(NomPeriodoPagos::class, 'id_contrato', 'id');
 	}
 
     public function concepto_basico()

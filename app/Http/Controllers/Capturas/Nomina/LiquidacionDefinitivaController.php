@@ -23,12 +23,12 @@ use App\Models\Sistema\Nomina\NomPeriodoPagoDetalles;
 class LiquidacionDefinitivaController extends Controller
 {
     protected $messages = null;
-    private const CONCEPTOS = [
+    protected const CONCEPTOS = [
         'PRIMA' => 32,
         'VACACIONES' => 33,
         'CESANTIAS' => 30,
         'INTERESES_CESANTIAS' => 31,
-        'INDEMNIZACION' => 34, // Asumido, ajustar según tu sistema
+        'INDEMNIZACION' => 35,
         'HORAS_ORDINARIAS' => 1
     ];
 

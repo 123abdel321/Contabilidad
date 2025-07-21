@@ -103,6 +103,7 @@ var moduloCreado = {
     'extracto': false,
     'causar': false,
     'liquidaciondefinitiva': false,
+    'vacaciones': false,
 };
 
 var moduloRoute = {
@@ -163,6 +164,7 @@ var moduloRoute = {
     'extracto': 'informes',
     'causar': 'capturas',
     'liquidaciondefinitiva': 'capturas',
+    'vacaciones': 'capturas',
 }
 
 function iniciarCanalesDeNotificacion () {
