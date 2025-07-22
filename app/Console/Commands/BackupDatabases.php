@@ -29,6 +29,7 @@ class BackupDatabases extends Command
     public function handle()
     {
         $empresasActivas = Empresa::where('estado', 1)
+            ->where('id', 6)
             ->orderBy('id', 'ASC')
             ->get();
     
