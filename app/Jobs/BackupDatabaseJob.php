@@ -54,6 +54,8 @@ class BackupDatabaseJob implements ShouldQueue
             escapeshellarg($this->empresa->token_db),
             escapeshellarg($filePath)
         );
+
+        \Log::info("Comando mysqldump: {$command}");
         
         exec($command, $output, $resultCode);
 
