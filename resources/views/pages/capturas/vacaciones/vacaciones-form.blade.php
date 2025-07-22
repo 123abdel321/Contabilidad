@@ -24,6 +24,7 @@
                                 title="<b class='titulo-popover'>Empleado:</b> Seleccione el empleado al que se asociará este contrato. Debe estar previamente registrado en el sistema."
                                 data-toggle="popover" data-html="true"></i>
                             <select name="id_empleado_vacaciones" id="id_empleado_vacaciones" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required></select>
+                            <div class="invalid-feedback">El empleado es requerido</div>
                         </div>
 
                         <div class="form-group col-12 col-sm-6 col-md-6">
@@ -32,11 +33,11 @@
                                 title="<b class='titulo-popover'>Método:</b> Seleccione 'Fijo' si el salario del empleado es estable, o 'Variable' si se promedia con otros conceptos."
                                 data-toggle="popover" data-html="true"></i>
                             <select name="metodo_vacaciones" id="metodo_vacaciones" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
-                                <option value="">Seleccione un metodo de liquidación</option>
+                                <option value="">Seleccione un método de liquidación</option>
                                 <option value="0">Fijo</option>
                                 <option value="1">Variable</option>
                             </select>
-                            <div class="invalid-feedback">El método es requerido</div>
+                            <div class="invalid-feedback">El método de liquidación es requerido</div>
                         </div>
 
                         <div class="form-group col-12 col-sm-6 col-md-6">
@@ -48,19 +49,19 @@
                         </div>
 
                         <div class="form-group col-12 col-sm-6 col-md-6">
-                            <label for="dias_no_habiles_vacaciones">Días no hábiles</label>
+                            <label for="dias_no_habiles_vacaciones">Días no hábiles <span style="color: red">*</span></label>
                             <i class="fas fa-info icon-info" style="float: inline-end;"
                                 title="<b class='titulo-popover'>Días no hábiles:</b> Domingos o festivos dentro del período de vacaciones que no cuentan como hábiles."
                                 data-toggle="popover" data-html="true"></i>
-                            <input type="text" data-type="integer" class="form-control form-control-sm text-align-right" name="dias_no_habiles_vacaciones" id="dias_no_habiles_vacaciones" onfocus="this.select();" value="0" onfocusout="focusOutCalcularFechaFin()" onkeypress="enterPressCalcularFechaFin(event)">
+                            <input type="text" data-type="integer" class="form-control form-control-sm text-align-right" name="dias_no_habiles_vacaciones" id="dias_no_habiles_vacaciones" onfocus="this.select();" value="0" onfocusout="focusOutCalcularFechaFin()" onkeypress="enterPressCalcularFechaFin(event)" required>
                         </div>
 
                         <div class="form-group col-12 col-sm-6 col-md-6">
-                            <label for="dias_compensados_vacaciones">Días compensados en dinero</label>
+                            <label for="dias_compensados_vacaciones">Días compensados en dinero <span style="color: red">*</span></label>
                             <i class="fas fa-info icon-info" style="float: inline-end;"
                                 title="<b class='titulo-popover'>Días compensados:</b> Días de vacaciones que serán pagados en dinero en lugar de ser disfrutados."
                                 data-toggle="popover" data-html="true"></i>
-                            <input type="text" data-type="integer" class="form-control form-control-sm text-align-right" name="dias_compensados_vacaciones" id="dias_compensados_vacaciones" onfocus="this.select();" value="0" onfocusout="focusOutCalcularFechaFin()" onkeypress="enterPressCalcularFechaFin(event)">
+                            <input type="text" data-type="integer" class="form-control form-control-sm text-align-right" name="dias_compensados_vacaciones" id="dias_compensados_vacaciones" onfocus="this.select();" value="0" onfocusout="focusOutCalcularFechaFin()" onkeypress="enterPressCalcularFechaFin(event)" required>
                         </div>
 
                         <div class="form-group col-12 col-sm-6 col-md-6">
@@ -68,7 +69,7 @@
                             <i class="fas fa-info icon-info" style="float: inline-end;"
                                 title="<b class='titulo-popover'>Fecha de inicio:</b> Fecha en la que el empleado comenzará a disfrutar sus vacaciones."
                                 data-toggle="popover" data-html="true"></i>
-                            <input name="fecha_inicio_vacaciones" id="fecha_inicio_vacaciones" class="form-control form-control-sm" type="date" required onfocusout="focusOutCalcularFechaFin()" onkeypress="enterPressCalcularFechaFin(event)">
+                            <input name="fecha_inicio_vacaciones" id="fecha_inicio_vacaciones" class="form-control form-control-sm" type="date" required onfocusout="focusOutCalcularFechaFin()" onkeypress="enterPressCalcularFechaFin(event)" required>
                             <div class="invalid-feedback">La fecha de inicio es requerida</div>
                         </div>
 

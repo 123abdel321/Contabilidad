@@ -185,8 +185,7 @@ class VacacionesController extends Controller
             
             (new CalcularPeriodo())->calcularNominas(
                 CarbonImmutable::parse($vacaciones->fecha_fin)->format('Y-m'),
-                [$vacaciones->id_empleado],
-                [$periodoPagos->id]
+                [$vacaciones->id_empleado]
             );
 
             DB::connection('sam')->commit();
