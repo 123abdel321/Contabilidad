@@ -326,10 +326,9 @@ class PlanCuentaController extends Controller
                 ]);
             
             $tiposCuenta = $request->get('id_tipo_cuenta');
+            PlanCuentasTipo::where('id_cuenta', $request->get('id'))->delete();
 
             if (count($tiposCuenta) > 0) {
-                PlanCuentasTipo::where('id_cuenta', $request->get('id'))->delete();
-                
                 foreach ($tiposCuenta as $tipoCuenta) {
                     PlanCuentasTipo::create([
                         'id_cuenta' => $request->get('id'),
