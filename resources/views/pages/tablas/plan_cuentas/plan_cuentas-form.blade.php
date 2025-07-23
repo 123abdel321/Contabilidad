@@ -92,23 +92,23 @@
                         </div>
 
                         <div class="form-check form-group col-12 col-sm-6 col-md-6">
-                            <input name="exige_nit" id="exige_nit" type="checkbox" class="form-check-input" style="margin-left: -13px;">
+                            <input name="exige_nit" id="exige_nit" type="checkbox" class="form-check-input" style="margin-left: -13px;" disabled checked>
                             <label class="custom-control-label" for="exige_nit">Exige nit</label>
                         </div>
 
                         <div class="form-check form-group col-12 col-sm-6 col-md-6">
                             <input name="exige_documento_referencia" id="exige_documento_referencia" type="checkbox" class="form-check-input" style="margin-left: -13px;">
-                            <label class="custom-control-label" for="exige_nit">Exige Dcto refe</label>
+                            <label class="custom-control-label" for="exige_documento_referencia">Exige Dcto refe</label>
                         </div>
 
                         <div class="form-check form-group col-12 col-sm-6 col-md-6">
-                            <input name="exige_concepto" id="exige_concepto" type="checkbox" class="form-check-input" style="margin-left: -13px;">
-                            <label class="custom-control-label" for="exige_nit">Exige concepto</label>
+                            <input name="exige_concepto" id="exige_concepto" type="checkbox" class="form-check-input" style="margin-left: -13px;" disabled checked>
+                            <label class="custom-control-label" for="exige_concepto">Exige concepto</label>
                         </div>
 
                         <div class="form-check form-group col-12 col-sm-6 col-md-6">
                             <input name="exige_centro_costos" id="exige_centro_costos" type="checkbox" class="form-check-input" style="margin-left: -13px;">
-                            <label class="custom-control-label" for="exige_nit">Exige centro costos</label>
+                            <label class="custom-control-label" for="exige_centro_costos">Exige centro costos</label>
                         </div>
 
                         <div class="form-group form-group col-12 col-sm-6 col-md-6">
