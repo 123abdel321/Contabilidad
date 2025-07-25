@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfCartera;
+use App\Models\Sistema\PlanCuentasTipo;
 
 class ProcessInformeCartera implements ShouldQueue
 {
@@ -808,9 +809,24 @@ class ProcessInformeCartera implements ShouldQueue
 
     private function tipoCuentas ()
     {
-        if ($this->request['tipo_informe'] == 'por_cobrar') return [3,7];
-        if ($this->request['tipo_informe'] == 'por_pagar') return [4,8];
-        return [3,7,4,8];
+        if ($this->request['tipo_informe'] == 'por_cobrar') {
+            return [
+                PlanCuentasTipo::TIPO_CUENTA_CXC,
+                PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC
+            ];
+        }
+        if ($this->request['tipo_informe'] == 'por_pagar') {
+            return [
+                PlanCuentasTipo::TIPO_CUENTA_CXP,
+                PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_CLIENTES_XP
+            ];
+        }
+        return [
+            PlanCuentasTipo::TIPO_CUENTA_CXC,
+            PlanCuentasTipo::TIPO_CUENTA_CXP,
+            PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_CLIENTES_XP,
+            PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC
+        ];
     }
 
     private function calcularTotalAbono ()

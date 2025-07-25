@@ -25,6 +25,7 @@ use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\CentroCostos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\ConReciboPagos;
+use App\Models\Sistema\PlanCuentasTipo;
 use App\Models\Sistema\DocumentosGeneral;
 use App\Models\Sistema\ConReciboDetalles;
 use App\Models\Sistema\ArchivosGenerales;
@@ -103,7 +104,7 @@ class RecibosController extends Controller
                     $fechaManual = isset($reciboEdit['detalles']) ? $reciboEdit['detalles'][0]['fecha_manual'] : $reciboEdit['fecha_manual'];
                 }
             }
-
+            
             if (!$idNit && !$reciboEdit) {
                 return response()->json([
                     'success'=>	true,
@@ -114,7 +115,7 @@ class RecibosController extends Controller
             
             $extractos = (new Extracto(
                 $idNit,
-                [3,7],
+                [PlanCuentasTipo::TIPO_CUENTA_CXC, PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC],
                 null,
                 $fechaManual
             ))->actual()->get();
@@ -169,8 +170,9 @@ class RecibosController extends Controller
 
                 if (isset($extractos)) {
                     foreach ($extractos as $key => $extracto) {
-                        $indice = array_search($extracto->documento_referencia, array_column($detalles, 'documento_referencia'));
-                        if (!$indice && $indice != 0) {
+                        $indiceDocRef = array_search($extracto->documento_referencia, array_column($detalles, 'documento_referencia'));
+                        $indiceCuenta = array_search($extracto->id_cuenta, array_column($detalles, 'id_cuenta'));
+                        if (!(is_numeric($indiceDocRef) && is_numeric($indiceCuenta))) {
                             $dataRecibos[] = $this->formatExtracto($extracto);
                         }
                     }
