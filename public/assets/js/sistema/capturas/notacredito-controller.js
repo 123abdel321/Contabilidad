@@ -134,7 +134,7 @@ function notacreditoInit () {
         dom: 'Brtip',
         paging: true,
         responsive: false,
-        processing: true,
+        processing: false,
         serverSide: true,
         fixedHeader: true,
         deferLoading: 0,
@@ -415,7 +415,7 @@ function iniciarNotaCredito(event) {
 
     if(event.keyCode != 13) return;
 
-    nota_credito_table_facturas.ajax.reload(event);
+    nota_credito_table_facturas.ajax.reload();
     $("#modalFacturasDevolucion").modal('show');
 }
 
