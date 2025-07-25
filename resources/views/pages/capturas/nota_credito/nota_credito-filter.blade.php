@@ -10,7 +10,7 @@
         <div id="collapseNotaCreditoGeneral" class="accordion-collapse collapse show" data-bs-parent="#accordionRental">
             <div class="accordion-body text-sm" style="padding: 0 !important;">
 
-                <form id="notaCreditoFilterForm" class="needs-validation row" style="margin-top: 10px;" novalidate>
+                <form id="notaCreditoFilterForm" class="needs-validation row" style="margin-top: 10px;" onsubmit="return false;" novalidate>
 
                     <div class="form-group col-6 col-sm-4 col-md-3">
                         <label>Cliente<span style="color: red">*</span></label>
@@ -51,8 +51,8 @@
                     </div>
 
                     <div class="form-group col-6 col-sm-4 col-md-2">
-                        <label for="example-text-input" class="form-control-label">No. factura <span style="color: red">*</span></label>
-                        <input type="text" class="form-control form-control-sm" name="consecutivo_nota_credito" id="consecutivo_nota_credito" required>
+                        <label for="consecutivo_nota_credito" class="form-control-label">No. factura <span style="color: red">*</span></label>
+                        <input type="text" class="form-control form-control-sm" name="consecutivo_nota_credito" id="consecutivo_nota_credito" onkeydown="iniciarNotaCredito(event)" required>
                         <i class="fa fa-spinner fa-spin fa-fw nota-credito-load" id="consecutivo_nota_credito_loading" style="display: none; margin-top: -22px; float: right;"></i>
                         <div class="invalid-feedback" id="error_consecutivo_nota_credito">
                             El No. factura requerido

@@ -411,6 +411,14 @@ $("#id_resolucion_nota_credito").on('change', function(event) {
     consecutivoSiguienteNotaCredito();
 });
 
+function iniciarNotaCredito(event) {
+
+    if(event.keyCode != 13) return;
+
+    nota_credito_table_facturas.ajax.reload(event);
+    $("#modalFacturasDevolucion").modal('show');
+}
+
 function consecutivoSiguienteNotaCredito() {
     var id_resolucion = $('#id_resolucion_nota_credito').val();
     var fecha_manual = $('#fecha_manual_nota_credito').val();
