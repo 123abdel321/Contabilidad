@@ -452,6 +452,13 @@ class VentaController extends Controller
                             ProcessConsultarFE::dispatch($venta->id, $ventaElectronica["zip_key"], $request->user()->id, $empresa->id)->delay(now()->addSeconds(10));
                         }
                     }
+                    if (!$ventaElectronica["zip_key"] && $ventaElectronica["status"] == 500) {
+                        return response()->json([
+                            "success"=>false,
+                            'data' => [],
+                            "message"=>$ventaElectronica["error_message"] 
+                        ], 422);
+                    }
                 }
 
                 if ($ventaElectronica['status'] == 200) {
@@ -752,7 +759,7 @@ class VentaController extends Controller
         $this->calcularTotales($request->get('productos'));
         $this->calcularFormasPago($request->get('pagos'));
         $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
-        
+
         $venta = FacVentas::create([
             'id_cliente' => $request->get('id_cliente'),
             'id_resolucion' => $request->get('id_resolucion'),
@@ -1073,7 +1080,8 @@ class VentaController extends Controller
             $cuentaRetencion = $productoDb->familia->cuenta_venta_retencion;
             if ($cuentaRetencion && $cuentaRetencion->impuesto) {
                 $impuesto = $cuentaRetencion->impuesto;
-                if (floatval($impuesto->porcentaje) > $this->totalesFactura['porcentaje_rete_fuente']) {
+                $baseActual = floatval($impuesto->base);
+                if (floatval($impuesto->porcentaje) > $this->totalesFactura['porcentaje_rete_fuente'] && $baseActual > floatval($this->totalesFactura['tope_retencion'])) {
                     $this->totalesFactura['porcentaje_rete_fuente'] = floatval($impuesto->porcentaje);
                     $this->totalesFactura['tope_retencion'] = floatval($impuesto->base);
                     $this->totalesFactura['id_cuenta_rete_fuente'] = $cuentaRetencion->id;

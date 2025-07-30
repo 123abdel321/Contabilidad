@@ -68,7 +68,6 @@ abstract class AbstractFESender
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		
 		$params = $this->getParams();
-
 		$url = $this->getUrl() . $setTestId;
 		$response = Http::withHeaders([
 			'Content-Type' => 'application/json',
@@ -80,7 +79,7 @@ abstract class AbstractFESender
 		
 		info(json_encode($data));
 		
-		if ($data->status == 200) {
+		if (property_exists($data, 'status') && $data->status == 200) {
 			return [
 				"status" => $data->status,
 				"cufe" => $data->response['cufe'],
@@ -89,23 +88,41 @@ abstract class AbstractFESender
 			];
 		}
 
-		if (!property_exists($data, 'data')) {
-			return [
-				"status" => $data->status,
-				"message_object" => $data->message,
-				"error_message" => $data->errors,
-				"zip_key" => null
-			];
+		if (property_exists($data, 'response')) {
+			$response = $data->response;
+			if (array_key_exists('unexpected', $response)) {
+				$erroresOrganizados = [];
+
+				foreach ($response['unexpected'] as $error) {
+					// Dividir cada error en la parte de la regla y el mensaje
+					$partes = explode(', ', $error, 2);
+					
+					if (count($partes) === 2) {
+						$regla = $partes[0];
+						$mensaje = $partes[1];
+						
+						// Agregar al arreglo organizado
+						$erroresOrganizados[$regla] = [$mensaje];
+					}
+				}
+
+				return [
+					"status" => 500,
+					"message_object" => 'Error al generar la factura',
+					"error_message" => $erroresOrganizados,
+					"zip_key" => null
+				];
+			}
 		}
 
-		if ($data->status >= 500) {
+		if (property_exists($data, 'status') && $data->status >= 500) {
 			return [
 				"status" => 500,
 				"message_object" => ["Error interno: https://fe.portafolioerp.com"]
 			];
 		}
 
-		if ($data->status >= 400) {
+		if (property_exists($data, 'status') && $data->status >= 400) {
 			
 			$statusDescription = $data->data['StatusDescription'];
 			$errorMessage = $data->data['ErrorMessage'];
@@ -126,6 +143,15 @@ abstract class AbstractFESender
 				"mensaje" => $data->message,
 				"xml" => $data->invoicexml,
 				"data" => $data,
+				"zip_key" => null
+			];
+		}
+
+		if (!property_exists($data, 'data')) {
+			return [
+				"status" => $data->status,
+				"message_object" => $data->message,
+				"error_message" => $data->errors,
 				"zip_key" => null
 			];
 		}

@@ -1616,14 +1616,13 @@ function saveVenta() {
             disabledFormasPagoVenta();
 
         } else {
-            var mensaje = res.mensages;
-            var errorsMsg = "";
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
+
+            guardandoVenta = false;
+            $("#crearCapturaVenta").show();
+            $("#crearCapturaVentaLoading").hide();
+            
+            var mensaje = res.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
             agregarToast('error', 'Creación errada', errorsMsg);
         }
     }).fail((err) => {
