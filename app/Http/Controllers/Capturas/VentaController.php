@@ -470,6 +470,18 @@ class VentaController extends Controller
                         $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
                         $venta->fe_zip_key = $ventaElectronica['zip_key'];
                         $venta->save();
+
+                        if ($venta->cliente->email) {
+                            $pdf = (new VentasPdf($empresa, $venta))->buildPdf()->getPdf();
+
+                            $this->sendEmailFactura(
+                                $request->user()['has_empresa'],
+                                $venta->cliente->email,
+                                $venta,
+                                $pdf
+                            );
+                        }
+
                     }
                 }
             }

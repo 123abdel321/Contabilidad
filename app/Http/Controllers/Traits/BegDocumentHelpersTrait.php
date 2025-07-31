@@ -29,8 +29,8 @@ trait BegDocumentHelpersTrait
 			$zip = $this->generateZip($factura->documento_referencia_fe, $pdf, $xml);
 
 			Mail::to($email)
-				->cc('abdel.portafolioerp@gmail.com')
-				->bcc('abdel.portafolioerp@gmail.com')
+				// ->cc('abdel.portafolioerp@gmail.com')
+				// ->bcc('abdel.portafolioerp@gmail.com')
 				->send(new GeneralEmail($empresa->razon_social, 'emails.capturas.factura', [
 					'cliente' => $factura->cliente,
 					'factura' => $factura,
@@ -38,8 +38,8 @@ trait BegDocumentHelpersTrait
 				], $zip));
 		} else {
 			Mail::to($email)
-				->cc('abdel.portafolioerp@gmail.com')
-				->bcc('abdel.portafolioerp@gmail.com')
+				// ->cc('abdel.portafolioerp@gmail.com')
+				// ->bcc('abdel.portafolioerp@gmail.com')
 				->send(new GeneralEmail($empresa->razon_social, 'emails.capturas.factura', [
 					'cliente' => $factura->cliente,
 					'factura' => $factura,
@@ -53,8 +53,8 @@ trait BegDocumentHelpersTrait
     public function getXml(FacVentas $documento)
 	{
 		$bearerToken = VariablesEntorno::where('nombre', 'token_key_fe')->first();
-        $bearerToken = $bearerToken ? $bearerToken->valor	: '';
-		$url = 'https://fe.portafolioerp.com/api/ubl2.1/invoice/xml?number='.$documento->documento_referencia_fe;;
+        $bearerToken = $bearerToken ? $bearerToken->valor : '';
+		$url = 'https://fe.portafolioerp.com/api/ubl2.1/invoice/xml?number='.$documento->documento_referencia_fe;
 
 		$response = Http::withHeaders([
 			'Content-Type' => 'application/json',
@@ -65,7 +65,11 @@ trait BegDocumentHelpersTrait
 			->throw()
 			->json();
 
-		return base64_decode($response['base64Bytes']);
+		if (rray_key_exists("base64Bytes", $response)) {
+			return base64_decode($response['base64Bytes']);
+		}
+
+		return '';
 	}
 
     public function isFe(FacVentas $factura)
