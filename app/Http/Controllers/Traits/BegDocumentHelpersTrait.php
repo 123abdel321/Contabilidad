@@ -65,7 +65,7 @@ trait BegDocumentHelpersTrait
 			->throw()
 			->json();
 
-		if (rray_key_exists("base64Bytes", $response)) {
+		if (array_key_exists("base64Bytes", $response)) {
 			return base64_decode($response['base64Bytes']);
 		}
 
