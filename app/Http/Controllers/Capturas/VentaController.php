@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;  
 use Illuminate\Support\Facades\Validator;
 //HELPERS
+use App\Helpers\Extracto;
 use App\Helpers\Documento;
 use App\Helpers\Printers\VentasPdf;
 use App\Helpers\Printers\VentasInformeZ;
@@ -27,6 +28,7 @@ use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacVentaPagos;
+use App\Models\Sistema\PlanCuentasTipo;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Empresas\UsuarioPermisos;
@@ -1054,7 +1056,7 @@ class VentaController extends Controller
     {
         $tiposCuenta = $formaPago->cuenta->tipos_cuenta;
         foreach ($tiposCuenta as $tipoCuenta) {
-            if ($tipoCuenta->id_tipo_cuenta == 8) {
+            if ($tipoCuenta->id_tipo_cuenta == PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_CLIENTES_XP) {
                 $anticipoCuenta = (new Extracto(
                     $idNit,
                     null,
