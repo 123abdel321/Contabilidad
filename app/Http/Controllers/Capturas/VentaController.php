@@ -192,6 +192,7 @@ class VentaController extends Controller
             //CREAR FACTURA VENTA
             $this->nit = $this->findCliente($request->get('id_cliente'));
             $venta = $this->createFacturaVenta($request);
+            $enviarFacturaElectronica = false;
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE VENTAS
             $documentoGeneral = new Documento(
@@ -474,14 +475,7 @@ class VentaController extends Controller
                         $venta->save();
 
                         if ($venta->cliente->email) {
-                            $pdf = (new VentasPdf($empresa, $venta))->buildPdf()->getPdf();
-
-                            $this->sendEmailFactura(
-                                $request->user()['has_empresa'],
-                                $venta->cliente->email,
-                                $venta,
-                                $pdf
-                            );
+                            $enviarFacturaElectronica = true;
                         }
 
                     }
@@ -489,6 +483,17 @@ class VentaController extends Controller
             }
 
             DB::connection('sam')->commit();
+
+            if ($enviarFacturaElectronica) {
+                $pdf = (new VentasPdf($empresa, $venta))->buildPdf()->getPdf();
+
+                $this->sendEmailFactura(
+                    $request->user()['has_empresa'],
+                    $venta->cliente->email,
+                    $venta,
+                    $pdf
+                );
+            }
 
             return response()->json([
 				'success'=>	true,
