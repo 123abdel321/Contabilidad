@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Capturas;
 
 use DB;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Jobs\ProcessConsultarFE;
 use App\Http\Controllers\Controller;
