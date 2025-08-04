@@ -219,7 +219,7 @@ class NotaCreditoController extends Controller
                     $notaCredito->bodegas()->save($movimiento);
 
                     //AGREGAR INVENTARIO
-                    if ($productoDb->precio_inicial) {
+                    if ($productoDb->precio_inicial && $productoDb->familia->cuenta_costos) {
                         $cuentaCosto = $productoDb->familia->cuenta_costos;
                         $cuentaOpuestoCosto = PlanCuentas::CREDITO == $cuentaCosto->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
 
