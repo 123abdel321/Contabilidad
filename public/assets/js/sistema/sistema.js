@@ -1021,13 +1021,15 @@ function arreglarMensajeError(mensaje) {
         for (field in mensaje) {
             var errores = mensaje[field];
             for (campo in errores) {
-                errorsMsg += field+": "+errores[campo]+" <br>";
+                errorsMsg += `<b>${field}:</b> ${errores[campo]} <br>`;
             }
         };
     }
+
     else if (typeof mensaje === 'string') {
         errorsMsg = mensaje;
     }
+
     return errorsMsg;
 }
 

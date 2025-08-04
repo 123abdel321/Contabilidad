@@ -28,11 +28,13 @@ use App\Http\Controllers\Tablas\Nomina\ConfiguracionProvisiones;
 use App\Http\Controllers\Tablas\Nomina\AdministradorasController;
 use App\Http\Controllers\Tablas\Nomina\ConceptosNominaController;
 //INFORMES
+use App\Http\Controllers\Informes\ImpuestosController;
 use App\Http\Controllers\Informes\ResultadosController;
 use App\Http\Controllers\Informes\EstadoActualController;
 use App\Http\Controllers\Informes\ResumenCarteraController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
 use App\Http\Controllers\Informes\ResumenComprobantesController;
+use App\Http\Controllers\Informes\DocumentosGeneralesController;
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\PagosController;
@@ -43,6 +45,7 @@ use App\Http\Controllers\Capturas\ReservaController;
 use App\Http\Controllers\Capturas\RecibosController;
 use App\Http\Controllers\Capturas\ParqueaderoController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
+use App\Http\Controllers\Capturas\VentasGeneralesController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
 
@@ -152,18 +155,24 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('cartera-find', 'App\Http\Controllers\Informes\CarteraController@find');
         Route::post('cartera-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
         //CARTERA
-        Route::get('impuestos', 'App\Http\Controllers\Informes\ImpuestosController@generate');
-        Route::get('impuestos-show', 'App\Http\Controllers\Informes\ImpuestosController@show');
-        Route::get('impuestos-find', 'App\Http\Controllers\Informes\ImpuestosController@find');
-        // Route::post('impuestos-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
+        Route::controller(ImpuestosController::class)->group(function () {
+            Route::get('impuestos', 'generate');
+            Route::get('documentos', 'show');
+            Route::get('impuestos-find', 'find');
+        });
         //DOCUMENTOS GENERALES
-        Route::get('documentos-generales', 'App\Http\Controllers\Informes\DocumentosGeneralesController@generate');
-        Route::get('documentos-generales-show', 'App\Http\Controllers\Informes\DocumentosGeneralesController@show');
-        Route::post('documentos-generales-delete', 'App\Http\Controllers\Informes\DocumentosGeneralesController@delete');
-        Route::post('documentos-generales-excel', 'App\Http\Controllers\Informes\DocumentosGeneralesController@exportExcel');
+        Route::controller(DocumentosGeneralesController::class)->group(function () {
+            Route::get('documentos-generales', 'generate');
+            Route::get('documentos-generales-show', 'show');
+            Route::post('documentos-generales-delete', 'delete');
+            Route::post('documentos-generales-excel', 'exportExcel');
+            Route::post('documentos-generales-pdf', 'exportPdf');
+        });
         //VENTAS GENERALES
-        Route::get('ventas-generales', 'App\Http\Controllers\Informes\VentasGeneralesController@generate');
-        Route::get('ventas-generales-show', 'App\Http\Controllers\Informes\VentasGeneralesController@show');
+        Route::controller(VentasGeneralesController::class)->group(function () {
+            Route::get('ventas-generales', 'generate');
+            Route::get('ventas-generales-show', 'show');
+        });
         //INFORME ESTADO ACTUAL
         Route::controller(EstadoActualController::class)->group(function () {
             Route::get('estado-actual', 'generate');
@@ -444,6 +453,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //CAPTURA NOTA CREDITO
         Route::controller(NotaCreditoController::class)->group(function () {
             Route::get('nota-credito/factura-detalle', 'detalleFactura');
+            Route::post('nota-credito-fe', 'facturacionElectronica');
             Route::post('nota-credito', 'create');
         });
         //UBICACIONES

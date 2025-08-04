@@ -47,6 +47,7 @@ class VentaController extends Controller
     protected $nit = null;
     protected $bodega = null;
     protected $resolucion = null;
+    protected $ivaIncluido = null;
 	protected $messages = null;
     protected $ventaData = [];
     protected $totalesPagos = [
@@ -229,6 +230,11 @@ class VentaController extends Controller
                     ], 422);
                 }
 
+                $costo = $producto->costo;
+                if ($this->ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
+                    $costo = round((float)$producto->costo / (1 + ($producto->iva_porcentaje / 100)), 2);
+                }
+
                 //CREAR VENTA DETALLE
                 FacVentaDetalles::create([
                     'id_venta' => $venta->id,
@@ -239,8 +245,8 @@ class VentaController extends Controller
                     'id_cuenta_venta_descuento' => $productoDb->familia->id_cuenta_venta_descuento,
                     'descripcion' => $productoDb->codigo.' - '.$productoDb->nombre,
                     'cantidad' => $producto->cantidad,
-                    'costo' => $producto->costo,
-                    'subtotal' => $producto->costo * $producto->cantidad,
+                    'costo' => $costo,
+                    'subtotal' => $costo * $producto->cantidad,
                     'descuento_porcentaje' => $producto->descuento_porcentaje,
                     'descuento_valor' => $producto->descuento_valor,
                     'iva_porcentaje' => $producto->iva_porcentaje,
@@ -444,7 +450,6 @@ class VentaController extends Controller
             //FACTURAR ELECTRONICAMENTE
             if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
                 $ventaElectronica = (new VentaElectronicaSender($venta))->send();
-
                 if ($ventaElectronica["status"] >= 400) {
                     if ($ventaElectronica["zip_key"]) {
                         $venta->fe_zip_key = $ventaElectronica["zip_key"];
@@ -460,7 +465,7 @@ class VentaController extends Controller
                         return response()->json([
                             "success"=>false,
                             'data' => [],
-                            "message"=>$ventaElectronica["error_message"] 
+                            "message" => $ventaElectronica["error_message"] 
                         ], 422);
                     }
                 }
@@ -473,6 +478,7 @@ class VentaController extends Controller
                         $ventaElectronica['status'] = 200;
                         $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
                         $venta->fe_zip_key = $ventaElectronica['zip_key'];
+                        $venta->fe_xml_file = $ventaElectronica['xml_url'];
                         $venta->save();
 
                         if ($venta->cliente->email) {
@@ -536,7 +542,8 @@ class VentaController extends Controller
                 'comprobante',
                 'detalles',
                 'vendedor.nit',
-                'pagos'
+                'pagos',
+                'factura'
             )
             ->select(
                 '*',
@@ -545,6 +552,7 @@ class VentaController extends Controller
                 'created_by',
                 'updated_by'
             )
+            // ->first();
             ->take($rowperpage);
         
         if ($request->get('id_cliente')) {
@@ -596,7 +604,8 @@ class VentaController extends Controller
         $totalDataNotas = $this->queryTotalesVentaCosto($request, true)->select(
             DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
             DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
-            DB::raw("SUM(FVD.total) AS total_venta")
+            DB::raw("SUM(FVD.total) AS total_venta"),
+            "FVNC.*"
         )->get();
 
         if ($request->get('detallar_venta') == 'si') {
@@ -647,6 +656,7 @@ class VentaController extends Controller
                 "updated_by" => $value->updated_by,
                 "detalle" => $detallar ? false : true,
                 "resolucion" => $resolucion,
+                "factura" => $value->factura ?? null,
                 'fe_codigo_identificador' => $value->fe_codigo_identificador
             ];
             if ($detallar) {
@@ -959,7 +969,7 @@ class VentaController extends Controller
                 return response()->json([
                     "success" => false,
                     'data' => [],
-                    "message" => $ventaElectronica['message_object']
+                    "message" => $ventaElectronica["error_message"]
                 ], 422);
             }
 
@@ -971,6 +981,7 @@ class VentaController extends Controller
                     $ventaElectronica['status'] = 200;
                     $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
                     $venta->fe_zip_key = $ventaElectronica['zip_key'];
+                    $venta->fe_xml_file = $ventaElectronica['xml_url'];
                     $venta->save();
                 }
             }
@@ -1081,7 +1092,7 @@ class VentaController extends Controller
     private function calcularTotales ($productos)
     {
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
-        $ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
+        $this->ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
         $responsabilidades = $this->getResponsabilidades();
         
         foreach ($productos as $producto) {
@@ -1132,6 +1143,7 @@ class VentaController extends Controller
             }
 
             $subtotal = ($producto->cantidad * $costo) - $producto->descuento_valor;
+
             $this->totalesFactura['subtotal']+= $subtotal;
             $this->totalesFactura['total_iva']+= $iva;
             $this->totalesFactura['total_descuento']+= $producto->descuento_valor;
@@ -1211,11 +1223,12 @@ class VentaController extends Controller
             ->leftJoin('fac_venta_detalles AS FVD', 'FV.id', 'FVD.id_venta')
             ->leftJoin('fac_productos AS FP', 'FVD.id_producto', 'FP.id')
             ->leftJoin('fac_venta_pagos AS FVP', 'FV.id', 'FVP.id_venta')
+            ->leftJoin('fac_ventas AS FVNC', 'FV.id_factura', 'FVNC.id')
             ->when(true, function ($query) use ($notas) {
                 if ($notas) {
-                    $query->whereNotNull('id_factura');
+                    $query->whereNotNull('FV.id_factura');
                 } else {
-                    $query->whereNull('id_factura');
+                    $query->whereNull('FV.id_factura');
                 }
             })
             ->when($request->get('id_cliente') ? true : false, function ($query) use ($request) {

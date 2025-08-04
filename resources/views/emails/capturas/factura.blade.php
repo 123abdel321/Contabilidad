@@ -441,7 +441,7 @@
           <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
 		  	<tr>
 				<td class="email-masthead">
-					<a href="https://begranda.com" class="f-fallback email-masthead_name">
+					<a href="https://portafolioerp.com/" class="f-fallback email-masthead_name">
 						<img style='max-height:200px;max-width: 490px;' src="{{$empresa->logo}}">
 					</a>
 				</td>

@@ -6,7 +6,7 @@
 				Si no desea seguir recibiendo estos correos, presione el boton de
 				unsubscribe</p>
 			<p class="f-fallback sub">
-				<a href="https://begranda.com/unsubscribe/?mail={{$factura->email}}">Unsubscribe</a>
+				<a href="https://portafolioerp.com/unsubscribe/?mail={{$factura->email}}">Unsubscribe</a>
 			</p>
 		</td>
 	</tr>

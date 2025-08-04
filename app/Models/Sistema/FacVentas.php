@@ -39,6 +39,7 @@ class FacVentas extends Model
         'fe_estado_acuse',
         'fe_codigo_qr',
         'fe_zip_key',
+        'fe_xml_file',
         'created_by',
         'updated_by'
     ];

@@ -2,9 +2,9 @@
 
 namespace App\Helpers\FacturaElectronica;
 
-class VentaElectronicaSender extends AbstractFESender
+class NotaCreditoElectronicaSender extends AbstractFESender
 {
-	private $endpoint = '/invoice';
+	private $endpoint = '/credit-note';
 
 	public function getEndpoint(): string
 	{
@@ -16,12 +16,23 @@ class VentaElectronicaSender extends AbstractFESender
 		return [
 			'payment_form' => $this->paymentForm(),
 			'customer' => $this->customer(),
-			'invoice_lines' => $this->invoiceLines(),
-			'legal_monetary_totals' => $this->legalMonetaryTotals()
+			'legal_monetary_totals' => $this->legalMonetaryTotals(),
+			'credit_note_lines' => $this->invoiceLines(),
+			'billing_reference' => $this->creditNote()
 		];
 	}
 
-	public function getRelationShips(): array
+	private function creditNote()
+	{
+		$data = [
+			"number" => $this->factura->factura->consecutivo,
+			"uuid" =>  $this->factura->factura->cufe,
+			"issue_date" => date_format(date_create($this->factura->created_at), 'Y-m-d')
+		];
+		return $data;
+	}
+
+	public function getRelationShips() : array
 	{
 		return [
 			'cliente',
@@ -29,7 +40,7 @@ class VentaElectronicaSender extends AbstractFESender
 			'resolucion',
 			'detalles.cuenta_iva',
 			'detalles.cuenta_retencion',
-			'detalles.producto'
+			'detalles.producto',
 		];
 	}
 
@@ -56,5 +67,4 @@ class VentaElectronicaSender extends AbstractFESender
 			'payable_amount' => $this->factura->total_factura + $this->factura->total_rete_fuente, // Valor total a pagar
 		];
 	}
-
 }

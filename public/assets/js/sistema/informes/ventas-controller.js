@@ -88,9 +88,12 @@ function ventasInit() {
                         html+= '<span id="imprimirventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info imprimir-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">PDF &nbsp;<i class="fas fa-print"></i></span>';
                     }
                     
-                    if (row.resolucion && !row.resolucion.fe_codigo_identificador && !row.fe_codigo_identificador){
+                    if (row.resolucion && !row.fe_codigo_identificador){
                         html+= '&nbsp;<span id="enviarfeventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary enviar-fe-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">Enviar FE &nbsp;<i class="fas fa-share"></i></span>';
                         html+= '&nbsp;<span id="enviarfeventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="margin-bottom: 0rem !important; color: white; background-color: white !important; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                    } else if (row.factura && row.factura.resolucion && !row.fe_codigo_identificador) {
+                        html+= '&nbsp;<span id="enviarnceventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary enviar-nce-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">Enviar NCE &nbsp;<i class="fas fa-share"></i></span>';
+                        html+= '&nbsp;<span id="enviarnceventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="margin-bottom: 0rem !important; color: white; background-color: white !important; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
                     }
 
                     if (row.resolucion && row.fe_codigo_identificador) {
@@ -342,6 +345,36 @@ $(document).on('click', '.enviar-fe-venta', function () {
         agregarToast('error', 'Envio a la dian errado', errorsMsg);
     });
 });
+
+$(document).on('click', '.enviar-nce-venta', function () {
+    var id = this.id.split('_')[1];
+    $("#enviarnceventa_"+id).hide();
+    $("#enviarnceventaloading_"+id).show();
+    $.ajax({
+        url: base_url + 'nota-credito-fe',
+        method: 'POST',
+        data: JSON.stringify({
+            id_nota_credito: id
+        }),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        ventas_table.ajax.reload(function (res) {
+            showTotalsVentas(res);
+        });
+    }).fail((err) => {
+        $("#enviarnceventa_"+id).show();
+        $("#enviarnceventaloading_"+id).hide();
+
+        $("#crearCapturaVenta").show();
+        $("#crearCapturaVentaLoading").hide();
+
+        const mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Envio a la dian errado', errorsMsg);
+    });
+});
+
 //RENVIAR EMAIL FACTURA
 $(document).on('click', '.reenviar-email-venta', function () {
 
@@ -498,7 +531,7 @@ function showTotalsVentas(res) {
     var countD = new CountUp('total_utilidad_ventas', 0, total_utilidad);
         countD.start();
 
-    var countE = new CountUp('total_porcentaje_ventas', 0, parseFloat(porcentaje_utilidad).toFixed(2));
+    var countE = new CountUp('total_porcentaje_ventas', 0, porcentaje_utilidad ? parseFloat(porcentaje_utilidad).toFixed(2) : 100);
         countE.start();
 }
 

@@ -43,6 +43,7 @@ return new class extends Migration
             $table->boolean('fe_estado_acuse')->nullable()->comment('0: Pendiente, 1: Aprobada, 2: Rechazada');
             $table->string('fe_codigo_qr', 1000)->nullable();
             $table->string('fe_zip_key', 50)->nullable();
+            $table->string('fe_xml_file', 200)->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->unique(['consecutivo', 'id_resolucion']);

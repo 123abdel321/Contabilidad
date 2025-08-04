@@ -3,14 +3,22 @@
 namespace App\Http\Controllers\Capturas;
 
 use DB;
-use App\Helpers\Documento;
 use Illuminate\Http\Request;
+use App\Jobs\ProcessConsultarFE;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Traits\BegConsecutiveTrait;
+//HELPERS
+use App\Helpers\Documento;
+use App\Helpers\Printers\VentasPdf;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
+use App\Helpers\FacturaElectronica\NotaCreditoElectronicaSender;
+//TRAITS
+use App\Http\Controllers\Traits\BegConsecutiveTrait;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
+use App\Http\Controllers\Traits\BegFacturacionElectronica;
 //MODELS
 use App\Models\Sistema\Nits;
+use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\FacFactura;
 use App\Models\Sistema\FacBodegas;
@@ -29,6 +37,8 @@ use App\Models\Sistema\FacProductosBodegasMovimiento;
 class NotaCreditoController extends Controller
 {
     use BegConsecutiveTrait;
+    use BegDocumentHelpersTrait;
+    use BegFacturacionElectronica;
 
     protected $bodega = null;
     protected $facturaVentas = null;
@@ -151,6 +161,9 @@ class NotaCreditoController extends Controller
 
         try {
             DB::connection('sam')->beginTransaction();
+
+            $enviarFacturaElectronica = false;
+            $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
             //CREAR NOTA CREDITO
             $notaCredito = $this->createNotaCredito($request);
 
@@ -387,7 +400,76 @@ class NotaCreditoController extends Controller
                 ], 422);
             }
 
+            if ($this->facturaVentas->fe_codigo_identificador) {
+                $notaCreditoElectronica = (new NotaCreditoElectronicaSender($notaCredito))->send();
+
+                if ($notaCreditoElectronica["status"] >= 400) {
+                    if ($notaCreditoElectronica["zip_key"]) {
+                        $notaCredito->fe_zip_key = $notaCreditoElectronica["zip_key"];
+                        $notaCredito->save();
+
+                        if ($notaCreditoElectronica["message_object"] == 'Batch en proceso de validación.') {
+                            //JOB CONSULTAR FACTURA EN 1MN
+                            ProcessConsultarFE::dispatch($notaCredito->id, $notaCreditoElectronica["zip_key"], $request->user()->id, $empresa->id);
+
+                            DB::connection('sam')->commit();
+
+                            return response()->json([
+                                "success" => false,
+                                'data' => [],
+                                "message" => 'Batch en proceso de validación, el sistema le notificará una vez haya consultado la información'
+                            ], 300);
+                        }
+
+                    }
+                    if (!$notaCreditoElectronica["zip_key"] && $notaCreditoElectronica["status"] == 500) {
+                        return response()->json([
+                            "success"=>false,
+                            'data' => [],
+                            "message" => $notaCreditoElectronica["error_message"] 
+                        ], 422);
+                    }
+
+                    DB::connection('sam')->commit();
+
+                    return response()->json([
+                        "success" => false,
+                        'data' => [],
+                        "message" => $notaCreditoElectronica["error_message"]
+                    ], 422);
+                }
+
+                if ($notaCreditoElectronica["status"] == 200) {
+                    $feSended = $notaCreditoElectronica['status'] == 200;
+                    $hasCufe = (isset($notaCreditoElectronica['cufe']) && $notaCreditoElectronica['cufe']);
+
+                    if($feSended || $hasCufe){
+                        $notaCreditoElectronica['status'] = 200;
+                        $notaCredito = $this->SetFeFields($notaCredito, $notaCreditoElectronica['cufe'], $empresa->nit);
+                        $notaCredito->fe_zip_key = $notaCreditoElectronica['zip_key'];
+                        $notaCredito->fe_xml_file = $notaCreditoElectronica['xml_url'];
+                        $notaCredito->save();
+
+                        if ($notaCredito->cliente->email) {
+                            $enviarFacturaElectronica = true;
+                        }
+
+                    }
+                }
+            }
+
             DB::connection('sam')->commit();
+
+            // if ($enviarFacturaElectronica) {
+            //     $pdf = (new VentasPdf($empresa, $notaCredito))->buildPdf()->getPdf();
+
+            //     $this->sendEmailFactura(
+            //         $request->user()['has_empresa'],
+            //         $notaCredito->cliente->email,
+            //         $notaCredito,
+            //         $pdf
+            //     );
+            // }
 
             return response()->json([
                 'success'=>	true,
@@ -407,11 +489,123 @@ class NotaCreditoController extends Controller
         }
     }
 
+    public function facturacionElectronica(Request $request)
+    {
+        $rules = [
+			'id_nota_credito' => "required|exists:sam.fac_ventas,id",
+		];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+        $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
+        $notaCredito = FacVentas::with('factura')
+            ->where('id', $request->id_nota_credito)
+            ->first();
+
+        if ($notaCredito->fe_codigo_identificador) {
+			return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['factura_electronica' => ['mensaje' => "La factura $notaCredito->consecutivo ya fue emitida."]]
+            ], 422);
+		}
+
+        if (!$notaCredito->factura->fe_codigo_identificador) {
+			return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['Factura electronica' => ['mensaje' => "La factura asociada a la nota débito no tiene CUFE generado"]]
+            ], 422);
+		}
+
+        try {
+            DB::connection('sam')->beginTransaction();
+
+            $notaCreditoElectronica = (new NotaCreditoElectronicaSender($notaCredito))->send();
+
+            if ($notaCreditoElectronica["status"] >= 400) {
+                if ($notaCreditoElectronica["zip_key"]) {
+                    $notaCredito->fe_zip_key = $notaCreditoElectronica["zip_key"];
+                    $notaCredito->save();
+
+                    if ($notaCreditoElectronica["message_object"] == 'Batch en proceso de validación.') {
+                        //JOB CONSULTAR FACTURA EN 1MN
+                        ProcessConsultarFE::dispatch($notaCredito->id, $notaCreditoElectronica["zip_key"], $request->user()->id, $empresa->id);
+
+                        DB::connection('sam')->commit();
+
+                        return response()->json([
+                            "success" => false,
+                            'data' => [],
+                            "message" => 'Batch en proceso de validación, el sistema le notificará una vez haya consultado la información'
+                        ], 300);
+                    }
+                }
+
+                DB::connection('sam')->commit();
+
+                return response()->json([
+                    "success" => false,
+                    'data' => [],
+                    "message" => $notaCreditoElectronica["error_message"]
+                ], 422);
+            }
+
+            if ($notaCreditoElectronica["status"] == 200) {
+                $feSended = $notaCreditoElectronica['status'] == 200;
+                $hasCufe = (isset($notaCreditoElectronica['cufe']) && $notaCreditoElectronica['cufe']);
+
+                if($feSended || $hasCufe){
+                    $notaCreditoElectronica['status'] = 200;
+                    $notaCredito = $this->SetFeFields($notaCredito, $notaCreditoElectronica['cufe'], $empresa->nit);
+                    $notaCredito->fe_zip_key = $notaCreditoElectronica['zip_key'];
+                    $notaCredito->fe_xml_file = $notaCreditoElectronica['xml_url'];
+                    $notaCredito->save();
+                }
+            }
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+				'success'=>	true,
+				'data' => [],
+				'message'=> 'Factura electrónica enviada!'
+			], 200);
+
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+				'success'=>	true,
+				'data' => [],
+				'message'=> 'Factura electrónica enviada!'
+			], 200);
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+
+    }
+
     private function createNotaCredito ($request)
     {
         $this->calcularTotales($request->get('productos'));
         $this->calcularFormasPago($request->get('pagos'));
-
+        
         $this->bodega = FacBodegas::find($this->facturaVentas->id_bodega);
 
         return FacVentas::create([

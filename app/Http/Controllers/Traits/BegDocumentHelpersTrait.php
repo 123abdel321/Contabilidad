@@ -10,6 +10,7 @@ use App\Helpers\BegEmailSender;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
@@ -23,14 +24,12 @@ trait BegDocumentHelpersTrait
 	public function sendEmailFactura(string $has_empresa, string $email, FacVentas $factura, $pdf = null, $xml = null)
 	{
 		$empresa = Empresa::where('token_db', $has_empresa)->first();
-
+		
         if($this->isFe($factura)) {
 			$xml = $xml ?: $this->getXml($factura);
 			$zip = $this->generateZip($factura->documento_referencia_fe, $pdf, $xml);
 
 			Mail::to($email)
-				// ->cc('abdel.portafolioerp@gmail.com')
-				// ->bcc('abdel.portafolioerp@gmail.com')
 				->send(new GeneralEmail($empresa->razon_social, 'emails.capturas.factura', [
 					'cliente' => $factura->cliente,
 					'factura' => $factura,
@@ -38,8 +37,6 @@ trait BegDocumentHelpersTrait
 				], $zip));
 		} else {
 			Mail::to($email)
-				// ->cc('abdel.portafolioerp@gmail.com')
-				// ->bcc('abdel.portafolioerp@gmail.com')
 				->send(new GeneralEmail($empresa->razon_social, 'emails.capturas.factura', [
 					'cliente' => $factura->cliente,
 					'factura' => $factura,
@@ -50,11 +47,19 @@ trait BegDocumentHelpersTrait
 		return true;
 	}
 
-    public function getXml(FacVentas $documento)
+    public function getXml(FacVentas $venta)
 	{
+
+		if ($venta->fe_xml_file) {
+			$file = Storage::disk('do_spaces')->get("/{$venta->fe_xml_file}");
+			if ($file) {
+				return $file;
+			}
+		}
+		
 		$bearerToken = VariablesEntorno::where('nombre', 'token_key_fe')->first();
         $bearerToken = $bearerToken ? $bearerToken->valor : '';
-		$url = 'https://fe.portafolioerp.com/api/ubl2.1/invoice/xml?number='.$documento->documento_referencia_fe;
+		$url = 'https://fe.portafolioerp.com/api/ubl2.1/invoice/xml?number='.$venta->documento_referencia_fe;
 
 		$response = Http::withHeaders([
 			'Content-Type' => 'application/json',

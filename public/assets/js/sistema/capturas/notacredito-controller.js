@@ -480,7 +480,7 @@ function calcularNotaCreditoPorCantidad (idDetalle) {
             $('#nota_credito_cantidad_'+idDetalle).select();
         },10);
     }
-
+    
     var totalDisponible = (dataDetalle.total - dataDetalle.total_devuelto);
     var descuentoProporcion = (dataDetalle.costo * (dataDetalle.descuento_porcentaje / 100));
     var ivaProporcion = (dataDetalle.costo - descuentoProporcion) * (dataDetalle.iva_porcentaje / 100);
@@ -502,10 +502,10 @@ function calcularNotaCreditoPorCantidad (idDetalle) {
         dataRow.valor_iva = dataDetalle.iva_valor - iva;
     }
 
-    var subtotal = costoCantidad;
+    var subtotal = parseFloat(costoCantidad).toFixed(2);
 
     if (ivaIncluidoNotaCredito) {
-        subtotal-= iva;
+        // subtotal+= iva;
     }
 
     dataRow.cantidad_devuelta = cantidadDevolucion;
@@ -513,7 +513,7 @@ function calcularNotaCreditoPorCantidad (idDetalle) {
     dataRow.devolucion_total = subtotal;
     dataRow.total_devolucion = subtotal;
     dataRow.total_disponible = ((dataDetalle.total - dataDetalle.total_devuelto) - (subtotal));
-    console.log('dataRow:',dataRow);
+    
     nota_credito_table.row(keyRow).data(dataRow).draw();
 
     mostrarValoresNotaCredito();

@@ -66,9 +66,9 @@ abstract class AbstractFESender
 	public function send()
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
-		
 		$params = $this->getParams();
 		$url = $this->getUrl() . $setTestId;
+
 		$response = Http::withHeaders([
 			'Content-Type' => 'application/json',
 			'X-Requested-With' => 'XMLHttpRequest',
@@ -83,6 +83,7 @@ abstract class AbstractFESender
 			return [
 				"status" => $data->status,
 				"cufe" => $data->response['cufe'],
+				"xml_url" => $data->response["XmlUrl"],
 				"mensaje" => $data->response['StatusDescription'],
 				"zip_key" => ''
 			];
@@ -148,46 +149,48 @@ abstract class AbstractFESender
 		}
 
 		if (!property_exists($data, 'data')) {
-			return [
-				"status" => $data->status,
-				"message_object" => $data->message,
-				"error_message" => $data->errors,
-				"zip_key" => null
-			];
+			if (property_exists($data, 'status')) {
+				return [
+					"status" => $data->status,
+					"message_object" => $data->message,
+					"error_message" => $data->errors,
+					"zip_key" => null
+				];
+			}
+			if (property_exists($data, 'errors')) {
+				return [
+					"status" => 500,
+					"message_object" => $data->message,
+					"error_message" => $data->errors,
+					"zip_key" => null
+				];
+			}
 		}
-
+		
 		$zipKey = $data->data->ResponseDian['Envelope']['Body']['SendTestSetAsyncResponse']['SendTestSetAsyncResult']['ZipKey'];
 
 		return [
+			"zip_key" => $zipKey,
 			"status" => $data->status,
 			"cufe" => $data->data["cufe"],
+			"xml_url" => $data->data["XmlUrl"],
 			"mensaje" => $data->data["StatusDescription"],
-			"zip_key" => $zipKey
 		];
 	}
 
 	public function getParams(): array
 	{
 		$params = array(
-			'number' => $this->factura->consecutivo, // Consecutive
-			'prefix' => $this->factura->resolucion->prefijo, // 'prefix' => "SETP"
-			'type_document_id' => CodigoDocumentoDianTypes::getIdTipoDocumentoDian(($this->factura->codigo_tipo_documento_dian)), // id tipo documento dian
+			'number' => $this->factura->consecutivo,
+			'prefix' => $this->factura->resolucion->prefijo,
+			'type_document_id' => CodigoDocumentoDianTypes::getIdTipoDocumentoDian(($this->factura->codigo_tipo_documento_dian)),
 			'date' => date_format(date_create($this->factura->fecha_manual), 'Y-m-d'),
 			'time' => date_format(date_create($this->factura->created_at), 'H:i:s'),
 			'software-provider' => [
 				'provider_id' => $this->softwareProviderId
 			],
-			'allowance_charges' => [], // Cargos por subsidio
-			'tax_totals' => $this->taxTotals([1, 5]), // Total impuestos
-			'legal_monetary_totals' => [ // Legal monetary totals
-				'line_extension_amount' => number_format($this->factura->subtotal, 2, '.', ''), // Total con Impuestos
-				'tax_exclusive_amount' => $this->factura->total_iva ? number_format($this->factura->subtotal, 2, '.', '') : "0.00", // Total sin impuestos pero con descuentos
-				// 'tax_inclusive_amount' => $this->factura->subtotal + $this->factura->total_iva,
-				'tax_inclusive_amount' => $this->factura->total_factura + $this->factura->total_rete_fuente, // Total con Impuestos
-				'allowance_total_amount' => "0.00", // Descuentos nivel de factura
-				'charge_total_amount' => "0.00", // Cargos
-				'payable_amount' => $this->factura->total_factura + $this->factura->total_rete_fuente, // Valor total a pagar
-			],
+			'allowance_charges' => [],
+			'tax_totals' => $this->taxTotals([1, 5]),
 			"holding_tax_totals" => $this->taxTotals([6]),
 		);
 		
@@ -217,7 +220,7 @@ abstract class AbstractFESender
 			$invoiceLines[] = [
 				"unit_measure_id" => 642, // Unidad de medida que se maneja
 				"invoiced_quantity" => $detalle->cantidad, // Cantidad de productos
-				"line_extension_amount" =>  $this->iva_inluido ? $detalle->subtotal - $detalle->iva_valor : $detalle->subtotal, // Total producto incluyento impuestos
+				"line_extension_amount" =>  $this->iva_inluido ? $detalle->subtotal : $detalle->subtotal, // Total producto incluyento impuestos
 				"free_of_charge_indicator" => false, // Indica si el producto es una muestra gratis
 				// "allowance_charges" => $this->totalDescuento($detalle),
 				"tax_totals" => $this->taxTotalsDetalle($detalle, [1, 5]),
@@ -243,6 +246,7 @@ abstract class AbstractFESender
 		//AGREGAR DETALLE DE LOS ITEMS
 		foreach ($this->detalles as $detalle) {
 			foreach ($taxs as $tax) {
+
 				switch ($tax) {
 					case 1: //IVA
 						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1])) && intval($dIva[0]["tax_amount"])) $dataTaxTotals['iva'][] = $dIva[0];
@@ -318,6 +322,7 @@ abstract class AbstractFESender
 	{
 		$taxTotalsDetalle = [];
 		$impuestos = $this->impuesto($detalle);
+
 		foreach ($impuestos as $impuesto) {
 			$existencia = $data ? in_array($impuesto['tax_id'], $data) : true;
 			if ($existencia) {
@@ -347,7 +352,7 @@ abstract class AbstractFESender
 				"tax_id" => 1, //IVA
 				"tax_amount" => $detalle->iva_valor,
 				"percent" => $detalle->iva_porcentaje ?? "0.00",
-				"taxable_amount" => number_format($this->iva_inluido ? $detalle->subtotal - $detalle->iva_valor : $detalle->subtotal, 2, '.', '')
+				"taxable_amount" => number_format($this->iva_inluido ? $detalle->subtotal : $detalle->subtotal, 2, '.', '')
 			],
 			[
 				"tax_id" => 5, // RETE IVA

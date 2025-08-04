@@ -52,7 +52,7 @@
 
                     <div class="form-group col-6 col-sm-4 col-md-2">
                         <label for="consecutivo_nota_credito" class="form-control-label">No. factura <span style="color: red">*</span></label>
-                        <input type="text" class="form-control form-control-sm" name="consecutivo_nota_credito" id="consecutivo_nota_credito" onkeydown="iniciarNotaCredito(event)" required>
+                        <input type="text" class="form-control form-control-sm" name="consecutivo_nota_credito" id="consecutivo_nota_credito" onkeydown="iniciarNotaCredito(event)" required disabled>
                         <i class="fa fa-spinner fa-spin fa-fw nota-credito-load" id="consecutivo_nota_credito_loading" style="display: none; margin-top: -22px; float: right;"></i>
                         <div class="invalid-feedback" id="error_consecutivo_nota_credito">
                             El No. factura requerido
