@@ -23,6 +23,41 @@ var dateNow = new Date();
 const auth_token = localStorage.getItem("auth_token");
 const iconNavbarSidenavMaximo = document.getElementById('iconNavbarSidenavMaximo');
 
+// Función auxiliar para ajustar fechas
+const startOfDay = (date) => new Date(date.setHours(0, 0, 0, 0));
+const endOfDay = (date) => new Date(date.setHours(23, 59, 59, 999));
+
+const rangoFechas = {
+    "Hoy": [
+        startOfDay(new Date(dateNow)),
+        endOfDay(new Date(dateNow))
+    ],
+    "Ayer": [
+        startOfDay(new Date(dateNow.getTime() - 86400000)), // Resta 1 día en milisegundos
+        endOfDay(new Date(dateNow.getTime() - 86400000))
+    ],
+    "Últimos 7 días": [
+        startOfDay(new Date(dateNow.getTime() - 6 * 86400000)), // Resta 6 días
+        endOfDay(new Date(dateNow))
+    ],
+    "Últimos 30 días": [
+        startOfDay(new Date(dateNow.getTime() - 29 * 86400000)), // Resta 29 días
+        endOfDay(new Date(dateNow))
+    ],
+    "Este mes": [
+        startOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth(), 1)),
+        endOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth() + 1, 0))
+    ],
+    "Mes anterior": [
+        startOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth() - 1, 1)),
+        endOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth(), 0))
+    ],
+    "Este año": [
+        startOfDay(new Date(dateNow.getFullYear(), 0, 1)), // 1 de enero
+        endOfDay(new Date(dateNow.getFullYear(), 11, 31)) // 31 de diciembre
+    ]
+};
+
 $.ajaxSetup({
     'headers':{
         "Authorization": auth_token,
@@ -104,6 +139,7 @@ var moduloCreado = {
     'causar': false,
     'liquidaciondefinitiva': false,
     'vacaciones': false,
+    'ventasacumuladas': false,
 };
 
 var moduloRoute = {
@@ -165,6 +201,7 @@ var moduloRoute = {
     'causar': 'capturas',
     'liquidaciondefinitiva': 'capturas',
     'vacaciones': 'capturas',
+    'ventasacumuladas': 'informes'
 }
 
 function iniciarCanalesDeNotificacion () {

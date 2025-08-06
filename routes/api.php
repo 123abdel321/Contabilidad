@@ -32,6 +32,7 @@ use App\Http\Controllers\Informes\ImpuestosController;
 use App\Http\Controllers\Informes\ResultadosController;
 use App\Http\Controllers\Informes\EstadoActualController;
 use App\Http\Controllers\Informes\ResumenCarteraController;
+use App\Http\Controllers\Informes\VentasAcumuladasController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
 use App\Http\Controllers\Informes\ResumenComprobantesController;
 use App\Http\Controllers\Informes\DocumentosGeneralesController;
@@ -201,6 +202,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(ResultadosController::class)->group(function () {
             Route::get('resultados', 'generate');
             Route::get('resultados-show', 'show');
+        });
+        //INFORME VENTAS ACUMULADAS
+        Route::controller(VentasAcumuladasController::class)->group(function () {
+            Route::get('ventas-acumuladas', 'generate');
+            Route::get('ventas-acumuladas-show', 'show');
         });
 
         //USUARIOS

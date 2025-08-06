@@ -20,6 +20,7 @@ use App\Http\Controllers\Informes\ResultadosController;
 use App\Http\Controllers\Informes\EstadoActualController;
 use App\Http\Controllers\Informes\ResumenCarteraController;
 use App\Http\Controllers\Informes\VentasGeneralesController;
+use App\Http\Controllers\Informes\VentasAcumuladasController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
 use App\Http\Controllers\Informes\DocumentosGeneralesController;
 use App\Http\Controllers\Informes\ResumenComprobantesController;
@@ -243,6 +244,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		// Route::get('/documentos-print/{id}', [DocumentoController::class, 'showPdf'])->name('documento-pdf');
 		//VENTAS GENERALES
 		Route::get('/ventasgenerales', [VentasGeneralesController::class, 'index']);
+		//VENTAS ACUMULADAS
+		Route::get('/ventasacumuladas', [VentasAcumuladasController::class, 'index']);
+		
 		//ESTADO ACTUAL
 		Route::get('/estadoactual', [EstadoActualController::class, 'index']);
 		//RESUMEN CARTERA
