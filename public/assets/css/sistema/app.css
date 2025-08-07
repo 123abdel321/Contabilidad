@@ -166,7 +166,6 @@ thead tr:first-child th {
     cursor: context-menu;
 }
 
-
 /* ANIMACION DE NUEVOS BOTONES */
 .btn-bg-info {
     background-image: linear-gradient(310deg, #212229 0%, #212529 100%);
@@ -368,8 +367,6 @@ thead tr:first-child th {
     color: gold;
 }
 
-/* FIN DE NUEVOS BOTONES */
-
 @keyframes shine {
     0% {
         left: -100%;
@@ -381,6 +378,7 @@ thead tr:first-child th {
         left: 100%;
     }
 }
+/* FIN DE NUEVOS BOTONES */
 
 .button-side-nav {
     cursor: pointer;

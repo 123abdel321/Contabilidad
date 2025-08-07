@@ -22,7 +22,7 @@
     <!-- DATATABLE -->
     <link href="assets/css/sistema/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <link href="assets/css/sistema/responsive.bootstrap5.min.css" rel="stylesheet" />
-    <link href="assets/css/sistema/app.css" rel="stylesheet" />
+    <link href="{{ asset('assets/css/sistema/app.css') }}?v={{ config('app.version') }}" rel="stylesheet" />
     <!-- SELECT 2 -->
     <link href="assets/css/sistema/select2.min.css" rel="stylesheet" />
     <link href="assets/css/sistema/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
@@ -78,6 +78,7 @@
                 </button>
             </div>
             <div class="modal-body">
+                
                 <div class="row">  
 
                     <div class="form-group col-12">
