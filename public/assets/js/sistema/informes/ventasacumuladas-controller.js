@@ -78,7 +78,7 @@ function initTablesVentasAcumuladas() {
             }},
             { data: function (row, type, set){
                 if(row.nivel != 1) {
-                    return row.nombre_nit;
+                    return `${row.numero_documento} - ${row.nombre_nit}`;
                 }
                 return '';
             }},
@@ -96,7 +96,13 @@ function initTablesVentasAcumuladas() {
             }},
             { data: function (row, type, set){
                 if(row.nivel != 1) {
-                    return `${row.codigo_producto} - ${row.nombre_producto}`;
+                    return `${row.codigo_producto}`;
+                }
+                return '';
+            }},
+            { data: function (row, type, set){
+                if(row.nivel != 1) {
+                    return `${row.nombre_producto}`;
                 }
                 return '';
             }},
@@ -108,7 +114,7 @@ function initTablesVentasAcumuladas() {
             { data: "descuento_porcentaje", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: "descuento_valor", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: "total", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            { data:'id'},
+            { data: "nombre_vendedor"},
             { data: function (row, type, set){
                 if(row.nivel == 1) {
                     return '';
@@ -339,6 +345,10 @@ function loadVentasAcumuladasById(id_venta_acumulada) {
         $("#generarVentasAcumuladas").show();
         $("#generarVentasAcumuladasLoading").hide();
         if(res.success){
+
+            $("#descargarExcelVentasAcumuladas").show();
+            $("#descargarExcelVentasAcumuladasDisabled").hide();
+
             agregarToast('exito', 'Ventas acumuladas', 'Informe cargado con exito!', true);
         }
     });
@@ -351,6 +361,9 @@ function consultarVentaAcumulada() {
 
     $("#generarVentasAcumuladas").hide();
     $("#generarVentasAcumuladasLoading").show();
+
+    $("#descargarExcelVentasAcumuladas").hide();
+    $("#descargarExcelVentasAcumuladasDisabled").show();
 
     let documento_referencia = "";
     if ($('#factura_documentos_extracto').val()) {
@@ -383,6 +396,38 @@ function consultarVentaAcumulada() {
 
 $(document).on('click', '#generarVentasAcumuladas', function () {
     consultarVentaAcumulada();
+});
+
+$(document).on('click', '#descargarExcelVentasAcumuladas', function () {
+    $("#descargarExcelVentasAcumuladas").hide();
+    $("#descargarExcelVentasAcumuladasLoading").show();
+    $("#descargarExcelVentasAcumuladasDisabled").hide();
+
+    $.ajax({
+        url: base_url + 'ventas-acumuladas-excel',
+        method: 'POST',
+        data: JSON.stringify({id: $('#id_venta_acumulada_cargado').val()}),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            $("#descargarExcelVentasAcumuladas").show();
+            $("#descargarExcelVentasAcumuladasLoading").hide();
+            $("#descargarExcelVentasAcumuladasDisabled").hide();
+            if(res.url_file){
+                window.open('https://'+res.url_file, "_blank");
+                return; 
+            }
+            agregarToast('info', 'Generando excel', res.message, true);
+        }
+    }).fail((err) => {
+        $("#descargarExcelVentasAcumuladas").show();
+        $("#descargarExcelVentasAcumuladasLoading").hide();
+        $("#descargarExcelVentasAcumuladasDisabled").hide();
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Error al generar excel', errorsMsg);
+    });
 });
 
 ventasAcumuladasInformeChanel.bind('notificaciones', function(data) {

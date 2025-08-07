@@ -6,7 +6,10 @@ use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Events\PrivateMessageEvent;
+use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
+use App\Exports\VentasAcumuladasExport;
 use App\Jobs\ProcessInformeVentasAcumuladas;
 //MODELS
 use App\Models\Empresas\Empresa;
@@ -114,5 +117,74 @@ class VentasAcumuladasController extends Controller
             'perPage' => $rowperpage,
             'message'=> 'Informe de ventas acumuladas creado con exito!'
         ]);
+    }
+
+    public function exportExcel(Request $request)
+    {
+        try {
+            $informeVentasAcumuladas = InfVentasAcumulada::find($request->get('id'));
+
+            if($informeVentasAcumuladas && $informeVentasAcumuladas->exporta_excel == 1) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => '',
+                    'message'=> 'Actualmente se esta generando el excel de ventas acumuladas'
+                ]);
+            }
+
+            if($informeVentasAcumuladas && $informeVentasAcumuladas->exporta_excel == 2) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => $informeVentasAcumuladas->archivo_excel,
+                    'message'=> ''
+                ]);
+            }
+
+            $fileName = 'export/ventasacumuladas_'.uniqid().'.xlsx';
+            $url = $fileName;
+
+            $informeVentasAcumuladas->exporta_excel = 1;
+            $informeVentasAcumuladas->archivo_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
+            $informeVentasAcumuladas->save();
+
+            $has_empresa = $request->user()['has_empresa'];
+            $user_id = $request->user()->id;
+            $id_informe = $request->get('id');
+
+            Bus::chain([
+                function () use ($id_informe, &$fileName) {
+                    // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
+                    (new VentasAcumuladasExport($id_informe))->store($fileName, 'do_spaces', null, [
+                        'visibility' => 'public'
+                    ]);
+                },
+                function () use ($user_id, $has_empresa, $url, $informeVentasAcumuladas) {
+                    // Lanza el evento cuando el proceso termine
+                    event(new PrivateMessageEvent('informe-ventas-acumuladas-'.$has_empresa.'_'.$user_id, [
+                        'tipo' => 'exito',
+                        'mensaje' => 'Excel de Ventas acumuladas generado con exito!',
+                        'titulo' => 'Excel generado',
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
+                        'autoclose' => false
+                    ]));
+                    
+                    // Actualiza el informe auxiliar
+                    $informeVentasAcumuladas->exporta_excel = 2;
+                    $informeVentasAcumuladas->save();
+                }
+            ])->dispatch();
+
+            return response()->json([
+                'success'=>	true,
+                'url_file' => '',
+                'message'=> 'Se le notificará cuando el informe haya finalizado'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 }

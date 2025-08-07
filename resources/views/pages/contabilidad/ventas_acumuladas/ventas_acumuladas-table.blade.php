@@ -5,6 +5,7 @@
             <th>Cliente</th>
             <th>Bodega</th>
             <th>Fecha</th>
+            <th>Código</th>
             <th>Producto</th>
             <th>Cantidad</th>
             <th>Costo</th>

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('nombre_cuenta', 100)->nullable();
             $table->string('numero_documento', 50)->nullable();
             $table->string('nombre_nit', 100)->nullable();
+            $table->string('nombre_vendedor', 100)->nullable();
             $table->string('razon_social', 200)->nullable();
             $table->string('codigo_cecos', 50)->nullable();
             $table->string('nombre_cecos', 200)->nullable();

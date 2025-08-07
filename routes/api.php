@@ -207,6 +207,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(VentasAcumuladasController::class)->group(function () {
             Route::get('ventas-acumuladas', 'generate');
             Route::get('ventas-acumuladas-show', 'show');
+            Route::post('ventas-acumuladas-excel', 'exportExcel');
         });
 
         //USUARIOS

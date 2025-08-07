@@ -108,8 +108,10 @@ class ProcessInformeVentasAcumuladas
                 'fecha_manual',
                 'documento_referencia',
                 'nombre_nit',
+                'nombre_vendedor',
                 'razon_social',
                 'numero_documento',
+                'numero_documento_vendedor',
                 'apartamentos',
                 'codigo_productos',
                 'nombre_productos',
@@ -168,8 +170,10 @@ class ProcessInformeVentasAcumuladas
                 'fecha_manual',
                 'documento_referencia',
                 'nombre_nit',
+                'nombre_vendedor',
                 'razon_social',
                 'numero_documento',
+                'numero_documento_vendedor',
                 'apartamentos',
                 'codigo_productos',
                 'nombre_productos',
@@ -215,10 +219,16 @@ class ProcessInformeVentasAcumuladas
                 'N.id AS id_nit',
                 'N.numero_documento',
                 DB::raw("(CASE
-                    WHEN N.id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN N.id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    WHEN N.id IS NOT NULL AND N.razon_social IS NOT NULL AND N.razon_social != '' THEN N.razon_social
+                    WHEN N.id IS NOT NULL AND (N.razon_social IS NULL OR N.razon_social = '') THEN CONCAT_WS(' ', N.primer_nombre, N.primer_apellido)
                     ELSE NULL
                 END) AS nombre_nit"),
+                'VE.numero_documento AS numero_documento_vendedor',
+                DB::raw("(CASE
+                    WHEN VE.id IS NOT NULL AND VE.razon_social IS NOT NULL AND VE.razon_social != '' THEN VE.razon_social
+                    WHEN VE.id IS NOT NULL AND (VE.razon_social IS NULL OR VE.razon_social = '') THEN CONCAT_WS(' ', VE.primer_nombre, VE.primer_apellido)
+                    ELSE NULL
+                END) AS nombre_vendedor"),
                 "N.razon_social",
                 "N.apartamentos",
                 "CC.id AS id_centro_costos",
@@ -262,11 +272,13 @@ class ProcessInformeVentasAcumuladas
             ->leftJoin('fac_venta_pagos AS FVP', 'FV.id', 'FVP.id_venta')
             ->leftJoin('fac_formas_pagos AS FFP', 'FVP.id_forma_pago', 'FFP.id')
             ->leftJoin('nits AS N', 'FV.id_cliente', 'N.id')
+            ->leftJoin('nits AS VE', 'FV.id_vendedor', 'VE.id')
             ->leftJoin('fac_bodegas AS FB', 'FV.id_bodega', 'FB.id')
             ->leftJoin('centro_costos AS CC', 'FV.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'FV.id_comprobante', 'CO.id')
             ->leftJoin('fac_resoluciones AS FR', 'FV.id_resolucion', 'FR.id')
             ->leftJoin('fac_productos AS FP', 'FVD.id_producto', 'FP.id')
+
             ->where('FV.fecha_manual', '>=', Carbon::parse($this->request['fecha_desde'])->format('Y-m-d'))
             ->where('FV.fecha_manual', '<=', Carbon::parse($this->request['fecha_hasta'])->format('Y-m-d'))
             ->when(isset($this->request['id_nit']) ? true : false, function ($query) {
@@ -311,6 +323,7 @@ class ProcessInformeVentasAcumuladas
             'id_centro_costos' => $detalle->id_centro_costos,
             'numero_documento' => $detalle->numero_documento,
             'nombre_nit' => $detalle->nombre_nit,
+            'nombre_vendedor' => $detalle->nombre_vendedor ? "$detalle->numero_documento_vendedor $detalle->nombre_vendedor" : null,
             'razon_social' => $detalle->razon_social,
             'codigo_cecos' => $detalle->codigo_cecos,
             'nombre_cecos' => $detalle->nombre_cecos,
@@ -354,6 +367,7 @@ class ProcessInformeVentasAcumuladas
             'id_centro_costos' => $detalle->id_centro_costos,
             'numero_documento' => $detalle->numero_documento,
             'nombre_nit' => $detalle->nombre_nit,
+            'nombre_vendedor' => $detalle->nombre_vendedor ? "$detalle->numero_documento_vendedor $detalle->nombre_vendedor" : null,
             'razon_social' => $detalle->razon_social,
             'codigo_cecos' => $detalle->codigo_cecos,
             'nombre_cecos' => $detalle->nombre_cecos,
@@ -425,7 +439,7 @@ class ProcessInformeVentasAcumuladas
                 $nombreAgrupado = "{$detalle->nombre_pagos}";
                 break;
             default:
-                $nombreAgrupado = "{$detalle->nombre_nit}";
+                $nombreAgrupado = "{$detalle->numero_documento} - {$detalle->nombre_nit}";
                 break;
         }
         return $nombreAgrupado;

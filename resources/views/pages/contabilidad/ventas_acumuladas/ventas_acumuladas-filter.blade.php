@@ -73,7 +73,7 @@
                         </div>
 
                         <div class="form-group col-12 col-sm-4 col-md-3 row" style="margin-bottom: 0.1rem !important;">
-                            <label for="example-text-input" class="form-control-label">Detallar ventas_acumuladas</label>
+                            <label for="example-text-input" class="form-control-label">Detallar ventas</label>
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                 <input class="form-check-input" type="radio" name="detallar_venta" id="detallar_venta1" style="font-size: 11px;" checked>
                                 <label class="form-check-label" for="detallar_venta1" style="font-size: 11px;">
@@ -92,13 +92,27 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="generarVentasAcumuladas" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
+                    <span id="generarVentasAcumuladas" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;">
                         <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">BUSCAR</b>
                     </span>
-                    <span id="generarVentasAcumuladasLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                    <span id="generarVentasAcumuladasLoading" class="badge bg-gradient-info btn-bg-gold-loading" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">BUSCANDO</b>
+                        <b style="vertical-align: text-top;">GENERANDO</b>
+                    </span>
+                    <!-- BOTON EXCEL -->
+                    <span id="descargarExcelVentasAcumuladas" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
+                        <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">EXCEL</b>
+                    </span>
+                    <span id="descargarExcelVentasAcumuladasLoading" class="badge bg-gradient-info btn-bg-excel-loading" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">EXCEL</b>
+                    </span>
+                    <span id="descargarExcelVentasAcumuladasDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                        <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                 </div>
             </div>

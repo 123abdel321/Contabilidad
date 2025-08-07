@@ -24,6 +24,7 @@ class InfVentasAcumuladaDetalle extends Model
         'nombre_cuenta',
         'numero_documento',
         'nombre_nit',
+        'nombre_vendedor',
         'razon_social',
         'codigo_cecos',
         'nombre_cecos',

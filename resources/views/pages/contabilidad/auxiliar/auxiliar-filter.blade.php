@@ -50,30 +50,30 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="generarAuxiliar" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="min-width: 40px; margin-right: 3px;">
+                    <span id="generarAuxiliar" href="javascript:void(0)" class="btn badge bg-gradient-primary btn-bg-gold" style="min-width: 40px; margin-right: 3px;">
                         <i class="fas fa-search" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">BUSCAR</b>
                     </span>
-                    <span id="generarAuxiliarLoading" class="badge bg-gradient-primary" style="display:none; min-width: 40px; margin-right: 3px; margin-bottom: 13px;">
+                    <span id="generarAuxiliarLoading" class="badge bg-gradient-primary btn-bg-gold-loading" style="display:none; min-width: 40px; margin-right: 3px; margin-bottom: 13px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">GENERANDO</b>
                     </span>
                     <!-- BOTON EXCEL -->
-                    <span id="descargarExcelAuxiliar" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
+                    <span id="descargarExcelAuxiliar" class="btn badge bg-gradient-success btn-bg-success" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXCEL</b>
                     </span>
-                    <span id="descargarExcelAuxiliarDisabled" class="badge bg-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                    <span id="descargarExcelAuxiliarDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                     <!-- BOTON PDF -->
-                    <span id="descargarPdfAuxiliar" class="btn badge bg-gradient-success btn-bg-pdf" style="min-width: 40px; margin-right: 3px; display:none;">
+                    <span id="descargarPdfAuxiliar" class="btn badge bg-gradient-success btn-bg-danger" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-pdf" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">PDF</b>
                     </span>
-                    <span id="descargarPdfAuxiliarDisabled" class="badge bg-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                    <span id="descargarPdfAuxiliarDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">PDF</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>

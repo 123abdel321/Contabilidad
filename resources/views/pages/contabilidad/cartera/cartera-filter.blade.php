@@ -87,11 +87,11 @@
                         <b style="vertical-align: text-top;">BUSCANDO</b>
                     </span>
                     <!-- BOTON EXCEL -->
-                    <span id="descargarExcelCartera" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; display:none;">
+                    <span id="descargarExcelCartera" class="btn badge bg-gradient-success btn-bg-success" style="min-width: 40px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXCEL</b>
                     </span>
-                    <span id="descargarExcelCarteraDisabled" class="badge bg-dark" style="min-width: 40px; color: #adadad; margin-right: 3px;">
+                    <span id="descargarExcelCarteraDisabled" class="badge bg-gradient-dark" style="min-width: 40px; color: #adadad; margin-right: 3px;">
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
