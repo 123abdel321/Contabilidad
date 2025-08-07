@@ -64,6 +64,10 @@ class ProcessInformeVentasAcumuladas
                     ->insert(array_values($ventaAcumuladaCollection));
 			}
 
+            InfVentasAcumulada::where('id', $this->id_venta_acumulada)->update([
+                'estado' => 2
+            ]);
+
             DB::connection('informes')->commit();
 
             event(new PrivateMessageEvent('informe-ventas-acumuladas-'.$this->empresa->token_db.'_'.$this->id_usuario, [
