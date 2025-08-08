@@ -840,6 +840,13 @@ function loadExcel(data) {
     },5000);
 }
 
+function loadPdf(data) {
+    setTimeout(function(){
+        window.open('https://'+data.url_file_pdf, "_blank");
+        agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
+    },5000);
+}
+
 $(document).on('click', '#descargarPlantilla', function () {
     
 });

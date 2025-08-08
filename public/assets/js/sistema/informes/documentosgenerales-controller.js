@@ -352,7 +352,7 @@ channel_informe_documentos_generales.bind('notificaciones', function(data) {
         return;
     }
     if(data.url_file_pdf){
-        loadExcel(data);
+        loadPdf(data);
         $("#descargarPdfDocumento").show();
         $("#descargarPdfDocumentoLoading").hide();
         $("#descargarPdfDocumentoDisabled").hide();
