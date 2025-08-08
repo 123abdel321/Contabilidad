@@ -51,11 +51,11 @@
                     <!-- BOTON EXCEL -->
                     <!-- <span id="descargarExcelEstadoComprobante" class="btn badge bg-gradient-success btn-bg-success" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                     </span>
                     <span id="descargarExcelEstadoComprobanteDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>
-                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span> -->
                     <!-- BOTON ULTIMO INFORME -->

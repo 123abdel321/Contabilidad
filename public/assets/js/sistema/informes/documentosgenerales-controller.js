@@ -1,6 +1,7 @@
 var documentos_generales_table = null;
 var generarDocumentosGenerales = false;
 var agrupadoPorDocumento = false;
+var channel_informe_documentos_generales = pusher.subscribe('informe-documentos-generales-'+localStorage.getItem("notificacion_code"));
 
 function documentosgeneralesInit() {
 
@@ -91,29 +92,30 @@ function documentosgeneralesInit() {
         },
         rowCallback: function(row, data, index){
             if(data.nivel == 99){
-                $('td', row).css('background-color', 'rgb(28 69 135)');
+                $('td', row).css('background-color', '#000');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
             }
             if(data.nivel == 1){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
+                $('td', row).css('background-color', '#000');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.nivel == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 35%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', 'rgb(0 0 0 / 85%)');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.nivel == 3){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 20%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', 'rgb(0 0 0 / 70%)');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.nivel == 4){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 5%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', 'rgb(0 0 0 / 55%)');
+                $('td', row).css('color', 'white');
                 return;
             }
         },
@@ -191,6 +193,7 @@ function documentosgeneralesInit() {
                 return html;
             }},
             {"data": function (row, type, set){
+                var html = '';
                 if (row.nivel == 1 && agrupadoPorDocumento) {
                     html+= `<span id="imprimirdocumentogeneral_${row.id}" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-documentogeneral" style="margin-bottom: 0rem !important; color: black; background-color: white !important;">Imprimir</span>&nbsp;`;
                     html+= `<span id="anulardocumentogeneral_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger anular-documentogeneral" style="margin-bottom: 0rem !important;">Anular</span>`;
@@ -199,7 +202,7 @@ function documentosgeneralesInit() {
                 }
                 var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
                 if(!row.updated_by && !row.fecha_edicion) return '';
-                if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
+                if(!row.updated_by ) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
                 return html;
             }},
         ]
@@ -337,9 +340,7 @@ function documentosgeneralesInit() {
     });
 }
 
-var channel = pusher.subscribe('informe-documentos-generales-'+localStorage.getItem("notificacion_code"));
-
-channel.bind('notificaciones', function(data) {
+channel_informe_documentos_generales.bind('notificaciones', function(data) {
     if (data.id_documento_general) {
         $('#id_documento_general_cargado').val(data.id_documento_general);
     }
@@ -356,6 +357,12 @@ channel.bind('notificaciones', function(data) {
 function loadDocumentosGeneralesById(id_documento_general) {
     documentos_generales_table.ajax.url(base_url + 'documentos-generales-show?id='+id_documento_general).load(function(res) {
         if(res.success){
+            const comprobante = $('#id_comprobante_documentos_generales').select2('data')[0];
+            if (comprobante && comprobante.tipo_comprobante == 0) {
+                $("#descargarPdfDocumento").show();
+            } else {
+                $("#descargarPdfDocumento").hide();
+            }
             $("#generarDocumentosGenerales").show();
             $("#generarDocumentosGeneralesLoading").hide();
             // $('#descargarExcelAuxiliar').prop('disabled', false);
@@ -449,8 +456,14 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
 
     $("#generarDocumentosGenerales").hide();
     $("#generarDocumentosGeneralesLoading").show();
+
     $("#descargarExcelDocumento").hide();
-    $("#descargarExcelDocumentoDisabled").hide();
+    $("#descargarExcelDocumentoLoading").hide();
+    $("#descargarExcelDocumentoDisabled").show();
+
+    $("#descargarPdfDocumento").hide();
+    $("#descargarPdfDocumentoLoading").hide();
+    $("#descargarPdfDocumentoDisabled").show();
 
     var agruparDocumentos = $("#agrupar_documentos_generales").val();
     var agruparDocumentosText = '';
@@ -494,15 +507,22 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
         if(res.success) {
             $("#descargarExcelDocumento").show();
             $("#descargarExcelDocumentoDisabled").hide();
+            
+            const comprobante = $('#id_comprobante_documentos_generales').select2('data')[0];
+            if (comprobante && comprobante.tipo_comprobante == 0) {
+                $("#descargarPdfDocumento").show();
+                $("#descargarPdfDocumentoDisabled").hide();
+            }
+
             agregarToast('info', 'Generando documentos generales', 'En un momento se le notificará cuando el informe esté generado...', true );
         }
     });
 });
 
 $(document).on('click', '#descargarExcelDocumento', function () {
-    $("#generarDocumentosGenerales").hide();
-    $("#generarDocumentosGeneralesLoading").show();
+
     $("#descargarExcelDocumento").hide();
+    $("#descargarExcelDocumentoLoading").show();
     $("#descargarExcelDocumentoDisabled").hide();
 
     $.ajax({
@@ -512,9 +532,11 @@ $(document).on('click', '#descargarExcelDocumento', function () {
         headers: headers,
         dataType: 'json',
     }).done((res) => {
-        $("#generarDocumentosGenerales").show();
-        $("#generarDocumentosGeneralesLoading").hide();
+
         $("#descargarExcelDocumento").show();
+        $("#descargarExcelDocumentoLoading").hide();
+        $("#descargarExcelDocumentoDisabled").hide();
+
         if(res.success){
             if(res.url_file){
                 window.open('https://'+res.url_file, "_blank");
@@ -523,19 +545,64 @@ $(document).on('click', '#descargarExcelDocumento', function () {
             agregarToast('info', 'Generando excel', res.message, true);
         }
     }).fail((err) => {
-        var errorsMsg = "";
+
+        $("#descargarExcelDocumento").show();
+        $("#descargarExcelDocumentoLoading").hide();
+        $("#descargarExcelDocumentoDisabled").hide();
+
         var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Generación de excel errada', errorsMsg);
+    });
+});
+
+$(document).on('click', '#descargarPdfDocumento', function () {
+
+    $("#descargarPdfDocumento").hide();
+    $("#descargarPdfDocumentoLoading").show();
+    $("#descargarPdfDocumentoDisabled").hide();
+
+    let data = {
+        fecha_desde: $('#fecha_manual_documentos_generales').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm'),
+        fecha_hasta: $('#fecha_manual_documentos_generales').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm'),
+        precio_desde: $("#precio_desde_documentos_generales").val(),
+        precio_hasta: $("#precio_hasta_documentos_generales").val(),
+        documento_referencia: $("#factura_documentos_generales").val(),
+        consecutivo: $("#consecutivo_documentos_generales").val(),
+        concepto: $("#concepto_documentos_generales").val(),
+        id_nit: $("#id_nit_documentos_generales").val(),
+        id_comprobante: $("#id_comprobante_documentos_generales").val(),
+        id_cecos: $("#id_cecos_documentos_generales").val(),
+        id_cuenta: $("#id_cuenta_documentos_generales").val()
+    };
+
+    $.ajax({
+        url: base_url + 'documentos-generales-pdf',
+        method: 'POST',
+        data: JSON.stringify(data),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        
+        $("#descargarPdfDocumento").show();
+        $("#descargarPdfDocumentoLoading").hide();
+        $("#descargarPdfDocumentoDisabled").hide();
+
+        if(res.success){
+            if(res.url_file){
+                window.open('https://'+res.url_file, "_blank");
+                return; 
+            }
+            agregarToast('info', 'Generando pdf', res.message, true);
         }
-        agregarToast('error', 'Error al generar excel', errorsMsg);
+    }).fail((err) => {
+        $("#descargarPdfDocumento").show();
+        $("#descargarPdfDocumentoLoading").hide();
+        $("#descargarPdfDocumentoDisabled").hide();
+
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Generación de pdf errada', errorsMsg);;
     });
 });
 

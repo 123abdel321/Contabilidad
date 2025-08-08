@@ -103,15 +103,15 @@
                     <!-- BOTON EXCEL -->
                     <span id="descargarExcelVentasAcumuladas" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                     </span>
                     <span id="descargarExcelVentasAcumuladasLoading" class="badge bg-gradient-info btn-bg-excel-loading" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                     </span>
                     <span id="descargarExcelVentasAcumuladasDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                 </div>

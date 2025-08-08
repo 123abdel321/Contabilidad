@@ -98,24 +98,24 @@ label, .form-label {
 }
 
 @-webkit-keyframes color_change {
-    from { color: cornflowerblue; }
-    to { color: aqua; }
+    from { color: gold; }
+    to { color: #003883; }
 }
 @-moz-keyframes color_change {
-    from { color: cornflowerblue; }
-    to { color: aqua; }
+    from { color: gold; }
+    to { color: #003883; }
 }
 @-ms-keyframes color_change {
-    from { color: cornflowerblue; }
-    to { color: aqua; }
+    from { color: gold; }
+    to { color: #003883; }
 }
 @-o-keyframes color_change {
-    from { color: cornflowerblue; }
-    to { color: aqua; }
+    from { color: gold; }
+    to { color: #003883; }
 }
 @keyframes color_change {
-    from { color: cornflowerblue; }
-    to { color: aqua; }
+    from { color: gold; }
+    to { color: #003883; }
 }
 .dtfh-floatingparent {
     top: 0px !important;

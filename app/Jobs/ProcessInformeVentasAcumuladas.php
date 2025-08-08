@@ -69,8 +69,9 @@ class ProcessInformeVentasAcumuladas
             ]);
 
             DB::connection('informes')->commit();
-
-            event(new PrivateMessageEvent('informe-ventas-acumuladas-'.$this->empresa->token_db.'_'.$this->id_usuario, [
+            
+            $urlPusser = 'informe-ventas-acumuladas-'.$this->empresa->token_db.'_'.$this->id_usuario;
+            event(new PrivateMessageEvent($urlPusser, [
                 'tipo' => 'exito',
                 'mensaje' => 'Informe generado con exito!',
                 'titulo' => 'Ventas acumuladas generado',

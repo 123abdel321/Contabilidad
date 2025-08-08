@@ -65,7 +65,11 @@ abstract class AbstractPrinterPdf
     public function saveStorage()
     {
         $pdfBuilder = $this->pdf->output();
-        Storage::disk('do_spaces')->put('pdf/'.$this->name, $pdfBuilder);
+        $nameFile = "/pdf/{$this->name}.pdf";
+
+        $url = Storage::disk('do_spaces')->put($nameFile, $pdfBuilder, 'public');
+
+        return $nameFile;
     }
     
 }

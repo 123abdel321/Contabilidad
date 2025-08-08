@@ -64,11 +64,11 @@
                     <!-- BOTON EXCEL -->
                     <span id="descargarExcelResumenCartera" class="btn badge bg-gradient-dark btn-bg-success" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                     </span>
                     <span id="descargarExcelResumenCarteraDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>
-                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                 </div>

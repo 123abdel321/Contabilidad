@@ -121,24 +121,43 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="generarDocumentosGenerales" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
-                        <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">BUSCAR</b>
+                    <span id="generarDocumentosGenerales" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;">
+                        <i class="fas fa-search" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;BUSCAR</b>
                     </span>
-                    <span id="generarDocumentosGeneralesLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                    <span id="generarDocumentosGeneralesLoading" class="badge bg-gradient-info btn-bg-gold-loading" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">BUSCANDO</b>
+                        <b style="vertical-align: text-top;">&nbsp;BUSCANDO</b>
                     </span>
                     <!-- BOTON EXCEL -->
-                    <span id="descargarExcelDocumento" class="btn badge bg-gradient-dark btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
+                    <span id="descargarExcelDocumento" class="btn badge bg-gradient-dark btn-bg-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
+                    </span>&nbsp;
+                    <span id="descargarExcelDocumentoLoading" class="badge bg-gradient-dark btn-bg-success btn-bg-excel-loading" style="min-width: 40px; margin-right: 3px; display:none;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                     </span>
-                    <span id="descargarExcelDocumentoDisabled" class="badge bg-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                    <span id="descargarExcelDocumentoDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; margin-left: -5px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>
-                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
+                    <!-- BOTON PDF -->
+                    <span id="descargarPdfDocumento" class="btn badge bg-gradient-dark btn-bg-danger" style="min-width: 40px; margin-right: 3px; margin-left: -5px; display:none;">
+                        <i class="fas fa-file-pdf" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;PDF</b>
+                    </span>
+                    <span id="descargarPdfDocumentoLoading" class="badge bg-gradient-dark btn-bg-danger-loading" style="min-width: 40px; margin-right: 3px; margin-left: -5px; display:none;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;PDF</b>
+                    </span>
+                    <span id="descargarPdfDocumentoDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                        <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;PDF</b>
+                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
+                    </span>
+                    
                 </div>
             </div>
         </div>

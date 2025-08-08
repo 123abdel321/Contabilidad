@@ -22,25 +22,25 @@
     }
 
     @-webkit-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
-        }
-        @-moz-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
-        }
-        @-ms-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
-        }
-        @-o-keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
-        }
-        @keyframes color_change {
-            from { color: skyblue; }
-            to { color: darkcyan ; }
-        }
+        from { color: gold; }
+        to { color: #003883; }
+    }
+    @-moz-keyframes color_change {
+        from { color: gold; }
+        to { color: #003883; }
+    }
+    @-ms-keyframes color_change {
+        from { color: gold; }
+        to { color: #003883; }
+    }
+    @-o-keyframes color_change {
+        from { color: gold; }
+        to { color: #003883; }
+    }
+    @keyframes color_change {
+        from { color: gold; }
+        to { color: #003883; }
+    }
 
 </style>
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 side-nav-maximo-close" id="sidenav-main" style="z-index: 99 !important; border-radius: 0px 10px 10px 0px;">

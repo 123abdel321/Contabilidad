@@ -8,10 +8,13 @@ use Illuminate\Support\Facades\Bus;
 use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Exports\DocumentoGeneralExport;
+use App\Helpers\Printers\RecibosPdfMultiple;
 use App\Jobs\ProcessInformeDocumentosGenerales;
+use App\Jobs\ProcessGenerateRecibosMultiplePdf;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
+use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Informes\InfDocumentosGenerales;
 use App\Models\Informes\InfDocumentosGeneralesDetalle;
@@ -305,6 +308,55 @@ class DocumentosGeneralesController extends Controller
                 'url_file' => '',
                 'message'=> 'Se le notificará cuando el informe haya finalizado'
             ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function exportPdf(Request $request)
+    {
+        try {
+
+            if (!$request->get('id_comprobante')) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> "El comprobante es obligatorio"
+                ]);
+            }
+            $comprobante = Comprobantes::where('id', $request->get('id_comprobante'))->first();
+            if (!$comprobante) {
+                logger()->critical("Error showGeneralPdf: el comprobante id: {$request->get('id_comprobante')} no existe; consecutivo: {$consecutivo}");
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> "El comprobante: {$request->get('id_comprobante')} no existe"
+                ]);
+            }
+
+            if ($comprobante->tipo_comprobante != Comprobantes::TIPO_INGRESOS) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> "El comprobante: {$comprobante->nombre} no esta permitido para pdf"
+                ]);
+            }
+
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+            ProcessGenerateRecibosMultiplePdf::dispatch($empresa, $request->all(), $request->user()->id);
+
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=> 'Generando facturas pdf, se notificará apenas finalice'
+            ], 200);
+            
+
         } catch (Exception $e) {
             return response()->json([
                 "success"=>false,

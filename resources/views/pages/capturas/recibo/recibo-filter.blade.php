@@ -63,30 +63,30 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="iniciarCapturaRecibo" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
+                    <span id="iniciarCapturaRecibo" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;">
                         <i class="fas fa-folder-open" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">INICIAR RECIBO</b>
                     </span>
-                    <span id="iniciarCapturaReciboLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
-                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">CARGANDO</b>
-                    </span>
-                    <span id="cancelarCapturaRecibo" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="min-width: 40px; display:none;">
+                    <span id="cancelarCapturaRecibo" href="javascript:void(0)" class="btn badge bg-gradient-danger btn-bg-danger" style="min-width: 40px; display:none;">
                         <i class="fas fa-times-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">CANCELAR RECIBO</b>
                     </span>
-                    <span id="agregarRecibo" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; display:none;">
+                    <span id="agregarRecibo" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-info" style="min-width: 40px; display:none;">
                         <i class="fas fa-plus-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">AGREGAR PRODUCTO</b>
                     </span>
-                    <span id="crearCapturaReciboDisabled" href="javascript:void(0)" class="badge bg-success" style="min-width: 40px; display:none; float: right; background-color: #2dce899c !important; cursor: no-drop;">
+                    <span id="crearCapturaReciboDisabled" href="javascript:void(0)" class="badge bg-gradient-dark" style="min-width: 40px; display:none; float: right; cursor: no-drop; margin-top: 5px;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR RECIBO</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
-                    <span id="crearCapturaRecibo" href="javascript:void(0)" class="btn badge bg-gradient-success" style="min-width: 40px; display:none; float: right;">
+                    <span id="crearCapturaRecibo" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; display:none; float: right;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR RECIBO</b>
+                    </span>
+                    <span id="iniciarCapturaReciboLoading" class="badge bg-gradient-info btn-bg-excel" style="display:none; min-width: 40px; margin-bottom: 16px; float: right;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>
                 </div>
             </div>

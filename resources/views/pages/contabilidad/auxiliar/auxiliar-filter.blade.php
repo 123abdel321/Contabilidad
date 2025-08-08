@@ -61,21 +61,21 @@
                     <!-- BOTON EXCEL -->
                     <span id="descargarExcelAuxiliar" class="btn badge bg-gradient-success btn-bg-success" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                     </span>
                     <span id="descargarExcelAuxiliarDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">EXCEL</b>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                     <!-- BOTON PDF -->
                     <span id="descargarPdfAuxiliar" class="btn badge bg-gradient-success btn-bg-danger" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-pdf" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">PDF</b>
+                        <b style="vertical-align: text-top;">&nbsp;PDF</b>
                     </span>
                     <span id="descargarPdfAuxiliarDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">PDF</b>
+                        <b style="vertical-align: text-top;">&nbsp;PDF</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                     <!-- BOTON ULTIMO INFORME -->
