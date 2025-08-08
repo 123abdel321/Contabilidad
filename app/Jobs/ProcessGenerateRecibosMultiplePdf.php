@@ -19,9 +19,6 @@ class ProcessGenerateRecibosMultiplePdf implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 1;
-    public $timeout = 500;
-
     protected $empresa;
     protected $request;
     protected $usuario;
@@ -31,7 +28,6 @@ class ProcessGenerateRecibosMultiplePdf implements ShouldQueue
      */
     public function __construct($empresa, $request, $usuario)
     {
-        $this->onQueue('long-running');
         $this->empresa = $empresa;
         $this->request = $request;
         $this->usuario = $usuario;
