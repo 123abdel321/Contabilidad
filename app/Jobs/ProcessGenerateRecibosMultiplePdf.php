@@ -49,10 +49,13 @@ class ProcessGenerateRecibosMultiplePdf implements ShouldQueue
 
             event(new PrivateMessageEvent("informe-documentos-generales-{$this->empresa->token_db}_{$this->usuario}", [
                 'tipo' => 'exito',
-                'url_file' => "porfaolioerpbucket.nyc3.digitaloceanspaces.com{$recibosPdf}",
                 'success' =>  true,
-                'action' => 3
+                'titulo' => 'Pdf generado',
+                'mensaje' => 'Pdf de recibos de caja generado con exito',
+                'url_file_pdf' => "porfaolioerpbucket.nyc3.digitaloceanspaces.com{$recibosPdf}",
+                'autoclose' => true
             ]));
+
         } catch (Exception $exception) {
 			Log::error('Error al generar PDF de facturación', [
                 'error' => $exception->getMessage(),

@@ -346,6 +346,16 @@ channel_informe_documentos_generales.bind('notificaciones', function(data) {
     }
     if(data.url_file){
         loadExcel(data);
+        $("#descargarExcelDocumento").show();
+        $("#descargarExcelDocumentoLoading").hide();
+        $("#descargarExcelDocumentoDisabled").hide();
+        return;
+    }
+    if(data.url_file_pdf){
+        loadExcel(data);
+        $("#descargarPdfDocumento").show();
+        $("#descargarPdfDocumentoLoading").hide();
+        $("#descargarPdfDocumentoDisabled").hide();
         return;
     }
     if(data.id_documento_general){
@@ -365,11 +375,7 @@ function loadDocumentosGeneralesById(id_documento_general) {
             }
             $("#generarDocumentosGenerales").show();
             $("#generarDocumentosGeneralesLoading").hide();
-            // $('#descargarExcelAuxiliar').prop('disabled', false);
-            // $("#descargarExcelAuxiliar").show();
-            // $("#descargarExcelAuxiliarDisabled").hide();
-            // $('#generarAuxiliarUltimo').hide();
-            // $('#generarAuxiliarUltimoLoading').hide();
+
             agregarToast('exito', 'Documentos generales cargados', 'Informe cargado con exito!', true);
         }
     });
@@ -533,10 +539,6 @@ $(document).on('click', '#descargarExcelDocumento', function () {
         dataType: 'json',
     }).done((res) => {
 
-        $("#descargarExcelDocumento").show();
-        $("#descargarExcelDocumentoLoading").hide();
-        $("#descargarExcelDocumentoDisabled").hide();
-
         if(res.success){
             if(res.url_file){
                 window.open('https://'+res.url_file, "_blank");
@@ -544,12 +546,8 @@ $(document).on('click', '#descargarExcelDocumento', function () {
             }
             agregarToast('info', 'Generando excel', res.message, true);
         }
+
     }).fail((err) => {
-
-        $("#descargarExcelDocumento").show();
-        $("#descargarExcelDocumentoLoading").hide();
-        $("#descargarExcelDocumentoDisabled").hide();
-
         var mensaje = err.responseJSON.message;
         var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Generación de excel errada', errorsMsg);
@@ -583,11 +581,6 @@ $(document).on('click', '#descargarPdfDocumento', function () {
         headers: headers,
         dataType: 'json',
     }).done((res) => {
-        
-        $("#descargarPdfDocumento").show();
-        $("#descargarPdfDocumentoLoading").hide();
-        $("#descargarPdfDocumentoDisabled").hide();
-
         if(res.success){
             if(res.url_file){
                 window.open('https://'+res.url_file, "_blank");
@@ -596,10 +589,6 @@ $(document).on('click', '#descargarPdfDocumento', function () {
             agregarToast('info', 'Generando pdf', res.message, true);
         }
     }).fail((err) => {
-        $("#descargarPdfDocumento").show();
-        $("#descargarPdfDocumentoLoading").hide();
-        $("#descargarPdfDocumentoDisabled").hide();
-
         var mensaje = err.responseJSON.message;
         var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Generación de pdf errada', errorsMsg);;
