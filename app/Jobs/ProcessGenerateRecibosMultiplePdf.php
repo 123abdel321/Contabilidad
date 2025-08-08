@@ -14,9 +14,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Helpers\Printers\RecibosPdfMultiple;
 
-class ProcessGenerateRecibosMultiplePdf
+class ProcessGenerateRecibosMultiplePdf implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 1;
     public $timeout = 500;
