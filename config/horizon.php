@@ -203,6 +203,16 @@ return [
                 'tries' => 3,
                 'timeout' => 300,
             ],
+            'supervisor-long' => [
+                'connection' => 'redis',
+                'queue' => ['long-running'],
+                'balance' => 'simple',
+                'maxProcesses' => 2,
+                'memory' => 512,
+                'tries' => 1,
+                'timeout' => 500,
+                'nice' => 10,
+            ],
         ],
 
         'local' => [

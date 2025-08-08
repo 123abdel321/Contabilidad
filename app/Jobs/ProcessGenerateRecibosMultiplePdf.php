@@ -18,7 +18,9 @@ class ProcessGenerateRecibosMultiplePdf
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
-    public $timeout = 8999;
+    public $tries = 1;
+    public $timeout = 500;
+    public $queue = 'long-running'; 
 
     protected $empresa;
     protected $request;
