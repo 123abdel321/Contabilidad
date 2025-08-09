@@ -472,6 +472,10 @@ $('input[type=radio][name=detallar_venta]').change(function() {
 $(document).on('click', '#generarInformeZ', function () {
     var mensajeError = '';
     var errorCount = 0
+
+    $("#generarInformeZ").hide();
+    $("#generarInformeZLoading").show();
+    $("#generarInformeZDisabled").hide();
     
     if (!$('#id_bodega_ventas').val()) {
         errorCount++;
@@ -506,10 +510,20 @@ $(document).on('click', '#generarInformeZ', function () {
     url+= $("input[type='radio']#detallar_venta1").is(':checked') ? '&detallar_venta=1' : '&detallar_venta=0';
 
     window.open(url,'_blank');
+
+    setTimeout(function(){
+        $("#generarInformeZ").show();
+        $("#generarInformeZLoading").hide();
+        $("#generarInformeZDisabled").hide();
+    },100);
 });
 
 function showTotalsVentas(res) {
     if (!res.success) return;
+
+    $("#generarInformeZ").show();
+    $("#generarInformeZLoading").hide();
+    $("#generarInformeZDisabled").hide();
 
     var totales = res.totalesVenta[0];
     var totalesNotas = res.totalesNotas[0];

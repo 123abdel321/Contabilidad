@@ -534,7 +534,6 @@ class VentaController extends Controller
         $searchValue = $search_arr['value']; // Search value
 
 		$ventas = FacVentas::orderBy('id', 'DESC')
-            ->skip($start)
             ->with(
                 'resolucion',
                 'bodega',
@@ -594,13 +593,17 @@ class VentaController extends Controller
         }
 
         $informeTotals = $ventas->get();
-        $dataVentas = $ventas->take($rowperpage)->get();
+        
+        $dataVentas = $ventas->skip($start)
+            ->take($rowperpage)
+            ->get();
 
         $totalDataVenta = $this->queryTotalesVentaCosto($request)->select(
             DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
             DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
             DB::raw("SUM(FVD.total) AS total_venta")
         )->get();
+        
         $totalDataNotas = $this->queryTotalesVentaCosto($request, true)->select(
             DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
             DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),

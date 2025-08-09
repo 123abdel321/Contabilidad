@@ -84,18 +84,27 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="generarVentas" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
-                        <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">BUSCAR</b>
+                    <span id="generarVentas" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;">
+                        <i class="fas fa-search" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;BUSCAR</b>
                     </span>
-                    <span id="generarVentasLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                    <span id="generarVentasLoading" class="badge bg-gradient-info btn-bg-gold-loading" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">BUSCANDO</b>
+                        <b style="vertical-align: text-top;">&nbsp;BUSCANDO</b>
                     </span>
-
-                    <span id="generarInformeZ" href="javascript:void(0)" class="btn badge bg-gradient-success" style="min-width: 40px;">
-                        <i class="fas fa-file-pdf" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">INFORME Z</b>
+                    <!-- BOTON PDF -->
+                    <span id="generarInformeZ" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-danger" style="min-width: 40px; display:none;">
+                        <i class="fas fa-file-pdf" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;INFORME Z</b>
+                    </span>
+                    <span id="generarInformeZLoading" href="javascript:void(0)" class="badge bg-gradient-success btn-bg-danger-loading" style="min-width: 40px; display:none;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;INFORME Z</b>
+                    </span>
+                    <span id="generarInformeZDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                        <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;INFORME Z</b>
+                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                 </div>
             </div>
