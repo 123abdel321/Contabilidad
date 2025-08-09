@@ -551,9 +551,7 @@ class VentaController extends Controller
                 DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
                 'created_by',
                 'updated_by'
-            )
-            // ->first();
-            ->take($rowperpage);
+            );
         
         if ($request->get('id_cliente')) {
             $ventas->where('id_cliente', $request->get('id_cliente'));
@@ -595,7 +593,9 @@ class VentaController extends Controller
             $ventas->where('created_by', $request->get('id_usuario'));
         }
 
-        $dataVentas = $ventas->get();
+        $informeTotals = $ventas->get();
+        $dataVentas = $ventas->take($rowperpage)->get();
+
         $totalDataVenta = $this->queryTotalesVentaCosto($request)->select(
             DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
             DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
@@ -619,8 +619,8 @@ class VentaController extends Controller
             'draw' => $draw,
             'totalesVenta' => $totalDataVenta,
             'totalesNotas' => $totalDataNotas,
-            'iTotalRecords' => $ventas->count(),
-            'iTotalDisplayRecords' => $ventas->count(),
+            'iTotalRecords' => $informeTotals->count(),
+            'iTotalDisplayRecords' => $informeTotals->count(),
             'data' => $this->ventaData,
             'perPage' => $rowperpage,
             'message'=> 'Ventas cargados con exito!'
