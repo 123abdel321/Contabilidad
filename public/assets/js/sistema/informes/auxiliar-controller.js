@@ -1,6 +1,7 @@
+var auxiliar_table = null;
 var generarAuxiliar = false;
 var auxiliarExistente = false;
-var auxiliar_table = null;
+var channelInformeAuxiliar = pusher.subscribe('informe-auxiliar-'+localStorage.getItem("notificacion_code"));
 
 function auxiliarInit() {
 
@@ -366,9 +367,7 @@ $(document).on('click', '#generarAuxiliar', function () {
     });
 });
 
-var channel = pusher.subscribe('informe-auxiliar-'+localStorage.getItem("notificacion_code"));
-
-channel.bind('notificaciones', function(data) {
+channelInformeAuxiliar.bind('notificaciones', function(data) {
 
     if(data.tipo == "error"){
         $("#generarAuxiliar").show();
@@ -381,6 +380,9 @@ channel.bind('notificaciones', function(data) {
     }
 
     if(data.url_file){
+        $("#descargarExcelAuxiliar").show();
+        $("#descargarExcelAuxiliarLoading").hide();
+        $("#descargarExcelAuxiliarDisabled").hide();
         loadExcel(data);
         return;
     }
@@ -474,6 +476,11 @@ $('input[type=radio][name=tipo_documento]').change(function() {
 });
 
 $(document).on('click', '#descargarExcelAuxiliar', function () {
+
+    $("#descargarExcelAuxiliar").hide();
+    $("#descargarExcelAuxiliarLoading").show();
+    $("#descargarExcelAuxiliarDisabled").hide();
+
     $.ajax({
         url: base_url + 'auxiliares-excel',
         method: 'POST',
@@ -489,18 +496,13 @@ $(document).on('click', '#descargarExcelAuxiliar', function () {
             agregarToast('info', 'Generando excel', res.message, true);
         }
     }).fail((err) => {
-        var errorsMsg = "";
+
+        $("#descargarExcelAuxiliar").show();
+        $("#descargarExcelAuxiliarLoading").hide();
+        $("#descargarExcelAuxiliarDisabled").hide();
+
         var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
-        }
+        var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Error al generar excel', errorsMsg);
     });
 });
