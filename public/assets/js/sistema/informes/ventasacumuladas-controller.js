@@ -136,7 +136,7 @@ function initTablesVentasAcumuladas() {
         ],
         rowCallback: function(row, data, index){
             if(data.nivel == 1){
-                $('td', row).css('background-color', '#000');
+                $('td', row).css('background-color', 'rgb(33 35 41)');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
