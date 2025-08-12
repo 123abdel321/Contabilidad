@@ -45,7 +45,6 @@ use App\Http\Controllers\Tablas\Nomina\ContratosController;
 use App\Http\Controllers\Tablas\Nomina\ConfiguracionProvisiones;
 use App\Http\Controllers\Tablas\Nomina\ConceptosNominaController;
 use App\Http\Controllers\Tablas\Nomina\AdministradorasController;
-
 //CAPTURAS
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\PagosController;
@@ -61,6 +60,7 @@ use App\Http\Controllers\Capturas\DocumentoEliminarController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
 use App\Http\Controllers\Capturas\Nomina\VacacionesController;
 use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
+use App\Http\Controllers\Capturas\Nomina\CesantiasInteresController;
 use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
 use App\Http\Controllers\Capturas\Nomina\LiquidacionDefinitivaController;
 
@@ -101,7 +101,7 @@ use App\Http\Controllers\Importador\DocumentosImportadorController;
 // });
 
 Route::get('/', function () {
-	return redirect('/home');
+	return view('pages.landing-page');
 });
 
 Auth::routes();
@@ -155,15 +155,19 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		//MOVIMIENTO INVENTARIO
 		Route::get('/movimientoinventario', [MovimientoInventarioController::class, 'index']);
 
-		//NOVEDADES GENERALES -> NOMINA
+		// >> NOMINA << \\
+		//CESANTIAS INTERESES
+		Route::get('/cesantiasintereses', [CesantiasInteresController::class, 'index']);
+		//NOVEDADES GENERALES
 		Route::get('/novedadesgenerales', [NovedadesGeneralesController::class, 'index']);
-		//CAUSAR -> NOMINA
+		//CAUSAR
 		Route::get('/causar', [CausarNominaController::class, 'index']);
-		//LIQUIDACIÓN DEFINITIVA -> NOMINA
+		//LIQUIDACIÓN DEFINITIVA
 		Route::get('/liquidaciondefinitiva', [LiquidacionDefinitivaController::class, 'index']);
-		//VACACIONES -> NOMINA
+		//VACACIONES
 		Route::get('/vacaciones', [VacacionesController::class, 'index']);
-		
+		// >> NOMINA << \\
+
 		//COMPRAS
 		Route::get('/compra', [CompraController::class, 'index'])->name('compra');
 		Route::get('/compras', [CompraController::class, 'indexInforme'])->name('compras');
