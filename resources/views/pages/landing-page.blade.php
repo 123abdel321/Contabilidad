@@ -4,22 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PORTFOLIO ERP - ERP Colombiano con Integración DIAN | Software Contable y Facturación Electrónica</title>
-    <meta name="description" content="PORTFOLIOERP es el ERP colombiano líder con integración oficial DIAN. Contabilidad, nómina, facturación electrónica y reportes en tiempo real. Demo gratuita disponible.">
-    <meta name="keywords" content="ERP Colombia, facturación electrónica DIAN, software contable, nómina Colombia, PORTFOLIOERP, sistema contable colombiano">
-    <meta name="author" content="PORTFOLIOERP">
+    <meta name="description" content="PORTFOLIO ERP es el ERP colombiano líder con integración oficial DIAN. Contabilidad, nómina, facturación electrónica y reportes en tiempo real. Demo gratuita disponible.">
+    <meta name="keywords" content="ERP Colombia, facturación electrónica DIAN, software contable, nómina Colombia, PORTFOLIO ERP, sistema contable colombiano">
+    <meta name="author" content="PORTFOLIO ERP">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://portfolioerp.com/">
-    <meta property="og:title" content="PORTFOLIOERP - ERP Colombiano con Integración DIAN">
+    <meta property="og:title" content="PORTFOLIO ERP - ERP Colombiano con Integración DIAN">
     <meta property="og:description" content="El ERP colombiano que integra contabilidad, nómina y facturación DIAN en una sola plataforma. Cumple con la normativa fiscal y optimiza tus procesos empresariales.">
     <meta property="og:image" content="https://portfolioerp.com/og-image.jpg">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://portfolioerp.com/">
-    <meta property="twitter:title" content="PORTFOLIOERP - ERP Colombiano con Integración DIAN">
+    <meta property="twitter:title" content="PORTFOLIO ERP - ERP Colombiano con Integración DIAN">
     <meta property="twitter:description" content="El ERP colombiano que integra contabilidad, nómina y facturación DIAN en una sola plataforma.">
     <meta property="twitter:image" content="https://portfolioerp.com/og-image.jpg">
     
@@ -30,6 +30,7 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     
+    <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
@@ -44,6 +45,11 @@
         font-family: "Open Sans", sans-serif;
         line-height: 1.6;
         color: #334155;
+        }
+
+        /* Agregando clase para prevenir scroll cuando el menú móvil está abierto */
+        body.menu-open {
+        overflow: hidden;
         }
 
         .page-container {
@@ -186,6 +192,13 @@
         gap: 0.5rem;
         }
 
+        /* Agregando estilos para el logo real */
+        .logo-image {
+        width: 2rem;
+        height: 2rem;
+        object-fit: contain;
+        }
+
         .logo-icon {
         width: 2rem;
         height: 2rem;
@@ -204,6 +217,42 @@
         color: #1e293b;
         }
 
+        /* Agregando estilos para el botón hamburguesa */
+        .mobile-menu-toggle {
+        display: none;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 2rem;
+        height: 2rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        z-index: 60;
+        }
+
+        .hamburger-line {
+        width: 100%;
+        height: 0.125rem;
+        background-color: #1e293b;
+        border-radius: 0.0625rem;
+        transition: all 0.3s ease;
+        transform-origin: 1px;
+        }
+
+        .mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+        transform: rotate(45deg);
+        }
+
+        .mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+        opacity: 0;
+        }
+
+        .mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+        transform: rotate(-45deg);
+        }
+
+        /* Estilos para el menú de navegación responsive */
         .nav {
         display: flex;
         align-items: center;
@@ -245,9 +294,57 @@
         border-radius: 0.0625rem;
         }
 
+        /* Media queries para responsive design del header */
         @media (max-width: 768px) {
+        .mobile-menu-toggle {
+            display: flex;
+        }
+
         .nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+            padding: 5rem 2rem 2rem;
+            gap: 0;
+            transition: right 0.3s ease;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav.active {
+            right: 0;
+        }
+
+        .nav-link {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            border-radius: 0;
+            text-align: center;
+        }
+
+        .nav-link.active::after {
             display: none;
+        }
+
+        .nav .btn {
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        .nav .btn-outline {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Ajuste del color de las líneas hamburguesa cuando el header tiene scroll */
+        .header.scrolled .hamburger-line {
+            background-color: #1e293b;
         }
         }
 
@@ -836,24 +933,23 @@
 
         /* Responsive Design */
         @media (max-width: 640px) {
-        .hero-title {
-            font-size: 2rem;
-        }
+            .hero-title {
+                font-size: 2rem;
+            }
 
-        .section-header h2 {
-            font-size: 1.75rem;
-        }
+            .section-header h2 {
+                font-size: 1.75rem;
+            }
 
-        .cta-content h2 {
-            font-size: 2rem;
-        }
+            .cta-content h2 {
+                font-size: 2rem;
+            }
 
-        /* Ajuste para móviles con header transparente */
-        .hero {
-            padding: 5rem 1rem 3rem;
+            /* Ajuste para móviles con header transparente */
+            .hero {
+                padding: 5rem 1rem 3rem;
+            }
         }
-    }
-
     </style>
 </head>
 <body>
@@ -862,10 +958,20 @@
         <header class="header" id="header">
             <div class="container header-content">
                 <div class="logo">
-                    <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" style="width: 50px;" />
+                    <!-- Reemplazando el icono SVG con el logo real -->
+                    <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="PORTFOLIO ERP Logo" class="logo-image">
                     <span class="logo-text">PORTFOLIO ERP</span>
                 </div>
-                <nav class="nav">
+                
+                <!-- Agregando botón hamburguesa para móvil -->
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menú">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                
+                <!-- Agregando clase mobile-menu al nav -->
+                <nav class="nav mobile-menu" id="mobileMenu">
                     <a href="#modulos" class="nav-link" data-section="modulos">Módulos</a>
                     <a href="#beneficios" class="nav-link" data-section="beneficios">Beneficios</a>
                     <a href="#clientes" class="nav-link" data-section="clientes">Clientes</a>
@@ -1190,7 +1296,7 @@
                         <div class="footer-brand">
                             <div class="logo">
                                 <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" style="width: 50px;" />
-                                <span class="logo-text">PORTFOLIO ERP</span>
+                                <span class="logo-text">PORTAFOLIO ERP</span>
                             </div>
                             <p>El ERP colombiano diseñado para empresas que buscan crecer con tecnología confiable.</p>
                         </div>
@@ -1215,14 +1321,14 @@
                         <div class="footer-column">
                             <h4>Contacto</h4>
                             <ul>
-                                <li>+57 320 7147104</li>
-                                <li>portafolioerp@gmail.com</li>
-                                <li>Medellín, Colombia</li>
+                                <li>+57 (1) 234-5678</li>
+                                <li>info@portfolioerp.com</li>
+                                <li>Bogotá, Colombia</li>
                             </ul>
                         </div>
                     </div>
                     <div class="footer-bottom">
-                        <p>&copy; 2025 PORTFOLIO ERP. Todos los derechos reservados.</p>
+                        <p>&copy; 2024 PORTFOLIO ERP. Todos los derechos reservados.</p>
                     </div>
                 </div>
             </footer>
@@ -1234,6 +1340,20 @@
         // Header scroll effect
         const header = document.getElementById('header');
         const navLinks = document.querySelectorAll('.nav-link');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('active');
+            mobileMenuToggle.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('active');
+            mobileMenuToggle.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        }
         
         // Función para manejar el scroll del header
         function handleHeaderScroll() {
@@ -1278,6 +1398,8 @@
             handleActiveSection();
         });
         
+        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+        
         // Smooth scroll para los links de navegación
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -1293,8 +1415,22 @@
                         top: targetPosition,
                         behavior: 'smooth'
                     });
+                    
+                    closeMobileMenu();
                 }
             });
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!header.contains(e.target) && mobileMenu.classList.contains('active')) {
+                closeMobileMenu();
+            }
+        });
+        
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                closeMobileMenu();
+            }
         });
         
         // Inicializar en carga de página
