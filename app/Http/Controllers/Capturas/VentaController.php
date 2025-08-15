@@ -491,16 +491,16 @@ class VentaController extends Controller
 
             DB::connection('sam')->commit();
 
-            if ($enviarFacturaElectronica) {
-                $pdf = (new VentasPdf($empresa, $venta))->buildPdf()->getPdf();
+            // if ($enviarFacturaElectronica) {
+            //     $pdf = (new VentasPdf($empresa, $venta))->buildPdf()->getPdf();
 
-                $this->sendEmailFactura(
-                    $request->user()['has_empresa'],
-                    $venta->cliente->email,
-                    $venta,
-                    $pdf
-                );
-            }
+            //     $this->sendEmailFactura(
+            //         $request->user()['has_empresa'],
+            //         $venta->cliente->email,
+            //         $venta,
+            //         $pdf
+            //     );
+            // }
 
             return response()->json([
 				'success'=>	true,
