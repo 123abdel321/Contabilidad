@@ -1,6 +1,22 @@
 
 <html>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <table>
+        <tr>
+            <td rowspan="3" style="vertical-align: middle; align-items: center; text-align: center;">
+                <img src="{{ $logo_empresa }}" width="100" />
+            </td>
+            <td style="font-size: 25px; font-weight: bold;">{{ $nombre_empresa }}</td>
+        </tr>
+        <tr>
+            <td style="font-size: 20px; font-weight: bold;">{{ $nombre_informe }}</td>
+        </tr>
+        <tr>
+            <td style="font-size: 14px;">Fecha de generación: {{ \Carbon\Carbon::now()->format('Y-m-d H:i') }}</td>
+        </tr>
+    </table>
+
 	<table>
 		<thead>
             <tr>
@@ -16,17 +32,25 @@
 		@foreach($balances as $balance)
             <tr>
                 @if($balance->cuenta == 'TOTALES')
-                    @include('excel.balance.celdas', ['style' => 'background-color: #1c4587; font-weight: 600; color: #FFF;', 'balance' => $balance])
+                    @include('excel.balance.celdas', ['style' => 'background-color: #000000; font-weight: bold; color: #ffffff;', 'balance' => $balance])
                 @elseif($balance->auxiliar)
-                    @include('excel.balance.celdas', ['style' => 'background-color: #ecf6fa;', 'balance' => $balance])
+                    @include('excel.balance.celdas', ['style' => 'background-color: #ffffff; color: #000;', 'balance' => $balance])
                 @elseif(strlen($balance->cuenta) == 1)
-                    @include('excel.balance.celdas', ['style' => 'background-color: #79bfdf; font-weight: 600;', 'balance' => $balance])
+                    @include('excel.balance.celdas', ['style' => 'background-color: #212329; font-weight: bold; color: #ffffff;', 'balance' => $balance])
                 @elseif(strlen($balance->cuenta) == 2)
-                    @include('excel.balance.celdas', ['style' => 'background-color: #9fd1e8; font-weight: 600;', 'balance' => $balance])
+                    @if ($nivel == 1)
+                        @include('excel.balance.celdas', ['style' => 'background-color: #ffffff; color: #000;', 'balance' => $balance])
+                    @else
+                        @include('excel.balance.celdas', ['style' => 'background-color: #37393e; font-weight: bold; color: #ffffff;', 'balance' => $balance])
+                    @endif
                 @elseif(strlen($balance->cuenta) == 4)
-                    @include('excel.balance.celdas', ['style' => 'background-color: #c5e4f1; font-weight: 600;', 'balance' => $balance])
+                    @if ($nivel == 2)
+                        @include('excel.balance.celdas', ['style' => 'background-color: #ffffff; color: #000;', 'balance' => $balance])
+                    @else
+                        @include('excel.balance.celdas', ['style' => 'background-color: #4d4f54; font-weight: bold; color: #ffffff;', 'balance' => $balance])
+                    @endif
                 @elseif(strlen($balance->cuenta) == 6)
-                    @include('excel.balance.celdas', ['style' => 'background-color: #d9edf6; font-weight: 600;', 'balance' => $balance])
+                    @include('excel.balance.celdas', ['style' => 'background-color: #636569; color: #ffffff; font-weight: bold;', 'balance' => $balance])
                 @endif
             </tr>
 		@endforeach

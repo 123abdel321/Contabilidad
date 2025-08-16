@@ -88,12 +88,12 @@ function balanceInit() {
         },
         'rowCallback': function(row, data, index){
             if(data.cuenta == "TOTALES"){
-                $('td', row).css('background-color', 'rgb(28 69 135)');
+                $('td', row).css('background-color', 'rgb(0 0 0)');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
             }
-            if (data.auxiliar == 5) {
+            if (data.auxiliar) {
                 return;
             }
             if(data.balance){//
@@ -101,28 +101,39 @@ function balanceInit() {
                 return;
             }
             if(data.cuenta.length == 1){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
-                $('td', row).css('font-weight', '700');
+                $('td', row).css('background-color', 'rgb(33 35 41)');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 2){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
-                $('td', row).css('font-weight', '600');
+                if (getNivel() == 1) {
+                    return;
+                }
+                $('td', row).css('background-color', 'rgb(33 35 41 / 90%)');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 4){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
-                $('td', row).css('font-weight', '600');
+                if (getNivel() == 2) {
+                    return;
+                }
+                $('td', row).css('background-color', 'rgb(33 35 41 / 80%)');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 6){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
-                $('td', row).css('font-weight', '600');
+                $('td', row).css('background-color', 'rgb(33 35 41 / 70%)');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if (!data.auxiliar) {
-                $('td', row).css('background-color', 'rgb(64 164 209 / 10%)');
+                $('td', row).css('background-color', 'rgb(33 35 41 / 60%)');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
         },
@@ -236,11 +247,10 @@ function generarConsultaBalance() {
 
     $(".cardTotalBalance").css("background-color", "white");
 
-    $("#balance_anterior").text('$0');
-    $("#balance_debito").text('$0');
-    $("#balance_credito").text('$0');
-
-    $("#balance_diferencia").text('$0');
+    $("#balance_anterior").text('0');
+    $("#balance_debito").text('0');
+    $("#balance_credito").text('0');
+    $("#balance_diferencia").text('0');
 
     var tipoInformeBalance = $("#tipo_informe_balance").val();
     balance_table.column(2).visible(false);
@@ -398,6 +408,11 @@ function GenerateBalance() {
 }
 
 $(document).on('click', '#descargarExcelBalance', function () {
+
+    $("#descargarExcelBalance").hide();
+    $("#descargarExcelBalanceLoading").show();
+    $("#descargarExcelBalanceDisabled").hide();
+
     $.ajax({
         url: base_url + 'balances-excel',
         method: 'POST',
@@ -405,6 +420,11 @@ $(document).on('click', '#descargarExcelBalance', function () {
         headers: headers,
         dataType: 'json',
     }).done((res) => {
+
+        $("#descargarExcelBalance").show();
+        $("#descargarExcelBalanceLoading").hide();
+        $("#descargarExcelBalanceDisabled").hide();
+
         if(res.success){
             if(res.url_file){
                 window.open('https://'+res.url_file, "_blank");
@@ -413,18 +433,13 @@ $(document).on('click', '#descargarExcelBalance', function () {
             agregarToast('info', 'Generando excel', res.message, true);
         }
     }).fail((err) => {
-        var errorsMsg = "";
+
+        $("#descargarExcelBalance").show();
+        $("#descargarExcelBalanceLoading").hide();
+        $("#descargarExcelBalanceDisabled").hide();
+
         var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
-        }
+        var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Error al generar excel', errorsMsg);
     });
 });

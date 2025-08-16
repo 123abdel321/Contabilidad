@@ -220,7 +220,7 @@ class BalanceController extends Controller
                 return response()->json([
                     'success'=>	true,
                     'url_file' => '',
-                    'message'=> 'Actualmente se esta generando el excel del auxiliar 12'
+                    'message'=> 'Actualmente se esta generando el excel del balance'
                 ]);
             }
 
@@ -243,10 +243,12 @@ class BalanceController extends Controller
             $user_id = $request->user()->id;
             $id_informe = $request->get('id');
 
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
             Bus::chain([
-                function () use ($id_informe, &$fileName) {
+                function () use ($id_informe, &$fileName, &$empresa) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
-                    (new BalanceExport($id_informe))->store($fileName, 'do_spaces', null, [
+                    (new BalanceExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
                     ]);
                 },

@@ -63,32 +63,40 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="generarBalance" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="min-width: 40px; margin-right: 3px;">
+                    <span id="generarBalance" href="javascript:void(0)" class="btn badge bg-gradient-primary btn-bg-gold" style="min-width: 40px; margin-right: 3px;">
                         <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">BUSCAR</b>
                     </span>
-                    <span id="generarBalanceLoading" class="badge bg-gradient-primary" style="display:none; min-width: 40px; margin-right: 3px; margin-bottom: 16px;">
+                    <span id="generarBalanceLoading" class="badge bg-gradient-primary btn-bg-gold-loading" style="display:none; min-width: 40px; margin-right: 3px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">GENERANDO</b>
-                    </span>
-                    <!-- BOTON EXCEL -->
-                    <span id="descargarExcelBalance" class="btn badge bg-gradient-success btn-bg-success" style="min-width: 40px; display:none;">
-                        <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
-                    </span>
-                    <span id="descargarExcelBalanceDisabled" class="badge bg-gradient-dark" style="min-width: 40px; color: #adadad; margin-right: 3px;">
-                        <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
-                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
+                        <b style="vertical-align: text-top;">BUSCANDO</b>
                     </span>
                     <!-- BOTON PDF -->
                     <span id="descargarPdfBalance" class="btn badge bg-gradient-success btn-bg-danger" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-pdf" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">&nbsp;PDF</b>
                     </span>
+                    <span id="descargarPdfBalanceLoading" class="badge bg-gradient-success btn-bg-danger-loading" style="min-width: 40px; margin-right: 3px; display:none;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;PDF</b>
+                    </span>
                     <span id="descargarPdfBalanceDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">&nbsp;PDF</b>
+                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
+                    </span>
+                    <!-- BOTON EXCEL -->
+                    <span id="descargarExcelBalance" class="btn badge bg-gradient-success btn-bg-success btn-bg-excel" style="min-width: 40px; display:none;">
+                        <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
+                    </span>
+                    <span id="descargarExcelBalanceLoading" class="badge bg-gradient-success btn-bg-success btn-bg-excel-loading" style="min-width: 40px; display:none;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
+                    </span>
+                    <span id="descargarExcelBalanceDisabled" class="badge bg-gradient-dark" style="min-width: 40px; color: #adadad; margin-right: 3px;">
+                        <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                     <!-- BOTON ULTIMO INFORME -->
