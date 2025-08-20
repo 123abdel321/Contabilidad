@@ -61,6 +61,11 @@ class NomPeriodoPagos extends Model
 		return $this->hasMany(NomNovedadesGenerales::class, 'id_periodo_pago', 'id');
 	}
 
+    public function cesantiasIntereses()
+	{
+		return $this->hasMany(NomCesantiasInteres::class, 'id_periodo_pago', 'id');
+	}
+
     public function sumDetalles()
 	{
 		return $this->hasOne(NomPeriodoPagoDetalles::class, 'id_periodo_pago', 'id')->select([

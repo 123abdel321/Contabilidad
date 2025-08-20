@@ -61,7 +61,7 @@ function initSelect2Causar() {
 
 function initTablesCausar() {
     causar_nomina_table = $('#causarNominaTable').DataTable({
-        pageLength: 15,
+        pageLength: 100,
         dom: 'Brtip',
         paging: true,
         responsive: false,

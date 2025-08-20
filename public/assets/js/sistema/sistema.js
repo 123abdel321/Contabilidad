@@ -140,6 +140,7 @@ var moduloCreado = {
     'liquidaciondefinitiva': false,
     'vacaciones': false,
     'ventasacumuladas': false,
+    'cesantiasintereses': false,
 };
 
 var moduloRoute = {
@@ -201,7 +202,8 @@ var moduloRoute = {
     'causar': 'capturas',
     'liquidaciondefinitiva': 'capturas',
     'vacaciones': 'capturas',
-    'ventasacumuladas': 'informes'
+    'ventasacumuladas': 'informes',
+    'cesantiasintereses': 'capturas',
 }
 
 function iniciarCanalesDeNotificacion () {
@@ -256,18 +258,7 @@ $imagenes = [
     'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_46.jpg',
     'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_47.jpg',
     'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_48.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_49.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_50.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_51.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_52.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_53.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_54.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_55.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_56.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_57.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_58.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_59.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_60.jpg',
+    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_49.jpg'
 ];
 
 const meses = [

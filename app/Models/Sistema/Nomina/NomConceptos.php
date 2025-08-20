@@ -11,6 +11,8 @@ class NomConceptos extends Model
 {
     use HasFactory;
 
+    const CODE_INTERES_CESANTIAS = '031';
+
     protected $connection = 'sam';
 
     protected $table = "nom_conceptos";

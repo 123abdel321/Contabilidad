@@ -52,6 +52,7 @@ use App\Http\Controllers\Capturas\MovimientoInventarioController;
 
 use App\Http\Controllers\Capturas\Nomina\VacacionesController;
 use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
+use App\Http\Controllers\Capturas\Nomina\CesantiasInteresController;
 use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
 use App\Http\Controllers\Capturas\Nomina\CausarProvicionadaController;
 use App\Http\Controllers\Capturas\Nomina\LiquidacionDefinitivaController;
@@ -473,6 +474,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('ubicaciones-combo-general', 'comboUbicacion');
         });
 
+        //CAPTURA CESANTIAS INTERESES
+        Route::controller(CesantiasInteresController::class)->group(function () {
+            Route::post('cesantias-intereses', 'create');
+            Route::get('cesantias-intereses', 'generate');
+            Route::get('cesantias-intereses-detalle', 'detalles');
+        });
         //CAPTURA NOVEDADES GENERALES
         Route::controller(NovedadesGeneralesController::class)->group(function () {
             Route::get('novedades-generales', 'generate');

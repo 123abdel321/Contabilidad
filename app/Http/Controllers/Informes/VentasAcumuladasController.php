@@ -91,7 +91,7 @@ class VentasAcumuladasController extends Controller
     		'success'=>	true,
     		'data' => '',
     		'message'=> 'Generando informe de ventas acumulados'
-    	]);
+    	], Response::HTTP_OK);
     }
 
     public function show(Request $request)

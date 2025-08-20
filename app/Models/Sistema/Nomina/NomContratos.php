@@ -83,6 +83,11 @@ class NomContratos extends Model
         return $this->belongsTo(Nits::class, 'id_empleado');
 	}
 
+    public function empleado()
+    {
+        return $this->belongsTo(Nits::class, 'id_empleado');
+	}
+
     public function periodo()
     {
         return $this->belongsTo(NomPeriodos::class, 'id_periodo');
@@ -126,5 +131,17 @@ class NomContratos extends Model
     public function fondo_arl()
     {
         return $this->belongsTo(NomAdministradoras::class, 'id_fondo_arl');
+	}
+
+    public function scopeActivo($query, $date = null)
+	{
+		$date = $date ?: date('Y-m-d');
+
+		return $query->where('estado', 1)
+			->whereDate('fecha_inicio_contrato', '<=', $date)
+			->where(function ($q) use ($date) {
+				return $q->whereDate('fecha_fin_contrato', '>=', $date)
+					->orWhere('fecha_fin_contrato', null);
+			});
 	}
 }
