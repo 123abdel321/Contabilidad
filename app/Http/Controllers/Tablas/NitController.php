@@ -358,6 +358,7 @@ class NitController extends Controller
         }
 
         return $tipoDocumento->paginate(40);
+
     }
 
     public function comboNit(Request $request)
@@ -404,7 +405,7 @@ class NitController extends Controller
             $nits->whereIn('id', $request->get("id_nits"));
         } else {
             if ($request->get("q")) {
-                $nits->where('numero_documento', $request->get("q"))
+                $nits->where('numero_documento', 'LIKE', '%' .$request->get("q") . '%')
                     ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("q") . '%')
                     ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("q") . '%')
                     ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("q") . '%')

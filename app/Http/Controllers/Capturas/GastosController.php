@@ -106,7 +106,7 @@ class GastosController extends Controller
             'pagos.*.id' => 'required|exists:sam.fac_formas_pagos,id',
             'pagos.*.valor' => 'required',
         ];
-        
+
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
 		if ($validator->fails()){
@@ -117,8 +117,29 @@ class GastosController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
+        $actualizarConsecutivo = true;
 
+        // Verificar que exista el comprobante
+        $comprobanteGasto = Comprobantes::find($request->get('id_comprobante'));
+        if(!$comprobanteGasto) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Verificar fecha manual
+        if (!$request->get('fecha_manual')) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Verificar si se encuentra en una fecha cerrada
+        $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
         if ($isFechaCierreLimit) {
 			return response()->json([
                 "success"=>false,
@@ -127,53 +148,52 @@ class GastosController extends Controller
             ], 200);
 		}
 
+        // Verificar si el consecutivo está en uso (con o sin recibo)
+        $gasto = $request->get('id_gasto') ? ConGastos::find($request->get('id_gasto')) : null;
+        $consecutivoUsado = $this->consecutivoUsado(
+            $comprobanteGasto,
+            $request->get('consecutivo'),
+            $request->get('fecha_manual'),
+            $gasto
+        );
+
+        if ($consecutivoUsado) {
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => "El consecutivo {$request->get('consecutivo')} ya está en uso."
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         try {
             DB::connection('sam')->beginTransaction();
             
-            $comprobanteGasto = Comprobantes::where('id', $request->get('id_comprobante'))->first();
             $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
             $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
             
             $this->proveedor = $this->findProveedor($request->get('id_proveedor'));
             $responsabilidades = $this->getResponsabilidades($this->proveedor->id_responsabilidades);
+            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
+
+            if (!auth()->user()->can("gasto update")) {
+                $request->request->add(['consecutivo' => $consecutivo]);
+            } else if ($consecutivo != $request->get('consecutivo')) {
+                $actualizarConsecutivo = false;
+            }
+
+            // Eliminar datos del gasto anterior
+            if ($gasto) {
+                $actualizarConsecutivo = false;
+                $gasto->documentos()->delete();
+                $gasto->detalles()->delete();
+                $gasto->pagos()->delete();
+                $gasto->delete();
+            }
 
             if (!in_array('5', $responsabilidades)) {
                 $this->tipoRetencion = 'cuenta_retencion_declarante';
             }
-
-            if ($request->get('editing_gasto')) {
-
-                $gasto = ConGastos::where('id_comprobante', $request->get('id_comprobante'))
-                    ->where('consecutivo', $request->get('consecutivo'))
-                    ->orderBy('id', 'DESC')
-                    ->first();
-
-                $consecutivoUsado = $this->consecutivoUsado(
-                    $comprobanteGasto,
-                    $request->get('consecutivo'),
-                    $request->get('fecha_manual'),
-                    $gasto
-                );
-
-                if ($consecutivoUsado) {
-                    return response()->json([
-                        "success"=>false,
-                        'data' => [],
-                        "message"=> "El consecutivo {$request->get('consecutivo')} ya está en uso."
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                }
-
-                if ($gasto) {
-                    $gasto->documentos()->delete();
-                    $gasto->detalles()->delete();
-                    $gasto->pagos()->delete();
-                    $gasto->delete();
-                }
-            } else {
-                $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
-                $request->request->add(['consecutivo' => $consecutivo]);
-            }
-
+            
             //CREAR FACTURA GASTO
             $gasto = $this->createFacturaGasto($request);
 
@@ -190,7 +210,7 @@ class GastosController extends Controller
 
             $redondeo_gastos = VariablesEntorno::where('nombre', 'redondeo_gastos')->first();
             $redondeo_gastos = $redondeo_gastos ? floatval($redondeo_gastos->valor) : null;
-
+            
             //AGREGAR MOVIMIENTO DE CUENTAS POR GASTO
             foreach ($request->get('gastos') as $movimiento) {
                 $movimiento = (object)$movimiento;
@@ -408,11 +428,12 @@ class GastosController extends Controller
                 }
             }
 
-            if (!$request->get('editing_gasto')) {
+            if ($actualizarConsecutivo) {
                 $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
             }
             
             if (!$documentoGeneral->save()) {
+
 				DB::connection('sam')->rollback();
 				return response()->json([
 					'success'=>	false,
@@ -505,7 +526,7 @@ class GastosController extends Controller
         
         $this->calcularTotales($request->get('gastos'), $request->get('id_proveedor'));
         $this->calcularFormasPago($request->get('pagos'));
-        // dd($this->totalesFactura);
+        
         $gasto = ConGastos::create([
             'id_concepto' => $request->get('id_concepto'),
             'id_proveedor' => $request->get('id_proveedor'),

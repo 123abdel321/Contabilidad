@@ -195,7 +195,7 @@ class CesantiasInteresController extends Controller
         }
     }
 
-    public function create (Request $request)
+    public function create(Request $request)
     {
         $rules = [
             'fecha_desde' => 'required|date_format:Y-m-d',
@@ -206,125 +206,141 @@ class CesantiasInteresController extends Controller
             'data.*.id_contrato' => 'required|exists:sam.nom_contratos,id,estado,'.NomContratos::ESTADO_ACTIVO,
             'data.*.id_empleado' => 'required|exists:sam.nits,id',
             'data.*.base' => 'required|numeric',
-            'data.*.dias' => 'required|numeric',
-            'data.*.promedio' => 'required|numeric',
-            'data.*.cesantias' => 'required|numeric',
-            'data.*.intereses' => 'required|numeric',
+            'data.*.dias' => 'required|numeric|min:0',
+            'data.*.promedio' => 'required|numeric|min:0',
+            'data.*.cesantias' => 'required|numeric|min:0',
+            'data.*.intereses' => 'required|numeric|min:0',
             'data.*.editado' => 'required|boolean',
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$validator->errors()
+                "message" => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
-
             DB::connection('sam')->beginTransaction();
 
             $cesantiasData = $request->get('data');
+            $fechaDesde = $request->get('fecha_desde');
+            $fechaHasta = $request->get('fecha_hasta');
+            $fechaPersonalizada = $request->get('fecha_personalizada', false);
+            
             $concepto = NomConceptos::where('codigo', NomConceptos::CODE_INTERES_CESANTIAS)->first();
+            
+            if (!$concepto) {
+                throw new Exception('Concepto de cesantías no encontrado');
+            }
 
-            foreach ($cesantiasData as $cesantias) {
+            // Verificar duplicados globalmente primero
+            $existingCesantias = NomCesantiasInteres::where('fecha_inicio', $fechaDesde)
+                ->where('fecha_fin', $fechaHasta)
+                ->whereIn('id_contrato', array_column($cesantiasData, 'id_contrato'))
+                ->exists();
 
-                $existingCesantia = NomCesantiasInteres::where('fecha_inicio', $request->get('fecha_inicio'))
-                    ->where('fecha_fin', $request->get('fecha_fin'))
-                    ->first();
+            if ($existingCesantias) {
+                return response()->json([
+                    "success" => false,
+                    'data' => [],
+                    "message" => "Ya existen cesantías para algunos contratos en el periodo especificado."
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
 
-                if ($existingCesantia) {
-                    return response()->json([
-                        "success"=>false,
-                        'data' => [],
-                        "message"=>"Ya existe una cesantía para el contrato {$cesantias['id_contrato']} en el periodo especificado."
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                }
+            $periodosPago = [];
+            $cesantiasCreadas = [];
 
-                $periodoPago = null;
-
-                if ($request->get('fecha_personalizada')) {
+            foreach ($cesantiasData as $cesantia) {
+                $idContrato = $cesantia['id_contrato'];
+                
+                // Gestionar periodo de pago
+                if ($fechaPersonalizada) {
                     $periodoPago = NomPeriodoPagos::create([
-                        'id_contrato' => $cesantias['id_contrato'],
-                        'id_empleado' => $cesantias['id_empleado'],
-                        'fecha_inicio_periodo' => $request->get('fecha_desde'),
-                        'fecha_fin_periodo' => $request->get('fecha_hasta'),
+                        'id_contrato' => $idContrato,
+                        'id_empleado' => $cesantia['id_empleado'],
+                        'fecha_inicio_periodo' => $fechaDesde,
+                        'fecha_fin_periodo' => $fechaHasta,
                         'estado' => NomPeriodoPagos::ESTADO_PENDIENTE,
-                        'created_by' => auth()->user()->id,
-                        'updated_by' => auth()->user()->id,
+                        'created_by' => auth()->id(),
+                        'updated_by' => auth()->id(),
                     ]);
+                    $periodosPago[$idContrato] = $periodoPago;
                 } else {
-                    $periodoPago = NomPeriodoPagos::where('id_contrato', $cesantias['id_contrato'])
-                        ->whereDate('fecha_inicio_periodo', '>=', $request->get('fecha_desde'))
-                        ->whereDate('fecha_fin_periodo', '<=', $request->get('fecha_hasta'))
-                        ->first();
+                    if (!isset($periodosPago[$idContrato])) {
+                        $periodoPago = NomPeriodoPagos::where('id_contrato', $idContrato)
+                            ->whereDate('fecha_inicio_periodo', '>=', $fechaDesde)
+                            ->whereDate('fecha_fin_periodo', '<=', $fechaHasta)
+                            ->first();
+
+                        if (!$periodoPago) {
+                            throw new Exception("No se encontró un periodo de pago válido para el contrato {$idContrato}");
+                        }
+                        $periodosPago[$idContrato] = $periodoPago;
+                    }
                 }
 
-                if (!$periodoPago) {
-                    return response()->json([
-                        "success"=>false,
-                        'data' => [],
-                        "message"=>"No se encontró un periodo de pago válido para el contrato {$cesantias['id_contrato']} en el rango de fechas especificado."
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                }
+                $periodoPago = $periodosPago[$idContrato];
 
-                $periodoPago->cesantiasIntereses()->create([
-                    'id_empleado' => $cesantias['id_empleado'],
+                // Crear cesantía
+                $cesantiaCreada = $periodoPago->cesantiasIntereses()->create([
+                    'id_empleado' => $cesantia['id_empleado'],
                     'id_periodo_pago' => $periodoPago->id,
-                    'fecha_inicio' => $request->get('fecha_desde'),
-                    'fecha_fin' => $request->get('fecha_hasta'),
-                    'base' => $cesantias['base'],
-                    'dias' => $cesantias['dias'],
-                    'promedio' => $cesantias['promedio'],
-                    'cesantias' => $cesantias['cesantias'],
-                    'intereses' => $cesantias['intereses'],
-                    'editado' => $cesantias['editado'],
-                    'created_by' => auth()->user()->id,
-                    'updated_by' => auth()->user()->id,
+                    'fecha_inicio' => $fechaDesde,
+                    'fecha_fin' => $fechaHasta,
+                    'base' => $cesantia['base'],
+                    'dias' => $cesantia['dias'],
+                    'promedio' => $cesantia['promedio'],
+                    'cesantias' => $cesantia['cesantias'],
+                    'intereses' => $cesantia['intereses'],
+                    'editado' => $cesantia['editado'],
+                    'created_by' => auth()->id(),
+                    'updated_by' => auth()->id(),
                 ]);
 
+                // Crear novedad
                 $novedad = new NomNovedadesGenerales([
-                    'id_empleado' => $cesantias['id_empleado'],
-                    'id_contrato' => $cesantias['id_contrato'],
+                    'id_empleado' => $cesantia['id_empleado'],
+                    'id_contrato' => $idContrato,
                     'id_concepto' => $concepto->id,
                     'id_periodo_pago' => $periodoPago->id,
                     'tipo_unidad' => NomPeriodoPagoDetalles::TIPO_UNIDAD_DIAS,
-                    'unidades' => $cesantias['dias'],
-                    'valor' => $cesantias['cesantias'],
-                    'base'  => $cesantias['base'],
-                    'observacion' => "Cesantías e intereses generados automáticamente para el periodo {$periodoPago->fecha_inicio_periodo} - {$periodoPago->fecha_fin_periodo}",
-                    'created_by' => auth()->user()->id,
-                    'updated_by' => auth()->user()->id,
-                ]);
-
-                $periodoPagoDetalle = new NomPeriodoPagoDetalles([
-                    'id_concepto' => $concepto->id,
-                    'tipo_unidad' => NomPeriodoPagoDetalles::TIPO_UNIDAD_DIAS,
-                    'base' => $cesantias['base'],
-                    'unidades' => $cesantias['dias'],
-                    'valor' => $cesantias['cesantias'],
+                    'unidades' => $cesantia['dias'],
+                    'valor' => $cesantia['cesantias'],
+                    'base' => $cesantia['base'],
+                    'observacion' => "Cesantías generadas para el periodo {$fechaDesde} - {$fechaHasta}",
+                    'created_by' => auth()->id(),
+                    'updated_by' => auth()->id(),
                 ]);
 
                 $periodoPago->novedades()->save($novedad);
-                $periodoPago->detalles()->save($periodoPagoDetalle);
+
+                $cesantiasCreadas[] = $cesantiaCreada;
             }
+
+            // Calcular nóminas para todos los periodos afectados
+            $periodosIds = array_map(fn($pp) => $pp->id, $periodosPago);
+            
+            (new CalcularPeriodo())->calcularNominas(null, null, $periodosIds);
 
             DB::connection('sam')->commit();
 
             return response()->json([
-                'success'=>	true,
-                'data' => [],
-                'message'=> 'Cesantías e intereses creados con exito!'
+                'success' => true,
+                'data' => $cesantiasCreadas,
+                'message' => 'Cesantías e intereses creados con éxito!'
             ], Response::HTTP_OK);
 
         } catch (Exception $e) {
+            DB::connection('sam')->rollBack();
+            
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$e->getMessage()
+                "message" => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }

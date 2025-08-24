@@ -22,9 +22,15 @@ var $comboComprobanteGastos = null;
 var totalAnticiposGastoCuenta = null;
 
 function gastoInit () {
-    var dateNow = new Date;
-    fechaGasto = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    $('#fecha_manual_gasto').val(fechaGasto);
+
+    var dateNow = new Date();
+    // Formatear a YYYY-MM-DDTHH:MM (formato que espera datetime-local)
+    var fechaHoraRecibo = dateNow.getFullYear() + '-' + 
+        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
+        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
+        ("0" + dateNow.getHours()).slice(-2) + ':' + 
+        ("0" + dateNow.getMinutes()).slice(-2);
+    $('#fecha_manual_gasto').val(fechaHoraRecibo);
 
     gasto_table = $('#gastoTable').DataTable({
         pageLength: 300,
@@ -180,7 +186,7 @@ function gastoInit () {
             headers: headers,
             url: base_url + 'extracto',
             data: function ( d ) {
-                d.id_nit = $('#id_nit_pago').val();
+                d.id_nit = $('#id_nit_gasto').val();
                 d.id_tipo_cuenta = [7];
             }
         },
@@ -1373,7 +1379,7 @@ function saveGasto () {
         fecha_manual: $("#fecha_manual_gasto").val(),
         documento_referencia: $("#documento_referencia_gasto").val(),
         consecutivo: $("#consecutivo_gasto").val(),
-        editing_gasto: $("#editing_gasto").val(),
+        id_gasto: $("#id_gasto_up").val(),
     }
 
     disabledFormasPagoGasto();
@@ -1573,7 +1579,10 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
                 const pagos = gastos.pagos;
                 const detalles = gastos.detalles;
 
-                $("#editing_gasto").val("1");
+                console.log('pagos: ', pagos);
+                console.log('detalles: ', detalles);
+
+                $("#id_gasto_up").val(gastos.id);
                 $("#fecha_manual_gasto").val(gastos.fecha_manual);
                 $("#documento_referencia_gasto").val(gastos.documento_referencia);
                 
@@ -1607,9 +1616,10 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
                 
                 for (let index = 0; index < detalles.length; index++) {
                     const detalle = detalles[index];
+
                     addRowGastosData(detalle, gastos.nit);
                 }
-
+                
                 agregarPagosGastos(pagos);
 
                 $("#agregarGasto").show();
@@ -1621,7 +1631,7 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
 
                 // editandoGasto = false;
             } else {
-                $("#editing_gasto").val("0");
+                $("#id_gasto_up").val("");
                 $("#agregarGasto").show();
                 $("#cancelarCapturaGasto").show();
                 $("#crearCapturaGastoDisabled").show();
@@ -1635,7 +1645,7 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
         return;
     }
 
-    $("#editing_gasto").val("0");
+    $("#id_gasto_up").val("");
     $("#agregarGasto").show();
     $("#cancelarCapturaGasto").show();
     $("#crearCapturaGastoDisabled").show();
@@ -1691,7 +1701,6 @@ function agregarPagosGastos(pagos) {
 function cancelarGasto() {
 
     const dateNow = new Date;
-    const fechaGasto = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
 
     $comboNitGastos.val(0).trigger('change');
     totalAnticiposGasto = 0;
@@ -1703,9 +1712,15 @@ function cancelarGasto() {
 
     clearFormasPagoGasto();
     mostrarValoresGastos();
+
+    var fechaHoraGasto = dateNow.getFullYear() + '-' + 
+        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
+        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
+        ("0" + dateNow.getHours()).slice(-2) + ':' + 
+        ("0" + dateNow.getMinutes()).slice(-2);
     
     $('#total_faltante_gasto').val('0.00');
-    $('#fecha_manual_gasto').val(fechaGasto);
+    $('#fecha_manual_gasto').val(fechaHoraGasto);
     $('#agregarGasto').hide();
     $('#crearCapturaGasto').hide();
     $('#iniciarCapturaGasto').show();
@@ -1717,27 +1732,31 @@ function cancelarGasto() {
 }
 
 function addRowGastosData(detalle, nit) {
-
+    const editar_iva = detalle.id_cuenta_iva ? false : true;
+    const valorIva = editar_iva ? 0 : parseFloat(detalle.iva_valor);
+    const valorNoiva = editar_iva ? parseFloat(detalle.iva_valor) : 0;
     idGastoTable++;
+
     let data = {
         "id": idGastoTable,
         "id_concepto": detalle.id_concepto_gastos,
-        "editar_iva": false,
-        "valor_gasto": parseFloat(detalle.subtotal) - (parseFloat(detalle.aiu_valor) + parseFloat(detalle.iva_valor)),
+        "editar_iva": editar_iva,
+        "valor_gasto": parseFloat(detalle.subtotal) - (parseFloat(detalle.aiu_valor) + valorIva),
         'porcentaje_aiu': porcentajeAIUGastos,
         'base_aiu': 0,
         "descuento_gasto": detalle.descuento_valor,
         "porcentaje_descuento_gasto": detalle.descuento_porcentaje,
-        "valor_iva": detalle.iva_valor,
+        "valor_iva": valorIva,
         "valor_reteica": detalle.rete_ica_valor,
-        "no_valor_iva": detalle.iva_valor,
+        "no_valor_iva": valorNoiva,
         "porcentaje_iva": detalle.iva_porcentaje,
-        "valor_retencion": detalle.detalle,
+        "valor_retencion": detalle.rete_fuente_valor,
         "porcentaje_retencion": detalle.rete_fuente_porcentaje,
         "porcentaje_reteica": detalle.rete_ica_porcentaje,
         "total_valor_gasto": detalle.total,
         'observacion': detalle.observacion,
     };
+
     //RETENCION
     if (!responsabilidadesGasto.includes('5')) {
         if (detalle.cuenta_retencion_declarante && detalle.cuenta_retencion_declarante.impuesto) {

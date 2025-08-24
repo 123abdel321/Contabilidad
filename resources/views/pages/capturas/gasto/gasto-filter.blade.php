@@ -12,7 +12,7 @@
 
                 <form id="gastoFilterForm" class="needs-validation row" style="margin-top: 5px;" novalidate>
 
-                    <input name="editing_gasto" id="editing_gasto" class="form-control form-control-sm" type="text" style="display: none;">
+                    <input name="id_gasto_up" id="id_gasto_up" class="form-control form-control-sm" type="text" style="display: none;">
 
                     <div class="form-group col-12 col-sm-4 col-md-3">
                         <label>Proveedor <span style="color: red">*</span></label>
@@ -46,7 +46,8 @@
 
                     <div class="form-group col-12 col-sm-4 col-md-2">
                         <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
-                        <input name="fecha_manual_gasto" id="fecha_manual_gasto" class="form-control form-control-sm" type="date" required>
+                        <input name="fecha_manual_gasto" id="fecha_manual_gasto" class="form-control form-control-sm" type="datetime-local" required>
+
                         <div class="invalid-feedback">
                             La fecha es requerido
                         </div>
