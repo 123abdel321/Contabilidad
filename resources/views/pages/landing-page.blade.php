@@ -75,7 +75,7 @@
                     <a href="#clientes" class="nav-link" data-section="clientes">Clientes</a>
                     <a href="#contacto" class="nav-link" data-section="contacto">Contacto</a>
                     <!-- Cambiando link de login y quitando demo -->
-                    <a href="https://app.portafolioerp.com/login" class="btn btn-outline">Iniciar Sesión</a>
+                    <a href="/login" class="btn btn-outline">Iniciar Sesión</a>
                 </nav>
             </div>
         </header>
