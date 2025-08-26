@@ -405,8 +405,9 @@ $(document).on('click', '#eliminarDocumentos', function () {
         $("#generarEliminarDocumentosLoading").hide();
         if (result.isConfirmed) {
             var data = {
-                fecha_desde: $('#fecha_desde_eliminar_documentos').val(),
-                fecha_hasta: $('#fecha_hasta_eliminar_documentos').val(),
+                
+                fecha_desde: $('#fecha_manual_eliminar_documentos').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm'),
+                fecha_hasta: $('#fecha_manual_eliminar_documentos').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm'),
                 precio_desde: $('#precio_desde_eliminar_documentos').val(),
                 precio_hasta: $('#precio_hasta_eliminar_documentos').val(),
                 id_nit: $('#id_nit_eliminar_documentos').val(),
