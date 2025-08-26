@@ -60,8 +60,37 @@ function empresaInit() {
             // {"data":'segundo_apellido'},
             {
                 "data": function (row, type, set){
-                    var html = '<span id="editempresa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-empresa" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
-                    html+= '<span id="selectempresa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info select-empresa" style="margin-bottom: 0rem !important; min-width: 50px;">Seleccionar</span>&nbsp;';
+                    var html = ``;
+                    html += `
+                        <span
+                            id="editempresa_${row.id}
+                            href="javascript:void(0)"
+                            class="edit-empresa btn badge bg-gradient-success btn-bg-excel"
+                            style="margin: 0px; !important; min-width: 50px; margin-bottom: 0px !important;"
+                        >
+                            <i class="fa-solid fa-file-pen" style="font-size: 12px;"></i>&nbsp;
+                            <b style="font-size: 11px;">Editar</b>
+                        </span>
+                    `;
+                    html += `
+                        <span
+                            id="selectempresa_${row.id}"
+                            href="javascript:void(0)"
+                            class="select-empresa btn badge bg-gradient-info btn-bg-gold"
+                            style="margin: 0px; !important; min-width: 50px; margin-bottom: 0px !important;"
+                        >
+                            <i class="fa-solid fa-plug" style="font-size: 12px;"></i>&nbsp;
+                            <b style="font-size: 11px;">Seleccionar</b>
+                        </span>
+                        <span
+                            id="selectingempresa_${row.id}"
+                            class="badge bg-gradient-info btn-bg-gold-loading"
+                            style="margin: 0px; !important; min-width: 50px; margin-bottom: 0px !important; display: none;"
+                        >
+                            <i class="fas fa-spinner fa-spin" style="font-size: 12px;" aria-hidden="true"></i>
+                            <b style="text-transform: math-auto;">Seleccionando</b>
+                        </span>
+                    `;
                     return html;
                 }
             },
@@ -101,7 +130,7 @@ function empresaInit() {
             var id = this.id.split('_')[1];
             var data = getDataById(id, empresas_table);
 
-            seleccionarEmpresa(data.hash);
+            seleccionarEmpresa(data.hash, id);
         });
     }
 
@@ -263,7 +292,10 @@ $("#form-empresa-update").submit(function(e) {
     };
 });
 
-function seleccionarEmpresa(hash) {
+function seleccionarEmpresa(hash, id) {
+
+    $("#selectempresa_" + id).hide();
+    $("#selectingempresa_" + id).show();
 
     $.ajax({
         url: base_url + 'seleccionar-empresa',
@@ -279,21 +311,13 @@ function seleccionarEmpresa(hash) {
             location.reload();
         }
     }).fail((err) => {
-        $("#updateEmpresaLoading").hide();
-        $("#updateEmpresa").show();
-        var errorsMsg = "";
+
+        $("#selectempresa_" + id).show();
+        $("#selectingempresa_" + id).hide();
+
         var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
-        }
-        agregarToast('error', 'Actualización errada', errorsMsg);
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Selección de empresa errada', errorsMsg);
     });
 }
 
