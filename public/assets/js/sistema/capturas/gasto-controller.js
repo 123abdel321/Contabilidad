@@ -811,18 +811,42 @@ function changeValorNoIvaGasto (idGasto, event = null) {
             return;
         }
 
+        var baseAIU = 0;
+
         var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
-        var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
         var valorGasto = dataGasto[indexGasto].valor_gasto;
+        var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
         var valorDescuento = redondear(stringToNumberFloat($("#gastovalordescuento_"+idGasto).val()), redondeoGastos);
         var valorNoiva = redondear(stringToNumberFloat($("#gasto_no_iva_valor_"+idGasto).val()), redondeoGastos);
 
         var valorPorcentajeDescuento = (valorDescuento / valorGasto) * 100;
         var valorSubtotal = redondear(valorGasto - (valorDescuento), redondeoGastos);
-        var valorIva = redondear(valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100), redondeoGastos);
-        var valorRetencion = redondear(dataGasto[indexGasto].porcentaje_retencion ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_retencion / 100) : 0, redondeoGastos);
-        var valorReteIca = redondear(dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0, redondeoGastos);
-        var valorTotal = redondear((valorSubtotal) - (valorRetencion + valorReteIca), redondeoGastos);
+
+        if (porcentajeAIUGastos) baseAIU = valorSubtotal * (porcentajeAIUGastos / 100);
+        var valorRetencion = 0;
+        var valorReteIca = 0;
+        var valorIva = 0;
+
+        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU);
+        valorRetencion = redondear(valorRetencion, redondeoGastos);
+
+        if (baseAIU) {
+            valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? baseAIU * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
+            valorIva = dataGasto[indexGasto].porcentaje_iva ? baseAIU * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
+        } else {
+            valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
+            valorIva = dataGasto[indexGasto].porcentaje_iva ? valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
+        }
+
+        valorReteIca = redondear(valorReteIca, redondeoGastos);
+        valorIva = redondear(valorIva, redondeoGastos);
+
+        var valorTotal = 0;
+
+        if (sumarAIU) valorTotal = parseFloat((valorSubtotal + valorIva + baseAIU) - (valorRetencion + valorReteIca)).toFixed(2);
+        else valorTotal = parseFloat((valorSubtotal + valorIva) - (valorRetencion + valorReteIca)).toFixed(2);
+
+        valorTotal = redondear(valorTotal, redondeoGastos);
 
         dataGasto[indexGasto].porcentaje_descuento_gasto = valorPorcentajeDescuento;
         dataGasto[indexGasto].descuento_gasto = valorDescuento;
