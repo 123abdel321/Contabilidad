@@ -392,7 +392,7 @@ $(document).on('click', '#generarEliminarDocumentos', function () {
 });
 
 $(document).on('click', '#eliminarDocumentos', function () {
-    $("#generarEliminarDocumentosLoading").show();
+    
     Swal.fire({
         title: "Esta seguro?",
         text: "¡No podrás revertir esto!",
@@ -402,8 +402,14 @@ $(document).on('click', '#eliminarDocumentos', function () {
         cancelButtonColor: "#d33",
         confirmButtonText: "Si, borrar!"
     }).then((result) => {
-        $("#generarEliminarDocumentosLoading").hide();
+
         if (result.isConfirmed) {
+
+            $("#eliminarDocumentos").hide();
+            $("#generarEliminarDocumentos").hide();
+            $("#eliminarDocumentosDisabled").hide();
+            $("#generarEliminarDocumentosLoading").show();
+
             var data = {
                 
                 fecha_desde: $('#fecha_manual_eliminar_documentos').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm'),
@@ -428,11 +434,19 @@ $(document).on('click', '#eliminarDocumentos', function () {
                 headers: headers,
                 dataType: 'json',
             }).done((res) => {
+                $("#eliminarDocumentos").hide();
+                $("#generarEliminarDocumentos").show();
+                $("#eliminarDocumentosDisabled").hide();
+                $("#generarEliminarDocumentosLoading").hide();
                 if(res.success){
                     agregarToast('exito', 'Documentos eliminados!', 'Documentos eliminados con exito!', true);
                     document.getElementById('generarEliminarDocumentos').click();
                 }
             }).fail((err) => {
+                $("#eliminarDocumentos").hide();
+                $("#generarEliminarDocumentos").show();
+                $("#eliminarDocumentosDisabled").show();
+                $("#generarEliminarDocumentosLoading").hide();
                 var mensaje = err.responseJSON.message;
                 var errorsMsg = arreglarMensajeError(mensaje);
                 agregarToast('error', 'Creación errada', errorsMsg);

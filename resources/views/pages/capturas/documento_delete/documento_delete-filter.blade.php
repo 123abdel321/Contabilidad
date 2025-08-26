@@ -133,7 +133,7 @@
                     </span>
                     <span id="generarEliminarDocumentosLoading" class="badge btn-bg-gold-loading" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">BUSCANDO</b>
+                        <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>
                     <!-- BOTON ELIMINAR -->
                     <span id="eliminarDocumentos" href="javascript:void(0)" class="btn badge btn-bg-danger" style="min-width: 40px; display: none;">
