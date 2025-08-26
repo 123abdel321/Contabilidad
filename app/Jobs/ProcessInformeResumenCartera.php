@@ -254,7 +254,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 $query->whereNotNull('N.apartamentos');
             })
             ->when($this->request['fecha_hasta'], function ($query) {
-				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
+				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'].' 23:59:59');
 			})
             ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
             ->where('anulado', 0)
