@@ -14,34 +14,9 @@
                     <div class="row">
                         <input name="id_documento_general_cargado" id="id_documento_general_cargado" class="form-control form-control-sm" type="text" style="display: none;">
 
-                        <div class="form-group col-6 col-sm-3 col-md-3">
+                        <div class="form-group col-6 col-sm-4 col-md-3">
                             <label for="fecha_manual_documentos_generales" class="form-control-label">Fecha<span style="color: red">*</span></label>
                             <input name="fecha_manual_documentos_generales" id="fecha_manual_documentos_generales" class="form-control form-control-sm" require>
-                        </div>
-
-                        <div class="form-group col-6 col-sm-3 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Valor desde</label>
-                            <input name="precio_desde_documentos_generales" id="precio_desde_documentos_generales" class="form-control form-control-sm" type="number">
-                        </div>
-
-                        <div class="form-group col-6 col-sm-3 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Valor hasta</label>
-                            <input name="precio_hasta_documentos_generales" id="precio_hasta_documentos_generales" class="form-control form-control-sm" type="number">
-                        </div>
-
-                        <div class="form-group col-6 col-sm-3 col-md-3">
-                            <label for="factura_documentos_generales" class="form-control-label">No. factura</label>
-                            <input name="factura_documentos_generales" id="factura_documentos_generales" class="form-control form-control-sm" type="text">
-                        </div>
-
-                        <div class="form-group col-6 col-sm-3 col-md-3">
-                            <label for="consecutivo_documentos_generales" class="form-control-label">Consecutivo</label>
-                            <input name="consecutivo_documentos_generales" id="consecutivo_documentos_generales" class="form-control form-control-sm" type="text">
-                        </div>
-
-                        <div class="form-group col-6 col-sm-3 col-md-3">
-                            <label for="concepto_documentos_generales" class="form-control-label">Concepto</label>
-                            <input name="concepto_documentos_generales" id="concepto_documentos_generales" class="form-control form-control-sm" type="text">
                         </div>
 
                         <div class="form-group col-6 col-sm-4 col-md-3">
@@ -66,6 +41,44 @@
                             <label for="id_cuenta_documentos_generales">Cuenta</label>
                             <select name="id_cuenta_documentos_generales" id="id_cuenta_documentos_generales" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
+                        </div>
+
+                        <div class="form-group col-6 col-sm-4 col-md-3">
+                            <label>Valor del documento</label>
+                            <div class="" style="display: flex;">
+
+                                <input
+                                    id="precio_desde_documentos_generales"
+                                    name="precio_desde_documentos_generales"
+                                    placeholder="Ej: 50.000"
+                                    class="form-control form-control-sm"
+                                    style="height: 28px; border-bottom-left-radius: 5px; border-top-left-radius: 5px; border-bottom-right-radius: 0px; border-top-right-radius: 0px; border-right: solid 1px #cfcfcf;"
+                                />
+                                <span class="input-group-text" style="height: 28px; border-radius: 0px; border-left: solid 0px; border-right: solid 0px;">Hasta</span>
+                                <input
+                                    id="precio_hasta_documentos_generales"
+                                    name="precio_hasta_documentos_generales"
+                                    placeholder="Ej: 100.000"
+                                    class="form-control form-control-sm"
+                                    style="height: 28px; border-bottom-right-radius: 5px; border-top-right-radius: 5px; border-bottom-left-radius: 0px; border-top-left-radius: 0px;"
+                                />
+                            
+                            </div>
+                        </div>
+
+                        <div class="form-group col-6 col-sm-3 col-md-3">
+                            <label for="factura_documentos_generales" class="form-control-label">No. factura</label>
+                            <input name="factura_documentos_generales" id="factura_documentos_generales" class="form-control form-control-sm" type="text">
+                        </div>
+
+                        <div class="form-group col-6 col-sm-3 col-md-3">
+                            <label for="consecutivo_documentos_generales" class="form-control-label">Consecutivo</label>
+                            <input name="consecutivo_documentos_generales" id="consecutivo_documentos_generales" class="form-control form-control-sm" type="text">
+                        </div>
+
+                        <div class="form-group col-6 col-sm-3 col-md-3">
+                            <label for="concepto_documentos_generales" class="form-control-label">Concepto</label>
+                            <input name="concepto_documentos_generales" id="concepto_documentos_generales" class="form-control form-control-sm" type="text">
                         </div>
 
                         <!-- <div class="form-group col-6 col-sm-3 col-md-3">

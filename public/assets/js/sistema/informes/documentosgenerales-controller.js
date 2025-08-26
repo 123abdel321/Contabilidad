@@ -91,6 +91,11 @@ function documentosgeneralesInit() {
             headers: headers
         },
         rowCallback: function(row, data, index){
+
+            if(parseInt(data.diferencia) && data.nivel == 1) {
+                $(row).addClass('highlight-error');
+                return;
+            }
             if(data.nivel == 99){
                 $('td', row).css('background-color', '#000');
                 $('td', row).css('font-weight', 'bold');
@@ -180,7 +185,16 @@ function documentosgeneralesInit() {
             { data: 'documento_referencia'}, //FACTURA
             { data: "debito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: "credito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            { data: "diferencia", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){ //DIFERENCIA
+                const diferencia = parseFloat(row.diferencia).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                if(parseInt(row.diferencia) && row.nivel == 1) {
+                    return `<div class="error-container">
+                        <i class="fas fa-exclamation-triangle error-triangle" aria-hidden="true"></i>&nbsp;
+                        <span class="error-text">${diferencia}</span>
+                    </div>`;
+                }
+                return diferencia;
+            }, className: 'dt-body-right'},
             { data: 'fecha_manual'},
             { data: 'concepto'},
             { data: "base_cuenta", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},

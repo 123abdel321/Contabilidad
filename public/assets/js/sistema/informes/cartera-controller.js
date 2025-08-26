@@ -44,15 +44,13 @@ function carteraInit() {
             
             if (naturaleza == 0 && nivelData == 2) {
                 if (parseInt(data.saldo_anterior) < 0 || parseInt(data.saldo) < 0) {
-                    $('td', row).css('background-color', '#ff00004d');
-                    $('td', row).css('color', 'black');
+                    $(row).addClass('highlight-error');
                     return;
                 }
             }
             if (naturaleza == 1 && nivelData == 2) {
                 if (parseInt(data.saldo_anterior) > 0 || parseInt(data.saldo) > 0) {
-                    $('td', row).css('background-color', '#ff00004d');
-                    $('td', row).css('color', 'black');
+                    $(row).addClass('highlight-error');
                     return;
                 }
             }
@@ -83,8 +81,8 @@ function carteraInit() {
                 }
                 if(data.nivel == 1){
                     if (data.errores) {
-                        $('td', row).css('background-color', 'rgb(209 64 64 / 55%)');
-                        $('td', row).css('font-weight', 'bold');
+                        $(row).addClass('highlight-error');
+                        $('td', row).css('background-color', 'rgb(209 64 64 / 55%) !important');
                         return;
                     } else {
                         if (data.numero_documento == 'TOTALES POR COBRAR' || data.numero_documento == 'CUENTAS POR COBRAR') {
@@ -116,8 +114,8 @@ function carteraInit() {
                 }
                 if(data.nivel == 1){
                     if (data.errores) {
-                        $('td', row).css('background-color', 'rgb(209 64 64 / 55%)');
-                        $('td', row).css('font-weight', 'bold');
+                        $(row).addClass('highlight-error');
+                        $('td', row).css('background-color', 'rgb(209 64 64 / 55%) !important');
                         return;
                     } else {
                         if (data.numero_documento == 'TOTALES POR COBRAR' || data.numero_documento == 'CUENTAS POR COBRAR') {
@@ -219,7 +217,7 @@ function carteraInit() {
                         if (parseInt(row.saldo_anterior) < 0) {
                             return `<div class="">
                                 <i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;
-                                ${formattedNumber}
+                                <span class="error-text">${formattedNumber}</span>
                             </div>`;
                         }
                     }
@@ -227,7 +225,7 @@ function carteraInit() {
                         if (parseInt(row.saldo_anterior) > 0) {
                             return `<div class="">
                                 <i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;
-                                ${formattedNumber}
+                                <span class="error-text">${formattedNumber}</span>
                             </div>`;
                         }
                     }
@@ -268,7 +266,7 @@ function carteraInit() {
                         if (parseInt(row.saldo) < 0) {
                             return `<div class="">
                                 <i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;
-                                ${formattedNumber}
+                                <span class="error-text">${formattedNumber}</span>
                             </div>`;
                         }
                     }
@@ -276,7 +274,7 @@ function carteraInit() {
                         if (parseInt(row.saldo) > 0) {
                             return `<div class="">
                                 <i class="fas fa-exclamation-triangle error-triangle"></i>&nbsp;
-                                ${formattedNumber}
+                                <span class="error-text">${formattedNumber}</span>
                             </div>`;
                         }
                     }
