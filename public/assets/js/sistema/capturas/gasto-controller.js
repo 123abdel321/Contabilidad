@@ -1117,7 +1117,7 @@ function totalValoresGastos () {
     
     dataGasto.forEach(gastoRow => {
         const valorIva = parseFloat(gastoRow.no_valor_iva);
-        gasto_iva+= valorIva ?? parseFloat(gastoRow.valor_iva);
+        gasto_iva+= valorIva ? valorIva : parseFloat(gastoRow.valor_iva);
         gasto_reteica+= parseFloat(gastoRow.valor_reteica);
         gasto_retencion+= parseFloat(gastoRow.valor_retencion);
         gasto_descuento+= parseFloat(gastoRow.descuento_gasto);
