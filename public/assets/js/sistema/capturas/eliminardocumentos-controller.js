@@ -1,13 +1,62 @@
 var eliminar_documentos_table = null;
 var generarEliminarDocumentos = false;
+var channelEliminarDocumentos = pusher.subscribe('informe-documentos-generales-'+localStorage.getItem("notificacion_code"));
 
 function eliminardocumentosInit() {
 
-    fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    cargarTablasEliminarDocumentos();
+    cargarCombosEliminarDocumentos();
 
-    $('#fecha_desde_eliminar_documentos').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-    $('#fecha_hasta_eliminar_documentos').val(fechaDesde);
+    const start = moment().startOf("month");
+    const end = moment().endOf("month");
+    
+    $("#fecha_manual_eliminar_documentos").daterangepicker({
+        startDate: start,
+        endDate: end,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " - ",
+            applyLabel: "Aplicar",
+            cancelLabel: "Cancelar",
+            fromLabel: "Desde",
+            toLabel: "Hasta",
+            customRangeLabel: "Personalizado",
+            daysOfWeek: moment.weekdaysMin(),
+            monthNames: moment.months(),
+            firstDay: 1
+        },
+        ranges: {
+            "Hoy": [moment().startOf('day'), moment().endOf('day')],
+            "Ayer": [
+                moment().subtract(1, "days").startOf("day"),
+                moment().subtract(1, "days").endOf("day")
+            ],
+            "Últimos 7 días": [
+                moment().subtract(6, "days").startOf("day"),
+                moment().endOf("day")
+            ],
+            "Últimos 30 días": [
+                moment().subtract(29, "days").startOf("day"),
+                moment().endOf("day")
+            ],
+            "Este mes": [
+                moment().startOf("month").startOf("day"),
+                moment().endOf("month").endOf("day")
+            ],
+            "Mes anterior": [
+                moment().subtract(1, "month").startOf("month").startOf("day"),
+                moment().subtract(1, "month").endOf("month").endOf("day")
+            ]
+        }
+    }, formatoFecha);
 
+    formatoFecha(start, end, "fecha_manual_eliminar_documentos");
+}
+
+function cargarTablasEliminarDocumentos() {
     eliminar_documentos_table = $('#eliminarDocumentosInformeTable').DataTable({
         pageLength: 100,
         dom: 'Brtip',
@@ -46,29 +95,33 @@ function eliminardocumentosInit() {
                 $("#eliminarDocumentosDisabled").hide();
             }
             if(data.nivel == 99){
-                $('td', row).css('background-color', 'rgb(28 69 135)');
+                $('td', row).css('background-color', 'rgb(0 0 0)');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
             }
             if(data.nivel == 1){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 90%)');
+                $('td', row).css('background-color', 'rgb(33 35 41 / 85%)');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.nivel == 2){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
+                $('td', row).css('background-color', 'rgb(33 35 41 / 70%)');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.nivel == 3){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 50%)');
+                $('td', row).css('background-color', 'rgb(33 35 41 / 55%)');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.nivel == 4){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
+                $('td', row).css('background-color', 'rgb(33 35 41 / 30%)');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
         },
@@ -125,8 +178,10 @@ function eliminardocumentosInit() {
                 return html;
             }},
         ]
-    }); 
+    });
+}
 
+function cargarCombosEliminarDocumentos() {
     $('#id_nit_eliminar_documentos').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -254,9 +309,7 @@ function eliminardocumentosInit() {
     });
 }
 
-var channel = pusher.subscribe('informe-documentos-generales-'+localStorage.getItem("notificacion_code"));
-
-channel.bind('notificaciones', function(data) {
+channelEliminarDocumentos.bind('notificaciones', function(data) {
     console.log('notificaciones', data);
     if(data.url_file){
         loadExcel(data);
@@ -314,10 +367,10 @@ $(document).on('click', '#generarEliminarDocumentos', function () {
     var id_usuario= $('#id_usuario_eliminar_documentos').val();
 
     var url = base_url + 'documentos-generales';
-    url+= '?fecha_desde='+$('#fecha_desde_eliminar_documentos').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_eliminar_documentos').val();
-    url+= '&precio_desde='+$('#precio_desde_eliminar_documentos').val();
-    url+= '&precio_hasta='+$('#precio_hasta_eliminar_documentos').val();
+    url+= '?fecha_desde='+ $('#fecha_manual_eliminar_documentos').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
+    url+= '&fecha_hasta='+ $('#fecha_manual_eliminar_documentos').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
+    url+= '&precio_desde='+ $('#precio_desde_eliminar_documentos').val();
+    url+= '&precio_hasta='+ $('#precio_hasta_eliminar_documentos').val();
     url+= '&id_nit='+ id_nit;
     url+= '&id_comprobante='+ id_comprobante;
     url+= '&id_centro_costos='+ id_centro_costos;
