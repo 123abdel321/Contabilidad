@@ -857,29 +857,31 @@ $(document).on('click', '#descargarPlantilla', function () {
     
 });
 
-btnLogout.addEventListener('click', event => {
-
-    event.preventDefault();
-    $.ajax({
-        url: base_web + 'logout-api',
-        method: 'POST',
-        headers: headers,
-        dataType: 'json',
-    }).done((res) => {
-        localStorage.setItem("token_db_portafolio", '');
-        localStorage.setItem("auth_token", '');
-        localStorage.setItem("auth_token_erp", '');
-        localStorage.setItem("empresa_nombre", '');
-        localStorage.setItem("notificacion_code", '');
-        localStorage.setItem("notificacion_code_general", '');
-        localStorage.setItem("fondo_sistema", '');
-        localStorage.setItem("empresa_logo", '');
-
-        window.location.href = '/login';
-    }).fail((err) => {
-        window.location.href = '/login';
+if (btnLogout) {
+    btnLogout.addEventListener('click', event => {
+    
+        event.preventDefault();
+        $.ajax({
+            url: base_web + 'logout-api',
+            method: 'POST',
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            localStorage.setItem("token_db_portafolio", '');
+            localStorage.setItem("auth_token", '');
+            localStorage.setItem("auth_token_erp", '');
+            localStorage.setItem("empresa_nombre", '');
+            localStorage.setItem("notificacion_code", '');
+            localStorage.setItem("notificacion_code_general", '');
+            localStorage.setItem("fondo_sistema", '');
+            localStorage.setItem("empresa_logo", '');
+    
+            window.location.href = '/login';
+        }).fail((err) => {
+            window.location.href = '/login';
+        });
     });
-});
+}
 
 function numberWithCommas(x) {
     x = x.toString();
