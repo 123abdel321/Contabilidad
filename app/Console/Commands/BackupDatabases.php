@@ -32,9 +32,14 @@ class BackupDatabases extends Command
             ->orderBy('id', 'ASC')
             ->get();
     
-        foreach ($empresasActivas as $empresa) {
-            BackupDatabaseJob::dispatch($empresa);
-        }
+        // Procesar en lotes más pequeños
+        $empresasActivas->chunk(3)->each(function ($chunk) {
+            foreach ($chunk as $empresa) {
+                BackupDatabaseJob::dispatch($empresa)
+                    ->onQueue('backups')
+                    ->delay(now()->addSeconds(rand(1, 30))); // Espaciar los jobs
+            }
+        });
         
         \Log::info("Se han programado backups para {$empresasActivas->count()} empresas");
     }
