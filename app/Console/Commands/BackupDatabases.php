@@ -36,7 +36,6 @@ class BackupDatabases extends Command
         $empresasActivas->chunk(3)->each(function ($chunk) {
             foreach ($chunk as $empresa) {
                 BackupDatabaseJob::dispatch($empresa)
-                    ->onQueue('backups')
                     ->delay(now()->addSeconds(rand(1, 30))); // Espaciar los jobs
             }
         });
