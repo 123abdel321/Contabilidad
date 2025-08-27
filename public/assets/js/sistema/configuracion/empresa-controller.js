@@ -63,7 +63,7 @@ function empresaInit() {
                     var html = ``;
                     html += `
                         <span
-                            id="editempresa_${row.id}
+                            id="editempresa_${row.id}"
                             href="javascript:void(0)"
                             class="edit-empresa btn badge bg-gradient-success btn-bg-excel"
                             style="margin: 0px; !important; min-width: 50px; margin-bottom: 0px !important;"
