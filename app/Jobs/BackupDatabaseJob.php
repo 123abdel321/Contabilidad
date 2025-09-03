@@ -12,8 +12,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
-//MODEL
-use App\Models\Empresas\BackupEmpresa;
 
 class BackupDatabaseJob implements ShouldQueue
 {
@@ -30,7 +28,6 @@ class BackupDatabaseJob implements ShouldQueue
     public function handle()
     {
         try {
-
             // 1. Configurar conexión a la BD
             copyDBConnection('sam', $this->empresa->token_db);
             setDBInConnection('sam', $this->empresa->token_db);
@@ -62,21 +59,20 @@ class BackupDatabaseJob implements ShouldQueue
                 throw new \RuntimeException("Falló mysqldump: " . implode("\n", $output));
             }
 
-            // 5. Subir a Digital Ocean Spaces (CORRECCIÓN CLAVE)
-            $fileToUpload = new SymfonyFile($filePath); // Usar SymfonyFile aquí
+            // 5. Subir a Digital Ocean Spaces
+            $fileToUpload = new SymfonyFile($filePath);
             
             Storage::disk('do_spaces')->putFileAs(
                 'backups-portafolioerp',
-                $fileToUpload, // Pasar la instancia de archivo, no la facade
+                $fileToUpload,
                 $filename,
                 ['visibility' => 'public']
             );
 
-            // 6. Registrar en base de datos
-            $this->registerBackup(
-                $filename,
-                Storage::disk('do_spaces')->url("backups-portafolioerp/{$filename}")
-            );
+            $fileUrl = Storage::disk('do_spaces')->url("backups-portafolioerp/{$filename}");
+
+            // 6. Registrar en base de datos con manejo de error 1615
+            $this->registerBackupWithRetry($filename, $fileUrl);
 
             // 7. Limpiar backups antiguos
             $this->cleanOldBackups();
@@ -91,75 +87,124 @@ class BackupDatabaseJob implements ShouldQueue
         }
     }
 
-    protected function registerBackup($filename, $url)
+    protected function registerBackupWithRetry($filename, $url, $maxAttempts = 3)
     {
-        $now = now();
+        $attempt = 0;
         
-        DB::connection('clientes')->table('backup_empresas')->insert([
-            'id_empresa' => $this->empresa->id,
-            'url_file' => $url,
-            'file_name' => $filename,
-            'created_at' => $now,
-            'updated_at' => $now
-        ]);
-    }
-
-    protected function cleanOldBackups()
-    {
-        $backups = DB::connection('clientes')
-            ->table('backup_empresas')
-            ->where('id_empresa', $this->empresa->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-            
-        if ($backups->count() > $this->maxBackups) {
-            $oldestBackups = $backups->slice($this->maxBackups);
-            
-            foreach ($oldestBackups as $backup) {
-                try {
-                    // Construir la ruta directamente usando el prefijo y el nombre de archivo
-                    $path = 'backups-portafolioerp/' . $backup->file_name;
-
-                    // Validación adicional
-                    if (empty(trim($path))) {
-                        \Log::error("Path vacío para backup ID: {$backup->id}");
-                        continue;
-                    }
-
-                    // Eliminar archivo de backup
-                    if (Storage::disk('do_spaces')->exists($path)) {
-                        Storage::disk('do_spaces')->delete($path);
-                    }
-
-                    DB::connection('clientes')->delete("
-                        DELETE FROM backup_empresas 
-                        WHERE id = " . (int)$backup->id
-                    );
-                    
-                } catch (\Exception $e) {
-                    \Log::error("Error eliminando backup antiguo: " . $e->getMessage());
-
-                    $this->retryWithFreshConnection($backup);
+        while ($attempt < $maxAttempts) {
+            try {
+                $attempt++;
+                
+                $now = now();
+                
+                DB::connection('clientes')->table('backup_empresas')->insert([
+                    'id_empresa' => $this->empresa->id,
+                    'url_file' => $url,
+                    'file_name' => $filename,
+                    'created_at' => $now,
+                    'updated_at' => $now
+                ]);
+                
+                // Si llega aquí, tuvo éxito
+                return;
+                
+            } catch (\Exception $e) {
+                if ($attempt >= $maxAttempts) {
+                    \Log::error("Error después de {$maxAttempts} intentos al registrar backup: " . $e->getMessage());
+                    return;
                 }
+                
+                // Verificar si es el error 1615 específico
+                if (strpos($e->getMessage(), 'Prepared statement needs to be re-prepared') !== false) {
+                    \Log::warning("Error 1615 detectado, reintentando registro (intento {$attempt})");
+                    
+                    // Forzar reconexión a la base de datos
+                    DB::connection('clientes')->reconnect();
+                    
+                    // Esperar un momento antes de reintentar
+                    sleep(1);
+                    continue;
+                }
+                
+                // Si es otro error, no reintentar
+                \Log::error("Error diferente al 1615 al registrar backup: " . $e->getMessage());
+                return;
             }
         }
     }
 
-    protected function retryWithFreshConnection($backup)
+    protected function cleanOldBackups()
     {
         try {
-            // Forzar una nueva conexión
-            DB::connection('clientes')->reconnect();
-            
-            DB::connection('clientes')->delete("
-                DELETE FROM backup_empresas 
-                WHERE id = " . (int)$backup->id
-            );
-            
-            \Log::info("Backup eliminado exitosamente en reintento: " . $backup->id);
-            
+            $backups = DB::connection('clientes')
+                ->table('backup_empresas')
+                ->where('id_empresa', $this->empresa->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+                
+            if ($backups->count() > $this->maxBackups) {
+                $oldestBackups = $backups->slice($this->maxBackups);
+                
+                foreach ($oldestBackups as $backup) {
+                    $this->deleteBackupWithRetry($backup);
+                }
+            }
         } catch (\Exception $e) {
-            \Log::error("Error en reintento de eliminación: " . $e->getMessage());
+            \Log::error("Error obteniendo backups antiguos: " . $e->getMessage());
+        }
+    }
+
+    protected function deleteBackupWithRetry($backup, $maxAttempts = 3)
+    {
+        $attempt = 0;
+        
+        while ($attempt < $maxAttempts) {
+            try {
+                $attempt++;
+                
+                $path = 'backups-portafolioerp/' . $backup->file_name;
+
+                if (empty(trim($path))) {
+                    \Log::error("Path vacío para backup ID: {$backup->id}");
+                    return;
+                }
+
+                // Eliminar archivo de backup
+                if (Storage::disk('do_spaces')->exists($path)) {
+                    Storage::disk('do_spaces')->delete($path);
+                }
+
+                // Eliminar registro de la base de datos
+                DB::connection('clientes')
+                    ->table('backup_empresas')
+                    ->where('id', $backup->id)
+                    ->delete();
+                
+                // Si llega aquí, tuvo éxito
+                return;
+                
+            } catch (\Exception $e) {
+                if ($attempt >= $maxAttempts) {
+                    \Log::error("Error después de {$maxAttempts} intentos al eliminar backup {$backup->id}: " . $e->getMessage());
+                    return;
+                }
+                
+                // Verificar si es el error 1615 específico
+                if (strpos($e->getMessage(), 'Prepared statement needs to be re-prepared') !== false) {
+                    \Log::warning("Error 1615 detectado, reintentando eliminación (intento {$attempt}) para backup {$backup->id}");
+                    
+                    // Forzar reconexión a la base de datos
+                    DB::connection('clientes')->reconnect();
+                    
+                    // Esperar un momento antes de reintentar
+                    sleep(1);
+                    continue;
+                }
+                
+                // Si es otro error, no reintentar
+                \Log::error("Error diferente al 1615 al eliminar backup {$backup->id}: " . $e->getMessage());
+                return;
+            }
         }
     }
 }
