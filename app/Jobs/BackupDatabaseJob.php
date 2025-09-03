@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 //MODEL
 use App\Models\Empresas\BackupEmpresa;
 
-
 class BackupDatabaseJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -84,6 +83,8 @@ class BackupDatabaseJob implements ShouldQueue
 
             // 8. Eliminar archivo temporal
             File::delete($filePath);
+
+            \Log::info("Backup generado de {$this->empresa->razon_social}");
             
         } catch (\Exception $e) {
             \Log::error("Error generando backup: " . $e->getMessage());
@@ -94,22 +95,20 @@ class BackupDatabaseJob implements ShouldQueue
     {
         $now = now();
         
-        DB::connection('clientes')->statement("
-            INSERT INTO backup_empresas 
-            (id_empresa, url_file, file_name, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?)
-        ", [
-            $this->empresa->id,
-            $url,
-            $filename,
-            $now,
-            $now
+        DB::connection('clientes')->table('backup_empresas')->insert([
+            'id_empresa' => $this->empresa->id,
+            'url_file' => $url,
+            'file_name' => $filename,
+            'created_at' => $now,
+            'updated_at' => $now
         ]);
     }
 
     protected function cleanOldBackups()
     {
-        $backups = BackupEmpresa::where('id_empresa', $this->empresa->id)
+        // Usar Eloquent directamente en lugar de consultas raw
+        $backups = BackupEmpresa::on('clientes')
+            ->where('id_empresa', $this->empresa->id)
             ->orderBy('created_at', 'desc')
             ->get();
             
@@ -127,14 +126,11 @@ class BackupDatabaseJob implements ShouldQueue
                         continue;
                     }
                     
-                    // Verificar si el archivo existe antes de intentar borrarlo
                     if (Storage::disk('do_spaces')->exists($path)) {
                         Storage::disk('do_spaces')->delete($path);
-                        $backup->delete();
-                    } else {
-                        \Log::warning("Archivo no encontrado en Spaces: {$path}");
-                        $backup->delete(); // Eliminar el registro de todos modos
                     }
+
+                    $backup->delete();
                     
                 } catch (\Exception $e) {
                     \Log::error("Error eliminando backup antiguo: " . $e->getMessage());
