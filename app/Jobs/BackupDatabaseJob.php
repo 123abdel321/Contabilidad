@@ -106,8 +106,8 @@ class BackupDatabaseJob implements ShouldQueue
 
     protected function cleanOldBackups()
     {
-        // Usar Eloquent directamente en lugar de consultas raw
-        $backups = BackupEmpresa::on('clientes')
+        $backups = DB::connection('clientes')
+            ->table('backup_empresas')
             ->where('id_empresa', $this->empresa->id)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -125,17 +125,41 @@ class BackupDatabaseJob implements ShouldQueue
                         \Log::error("Path vacío para backup ID: {$backup->id}");
                         continue;
                     }
-                    
+
+                    // Eliminar archivo de backup
                     if (Storage::disk('do_spaces')->exists($path)) {
                         Storage::disk('do_spaces')->delete($path);
                     }
 
-                    $backup->delete();
+                    DB::connection('clientes')->delete("
+                        DELETE FROM backup_empresas 
+                        WHERE id = " . (int)$backup->id
+                    );
                     
                 } catch (\Exception $e) {
                     \Log::error("Error eliminando backup antiguo: " . $e->getMessage());
+
+                    $this->retryWithFreshConnection($backup);
                 }
             }
+        }
+    }
+
+    protected function retryWithFreshConnection($backup)
+    {
+        try {
+            // Forzar una nueva conexión
+            DB::connection('clientes')->reconnect();
+            
+            DB::connection('clientes')->delete("
+                DELETE FROM backup_empresas 
+                WHERE id = " . (int)$backup->id
+            );
+            
+            \Log::info("Backup eliminado exitosamente en reintento: " . $backup->id);
+            
+        } catch (\Exception $e) {
+            \Log::error("Error en reintento de eliminación: " . $e->getMessage());
         }
     }
 }
