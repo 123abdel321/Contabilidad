@@ -6,6 +6,7 @@ use DB;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,10 +23,12 @@ class ProcessInformeResultados implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $empresa;
     public $request;
     public $id_usuario;
 	public $id_empresa;
     public $id_resultado;
+    public $timeout = 300;
     public $resultados = [];
     public $resultadoCollection = [];
     public $meses = [
@@ -43,35 +46,30 @@ class ProcessInformeResultados implements ShouldQueue
         12 => 'diciembre',
     ];
 
-    public function __construct($request, $id_usuario, $id_empresa)
+    public function __construct($request, $id_usuario, $id_empresa, $id_resultado)
     {
         $this->request = $request;
 		$this->id_usuario = $id_usuario;
 		$this->id_empresa = $id_empresa;
+		$this->id_resultado = $id_resultado;
     }
 
     public function handle()
     {
-		$empresa = Empresa::find($this->id_empresa);
+        $startTime = microtime(true);
+        $startMemory = memory_get_usage();
+
+        $this->empresa = Empresa::find($this->id_empresa);
         
         copyDBConnection('sam', 'sam');
-        setDBInConnection('sam', $empresa->token_db);
+        setDBInConnection('sam', $this->empresa->token_db);
 
         DB::connection('informes')->beginTransaction();
+
         try {
-            $resultado = InfResultado::create([
-				'id_empresa' => $this->id_empresa,
-				'fecha_desde' => $this->request['fecha_desde'],
-				'fecha_hasta' => $this->request['fecha_hasta'],
-				'id_cecos' => $this->request['id_cecos'],
-				'id_nit' => $this->request['id_nit'],
-			]);
 
-            $this->id_resultado = $resultado->id;
-
-            $this->presupuestoDatos();
-            // $this->documentosResultado();
-            $this->totalesDocumentosResultado();
+            // $this->presupuestoDatos();
+            $this->documentosResultado();
             
             ksort($this->resultadoCollection, SORT_STRING | SORT_FLAG_CASE);
 
@@ -81,15 +79,27 @@ class ProcessInformeResultados implements ShouldQueue
                     ->insert(array_values($resultadoCollection));
             }
 
+            InfResultado::where('id', $this->id_resultado)->update([
+                'estado' => 2
+            ]);
+
             DB::connection('informes')->commit();
 
-            event(new PrivateMessageEvent('informe-resultado-'.$empresa->token_db.'_'.$this->id_usuario, [
+            event(new PrivateMessageEvent('informe-resultado-'.$this->empresa->token_db.'_'.$this->id_usuario, [
                 'tipo' => 'exito',
                 'mensaje' => 'Informe generado con exito!',
                 'titulo' => 'Resultado generado',
                 'id_resultado' => $this->id_resultado,
                 'autoclose' => false
             ]));
+
+            $endTime = microtime(true);
+            $endMemory = memory_get_usage();
+
+            $executionTime = $endTime - $startTime;
+            $memoryUsage = $endMemory - $startMemory;
+            
+            Log::info("Informe resultados ejecutado en {$executionTime} segundos, usando {$memoryUsage} bytes de memoria.");
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
@@ -161,12 +171,13 @@ class ProcessInformeResultados implements ShouldQueue
             ->groupByRaw('cuenta')
             ->orderByRaw('cuenta')
             ->chunk(233, function ($documentos) {
-
+                
                 $documentos->each(function ($documento) {
+                    
                     $presupuestoPadre = false;
                     $cuentasAsociadas = $this->getCuentas($documento->cuenta); //return ARRAY PADRES CUENTA
+                    
                     foreach ($cuentasAsociadas as $cuenta) {
-                        
                         if ($this->hasCuentaData($cuenta)) $this->sumCuentaData($cuenta, $documento);
                         else $this->newCuentaData($cuenta, $documento);
 
@@ -354,6 +365,8 @@ class ProcessInformeResultados implements ShouldQueue
             )
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
+
+            ->where('PC.cuenta', 'LIKE', '5%')
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
@@ -393,6 +406,7 @@ class ProcessInformeResultados implements ShouldQueue
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->where('anulado', 0)
+            ->where('PC.cuenta', 'LIKE', '5%')
             ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
             ->when($this->request['cuenta'], function ($query) {
                 $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
@@ -495,8 +509,8 @@ class ProcessInformeResultados implements ShouldQueue
                 DB::raw('SUM(PD.diciembre) AS diciembre'),
             )
             ->leftJoin('presupuesto_detalles AS PD', 'PR.id', 'PD.id_presupuesto')
-            ->where('PR.periodo', $fecha[0])
-            ->where('PD.id_padre', 0);
+            ->where('PR.periodo', $fecha[0]);
+            // ->where('PD.id_padre', 0);
 
         if ($padre) {
             $presupuesto->where('PD.cuenta', 'LIKE', $cuenta.'%')
@@ -564,4 +578,38 @@ class ProcessInformeResultados implements ShouldQueue
 	{
 		return isset($this->resultadoCollection[$cuenta]);
 	}
+
+    public function failed($exception)
+    {
+        DB::connection('informes')->rollBack();
+        
+        // Si no tenemos la empresa, intentamos obtenerla
+        if (!$this->empresa && $this->id_empresa) {
+            $this->empresa = Empresa::find($this->id_empresa);
+        }
+
+        $token_db = $this->empresa ? $this->empresa->token_db : 'unknown';
+
+        InfResultado::where('id', $this->id_resultado)->update([
+            'estado' => 0
+        ]);
+
+        event(new PrivateMessageEvent(
+            'informe-resultado-'.$token_db.'_'.$this->id_usuario, 
+            [
+                'tipo' => 'error',
+                'mensaje' => 'Error al generar el informe: '.$exception->getMessage(),
+                'titulo' => 'Error en proceso',
+                'autoclose' => false
+            ]
+        ));
+
+        // Registrar el error en los logs
+        logger()->error("Error en ProcessInformeResultados: ".$exception->getMessage(), [
+            'exception' => $exception,
+            'request' => $this->request,
+            'user_id' => $this->id_usuario,
+            'empresa_id' => $this->id_empresa
+        ]);
+    }
 }

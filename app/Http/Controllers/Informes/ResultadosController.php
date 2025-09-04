@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Informes;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Exports\ResultadoExport;
 use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
@@ -24,106 +26,183 @@ class ResultadosController extends Controller
 
     public function generate(Request $request)
     {
-        if (!$request->has('fecha_desde') && $request->get('fecha_desde')|| !$request->has('fecha_hasta') && $request->get('fecha_hasta')) {
-			return response()->json([
-                'success'=>	false,
+        try {
+
+            if (!$request->has('fecha_desde') && $request->get('fecha_desde')|| !$request->has('fecha_hasta') && $request->get('fecha_hasta')) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'Por favor ingresar un rango de fechas válido.'
+                ], Response::HTTP_NO_CONTENT);
+            }
+
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+            $fecha_hasta = Carbon::parse($request->get('fecha_hasta', null))->format('Y-m-d');
+            $fecha_desde = Carbon::parse($request->get('fecha_desde', null))->format('Y-m-d');
+
+            $resultado = InfResultado::where('id_empresa', $empresa->id)
+                ->where('fecha_hasta', $fecha_hasta)
+                ->where('fecha_desde', $fecha_desde)
+                ->where('id_cecos', $request->get('id_cecos', null))
+                ->where('id_nit', $request->get('id_nit', null))
+                ->first();
+
+            if ($resultado && $resultado->estado == 1) {
+
+                $created = Carbon::parse($resultado->created_at);
+                $now = Carbon::now();
+
+                $diffInSeconds = $created->diffInSeconds($now);
+                $diffFormatted = floor($diffInSeconds / 60) . 'm ' . ($diffInSeconds % 60) . 's';
+
+                return response()->json([
+                    'success'=>	true,
+                    'time' => $created->format('Y-m-d H:i') . " ({$diffFormatted})",
+                    'data' => '',
+                    'message'=> 'Generando informe de resultados'
+                ], Response::HTTP_OK);
+            }
+
+            if($resultado) {
+                InfResultadoDetalle::where('id_resultado', $resultado->id)->delete();
+                $resultado->delete();
+            }
+
+            if($request->get('id_cuenta')) {
+                $cuenta = PlanCuentas::find($request->get('id_cuenta'));
+                $request->request->add(['cuenta' => $cuenta->cuenta]);
+            } else {
+                $request->request->add(['cuenta' => false]);
+            }
+
+            $resultado = InfResultado::create([
+				'id_empresa' => $empresa->id,
+				'fecha_desde' => $request->get('fecha_desde'),
+				'fecha_hasta' => $request->get('fecha_hasta'),
+				'id_cecos' => $request->get('id_cecos', null),
+				'id_nit' => $request->get('id_nit', null),
+                'estado' => 1
+			]);
+
+            ProcessInformeResultados::dispatch(
+                $request->all(),
+                $request->user()->id,
+                $empresa->id,
+                $resultado->id
+            );
+
+            return response()->json([
+                'success'=>	true,
+                'time' => null,
+                'data' => '',
+                'message'=> 'Generando informe de auxiliar'
+            ], Response::HTTP_OK);
+            
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
                 'data' => [],
-                'message'=> 'Por favor ingresar un rango de fechas válido.'
-            ]);
-		}
-
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-
-        $resultado = InfResultado::where('id_empresa', $empresa->id)
-            ->where('fecha_hasta', $request->get('fecha_hasta'))
-            ->where('fecha_desde', $request->get('fecha_desde'))
-            ->where('cuenta_hasta', $request->get('cuenta_hasta'))
-            ->where('cuenta_desde', $request->get('cuenta_desde'))
-            ->where('id_cecos', $request->get('id_cecos', null))
-            ->where('id_nit', $request->get('id_nit', null))
-			->first();
-
-        if($resultado) {
-            InfResultadoDetalle::where('id_resultado', $resultado->id)->delete();
-            $resultado->delete();
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        if($request->get('id_cuenta')) {
-            $cuenta = PlanCuentas::find($request->get('id_cuenta'));
-            $request->request->add(['cuenta' => $cuenta->cuenta]);
-        } else {
-            $request->request->add(['cuenta' => false]);
-        }
-
-        ProcessInformeResultados::dispatch($request->all(), $request->user()->id, $empresa->id);
-
-        return response()->json([
-    		'success'=>	true,
-    		'data' => '',
-    		'message'=> 'Generando informe de resultados'
-    	]);
     }
 
     public function show(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length");
-        $resultado = InfResultado::where('id', $request->get('id'))->first();
-		$informe = InfResultadoDetalle::where('id_resultado', $resultado->id);
-		$total = InfResultadoDetalle::where('id_resultado', $resultado->id)->orderBy('id', 'desc')->first();
-        $descuadre = false;
-        $filtros = true;
+        try {
 
-        $informeTotals = $informe->get();
+            $draw = $request->get('draw');
+            $start = $request->get("start");
+            $rowperpage = $request->get("length");
 
-        $informePaginate = $informe->skip($start)
-            ->take($rowperpage);
+            $resultado = InfResultado::where('id', $request->get('id'))->first();
 
-        if(!$resultado->id_cuenta) {
-            $filtros = false;
-            $descuadre = $total->saldo_final > 0 ? true : false;
+            if (!$resultado) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=> 'No se encontro el informe resultados'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $informe = InfResultadoDetalle::where('id_resultado', $resultado->id);
+            $total = InfResultadoDetalle::where('id_resultado', $resultado->id)->orderBy('id', 'desc')->first();
+            $descuadre = false;
+            $filtros = true;
+
+            $informeTotals = $informe->get();
+
+            $informePaginate = $informe->skip($start)
+                ->take($rowperpage);
+
+            if(!$resultado->id_cuenta) {
+                $filtros = false;
+                $descuadre = $total->saldo_final > 0 ? true : false;
+            }
+
+            return response()->json([
+                'success'=>	true,
+                'draw' => $draw,
+                'iTotalRecords' => $informeTotals->count(),
+                'iTotalDisplayRecords' => $informeTotals->count(),
+                'data' => $informePaginate->get(),
+                'perPage' => $rowperpage,
+                'totales' => $total,
+                'filtros' => $filtros,
+                'descuadre' => $descuadre,
+                'message'=> 'Resultado generado con exito!'
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $informeTotals->count(),
-            'iTotalDisplayRecords' => $informeTotals->count(),
-            'data' => $informePaginate->get(),
-            'perPage' => $rowperpage,
-            'totales' => $total,
-            'filtros' => $filtros,
-            'descuadre' => $descuadre,
-            'message'=> 'Resultado generado con exito!'
-        ]);
     }
 
     public function find(Request $request)
     {
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        $id_cuenta = $request->get('id_cuenta') != 'null' ? $request->get('id_cuenta') : NULL;
-        
-        $resultado = InfResultado::where('id_empresa', $empresa->id)
-            ->where('fecha_hasta', $request->get('fecha_hasta'))
-            ->where('fecha_desde', $request->get('fecha_desde'))
-            ->where('id_cuenta', $id_cuenta)
-            ->where('nivel', $request->get('nivel', null))
-			->first();
+        try {
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+            $id_cuenta = $request->get('id_cuenta') != 'null' ? $request->get('id_cuenta') : NULL;
             
-        if ($resultado) {
+            $resultado = InfResultado::where('id_empresa', $empresa->id)
+                ->where('fecha_hasta', $request->get('fecha_hasta'))
+                ->where('fecha_desde', $request->get('fecha_desde'))
+                ->where('id_cuenta', $id_cuenta)
+                ->where('nivel', $request->get('nivel', null))
+                ->first();
+                
+            if ($resultado) {
+
+                $created = Carbon::parse($resultado->created_at);
+
+                return response()->json([
+                    'success'=>	true,
+                    'time' => $created->format('Y-m-d H:i'),
+                    'data' => $resultado->id,
+                    'message'=> 'Resultado existente'
+                ], Response::HTTP_OK);
+            }
+
             return response()->json([
                 'success'=>	true,
-                'data' => $resultado->id,
-                'message'=> 'Resultado existente'
-            ]);
-        }
+                'data' => '',
+                'message'=> 'Resultado no existente'
+            ], Response::HTTP_OK);
 
-        return response()->json([
-            'success'=>	true,
-            'data' => '',
-            'message'=> 'Resultado no existente'
-        ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     public function exportExcel(Request $request)

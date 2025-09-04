@@ -440,15 +440,16 @@ function actualizarPresupuesto (id) {
 }
 
 function searchPresupuesto (event) {
-    if (event.keyCode == 20 || event.keyCode == 16 || event.keyCode == 17 || event.keyCode == 18) {
-        return;
+
+
+    if (event.keyCode == 13) {
+        var botonPrecionado = event.key.length == 1 ? event.key : '';
+        searchValuePresupuesto = $('#searchInputInmuebles').val();
+        // searchValuePresupuesto = searchValuePresupuesto+botonPrecionado;
+        // if(event.key == 'Backspace') searchValuePresupuesto = searchValuePresupuesto.slice(0, -1);
+        if(presupuesto_table)presupuesto_table.context[0].jqXHR.abort();
+        reloadPresupuesto();
     }
-    var botonPrecionado = event.key.length == 1 ? event.key : '';
-    searchValuePresupuesto = $('#searchInputInmuebles').val();
-    searchValuePresupuesto = searchValuePresupuesto+botonPrecionado;
-    if(event.key == 'Backspace') searchValuePresupuesto = searchValuePresupuesto.slice(0, -1);
-    if(presupuesto_table)presupuesto_table.context[0].jqXHR.abort();
-    reloadPresupuesto();
 }
 
 function sumaTotalDeYears() {

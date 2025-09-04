@@ -19,8 +19,8 @@ return new class extends Migration
             $table->date('fecha_desde');
             $table->date('fecha_hasta');
             $table->integer('exporta_excel')->nullable()->comment('1: Exportando, 2: Exportado');
-            $table->integer('estado')->nullable()->comment('0: Error; 1: Proceso; 2: Generado;');
             $table->string('archivo_excel')->nullable();
+            $table->integer('estado')->nullable()->comment('0: Error; 1: Proceso; 2: Generado;');
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

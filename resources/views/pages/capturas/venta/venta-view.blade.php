@@ -225,18 +225,18 @@
     </div>
 
     <script>
-        let ventaExistencias = @json(auth()->user()->can("venta existencia"));
-        let ventaDescuento = @json(auth()->user()->can("venta descuento"));
-        let ventaNegativa = @json(auth()->user()->can("venta negativa"));
-        let ventaRapida = @json(auth()->user()->can("venta rapida"));
-        let ventaFecha = @json(auth()->user()->can("venta fecha"));
+        var ventaExistencias = @json(auth()->user()->can("venta existencia"));
+        var ventaDescuento = @json(auth()->user()->can("venta descuento"));
+        var ventaNegativa = @json(auth()->user()->can("venta negativa"));
+        var ventaRapida = @json(auth()->user()->can("venta rapida"));
+        var ventaFecha = @json(auth()->user()->can("venta fecha"));
         
-        let primeraBodegaVenta = @json($bodegas);
-        let primeraResolucionVenta = @json($resolucion);
-        let ivaIncluidoVentas = @json($iva_incluido);
-        let vendedoresVentas = @json($vendedores_ventas);
-        let primeraNit = @json($cliente);
-        let valor_uvt = @json($valor_uvt);
+        var primeraBodegaVenta = @json($bodegas);
+        var primeraResolucionVenta = @json($resolucion);
+        var ivaIncluidoVentas = @json($iva_incluido);
+        var vendedoresVentas = @json($vendedores_ventas);
+        var primeraNit = @json($cliente);
+        var valor_uvt = @json($valor_uvt);
 
     </script>
     

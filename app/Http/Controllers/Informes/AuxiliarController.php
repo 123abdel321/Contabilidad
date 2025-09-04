@@ -40,7 +40,7 @@ class AuxiliarController extends Controller
                     'success'=>	false,
                     'data' => [],
                     'message'=> 'Por favor ingresar un rango de fechas válido.'
-                ]);
+                ], Response::HTTP_NO_CONTENT);
             }
     
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
@@ -87,7 +87,12 @@ class AuxiliarController extends Controller
                 'estado' => 1
 			]);
             
-            ProcessInformeAuxiliar::dispatch($request->all(), $request->user()->id, $empresa->id, $auxiliar->id);
+            ProcessInformeAuxiliar::dispatch(
+                $request->all(),
+                $request->user()->id,
+                $empresa->id,
+                $auxiliar->id
+            );
     
             return response()->json([
                 'success'=>	true,

@@ -5,13 +5,16 @@ var resultadosExistente = false;
 var channelResultado = pusher.subscribe('informe-resultado-'+localStorage.getItem("notificacion_code"));
 
 function resultadosInit() {
-    fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+
     generarResultados = false;
     resultadosExistente = false;
 
-    $('#fecha_desde_resultado').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-    $('#fecha_hasta_resultado').val(fechaDesde);
+    cargarTablasResultados();
+    cargarCombosResultados();
+    cargarFechasResultados();
+}
 
+function cargarTablasResultados() {
     resultados_table = $('#resultadoInformeTable').DataTable({
         pageLength: 100,
         dom: 'Brtip',
@@ -42,8 +45,8 @@ function resultadosInit() {
             url: base_url + 'resultados',
             headers: headers,
             data: function ( d ) {
-                d.fecha_desde = $('#fecha_desde_resultado').val();
-                d.fecha_hasta = $('#fecha_hasta_resultado').val();
+                d.fecha_desde = $('#fecha_manual_resultados').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
+                d.fecha_hasta = $('#fecha_manual_resultados').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
                 d.id_cuenta = $('#id_cuenta_resultado').val();
                 d.tipo = $('#tipo_informe_resultado').val();
                 d.id_cecos = $('#id_cecos_resultado').val();
@@ -53,30 +56,34 @@ function resultadosInit() {
         },
         "rowCallback": function(row, data, index){
             if(data.cuenta == "TOTALES"){
-                $('td', row).css('background-color', 'rgb(28 69 135)');
+                $('td', row).css('background-color', '#000');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
             }
             if (!data.auxiliar) {
                 if(data.cuenta.length == 1){//
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
-                    $('td', row).css('font-weight', '700');
+                    $('td', row).css('background-color', 'rgb(33 35 41)');
+                    $('td', row).css('font-weight', 'bold');
+                    $('td', row).css('color', 'white');
                     return;
                 }
                 if(data.cuenta.length == 2){//
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
-                    $('td', row).css('font-weight', '600');
+                    $('td', row).css('background-color', 'rgb(33 35 41 / 80%)');
+                    $('td', row).css('font-weight', 'bold');
+                    $('td', row).css('color', 'white');
                     return;
                 }
                 if(data.cuenta.length == 4){//
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 30%)');
+                    $('td', row).css('background-color', 'rgb(33 35 41 / 60%)');
                     $('td', row).css('font-weight', '600');
+                    $('td', row).css('color', 'white');
                     return;
                 }
                 if(data.cuenta.length == 6){//
-                    $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
+                    $('td', row).css('background-color', 'rgb(33 35 41 / 40%)');
                     $('td', row).css('font-weight', '600');
+                    $('td', row).css('color', 'white');
                     return;
                 }
             }
@@ -128,7 +135,9 @@ function resultadosInit() {
             {data: 'ppto_porcentaje_acumulado'},
         ]
     });
+}
 
+function cargarCombosResultados() {
     $('#id_nit_resultado').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -226,6 +235,34 @@ function resultadosInit() {
     });
 }
 
+function cargarFechasResultados() {
+    const start = moment().startOf("month");
+    const end = moment().endOf("month");
+    
+    $("#fecha_manual_resultados").daterangepicker({
+        startDate: start,
+        endDate: end,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " - ",
+            applyLabel: "Aplicar",
+            cancelLabel: "Cancelar",
+            fromLabel: "Desde",
+            toLabel: "Hasta",
+            customRangeLabel: "Personalizado",
+            daysOfWeek: moment.weekdaysMin(),
+            monthNames: moment.months(),
+            firstDay: 1
+        },
+        ranges: rangoFechas
+    }, formatoFecha);
+
+    formatoFecha(start, end, "fecha_manual_resultados");
+}
+
 function loadResultadosById(id_impuesto) {
     var url = base_url + 'resultados-show?id='+id_impuesto;
 
@@ -243,8 +280,8 @@ $(document).on('click', '#generarResultado', function () {
     $("#generarResultadoLoading").show();
 
     var url = base_url + 'resultados';
-    url+= '?fecha_desde='+$('#fecha_desde_resultado').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_resultado').val();
+    url+= '?fecha_desde='+$('#fecha_manual_resultados').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
+    url+= '&fecha_hasta='+$('#fecha_manual_resultados').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
     url+= '&id_cuenta='+$('#id_cuenta_resultado').val();
     url+= '&tipo='+$('#tipo_informe_resultado').val();
     url+= '&id_cecos='+$('#id_cecos_resultado').val();
@@ -258,6 +295,17 @@ $(document).on('click', '#generarResultado', function () {
 });
 
 channelResultado.bind('notificaciones', function(data) {
+    console.log('channelResultado: ',data);
+    if(data.tipo == "error"){
+        $("#generarResultado").show();
+        $("#generarResultadoLoading").hide();
+
+        $('#generarResultadoUltimo').hide();
+        $('#generarResultadoUltimoLoading').hide();
+        agregarToast('error', 'Error al cargar informe de resultados', data.mensaje, false);
+        return;
+    }
+
     if(data.id_resultado){
         $('#id_resultado_cargado').val(data.id_resultado);
         loadResultadoById(data.id_resultado);
@@ -266,16 +314,14 @@ channelResultado.bind('notificaciones', function(data) {
 });
 
 function loadResultadoById(id_resultado) {
+    console.log('loadResultadoById: ',id_resultado);
+
+    $('#id_resultado_cargado').val(id_resultado);
     resultados_table.ajax.url(base_url + 'resultados-show?id='+id_resultado).load(function(res) {
         console.log('res: ',res);
         if(res.success){
             $("#generarResultado").show();
             $("#generarResultadoLoading").hide();
-            // $("#generarResultadoUltimo").hide();
-            // $("#generarResultadoUltimoLoading").hide();
-            // $('#descargarExcelBalance').prop('disabled', false);
-            // $("#descargarExcelBalance").show();
-            // $("#descargarExcelBalanceDisabled").hide();
 
             agregarToast('exito', 'Resultado cargado', 'Informe cargado con exito!', true);
         }

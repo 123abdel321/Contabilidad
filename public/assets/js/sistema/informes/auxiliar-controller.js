@@ -10,54 +10,7 @@ function auxiliarInit() {
 
     cargarTablasAuxiliar();
     cargarCombosAuxiliar();
-
-    const start = moment().startOf("month");
-    const end = moment().endOf("month");
-    
-    $("#fecha_manual_auxiliar").daterangepicker({
-        startDate: start,
-        endDate: end,
-        timePicker: true,
-        timePicker24Hour: true,
-        timePickerSeconds: true,
-        locale: {
-            format: "YYYY-MM-DD",
-            separator: " - ",
-            applyLabel: "Aplicar",
-            cancelLabel: "Cancelar",
-            fromLabel: "Desde",
-            toLabel: "Hasta",
-            customRangeLabel: "Personalizado",
-            daysOfWeek: moment.weekdaysMin(),
-            monthNames: moment.months(),
-            firstDay: 1
-        },
-        ranges: {
-            "Hoy": [moment().startOf('day'), moment().endOf('day')],
-            "Ayer": [
-                moment().subtract(1, "days").startOf("day"),
-                moment().subtract(1, "days").endOf("day")
-            ],
-            "Últimos 7 días": [
-                moment().subtract(6, "days").startOf("day"),
-                moment().endOf("day")
-            ],
-            "Últimos 30 días": [
-                moment().subtract(29, "days").startOf("day"),
-                moment().endOf("day")
-            ],
-            "Este mes": [
-                moment().startOf("month").startOf("day"),
-                moment().endOf("month").endOf("day")
-            ],
-            "Mes anterior": [
-                moment().subtract(1, "month").startOf("month").startOf("day"),
-                moment().subtract(1, "month").endOf("month").endOf("day")
-            ]
-        }
-    }, formatoFecha);
-
-    formatoFecha(start, end, "fecha_manual_auxiliar");
+    cargarFechasAuxiliar();
 }
 
 function cargarCombosAuxiliar() {
@@ -304,6 +257,34 @@ function cargarTablasAuxiliar() {
     else columnUbicacionMaximoPH.visible(false);
 }
 
+function cargarFechasAuxiliar() {
+    const start = moment().startOf("month");
+    const end = moment().endOf("month");
+    
+    $("#fecha_manual_auxiliar").daterangepicker({
+        startDate: start,
+        endDate: end,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " - ",
+            applyLabel: "Aplicar",
+            cancelLabel: "Cancelar",
+            fromLabel: "Desde",
+            toLabel: "Hasta",
+            customRangeLabel: "Personalizado",
+            daysOfWeek: moment.weekdaysMin(),
+            monthNames: moment.months(),
+            firstDay: 1
+        },
+        ranges: rangoFechas
+    }, formatoFecha);
+
+    formatoFecha(start, end, "fecha_manual_auxiliar");
+}
+
 $(document).on('click', '#generarAuxiliar', function () {
     generarAuxiliar = false;
     $("#generarAuxiliar").hide();
@@ -375,7 +356,7 @@ channelInformeAuxiliar.bind('notificaciones', function(data) {
 
         $('#generarAuxiliarUltimo').hide();
         $('#generarAuxiliarUltimoLoading').hide();
-        agregarToast('error', 'Error al cargar informe', data.mensaje, false);
+        agregarToast('error', 'Error al cargar informe de auxiliar', data.mensaje, false);
         return;
     }
 

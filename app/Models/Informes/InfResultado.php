@@ -27,6 +27,7 @@ class InfResultado extends Model
         'archivo_excel',
         'tipo',
         'nivel',
+        'estado',
         'created_by',
         'updated_by',
         'created_at',

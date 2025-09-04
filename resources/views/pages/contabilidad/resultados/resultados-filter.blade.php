@@ -11,10 +11,17 @@
             <div class="accordion-body text-sm" style="padding: 0 !important;">
             
                 <form id="resultadoprimaryrmeForm" style="margin-top: 10px;">
-                    <input name="id_resultado_cargado" id="id_resultado_cargado" class="form-control form-control-sm" type="text" style="display: none;">
+                    
                     <div class="row">
 
-                        <div class="form-group col-12 col-sm-4 col-md-3">
+                        <input name="id_resultado_cargado" id="id_resultado_cargado" class="form-control form-control-sm" type="text" style="display: none;">
+
+                        <div class="form-group col-12 col-sm-4 col-md-4">
+                            <label for="example-text-input" class="form-control-label">Fecha</label>
+                            <input name="fecha_manual_resultados" id="fecha_manual_resultados" class="form-control form-control-sm" require>
+                        </div>
+
+                        <div class="form-group col-12 col-sm-4 col-md-4">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Tipo informe</label>
                             <select name="tipo_informe_resultado" id="tipo_informe_resultado" class="form-control form-control-sm">
                                 <option value="1">Igresos</option>
@@ -22,29 +29,19 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-6 col-sm-4 col-md-3">
+                        <div class="form-group col-6 col-sm-4 col-md-4">
                             <label>Cuenta</label>
                             <select name="id_cuenta_resultado" id="id_cuenta_resultado" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
                         </div>
-                        
-                        <div class="form-group col-6 col-sm-4 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Fecha desde</label>
-                            <input name="fecha_desde_resultado" id="fecha_desde_resultado" class="form-control form-control-sm" type="date" require>
-                        </div>
 
-                        <div class="form-group col-6 col-sm-4 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Fecha hasta</label>
-                            <input name="fecha_hasta_resultado" id="fecha_hasta_resultado" class="form-control form-control-sm" type="date" require>
-                        </div>
-
-                        <div class="form-group col-6 col-sm-4 col-md-3">
+                        <div class="form-group col-6 col-sm-4 col-md-4">
                             <label>Centro costos</label>
                             <select name="id_cecos_resultado" id="id_cecos_resultado" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
                         </div>
 
-                        <div class="form-group col-6 col-sm-4 col-md-3">
+                        <div class="form-group col-6 col-sm-4 col-md-4">
                             <label>Cedula/Nit</label>
                             <select name="id_nit_resultado" id="id_nit_resultado" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
                             </select>
@@ -54,11 +51,11 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="generarResultado" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="min-width: 40px; margin-right: 3px;">
+                    <span id="generarResultado" href="javascript:void(0)" class="btn badge bg-gradient-primary btn-bg-gold" style="min-width: 40px; margin-right: 3px;">
                         <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">BUSCAR</b>
                     </span>
-                    <span id="generarResultadoLoading" class="badge bg-gradient-primary" style="display:none; min-width: 40px; margin-right: 3px; margin-bottom: 16px;">
+                    <span id="generarResultadoLoading" class="badge bg-gradient-primary btn-bg-gold-loading" style="display:none; min-width: 40px; margin-right: 3px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">GENERANDO</b>
                     </span>
