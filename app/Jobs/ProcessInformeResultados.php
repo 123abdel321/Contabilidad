@@ -23,6 +23,7 @@ class ProcessInformeResultados implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tipo;
     public $empresa;
     public $request;
     public $id_usuario;
@@ -52,6 +53,7 @@ class ProcessInformeResultados implements ShouldQueue
 		$this->id_usuario = $id_usuario;
 		$this->id_empresa = $id_empresa;
 		$this->id_resultado = $id_resultado;
+        $this->tipo = $this->request['tipo'] == 1 ? '4' : '5';
     }
 
     public function handle()
@@ -342,6 +344,7 @@ class ProcessInformeResultados implements ShouldQueue
 
     private function resultadoDocumentosQuery($cuenta = null)
     {
+
         $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
                 'N.id AS id_nit',
@@ -365,8 +368,7 @@ class ProcessInformeResultados implements ShouldQueue
             )
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
-
-            ->where('PC.cuenta', 'LIKE', '5%')
+            ->where('PC.cuenta', 'LIKE', $this->tipo.'%')
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
@@ -406,7 +408,7 @@ class ProcessInformeResultados implements ShouldQueue
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->where('anulado', 0)
-            ->where('PC.cuenta', 'LIKE', '5%')
+            ->where('PC.cuenta', 'LIKE', $this->tipo.'%')
             ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
             ->when($this->request['cuenta'], function ($query) {
                 $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
