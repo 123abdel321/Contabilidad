@@ -10,7 +10,7 @@
     }
     #sidenav-main {
         background-color: #000000 !important;
-        opacity: 0.85 !important;
+        opacity: 0.95 !important;
     }
 
     .text-blue {
@@ -42,6 +42,10 @@
         to { color: #003883; }
     }
 
+    .menu-lateral:hover {
+        border: solid 1px !important;
+    }
+
 </style>
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 side-nav-maximo-close" id="sidenav-main" style="z-index: 99 !important; border-radius: 0px 10px 10px 0px;">
     <div class="sidenav-header">
@@ -65,7 +69,7 @@
         </ul>
     </div>
 
-    <ul class="collapse navbar-collapse navbar-nav" id="sidenav-collapse-main" style="height: 100%;">
+    <ul class="collapse navbar-collapse navbar-nav" id="sidenav-collapse-main" style="height: 100%; width: auto; margin-left: 10px;">
 
             @foreach ($menus as $menu)
 
@@ -79,11 +83,11 @@
                     </div>
 
                     <div class="collapse" id="collapse{{ $menu[0]->padre->id }}" >
-                        <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #0dd7f6; margin-left: 30px;">
+                        <ul class="navbar-nav" style="margin-left: 15px; border-left: solid 1px #0dd7f6; margin-left: 30px; width: auto;">
 
                             @foreach ($menu as $item)
                                 <li class="nav-item tipo_menu_{{ $item->tipo_menu }}">
-                                    <a class="nav-link button-side-nav" id="sidenav_{{ $item->url }}" onclick="openNewItem('{{ $item->url }}', '{{ $item->nombre }}', '{{ $item->icon }}')" style="margin-left: 20px;">
+                                    <a class="nav-link button-side-nav" id="sidenav_{{ $item->url }}" onclick="openNewItem('{{ $item->url }}', '{{ $item->nombre }}', '{{ $item->icon }}', '{{ $menu[0]->padre->id }}')" style="margin-left: 20px;">
                                         <span class="nav-link-text ms-1">{{ $item->nombre }}</span>
                                     </a>
                                 </li>
@@ -98,7 +102,7 @@
     </ul>
 </aside>
 
-<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl" id="sidenav-main-2" style="z-index: 99 !important; width: 11px; cursor: pointer; background-color: #003883 !important; border-radius: 0px 7px 7px 0px;">
+<aside class="btn-bg-blue-dark sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl menu-lateral" id="sidenav-main-2" style="z-index: 99 !important; width: 11px; cursor: pointer; background-color: #001c41 !important; border-radius: 0px 7px 7px 0px;">
     <span id="button-mostrar-lateral" class="nav-link-text ms-1" style="margin: 0; position: fixed; top: 50%; transform: translateY(-50%);">
         <i class="fas fa-caret-right" style="color: #FFF;"></i>
     </span>

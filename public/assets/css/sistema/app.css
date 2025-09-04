@@ -56,7 +56,7 @@ label, .form-label {
 }
 
 .navbar-nav > .nav-item > .nav-link.active {
-    background-image: linear-gradient(310deg, #24698c 0%, #344767 100%) !important;
+    background-image: linear-gradient(310deg, #001c41 0%, #001c41 100%) !important;
     color: white !important;
 }
 
@@ -122,7 +122,7 @@ label, .form-label {
     /* left: 29px !important; */
 }
 thead tr:first-child th {
-    background-color: #003883;
+    background-color: #001c41;
     color: white;
     font-weight: bold;
     font-size: 14px;
@@ -176,7 +176,7 @@ thead tr:first-child th {
     margin-top: 5px;
 }
 
-.btn-bg-info::before {
+/* .btn-bg-info::before {
     content: "";
     position: absolute;
     top: 0;
@@ -191,17 +191,17 @@ thead tr:first-child th {
     );
     transition: none;
     animation: shine 3s infinite;
-}
+} */
 
-.btn-bg-info:hover::before {
+/* .btn-bg-info:hover::before {
     background: linear-gradient(
         90deg,
         transparent,
-        #0077ff63, /* Más opacidad al hacer hover */
+        #0077ff63,
         transparent
     );
-    animation-duration: 1s; /* Más rápido al hacer hover */
-}
+    animation-duration: 1s;
+} */
 
 .btn-bg-info i {
     color: #0077ff;
@@ -224,7 +224,7 @@ thead tr:first-child th {
     margin-top: 5px;
 }
 
-.btn-bg-excel::before {
+/* .btn-bg-excel::before {
     content: "";
     position: absolute;
     top: 0;
@@ -234,22 +234,22 @@ thead tr:first-child th {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(115, 255, 0, 0.4), /* Color dorado con transparencia */
+        rgba(115, 255, 0, 0.4),
         transparent
     );
     transition: none;
-    animation: shine 3s infinite;
-}
+    animation: shine 3s infinite; 
+}*/
 
-.btn-bg-excel:hover::before {
+/* .btn-bg-excel:hover::before {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(115, 255, 0, 0.4), /* Más opacidad al hacer hover */
+        rgba(115, 255, 0, 0.4),
         transparent
     );
-    animation-duration: 1s; /* Más rápido al hacer hover */
-}
+    animation-duration: 1s;
+} */
 
 .btn-bg-excel i {
     color: #00ff00;
@@ -272,7 +272,7 @@ thead tr:first-child th {
     margin-top: 5px;
 }
 
-.btn-bg-danger::before {
+/* .btn-bg-danger::before {
     content: "";
     position: absolute;
     top: 0;
@@ -282,22 +282,22 @@ thead tr:first-child th {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 0, 0, 0.4), /* Color dorado con transparencia */
+        rgba(255, 0, 0, 0.4),
         transparent
     );
     transition: none;
     animation: shine 3s infinite;
-}
+} */
 
-.btn-bg-danger:hover::before {
+/* .btn-bg-danger:hover::before {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 0, 0, 0.4), /* Más opacidad al hacer hover */
+        rgba(255, 0, 0, 0.4),
         transparent
     );
-    animation-duration: 1s; /* Más rápido al hacer hover */
-}
+    animation-duration: 1s;
+} */
 
 .btn-bg-danger i {
     color: #ff0000;
@@ -322,7 +322,7 @@ thead tr:first-child th {
     transform: translateZ(0);
 }
 
-.btn-bg-gold::before {
+/* .btn-bg-gold::before {
     content: "";
     position: absolute;
     top: 0;
@@ -332,23 +332,23 @@ thead tr:first-child th {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 215, 0, 0.4), /* Color dorado con transparencia */
+        rgba(255, 215, 0, 0.4),
         transparent
     );
     transition: none;
     animation: shine 3s infinite;
     transition: all 0.3s ease;
-}
+} */
 
-.btn-bg-gold:hover::before {
+/* .btn-bg-gold:hover::before {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 215, 0, 0.4), /* Más opacidad al hacer hover */
+        rgba(255, 215, 0, 0.4),
         transparent
     );
-    animation-duration: 1s; /* Más rápido al hacer hover */
-}
+    animation-duration: 1s;
+} */
 
 .btn-bg-gold i {
     color: gold;
@@ -365,6 +365,60 @@ thead tr:first-child th {
 
 .btn-bg-gold-loading i {
     color: gold;
+}
+
+.btn-bg-blue-dark {
+    background-image: linear-gradient(310deg, #001c41 0%, #001c41 100%);
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 5px;
+}
+
+/* .btn-bg-blue-dark::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(250, 250, 250, 0.4),
+        transparent
+    );
+    transition: none;
+    animation: shine 3s infinite;
+    transition: all 0.3s ease;
+} */
+
+/* .btn-bg-blue-dark:hover::before {
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    animation-duration: 1s;
+} */
+
+.btn-bg-blue-dark i {
+    color: rgb(255, 255, 255);
+    position: relative; /* Para que aparezca sobre el efecto de brillo */
+}
+
+.btn-bg-blue-dark b {
+    position: relative; /* Para que aparezca sobre el efecto de brillo */
+}
+
+.btn-bg-blue-dark-loading {
+    background-image: linear-gradient(310deg, #001c41 0%, #001c41 100%);
+}
+
+.btn-bg-blue-dark-loading i {
+    color: rgb(255, 255, 255);
 }
 
 @keyframes shine {

@@ -918,7 +918,8 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
     if (!ivaIncluidoVentas) {
         totalProducto+= totalIva;
     }
-    
+
+    totalProducto = Math.round(totalProducto * 100) / 100;
     $('#venta_total_'+idRow).val(formatCurrencyValue(totalProducto));
 
     mostrarValoresVentas();
@@ -1126,7 +1127,7 @@ function totalValoresVentas() {
 
     var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
 
-    if (total > 0 && (totalEfectivo + totalOtrosPagos + totalAnticipos) >= total) {
+    if (parseFloat(total.toFixed(2)) > 0 && (totalEfectivo + totalOtrosPagos + totalAnticipos) >= parseFloat(total.toFixed(2))) {
         if (vendedoresVentas && !$("#id_vendedor_venta").val()) {
             $("#crearCapturaVentaDisabled").show();
             $("#crearCapturaVenta").hide();
@@ -1486,6 +1487,9 @@ function calcularVentaPagos(idFormaPago) {
     $('#total_faltante_venta').removeClass("is-invalid");
 
     var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
+
+    total = parseFloat(total.toFixed(2));
+
     var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
     var totalFaltante = total - (totalEfectivo + totalOtrosPagos + totalAnticipos);
     
@@ -1541,6 +1545,8 @@ function validateSaveVenta() {
 
         var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
         var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
+
+        total = parseFloat(total.toFixed(2));
 
         if ((totalEfectivo + totalOtrosPagos + totalAnticipos) >= total) {
             
@@ -1669,7 +1675,7 @@ function getProductosVenta() {
 
         const id_row = dataVentaProductos[index].id;
         var id_producto = $('#venta_producto_'+id_row).val();
-        var cantidad = $('#venta_cantidad_'+id_row).val();
+        var cantidad = parseFloat($('#venta_cantidad_'+id_row).val());
         
         if (id_producto && cantidad) {
             let costo = stringToNumberFloat($('#venta_costo_'+id_row).val());
@@ -1678,7 +1684,7 @@ function getProductosVenta() {
             let iva_porcentaje = stringToNumberFloat($('#venta_iva_porcentaje_'+id_row).val());
             let iva_valor = stringToNumberFloat($('#venta_iva_valor_'+id_row).val());
             let total = stringToNumberFloat($('#venta_total_'+id_row).val());
-            let subtotal = parseInt(cantidad) * costo;
+            let subtotal = cantidad * costo;
             let concepto = $('#venta_concepto_'+id_row).val();
 
             if(ivaIncluidoVentas) {
@@ -1687,7 +1693,7 @@ function getProductosVenta() {
 
             data.push({
                 id_producto: parseInt(id_producto),
-                cantidad: parseInt(cantidad),
+                cantidad: cantidad,
                 costo: costo ? costo : 0,
                 subtotal: subtotal,
                 descuento_porcentaje: descuento_porcentaje ? descuento_porcentaje : 0,

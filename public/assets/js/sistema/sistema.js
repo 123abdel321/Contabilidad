@@ -371,11 +371,11 @@ if (sidenav2) {
 
 selectMenu(itemMenuActive);
 
-function openNewItem(id, nombre, icon) {
+function openNewItem(id, nombre, icon, idPadre) {
     if($('#containner-'+id).length == 0) {
         generateView(id, nombre, icon);
     }
-    seleccionarView(id, nombre);
+    seleccionarView(id, nombre, idPadre);
     document.getElementById('sidenav-main-2').click();
 }
 
@@ -426,16 +426,18 @@ function includeJs(id){
     moduloCreado[id] = true;
 }
 
-function seleccionarView(id, nombre = 'Inicio'){
+function seleccionarView(id, nombre = 'Inicio', idPadre){
 
     $(".dtfh-floatingparent").remove();
     $('.change-view').removeClass("active");
     $('.seleccionar-view').removeClass("active");
+    $('.nav-link nav-padre').removeClass("active");
     $('.button-side-nav').removeClass("active");
     $('#containner-'+id).addClass("active");
     $('#tab-'+id).addClass("active");
     $('#sidenav_'+id).addClass("active");
-    
+    // $('#nav_'+idPadre).addClass("active");
+
     $("#titulo-view").text(nombre);
 }
 

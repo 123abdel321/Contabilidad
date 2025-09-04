@@ -137,7 +137,7 @@ class VentaController extends Controller
                     }
 				}
             ],
-            'productos.*.cantidad' => 'required|numeric|min:1',
+            'productos.*.cantidad' => 'required|numeric|min:0.001',
             'productos.*.costo' => 'required|min:0',
             'productos.*.descuento_porcentaje' => 'required|numeric|min:0|max:100',
             'productos.*.descuento_valor' => 'required|numeric|min:0',
@@ -188,7 +188,7 @@ class VentaController extends Controller
         ]);
 
         $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
-
+        
         try {
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA VENTA
@@ -1100,7 +1100,7 @@ class VentaController extends Controller
         
         foreach ($productos as $producto) {
             $producto = (object)$producto;
-
+            
             $productoDb = FacProductos::where('id', $producto->id_producto)
                 ->with(
                     'familia.cuenta_venta',
@@ -1136,16 +1136,17 @@ class VentaController extends Controller
                 }
 
                 $iva = (($totalPorCantidad - $producto->descuento_valor) * ($this->totalesFactura['porcentaje_iva'] / 100));
-                if ($ivaIncluido) {
+                if ($this->ivaIncluido) {
                     $iva = round(($totalPorCantidad - $producto->descuento_valor) - (($totalPorCantidad - $producto->descuento_valor) / (1 + ($this->totalesFactura['porcentaje_iva'] / 100))), 2);
                 }
+                $iva = round($iva, 2);
             }
 
-            if ($ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
+            if ($this->ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
                 $costo = round((float)$producto->costo / (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 2);
             }
 
-            $subtotal = ($producto->cantidad * $costo) - $producto->descuento_valor;
+            $subtotal = round(($producto->cantidad * $costo) - $producto->descuento_valor, 2);
 
             $this->totalesFactura['subtotal']+= $subtotal;
             $this->totalesFactura['total_iva']+= $iva;
@@ -1164,7 +1165,6 @@ class VentaController extends Controller
         } else {
             $this->totalesFactura['id_cuenta_rete_fuente'] = null;
         }
-
     }
 
     private function getResponsabilidades()
