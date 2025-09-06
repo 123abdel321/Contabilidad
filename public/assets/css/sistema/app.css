@@ -1021,6 +1021,10 @@ div.dataTables_processing {
     z-index: 99 !important;
 }
 
+.fc .fc-col-header-cell-cushion {
+    color: white;
+}
+
 .icon-info {
     border: solid 1px #378cff;
     padding-left: 5px;

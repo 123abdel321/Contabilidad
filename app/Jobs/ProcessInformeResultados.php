@@ -473,7 +473,7 @@ class ProcessInformeResultados implements ShouldQueue
 
             $this->resultadoCollection[$cuenta]['ppto_anterior'] = $presupuesto['ppto_anterior'];
             $this->resultadoCollection[$cuenta]['ppto_movimiento'] = $presupuesto['ppto_movimiento'];
-            $this->resultadoCollection[$cuenta]['ppto_acumulado'] = $presupuesto['ppto_acumulado'];
+            $this->resultadoCollection[$cuenta]['ppto_acumulado'] =  $presupuesto['ppto_anterior'] + $presupuesto['ppto_movimiento'];
             $this->resultadoCollection[$cuenta]['ppto_diferencia'] = 
                 $presupuesto['ppto_acumulado'] - abs($data['saldo_final']);
             $this->resultadoCollection[$cuenta]['ppto_porcentaje'] = $pptoPorcentaje;

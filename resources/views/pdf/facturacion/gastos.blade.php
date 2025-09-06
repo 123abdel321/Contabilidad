@@ -232,6 +232,10 @@
 												<td class="padding3">Centro de costos</td>
 												<td class="valor padding3">{{ $gasto->cecos->codigo }} - {{ $gasto->cecos->nombre }}</td>
 											</tr>
+											<tr >
+												<td class="padding3">Documento referencia</td>
+												<td class="valor padding3">{{ $gasto->documento_referencia }}</td>
+											</tr>
 										</tbody>
 									</table>
 								</td>

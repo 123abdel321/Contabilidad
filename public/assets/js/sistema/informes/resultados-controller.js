@@ -131,8 +131,8 @@ function cargarTablasResultados() {
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
                 className: "column-number", className: 'dt-body-right'
             },
-            {data: 'ppto_porcentaje'},
-            {data: 'ppto_porcentaje_acumulado'},
+            {data: 'ppto_porcentaje', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {data: 'ppto_porcentaje_acumulado', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
         ]
     });
 }
