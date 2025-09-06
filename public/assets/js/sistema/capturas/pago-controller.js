@@ -101,7 +101,7 @@ function pagoInit () {
                     if (row.cuenta_pago == 'sin_deuda') {
                         return
                     }
-                    return `<input type="text" class="form-control form-control-sm" id="pago_concepto_${row.id}" placeholder="SIN OBSERVACIÓN" value="${row.concepto}" onkeypress="changeConceptoPagoRow(${row.id}, event)" style="width: 150px !important; padding: 0.05rem 0.5rem !important;" onfocus="this.select();">`;
+                    return `<input type="text" class="form-control form-control-sm" id="pago_concepto_${row.id}" placeholder="SIN OBSERVACIÓN" value="${row.concepto}" onkeypress="changeConceptoPagoRow(${row.id}, event)" onblur="outFocusConceptoPagoRow(${row.id})" style="width: 150px !important; padding: 0.05rem 0.5rem !important;" onfocus="this.select();">`;
                 }
             }
         ],
@@ -696,6 +696,25 @@ function changeConceptoPagoRow(idRow, event) {
             }
         });
     }
+}
+
+function outFocusConceptoPagoRow(idRow) {
+    if (!idRow) return;
+
+    var concepto = $("#pago_concepto_"+idRow).val();
+    var data = getDataById(idRow, pago_table);
+    data.concepto = concepto;
+    pago_table.row(idRow-1).data(data);
+    $("input[data-type='currency']").on({
+        keyup: function(event) {
+            if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+                formatCurrency($(this));
+            }
+        },
+        blur: function() {
+            formatCurrency($(this), "blur");
+        }
+    });
 }
 
 function mostrarValoresPagos() {

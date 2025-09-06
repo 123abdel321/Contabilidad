@@ -130,7 +130,7 @@ function reciboInit () {
                     if (row.cuenta_recibo == 'sin_deuda') {
                         return '';
                     }
-                    return `<input type="text" class="form-control form-control-sm" id="recibo_concepto_${row.id}" placeholder="SIN OBSERVACIÓN" value="${row.concepto}" onkeypress="changeConceptoReciboRow(${row.id}, event)" style="width: 150px !important; padding: 0.05rem 0.5rem !important;" onfocus="this.select();">`;
+                    return `<input type="text" class="form-control form-control-sm" id="recibo_concepto_${row.id}" placeholder="SIN OBSERVACIÓN" value="${row.concepto}" onkeypress="changeConceptoReciboRow(${row.id}, event)" onblur="outFocusConceptoReciboRow(${row.id})" style="width: 150px !important; padding: 0.05rem 0.5rem !important;" onfocus="this.select();">`;
                 }
             }
         ],
@@ -682,7 +682,7 @@ function changeTotalAbonoRecibo(event) {
             dataAnticipo.recibo.nuevo_saldo = totalAbono;
             dataAnticipo.recibo.valor_recibido = totalAbono;
             dataAnticipo.recibo.documento_referencia = $('#documento_referencia_recibo').val();
-            dataAnticipo.recibo.concepto = "ANTICIPO RECIBO";
+            dataAnticipo.recibo.concepto = dataAnticipo.recibo.concepto ? dataAnticipo.recibo.concepto : "ANTICIPO RECIBO";
             totalSaldo+= parseFloat(totalAbono);
             totalAbono = 0;
             recibo_table.row(dataAnticipo.index).data(dataAnticipo.recibo);
@@ -737,6 +737,25 @@ function changeConceptoReciboRow(idRow, event) {
             }
         });
     }
+}
+
+function outFocusConceptoReciboRow(idRow) {
+    if (!idRow) return;
+    
+    var concepto = $("#recibo_concepto_"+idRow).val();
+    var data = getDataById(idRow, recibo_table);
+    data.concepto = concepto;
+    recibo_table.row(idRow-1).data(data);
+    $("input[data-type='currency']").on({
+        keyup: function(event) {
+            if (event.keyCode >= 96 && event.keyCode <= 105 || event.keyCode == 110 || event.keyCode == 8 || event.keyCode == 46) {
+                formatCurrency($(this));
+            }
+        },
+        blur: function() {
+            formatCurrency($(this), "blur");
+        }
+    });
 }
 
 function mostrarValoresRecibos() {
