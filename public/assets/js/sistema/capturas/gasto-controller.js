@@ -119,7 +119,7 @@ function gastoInit () {
             },
             {//OBSERVAVACION
                 "data": function (row, type, set, col){
-                    return `<input type="text" class="form-control form-control-sm" id="gastoobservacion_${row.id}" onkeypress="changeObservacionGasto(${row.id}, event)" onfocus="this.select();" onfocusout="changeObservacionGasto(${row.id})" style="width: 180px !important;" value="${row.observacion}" disabled>`;
+                    return `<input type="text" class="form-control form-control-sm" id="gastoobservacion_${row.id}" onkeypress="changeObservacionGasto(${row.id}, event)" onfocus="this.select();" onblur="outFocusObservacionGasto(${row.id})" style="width: 180px !important;" value="${row.observacion}" disabled>`;
                 }
             },
         ],
@@ -894,6 +894,28 @@ function changeObservacionGasto (idGasto, event = null) {
             addRowGastos();
         },100);
     }
+}
+
+function outFocusObservacionGasto (idGasto) {
+    if (!idGasto) return;
+    
+    var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
+    var dataObservacion = $('#gastoobservacion_'+idGasto).val();
+    if (dataGasto[indexGasto].observacion == dataObservacion && !event) return;
+    if (!dataObservacion) return;
+    if (!calculandoDatos) return;
+
+    calculandoDatos = false;
+    var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
+    var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
+
+    dataGasto[indexGasto].observacion = dataObservacion;
+
+    updateDataGasto(dataGasto[indexGasto], dataConcepto, idGasto);
+
+    setTimeout(function(){
+        calculandoDatos = true;
+    },50);
 }
 
 function changePorcentajeDescuentoGasto (idGasto, event = null) {
