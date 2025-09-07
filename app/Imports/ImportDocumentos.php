@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\Importable;
@@ -19,7 +20,8 @@ class ImportDocumentos implements ToCollection, WithHeadingRow, WithProgressBar
     {
         foreach ($rows as $row) {
             if ($row['debito'] || $row['credito']) {
-                $fecha_manual = $row['fecha_manual'] ? Date::excelToDateTimeObject($row['fecha_manual']) : '';
+                
+                $fecha_manual = $this->parseFecha($row['fecha_manual']);
                 
                 DocumentosImport::create([
                     'documento_nit' => $row['documento_nit'],
@@ -56,6 +58,48 @@ class ImportDocumentos implements ToCollection, WithHeadingRow, WithProgressBar
             '8' => 'credito',
             '9' => 'concepto',
         ];
+    }
+
+     protected function parseFecha($fecha, $hora = null)
+    {
+        $fechaObj = null;
+        
+        // Parsear la fecha
+        if ($fecha && str_contains($fecha, '/')) {
+            $fechaObj = Carbon::parse($fecha);
+        } else if ($fecha && str_contains($fecha, '-')) {
+            $fechaObj = Carbon::parse($fecha);
+        } else if (is_numeric($fecha)) {
+            $fechaObj = Carbon::instance(Date::excelToDateTimeObject($fecha));
+        }
+        
+        if (!$fechaObj) {
+            return null;
+        }
+        
+        // Formatear la fecha base
+        $fechaFormateada = $fechaObj->format('Y-m-d');
+        
+        // Si hay hora, agregarla
+        if (isset($hora)) {
+            try {
+                if (is_numeric($hora)) {
+                $horaObj = Carbon::instance(Date::excelToDateTimeObject($hora));
+                
+                } else {
+                    // Intenta parsear la hora en diferentes formatos comunes
+                    $horaObj = Carbon::createFromFormat('H:i:s', $hora) ?:
+                            Carbon::createFromFormat('H:i', $hora) ?:
+                            Carbon::parse($hora);
+                }
+                
+                $horaFormateada = $horaObj->format('H:i:s');
+                return $fechaFormateada . ' ' . $horaFormateada;
+            } catch (\Exception $e) {
+                return $fechaFormateada;
+            }
+        }
+        return $fechaFormateada;
     }
 
 }
