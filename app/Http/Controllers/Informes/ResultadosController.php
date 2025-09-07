@@ -140,7 +140,7 @@ class ResultadosController extends Controller
             $informePaginate = $informe->skip($start)
                 ->take($rowperpage);
 
-            if(!$resultado->id_cuenta) {
+            if(!$resultado->id_cuenta && $total) {
                 $filtros = false;
                 $descuadre = $total->saldo_final > 0 ? true : false;
             }
