@@ -257,109 +257,114 @@ function initTablesReuniones() {
         }
     });
 
-    // reuniones_table = $('#reunionesTable').DataTable({
-    //     pageLength: 20,
-    //     dom: 'Brtip',
-    //     paging: true,
-    //     responsive: false,
-    //     processing: true,
-    //     serverSide: true,
-    //     fixedHeader: true,
-    //     deferLoading: 0,
-    //     initialLoad: false,
-    //     ordering: false,
-    //     language: lenguajeDatatable,
-    //     sScrollX: "100%",
-    //     fixedColumns: {
-    //         left: 0,
-    //         right: 1,
-    //     },
-    //     ajax: {
-    //         type: "GET",
-    //         headers: headers,
-    //         url: base_url + 'reuniones-table',
-    //         data: function(d) {
-    //             d.fecha_desde = $('#fecha_desde_reuniones_filter').val();
-    //             d.fecha_hasta = $('#fecha_hasta_reuniones_filter').val();
-    //             d.estado = $('#estado_reuniones_filter_table').val();
-    //         }
-    //     },
-    //     columns: [
-    //         {"data": 'id'},
-    //         {"data": function(row, type, set) {
-    //             if (row.estado == '0') return `<span class="badge bg-info">PROGRAMADA</span>`;
-    //             if (row.estado == '1') return `<span class="badge bg-primary">EN CURSO</span>`;
-    //             if (row.estado == '2') return `<span class="badge bg-success">FINALIZADA</span>`;
-    //             if (row.estado == '3') return `<span class="badge bg-danger">CANCELADA</span>`;
-    //             return '';
-    //         }},
-    //         {"data": 'titulo'},
-    //         {"data": function(row, type, set) {
-    //             return `<div class="text-wrap width-500">${row.descripcion}</div>`;
-    //         }},
-    //         {"data": 'lugar'},
-    //         {"data": 'fecha_inicio'},
-    //         {"data": 'fecha_fin'},
-    //         {"data": function(row, type, set) {
-    //             return row.participantes_count + ' participantes';
-    //         }},
-    //         {"data": 'fecha_creacion'},
-    //         {
-    //             "data": function(row, type, set) {
-    //                 var html = '';
-    //                 if (editarReuniones) html += `<span id="editreuniones_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-info edit-reuniones" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;`;
-    //                 if (eliminarReuniones) html += `<span id="deletereuniones_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-reuniones" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>`;
-    //                 return html;
-    //             }
-    //         },
-    //     ]
-    // });
+    reuniones_table = $('#reunionesTable').DataTable({
+        pageLength: 20,
+        dom: 'Brtip',
+        paging: true,
+        responsive: false,
+        processing: true,
+        serverSide: true,
+        fixedHeader: true,
+        deferLoading: 0,
+        initialLoad: false,
+        ordering: false,
+        language: lenguajeDatatable,
+        sScrollX: "100%",
+        fixedColumns: {
+            left: 0,
+            right: 1,
+        },
+        ajax: {
+            type: "GET",
+            headers: headers,
+            url: base_url + 'reuniones-table',
+            data: function(d) {
+                d.fecha_desde = $('#fecha_desde_reuniones_filter').val();
+                d.fecha_hasta = $('#fecha_hasta_reuniones_filter').val();
+                d.estado = $('#estado_reuniones_filter_table').val();
+            }
+        },
+        columns: [
+            {"data": 'id'},
+            {"data": function(row, type, set) {
+                if (row.estado == '0') return `<span class="badge bg-info">PROGRAMADA</span>`;
+                if (row.estado == '1') return `<span class="badge bg-primary">EN CURSO</span>`;
+                if (row.estado == '2') return `<span class="badge bg-success">FINALIZADA</span>`;
+                if (row.estado == '3') return `<span class="badge bg-danger">CANCELADA</span>`;
+                return '';
+            }},
+            {"data": 'titulo'},
+            {"data": function(row, type, set) {
+                return `<div class="text-wrap width-200">${row.lugar}</div>`;
+            }},
+            {"data": function(row, type, set) {
+                return `<div class="text-wrap width-500">${row.descripcion}</div>`;
+            }},
+            {"data": 'fecha_hora_inicio'},
+            {"data": 'fecha_hora_fin'},
+            // {"data": function(row, type, set) {
+            //     return row.participantes_count + ' participantes';
+            // }},
+            {"data": 'fecha_creacion'},
+            {
+                "data": function(row, type, set) {
+                    var html = '';
+                    if (editarReuniones) html += `<span id="editreuniones_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-info edit-reuniones" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;`;
+                    if (eliminarReuniones) html += `<span id="deletereuniones_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-reuniones" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>`;
+                    return html;
+                }
+            },
+        ]
+    });
 
-    // if (reuniones_table) {
-    //     // EDITAR REUNIONES
-    //     reuniones_table.on('click', '.edit-reuniones', function() {
-    //         var id = this.id.split('_')[1];
-    //         cargarReunionParaEdicion(id);
-    //     });
+    if (reuniones_table) {
+        // EDITAR REUNIONES
+        reuniones_table.on('click', '.edit-reuniones', function() {
+            var id = this.id.split('_')[1];
+            var data = getDataById(id, reuniones_table);
+
+            cargarReunionParaEdicion(data);
+        });
         
-    //     // BORRAR REUNIONES
-    //     reuniones_table.on('click', '.drop-reuniones', function() {
-    //         var trReunion = $(this).closest('tr');
-    //         var id = this.id.split('_')[1];
-    //         var data = getDataById(id, reuniones_table);
+        // BORRAR REUNIONES
+        reuniones_table.on('click', '.drop-reuniones', function() {
+            var trReunion = $(this).closest('tr');
+            var id = this.id.split('_')[1];
+            var data = getDataById(id, reuniones_table);
             
-    //         Swal.fire({
-    //             title: 'Eliminar reunión: ' + data.titulo + '?',
-    //             text: "No se podrá revertir!",
-    //             type: 'warning',
-    //             icon: 'warning',
-    //             showCancelButton: true,
-    //             confirmButtonColor: '#3085d6',
-    //             cancelButtonColor: '#d33',
-    //             confirmButtonText: 'Borrar!',
-    //             reverseButtons: true,
-    //         }).then((result) => {
-    //             if (result.value){
-    //                 $.ajax({
-    //                     url: base_url + 'reuniones/' + id,
-    //                     method: 'DELETE',
-    //                     headers: headers,
-    //                     dataType: 'json',
-    //                 }).done((res) => {
-    //                     if(res.success){
-    //                         reuniones_table.row(trReunion).remove().draw();
-    //                         calendarioReuniones.refetchEvents();
-    //                         agregarToast('exito', 'Eliminación exitosa', 'Reunión eliminada con exito!', true);
-    //                     } else {
-    //                         agregarToast('error', 'Eliminación errada', res.message);
-    //                     }
-    //                 }).fail((res) => {
-    //                     agregarToast('error', 'Eliminación errada', res.message);
-    //                 });
-    //             }
-    //         });
-    //     });
-    // }
+            Swal.fire({
+                title: 'Eliminar reunión: ' + data.titulo + '?',
+                text: "No se podrá revertir!",
+                type: 'warning',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Borrar!',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.value){
+                    $.ajax({
+                        url: base_url + 'reuniones',
+                        method: 'DELETE',
+                        data: JSON.stringify({id: id}),
+                        headers: headers,
+                        dataType: 'json',
+                    }).done((res) => {
+                        if(res.success){
+                            reuniones_table.row(trReunion).remove().draw();
+                            calendarioReuniones.refetchEvents();
+                            agregarToast('exito', 'Eliminación exitosa', 'Reunión eliminada con exito!', true);
+                        } else {
+                            agregarToast('error', 'Eliminación errada', res.message);
+                        }
+                    }).fail((res) => {
+                        agregarToast('error', 'Eliminación errada', res.message);
+                    });
+                }
+            });
+        });
+    }
 }
 
 function initFilterReuniones() {
@@ -390,7 +395,7 @@ function reloadReuniones() {
     },500);
 
     calendarioReuniones.refetchEvents();
-    // reuniones_table.ajax.reload();
+    reuniones_table.ajax.reload();
 }
 
 function clearFormReunion() {
@@ -406,43 +411,35 @@ function clearFormReunion() {
     $("#participantes_reunion").val(null).trigger('change');
 }
 
-function cargarReunionParaEdicion(id) {
-    $.ajax({
-        url: base_url + 'reuniones/' + id,
-        method: 'GET',
-        headers: headers,
-        dataType: 'json',
-    }).done((res) => {
-        if(res.success){
-            const reunion = res.data;
-            
-            $("#id_reunion_up").val(reunion.id);
-            $("#titulo_reunion").val(reunion.titulo);
-            $("#descripcion_reunion").val(reunion.descripcion);
-            $("#lugar_reunion").val(reunion.lugar);
-            
-            // Formatear fechas
-            const fechaInicio = new Date(reunion.fecha_inicio);
-            const fechaFin = new Date(reunion.fecha_fin);
-            
-            $("#fecha_inicio_reunion").val(fechaInicio.toISOString().split('T')[0]);
-            $("#fecha_fin_reunion").val(fechaFin.toISOString().split('T')[0]);
-            $("#hora_inicio_reunion").val(fechaInicio.toTimeString().substring(0,5));
-            $("#hora_fin_reunion").val(fechaFin.toTimeString().substring(0,5));
-            
-            // Cargar participantes
-            const participantesIds = reunion.participantes.map(p => p.id_usuario);
-            $("#participantes_reunion").val(participantesIds).trigger('change');
-            
-            $("#textReunionCreate").hide();
-            $("#textReunionUpdate").show();
-            $("#reunionFormModal").modal('show');
+function cargarReunionParaEdicion(reunion) {
+    console.log('reunion: ',reunion);
+    $("#id_reunion_up").val(reunion.id);
+    $("#titulo_reunion").val(reunion.titulo);
+    $("#descripcion_reunion").val(reunion.descripcion);
+    $("#lugar_reunion").val(reunion.lugar);
+    
+    // Formatear fechas
+    const fechaInicio = new Date(reunion.fecha_inicio);
+    const fechaFin = new Date(reunion.fecha_fin);
+    
+    $("#fecha_inicio_reunion").val(fechaInicio.toISOString().split('T')[0]);
+    $("#fecha_fin_reunion").val(fechaFin.toISOString().split('T')[0]);
+    $("#hora_inicio_reunion").val(fechaInicio.toTimeString().substring(0,5));
+    $("#hora_fin_reunion").val(fechaFin.toTimeString().substring(0,5));
+    
+    // Cargar participantes
+    for (let index = 0; index < reunion.participantes.length; index++) {
+        const participante = reunion.participantes[index];
+        participantesSeleccionados.set(participante.id, participante);
+    }
 
-            setTimeout(actualizarTablaParticipantes, 300);
-        }
-    }).fail((res) => {
-        agregarToast('error', 'Error', 'No se pudo cargar la reunión');
-    });
+    actualizarParticipantesSeleccionados();
+    
+    $("#textReunionCreate").hide();
+    $("#textReunionUpdate").show();
+    $("#reunionFormModal").modal('show');
+
+    setTimeout(actualizarTablaParticipantes, 300);
 }
 
 function actualizarTablaParticipantes() {
@@ -738,6 +735,21 @@ $(document).on('click', '#saveReunion', function() {
         $("#saveReunionLoading").hide();
         agregarToast('error', 'Error', res.responseJSON.message);
     });
+});
+
+$(document).on('click', '#verReunionDetalle', function () {
+    reuniones_table.ajax.reload();
+    $('#tabla_reuniones').show();
+    $('#volverReuniones').show();
+    $('#verReunionDetalle').hide();
+    $('#calendar_reuniones').hide();
+});
+
+$(document).on('click', '#volverReuniones', function () {
+    $('#tabla_reuniones').hide();
+    $('#volverReuniones').hide();
+    $('#verReunionDetalle').show();
+    $('#calendar_reuniones').show();
 });
 
 $('#reunionFormModal').on('show.bs.modal', function() {

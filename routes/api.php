@@ -223,6 +223,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('reuniones', 'create');
             Route::put('reuniones', 'update');
             Route::get('reuniones', 'find');
+            Route::delete('reuniones', 'delete');
+            Route::get('reuniones-table', 'table');
             // Route::get('reuniones-event', 'read');
             // Route::post('reuniones-asistencia', 'updateAsistencia');
         });

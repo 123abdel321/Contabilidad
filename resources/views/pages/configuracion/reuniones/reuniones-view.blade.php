@@ -20,20 +20,26 @@
     <div class="row">
         <div class="row" style="z-index: 9;">
             <div class="col-12 col-md-12 col-sm-12">
-                <button type="button" class="btn btn-dark btn-sm" id="volverReuniones" style="display: none;">
-                    <i class="fas fa-step-backward back-icon-button" aria-hidden="true"></i>&nbsp;Volver
-                </button>
+                <span id="volverReuniones" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-danger" style="min-width: 40px; display: none;">
+                    <i class="fa-solid fa-backward" style="font-size: 17px;"></i>&nbsp;
+                    <b style="vertical-align: text-top;">VOLVER</b>
+                </span>
                 @can('reuniones create')
-                    <span id="createReunion" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px;">
+                    <span id="createReunion" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px;">
                         <i class="fa-solid fa-calendar-plus" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">AGREGAR REUNIÓN</b>
                     </span>
                 @endcan
+                <span id="verReunionDetalle" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px;">
+                    <i class="fa-solid fa-eye" style="font-size: 17px;"></i>&nbsp;
+                    <b style="vertical-align: text-top;">VER DETALLE</b>
+                </span>
                 <!-- <button type="button" class="btn btn-info btn-sm" id="detalleReunion">VER DETALLE</button> -->
                 <button type="button" class="btn btn-sm badge btn-light btn-bg-blue-dark" style="vertical-align: middle; height: 30px;" id="reloadReuniones">
                     <i id="reloadReunionesIconLoading" class="fa fa-refresh fa-spin" style="font-size: 16px; color: #2d3257; display: none;"></i>
                     <i id="reloadReunionesIconNormal" class="fas fa-sync-alt" style="font-size: 17px;"></i>&nbsp;
                 </button>
+
             </div>
         </div>
 
@@ -58,7 +64,7 @@
 
         <div id="tabla_reuniones" class="card mb-4" style="content-visibility: auto; overflow: auto; margin-top: 10px; display: none;">
             <div class="card-body">
-                
+                @include('pages.configuracion.reuniones.reuniones-table')
             </div>
         </div>
     </div>

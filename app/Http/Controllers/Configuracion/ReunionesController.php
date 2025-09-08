@@ -115,8 +115,13 @@ class ReunionesController extends Controller
             $start = $request->get("start");
             $rowperpage = $request->get("length");
 
-            $reuniones = Reunion::with('participantes', 'creador')
-                ->select('*', DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"))
+            $reuniones = Reunion::with('participantes')
+                ->select(
+                    '*',
+                    DB::raw("DATE_FORMAT(fecha_inicio, '%Y-%m-%d %T') AS fecha_creacion"),
+                    DB::raw("DATE_FORMAT(fecha_inicio, '%Y-%m-%d %T') AS fecha_hora_inicio"),
+                    DB::raw("DATE_FORMAT(fecha_fin, '%Y-%m-%d %T') AS fecha_hora_fin")
+                )
                 ->orderBy('fecha_inicio', 'DESC');
 
             if ($request->get('fecha_desde')) {
@@ -302,15 +307,16 @@ class ReunionesController extends Controller
         }
     }
 
-    public function delete(Request $request, $id)
+    public function delete(Request $request)
     {
         try {
+
             DB::connection('sam')->beginTransaction();
 
-            $reunion = Reunion::findOrFail($id);
+            $reunion = Reunion::findOrFail($request->get('id'));
             
             // Eliminar participantes
-            ReunionParticipante::where('id_reunion', $id)->delete();
+            ReunionParticipante::where('id_reunion', $request->get('id'))->delete();
             
             $reunion->delete();
 
