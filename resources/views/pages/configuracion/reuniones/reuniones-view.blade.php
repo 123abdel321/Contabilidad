@@ -24,10 +24,18 @@
                     <i class="fa-solid fa-backward" style="font-size: 17px;"></i>&nbsp;
                     <b style="vertical-align: text-top;">VOLVER</b>
                 </span>
+                <span id="volverReunionesNits" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-danger" style="min-width: 40px; display: none;">
+                    <i class="fa-solid fa-backward" style="font-size: 17px;"></i>&nbsp;
+                    <b style="vertical-align: text-top;">VOLVER</b>
+                </span>
                 @can('reuniones create')
                     <span id="createReunion" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px;">
                         <i class="fa-solid fa-calendar-plus" style="font-size: 17px;"></i>&nbsp;
-                        <b style="vertical-align: text-top;">AGREGAR REUNIÓN</b>
+                        <b style="vertical-align: text-top;">NUEVA REUNIÓN</b>
+                    </span>
+                    <span id="createReunionNit" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px; display: none;">
+                        <i class="fa-solid fa-person-circle-plus" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">AGREGAR PARTICIPANTE</b>
                     </span>
                 @endcan
                 <span id="verReunionDetalle" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px;">
@@ -67,9 +75,17 @@
                 @include('pages.configuracion.reuniones.reuniones-table')
             </div>
         </div>
+
+        <div id="tabla_reuniones_nits" class="card mb-4" style="content-visibility: auto; overflow: auto; margin-top: 10px; display: none;">
+            <div class="card-body">
+                @include('pages.configuracion.reuniones.reuniones-nits-table')
+            </div>
+        </div>
+
     </div>
 
     @include('pages.configuracion.reuniones.reuniones-form')
+    @include('pages.configuracion.reuniones.reuniones-nits-form')
 
 </div>
 

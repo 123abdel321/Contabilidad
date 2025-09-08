@@ -225,8 +225,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('reuniones', 'find');
             Route::delete('reuniones', 'delete');
             Route::get('reuniones-table', 'table');
-            // Route::get('reuniones-event', 'read');
-            // Route::post('reuniones-asistencia', 'updateAsistencia');
+            Route::get('reuniones-participantes', 'participantes');
+            Route::post('reuniones-participantes', 'createParticipantes');
+            Route::delete('reuniones-participantes', 'deleteParticipantes');
         });
 
         //IMPUESTOS

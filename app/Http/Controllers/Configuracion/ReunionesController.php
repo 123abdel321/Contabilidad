@@ -157,6 +157,150 @@ class ReunionesController extends Controller
         }
     }
 
+    public function participantes(Request $request)
+    {
+        try {
+            $draw = $request->get('draw');
+            $start = $request->get("start");
+            $rowperpage = $request->get("length");
+
+            $reuniones = ReunionParticipante::with('nit')
+                ->where('id_reunion', $request->get("id_reunion"))
+                ->orderBy('id', 'DESC');
+
+            // if ($request->get('fecha_desde')) {
+            //     $reuniones->where('fecha_inicio', '>=', $request->get('fecha_desde'));
+            // }
+            
+            // if ($request->get('fecha_hasta')) {
+            //     $reuniones->where('fecha_fin', '<=', $request->get('fecha_hasta') . ' 23:59:59');
+            // }
+            
+            // if ($request->get('estado')) {
+            //     $reuniones->where('estado', $request->get('estado'));
+            // }
+
+            $reunionesTotals = $reuniones->get();
+            $reunionesPaginate = $reuniones->skip($start)->take($rowperpage);
+
+            return response()->json([
+                'success' => true,
+                'draw' => $draw,
+                'iTotalRecords' => $reunionesTotals->count(),
+                'iTotalDisplayRecords' => $reunionesTotals->count(),
+                'data' => $reunionesPaginate->get(),
+                'perPage' => $rowperpage,
+                'message' => 'Participantes generados con exito!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => $e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function createParticipantes(Request $request)
+    {
+        $rules = [
+			'id_nit' => 'required|exists:sam.reunions,id',
+            'id_reunion' => 'required|exists:sam.nits,id'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+        if ($validator->fails()){
+            
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+        DB::connection('sam')->beginTransaction();
+
+        try {
+
+            $existe = ReunionParticipante::where('id_reunion', $request->get('id_reunion'))
+                ->where('id_usuario', $request->get('id_nit'))
+                ->count();
+
+            if ($existe) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => '',
+                    'message'=> 'El participante ya se encuentra agregado en la reunión'
+                ]);
+            }
+
+            ReunionParticipante::create([
+                'id_reunion' => $request->get('id_reunion'),
+                'id_usuario' => $request->get('id_nit'),
+                'asistio' => false
+            ]);
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => [],
+                'message'=> 'Participante agregado con exito!'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => $e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function deleteParticipantes(Request $request)
+    {
+        $rules = [
+			'id_nit' => 'required|exists:sam.reunions,id',
+            'id_reunion' => 'required|exists:sam.nits,id'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+        if ($validator->fails()){
+            
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+        DB::connection('sam')->beginTransaction();
+        
+        try {
+
+            ReunionParticipante::where('id_reunion', $request->get('id_reunion'))
+                ->where('id_usuario', $request->get('id_nit'))
+                ->delete();
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => [],
+                'message'=> 'Participante eliminado con exito!'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => $e->getMessage()
+            ], 422);
+        }
+    }
+
     public function create(Request $request)
     {
         $rules = [
@@ -164,9 +308,7 @@ class ReunionesController extends Controller
             'descripcion' => 'nullable|string',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
-            'lugar' => 'nullable|string|max:255',
-            'participantes' => 'required|array|min:1',
-            'participantes.*' => 'exists:sam.nits,id'
+            'lugar' => 'nullable|string|max:255'
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -194,23 +336,23 @@ class ReunionesController extends Controller
                 'updated_by' => $request->user()->id
             ]);
 
-            // Agregar participantes
-            foreach ($request->participantes as $participanteId) {
-                ReunionParticipante::create([
-                    'id_reunion' => $reunion->id,
-                    'id_usuario' => $participanteId,
-                    'asistio' => false
-                ]);
-            }
+            // // Agregar participantes
+            // foreach ($request->participantes as $participanteId) {
+            //     ReunionParticipante::create([
+            //         'id_reunion' => $reunion->id,
+            //         'id_usuario' => $participanteId,
+            //         'asistio' => false
+            //     ]);
+            // }
 
-            // Agregar al creador como participante si no está en la lista
-            if (!in_array($request->user()->id, $request->participantes)) {
-                ReunionParticipante::create([
-                    'id_reunion' => $reunion->id,
-                    'id_usuario' => $request->user()->id,
-                    'asistio' => false
-                ]);
-            }
+            // // Agregar al creador como participante si no está en la lista
+            // if (!in_array($request->user()->id, $request->participantes)) {
+            //     ReunionParticipante::create([
+            //         'id_reunion' => $reunion->id,
+            //         'id_usuario' => $request->user()->id,
+            //         'asistio' => false
+            //     ]);
+            // }
 
             DB::connection('sam')->commit();
 
@@ -238,9 +380,7 @@ class ReunionesController extends Controller
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
             'lugar' => 'nullable|string|max:255',
-            'estado' => 'nullable|integer|min:0|max:3',
-            'participantes' => 'required|array|min:1',
-            'participantes.*' => 'exists:sam.nits,id'
+            'estado' => 'nullable|integer|min:0|max:3'
         ];
         
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -269,26 +409,26 @@ class ReunionesController extends Controller
             ]);
 
             // Sincronizar participantes
-            $participantesActuales = $reunion->participantes()->pluck('id_usuario')->toArray();
-            $nuevosParticipantes = $request->participantes;
+            // $participantesActuales = $reunion->participantes()->pluck('id_usuario')->toArray();
+            // $nuevosParticipantes = $request->participantes;
             
-            // Eliminar participantes que ya no están
-            $participantesAEliminar = array_diff($participantesActuales, $nuevosParticipantes);
-            if (!empty($participantesAEliminar)) {
-                ReunionParticipante::where('id_reunion', $reunion->id)
-                    ->whereIn('id_usuario', $participantesAEliminar)
-                    ->delete();
-            }
+            // // Eliminar participantes que ya no están
+            // $participantesAEliminar = array_diff($participantesActuales, $nuevosParticipantes);
+            // if (!empty($participantesAEliminar)) {
+            //     ReunionParticipante::where('id_reunion', $reunion->id)
+            //         ->whereIn('id_usuario', $participantesAEliminar)
+            //         ->delete();
+            // }
             
-            // Agregar nuevos participantes
-            $participantesAAgregar = array_diff($nuevosParticipantes, $participantesActuales);
-            foreach ($participantesAAgregar as $participanteId) {
-                ReunionParticipante::create([
-                    'id_reunion' => $reunion->id,
-                    'id_usuario' => $participanteId,
-                    'asistio' => false
-                ]);
-            }
+            // // Agregar nuevos participantes
+            // $participantesAAgregar = array_diff($nuevosParticipantes, $participantesActuales);
+            // foreach ($participantesAAgregar as $participanteId) {
+            //     ReunionParticipante::create([
+            //         'id_reunion' => $reunion->id,
+            //         'id_usuario' => $participanteId,
+            //         'asistio' => false
+            //     ]);
+            // }
 
             DB::connection('sam')->commit();
 

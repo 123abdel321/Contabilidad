@@ -51,49 +51,6 @@
                         <label for="lugar_reunion" class="form-control-label">Lugar</label>
                         <input type="text" class="form-control form-control-sm" name="lugar_reunion" id="lugar_reunion" placeholder="Ej: Sala de juntas, Oficina 101, Enlace Zoom...">
                     </div>
-
-                    <!-- <div class="form-group col-12 col-sm-12 col-md-12">
-                        <label for="participantes_reunion" class="form-control-label">Participantes <span class="text-danger">*</span></label>
-                        <select name="participantes_reunion[]" id="participantes_reunion" class="form-control form-control-sm" multiple="multiple" required style="width: 100%;">
-                        </select>
-                        <div class="invalid-feedback">Selecciona al menos un participante</div>
-                        <small class="form-text text-muted">Busca y selecciona los usuarios que asistirán a la reunión</small>
-                    </div> -->
-
-                    <!-- Participantes seleccionados -->
-                    <div>
-                        <div class="card mb-4" style="padding-right: 0px; padding-left: 0px;">
-                            <div class="card-header bg-primary text-white" styl="padding: 10px;">
-                                <h6 class="mb-0" style="color: white">Participantes Seleccionados</h6>
-                            </div>
-                            <div class="card-body">
-                                <div id="participantes-seleccionados" class="d-flex flex-wrap" style="padding: 5px;">
-                                    <span class="text-muted">No hay participantes seleccionados</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tabla de nits con DataTables -->
-                    <div class="card">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0">Seleccionar Participantes</h6>
-                        </div>
-                        <div class="card-body p-0">
-                            <table id="nitTableReuniones" class="table table-bordered display responsive" width="100%">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Documento</th>
-                                        <th>Nombre/Razón Social</th>
-                                        <th>Email</th>
-                                        <th>Teléfono</th>
-                                        <th>Ciudad</th>
-                                        <th width="100px">Acciones</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
                     
                 </form>
             </div>

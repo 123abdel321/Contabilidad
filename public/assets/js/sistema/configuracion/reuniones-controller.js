@@ -2,14 +2,14 @@
 var calendarioReuniones = null;
 var reuniones_table = null;
 var reuniones_nit_table = null;
-var participantesSeleccionados = new Map();
+var participantes_reuniones_table = null;
+var reunion_id = null;
 
 function reunionesInit() {
 
     initCalendarReuniones();
     initSelect2Reuniones();
     initTablesReuniones();
-    // initFilterReuniones();
 
     $('.water').hide();
 }
@@ -114,9 +114,9 @@ function initCalendarReuniones() {
 }
 
 function initSelect2Reuniones() {
-    $('#participantes_reunion').select2({
+    $('#id_nit_reunion').select2({
         theme: 'bootstrap-5',
-        dropdownParent: $('#reunionFormModal'),
+        dropdownParent: $('#reunionNitsFormModal'),
         placeholder: "Buscar usuarios...",
         allowClear: true,
         language: {
@@ -189,74 +189,6 @@ function applyPerfectScrollbar() {
 
 function initTablesReuniones() {
 
-    reuniones_nit_table = $('#nitTableReuniones').DataTable({
-        pageLength: 10,
-        dom: 'Brtip',
-        paging: true,
-        responsive: false,
-        processing: true,
-        serverSide: true,
-        fixedHeader: true,
-        deferLoading: 0,
-        initialLoad: true,
-        bFilter: true,
-        language: lenguajeDatatable,
-        sScrollX: "100%",
-        scrollX: true,
-        fixedColumns: {
-            left: 0,
-            right: 1,
-        },
-        ajax: {
-            type: "GET",
-            headers: headers,
-            url: base_url + 'nit',
-        },
-        columns: [
-            {"data": 'numero_documento'},
-            {
-                "data": function(row, type, set) {
-                    if (row.razon_social) {
-                        return row.razon_social;
-                    }
-                    var primer_nombre = row.primer_nombre ? row.primer_nombre + ' ' : '';
-                    var otros_nombres = row.otros_nombres ? row.otros_nombres + ' ' : '';
-                    var primer_apellido = row.primer_apellido ? row.primer_apellido + ' ' : '';
-                    var segundo_apellido = row.segundo_apellido ? row.segundo_apellido + ' ' : '';
-                    
-                    return primer_nombre + otros_nombres + primer_apellido + segundo_apellido;
-                }
-            },
-            {"data": 'email'},
-            {"data": 'telefono_1'},
-            {
-                "data": function(row, type, set) {
-                    if (row.ciudad) {
-                        return row.ciudad.nombre_completo;
-                    }
-                    return '';
-                }
-            },
-            {
-                "data": function(row, type, set) {
-                    const isSelected = participantesSeleccionados.has(row.id);
-                    return `
-                        <span class="btn badge btn-sm ${isSelected ? 'btn-danger' : 'btn-success'} btn-seleccionar" 
-                                onclick="toggleParticipante(${row.id}, this)">
-                            ${isSelected ? 'Quitar' : 'Seleccionar'}
-                        </span>
-                    `;
-                }
-            }
-        ],
-        createdRow: function(row, data, dataIndex) {
-            // Resaltar fila si ya está seleccionada
-            if (participantesSeleccionados.has(data.id)) {
-                $(row).addClass('table-success');
-            }
-        }
-    });
-
     reuniones_table = $('#reunionesTable').DataTable({
         pageLength: 20,
         dom: 'Brtip',
@@ -302,15 +234,78 @@ function initTablesReuniones() {
             }},
             {"data": 'fecha_hora_inicio'},
             {"data": 'fecha_hora_fin'},
-            // {"data": function(row, type, set) {
-            //     return row.participantes_count + ' participantes';
-            // }},
+             {"data": function(row, type, set) {
+                return row.participantes.length + ' participantes';
+            }},
             {"data": 'fecha_creacion'},
             {
                 "data": function(row, type, set) {
                     var html = '';
                     if (editarReuniones) html += `<span id="editreuniones_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-info edit-reuniones" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;`;
+                    html += `<span id="participantesreuniones_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-success participantes-reuniones" style="margin-bottom: 0rem !important; min-width: 50px;">Participantes</span>`;
                     if (eliminarReuniones) html += `<span id="deletereuniones_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-reuniones" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>`;
+                    return html;
+                }
+            },
+        ]
+    });
+
+    participantes_reuniones_table = $('#reunionesNitTable').DataTable({
+        pageLength: 20,
+        dom: 'Brtip',
+        paging: true,
+        responsive: false,
+        processing: true,
+        serverSide: true,
+        fixedHeader: true,
+        deferLoading: 0,
+        initialLoad: false,
+        ordering: false,
+        language: lenguajeDatatable,
+        sScrollX: "100%",
+        fixedColumns: {
+            left: 0,
+            right: 1,
+        },
+        ajax: {
+            
+            type: "GET",
+            headers: headers,
+            url: base_url + 'reuniones-participantes',
+            data: function(d) {
+                d.id_reunion = reunion_id;
+            }
+        },
+        columns: [
+            {"data": function(row, type, set) {
+                const nit = row.nit
+                if (nit) return nit.numero_documento;
+                return '';
+            }},
+            {"data": function(row, type, set) {
+                const nit = row.nit
+                if (nit) return nit.nombre_completo;
+                return '';
+            }},
+            {"data": function(row, type, set) {
+                const nit = row.nit
+                if (nit) return nit.apartamentos;
+                return '';
+            }},
+            {"data": function(row, type, set) {
+                const nit = row.nit
+                if (nit) return nit.telefono_1;
+                return '';
+            }},
+            {"data": function(row, type, set) {
+                const nit = row.nit
+                if (nit) return nit.email;
+                return '';
+            }},
+            {
+                "data": function(row, type, set) {
+                    var html = '';
+                    html += `<span id="deletereunionesnit_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-reuniones-nit" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>`;
                     return html;
                 }
             },
@@ -364,25 +359,54 @@ function initTablesReuniones() {
                 }
             });
         });
+
+        reuniones_table.on('click', '.participantes-reuniones', function() {
+            var id = this.id.split('_')[1];
+            mostrarParticipantes(id);
+        });
     }
-}
 
-function initFilterReuniones() {
-    $("#estado_filter_reunion").on('change', function(event) {
-        reloadReuniones();
-    });
-
-    $("#estado_reuniones_filter_table").on('change', function(event) {
-        // reuniones_table.ajax.reload();
-    });
-
-    $("#fecha_desde_reuniones_filter").on('change', function(event) {
-        // reuniones_table.ajax.reload();
-    });
-
-    $("#fecha_hasta_reuniones_filter").on('change', function(event) {
-        // reuniones_table.ajax.reload();
-    });
+    if (participantes_reuniones_table) {
+        participantes_reuniones_table.on('click', '.drop-reuniones-nit', function() {
+            var trReunion = $(this).closest('tr');
+            var id = this.id.split('_')[1];
+            var data = getDataById(id, participantes_reuniones_table);
+            
+            Swal.fire({
+                title: 'Eliminar participante: ' + data.nit.nombre_completo + '?',
+                text: "No se podrá revertir!",
+                type: 'warning',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Borrar!',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.value){
+                    $.ajax({
+                        url: base_url + 'reuniones-participantes',
+                        method: 'DELETE',
+                        data: JSON.stringify({
+                            id_nit: id,
+                            id_reunion: reunion_id
+                        }),
+                        headers: headers,
+                        dataType: 'json',
+                    }).done((res) => {
+                        if(res.success){
+                            participantes_reuniones_table.row(trReunion).remove().draw();
+                            agregarToast('exito', 'Eliminación exitosa', 'Reunión eliminada con exito!', true);
+                        } else {
+                            agregarToast('error', 'Eliminación errada', res.message);
+                        }
+                    }).fail((res) => {
+                        agregarToast('error', 'Eliminación errada', res.message);
+                    });
+                }
+            });
+        });
+    }
 }
 
 function reloadReuniones() {
@@ -408,7 +432,7 @@ function clearFormReunion() {
     $("#fecha_fin_reunion").val("");
     $("#hora_inicio_reunion").val("08:00");
     $("#hora_fin_reunion").val("09:00");
-    $("#participantes_reunion").val(null).trigger('change');
+    $("#id_nit_reunion").val(null).trigger('change');
 }
 
 function cargarReunionParaEdicion(reunion) {
@@ -432,48 +456,10 @@ function cargarReunionParaEdicion(reunion) {
         const participante = reunion.participantes[index];
         participantesSeleccionados.set(participante.id, participante);
     }
-
-    actualizarParticipantesSeleccionados();
     
     $("#textReunionCreate").hide();
     $("#textReunionUpdate").show();
     $("#reunionFormModal").modal('show');
-
-    setTimeout(actualizarTablaParticipantes, 300);
-}
-
-function actualizarTablaParticipantes() {
-    const participantes = $('#participantes_reunion').val();
-    const tbody = $('#tabla-participantes tbody');
-    tbody.empty();
-    console.log('participantes: ',participantes);
-    if (participantes && participantes.length > 0) {
-        // Obtener los textos de los participantes seleccionados
-        const $options = $('#participantes_reunion option:selected');
-        
-        $options.each(function(index) {
-            const id = $(this).val();
-            const text = $(this).text();
-            
-            tbody.append(`
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${text}</td>
-                    <td>
-                        <span class="badge bg-success">Seleccionado</span>
-                    </td>
-                </tr>
-            `);
-        });
-    } else {
-        tbody.append(`
-            <tr>
-                <td colspan="3" class="text-center text-muted py-3">
-                    No hay participantes seleccionados
-                </td>
-            </tr>
-        `);
-    }
 }
 
 function seleccionarRangoDeReuniones(info) {
@@ -526,7 +512,6 @@ function mostrarModalReunion(info) {
             const participante = dataReunion.participantes[index];
             participantesSeleccionados.set(participante.id, participante);
         }
-        actualizarParticipantesSeleccionados();
         
         $("#textReunionCreate").html('Actualizar reunión');
         $("#reunionFormModal").modal('show');
@@ -544,8 +529,7 @@ function guardarReunion() {
         descripcion: $('#descripcion_reunion').val(),
         fecha_inicio: $('#fecha_inicio_reunion').val() + ' ' + $('#hora_inicio_reunion').val(),
         fecha_fin: $('#fecha_fin_reunion').val() + ' ' + $('#hora_fin_reunion').val(),
-        lugar: $('#lugar_reunion').val(),
-        participantes: $('#participantes_reunion').val() || []
+        lugar: $('#lugar_reunion').val()
     };
 
     // Validar que haya al menos un participante
@@ -577,11 +561,9 @@ function guardarReunion() {
             agregarToast('error', 'Error', res.message);
         }
     }).fail((err) => {
-        let errorMsg = 'Error al guardar la reunión';
-        if (err.responseJSON && err.responseJSON.message) {
-            errorMsg = err.responseJSON.message;
-        }
-        agregarToast('error', 'Error', errorMsg);
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Error', errorsMsg);
     }).always(() => {
         $('#saveReunion').show();
         $('#saveReunionLoading').hide();
@@ -609,59 +591,8 @@ function armarFechaReuniones (fecha) {
 
 }
 
-function toggleParticipante(nitId, button) {
-    if (participantesSeleccionados.has(nitId)) {
-        // Quitar participante
-        participantesSeleccionados.delete(nitId);
-        $(button).removeClass('btn-danger').addClass('btn-success').text('Seleccionar');
-        $(button).closest('tr').removeClass('table-success');
-    } else {
-        // Agregar participante - obtener datos completos
-        $.ajax({
-            url: base_url + 'nit',
-            method: 'GET',
-            data: { id: nitId },
-            headers: headers,
-            success: function(response) {
-                if (response.success && response.data.length > 0) {
-                    const nit = response.data[0];
-                    participantesSeleccionados.set(nitId, nit);
-                    $(button).removeClass('btn-success').addClass('btn-danger').text('Quitar');
-                    $(button).closest('tr').addClass('table-success');
-                    actualizarParticipantesSeleccionados();
-                }
-            }
-        });
-    }
-    actualizarParticipantesSeleccionados();
-}
-
-function actualizarParticipantesSeleccionados() {
-    const container = $('#participantes-seleccionados');
-    container.empty();
-
-    if (participantesSeleccionados.size === 0) {
-        container.append('<span class="text-muted">No hay participantes seleccionados</span>');
-        return;
-    }
-
-    participantesSeleccionados.forEach((nit, id) => {
-        const nombre = nit.razon_social || 
-            `${nit.primer_nombre || ''} ${nit.primer_apellido || ''}`.trim();
-        const documento = nit.numero_documento || '';
-        
-        container.append(`
-            <span class="badge bg-primary me-2 mb-2" onclick="quitarParticipante(${id})">
-                ${nombre} (${documento})
-                <i class="fas fa-times ms-1"></i>
-            </span>
-        `);
-    });
-}
-
 function quitarParticipante(nitId) {
     participantesSeleccionados.delete(nitId);
-    actualizarParticipantesSeleccionados();
     
     // Actualizar botones en la tabla
     if (reuniones_nit_table) {
@@ -676,7 +607,29 @@ function quitarParticipante(nitId) {
     }
 }
 
+function mostrarParticipantes(id) {
+    if (!id) return;
+    reunion_id = id;
+    participantes_reuniones_table.ajax.reload();
 
+    $('#createReunion').hide();
+    $('#volverReuniones').hide();
+    $('#createReunionNit').show();
+    $('#verReunionDetalle').hide();
+    $('#volverReunionesNits').show();
+
+    $('#tabla_reuniones').hide();
+    $('#calendar_reuniones').hide();
+    $('#tabla_reuniones_nits').show();
+}
+
+
+
+
+$(document).on('click', '#createReunionNit', function() {
+    $("#id_nit_reunion").val(null).trigger('change');
+    $("#reunionNitsFormModal").modal('show');
+});
 
 $(document).on('click', '#createReunion', function() {
     clearFormReunion();
@@ -694,8 +647,6 @@ $(document).on('click', '#saveReunion', function() {
         form.classList.add('was-validated');
         return;
     }
-
-    const participantes = Array.from(participantesSeleccionados.values()).map(nit => nit.id);
     
     const reunionData = {
         id: $("#id_reunion_up").val(),
@@ -704,7 +655,6 @@ $(document).on('click', '#saveReunion', function() {
         lugar: $('#lugar_reunion').val(),
         fecha_inicio: $('#fecha_inicio_reunion').val() + ' ' + $('#hora_inicio_reunion').val(),
         fecha_fin: $('#fecha_fin_reunion').val() + ' ' + $('#hora_fin_reunion').val(),
-        participantes: participantes
     };
 
     $("#saveReunion").hide();
@@ -730,32 +680,95 @@ $(document).on('click', '#saveReunion', function() {
         } else {
             agregarToast('error', 'Error', res.message);
         }
-    }).fail((res) => {
+    }).fail((err) => {
         $("#saveReunion").show();
         $("#saveReunionLoading").hide();
-        agregarToast('error', 'Error', res.responseJSON.message);
+
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Error', errorsMsg);
+    });
+});
+
+$(document).on('click', '#saveReunionNit', function() {
+
+    var form = document.querySelector('#form-reunion-nit');
+
+    if(!form.checkValidity()){
+        form.classList.add('was-validated');
+        return;
+    }
+
+    const id = $("#id_nit_reunion").val();
+
+    $("#saveReunionNit").hide();
+    $("#saveReunionNitLoading").show();
+    
+    $.ajax({
+        url: base_url + 'reuniones-participantes',
+        method: 'POST',
+        data: JSON.stringify({
+            id_nit: id,
+            id_reunion: reunion_id
+        }),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+
+            $("#saveReunionNit").show();
+            $("#saveReunionNitLoading").hide();
+            $("#reunionNitsFormModal").modal('hide');
+            participantes_reuniones_table.ajax.reload();
+            agregarToast('exito', 'Exitoso', res.message, true);
+        } else {
+            agregarToast('error', 'Error', res.message);
+        }
+    }).fail((err) => {
+        $("#saveReunionNit").show();
+        $("#saveReunionNitLoading").hide();
+
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Error', errorsMsg);
     });
 });
 
 $(document).on('click', '#verReunionDetalle', function () {
     reuniones_table.ajax.reload();
-    $('#tabla_reuniones').show();
+    $('#createReunion').show();
     $('#volverReuniones').show();
+    $('#createReunionNit').hide();
     $('#verReunionDetalle').hide();
+    $('#volverReunionesNits').hide();
+
+    $('#tabla_reuniones').show();
     $('#calendar_reuniones').hide();
+    $('#tabla_reuniones_nits').hide();
+});
+
+$(document).on('click', '#volverReunionesNits', function () {
+    reuniones_table.ajax.reload();
+    
+    $('#createReunion').show();
+    $('#volverReuniones').show();
+    $('#createReunionNit').hide();
+    $('#verReunionDetalle').hide();
+    $('#volverReunionesNits').hide();
+
+    $('#tabla_reuniones').show();
+    $('#calendar_reuniones').hide();
+    $('#tabla_reuniones_nits').hide();
 });
 
 $(document).on('click', '#volverReuniones', function () {
-    $('#tabla_reuniones').hide();
+    $('#createReunion').show();
     $('#volverReuniones').hide();
+    $('#createReunionNit').hide();
     $('#verReunionDetalle').show();
+    $('#volverReunionesNits').hide();
+
+    $('#tabla_reuniones').hide();
     $('#calendar_reuniones').show();
-});
-
-$('#reunionFormModal').on('show.bs.modal', function() {
-    reuniones_nit_table.ajax.reload();
-});
-
-$('#participantes_reunion').on('change', function() {
-    actualizarTablaParticipantes();
+    $('#tabla_reuniones_nits').hide();
 });
