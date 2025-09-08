@@ -69,6 +69,7 @@ use App\Http\Controllers\InstaladorController;
 use App\Http\Controllers\Configuracion\EntornoController;
 use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
+use App\Http\Controllers\Configuracion\ReunionesController;
 //IMPORTADORES
 use App\Http\Controllers\Importador\NitsImportadorController;
 use App\Http\Controllers\Importador\ProductoImportadorController;
@@ -265,9 +266,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::post('/loadrut', [EmpresaController::class, 'rut']);
 		Route::post('/instalacionempresa', [InstaladorController::class, 'instalar']);
 		Route::post('/actualizarempresa', [InstaladorController::class, 'actualizar']);
-
 		//ENTORNO
 		Route::get('/entorno', [EntornoController::class, 'index'])->name('entorno');
+		//REUNIONES
+		Route::get('/reuniones', [ReunionesController::class, 'index'])->name('reuniones');
+		Route::get('/reuniones-event', [ReunionesController::class, 'read'])->name('reuniones.event');
 
 		//IMPORTADORES PRODUCTOS
 		Route::get('/productoprecios', [ProductoImportadorController::class, 'index']);

@@ -141,6 +141,7 @@ var moduloCreado = {
     'vacaciones': false,
     'ventasacumuladas': false,
     'cesantiasintereses': false,
+    'reuniones': false,
 };
 
 var moduloRoute = {
@@ -204,6 +205,7 @@ var moduloRoute = {
     'vacaciones': 'capturas',
     'ventasacumuladas': 'informes',
     'cesantiasintereses': 'capturas',
+    'reuniones': 'configuracion',
 }
 
 function iniciarCanalesDeNotificacion () {

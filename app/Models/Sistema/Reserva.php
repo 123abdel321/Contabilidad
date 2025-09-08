@@ -7,28 +7,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reserva extends Model
 {
-    use HasFactory;
+	use HasFactory;
 
-    protected $connection = 'sam';
+	protected $connection = 'sam';
 
-    protected $table = "reservas";
+	protected $table = "reservas";
 
-    protected $fillable = [
-        'id_nit',
-        'id_ubicacion',
-        'fecha_inicio',
-        'fecha_fin',
-        'observacion',
-        'estado',
-        'created_by',
-        'updated_by',
-    ];
+	protected $fillable = [
+		'id_nit',
+		'id_ubicacion',
+		'fecha_inicio',
+		'fecha_fin',
+		'observacion',
+		'estado',
+		'created_by',
+		'updated_by',
+	];
 
-    public function ubicacion() {
+  	public function ubicacion()
+	{
 		return $this->belongsTo('App\Models\Sistema\Ubicacion', 'id_ubicacion', 'id');
 	}
 
-    public function nit() {
-		return $this->belongsTo('App\Models\Sistema\Nits', 'id_nit', 'id');
+  	public function nit()
+    {
+		return $this->belongsTo(Nits::class, 'id_nit', 'id');
 	}
 }

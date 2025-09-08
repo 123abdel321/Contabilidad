@@ -65,6 +65,7 @@ use App\Http\Controllers\Sistema\UbicacionController;
 //CONFIGURACION
 use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
+use App\Http\Controllers\Configuracion\ReunionesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -210,7 +211,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('ventas-acumuladas-show', 'show');
             Route::post('ventas-acumuladas-excel', 'exportExcel');
         });
-
         //USUARIOS
         Route::controller(UsuariosController::class)->group(function () {
             Route::get('usuarios', 'generate');
@@ -218,6 +218,15 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('usuarios', 'update');
             Route::get('usuarios/combo', 'comboUsuario');
         });
+        //REUNIONES
+        Route::controller(ReunionesController::class)->group(function () {
+            Route::post('reuniones', 'create');
+            Route::put('reuniones', 'update');
+            Route::get('reuniones', 'find');
+            // Route::get('reuniones-event', 'read');
+            // Route::post('reuniones-asistencia', 'updateAsistencia');
+        });
+
         //IMPUESTOS
         Route::controller(ImpuestoController::class)->group(function () {
             Route::get('impuesto/combo-impuesto', 'comboImpuesto');

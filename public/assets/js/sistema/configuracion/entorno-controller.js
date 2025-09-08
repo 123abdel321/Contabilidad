@@ -275,18 +275,9 @@ $(document).on('click', '#updateEntorno', function () {
     }).fail((err) => {
         $("#updateEntornoLoading").hide();
         $("#updateEntorno").show();
-        var errorsMsg = "";
+
         var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
-        }
+        var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Actualización errada', errorsMsg);
     });
 });
