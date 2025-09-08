@@ -70,13 +70,13 @@
             </div>
         </div>
 
-        <div id="tabla_reuniones" class="card mb-4" style="content-visibility: auto; overflow: auto; margin-top: 10px; display: none;">
+        <div id="tabla_reuniones" class="card mb-4" style="content-visibility: auto; overflow: auto; display: none;">
             <div class="card-body">
                 @include('pages.configuracion.reuniones.reuniones-table')
             </div>
         </div>
 
-        <div id="tabla_reuniones_nits" class="card mb-4" style="content-visibility: auto; overflow: auto; margin-top: 10px; display: none;">
+        <div id="tabla_reuniones_nits" class="card mb-4" style="content-visibility: auto; overflow: auto; display: none;">
             <div class="card-body">
                 @include('pages.configuracion.reuniones.reuniones-nits-table')
             </div>
