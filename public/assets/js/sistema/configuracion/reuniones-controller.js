@@ -305,7 +305,7 @@ function initTablesReuniones() {
             {
                 "data": function(row, type, set) {
                     var html = '';
-                    html += `<span id="deletereunionesnit_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-reuniones-nit" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>`;
+                    html += `<span id="deletereunionesnit_${row.nit.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-reuniones-nit" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>`;
                     return html;
                 }
             },
@@ -401,7 +401,9 @@ function initTablesReuniones() {
                             agregarToast('error', 'Eliminación errada', res.message);
                         }
                     }).fail((res) => {
-                        agregarToast('error', 'Eliminación errada', res.message);
+                        var mensaje = err.responseJSON.message;
+                        var errorsMsg = arreglarMensajeError(mensaje);
+                        agregarToast('error', 'Eliminación errada', errorsMsg);
                     });
                 }
             });
@@ -578,22 +580,6 @@ function armarFechaReuniones (fecha) {
 
     return [fechaFormateada, horaFormateada];
 
-}
-
-function quitarParticipante(nitId) {
-    participantesSeleccionados.delete(nitId);
-    
-    // Actualizar botones en la tabla
-    if (reuniones_nit_table) {
-        reuniones_nit_table.rows().every(function() {
-            const data = this.data();
-            if (data.id === nitId) {
-                const button = $(this.node()).find('.btn-seleccionar');
-                button.removeClass('btn-danger').addClass('btn-success').text('Seleccionar');
-                $(this.node()).removeClass('table-success');
-            }
-        });
-    }
 }
 
 function mostrarParticipantes(id) {
