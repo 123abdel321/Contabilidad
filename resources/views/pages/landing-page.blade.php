@@ -27,7 +27,7 @@
     <link rel="canonical" href="https://PORTAFOLIOERP.com/">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     
     <link id="pagestyle" href="{{ asset('assets/css/landing-page.css') }}" rel="stylesheet" />
