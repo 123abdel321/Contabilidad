@@ -305,7 +305,7 @@ function initTablesReuniones() {
             {
                 "data": function(row, type, set) {
                     var html = '';
-                    html += `<span id="deletereunionesnit_${row.nit.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-reuniones-nit" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>`;
+                    html += `<span id="deletereunionesnit_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-reuniones-nit" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>`;
                     return html;
                 }
             },
@@ -388,7 +388,7 @@ function initTablesReuniones() {
                         url: base_url + 'reuniones-participantes',
                         method: 'DELETE',
                         data: JSON.stringify({
-                            id_nit: id,
+                            id_nit: data.nit.id,
                             id_reunion: reunion_id
                         }),
                         headers: headers,
