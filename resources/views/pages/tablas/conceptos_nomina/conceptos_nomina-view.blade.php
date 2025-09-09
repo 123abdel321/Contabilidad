@@ -4,7 +4,10 @@
             <div class="row" style="z-index: 9;">
                 <div class="col-12 col-md-6 col-sm-6">
                     @can('conceptos_nomina create')
-                        <button type="button" class="btn btn-primary btn-sm" id="createConceptosNomina">Agregar <i class="fas fa-plus-circle"></i></button>
+                        <span id="createConceptosNomina" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px;">
+                            <i class="fa-solid fa-folder-plus" style="font-size: 17px;"></i>&nbsp;
+                            <b style="vertical-align: text-top;">CREAR CONTO DE NOMINA</b>
+                        </span>
                     @endcan
                 </div>
                 <div class="col-12 col-md-6 col-sm-6">

@@ -4,7 +4,10 @@
             <div class="row" style="z-index: 9;">
                 <div class="col-12 col-md-6 col-sm-6">
                     @can('vendedores create')
-                        <button type="button" class="btn btn-primary btn-sm" id="createVendedores">Agregar vendedor</button>
+                        <span id="createVendedores" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px;">
+                            <i class="fa-solid fa-folder-plus" style="font-size: 17px;"></i>&nbsp;
+                            <b style="vertical-align: text-top;">CREAR VENDEDOR</b>
+                        </span>
                     @endcan
                 </div>
                 <div class="col-12 col-md-6 col-sm-6">

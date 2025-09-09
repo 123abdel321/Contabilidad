@@ -3,7 +3,10 @@
         <div class="row" style="z-index: 9;">
             <div class="col-12 col-md-4 col-sm-4">
                 @can('concepto_gastos create')
-                    <button type="button" class="btn btn-primary btn-sm" id="createConceptoGasto">Agregar concepto gasto</button>
+                    <span id="createConceptoGasto" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px;">
+                        <i class="fa-solid fa-folder-plus" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">CREAR CONCEPTO DE GASTO</b>
+                    </span>
                 @endcan
             </div>
             <div class="col-12 col-md-8 col-sm-8">
