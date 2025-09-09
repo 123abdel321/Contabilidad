@@ -451,12 +451,6 @@ function cargarReunionParaEdicion(reunion) {
     $("#hora_inicio_reunion").val(fechaInicio.toTimeString().substring(0,5));
     $("#hora_fin_reunion").val(fechaFin.toTimeString().substring(0,5));
     
-    // Cargar participantes
-    for (let index = 0; index < reunion.participantes.length; index++) {
-        const participante = reunion.participantes[index];
-        participantesSeleccionados.set(participante.id, participante);
-    }
-    
     $("#textReunionCreate").hide();
     $("#textReunionUpdate").show();
     $("#reunionFormModal").modal('show');
@@ -507,11 +501,6 @@ function mostrarModalReunion(info) {
         $("#hora_fin_reunion").val(
             `${fechaFin.getHours().toString().padStart(2, '0')}:${fechaFin.getMinutes().toString().padStart(2, '0')}`
         );
-
-        for (let index = 0; index < dataReunion.participantes.length; index++) {
-            const participante = dataReunion.participantes[index];
-            participantesSeleccionados.set(participante.id, participante);
-        }
         
         $("#textReunionCreate").html('Actualizar reunión');
         $("#reunionFormModal").modal('show');
