@@ -204,8 +204,8 @@ class ReunionesController extends Controller
     public function createParticipantes(Request $request)
     {
         $rules = [
-			'id_nit' => 'required|exists:sam.reunions,id',
-            'id_reunion' => 'required|exists:sam.nits,id'
+			'id_nit' => 'required|exists:sam.nits,id',
+            'id_reunion' => 'required|exists:sam.reunions,id'
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -261,8 +261,8 @@ class ReunionesController extends Controller
     public function deleteParticipantes(Request $request)
     {
         $rules = [
-			'id_nit' => 'required|exists:sam.reunions,id',
-            'id_reunion' => 'required|exists:sam.nits,id'
+			'id_nit' => 'required|exists:sam.nits,id',
+            'id_reunion' => 'required|exists:sam.reunions,id'
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
