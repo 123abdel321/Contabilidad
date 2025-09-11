@@ -263,13 +263,19 @@ function cargarFechasResultados() {
     formatoFecha(start, end, "fecha_manual_resultados");
 }
 
-function loadResultadosById(id_impuesto) {
-    var url = base_url + 'resultados-show?id='+id_impuesto;
+function loadResultadoById(id_resultado) {
 
-    resultados_table.ajax.url(url).load(function(res) {
-        
+    $('#id_resultado_cargado').val(id_resultado);
+    resultados_table.ajax.url(base_url + 'resultados-show?id='+id_resultado).load(function(res) {
         if(res.success){
-            agregarToast('exito', 'Impuestos cargado', 'Informe cargado con exito!', true);
+            $("#generarResultado").show();
+            $("#generarResultadoLoading").hide();
+
+            $("#descargarExcelResultado").show();
+            $("#descargarExcelResultadoLoading").hide();
+            $("#descargarExcelResultadoDisabled").hide();
+
+            agregarToast('exito', 'Resultado cargado', 'Informe cargado con exito!', true);
         }
     });
 }
@@ -294,8 +300,49 @@ $(document).on('click', '#generarResultado', function () {
     });
 });
 
+$(document).on('click', '#descargarExcelResultado', function () {
+
+    $("#descargarExcelResultado").hide();
+    $("#descargarExcelResultadoLoading").show();
+    $("#descargarExcelResultadoDisabled").hide();
+
+    $.ajax({
+        url: base_url + 'resultados-excel',
+        method: 'POST',
+        data: JSON.stringify({id: $('#id_resultado_cargado').val()}),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+
+        $("#descargarExcelResultado").show();
+        $("#descargarExcelResultadoLoading").hide();
+        $("#descargarExcelResultadoDisabled").hide();
+
+        if(res.success){
+            if(res.url_file){
+                window.open('https://'+res.url_file, "_blank");
+                return; 
+            }
+            agregarToast('info', 'Generando excel', res.message, true);
+        }
+    }).fail((err) => {
+
+        $("#descargarExcelResultado").show();
+        $("#descargarExcelResultadoLoading").hide();
+        $("#descargarExcelResultadoDisabled").hide();
+
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Error al generar excel', errorsMsg);
+    });
+});
+
 channelResultado.bind('notificaciones', function(data) {
-    console.log('channelResultado: ',data);
+
+    if(data.url_file){
+        loadExcel(data);
+        return;
+    }
     if(data.tipo == "error"){
         $("#generarResultado").show();
         $("#generarResultadoLoading").hide();
@@ -312,18 +359,3 @@ channelResultado.bind('notificaciones', function(data) {
         return;
     }
 });
-
-function loadResultadoById(id_resultado) {
-    console.log('loadResultadoById: ',id_resultado);
-
-    $('#id_resultado_cargado').val(id_resultado);
-    resultados_table.ajax.url(base_url + 'resultados-show?id='+id_resultado).load(function(res) {
-        console.log('res: ',res);
-        if(res.success){
-            $("#generarResultado").show();
-            $("#generarResultadoLoading").hide();
-
-            agregarToast('exito', 'Resultado cargado', 'Informe cargado con exito!', true);
-        }
-    });
-}

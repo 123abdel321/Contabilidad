@@ -8,10 +8,6 @@
             <th>Telefono</th>
             <th>Dirección</th>
             <th>Usuario</th>
-            <!-- <th>Primer nombre</th>
-            <th>Otros nombre</th>
-            <th>Primer apellido</th>
-            <th>Segundo apellido</th> -->
             <th style="border-radius: 0px 15px 0px 0px !important;">Acciones</th>
         </tr>
     </thead>

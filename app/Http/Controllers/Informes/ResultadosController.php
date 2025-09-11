@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Exports\ResultadoExport;
 use App\Events\PrivateMessageEvent;
+use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeResultados;
 //MODELS
@@ -235,19 +236,34 @@ class ResultadosController extends Controller
             $informeResultado->archivo_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
             $informeResultado->save();
 
-            (new ResultadoExport($request->get('id')))->store($fileName, 'do_spaces', null, [
-                'visibility' => 'public'
-            ])->chain([
-                event(new PrivateMessageEvent('informe-resultado-'.$request->user()['has_empresa'].'_'.$request->user()->id, [
-                    'tipo' => 'exito',
-                    'mensaje' => 'Excel de Resultado generado con exito!',
-                    'titulo' => 'Excel generado',
-                    'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
-                    'autoclose' => false
-                ])),
-                $informeResultado->exporta_excel = 2,
-                $informeResultado->save(),
-            ]);
+            $has_empresa = $request->user()['has_empresa'];
+            $user_id = $request->user()->id;
+            $id_informe = $request->get('id');
+
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+            Bus::chain([
+                function () use ($id_informe, &$fileName, &$empresa) {
+                    // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
+                    (new ResultadoExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
+                        'visibility' => 'public'
+                    ]);
+                },
+                function () use ($user_id, $has_empresa, $url, $informeResultado) {
+                    // Lanza el evento cuando el proceso termine
+                    event(new PrivateMessageEvent('informe-resultado-'.$has_empresa.'_'.$user_id, [
+                        'tipo' => 'exito',
+                        'mensaje' => 'Excel de Resultado generado con exito!',
+                        'titulo' => 'Excel generado',
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
+                        'autoclose' => false
+                    ]));
+                    
+                    // Actualiza el informe auxiliar
+                    $informeResultado->exporta_excel = 2;
+                    $informeResultado->save();
+                }
+            ])->dispatch();
 
             return response()->json([
                 'success'=>	true,

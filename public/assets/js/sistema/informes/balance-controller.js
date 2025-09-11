@@ -102,7 +102,7 @@ function balanceInit() {
             }
             if(data.cuenta.length == 1){//
                 $('td', row).css('background-color', 'rgb(33 35 41)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('font-weight', '700');
                 $('td', row).css('color', 'white');
                 return;
             }
@@ -110,8 +110,8 @@ function balanceInit() {
                 if (getNivel() == 1) {
                     return;
                 }
-                $('td', row).css('background-color', 'rgb(33 35 41 / 85%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', 'rgb(33 35 41 / 70%)');
+                $('td', row).css('font-weight', '700');
                 $('td', row).css('color', 'white');
                 return;
             }
@@ -119,21 +119,20 @@ function balanceInit() {
                 if (getNivel() == 2) {
                     return;
                 }
-                $('td', row).css('background-color', 'rgb(33 35 41 / 70%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', 'rgb(33 35 41 / 50%)');
+                $('td', row).css('font-weight', '700');
                 $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 6){//
-                $('td', row).css('background-color', 'rgb(33 35 41 / 65%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', 'rgb(33 35 41 / 30%)');
+                $('td', row).css('font-weight', '700');
                 $('td', row).css('color', 'white');
                 return;
             }
             if (!data.auxiliar) {
-                $('td', row).css('background-color', 'rgb(33 35 41 / 50%)');
-                $('td', row).css('font-weight', 'bold');
-                $('td', row).css('color', 'white');
+                $('td', row).css('background-color', 'rgb(33 35 41 / 10%)');
+                $('td', row).css('font-weight', '700');
                 return;
             }
         },

@@ -1,0 +1,12 @@
+<!-- A --><td style="{{ $style }}">{{ $resultado->cuenta }}</td>
+<!-- B --><td style="{{ $style }}">{{ $resultado->nombre_cuenta }}</td>
+<!-- C --><td style="{{ $style }}">{{ $resultado->saldo_anterior }}</td>
+<!-- D --><td style="{{ $style }}">{{ $resultado->debito }}</td>
+<!-- E --><td style="{{ $style }}">{{ $resultado->credito }}</td>
+<!-- F --><td style="{{ $style }}">{{ $resultado->saldo_final }}</td>
+<!-- G --><td style="{{ $style }}">{{ $resultado->ppto_anterior }}</td>
+<!-- H --><td style="{{ $style }}">{{ $resultado->ppto_movimiento }}</td>
+<!-- I --><td style="{{ $style }}">{{ $resultado->ppto_acumulado }}</td>
+<!-- J --><td style="{{ $style }}">{{ $resultado->ppto_diferencia }}</td>
+<!-- K --><td style="{{ $style }}">{{ $resultado->ppto_porcentaje }}</td>
+<!-- L --><td style="{{ $style }}">{{ $resultado->ppto_porcentaje_acumulado }}</td>

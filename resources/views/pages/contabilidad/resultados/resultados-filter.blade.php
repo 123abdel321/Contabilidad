@@ -59,6 +59,20 @@
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">GENERANDO</b>
                     </span>
+                    <!-- BOTON EXCEL -->
+                    <span id="descargarExcelResultado" class="btn badge bg-gradient-success btn-bg-success btn-bg-excel" style="min-width: 40px; display:none;">
+                        <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
+                    </span>
+                    <span id="descargarExcelResultadoLoading" class="badge bg-gradient-success btn-bg-success btn-bg-excel-loading" style="min-width: 40px; display:none;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
+                    </span>
+                    <span id="descargarExcelResultadoDisabled" class="badge bg-gradient-dark" style="min-width: 40px; color: #adadad; margin-right: 3px;">
+                        <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
+                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
+                    </span>
                     <!-- BOTON ULTIMO INFORME -->
                     <span id="generarResultadoUltimo" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; margin-right: 3px; float: right; display:none;">
                         <i class="fas fa-history" style="font-size: 17px;"></i>&nbsp;
