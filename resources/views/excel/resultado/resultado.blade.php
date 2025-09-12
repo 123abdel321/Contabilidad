@@ -46,9 +46,9 @@
                 @elseif(strlen($resultado->cuenta) == 2 )
                     @include('excel.resultado.celdas', ['style' => 'background-color: #4d4f54; color: #ffffff; font-weight: bold;', 'resultado' => $resultado])
                 @elseif(strlen($resultado->cuenta) == 4 )
-                    @include('excel.resultado.celdas', ['style' => 'background-color: #7a7b7f; color: #ffffff; font-weight: bold;', 'resultado' => $resultado])
+                    @include('excel.resultado.celdas', ['style' => 'background-color: #33849e; color: #ffffff; font-weight: 600;', 'resultado' => $resultado])
                 @elseif(strlen($resultado->cuenta) == 6 )
-                    @include('excel.resultado.celdas', ['style' => 'background-color: #a6a7a9; color: #ffffff; font-weight: bold;', 'resultado' => $resultado])
+                    @include('excel.resultado.celdas', ['style' => 'background-color: #9bd8e9ff; font-weight: 600;', 'resultado' => $resultado])
                 @else  
                     @include('excel.resultado.celdas', ['style' => 'background-color: #FFF; color: #000;', 'resultado' => $resultado])
                 @endif

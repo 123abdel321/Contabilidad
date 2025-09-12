@@ -75,15 +75,14 @@ function cargarTablasResultados() {
                     return;
                 }
                 if(data.cuenta.length == 4){//
-                    $('td', row).css('background-color', 'rgb(33 35 41 / 60%)');
+                    $('td', row).css('background-color', '#33849e');
                     $('td', row).css('font-weight', '600');
                     $('td', row).css('color', 'white');
                     return;
                 }
                 if(data.cuenta.length == 6){//
-                    $('td', row).css('background-color', 'rgb(33 35 41 / 40%)');
+                    $('td', row).css('background-color', '#9bd8e9ff');
                     $('td', row).css('font-weight', '600');
-                    $('td', row).css('color', 'white');
                     return;
                 }
             }

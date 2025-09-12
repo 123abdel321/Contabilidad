@@ -119,15 +119,14 @@ function balanceInit() {
                 if (getNivel() == 2) {
                     return;
                 }
-                $('td', row).css('background-color', 'rgb(33 35 41 / 50%)');
-                $('td', row).css('font-weight', '700');
+                $('td', row).css('background-color', '#33849e');
+                $('td', row).css('font-weight', '600');
                 $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 6){//
-                $('td', row).css('background-color', 'rgb(33 35 41 / 30%)');
-                $('td', row).css('font-weight', '700');
-                $('td', row).css('color', 'white');
+                $('td', row).css('background-color', '#9bd8e9ff');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if (!data.auxiliar) {

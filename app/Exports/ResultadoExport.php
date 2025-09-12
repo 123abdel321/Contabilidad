@@ -89,7 +89,7 @@ class ResultadoExport implements FromView, WithColumnWidths, WithStyles, WithCol
         ]);
 
         // Estilo para los encabezados (fila 4)
-        $sheet->getStyle('A5:F5')->applyFromArray([
+        $sheet->getStyle('A5:L5')->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -107,7 +107,7 @@ class ResultadoExport implements FromView, WithColumnWidths, WithStyles, WithCol
 
         // Aplica bordes finos a toda la tabla (desde la fila 5 en adelante)
         $highestRow = $sheet->getHighestRow();
-        $sheet->getStyle("A5:F{$highestRow}")->applyFromArray([
+        $sheet->getStyle("A5:L{$highestRow}")->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,

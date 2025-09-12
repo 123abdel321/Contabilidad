@@ -47,10 +47,10 @@
                     @if ($nivel == 2)
                         @include('excel.balance.celdas', ['style' => 'background-color: #ffffff; color: #000;', 'balance' => $balance])
                     @else
-                        @include('excel.balance.celdas', ['style' => 'background-color: #4d4f54; font-weight: bold; color: #ffffff;', 'balance' => $balance])
+                        @include('excel.balance.celdas', ['style' => 'background-color: #33849e; font-weight: 600; color: #ffffff;', 'balance' => $balance])
                     @endif
                 @elseif(strlen($balance->cuenta) == 6)
-                    @include('excel.balance.celdas', ['style' => 'background-color: #636569; color: #ffffff; font-weight: bold;', 'balance' => $balance])
+                    @include('excel.balance.celdas', ['style' => 'background-color: #9bd8e9ff; font-weight: 600;', 'balance' => $balance])
                 @endif
             </tr>
 		@endforeach

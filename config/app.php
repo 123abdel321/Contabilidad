@@ -1,4 +1,4 @@
-}<?php
+<?php
 
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'version' => '1.18.257 - 2025/09/11',
+    'version' => '1.18.258 - 2025/09/12',
 
     /*
     |--------------------------------------------------------------------------
