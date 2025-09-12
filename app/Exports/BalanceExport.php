@@ -26,7 +26,6 @@ class BalanceExport implements FromView, WithColumnWidths, WithStyles, WithColum
     use Exportable;
 
     protected $empresa;
-
     protected $id_balance;
 
     public function __construct(int $id, $empresa)

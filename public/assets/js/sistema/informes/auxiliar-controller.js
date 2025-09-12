@@ -93,47 +93,59 @@ function cargarTablasAuxiliar() {
                     return;
                 }
             }
+            if (data.auxiliar) {
+                return;
+            }
             if(data.detalle_group == 'nits-totales'){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 25%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', '#9bd8e9ff');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.detalle_group == 'nits'){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 15%)');
+                $('td', row).css('background-color', '#9bd8e9ff');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.cuenta == "TOTALES"){
-                $('td', row).css('background-color', 'rgb(28 69 135)');
+                $('td', row).css('background-color', '#000');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 1){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 90%)');
+                $('td', row).css('background-color', 'rgb(33 35 41)');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 2){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 75%)');
+                $('td', row).css('background-color', 'rgb(33 35 41 / 80%)');
                 $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.cuenta.length == 4){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 60%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', '#33849e');
+                $('td', row).css('font-weight', '600');
+                $('td', row).css('color', 'white');
+                return;
+            }
+            if(data.cuenta.length == 6){//
+                $('td', row).css('background-color', '#9bd8e9ff');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.detalle == 0 && data.detalle_group == 0){
                 return;
             }
             if(data.detalle_group && !data.detalle){//
-                $('td', row).css('background-color', 'rgb(64 164 209 / 45%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', '#9bd8e9ff');
+                $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.detalle){
-                $('td', row).css('background-color', 'rgb(64 164 209 / 35%)');
-                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('background-color', '#9bd8e9ff');
+                $('td', row).css('font-weight', '600');
                 return;
             }
         },
