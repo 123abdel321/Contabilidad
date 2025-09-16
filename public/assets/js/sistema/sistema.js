@@ -340,9 +340,9 @@ $('#containner-dashboard').load('/dashboard', function() {
 $("#titulo-view").text('Inicio');
 
 $(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
-    // console.log('xhr: ',xhr);
+    console.log('xhr: ',xhr.status);
     if(xhr.status == 401) {
-        document.getElementById('logout-form').submit();
+        closeSessionProfile();
     }
 });
 
@@ -1228,3 +1228,9 @@ $(document).on('shown.bs.popover', function() {
         'font-weight': 'bold'
     });
 });
+
+// En tu archivo principal o en un lugar global
+// $(document).ajaxError(function(event, xhr, settings, error) {
+//     if (xhr.status === 401 || xhr.responseText.includes('Unauthenticated')) {
+//     }
+// });
