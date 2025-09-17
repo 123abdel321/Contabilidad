@@ -404,14 +404,7 @@ function generateView(id, nombre, icon){
     $('#footer-navigation').append(generateNewTabButton(id, nombre, icon));
     $('#containner-'+id).load('/'+id, function(response, status, xhr) {
 
-        // Verificar si la respuesta contiene indicios de ser la página de login
-        if (response.includes('form-login') || 
-            response.includes('password') || 
-            response.includes('csrf-token') ||
-            xhr.status === 401 || 
-            xhr.status === 419) {
-            
-            // Redirigir a la página de login
+        if (xhr.status === 401) {
             window.location.href = '/login';
             return;
         }
