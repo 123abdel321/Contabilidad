@@ -183,6 +183,7 @@
     </div>
 
     @include('pages.capturas.pago.pago-anticipos')
+    @include('pages.capturas.pago.pago-movimiento')
 
     <script>
         var pagoFecha = @json(auth()->user()->can("pago fecha"));

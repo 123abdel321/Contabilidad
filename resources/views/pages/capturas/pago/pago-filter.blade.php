@@ -63,30 +63,36 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="iniciarCapturaPago" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
+                    <span id="iniciarCapturaPago" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;">
                         <i class="fas fa-folder-open" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">INICIAR PAGO</b>
                     </span>
-                    <span id="iniciarCapturaPagoLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
-                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">CARGANDO</b>
-                    </span>
-                    <span id="cancelarCapturaPago" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="min-width: 40px; display:none;">
+                    <span id="cancelarCapturaPago" href="javascript:void(0)" class="btn badge bg-gradient-danger btn-bg-danger" style="min-width: 40px; display:none;">
                         <i class="fas fa-times-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">CANCELAR PAGO</b>
                     </span>
-                    <span id="agregarPago" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; display:none;">
+                    <span id="agregarPago" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-info" style="min-width: 40px; display:none;">
                         <i class="fas fa-plus-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">AGREGAR PRODUCTO</b>
                     </span>
-                    <span id="crearCapturaPagoDisabled" href="javascript:void(0)" class="badge bg-success" style="min-width: 40px; display:none; float: right; background-color: #2dce899c !important; cursor: no-drop;">
+
+
+                    <span id="crearCapturaPagoDisabled" href="javascript:void(0)" class="badge bg-gradient-dark" style="min-width: 40px; display:none; float: right; background-color: #2dce899c !important; cursor: no-drop;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR PAGO</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
-                    <span id="crearCapturaPago" href="javascript:void(0)" class="btn badge bg-gradient-success" style="min-width: 40px; display:none; float: right;">
+                    <span id="crearCapturaPago" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; display:none; float: right; margin-left: 3px;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR PAGO</b>
+                    </span>
+                    <span id="movimientoContablePago" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px; display:none; float: right;">
+                        <i class="fa-solid fa-calculator" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">VER MOVIMIENTO CONTABLE</b>
+                    </span>
+                    <span id="iniciarCapturaPagoLoading" class="badge bg-gradient-info btn-bg-excel" style="display:none; min-width: 40px; margin-bottom: 16px; float: right;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>
                 </div>
             </div>

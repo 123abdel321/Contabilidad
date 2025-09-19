@@ -279,7 +279,7 @@ function initTablesCausar() {
         serverSide: false,
         fixedHeader: true,
         deferLoading: 0,
-        lalanguage: {
+        language: {
             ...lenguajeDatatable,
             info: "",
             infoEmpty: "",

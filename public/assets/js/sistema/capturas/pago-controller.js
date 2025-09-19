@@ -7,10 +7,27 @@ var totalAnticiposPago = null;
 var validarFacturaPago = null;
 var noBuscarDatosPago = false;
 var calculandoRowPagos = false;
+var pago_table_movimiento = null;
 var $comboComprobantePagos = null;
 var totalAnticiposPagoCuenta = null;
 
 function pagoInit () {
+
+    cargarFechasPago();
+    cargarCombosPago();
+    cargarTablasPago();
+    cargarFormasPagoPago();
+
+    if (pagoFecha) $('#fecha_manual_pago').prop('disabled', false);
+    else $('#fecha_manual_pago').prop('disabled', true);
+
+    if (pagoUpdate) $("#documento_referencia_pago").prop('disabled', false);
+    else $("#documento_referencia_pago").prop('disabled', true);
+
+    $('.water').hide();
+}
+
+function cargarFechasPago() {
     var dateNow = new Date();
     // Formatear a YYYY-MM-DDTHH:MM (formato que espera datetime-local)
     var fechaHoraPago = dateNow.getFullYear() + '-' + 
@@ -19,7 +36,71 @@ function pagoInit () {
         ("0" + dateNow.getHours()).slice(-2) + ':' + 
         ("0" + dateNow.getMinutes()).slice(-2);
     $('#fecha_manual_pago').val(fechaHoraPago);
+}
 
+function cargarCombosPago() {
+    $comboNitPagos = $('#id_nit_pago').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        language: {
+            noResults: function() {
+                createNewNit = true;
+                return "No hay resultado";        
+            },
+            searching: function() {
+                createNewNit = false;
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/nit/combo-nit',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+    
+    $comboComprobantePagos= $('#id_comprobante_pago').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        ajax: {
+            url: 'api/comprobantes/combo-comprobante',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_comprobante: 1,
+                    _type: 'query'
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    if (comprobantesPagos && comprobantesPagos.length == 1) {
+        var dataComprobante = {
+            id: comprobantesPagos[0].id,
+            text: comprobantesPagos[0].codigo + ' - ' + comprobantesPagos[0].nombre
+        };
+        var newOption = new Option(dataComprobante.text, dataComprobante.id, false, false);
+        $comboComprobantePagos.append(newOption).val(dataComprobante.id).trigger('change');
+    }
+}
+
+function cargarTablasPago() {
     pago_table = $('#pagoTable').DataTable({
         dom: '',
         paging: false,
@@ -46,6 +127,17 @@ function pagoInit () {
         columns: [
             {
                 "data": function (row, type, set, col){
+                    const saldo = parseInt(row.saldo);
+                    if (saldo < 0) {
+                        return `<i
+                            class="fas fa-info icon-info"
+                            style="border: solid 1px red !important; color: red !important;";
+                            title="<b class='titulo-popover-error'>Documento referencia</b> <br/> Error en el cruce de los documentos de referencia"
+                            data-toggle="popover"
+                            data-html="true">
+                            </i>
+                        ${row.codigo_cuenta}`;
+                    }
                     if (!row.cuenta_pago && !row.id_forma_pago) {
                         return `<i
                                 class="fas fa-info icon-info"
@@ -86,7 +178,15 @@ function pagoInit () {
                     `;
                 }, className: 'dt-body-left'
             },
-            {"data":'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {//SALDO
+                "data": function (row, type, set, col){
+                    const saldo = parseInt(row.saldo);
+                    if (saldo < 0) {
+                        return `<p style="margin-bottom: 0px; font-size: 13px; color: red; font-weight: 600;">${new Intl.NumberFormat("ja-JP").format(row.saldo * -1)}</p>`;
+                    }
+                    return new Intl.NumberFormat("ja-JP").format(row.saldo);
+                }, className: 'dt-body-right'   
+            },
             {//VALOR RECIBIDO
                 "data": function (row, type, set, col){
                     if (row.cuenta_pago == 'sin_deuda') {
@@ -95,7 +195,15 @@ function pagoInit () {
                     return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right; padding: 0.05rem 0.5rem !important;" id="pago_valor_${row.id}" value="${new Intl.NumberFormat("ja-JP").format(row.valor_recibido)}" onkeypress="changeValorRecibidoPagoRow(${row.id}, event)" onfocusout="focusOutValorPagoRow(${row.id})" onfocus="focusValorRecibido(${row.id})" style="min-width: 100px;">`;
                 }
             },
-            {"data":'nuevo_saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {//NUEVO SALDO
+                "data": function (row, type, set, col){
+                    const saldo = parseInt(row.saldo);
+                    if (saldo < 0) {
+                        return `<p style="margin-bottom: 0px; font-size: 13px; color: red; font-weight: 600;">${new Intl.NumberFormat("ja-JP").format(row.nuevo_saldo * -1)}</p>`;
+                    }
+                    return new Intl.NumberFormat("ja-JP").format(row.nuevo_saldo);
+                }, className: 'dt-body-right'   
+            },
             {//CONCEPTO
                 "data": function (row, type, set, col){
                     if (row.cuenta_pago == 'sin_deuda') {
@@ -159,6 +267,7 @@ function pagoInit () {
             data: function ( d ) {
                 d.id_nit = $('#id_nit_pago').val();
                 d.id_tipo_cuenta = [7];
+                d.fecha_manual = $('#fecha_manual_pago').val().replace('T', ' ') + ':00';
             }
         },
         columns: [
@@ -261,73 +370,74 @@ function pagoInit () {
         }
     });
 
-    $comboNitPagos = $('#id_nit_pago').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
+    pago_table_movimiento = $('#pagoMovimientoTable').DataTable({
+        pageLength: -1,
+        deferRender: true,
+        deferLoading: true,
+        dom: 'Brtip',
+        paging: false,
+        responsive: false,
+        processing: true,
+        serverSide: false,
+        fixedHeader: true,
+        deferLoading: 0,
         language: {
-            noResults: function() {
-                createNewNit = true;
-                return "No hay resultado";        
-            },
-            searching: function() {
-                createNewNit = false;
-                return "Buscando..";
-            },
-            inputTooShort: function () {
-                return "Por favor introduce 1 o más caracteres";
+            ...lenguajeDatatable,
+            info: "",
+            infoEmpty: "",
+            infoFiltered: "",
+        },
+        ordering: false,
+        scrollX: true,
+        scrollCollapse: true,
+        sScrollX: "100%",
+        autoWidth: false,
+        info: false,
+        ajax:  {
+            type: "GET",
+            headers: headers,
+            url: base_url + 'pagos-movimiento',
+            data: function ( d ) {
+                d.id_nit = $("#id_nit_pago").val(),
+                d.pagos = JSON.stringify(getPagosPagos()),
+                d.movimiento = JSON.stringify(getMovimientoPago())
             }
         },
-        ajax: {
-            url: 'api/nit/combo-nit',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
+        rowCallback: function(row, data, index){
+            if(data.id_cuenta == "TOTALES"){
+                $('td', row).css('background-color', '#000');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
+                return;
             }
-        }
-    });
-    
-    $comboComprobantePagos= $('#id_comprobante_pago').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        ajax: {
-            url: 'api/comprobantes/combo-comprobante',
-            headers: headers,
-            data: function (params) {
-                var query = {
-                    q: params.term,
-                    tipo_comprobante: 1,
-                    _type: 'query'
+        },
+        columns: [
+            {
+                "data": function (row, type, set){
+                    if(row.id_cuenta == "TOTALES") return "TOTALES";
+                    if(row.cuenta) return row.cuenta.cuenta;
+                    return '';
                 }
-                return query;
             },
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
+            {
+                "data": function (row, type, set){
+                    if(row.cuenta) return row.cuenta.nombre;
+                    return '';
+                }
+            },
+            {"data":'debito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'credito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {
+                "data": function (row, type, set){
+                    const diferencia = parseFloat(row.concepto);
+                    if(row.id_cuenta == "TOTALES") {
+                        return diferencia.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                    }
+                    return row.concepto;
+                }
             }
-        }
+        ]
     });
-
-    if (comprobantesPagos && comprobantesPagos.length == 1) {
-        var dataComprobante = {
-            id: comprobantesPagos[0].id,
-            text: comprobantesPagos[0].codigo + ' - ' + comprobantesPagos[0].nombre
-        };
-        var newOption = new Option(dataComprobante.text, dataComprobante.id, false, false);
-        $comboComprobantePagos.append(newOption).val(dataComprobante.id).trigger('change');
-    }
-
-    if (pagoFecha) $('#fecha_manual_pago').prop('disabled', false);
-    else $('#fecha_manual_pago').prop('disabled', true);
-
-    if (pagoUpdate) $("#documento_referencia_pago").prop('disabled', false);
-    else $("#documento_referencia_pago").prop('disabled', true);
-
-    loadFormasPagoPagos();
 }
 
 function buscarFacturaPagos(event) {
@@ -375,8 +485,10 @@ $(document).on('change', '#id_comprobante_pago', function () {
 
 $(document).on('click', '#iniciarCapturaPago', function () {
 
+    $("#crearCapturaPago").hide();
     $('#iniciarCapturaPago').hide();
     $('#cancelarCapturaPago').hide();
+    $("#movimientoContablePago").hide();
     $('#crearCapturaPagoDisabled').hide();
     $('#iniciarCapturaPagoLoading').show();
     
@@ -393,6 +505,7 @@ function reloadTablePagos() {
         $('#iniciarCapturaPago').show();
         $('#crearCapturaPagoDisabled').show();
         $('#iniciarCapturaPagoLoading').hide();
+        $('#total_abono_pago').prop('disabled', false);
 
         let factura = res.edit;
 
@@ -415,22 +528,25 @@ function reloadTablePagos() {
             $('#total_abono_pago').val(factura.total_abono);
             agregarPagosPagos(factura.pagos);
             loadAnticiposPago(factura.fecha_manual, anticiposEditados);
+        } else {
+            loadAnticiposPago();
         }
 
         mostrarValoresPagos();
+
+        if (res.errores) {
+            disabledInputsPagos();
+            disabledFormasPagoRecibo(false);
+            $('#crearCapturaRecibo').hide();
+            $('#total_abono_recibo').prop('disabled', true);
+            agregarToast('error', 'Recibo con errores', 'Error en el cruce de los documentos de referencia');
+        }
 
         if (!factura) {
             let data = $('#id_nit_pago').select2('data')[0];
             if (data) {
                 $('#cancelarCapturaPago').show();
             }
-            // loadAnticiposPago();
-            // var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresPagos();
-            // $("#total_abono_pago").val(new Intl.NumberFormat("ja-JP").format(totalSaldo));
-            // setTimeout(function(){
-            //     $("#total_abono_pago").focus();
-            //     $("#total_abono_pago").select();
-            // },80);
         }
     });
 }
@@ -441,6 +557,11 @@ $(document).on('click', '#cancelarCapturaPago', function () {
 
 $(document).on('click', '#crearCapturaPago', function () {
     savePago();
+});
+
+$(document).on('click', '#movimientoContablePago', function () {
+    $("#pagoMovimientoModal").modal('show');
+    pago_table_movimiento.ajax.reload();
 });
 
 $(document).on('change', '#id_nit_pago', function () {
@@ -458,6 +579,7 @@ function savePago() {
     $('#iniciarCapturaPago').hide();
     $('#cancelarCapturaPago').hide();
     $('#crearCapturaPago').hide();
+    $('#movimientoContablePago').hide();
     $('#iniciarCapturaPagoLoading').show();
 
     let data = {
@@ -493,6 +615,7 @@ function savePago() {
         $('#iniciarCapturaPago').show();
         $('#cancelarCapturaPago').show();
         $('#crearCapturaPago').show();
+        $('#movimientoContablePago').show();
         $('#iniciarCapturaPagoLoading').hide();
 
         var mensaje = err.responseJSON.message;
@@ -562,6 +685,7 @@ function cancelarPago() {
     $('#pago_anticipo_disp').text('0');
     $('#crearCapturaPago').hide();
     $('#cancelarCapturaPago').hide();
+    $('#movimientoContablePago').hide();
     $('#input_anticipos_pago').hide();
     $('#pago_anticipo_disp_view').hide();
     $('#crearCapturaPagoDisabled').hide();
@@ -754,15 +878,18 @@ function mostrarValoresPagos() {
 
     if (!totalSaldo) {
         $('#crearCapturaPago').hide();
+        $('#movimientoContablePago').hide();
         $('#cancelarCapturaPago').hide();
         $('#crearCapturaPagoDisabled').show();
     }
 
     if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP)) && $('#id_nit_pago').val()) {
         $('#crearCapturaPago').show();
+        $('#movimientoContablePago').show();
         $('#crearCapturaPagoDisabled').hide();
     } else {
         $('#crearCapturaPago').hide();
+        $('#movimientoContablePago').hide();
         $('#crearCapturaPagoDisabled').show();
     }
 }
@@ -878,9 +1005,11 @@ function calcularPagosPagos(idFormaPago = null) {
 
     if (!totalFaltante) {
         $('#crearCapturaPago').show();
+        $('#movimientoContablePago').show();
         $('#crearCapturaPagoDisabled').hide();
     } else {
         $('#crearCapturaPago').hide();
+        $('#movimientoContablePago').hide();
         $('#crearCapturaPagoDisabled').show();
     }
 }
@@ -1293,10 +1422,23 @@ function consecutivoSiguientePago() {
     }
 }
 
-function loadFormasPagoPagos() {
+function cargarFormasPagoPago() {
     pago_table_pagos.ajax.reload(function(res) {
         disabledFormasPagoPago(true);
     });
+}
+
+function disabledInputsPagos(estado = true) {
+    const dataPagos = pago_table.rows().data();
+
+    if (dataPagos.length) {
+        for (let index = 0; index < dataPagos.length; index++) {
+            const pago = dataPagos[index];
+
+            $('#pago_valor_'+pago.id).prop('disabled', estado);
+            $('#pago_concepto_'+pago.id).prop('disabled', estado);
+        }
+    }
 }
 
 function disabledFormasPagoPago(estado = true) {

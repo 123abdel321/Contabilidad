@@ -400,16 +400,16 @@ th.dtfc-fixed-right {
 }
 
 .toast {
-    background: #ccc;
     display: flex;
     justify-content: space-between;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
     animation-name: apertura;
     animation-duration: 200ms;
     animation-timing-function: ease-out;
     position: relative;
     width: 100% !important;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
 }
 
 .toast.exito {
@@ -432,30 +432,36 @@ th.dtfc-fixed-right {
 .toast .contenido {
     display: grid;
     grid-template-columns: 30px auto;
-    align-items: center;
+    align-items: flex-start;
     gap: 15px;
-    padding: 15px;
+    padding: 16px 18px;
     z-index: 9;
-    overflow: auto;
-    max-height: 150px;
+    overflow-y: auto;
+    max-height: 220px; /* un poco más de altura */
 }
 
 .toast .icono {
-    color: rgba(0, 0, 0, 0.4);
+    margin-top: 4px;
+    color: rgba(255, 255, 255, 0.85); /* mejor contraste */
+    min-width: 22px;
+    min-height: 22px;
 }
 
 .toast .titulo {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    line-height: 1.3;
 }
 
 .toast .descripcion {
     font-size: 14px;
+    line-height: 1.4; /* más aire entre líneas */
+    white-space: pre-line; /* permite saltos de línea si el texto lo trae */
 }
 
 .toast .texto {
-    transform: translateY(10%);
+    transform: none; /* elimina ese "translateY" que rompe alineación */
 }
 
 .toast .btn-cerrar {
@@ -524,6 +530,7 @@ th.dtfc-fixed-right {
         width: 0%;
     }
 }
+/* END Toast */
 
 svg.tea {
     --secondary: #33406f;

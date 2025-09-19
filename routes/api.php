@@ -456,6 +456,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('recibos', 'generate');
             Route::post('recibos', 'create');
             Route::get('recibos-comprobante', 'generateComprobante');
+            Route::get('recibos-movimiento', 'movimientoContable');
             Route::post('recibos-comprobante', 'createComprobante');
             Route::put('recibos-comprobante', 'updateComprobante');
             Route::delete('recibos-comprobante', 'deleteComprobante');
@@ -464,6 +465,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(PagosController::class)->group(function () {
             Route::get('pagos', 'generate');
             Route::post('pagos', 'create');
+            Route::get('pagos-movimiento', 'movimientoContable');
         });
         
         //CAPTURA MOVIMIENTO INVENTARIO

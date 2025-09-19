@@ -434,7 +434,8 @@ class RecibosController extends Controller
                 $request->get('id_comprobante'),
                 $recibo,
                 $request->get('fecha_manual'),
-                $request->get('consecutivo')
+                $request->get('consecutivo'),
+                false
             );
 
             foreach ($request->get('movimiento') as $movimiento) {
@@ -1034,6 +1035,142 @@ class RecibosController extends Controller
 
         } catch (Exception $e) {
             DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public function movimientoContable(Request $request)
+    {
+        $rules = [
+            'movimiento' => '',
+            'pagos' => 'required',
+        ];
+        
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            $movimientos = json_decode($request->get('movimiento'));
+            $pagos = json_decode($request->get('pagos'));
+            $nit = $this->findNit($request->get('id_nit'));
+
+            $documentoGeneral = new Documento();
+
+            foreach ($movimientos as $movimiento) {
+
+                $cuentaRecord = PlanCuentas::find($movimiento->id_cuenta);
+                $naturalezaCuenta = $cuentaRecord->naturaleza_ingresos;
+                
+                if (count($cuentaRecord->tipos_cuenta)) {
+                    foreach ($cuentaRecord->tipos_cuenta as $tipoCuenta) {
+                        if ($tipoCuenta->id_tipo_cuenta == 8) {
+                            $naturalezaCuenta = $cuentaRecord->naturaleza_cuenta;
+                            break;
+                        }
+                    }
+                }
+
+                //AGREGAR MOVIMIENTO CONTABLE
+                $doc = new DocumentosGeneral([
+                    "id_cuenta" => $cuentaRecord->id,
+                    "id_nit" => null,
+                    "id_centro_costos" => null,
+                    "concepto" => $cuentaRecord->exige_concepto ? $movimiento->concepto : null,
+                    "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $movimiento->documento_referencia : null,
+                    "debito" => $movimiento->valor_recibido,
+                    "credito" => $movimiento->valor_recibido
+                ]);
+                $documentoGeneral->addRow($doc, $naturalezaCuenta);
+            }
+
+            //AGREGAR FORMAS DE PAGO
+            foreach ($pagos as $pagoItem) {
+
+                $pagoItem = (object)$pagoItem;
+                $formaPago = $this->findFormaPago($pagoItem->id);
+                $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $nit->id);
+                //CRUSAR ANTICIPOS
+                if (count($documentoReferenciaAnticipos)) {
+
+                    $pagoAnticipos = $pagoItem->valor;
+
+                    foreach ($documentoReferenciaAnticipos as $anticipos) {
+
+                        if (!$pagoAnticipos) {
+                            break;
+                        }
+                        
+                        $anticipoUsado = 0;
+                        $anticipoDisponible = floatval($anticipos->saldo);
+
+                        if ($anticipoDisponible >= $pagoAnticipos) {
+                            $anticipoUsado = $pagoAnticipos;
+                        } else {
+                            $anticipoUsado = $anticipoDisponible;
+                        }
+
+                        $pagoAnticipos-= $anticipoUsado;
+
+                        $doc = new DocumentosGeneral([
+                            'id_cuenta' => $formaPago->cuenta->id,
+                            'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
+                            'id_centro_costos' => null,
+                            'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$nit->nombre_nit : null,
+                            'documento_referencia' => $anticipos->documento_referencia,
+                            'debito' => $anticipoUsado,
+                            'credito' => $anticipoUsado,
+                        ]);
+
+                        $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ingresos);
+                    }
+                } else {
+
+                    $doc = new DocumentosGeneral([
+                        'id_cuenta' => $formaPago->cuenta->id,
+                        'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
+                        'id_centro_costos' => null,
+                        'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$nit->nombre_nit : null,
+                        'documento_referencia' => null,
+                        'debito' => $pagoItem->valor,
+                        'credito' => $pagoItem->valor
+                    ]);
+
+                    $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ingresos);
+                }
+            }
+
+            $movimientoGeneral = $documentoGeneral->getRows();
+            $totales = $documentoGeneral->getTotals();
+
+            $movimientoGeneral[] = [
+                'id_cuenta' => 'TOTALES',
+                'id_nit' => null,
+                'id_centro_costos' => null,
+                'concepto' => $totales->diferencia,
+                'documento_referencia' => null,
+                'debito' => $totales->debito,
+                'credito' => $totales->credito
+            ];
+
+            return response()->json([
+                'success'=>	true,
+                'data' => $movimientoGeneral,
+                'total' => $documentoGeneral->getTotals(),
+                'message'=> 'Movimiento contable generado con exito!'
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
             return response()->json([
                 "success"=>false,
                 'data' => [],

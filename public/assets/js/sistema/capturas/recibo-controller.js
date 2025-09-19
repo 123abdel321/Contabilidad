@@ -7,19 +7,100 @@ var validarFacturaRecibo = null;
 var totalAnticiposRecibo = null;
 var noBuscarDatosRecibo = false;
 var calculandoRowRecibos = false;
+var recibo_table_movimiento = null;
 var $comboComprobanteRecibos = null;
 var totalAnticiposReciboCuenta = null;
 
 function reciboInit () {
+
+    cargarFechasRecibo();
+    cargarCombosRecibo();
+    cargarTablasRecibo();
+    cargarFormasPagoRecibo();
+
+    if (reciboFecha) $('#fecha_manual_recibo').prop('disabled', false);
+    else $('#fecha_manual_recibo').prop('disabled', true);
+
+    if (reciboUpdate) $("#documento_referencia_recibo").prop('disabled', false);
+    else $("#documento_referencia_recibo").prop('disabled', true);
+
+    $('.water').hide();
+}
+
+function cargarFechasRecibo() {
     var dateNow = new Date();
-    // Formatear a YYYY-MM-DDTHH:MM (formato que espera datetime-local)
+
     var fechaHoraRecibo = dateNow.getFullYear() + '-' + 
         ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
         ("0" + dateNow.getDate()).slice(-2) + 'T' + 
         ("0" + dateNow.getHours()).slice(-2) + ':' + 
         ("0" + dateNow.getMinutes()).slice(-2);
     $('#fecha_manual_recibo').val(fechaHoraRecibo);
+}
 
+function cargarCombosRecibo() {
+    $comboNitRecibos = $('#id_nit_recibo').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        language: {
+            noResults: function() {
+                createNewNit = true;
+                return "No hay resultado";        
+            },
+            searching: function() {
+                createNewNit = false;
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/nit/combo-nit',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+    
+    $comboComprobanteRecibos= $('#id_comprobante_recibo').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        ajax: {
+            url: 'api/comprobantes/combo-comprobante',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_comprobante: 0,
+                    _type: 'query'
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    if (comprobantesRecibos && comprobantesRecibos.length == 1) {
+        var dataComprobante = {
+            id: comprobantesRecibos[0].id,
+            text: comprobantesRecibos[0].codigo + ' - ' + comprobantesRecibos[0].nombre
+        };
+        var newOption = new Option(dataComprobante.text, dataComprobante.id, false, false);
+        $comboComprobanteRecibos.append(newOption).val(dataComprobante.id).trigger('change');
+    }
+}
+
+function cargarTablasRecibo() {
     recibo_table = $('#reciboTable').DataTable({
         dom: '',
         paging: false,
@@ -108,7 +189,6 @@ function reciboInit () {
             },
             {//VALOR RECIBIDO
                 "data": function (row, type, set, col){
-                    const saldo = parseInt(row.saldo);
                     if (row.cuenta_recibo == 'sin_deuda') {
                         return '';
                     }
@@ -126,7 +206,6 @@ function reciboInit () {
             },
             {//CONCEPTO
                 "data": function (row, type, set, col){
-                    const saldo = parseInt(row.saldo);
                     if (row.cuenta_recibo == 'sin_deuda') {
                         return '';
                     }
@@ -291,73 +370,74 @@ function reciboInit () {
         }
     });
 
-    $comboNitRecibos = $('#id_nit_recibo').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
+    recibo_table_movimiento = $('#reciboMovimientoTable').DataTable({
+        pageLength: -1,
+        deferRender: true,
+        deferLoading: true,
+        dom: 'Brtip',
+        paging: false,
+        responsive: false,
+        processing: true,
+        serverSide: false,
+        fixedHeader: true,
+        deferLoading: 0,
         language: {
-            noResults: function() {
-                createNewNit = true;
-                return "No hay resultado";        
-            },
-            searching: function() {
-                createNewNit = false;
-                return "Buscando..";
-            },
-            inputTooShort: function () {
-                return "Por favor introduce 1 o más caracteres";
+            ...lenguajeDatatable,
+            info: "",
+            infoEmpty: "",
+            infoFiltered: "",
+        },
+        ordering: false,
+        scrollX: true,
+        scrollCollapse: true,
+        sScrollX: "100%",
+        autoWidth: false,
+        info: false,
+        ajax:  {
+            type: "GET",
+            headers: headers,
+            url: base_url + 'recibos-movimiento',
+            data: function ( d ) {
+                d.id_nit = $("#id_nit_recibo").val(),
+                d.pagos = JSON.stringify(getRecibosPagos()),
+                d.movimiento = JSON.stringify(getMovimientoRecibo())
             }
         },
-        ajax: {
-            url: 'api/nit/combo-nit',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
+        rowCallback: function(row, data, index){
+            if(data.id_cuenta == "TOTALES"){
+                $('td', row).css('background-color', '#000');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
+                return;
             }
-        }
-    });
-    
-    $comboComprobanteRecibos= $('#id_comprobante_recibo').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        ajax: {
-            url: 'api/comprobantes/combo-comprobante',
-            headers: headers,
-            data: function (params) {
-                var query = {
-                    q: params.term,
-                    tipo_comprobante: 0,
-                    _type: 'query'
+        },
+        columns: [
+            {
+                "data": function (row, type, set){
+                    if(row.id_cuenta == "TOTALES") return "TOTALES";
+                    if(row.cuenta) return row.cuenta.cuenta;
+                    return '';
                 }
-                return query;
             },
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
+            {
+                "data": function (row, type, set){
+                    if(row.cuenta) return row.cuenta.nombre;
+                    return '';
+                }
+            },
+            {"data":'debito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'credito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {
+                "data": function (row, type, set){
+                    const diferencia = parseFloat(row.concepto);
+                    if(row.id_cuenta == "TOTALES") {
+                        return diferencia.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                    }
+                    return row.concepto;
+                }
             }
-        }
+        ]
     });
-
-    if (comprobantesRecibos && comprobantesRecibos.length == 1) {
-        var dataComprobante = {
-            id: comprobantesRecibos[0].id,
-            text: comprobantesRecibos[0].codigo + ' - ' + comprobantesRecibos[0].nombre
-        };
-        var newOption = new Option(dataComprobante.text, dataComprobante.id, false, false);
-        $comboComprobanteRecibos.append(newOption).val(dataComprobante.id).trigger('change');
-    }
-
-    if (reciboFecha) $('#fecha_manual_recibo').prop('disabled', false);
-    else $('#fecha_manual_recibo').prop('disabled', true);
-
-    if (reciboUpdate) $("#documento_referencia_recibo").prop('disabled', false);
-    else $("#documento_referencia_recibo").prop('disabled', true);
-
-    loadFormasPagoRecibos();
 }
 
 function buscarFacturaRecibos(event) {
@@ -405,8 +485,10 @@ $(document).on('change', '#id_comprobante_recibo', function () {
 
 $(document).on('click', '#iniciarCapturaRecibo', function () {    
 
+    $("#crearCapturaRecibo").hide();
     $('#iniciarCapturaRecibo').hide();
     $('#cancelarCapturaRecibo').hide();
+    $("#movimientoContableRecibo").hide();
     $('#crearCapturaReciboDisabled').hide();
     $('#iniciarCapturaReciboLoading').show();
 
@@ -453,7 +535,7 @@ function reloadTableRecibos() {
         mostrarValoresRecibos();
 
         if (res.errores) {
-            disabledInputs();
+            disabledInputsRecibos();
             disabledFormasPagoRecibo(false);
             $('#crearCapturaRecibo').hide();
             $('#total_abono_recibo').prop('disabled', true);
@@ -465,13 +547,6 @@ function reloadTableRecibos() {
             if (data) {
                 $('#cancelarCapturaRecibo').show();
             }
-            // loadAnticiposRecibo();
-            // var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresRecibos();
-            // $("#total_abono_recibo").val(new Intl.NumberFormat("ja-JP").format(totalSaldo));
-            // setTimeout(function(){
-            //     $("#total_abono_recibo").focus();
-            //     $("#total_abono_recibo").select();
-            // },80);
         }
     });
 }
@@ -482,6 +557,11 @@ $(document).on('click', '#cancelarCapturaRecibo', function () {
 
 $(document).on('click', '#crearCapturaRecibo', function () {
     saveRecibo();
+});
+
+$(document).on('click', '#movimientoContableRecibo', function () {
+    $("#reciboMovimientoModal").modal('show');
+    recibo_table_movimiento.ajax.reload();
 });
 
 $(document).on('change', '#id_nit_recibo', function () {
@@ -499,6 +579,7 @@ function saveRecibo() {
     $('#iniciarCapturaRecibo').hide();
     $('#cancelarCapturaRecibo').hide();
     $('#crearCapturaRecibo').hide();
+    $('#movimientoContableRecibo').hide();
     $('#iniciarCapturaReciboLoading').show();
 
     let data = {
@@ -534,6 +615,7 @@ function saveRecibo() {
         $('#iniciarCapturaRecibo').show();
         $('#cancelarCapturaRecibo').show();
         $('#crearCapturaRecibo').show();
+        $('#movimientoContableRecibo').show();
         $('#iniciarCapturaReciboLoading').hide();
 
         var mensaje = err.responseJSON.message;
@@ -602,6 +684,7 @@ function cancelarRecibo() {
     $('#saldo_anticipo_recibo').val('0');
     $('#recibo_anticipo_disp').text('0');
     $('#crearCapturaRecibo').hide();
+    $('#movimientoContableRecibo').hide();
     $('#cancelarCapturaRecibo').hide();
     $('#input_anticipos_recibo').hide();
     $('#recibo_anticipo_disp_view').hide();
@@ -795,15 +878,18 @@ function mostrarValoresRecibos() {
 
     if (!totalSaldo) {
         $('#crearCapturaRecibo').hide();
+        $('#movimientoContableRecibo').hide();
         $('#cancelarCapturaRecibo').hide();
         $('#crearCapturaReciboDisabled').show();
     }
 
     if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP)) && $('#id_nit_recibo').val()) {
         $('#crearCapturaRecibo').show();
+        $('#movimientoContableRecibo').show();
         $('#crearCapturaReciboDisabled').hide();
     } else {
         $('#crearCapturaRecibo').hide();
+        $('#movimientoContableRecibo').hide();
         $('#crearCapturaReciboDisabled').show();
     }
 }
@@ -919,9 +1005,11 @@ function calcularRecibosPagos(idFormaPago = null) {
 
     if (!totalFaltante) {
         $('#crearCapturaRecibo').show();
+        $('#movimientoContableRecibo').show();
         $('#crearCapturaReciboDisabled').hide();
     } else {
         $('#crearCapturaRecibo').hide();
+        $('#movimientoContableRecibo').hide();
         $('#crearCapturaReciboDisabled').show();
     }
 }
@@ -1334,13 +1422,13 @@ function consecutivoSiguienteRecibo() {
     }
 }
 
-function loadFormasPagoRecibos() {
+function cargarFormasPagoRecibo() {
     recibo_table_pagos.ajax.reload(function(res) {
         disabledFormasPagoRecibo(true);
     });
 }
 
-function disabledInputs(estado = true) {
+function disabledInputsRecibos(estado = true) {
     const dataRecibos = recibo_table.rows().data();
 
     if (dataRecibos.length) {

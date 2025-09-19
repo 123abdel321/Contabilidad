@@ -182,6 +182,7 @@
     </div>
 
     @include('pages.capturas.recibo.recibo-anticipos')
+    @include('pages.capturas.recibo.recibo-movimiento')
 
     <script>
         var reciboFecha = @json(auth()->user()->can("recibo fecha"));

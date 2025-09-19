@@ -75,14 +75,20 @@
                         <i class="fas fa-plus-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">AGREGAR PRODUCTO</b>
                     </span>
+
+                    
                     <span id="crearCapturaReciboDisabled" href="javascript:void(0)" class="badge bg-gradient-dark" style="min-width: 40px; display:none; float: right; cursor: no-drop; margin-top: 5px;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR RECIBO</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
-                    <span id="crearCapturaRecibo" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; display:none; float: right;">
+                    <span id="crearCapturaRecibo" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; display:none; float: right; margin-left: 3px;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR RECIBO</b>
+                    </span>
+                    <span id="movimientoContableRecibo" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px; display:none; float: right;">
+                        <i class="fa-solid fa-calculator" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">VER MOVIMIENTO CONTABLE</b>
                     </span>
                     <span id="iniciarCapturaReciboLoading" class="badge bg-gradient-info btn-bg-excel" style="display:none; min-width: 40px; margin-bottom: 16px; float: right;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
