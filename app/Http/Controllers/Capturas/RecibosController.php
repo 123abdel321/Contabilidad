@@ -1166,7 +1166,6 @@ class RecibosController extends Controller
             return response()->json([
                 'success'=>	true,
                 'data' => $movimientoGeneral,
-                'total' => $documentoGeneral->getTotals(),
                 'message'=> 'Movimiento contable generado con exito!'
             ], Response::HTTP_OK);
 

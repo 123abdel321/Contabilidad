@@ -70,30 +70,36 @@
                 </form>
                 <div class="col-md normal-rem" style="margin-top: -5px;">
                     <!-- BOTON GENERAR -->
-                    <span id="iniciarCapturaGasto" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
+                    <span id="iniciarCapturaGasto" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;">
                         <i class="fas fa-folder-open" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">INICIAR GASTO</b>
                     </span>
-                    <span id="iniciarCapturaGastoLoading" class="badge bg-gradient-success" style="display:none; min-width: 40px; margin-bottom: 12px; float: inline-end;">
-                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">CARGANDO</b>
-                    </span>
-                    <span id="cancelarCapturaGasto" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="min-width: 40px; display:none;">
+                    <span id="cancelarCapturaGasto" href="javascript:void(0)" class="btn badge bg-gradient-danger btn-bg-danger" style="min-width: 40px; display:none;">
                         <i class="fas fa-times-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">CANCELAR GASTO</b>
                     </span>
-                    <span id="agregarGasto" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; display:none;">
+                    <span id="agregarGasto" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-info" style="min-width: 40px; display:none;">
                         <i class="fas fa-plus-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">AGREGAR GASTO</b>
                     </span>
-                    <span id="crearCapturaGastoDisabled" href="javascript:void(0)" class="badge bg-success" style="min-width: 40px; display:none; float: right; background-color: #2dce899c !important; cursor: no-drop;">
+
+
+                    <span id="crearCapturaGastoDisabled" href="javascript:void(0)" class="badge bg-gradient-dark" style="min-width: 40px; display:none; float: right; cursor: no-drop; margin-left: 4px;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR GASTO</b>
-                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
+                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px;"></i>
                     </span>
-                    <span id="crearCapturaGasto" href="javascript:void(0)" class="btn badge bg-gradient-success" style="min-width: 40px; display:none; float: right;">
+                    <span id="crearCapturaGasto" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; display:none; float: right; margin-left: 4px;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR GASTO</b>
+                    </span>
+                    <span id="movimientoContableGasto" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px; display:none; float: right;">
+                        <i class="fa-solid fa-calculator" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">VER MOVIMIENTO CONTABLE</b>
+                    </span>
+                    <span id="iniciarCapturaGastoLoading" class="badge bg-gradient-success btn-bg-excel" style="display:none; min-width: 40px; margin-bottom: 12px; float: inline-end;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>
                 </div>
             </div>

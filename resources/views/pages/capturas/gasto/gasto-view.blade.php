@@ -221,6 +221,7 @@
     </div>
 
     @include('pages.capturas.gasto.gasto-anticipos')
+    @include('pages.capturas.gasto.gasto-movimiento')
 
     <script>
         let gastoIva = @json(auth()->user()->can("gasto iva"));

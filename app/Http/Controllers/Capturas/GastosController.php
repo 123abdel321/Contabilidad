@@ -202,7 +202,8 @@ class GastosController extends Controller
                 $request->get('id_comprobante'),
                 $gasto,
                 $request->get('fecha_manual'),
-                $request->get('consecutivo')
+                $request->get('consecutivo'),
+                false
             );
 
             $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
@@ -521,6 +522,276 @@ class GastosController extends Controller
             ->showPdf();
     }
 
+    public function movimientoContable(Request $request)
+    {
+        $rules = [
+            'movimiento' => '',
+            'pagos' => 'required',
+        ];
+        
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+
+            if (!$request->get('id_nit')) {
+                return response()->json([
+                    'success'=>	true,
+                    'data' => [],
+                    'message'=> 'Movimiento contable generado con exito!'
+                ], Response::HTTP_OK);       
+            }
+
+            $movimientos = json_decode($request->get('movimiento'));
+            $pagos = json_decode($request->get('pagos'));
+            $this->proveedor = $this->findProveedor($request->get('id_nit'));
+            
+            $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
+            $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
+
+            $redondeo_gastos = VariablesEntorno::where('nombre', 'redondeo_gastos')->first();
+            $redondeo_gastos = $redondeo_gastos ? floatval($redondeo_gastos->valor) : null;
+            // dd('ca mismo');
+            $this->calcularTotales($movimientos, $request->get('id_nit'));
+            $this->calcularFormasPago($pagos);
+
+            $documentoGeneral = new Documento();
+            
+            //AGREGAR MOVIMIENTO DE CUENTAS POR GASTO
+            foreach ($movimientos as $movimiento) {
+                
+                $conceptoGasto = ConConceptoGastos::with(
+                    'cuenta_gasto.tipos_cuenta',
+                    'cuenta_reteica.tipos_cuenta',
+                    'cuenta_descento.tipos_cuenta',
+                    'cuenta_iva.impuesto',
+                    'cuenta_retencion.impuesto',
+                    'cuenta_retencion_declarante.impuesto',
+                    'cuenta_iva.tipos_cuenta',
+                    'cuenta_retencion.tipos_cuenta',
+                    'cuenta_retencion_declarante.tipos_cuenta',
+                )->find($movimiento->id_concepto);
+
+                $porcentajeRetencion = $this->totalesFactura['porcentaje_rete_fuente'];
+                $porcentajeReteIca = $this->totalesFactura['porcentaje_rete_ica'];
+                $porcentajeIva = 0;
+
+                if ($conceptoGasto->cuenta_iva && floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje)) {
+                    $porcentajeIva = floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje);
+                } else if (!$conceptoGasto->cuenta_iva && $this->proveedor->porcentaje_aiu && $porcentaje_iva_aiu) {
+                    $porcentajeIva = $porcentaje_iva_aiu;
+                }
+
+                $subtotalGasto = $this->redondearGasto($movimiento->valor_gasto - $movimiento->descuento_gasto, $redondeo_gastos);
+                $baseAIU = 0;
+                
+                if (floatval($this->proveedor->porcentaje_aiu)) {
+
+                    $ivaGasto = 0;
+                    $baseAIU = $this->redondearGasto($subtotalGasto * ($this->proveedor->porcentaje_aiu / 100), $redondeo_gastos);
+
+                    if ($porcentajeIva) {
+                        $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
+                    } else if ($porcentaje_iva_aiu) {
+                        $ivaGasto = $baseAIU * ($porcentaje_iva_aiu / 100);
+                    }
+                    $ivaGasto = $this->redondearGasto($ivaGasto, $redondeo_gastos);
+                    $retencionGasto = $this->redondearGasto($porcentajeRetencion ? ($baseAIU - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos);
+                    $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
+                    $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
+                    
+                    $subtotalGasto+= $ivaGasto;
+                } else {
+                    $ivaGasto = $this->redondearGasto($porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0, $redondeo_gastos);
+                    $retencionGasto = $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos);
+                    $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
+                    $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
+                }
+
+                if ($this->proveedor->sumar_aiu) {
+                    $totalGasto+= $baseAIU;
+                    $subtotalGasto+= $baseAIU;
+                }
+
+                foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
+
+                    $cuentaRecord = $conceptoGasto->{$cuentaKey};
+                    if (!$cuentaRecord) continue;
+                    
+                    $naturalezaCuenta = $cuentaRecord->naturaleza_compras;
+
+                    if (count($cuentaRecord->tipos_cuenta)) {
+                        foreach ($cuentaRecord->tipos_cuenta as $tipoCuenta) {
+                            if ($tipoCuenta->id_tipo_cuenta == 7) {
+                                $naturalezaCuenta = $cuentaRecord->naturaleza_cuenta;
+                                break;
+                            }
+                        }
+                    }
+
+                    $detalleGasto = (object)[
+                        'observacion' => $movimiento->observacion,
+                        'subtotal' => $subtotalGasto,
+                        'aiu_porcentaje' => $this->proveedor->porcentaje_aiu,
+                        'aiu_valor' => $baseAIU,
+                        'descuento_porcentaje' => $movimiento->porcentaje_descuento_gasto,
+                        'rete_fuente_porcentaje' => $porcentajeRetencion,
+                        'rete_ica_porcentaje' => $porcentajeReteIca,
+                        'descuento_valor' => $movimiento->descuento_gasto,
+                        'rete_fuente_valor' => $retencionGasto,
+                        'rete_ica_valor' => $reteIcaGasto,
+                        'iva_porcentaje' => $porcentajeIva,
+                        'iva_valor' => $ivaGasto + $movimiento->no_valor_iva,
+                        'total' => $totalGasto,
+                    ];
+
+                    $keyValorItem = $cuenta["valor"];
+                    $valorTotal = $detalleGasto->{$keyValorItem};
+
+                    $doc = new DocumentosGeneral([
+                        "id_cuenta" => $cuentaRecord->id,
+                        "id_nit" => null,
+                        "id_centro_costos" => null,
+                        "concepto" => $cuentaRecord->exige_concepto ? 'GASTO: '.$movimiento->observacion : null,
+                        "documento_referencia" => null,
+                        "debito" => $valorTotal,
+                        "credito" => $valorTotal
+                    ]);
+                    $documentoGeneral->addRow($doc, $naturalezaCuenta);
+                }
+            }
+            //AGREGAR RETE FUENTE
+            if ($this->totalesFactura['total_rete_fuente']) {
+                $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
+                
+                if ($cuentaRetencion->naturaleza_compras == PlanCuentas::DEBITO || $cuentaRetencion->naturaleza_compras == PlanCuentas::CREDITO) {
+                    $doc = new DocumentosGeneral([
+                        "id_cuenta" => $cuentaRetencion->id,
+                        "id_nit" => null,
+                        "id_centro_costos" => null,
+                        "concepto" => $cuentaRetencion->exige_concepto ? 'GASTO: RETENCIÓN' : null,
+                        "documento_referencia" => null,
+                        "debito" => $this->totalesFactura['total_rete_fuente'],
+                        "credito" => $this->totalesFactura['total_rete_fuente'],
+                    ]);
+                    $documentoGeneral->addRow($doc, $cuentaRetencion->naturaleza_compras);
+                }
+            }
+            //AGREGAR FORMAS DE PAGO
+            $totalGasto = $this->totalesFactura['total_pagado'];
+            foreach ($pagos as $pagoItem) {
+                
+                $pagoItem = (object)$pagoItem;
+                $totalGasto-= $pagoItem->valor;
+                $formaPago = $this->findFormaPago($pagoItem->id);
+                $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $this->proveedor->id);
+
+                //CRUSAR ANTICIPOS
+                if (count($documentoReferenciaAnticipos)) {
+
+                    $pagoAnticipos = $pagoItem->valor;
+
+                    foreach ($documentoReferenciaAnticipos as $anticipos) {
+
+                        $naturaleza = $formaPago->cuenta->naturaleza_egresos;
+
+                        if ($formaPago->cuenta?->tipos_cuenta) {
+                            foreach ($formaPago->cuenta->tipos_cuenta as $tipos_cuenta) {
+                                if ($tipos_cuenta->id_tipo_cuenta == 7) {
+                                    $naturaleza = $formaPago->cuenta->naturaleza_compras;
+                                }
+                            }
+                        }
+
+                        if (!$pagoAnticipos) {
+                            break;
+                        }
+
+                        $anticipoUsado = 0;
+                        $anticipoDisponible = floatval($anticipos->saldo);
+
+                        if ($anticipoDisponible >= $pagoAnticipos) {
+                            $anticipoUsado = $pagoAnticipos;
+                        } else {
+                            $anticipoUsado = $anticipoDisponible;
+                        }
+
+                        $pagoAnticipos-= $anticipoUsado;
+
+                        $doc = new DocumentosGeneral([
+                            'id_cuenta' => $formaPago->cuenta->id,
+                            'id_nit' => null,
+                            'id_centro_costos' => null,
+                            'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$nit->nombre_nit : null,
+                            'documento_referencia' => $anticipos->documento_referencia,
+                            'debito' => $anticipoUsado,
+                            'credito' => $anticipoUsado,
+                        ]);
+
+                        $documentoGeneral->addRow($doc, $naturaleza);
+                    }
+                } else {
+                    $naturaleza = $formaPago->cuenta->naturaleza_egresos;
+                    
+                    if ($formaPago->cuenta?->tipos_cuenta) {
+                        foreach ($formaPago->cuenta->tipos_cuenta as $tipos_cuenta) {
+                            if ($tipos_cuenta->id_tipo_cuenta == 4) {
+                                $naturaleza = $formaPago->cuenta->naturaleza_compras;
+                            }
+                        }
+                    }
+
+                    $doc = new DocumentosGeneral([
+                        'id_cuenta' => $formaPago->cuenta->id,
+                        'id_nit' => null,
+                        'id_centro_costos' => null,
+                        'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL PAGO: '.$this->proveedor->nombre_nit : null,
+                        'documento_referencia' => null,
+                        'debito' => $pagoItem->valor,
+                        'credito' => $pagoItem->valor,
+                    ]);
+
+                    $documentoGeneral->addRow($doc, $naturaleza);
+                }
+            }
+
+
+
+            $movimientoGeneral = $documentoGeneral->getRows();
+            $totales = $documentoGeneral->getTotals();
+
+            $movimientoGeneral[] = [
+                'id_cuenta' => 'TOTALES',
+                'id_nit' => null,
+                'id_centro_costos' => null,
+                'concepto' => $totales->diferencia,
+                'documento_referencia' => null,
+                'debito' => $totales->debito,
+                'credito' => $totales->credito
+            ];
+
+            return response()->json([
+                'success'=>	true,
+                'data' => $movimientoGeneral,
+                'message'=> 'Movimiento contable generado con exito!'
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
     private function createFacturaGasto($request)
     {
         
@@ -552,17 +823,17 @@ class GastosController extends Controller
 
     private function calcularTotales($gastos, $idNit)
     {
+        
         $subtotalGeneral = 0;
         $redondeo_gastos = VariablesEntorno::where('nombre', 'redondeo_gastos')->first();
         $redondeo_gastos = $redondeo_gastos ? floatval($redondeo_gastos->valor) : null;
         
         $nit = Nits::find($idNit);
         $responsabilidades = $this->getResponsabilidades($nit->id_responsabilidades);
-
+        
         foreach ($gastos as $gasto) {
             $gasto = (object)$gasto;
             $subtotalGeneral+= $gasto->valor_gasto - $gasto->descuento_gasto;
-
             $conceptoGasto = ConConceptoGastos::with(
                 'cuenta_gasto',
                 'cuenta_descento',
@@ -571,7 +842,7 @@ class GastosController extends Controller
                 'cuenta_retencion.impuesto',
                 'cuenta_retencion_declarante.impuesto'
             )->find($gasto->id_concepto);
-
+            
             $id_retencion = null;
             $base_retencion = null;
             $porcentaje_retencion = null;
@@ -593,7 +864,7 @@ class GastosController extends Controller
                 ];
             }
         }
-
+        
         foreach ($this->retenciones as $retencion) {
             $retencion = (object)$retencion;
             if ($subtotalGeneral >= $retencion->base && $retencion->porcentaje > $this->totalesFactura['porcentaje_rete_fuente']) {
@@ -616,7 +887,7 @@ class GastosController extends Controller
             )->find($gasto->id_concepto);
             
             $baseAIU = 0;
-
+            
             $porcentajeReteIca = floatval($nit->porcentaje_reteica);
             $porcentajeReteIca = $conceptoGasto->cuenta_reteica ? $porcentajeReteIca : 0;
             $porcentajeIva = $conceptoGasto->cuenta_iva ? floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje) : 0;
@@ -632,7 +903,7 @@ class GastosController extends Controller
             $valorRetencion = 0;
             $valorReteIca = 0;
             $ivaGasto = 0;
-
+            
             if ($baseAIU) {
                 $porcentajeIva = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
                 $porcentajeIva = $porcentajeIva ? floatval($porcentajeIva->valor) : 0;

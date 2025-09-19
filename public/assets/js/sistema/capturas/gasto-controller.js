@@ -17,21 +17,168 @@ var validandoDatosIva = false;
 let responsabilidadesGasto = [];
 var validarFacturaGastos = false;
 var abrirFormasPagoGastos = false;
+var gasto_table_movimiento = null;
 var $comboCentroCostoGastos = null;
 var $comboComprobanteGastos = null;
 var totalAnticiposGastoCuenta = null;
 
 function gastoInit () {
 
+    cargarFechasGasto();
+    cargarCombosGasto();
+    cargarTablasGasto();
+    loadFormasPagoGastos();
+    
+    $('[data-toggle="popover"]').popover({
+        trigger: 'hover',
+        html: true,
+        placement: 'top',
+        container: 'body',
+        customClass: 'popover-formas-pagos'
+    });
+
+    $('.water').hide();
+}
+
+function cargarFechasGasto() {
     var dateNow = new Date();
     // Formatear a YYYY-MM-DDTHH:MM (formato que espera datetime-local)
-    var fechaHoraRecibo = dateNow.getFullYear() + '-' + 
+    var fechaHoraGasto = dateNow.getFullYear() + '-' + 
         ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
         ("0" + dateNow.getDate()).slice(-2) + 'T' + 
         ("0" + dateNow.getHours()).slice(-2) + ':' + 
         ("0" + dateNow.getMinutes()).slice(-2);
-    $('#fecha_manual_gasto').val(fechaHoraRecibo);
+    $('#fecha_manual_gasto').val(fechaHoraGasto);
+}
 
+function cargarCombosGasto() {
+    $comboNitGastos = $('#id_nit_gasto').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        language: {
+            noResults: function() {
+                createNewNit = true;
+                return "No hay resultado";        
+            },
+            searching: function() {
+                createNewNit = false;
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/nit/combo-nit',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+    
+    $comboComprobanteGastos = $('#id_comprobante_gasto').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        ajax: {
+            url: 'api/comprobantes/combo-comprobante',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                    tipo_comprobante: 5,
+                    _type: 'query'
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $comboCentroCostoGastos = $('#id_centro_costos_gasto').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        ajax: {
+            url: 'api/centro-costos/combo-centro-costo',
+            headers: headers,
+            data: function (params) {
+                var query = {
+                    q: params.term,
+                }
+                return query;
+            },
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    if (comprobantesGastos && comprobantesGastos.length) {
+        var dataComprobante = {
+            id: comprobantesGastos[0].id,
+            text: comprobantesGastos[0].codigo + ' - ' + comprobantesGastos[0].nombre
+        };
+        var newOption = new Option(dataComprobante.text, dataComprobante.id, false, false);
+        $comboComprobanteGastos.append(newOption).val(dataComprobante.id).trigger('change');
+    }
+
+    if (centrosCostosGastos && centrosCostosGastos.length) {
+        var dataCecos = {
+            id: centrosCostosGastos[0].id,
+            text: centrosCostosGastos[0].codigo + ' - ' + centrosCostosGastos[0].nombre
+        };
+        var newOption = new Option(dataCecos.text, dataCecos.id, false, false);
+        $comboCentroCostoGastos.append(newOption).val(dataCecos.id).trigger('change');
+    }
+
+    $comboNitGastos.on('select2:close', function(event) {
+
+        if (editandoGasto) return;
+
+        var dataNit = $('#id_nit_gasto').select2('data');
+        var columnValReteIca = gasto_table.column(8);
+
+        if (dataNit && dataNit.length) {
+            dataNit = dataNit[0];
+            sumarAIU = dataNit.sumar_aiu ? true : false;
+            responsabilidadesGasto = getResponsabilidades(dataNit.id_responsabilidades);
+            if (dataNit.porcentaje_reteica) {
+                porcentajeReteica = parseFloat(dataNit.porcentaje_reteica);
+                columnValReteIca.visible(true);
+            } else {
+                columnValReteIca.visible(false);
+            }
+            actualizarInfoRetencionGastos();
+        } else {
+            porcentajeReteica = 0;
+            columnValReteIca.visible(false);
+        }
+
+        if (porcentajeReteica) {
+            $("#texto_gasto_reteica").html(`RETEICA %${porcentajeReteica}: `);
+            $("#gasto_reteica_disp_view").show();
+        } else {
+            $("#gasto_reteica_disp_view").hide();
+        }
+    });
+
+    setTimeout(function(){
+        $comboNitGastos.select2("open");
+    },10);
+}
+
+function cargarTablasGasto() {
     gasto_table = $('#gastoTable').DataTable({
         pageLength: 300,
         dom: '',
@@ -309,125 +456,73 @@ function gastoInit () {
         }
     });
 
-    $comboNitGastos = $('#id_nit_gasto').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
+    gasto_table_movimiento = $('#gastoMovimientoTable').DataTable({
+        pageLength: -1,
+        deferRender: true,
+        deferLoading: true,
+        dom: 'Brtip',
+        paging: false,
+        responsive: false,
+        processing: true,
+        serverSide: false,
+        fixedHeader: true,
+        deferLoading: 0,
         language: {
-            noResults: function() {
-                createNewNit = true;
-                return "No hay resultado";        
-            },
-            searching: function() {
-                createNewNit = false;
-                return "Buscando..";
-            },
-            inputTooShort: function () {
-                return "Por favor introduce 1 o más caracteres";
+            ...lenguajeDatatable,
+            info: "",
+            infoEmpty: "",
+            infoFiltered: "",
+        },
+        ordering: false,
+        scrollX: true,
+        scrollCollapse: true,
+        sScrollX: "100%",
+        autoWidth: false,
+        info: false,
+        ajax:  {
+            type: "GET",
+            headers: headers,
+            url: base_url + 'gastos-movimiento',
+            data: function ( d ) {
+                d.id_nit = $("#id_nit_gasto").val(),
+                d.pagos = JSON.stringify(getGastosPagos()),
+                d.movimiento = JSON.stringify(getGastosData())
             }
         },
-        ajax: {
-            url: 'api/nit/combo-nit',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
+        rowCallback: function(row, data, index){
+            if(data.id_cuenta == "TOTALES"){
+                $('td', row).css('background-color', '#000');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
+                return;
             }
-        }
-    });
-    
-    $comboComprobanteGastos = $('#id_comprobante_gasto').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        ajax: {
-            url: 'api/comprobantes/combo-comprobante',
-            headers: headers,
-            data: function (params) {
-                var query = {
-                    q: params.term,
-                    tipo_comprobante: 5,
-                    _type: 'query'
+        },
+        columns: [
+            {
+                "data": function (row, type, set){
+                    if(row.id_cuenta == "TOTALES") return "TOTALES";
+                    if(row.cuenta) return row.cuenta.cuenta;
+                    return '';
                 }
-                return query;
             },
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    $comboCentroCostoGastos = $('#id_centro_costos_gasto').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        ajax: {
-            url: 'api/centro-costos/combo-centro-costo',
-            headers: headers,
-            data: function (params) {
-                var query = {
-                    q: params.term,
+            {
+                "data": function (row, type, set){
+                    if(row.cuenta) return row.cuenta.nombre;
+                    return '';
                 }
-                return query;
             },
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
+            {"data":'debito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'credito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {
+                "data": function (row, type, set){
+                    const diferencia = parseFloat(row.concepto);
+                    if(row.id_cuenta == "TOTALES") {
+                        return diferencia.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                    }
+                    return row.concepto;
+                }
             }
-        }
-    });
-
-    if (comprobantesGastos && comprobantesGastos.length) {
-        var dataComprobante = {
-            id: comprobantesGastos[0].id,
-            text: comprobantesGastos[0].codigo + ' - ' + comprobantesGastos[0].nombre
-        };
-        var newOption = new Option(dataComprobante.text, dataComprobante.id, false, false);
-        $comboComprobanteGastos.append(newOption).val(dataComprobante.id).trigger('change');
-    }
-
-    if (centrosCostosGastos && centrosCostosGastos.length) {
-        var dataCecos = {
-            id: centrosCostosGastos[0].id,
-            text: centrosCostosGastos[0].codigo + ' - ' + centrosCostosGastos[0].nombre
-        };
-        var newOption = new Option(dataCecos.text, dataCecos.id, false, false);
-        $comboCentroCostoGastos.append(newOption).val(dataCecos.id).trigger('change');
-    }
-
-    $comboNitGastos.on('select2:close', function(event) {
-
-        if (editandoGasto) return;
-
-        var dataNit = $('#id_nit_gasto').select2('data');
-        var columnValReteIca = gasto_table.column(8);
-
-        if (dataNit && dataNit.length) {
-            dataNit = dataNit[0];
-            sumarAIU = dataNit.sumar_aiu ? true : false;
-            responsabilidadesGasto = getResponsabilidades(dataNit.id_responsabilidades);
-            if (dataNit.porcentaje_reteica) {
-                porcentajeReteica = parseFloat(dataNit.porcentaje_reteica);
-                columnValReteIca.visible(true);
-            } else {
-                columnValReteIca.visible(false);
-            }
-            actualizarInfoRetencionGastos();
-        } else {
-            porcentajeReteica = 0;
-            columnValReteIca.visible(false);
-        }
-
-        if (porcentajeReteica) {
-            $("#texto_gasto_reteica").html(`RETEICA %${porcentajeReteica}: `);
-            $("#gasto_reteica_disp_view").show();
-        } else {
-            $("#gasto_reteica_disp_view").hide();
-        }
+        ]
     });
 
     if (gastoUpdate) $("#consecutivo_gasto").prop('disabled', false);
@@ -449,20 +544,6 @@ function gastoInit () {
         columnPorDescuento.visible(false);
         columnValDescuento.visible(false);
     }
-
-    setTimeout(function(){
-        $comboNitGastos.select2("open");
-    },10);
-
-    loadFormasPagoGastos();
-    
-    $('[data-toggle="popover"]').popover({
-        trigger: 'hover',
-        html: true,
-        placement: 'top',
-        container: 'body',
-        customClass: 'popover-formas-pagos'
-    });
 }
 
 function loadFormasPagoGastos() {
@@ -711,7 +792,10 @@ function mostrarValoresGastos () {
     var countF = new CountUp('gasto_aiu', 0, gasto_aiu, 2, 0.5);
         countF.start();
 
-    if (gasto_total) disabledFormasPagoGasto(false);
+    if (gasto_total) {
+        disabledFormasPagoGasto(false);
+        $("#movimientoContableGasto").show();
+    }
     else disabledFormasPagoGasto();
 }
 
@@ -1413,6 +1497,7 @@ function saveGasto () {
     $("#agregarGasto").hide();
     $("#crearCapturaGasto").hide();
     $("#cancelarCapturaGasto").hide();
+    $("#movimientoContableGasto").hide();
     $("#crearCapturaGastoDisabled").hide();
     $("#iniciarCapturaGastoLoading").show();
 
@@ -1464,6 +1549,7 @@ function saveGasto () {
         $("#agregarGasto").show();
         $("#crearCapturaGasto").show();
         $("#cancelarCapturaGasto").show();
+        $("#movimientoContableGasto").show();
         $("#iniciarCapturaGastoLoading").hide();
 
         var mensaje = err.responseJSON.message;
@@ -1534,10 +1620,12 @@ function calcularGastosPagos (idFormaPago = null) {
     if (!totalFaltante) {
         $("#gasto_faltante_view").hide();
         $('#crearCapturaGasto').show();
+        $("#movimientoContableGasto").show();
         $('#crearCapturaGastoDisabled').hide();
     } else {
         $("#gasto_faltante_view").show();
         $('#crearCapturaGasto').hide();
+        $("#movimientoContableGasto").show();
         $('#crearCapturaGastoDisabled').show();
     }
 }
@@ -1556,6 +1644,7 @@ function deleteGastoRow (idGasto) {
     }
 
     $("#crearCapturaGasto").hide();
+    $("#movimientoContableGasto").hide();
     $("#crearCapturaGastoDisabled").show();
 }
 
@@ -1603,6 +1692,7 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
 
         $("#crearCapturaGasto").hide();
         $("#iniciarCapturaGasto").hide();
+        $("#movimientoContableGasto").hide();
         $("#iniciarCapturaGastoLoading").show();
 
         $.ajax({
@@ -1712,6 +1802,11 @@ $(document).on('click', '#cancelarCapturaGasto', function () {
     cancelarGasto();
 });
 
+$(document).on('click', '#movimientoContableGasto', function () {
+    $("#gastoMovimientoModal").modal('show');
+    gasto_table_movimiento.ajax.reload();
+});
+
 function agregarPagosGastos(pagos) {
     if (!pagos.length) return;
 
@@ -1772,6 +1867,7 @@ function cancelarGasto() {
     $('#iniciarCapturaGasto').show();
     $('#cancelarCapturaGasto').hide();
     $('#input_anticipos_gasto').hide();
+    $("#movimientoContableGasto").hide();
     $('#gasto_anticipo_disp_view').hide();
     $('#crearCapturaGastoDisabled').hide();
     $('#documento_referencia_gasto').val('');

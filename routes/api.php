@@ -450,6 +450,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::controller(GastosController::class)->group(function () {
             Route::post('gastos', 'create');
             Route::get('gastos', 'find');
+            Route::get('gastos-movimiento', 'movimientoContable');
         });
         //CAPTURA RECIBO
         Route::controller(RecibosController::class)->group(function () {
