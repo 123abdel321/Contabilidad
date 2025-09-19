@@ -34,6 +34,8 @@
                 @if($balance->cuenta == 'TOTALES')
                     @include('excel.balance.celdas', ['style' => 'background-color: #000000; font-weight: bold; color: #ffffff;', 'balance' => $balance])
                 @elseif($balance->auxiliar)
+                    @include('excel.balance.celdas', ['style' => 'background-color: #ecf6fa; color: #000;', 'balance' => $balance])
+                @elseif($balance->balance)
                     @include('excel.balance.celdas', ['style' => 'background-color: #ffffff; color: #000;', 'balance' => $balance])
                 @elseif(strlen($balance->cuenta) == 1)
                     @include('excel.balance.celdas', ['style' => 'background-color: #212329; font-weight: bold; color: #ffffff;', 'balance' => $balance])
@@ -50,7 +52,9 @@
                         @include('excel.balance.celdas', ['style' => 'background-color: #33849e; font-weight: 600; color: #ffffff;', 'balance' => $balance])
                     @endif
                 @elseif(strlen($balance->cuenta) == 6)
-                    @include('excel.balance.celdas', ['style' => 'background-color: #9bd8e9ff; font-weight: 600;', 'balance' => $balance])
+                    @include('excel.balance.celdas', ['style' => 'background-color: #9bd8e9ff; font-weight: 600; color: #000;', 'balance' => $balance])
+                @elseif(!$balance->auxiliar)
+                    @include('excel.balance.celdas', ['style' => 'background-color: #e8e9e9; font-weight: 700; color: #000;', 'balance' => $balance])
                 @endif
             </tr>
 		@endforeach
