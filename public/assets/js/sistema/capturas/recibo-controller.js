@@ -488,7 +488,7 @@ $(document).on('click', '#iniciarCapturaRecibo', function () {
     $("#crearCapturaRecibo").hide();
     $('#iniciarCapturaRecibo').hide();
     $('#cancelarCapturaRecibo').hide();
-    $("#movimientoContableRecibo").hide();
+    $('#movimientoContableRecibo').hide();
     $('#crearCapturaReciboDisabled').hide();
     $('#iniciarCapturaReciboLoading').show();
 
@@ -878,18 +878,18 @@ function mostrarValoresRecibos() {
 
     if (!totalSaldo) {
         $('#crearCapturaRecibo').hide();
-        $('#movimientoContableRecibo').hide();
         $('#cancelarCapturaRecibo').hide();
+        $('#movimientoContableRecibo').hide();
         $('#crearCapturaReciboDisabled').show();
+    } else {
+        $('#movimientoContableRecibo').show();
     }
 
     if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP)) && $('#id_nit_recibo').val()) {
         $('#crearCapturaRecibo').show();
-        $('#movimientoContableRecibo').show();
         $('#crearCapturaReciboDisabled').hide();
     } else {
         $('#crearCapturaRecibo').hide();
-        $('#movimientoContableRecibo').hide();
         $('#crearCapturaReciboDisabled').show();
     }
 }

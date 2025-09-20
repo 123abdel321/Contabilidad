@@ -878,18 +878,18 @@ function mostrarValoresPagos() {
 
     if (!totalSaldo) {
         $('#crearCapturaPago').hide();
-        $('#movimientoContablePago').hide();
         $('#cancelarCapturaPago').hide();
+        $('#movimientoContableRecibo').hide();
         $('#crearCapturaPagoDisabled').show();
+    } else {
+        $('#movimientoContablePago').show();
     }
 
     if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP)) && $('#id_nit_pago').val()) {
         $('#crearCapturaPago').show();
-        $('#movimientoContablePago').show();
         $('#crearCapturaPagoDisabled').hide();
     } else {
         $('#crearCapturaPago').hide();
-        $('#movimientoContablePago').hide();
         $('#crearCapturaPagoDisabled').show();
     }
 }
