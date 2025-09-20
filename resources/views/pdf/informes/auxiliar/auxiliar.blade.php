@@ -8,12 +8,19 @@
 
         <style>
 			body {
-				margin: 0;
-				font-family: "Lato", sans-serif;
-				line-height: 16px;
-				font-size: 10px;
-				width: 100%;
-				text-transform: uppercase;
+                margin: 0;
+                font-family: "Segoe UI", "Lato", Arial, sans-serif;
+                line-height: 1.4;
+                font-size: 11px;
+                width: 100%;
+                text-transform: uppercase;
+                color: #2c3e50;
+                background-color: #ffffff;
+            }
+
+			.text-title {
+				font-size: 15px;
+				font-weight: bold;
 			}
 
 			.detalle-factura td {
@@ -151,9 +158,19 @@
 								</td>
 								<td class="empresa padding5">
 									<h1>{{ $empresa->razon_social }}</h1>
-									<span>NIT: {{ $empresa->nit }}-{{ $empresa->dv }}</span><br>
-									<span>{{ $empresa->direccion }}</span><br>
-									<span>TEL: {{ $empresa->telefono }}</span><br>
+									<span class="text-title">NIT: 
+										@if ($empresa->dv)
+											{{ $empresa->nit }}-{{ $empresa->dv }}
+										@else
+											{{ $empresa->nit }}
+										@endif
+									</span><br>
+									@if ($empresa->direccion)
+										<span class="text-title">{{ $empresa->direccion }}</span><br>
+									@endif
+									@if ($empresa->telefono)
+										<span class="text-title">TEL: {{ $empresa->telefono }}</span><br>
+									@endif
 								</td>
 								
 								<td class="logo padding5">
@@ -193,34 +210,64 @@
 				</tr>
 			</thead>
             <tbody class="">
-                @foreach ($auxiliares as $auxiliar)
-					<tr>
 
-						@if($auxiliar->detalle_group == 'nits-totales')
-							@include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #9bd8e9ff; font-weight: 600;', 'auxiliar' => $auxiliar])
-						@elseif($auxiliar->detalle_group == 'nits')
-							@include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #9bd8e9ff; font-weight: 600;', 'auxiliar' => $auxiliar])
-						@elseif($auxiliar->cuenta == 'TOTALES')
-							@include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #000; font-weight: bold; color: white;', 'auxiliar' => $auxiliar])
-						@elseif(strlen($auxiliar->cuenta) == 1)  
-							@include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #212329; font-weight: bold; color: white;', 'auxiliar' => $auxiliar])
-						@elseif(strlen($auxiliar->cuenta) == 2) 
-							@include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #4d4f54; font-weight: bold; color: white;', 'auxiliar' => $auxiliar])
-						@elseif(strlen($auxiliar->cuenta) == 4) 
-							@include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #33849e; font-weight: 600; color: white;', 'auxiliar' => $auxiliar])
-						@elseif(strlen($auxiliar->cuenta) == 6) 
-							@include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #9bd8e9ff; font-weight: 600;', 'auxiliar' => $auxiliar])
-						@elseif($auxiliar->detalle == 0 && $auxiliar->detalle_group == 0) 
-							@include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #FFF;', 'auxiliar' => $auxiliar])
-						@elseif($auxiliar->detalle_group && !$auxiliar->detalle)
-							@include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #9bd8e9ff; font-weight: 600;', 'auxiliar' => $auxiliar])
-						@elseif($auxiliar->detalle)
-							@include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #9bd8e9ff; font-weight: 600;', 'auxiliar' => $auxiliar])
-						@else
-							@include('pdf.informes.auxiliar.celdas', ['style' => 'background-color: #FFF;', 'auxiliar' => $auxiliar])
-						@endif
+				@foreach($auxiliares as $auxiliar)
+					@php
+						$style = 'background-color: #FFFFFF;'; // Default style
+						
+						// Validación de saldos para nits (primera prioridad)
+						if($auxiliar->detalle_group == 'nits') {
+							if(($auxiliar->naturaleza_cuenta == 0 && intval($auxiliar->saldo_final) < 0) || 
+							($auxiliar->naturaleza_cuenta == 1 && intval($auxiliar->saldo_final) > 0)) {
+								$cuenta = substr($auxiliar->cuenta, 0, 2);
+								if ($cuenta != '11') {
+									$style = 'background-color: #FF00004D; color: #000000;';
+								}
+							}
+						}
+						
+						// Si tiene auxiliar, mantener estilo default
+						elseif($auxiliar->auxiliar) {
+							$style = 'background-color: #FFFFFF;';
+						}
+						
+						// Resto de condiciones
+						elseif($auxiliar->detalle_group == 'nits-totales') {
+							$style = 'background-color: #9BD8E9; font-weight: 600;';
+						}
+						elseif($auxiliar->detalle_group == 'nits') {
+							$style = 'background-color: #9BD8E9; font-weight: 600;';
+						}
+						elseif($auxiliar->cuenta == "TOTALES") {
+							$style = 'background-color: #000000; font-weight: bold; color: #FFFFFF;';
+						}
+						elseif(strlen($auxiliar->cuenta) == 1) {
+							$style = 'background-color: #212329; font-weight: bold; color: #FFFFFF;';
+						}
+						elseif(strlen($auxiliar->cuenta) == 2) {
+							$style = 'background-color: #4D4F54; font-weight: bold; color: #FFFFFF;';
+						}
+						elseif(strlen($auxiliar->cuenta) == 4) {
+							$style = 'background-color: #33849E; font-weight: 600; color: #FFFFFF;';
+						}
+						elseif(strlen($auxiliar->cuenta) == 6) {
+							$style = 'background-color: #9BD8E9; font-weight: 600;';
+						}
+						elseif($auxiliar->detalle == 0 && $auxiliar->detalle_group == 0) {
+							$style = 'background-color: #FFFFFF;';
+						}
+						elseif($auxiliar->detalle_group && !$auxiliar->detalle) {
+							$style = 'background-color: #9BD8E9; font-weight: 600;';
+						}
+						elseif($auxiliar->detalle) {
+							$style = 'background-color: #9BD8E9; font-weight: 600;';
+						}
+					@endphp
+					
+					<tr>
+						@include('pdf.informes.auxiliar.celdas', ['style' => $style, 'auxiliar' => $auxiliar])
 					</tr>
-                @endforeach
+				@endforeach
             </tbody>
         </table>
 
