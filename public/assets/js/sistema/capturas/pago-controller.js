@@ -615,7 +615,6 @@ function savePago() {
         $('#iniciarCapturaPago').show();
         $('#cancelarCapturaPago').show();
         $('#crearCapturaPago').show();
-        $('#movimientoContablePago').show();
         $('#iniciarCapturaPagoLoading').hide();
 
         var mensaje = err.responseJSON.message;
@@ -879,11 +878,16 @@ function mostrarValoresPagos() {
     if (!totalSaldo) {
         $('#crearCapturaPago').hide();
         $('#cancelarCapturaPago').hide();
-        $('#movimientoContableRecibo').hide();
         $('#crearCapturaPagoDisabled').show();
-    } else {
-        $('#movimientoContablePago').show();
     }
+
+    if (totalSaldo || totalAbonos || totalAnticipos) {
+        $('#movimientoContableRecibo').show();
+    } else {
+        $('#movimientoContableRecibo').hide();
+    }
+
+    $('#movimientoContablePago').show();
 
     if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP)) && $('#id_nit_pago').val()) {
         $('#crearCapturaPago').show();
@@ -1005,11 +1009,9 @@ function calcularPagosPagos(idFormaPago = null) {
 
     if (!totalFaltante) {
         $('#crearCapturaPago').show();
-        $('#movimientoContablePago').show();
         $('#crearCapturaPagoDisabled').hide();
     } else {
         $('#crearCapturaPago').hide();
-        $('#movimientoContablePago').hide();
         $('#crearCapturaPagoDisabled').show();
     }
 }

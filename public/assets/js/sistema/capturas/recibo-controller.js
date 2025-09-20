@@ -615,7 +615,6 @@ function saveRecibo() {
         $('#iniciarCapturaRecibo').show();
         $('#cancelarCapturaRecibo').show();
         $('#crearCapturaRecibo').show();
-        $('#movimientoContableRecibo').show();
         $('#iniciarCapturaReciboLoading').hide();
 
         var mensaje = err.responseJSON.message;
@@ -879,10 +878,13 @@ function mostrarValoresRecibos() {
     if (!totalSaldo) {
         $('#crearCapturaRecibo').hide();
         $('#cancelarCapturaRecibo').hide();
-        $('#movimientoContableRecibo').hide();
         $('#crearCapturaReciboDisabled').show();
-    } else {
+    }
+
+    if (totalSaldo || totalAbonos || totalAnticipos) {
         $('#movimientoContableRecibo').show();
+    } else {
+        $('#movimientoContableRecibo').hide();
     }
 
     if (!((totalAbonos + totalAnticipos) - (totalPagos + totalCXP)) && $('#id_nit_recibo').val()) {
@@ -1005,11 +1007,9 @@ function calcularRecibosPagos(idFormaPago = null) {
 
     if (!totalFaltante) {
         $('#crearCapturaRecibo').show();
-        $('#movimientoContableRecibo').show();
         $('#crearCapturaReciboDisabled').hide();
     } else {
         $('#crearCapturaRecibo').hide();
-        $('#movimientoContableRecibo').hide();
         $('#crearCapturaReciboDisabled').show();
     }
 }
