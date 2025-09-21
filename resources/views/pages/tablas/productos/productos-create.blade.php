@@ -177,6 +177,15 @@
                             </label>
                         </div>
                     </div>
+
+                    <div class="form-group col-6 col-sm-4 col-md-4" id="input-impuestos-valor" style="margin-left: 30px;">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="producto_estado" id="producto_estado" style="height: 20px;">
+                            <label class="form-check-label" for="">Estado</label>
+                        </div>
+                    </div>
+
+
                 </div>
 
             </div>

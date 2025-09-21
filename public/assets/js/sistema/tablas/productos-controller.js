@@ -164,6 +164,12 @@ function productosInit() {
                 }
                 return '';
             }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){
+                if (row.estado) {
+                    return '<span class="badge rounded-pill bg-success">Activo</span>'
+                }
+                return '<span class="badge rounded-pill bg-danger">Inactivo</span>';
+            }},
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
@@ -184,7 +190,6 @@ function productosInit() {
                     return html;
                 }
             },
-    
         ]
     });
 
@@ -349,6 +354,13 @@ function productosInit() {
                 $('#producto-inventario').show();
                 generarBodegas();
             }
+
+            if (dataProducto.estado) {
+                $('#producto_estado').prop('checked', true);
+            } else {
+                $('#producto_estado').prop('checked', false);
+            }
+
 
             // if (nuevoProducto.fraccion_hora) $('#fraccion_hora').prop('checked', true);
             // else $('#fraccion_hora').prop('checked', false);
@@ -826,6 +838,7 @@ $(document).on('click', '#saveNewProducto', function () {
     nuevoProducto.tipo_vehiculo = $("#tipo_vehiculo_producto").val();
     nuevoProducto.fraccion_hora = $("input[type='checkbox']#fraccion_hora").is(':checked') ? '1' : '';
     nuevoProducto.id_familia = parseInt($('#id_familia_producto').val());
+    nuevoProducto.estado = $("input[type='checkbox']#producto_estado").is(':checked') ? '1' : '';
 
     $.ajax({
         url: base_url + 'producto',
@@ -881,6 +894,7 @@ $(document).on('click', '#saveEditProducto', function () {
     nuevoProducto.tipo_vehiculo = $("#tipo_vehiculo_producto").val();
     nuevoProducto.id_familia = parseInt($('#id_familia_producto').val());
     nuevoProducto.fraccion_hora = $("input[type='checkbox']#fraccion_hora").is(':checked') ? '1' : '';
+    nuevoProducto.estado = $("input[type='checkbox']#producto_estado").is(':checked') ? '1' : '';
     
     $.ajax({
         url: base_url + 'producto',

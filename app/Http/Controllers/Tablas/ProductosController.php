@@ -179,6 +179,7 @@ class ProductosController extends Controller
             $productoPadre = FacProductos::create([
                 'id_familia' => $request->get('id_familia'),
                 'id_padre' => null,
+                'estado' => $request->get('estado'),
                 'tipo_producto' => $request->get('tipo_producto'),
                 'tipo_tiempo' => $request->get('tipo_tiempo'),
                 'tipo_vehiculo' => $request->get('tipo_vehiculo'),
@@ -373,6 +374,7 @@ class ProductosController extends Controller
             $producto->precio_minimo = $request->get('precio_minimo');
             $producto->porcentaje_utilidad = $request->get('porcentaje_utilidad');
             $producto->valor_utilidad = $request->get('valor_utilidad');
+            $producto->estado = $request->get('estado');
             $producto->updated_by = request()->user()->id;
             
             if($request->imagen) {
@@ -608,12 +610,13 @@ class ProductosController extends Controller
         return $nombreVariante;
     }
 
-    public function comboProducto (Request $request)
+    public function comboProducto(Request $request)
     {
         $producto = FacProductos::select(
                 \DB::raw('*'),
                 \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
-            )->with([
+            )
+            ->with([
                 'familia.cuenta_compra.impuesto',
                 'familia.cuenta_compra_retencion.impuesto',
                 'familia.cuenta_compra_devolucion.impuesto',
@@ -628,22 +631,31 @@ class ProductosController extends Controller
                 'familia.cuenta_venta_devolucion_iva.impuesto',
                 'familia.cuenta_inventario.impuesto',
                 'familia.cuenta_costos.impuesto'
-            ]);
+            ])
+            ->where('estado', 1);
 
+        // Filter by 'q' (search term)
         if ($request->get("q")) {
-            $producto->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
-                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+            $producto->where(function($query) use ($request) {
+                $query->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
+                    ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+            });
         }
 
+        // Filter by 'query' (another search term) - Consider combining this with the 'q' filter
         if ($request->get("query")) {
-            $producto->where('codigo', 'LIKE', '%' . $request->get("query") . '%')
-                ->orWhere('nombre', 'LIKE', '%' . $request->get("query") . '%');
+            $producto->where(function($query) use ($request) {
+                $query->where('codigo', 'LIKE', '%' . $request->get("query") . '%')
+                    ->orWhere('nombre', 'LIKE', '%' . $request->get("query") . '%');
+            });
         }
 
+        // Filter by family ID
         if ($request->get("id_familia")) {
             $producto->where('id_familia', $request->get("id_familia"));
         }
 
+        // Eager load inventories with a specific condition if id_bodega exists
         if ($request->has("id_bodega")) {
             $producto->with(['inventarios' => function ($query) use ($request) {
                 $query->where('id_bodega', $request->get("id_bodega"));
