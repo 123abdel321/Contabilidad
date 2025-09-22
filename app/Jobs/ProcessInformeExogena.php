@@ -31,6 +31,7 @@ class ProcessInformeExogena implements ShouldQueue
     public $id_usuario;
 	public $id_empresa;
     public $id_exogena;
+    public $token_db;
     public $timeout = 300;
     public $exogenaCollection = [];
 
@@ -40,6 +41,7 @@ class ProcessInformeExogena implements ShouldQueue
 		$this->id_usuario = $id_usuario;
 		$this->id_empresa = $id_empresa;
         $this->id_exogena = $id_exogena;
+        $this->token_db = $this->empresa ? $this->empresa->token_db : 'unknown';
     }
 
     public function handle()
@@ -182,7 +184,7 @@ class ProcessInformeExogena implements ShouldQueue
                         ]);
 
                         event(new PrivateMessageEvent(
-                            'informe-exogena-'.$token_db.'_'.$this->id_usuario, 
+                            'informe-exogena-'.$this->token_db.'_'.$this->id_usuario, 
                             [
                                 'tipo' => 'error',
                                 'mensaje' => "La columna relacionada al formato {$formato->formato} de la cuenta {$cuenta->cuenta} no existe.",
@@ -231,7 +233,7 @@ class ProcessInformeExogena implements ShouldQueue
                             ]);
 
                             event(new PrivateMessageEvent(
-                                'informe-exogena-'.$token_db.'_'.$this->id_usuario, 
+                                'informe-exogena-'.$this->token_db.'_'.$this->id_usuario, 
                                 [
                                     'tipo' => 'error',
                                     'mensaje' => 'El impuesto relacionado a la cuenta {$cuenta->cuenta} no existe.',
