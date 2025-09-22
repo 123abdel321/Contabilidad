@@ -196,10 +196,18 @@ function initTablesExogena() {
             url: base_url + 'exogena',
             headers: headers,
             data: function ( d ) {
-                d.year = $('#id_year_exogena').val();
-                d.id_formato = $('#id_formato_exogena').val();
-                d.id_concepto = $('#id_concepto_exogena').val();
-                d.id_nit = $('#id_nit_exogena').val();
+                // LIMPIAR todos los parámetros que DataTables agrega automáticamente
+                var cleanData = {
+                    year: $('#id_year_exogena').val(),
+                    id_formato: $('#id_formato_exogena').val(),
+                    id_concepto: $('#id_concepto_exogena').val(),
+                    id_nit: $('#id_nit_exogena').val(),
+                    draw: d.draw, // Mantener draw para server-side
+                    start: d.start, // Mantener start para paginación
+                    length: d.length // Mantener length para paginación
+                };
+                
+                return cleanData;
             }
         },
         "columns": [
