@@ -85,7 +85,7 @@ class ProcessInformeExogena implements ShouldQueue
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            Log::info("Informe exogena ejecutado en {$executionTime} segundos, usando {$memoryUsage} bytes de memoria. <br/> Usuario id: {$this->id_usuario}");
+            Log::info("Informe exogena ejecutado en {$executionTime} segundos, usando {$memoryUsage} bytes de memoria. Usuario id: {$this->id_usuario}");
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
