@@ -304,7 +304,10 @@ function initPusherExogena() {
             return;
         }
         if(data.tipo == 'error'){
-            console.log('data: ',data);
+            $("#generarExogena").show();
+            $("#generarExogenaLoading").hide();
+            agregarToast('error', 'Error al cargar informe de exogena', data.mensaje, false);
+            return;
         }
     });
 }

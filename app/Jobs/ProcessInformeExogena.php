@@ -177,7 +177,22 @@ class ProcessInformeExogena implements ShouldQueue
                     $columna = $cuentaColumnas->get($cuenta->id_exogena_formato_columna);
 
                     if (!$columna) {
-                        throw new Error("La columna relacionada al formato {$formato->formato} de la cuenta {$cuenta->cuenta} no existe.");
+                        InfExogena::where('id', $this->id_exogena)->update([
+                            'estado' => 0
+                        ]);
+
+                        event(new PrivateMessageEvent(
+                            'informe-exogena-'.$token_db.'_'.$this->id_usuario, 
+                            [
+                                'tipo' => 'error',
+                                'mensaje' => "La columna relacionada al formato {$formato->formato} de la cuenta {$cuenta->cuenta} no existe.",
+                                'titulo' => 'Error en proceso',
+                                'autoclose' => false
+                            ]
+                        ));
+
+                        DB::connection('informes')->rollback();
+                        return;
                     }
 
                     $naturaleza = PlanCuentas::DEBITO ? 'debito' : 'credito';
