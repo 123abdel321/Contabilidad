@@ -83,7 +83,7 @@ class ProcessInformeExogena implements ShouldQueue
             $executionTime = $endTime - $startTime;
             $memoryUsage = $endMemory - $startMemory;
 
-            Log::info("Informe balance ejecutado en {$executionTime} segundos, usando {$memoryUsage} bytes de memoria. <br/> Usuario id: {$this->id_usuario}");
+            Log::info("Informe exogena ejecutado en {$executionTime} segundos, usando {$memoryUsage} bytes de memoria. <br/> Usuario id: {$this->id_usuario}");
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
@@ -210,8 +210,23 @@ class ProcessInformeExogena implements ShouldQueue
 
                     foreach ($columnasPorcentaje as $columnaPorcentaje) {
                         if (!$cuenta->tipo_impuesto) {
+
+                            InfExogena::where('id', $this->id_exogena)->update([
+                                'estado' => 0
+                            ]);
+
+                            event(new PrivateMessageEvent(
+                                'informe-exogena-'.$token_db.'_'.$this->id_usuario, 
+                                [
+                                    'tipo' => 'error',
+                                    'mensaje' => 'El impuesto relacionado a la cuenta {$cuenta->cuenta} no existe.',
+                                    'titulo' => 'Error en proceso',
+                                    'autoclose' => false
+                                ]
+                            ));
+
                             DB::connection('informes')->rollback();
-                            throw new Error("El impuesto relacionado a la cuenta {$cuenta->cuenta} no existe.");
+                            return;
                         }
 
                         $storedExogena = $this->exogenaCollection[$ordenExogena];
