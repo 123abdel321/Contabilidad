@@ -2,6 +2,7 @@ var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slic
 var generarBalance = false;
 var balanceExistente = false;
 var balance_table = null;
+var channelBalance = pusher.subscribe('informe-balance-'+localStorage.getItem("notificacion_code"));
 
 function balanceInit() {
 
@@ -229,7 +230,7 @@ function balanceInit() {
 }
 
 $(document).on('click', '#generarBalance', function () {
-    generarConsultaBalance()
+    generarConsultaBalance();
 });
 
 function generarConsultaBalance() {
@@ -303,9 +304,7 @@ function generarConsultaBalance() {
     });
 }
 
-var channel = pusher.subscribe('informe-balance-'+localStorage.getItem("notificacion_code"));
-
-channel.bind('notificaciones', function(data) {
+channelBalance.bind('notificaciones', function(data) {
     if(data.url_file){
         loadExcel(data);
         return;

@@ -45,10 +45,10 @@ class ProcessInformeBalance implements ShouldQueue
         $startTime = microtime(true);
         $startMemory = memory_get_usage();
 
-        $empresa = Empresa::find($this->id_empresa);
+        $this->empresa = Empresa::find($this->id_empresa);
 
         copyDBConnection('sam', 'sam');
-        setDBInConnection('sam', $empresa->token_db);
+        setDBInConnection('sam', $this->empresa->token_db);
 
         DB::connection('informes')->beginTransaction();
 
@@ -81,7 +81,7 @@ class ProcessInformeBalance implements ShouldQueue
             
             DB::connection('informes')->commit();
 
-            event(new PrivateMessageEvent('informe-balance-' . $empresa->token_db . '_' . $this->id_usuario, [
+            event(new PrivateMessageEvent("informe-balance-{$this->empresa->token_db}_{$this->id_usuario}", [
                 'tipo' => 'exito',
                 'mensaje' => 'Informe generado con exito!',
                 'titulo' => 'Balance generado',

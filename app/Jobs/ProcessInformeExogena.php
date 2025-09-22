@@ -5,6 +5,7 @@ namespace App\Jobs;
 use DB;
 use Exception;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -19,66 +20,70 @@ use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfExogena;
 use App\Models\Sistema\ExogenaFormato;
+use App\Models\Sistema\ExogenaFormatoConcepto;
 
 class ProcessInformeExogena implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $request;
+    public $empresa;
     public $id_usuario;
 	public $id_empresa;
     public $id_exogena;
+    public $timeout = 300;
+    public $exogenaCollection = [];
 
-    public function __construct($request, $id_usuario, $id_empresa)
+    public function __construct($request, $id_usuario, $id_empresa, $id_exogena)
     {
         $this->request = $request;
 		$this->id_usuario = $id_usuario;
 		$this->id_empresa = $id_empresa;
+        $this->id_exogena = $id_exogena;
     }
 
     public function handle()
     {
-		$empresa = Empresa::find($this->id_empresa);
+        $startTime = microtime(true);
+        $startMemory = memory_get_usage();
+
+		$this->empresa = Empresa::find($this->id_empresa);
         
         copyDBConnection('sam', 'sam');
-        setDBInConnection('sam', $empresa->token_db);
-        
+        setDBInConnection('sam', $this->empresa->token_db);
+
         try {
             DB::connection('informes')->beginTransaction();
 
-            $exogena = InfExogena::create([
-				'year' => $this->request['year'],
-				'id_empresa' => $this->id_empresa,
-				'id_nit' => $this->request['id_nit'],
-				'id_exogena_formato' => $this->request['id_formato'],
-				'id_exogena_formato_concepto' => $this->request['id_concepto'],
-			]);
-
-            $this->id_exogena = $exogena->id;
-
             $this->documentosExogana();
 
-            // ksort($this->impuestosCollection, SORT_STRING | SORT_FLAG_CASE);
-            // foreach (array_chunk($this->impuestosCollection,233) as $impuestosCollection){
-            //     DB::connection('informes')
-            //         ->table('inf_impuestos_detalles')
-            //         ->insert(array_values($impuestosCollection));
-            // }
+            foreach (array_chunk($this->exogenaCollection, 233) as $exogenaCollection) {
+                DB::connection('informes')
+                    ->table('inf_exogena_detalles')
+                    ->insert(array_values($exogenaCollection));
+            }
+
+            InfExogena::where('id', $this->id_exogena)->update([
+                'estado' => 2
+            ]);
 
             DB::connection('informes')->commit();
 
-            $urlEventoNotificacion = $empresa->token_db.'_'.$this->id_usuario;
-            if ($this->id_notificacion) {
-                $urlEventoNotificacion = $this->id_notificacion;
-            }
-
-            event(new PrivateMessageEvent('informe-impuestos-'.$urlEventoNotificacion, [
+            event(new PrivateMessageEvent("informe-exogena-{$this->empresa->token_db}_{$this->id_usuario}", [
                 'tipo' => 'exito',
                 'mensaje' => 'Informe generado con exito!',
                 'titulo' => 'Impuestos generada',
-                'id_impuestos' => $this->id_impuestos,
+                'id_exogena' => $this->id_exogena,
                 'autoclose' => false
             ]));
+
+            $endTime = microtime(true);
+            $endMemory = memory_get_usage();
+
+            $executionTime = $endTime - $startTime;
+            $memoryUsage = $endMemory - $startMemory;
+
+            Log::info("Informe balance ejecutado en {$executionTime} segundos, usando {$memoryUsage} bytes de memoria. <br/> Usuario id: {$this->id_usuario}");
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
@@ -108,8 +113,6 @@ class ProcessInformeExogena implements ShouldQueue
             ->groupByRaw('id_nit, id_cuenta')
             ->orderBy('id')
             ->chunk(233, function ($documentos) use ($formato, $cuentaColumnas, $columnasFormato) {
-                
-                $exogenaCollection = [];
 
                 $nits = Nits::with(['pais', 'departamento', 'ciudad', 'tipo_documento'])
                     ->whereIn('id', $documentos->pluck('id_nit')->toArray())
@@ -157,42 +160,109 @@ class ProcessInformeExogena implements ShouldQueue
 						return [$columna->columna => 0];
 					});
 
-                    // dd($cuenta->exogena_concepto);
+                    $newRowExogena = $cuentaColumnasBase->merge($newRowExogena);
+                    $newRowExogena['id_exogena'] = $this->id_exogena;
+                    $newRowExogena['id_exogena_formato'] = $formato->id;
+                    $newRowExogena['id_exogena_formato_concepto'] = $cuenta->id_exogena_formato_concepto;
+                    $newRowExogena['id_nit'] = $documento->id_nit;
+                    $newRowExogena['cuenta'] = $cuenta->cuenta;
 
-                    $formatosCuentaExogenaByConcepto = $cuenta->exogena_concepto
-						->groupBy('id')
-                        ->get();
+                    // Obtener el concepto
+                    $concepto = ExogenaFormatoConcepto::find($cuenta->id_exogena_formato_concepto);
+                    $newRowExogena['concepto'] = $concepto ? $concepto->concepto : null;
 
-                    foreach ($formatosCuentaExogenaByConcepto as $idConceptoExogena => $formatosCuentaExogena) {
-                        $newRowExogena = $cuentaColumnasBase->merge($newRowExogena);
-                        $newRowExogena['id_exogena'] = $this->id_exogena;
-						$newRowExogena['id_exogena_formato'] = $formato->id;
-						$newRowExogena['id_exogena_formato_concepto'] = $idConceptoExogena;
-						$newRowExogena['id_nit'] = $documento->id_nit;
-						$newRowExogena['cuenta'] = $cuenta->cuenta;
+                    $this->dataEmpleados();
 
-                        dd($formatosCuentaExogena);
+                    // Obtener la columna relacionada a la cuenta
+                    $columna = $cuentaColumnas->get($cuenta->id_exogena_formato_columna);
 
-                        // if ($nit->empleado) {
-                        // }
-                        // dd($formatosCuentaExogena);
-                        foreach ($formatosCuentaExogena as $formatoCuentaExogena) {
-                            dd($formatoCuentaExogena);
-                            $newRowExogena['concepto'] = $formatoCuentaExogena->concepto;
-                            dd($newRowExogena);
-
-                        }
-
-                        dd($newRowExogena);
+                    if (!$columna) {
+                        throw new Error("La columna relacionada al formato {$formato->formato} de la cuenta {$cuenta->cuenta} no existe.");
                     }
 
-                    dd($formatosCuentaExogenaByConcepto);
+                    $naturaleza = PlanCuentas::DEBITO ? 'debito' : 'credito';
+                    $columnaValue = $columna->saldo ? $documento->saldo : $documento->{$naturaleza};
 
-                    dd($nit, $cuenta);
+                    if ($columna->acumulado) {
+                        $columnaValue += $documento->saldo_anterior;
+                    }
+
+                    $isSaldoYCredito = $columna->saldo && $columna->naturaleza && $cuenta->naturaleza_cuenta;
+                    $columnaValue = $isSaldoYCredito ? $columnaValue * (-1) : $columnaValue;
+
+                    $ordenExogena = "$documento->id_nit-{$cuenta->id_exogena_formato_concepto}";
+
+                    if ($columnaValue == 0) continue;
+
+                    if (isset($this->exogenaCollection[$ordenExogena])) {
+                        $storedExogena = $this->exogenaCollection[$ordenExogena];
+                        $storedExogena[$columna->columna] += $columnaValue;
+                        $this->exogenaCollection[$ordenExogena] = $storedExogena;
+                    } else {
+                        $newRowExogena[$columna->columna] = $columnaValue;
+                        $this->exogenaCollection[$ordenExogena] = $newRowExogena->toArray();
+                    }
+
+                    // Agrega valor a columnas con id_columna_porcentaje_base
+                    $columnasPorcentaje = $cuentaColumnas->filter(function ($cuentaColumna) use ($columna) {
+                        return $cuentaColumna->id_columna_porcentaje_base == $columna->id;
+                    });
+
+                    foreach ($columnasPorcentaje as $columnaPorcentaje) {
+                        if (!$cuenta->tipo_impuesto) {
+                            DB::connection('informes')->rollback();
+                            throw new Error("El impuesto relacionado a la cuenta {$cuenta->cuenta} no existe.");
+                        }
+
+                        $storedExogena = $this->exogenaCollection[$ordenExogena];
+
+                        $porcentajeBase = $cuenta->tipo_impuesto->porcentaje;
+                        $valorColumnaPorcentaje = $storedExogena[$columna->columna];
+                        $base = round($valorColumnaPorcentaje / ($porcentajeBase / 100), 2);
+                        $storedExogena[$columnaPorcentaje->columna] += $base;
+
+                        $this->exogenaCollection[$ordenExogena] = $storedExogena;
+                    }
                 }
-            });
+            }
+        );
+    }
 
-        dd('hee aca');
+    private function dataEmpleados()
+    {
+        // if ($nit->empleado) {
+        //     // Consulta y suma periodos de pago para columnas con id_tipo_concepto_nomina
+        //     $tiposConceptos = $cuentaColumnas
+        //         ->where('id_tipo_concepto_nomina', '!=', null)
+        //         ->pluck('id_tipo_concepto_nomina');
+
+        //     $conceptos = DB::connection('dynamic')
+        //         ->table('nom_conceptos')
+        //         ->select('id')
+        //         ->whereIn('tipo_concepto', $tiposConceptos)
+        //         ->pluck('id');
+
+        //     foreach ($cuentaColumnas as $columna) {
+        //         if (!$columna->id_tipo_concepto_nomina) continue;
+
+        //         $periodosPago = DB::connection('dynamic')
+        //             ->table('nom_periodo_pagos')
+        //             ->select('id')
+        //             ->where('id_empleado', $documento->id_nit)
+        //             ->whereYear('fecha_inicio_periodo', $this->filtros['year'])
+        //             ->whereYear('fecha_fin_periodo', $this->filtros['year'])
+        //             ->pluck('id');
+
+        //         $sumDetalles = DB::connection('dynamic')
+        //             ->table('nom_periodo_pago_detalles')
+        //             ->select('id')
+        //             ->whereIn('id_periodo_pago', $periodosPago)
+        //             ->whereIn('id_concepto', $conceptos)
+        //             ->sum('valor');
+
+        //         $newRowExogena[$columna->columna] += $sumDetalles;
+        //     }
+        // }
     }
 
     private function exogenaDocumentosQuery()
@@ -254,4 +324,38 @@ class ProcessInformeExogena implements ShouldQueue
 			})
 			->groupByRaw('id_nit, id_cuenta');
 	}
+
+    public function failed($exception)
+    {
+        DB::connection('informes')->rollBack();
+
+        // Si no tenemos la empresa, intentamos obtenerla
+        if (!$this->empresa && $this->id_empresa) {
+            $this->empresa = Empresa::find($this->id_empresa);
+        }
+
+        $token_db = $this->empresa ? $this->empresa->token_db : 'unknown';
+
+        InfExogena::where('id', $this->id_exogena)->update([
+            'estado' => 0
+        ]);
+
+        event(new PrivateMessageEvent(
+            'informe-exogena-'.$token_db.'_'.$this->id_usuario, 
+            [
+                'tipo' => 'error',
+                'mensaje' => 'Error al generar el informe: '.$exception->getMessage(),
+                'titulo' => 'Error en proceso',
+                'autoclose' => false
+            ]
+        ));
+
+        // Registrar el error en los logs
+        logger()->error("Error en ProcessInformeExogena: ".$exception->getMessage(), [
+            'exception' => $exception,
+            'request' => $this->request,
+            'user_id' => $this->id_usuario,
+            'empresa_id' => $this->id_empresa
+        ]);
+    }
 }

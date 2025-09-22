@@ -19,9 +19,12 @@ class InfExogena extends Model
 		'id_exogena_formato',
 		'id_exogena_formato_concepto',
 		'id_nit',
-		'exporte',
-		'url_excel',
+		'exporta_excel',
+        'archivo_excel',
+        'estado',
 		'created_by',
 		'updated_by',
+		'created_at',
+        'updated_at'
 	];
 }

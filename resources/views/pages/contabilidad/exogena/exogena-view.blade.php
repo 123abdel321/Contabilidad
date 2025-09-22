@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <div class="card mb-4" style="content-visibility: auto; overflow: auto; border-radius: 0px 0px 20px 20px;">
+        <div class="card mb-4" style="content-visibility: auto; overflow: auto; border-radius: 20px;">
             @include('pages.contabilidad.exogena.exogena-table')
         </div>
     </div>

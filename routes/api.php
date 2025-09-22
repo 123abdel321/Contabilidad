@@ -342,8 +342,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //EXOGENA
         Route::controller(ExogenaController::class)->group(function () {
             Route::get('exogena', 'generate');
+            Route::get('exogena-show', 'show');
             Route::get('exogena/formato', 'comboFormato');
             Route::get('exogena/columna', 'comboFormatoColumna');
+            Route::get('get-formato-data/{id}', 'getFormatoData');
             Route::get('exogena/concepto', 'comboFormatoConcepto');
         });
         //CONCEPTO GASTO

@@ -18,8 +18,9 @@ return new class extends Migration
             $table->integer('id_exogena_formato');
             $table->integer('id_exogena_formato_concepto')->nullable();
             $table->integer('id_nit')->nullable();
-            $table->integer('exporte')->nullable()->comment('1: Exportando, 2: Exportado');
-            $table->string('url_excel')->nullable();
+            $table->integer('exporta_excel')->nullable()->comment('1: Exportando, 2: Exportado');
+            $table->integer('estado')->nullable()->comment('0: Error; 1: Proceso; 2: Generado;');
+            $table->string('archivo_excel')->nullable();
             $table->integer('created_by');
             $table->integer('updated_by');
             $table->timestamps();
