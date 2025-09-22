@@ -29,6 +29,10 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    <link rel="mask-icon" href="https://maximoph.co/img/logo_contabilidad.png" color="#000000">
+    <link rel="alternate icon" class="js-site-favicon" type="image/png" href="/img/logo_contabilidad.png">
+    <link rel="icon" class="js-site-favicon" type="image/png" href="/img/logo_contabilidad.png">
     
     <link id="pagestyle" href="{{ asset('assets/css/landing-page.css') }}" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
