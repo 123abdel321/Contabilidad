@@ -141,16 +141,10 @@ class ExogenaController extends Controller
             );
         
         $total = InfExogenaDetalle::where('id_exogena', $exogena->id)->orderBy('id', 'desc')->first();
-        $descuadre = false;
         $filtros = true;
 
         $informeTotals = $informe->get();
         $informePaginate = $informe->skip($start)->take($rowperpage);
-
-        if(!$exogena->id_cuenta) {
-            $filtros = false;
-            $descuadre = $total->saldo_final != 0 ? true : false;
-        }
 
         return response()->json([
             'success'=> true,
@@ -161,7 +155,6 @@ class ExogenaController extends Controller
             'perPage' => $rowperpage,
             'totales' => $total,
             'filtros' => $filtros,
-            'descuadre' => $descuadre,
             'formato_data' => $formatoData, // ← AQUÍ ENVÍAS LOS DATOS DEL FORMATO
             'message'=> 'Balance generado con exito!'
         ]);
