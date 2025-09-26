@@ -179,7 +179,7 @@ class ProductosController extends Controller
             $productoPadre = FacProductos::create([
                 'id_familia' => $request->get('id_familia'),
                 'id_padre' => null,
-                'estado' => $request->get('estado'),
+                'estado' => $request->get('estado') ?? true,
                 'tipo_producto' => $request->get('tipo_producto'),
                 'tipo_tiempo' => $request->get('tipo_tiempo'),
                 'tipo_vehiculo' => $request->get('tipo_vehiculo'),
