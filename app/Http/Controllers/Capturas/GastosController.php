@@ -850,7 +850,7 @@ class GastosController extends Controller
             if ($conceptoGasto->{$this->tipoRetencion}) {
                 $id_retencion = $conceptoGasto->{$this->tipoRetencion}->id;
 
-                if ($conceptoGasto->{$this->tipoRetencion}->impuesto) {
+                if ($conceptoGasto->{$this->tipoRetencion}->impuesto && $conceptoGasto->{$this->tipoRetencion}->impuesto->base > 0) {
                     $base_retencion = $conceptoGasto->{$this->tipoRetencion}->impuesto->base;
                     $porcentaje_retencion = $conceptoGasto->{$this->tipoRetencion}->impuesto->porcentaje;
                 }
