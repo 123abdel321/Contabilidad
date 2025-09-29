@@ -280,6 +280,10 @@ class VentaController extends Controller
                         continue;
                     }
 
+                    if (!$productoDb->familia->id_cuenta_inventario && $cuentaKey == 'cuenta_costos') {
+                        continue;
+                    }
+
                     if ($producto->{$keyTotalItem} > 0) {
                         
                         if(!$cuentaRecord) {
