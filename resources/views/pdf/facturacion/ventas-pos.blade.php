@@ -289,6 +289,25 @@
             </tbody>
         </table>
 
+        @if ($factura->observacion)   
+            <table class="width-100">
+                <thead class="center-item">
+                    <tr>
+                        <th class="border-dashed font-13" style="width:100%;"> <b class="font-13">OBSERVACIÓN GENERAL</b></th>
+                    </tr>
+                </thead>
+            </table>
+
+            <table class="width-100">
+                <tbody>
+                    <tr>
+                        <td class="font-13" style="width:100%;">{{ $factura->observacion }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        @endif
+
+
         @if ($qrCode)
         <table>
             <thead class="">
@@ -326,6 +345,8 @@
             </thead>
         </table>
         @endif
+
+
 
         <table class="width-100">
             <thead class="center-item">
