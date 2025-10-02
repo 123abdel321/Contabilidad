@@ -17,21 +17,27 @@ class ClientConnection
      */
     public function handle($request, Closure $next)
     {
-		$user = $request->user();
-        if(!$user->has_empresa){
+        $user = $request->user();
+
+        if (!$user || !$user->has_empresa) {
             return response()->json([
                 "success" => false,
-				"message" => "Para acceder a esta opción debes seleccionar una empresa",
+                "message" => "Para acceder a esta opción debes seleccionar una empresa o iniciar sesión.",
             ], 401);
         }
 
-        // Cerrar la conexión actual si existe
-        if (DB::connection('sam')->getDatabaseName() !== $user->has_empresa) {
-            DB::purge('sam'); // Cierra la conexión actual
+        $desiredDatabase = $user->has_empresa;
+        $currentConfigDatabase = Config::get('database.connections.sam.database');
+
+        if ($currentConfigDatabase !== $desiredDatabase) {
+            if (DB::getConnections() && array_key_exists('sam', DB::getConnections())) {
+                DB::purge('sam');
+            }
+
+            Config::set('database.connections.sam.database', $desiredDatabase);
         }
 
-		Config::set('database.connections.sam.database', $user->has_empresa);
-		
         return $next($request);
     }
+
 }
