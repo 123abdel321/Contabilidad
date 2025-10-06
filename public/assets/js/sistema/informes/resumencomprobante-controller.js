@@ -7,8 +7,31 @@ var generarResumenComprobante = false;
 
 function resumencomprobanteInit() {
 
-    $('#fecha_desde_comprobantes').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-    $('#fecha_hasta_comprobantes').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2));
+    const start = moment().startOf("month");
+    const end = moment().endOf("month");
+    
+    $("#fecha_manual_comprobantes").daterangepicker({
+        startDate: start,
+        endDate: end,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " - ",
+            applyLabel: "Aplicar",
+            cancelLabel: "Cancelar",
+            fromLabel: "Desde",
+            toLabel: "Hasta",
+            customRangeLabel: "Personalizado",
+            daysOfWeek: moment.weekdaysMin(),
+            monthNames: moment.months(),
+            firstDay: 1
+        },
+        ranges: rangoFechas
+    }, formatoFecha);
+
+    formatoFecha(start, end, "fecha_manual_comprobantes");
 
     resumen_comprobante_table = $('#comprobantesInformeTable').DataTable({
         pageLength: 100,
@@ -41,8 +64,8 @@ function resumencomprobanteInit() {
             url: base_url + 'resumen-comprobante',
             headers: headers,
             data: function ( d ) {
-                d.fecha_desde = $('#fecha_desde_comprobantes').val();
-                d.fecha_hasta = $('#fecha_hasta_comprobantes').val();
+                d.fecha_desde = $('#fecha_manual_comprobantes').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');;
+                d.fecha_hasta = $('#fecha_manual_comprobantes').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');;
                 d.id_comprobante = $('#id_comprobante_comprobantes').val();
                 d.id_cuenta = $('#id_cuenta_comprobantes').val();
                 d.id_nit = $('#id_nit_comprobantes').val();
@@ -283,19 +306,23 @@ $(document).on('click', '#generarResumenComprobantes', function () {
     $('#generarResumenComprobantes').hide();
     $('#generarResumenComprobantesLoading').show();
 
+    const picker = $('#fecha_manual_comprobantes').data('daterangepicker');
+    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
+    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
+
     generarEstadoActual = false;
     initResumenComprobante = true;
 
     var url = base_url + 'resumen-comprobante';
 
-    url+= '?fecha_desde='+$('#fecha_desde_comprobantes').val();
-    url+= '?fecha_hasta='+$('#fecha_hasta_comprobantes').val();
-    url+= '?id_comprobante='+$('#id_comprobante_comprobantes').val();
-    url+= '?id_cuenta='+$('#id_cuenta_comprobantes').val();
-    url+= '?id_nit='+$('#id_nit_comprobantes').val();
-    url+= '?agrupado='+$('#agrupar_comprobantes').val();
-    url+= '?detallar='+ getDetallarResumen();
-    url+= '?init='+initResumenComprobante;
+    url+= '?fecha_desde='+fecha_desde;
+    url+= '&fecha_hasta='+fecha_hasta;
+    url+= '&id_comprobante='+$('#id_comprobante_comprobantes').val();
+    url+= '&id_cuenta='+$('#id_cuenta_comprobantes').val();
+    url+= '&id_nit='+$('#id_nit_comprobantes').val();
+    url+= '&agrupado='+$('#agrupar_comprobantes').val();
+    url+= '&detallar='+ getDetallarResumen();
+    url+= '&init='+initResumenComprobante;
     url+= '&generar='+generarResumenComprobante;
 
     resumen_comprobante_table.ajax.url(url).load(function(res) {

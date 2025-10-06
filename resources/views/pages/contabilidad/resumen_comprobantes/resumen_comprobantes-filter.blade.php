@@ -14,37 +14,32 @@
                     <div class="row">
                         <input name="id_resumen_comprobante" id="id_resumen_comprobante" class="form-control form-control-sm" type="text" style="display: none;">
 
-                        <div class="form-group col-12 col-sm-6 col-md-3">
+                        <div class="form-group col-12 col-sm-4 col-md-4">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Comprobante</label>
                             <select name="id_comprobante_comprobantes" id="id_comprobante_comprobantes" class="form-control form-control-sm">
                             </select>
                         </div>
 
-                        <div class="form-group col-12 col-sm-3 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Fecha desde</label>
-                            <input name="fecha_desde_comprobantes" id="fecha_desde_comprobantes" class="form-control form-control-sm" type="date" require>
-                        </div>
-
-                        <div class="form-group col-12 col-sm-3 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Fecha hasta</label>
-                            <input name="fecha_hasta_comprobantes" id="fecha_hasta_comprobantes" class="form-control form-control-sm" type="date" require>
+                        <div class="form-group col-12 col-sm-4 col-md-4">
+                            <label for="example-text-input" class="form-control-label">Fecha</label>
+                            <input name="fecha_manual_comprobantes" id="fecha_manual_comprobantes" class="form-control form-control-sm" require>
                         </div>
                         
-                        <div class="form-group col-12 col-sm-3 col-md-3">
+                        <div class="form-group col-12 col-sm-4 col-md-4">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Cuenta</label>
                             <select name="id_cuenta_comprobantes" id="id_cuenta_comprobantes" class="form-control form-control-sm">
                                 <option value="">Ninguna</option>
                             </select>
                         </div>
 
-                        <div class="form-group col-12 col-sm-3 col-md-3">
+                        <div class="form-group col-12 col-sm-4 col-md-4">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Nit</label>
                             <select class="form-control form-control-sm" name="id_nit_comprobantes" id="id_nit_comprobantes">
                                 <option value="">Ninguno</option>
                             </select>
                         </div>
 
-                        <div class="form-group col-12 col-sm-6 col-md-3">
+                        <div class="form-group col-12 col-sm-4 col-md-4">
                             <label for="exampleFormControlSelect1" style=" width: 100%;">Agrupar por</label>
                             <select name="agrupar_comprobantes" id="agrupar_comprobantes" class="form-control form-control-sm">
                                 <option value="">Seleccionar</option>
