@@ -13,13 +13,20 @@
                 <form id="carteraInformeForm" style="margin-top: 10px;">
                     <input name="id_cartera_cargado" id="id_cartera_cargado" class="form-control form-control-sm" type="text" style="display: none;">
                     <div class="row">
+                        
                         <div class="form-group form-group col-12 col-sm-4 col-md-3">
                             <label for="exampleFormControlSelect1">Tipo informe</label>
                             <select class="form-control form-control-sm tipo_cartera" id="tipo_informe_cartera" name="tipo_informe_cartera">
                                 <option value="">Ambos</option>
                                 <option value="por_cobrar">Cuentas por cobrar</option>
                                 <option value="por_pagar">Cuentas por pagar</option>
+                                <option value="por_edades">Por edades</option>
                             </select>
+                        </div>
+
+                        <div class="form-group col-12 col-sm-4 col-md-3">
+                            <label for="fecha_manual_cartera" class="form-control-label">Fecha</label>
+                            <input name="fecha_manual_cartera" id="fecha_manual_cartera" class="form-control form-control-sm" require>
                         </div>
                         
                         <div class="form-group col-12 col-sm-4 col-md-3">
@@ -28,6 +35,7 @@
                                 <option value="">Seleccionar</option>
                             </select>
                         </div>
+
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="exampleFormControlSelect1">Nit</label>
                             <select class="form-control form-control-sm" name="id_nit_cartera" id="id_nit_cartera">
@@ -43,17 +51,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Fecha desde</label>
-                            <input name="fecha_desde_cartera" id="fecha_desde_cartera" class="form-control form-control-sm" type="date">
-                        </div>
-
-                        <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="example-text-input" class="form-control-label">Fecha hasta</label>
-                            <input name="fecha_hasta_cartera" id="fecha_hasta_cartera" class="form-control form-control-sm" type="date">
-                        </div>
-
-                        <div class="form-group col-12 col-sm-3 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                        <div class="form-group col-12 col-sm-4 col-md-3 row" style="margin-bottom: 0.1rem !important;">
                             <label for="example-text-input" class="form-control-label">Niveles</label>
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                 <input class="form-check-input" type="radio" name="nivel_cartera" id="nivel_cartera1" style="font-size: 11px;">

@@ -2,17 +2,24 @@ var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slic
 var generarCartera = false;
 var carteraExistente = false;
 var cartera_table = null;
+var cartera_edades_table = null;
 
 function carteraInit() {
 
-    fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
     generarCartera = false;
     carteraExistente = false;
 
-    $('#fecha_desde_cartera').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-    $('#fecha_hasta_cartera').val(fechaDesde);
+    cargarTablasCartera();
+    cargarCombosCartera();
+    changeCombosCartera();
+    cargarFechasCartera();
 
-    cartera_table = $('#CarteraInformeTable').DataTable({
+    findCartera();
+    actualizarColumnas();
+}
+
+function cargarTablasCartera() {
+    cartera_table = $('#CarteraNormalInformeTable').DataTable({
         pageLength: 100,
         dom: 'Brtip',
         paging: true,
@@ -308,6 +315,74 @@ function carteraInit() {
         ]
     });
 
+    cartera_edades_table = $('#CarteraEdadesInformeTable').DataTable({
+        pageLength: 100,
+        dom: 'Brtip',
+        paging: true,
+        responsive: false,
+        processing: true,
+        serverSide: true,
+        fixedHeader: true,
+        deferLoading: 0,
+        initialLoad: false,
+        language: lenguajeDatatable,
+        ordering: false,
+        sScrollX: "100%",
+        scrollX: true,
+        scroller: {
+            displayBuffer: 20,
+            rowHeight: 50,
+            loadingIndicator: true
+        },
+        deferRender: true,
+        fixedHeader : {
+            header : true,
+            footer : true,
+            headerOffset: 45
+        },
+        ajax:  {
+            type: "GET",
+            url: base_url + 'extracto',
+            headers: headers,
+            data: function( result ) {
+                return result;
+            }
+        },
+        columns: [
+            { data: function (row, type, set){
+                var agrupado = $('#agrupar_cartera').val();
+                if (agrupado == 'id_cuenta') {
+                    if (row.nivel == 1) {
+                        return row.nombre_cuenta;
+                    } else {
+                        return row.nombre_nit;
+                    }
+                }
+                return row.numero_documento;
+            }},
+            { data: function (row, type, set){
+                var agrupado = $('#agrupar_cartera').val();
+                if (agrupado == 'id_cuenta') {
+                    if (row.nivel == 1) {
+                        return row.nombre_cuenta;
+                    } else {
+                        return row.nombre_nit;
+                    }
+                }
+                return row.nombre_nit;
+            }},
+            { data: 'apartamento_nit' },
+            { data: 'nombre_cuenta' },
+            { data: 'mora', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
+            { data: 'saldo_anterior', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
+            { data: 'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
+            { data: 'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
+            { data: 'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' }
+        ]
+    });
+}
+
+function cargarCombosCartera() {
     $('#id_cuenta_cartera').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -316,10 +391,19 @@ function carteraInit() {
         ajax: {
             url: 'api/plan-cuenta/combo-cuenta',
             data: function (params) {
+                var id_tipo_cuentas = [3,4,7,8];
+                const tipo_informe = $("#tipo_informe_cartera").val();
+
+                if (tipo_informe == 'por_cobrar') {
+                    id_tipo_cuentas = [3,7];
+                } else if (tipo_informe == 'por_cobrar') {
+                    id_tipo_cuentas = [4,8];
+                }
+                
                 var query = {
                     search: params.term,
                     total_cuentas: true,
-                    id_tipo_cuenta: $("#tipo_informe_cartera").val() == 'por_cobrar' ? [3,7] : [4,8]
+                    id_tipo_cuenta: id_tipo_cuentas
                 }
                 return query;
             },
@@ -349,7 +433,9 @@ function carteraInit() {
             }
         }
     });
+}
 
+function changeCombosCartera() {
     $('input[type=radio][name=detallar_cartera]').change(function() {
         if(!$("input[type='radio']#detallar_cartera1").is(':checked')){
             cartera_table.column( 6 ).visible( false );
@@ -406,14 +492,39 @@ function carteraInit() {
         findCartera();
     });
 
-    $(".tipo_informe_cartera").on('change', function(){
+    $("#tipo_informe_cartera").on('change', function(){
         clearCartera();
         findCartera();
-        ctualizarColumnas();
+        actualizarColumnas();
     });
+}
 
-    findCartera();
-    actualizarColumnas();
+function cargarFechasCartera() {
+    const start = moment().startOf("month");
+    const end = moment().endOf("month");
+    
+    $("#fecha_manual_cartera").daterangepicker({
+        startDate: start,
+        endDate: end,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " - ",
+            applyLabel: "Aplicar",
+            cancelLabel: "Cancelar",
+            fromLabel: "Desde",
+            toLabel: "Hasta",
+            customRangeLabel: "Personalizado",
+            daysOfWeek: moment.weekdaysMin(),
+            monthNames: moment.months(),
+            firstDay: 1
+        },
+        ranges: rangoFechas
+    }, formatoFecha);
+
+    formatoFecha(start, end, "fecha_manual_cartera");
 }
 
 $(document).on('click', '#descargarExcelCartera', function () {
@@ -454,6 +565,20 @@ $(document).on('click', '#descargarExcelCartera', function () {
 });
 
 function actualizarColumnas() {
+
+    const tipoInforme = $("#tipo_informe_cartera").val();
+
+    if (tipoInforme == 'por_edades') {
+        $("#div-CarteraNormalInformeTable").hide();
+        $("#div-CarteraEdadesInformeTable").show();
+    } else {
+        $("#div-CarteraNormalInformeTable").show();
+        $("#div-CarteraEdadesInformeTable").hide();
+        actualizarColumnasCarteraNormal();
+    }
+}
+
+function actualizarColumnasCarteraNormal() {
     const nivel = getNivelCartera();
     const agrupado = $("#agrupar_cartera").val();
     const tipoInforme = $("#tipo_informe_cartera").val();
@@ -509,23 +634,43 @@ function actualizarColumnas() {
 function loadCarteraById(id_cartera) {
     var url = base_url + 'cartera-show?id='+id_cartera;
 
-    cartera_table.ajax.url(url).load(function(res) {
-        
-        if(res.success){
-            $("#generarCartera").show();
-            $("#generarCarteraLoading").hide();
-            $("#generarCarteraUltimoLoading").hide();
-            $('#descargarExcelCartera').prop('disabled', false);
-            $("#descargarExcelCartera").show();
-            $("#descargarExcelCarteraDisabled").hide();
-            $('#generarCarteraUltimo').hide();
-            $('#generarCarteraUltimoLoading').hide();
+    const tipoInforme = $("#tipo_informe_cartera").val();
 
-            agregarToast('exito', 'Cartera cargado', 'Informe cargado con exito!', true);
-            
-            mostrarTotalesCartera(res.totales);
-        }
-    });
+    if (tipoInforme == 'por_edades') {
+        cartera_edades_table.ajax.url(url).load(function(res) {
+            if(res.success){
+                $("#generarCartera").show();
+                $("#generarCarteraLoading").hide();
+                $("#generarCarteraUltimoLoading").hide();
+                $('#descargarExcelCartera').prop('disabled', false);
+                $("#descargarExcelCartera").show();
+                $("#descargarExcelCarteraDisabled").hide();
+                $('#generarCarteraUltimo').hide();
+                $('#generarCarteraUltimoLoading').hide();
+    
+                agregarToast('exito', 'Cartera cargado', 'Informe cargado con exito!', true);
+                
+                mostrarTotalesCartera(res.totales);
+            }
+        });
+    } else {
+        cartera_table.ajax.url(url).load(function(res) {
+            if(res.success){
+                $("#generarCartera").show();
+                $("#generarCarteraLoading").hide();
+                $("#generarCarteraUltimoLoading").hide();
+                $('#descargarExcelCartera').prop('disabled', false);
+                $("#descargarExcelCartera").show();
+                $("#descargarExcelCarteraDisabled").hide();
+                $('#generarCarteraUltimo').hide();
+                $('#generarCarteraUltimoLoading').hide();
+    
+                agregarToast('exito', 'Cartera cargado', 'Informe cargado con exito!', true);
+                
+                mostrarTotalesCartera(res.totales);
+            }
+        });
+    }
 }
 
 function mostrarTotalesCartera(data) {
@@ -550,43 +695,78 @@ $(document).on('click', '#generarCartera', function () {
     $("#cartera_abonos").text('$0');
     $("#cartera_diferencia").text('$0');
 
+    const picker = $('#fecha_manual_cartera').data('daterangepicker');
+    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
+    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
+    const tipo_informe = $("#tipo_informe_cartera").val();
     var url = base_url + 'cartera';
     url+= '?id_nit='+$('#id_nit_cartera').val();
     url+= '&id_cuenta='+$('#id_cuenta_cartera').val();
-    url+= '&fecha_desde='+$('#fecha_desde_cartera').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_cartera').val();
+    url+= '&fecha_desde='+fecha_desde;
+    url+= '&fecha_hasta='+fecha_hasta;
     url+= '&agrupar_cartera='+$('#agrupar_cartera').val();
-    url+= '&tipo_informe='+$("#tipo_informe_cartera").val();
+    url+= '&tipo_informe='+tipo_informe;
     url+= '&nivel='+getNivelCartera();
 
-    cartera_table.ajax.url(url).load(function(res) {
-        if(res.success) {
-            if(res.data){
-                Swal.fire({
-                    title: '¿Cargar Cartera?',
-                    text: "Cartera generado anteriormente ¿Desea cargarlo?",
-                    type: 'info',
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Cargar',
-                    cancelButtonText: 'Generar nuevo',
-                    reverseButtons: true,
-                }).then((result) => {
-                    if (result.value){
-                        $('#id_cartera_cargado').val(res.data);
-                        loadCarteraById(res.data);
-                    } else {
-                        generarCartera = true;
-                        GenerateCartera();
-                    }
-                })
-            } else {
-                agregarToast('info', 'Generando cartera', 'En un momento se le notificará cuando el informe esté generado...', true );
+    if (tipo_informe == 'por_edades') {
+        cartera_edades_table.ajax.url(url).load(function(res) {
+            if(res.success) {
+                if(res.data){
+                    Swal.fire({
+                        title: '¿Cargar Cartera?',
+                        text: "Cartera generado anteriormente ¿Desea cargarlo?",
+                        type: 'info',
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Cargar',
+                        cancelButtonText: 'Generar nuevo',
+                        reverseButtons: true,
+                    }).then((result) => {
+                        if (result.value){
+                            $('#id_cartera_cargado').val(res.data);
+                            loadCarteraById(res.data);
+                        } else {
+                            generarCartera = true;
+                            GenerateCartera();
+                        }
+                    })
+                } else {
+                    agregarToast('info', 'Generando cartera', 'En un momento se le notificará cuando el informe esté generado...', true );
+                }
             }
-        }
-    });
+        });
+    } else {
+        cartera_table.ajax.url(url).load(function(res) {
+            if(res.success) {
+                if(res.data){
+                    Swal.fire({
+                        title: '¿Cargar Cartera?',
+                        text: "Cartera generado anteriormente ¿Desea cargarlo?",
+                        type: 'info',
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Cargar',
+                        cancelButtonText: 'Generar nuevo',
+                        reverseButtons: true,
+                    }).then((result) => {
+                        if (result.value){
+                            $('#id_cartera_cargado').val(res.data);
+                            loadCarteraById(res.data);
+                        } else {
+                            generarCartera = true;
+                            GenerateCartera();
+                        }
+                    })
+                } else {
+                    agregarToast('info', 'Generando cartera', 'En un momento se le notificará cuando el informe esté generado...', true );
+                }
+            }
+        });
+    }
 
 });
 
@@ -633,21 +813,36 @@ function findCartera() {
 }
 
 function GenerateCartera() {
+
+    const picker = $('#fecha_manual_cartera').data('daterangepicker');
+    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
+    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
+    const tipoInforme = $("#tipo_informe_cartera").val();
+
     var url = base_url + 'cartera-find';
     url+= '?id_nit='+$('#id_nit_cartera').val();
     url+= '&id_cuenta='+$('#id_cuenta_cartera').val();
-    url+= '&fecha_desde='+$('#fecha_desde_cartera').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_cartera').val();
+    url+= '&fecha_desde='+fecha_desde;
+    url+= '&fecha_hasta='+fecha_hasta;
     url+= '&agrupar='+$('#agrupar_cartera').val();
     url+= '&tipo_informe='+$("#tipo_informe_cartera").val();
     url+= '&nivel='+getNivelCartera();
     url+= '&generar='+generarCartera;
 
-    cartera_table.ajax.url(url).load(function(res) {
-        if(res.success) {
-            agregarToast('info', 'Generando cartera', 'En un momento se le notificará cuando el informe esté generado...', true );
-        }
-    });
+    if (tipoInforme == 'por_edades') {
+        cartera_edades_table.ajax.url(url).load(function(res) {
+            if(res.success) {
+                agregarToast('info', 'Generando cartera', 'En un momento se le notificará cuando el informe esté generado...', true );
+            }
+        });
+    } else {
+        cartera_table.ajax.url(url).load(function(res) {
+            if(res.success) {
+                agregarToast('info', 'Generando cartera', 'En un momento se le notificará cuando el informe esté generado...', true );
+            }
+        });
+    }
+
 }
 
 $(document).on('click', '#generarCarteraUltimo', function () {

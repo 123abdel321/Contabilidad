@@ -68,12 +68,16 @@ class ProcessInformeCartera implements ShouldQueue
 				'nivel' => $this->request['nivel'],
 			]);
             $this->id_cartera = $cartera->id;
-            
-            $this->nivelUnoCartera();//NIVEL 1: GRUPOS
-            if (!$this->request['tipo_informe']) $this->nivelCeroCartera();//INFORME AMBOS
-            if ($this->request['nivel'] != '1') $this->nivelDosCartera();//NIVEL 2: SUB-GRUPOS 
-            if ($this->request['nivel'] == '3') $this->nivelTresCartera();//NIVEL 3: DETALLE 
-            $this->totalesCartera();//TOTALES
+
+            if ($this->request['tipo_informe'] == 'por_edades') {
+                $this->carteraEdades();
+            } else {
+                $this->nivelUnoCartera();//NIVEL 1: GRUPOS
+                if (!$this->request['tipo_informe']) $this->nivelCeroCartera();//INFORME AMBOS
+                if ($this->request['nivel'] != '1') $this->nivelDosCartera();//NIVEL 2: SUB-GRUPOS 
+                if ($this->request['nivel'] == '3') $this->nivelTresCartera();//NIVEL 3: DETALLE 
+                $this->totalesCartera();//TOTALES
+            }
 
             ksort($this->carteraCollection, SORT_STRING | SORT_FLAG_CASE);
             foreach (array_chunk($this->carteraCollection,233) as $carteraCollection){
@@ -654,6 +658,115 @@ class ProcessInformeCartera implements ShouldQueue
             });
     }
 
+    private function carteraEdades()
+    {
+        $query = $this->carteraDocumentosQuery();
+        $query->unionAll($this->carteraAnteriorQuery());
+        
+        $datos = DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS cartera"))
+            ->mergeBindings($query)
+            ->select(
+                'id_nit',
+                'numero_documento',
+                'nombre_nit',
+                'razon_social',
+                'id_cuenta',
+                'cuenta',
+                'naturaleza_cuenta',
+                'apartamentos',
+                'auxiliar',
+                'nombre_cuenta',
+                'documento_referencia',
+                'id_centro_costos',
+                'codigo_cecos',
+                'nombre_cecos',
+                'id_comprobante',
+                'codigo_comprobante',
+                'nombre_comprobante',
+                'consecutivo',
+                'concepto',
+                'fecha_manual',
+                'created_at',
+                'fecha_creacion',
+                'fecha_edicion',
+                'created_by',
+                'updated_by',
+                'anulado',
+                DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
+                DB::raw('SUM(debito) AS debito'),
+                DB::raw('SUM(credito) AS credito'),
+                DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
+                DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
+                DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
+                DB::raw('SUM(total_columnas) AS total_columnas'),
+                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 0 AND 30 THEN (saldo_anterior + debito - credito) ELSE 0 END) AS saldo_0_30"),
+                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 31 AND 60 THEN (saldo_anterior + debito - credito) ELSE 0 END) AS saldo_30_60"),
+                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 61 AND 90 THEN (saldo_anterior + debito - credito) ELSE 0 END) AS saldo_60_90"),
+                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) > 90 THEN (saldo_anterior + debito - credito) ELSE 0 END) AS saldo_mas_90"),
+                DB::raw("(CASE
+					WHEN naturaleza_cuenta = 0 AND SUM(debito) < 0 THEN 1
+					WHEN naturaleza_cuenta = 1 AND SUM(credito) < 0 THEN 1
+					ELSE 0
+				END) AS error")
+            )
+            ->groupBy([
+                'id_nit',
+                'id_cuenta'
+            ])
+            ->orderByRaw('id_nit')
+            ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
+            ->chunk(233, function ($documentos) {
+                $documentos->each(function ($documento) {
+                    
+                    $key = '';
+
+                    if ($this->request['agrupar_cartera'] == 'id_nit') {
+                        $key = $documento->numero_documento;
+                    }
+                    if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                        $key = $documento->cuenta;
+                    }
+
+                    $this->carteraCollection[$key] = [
+                        'id_cartera' => $this->id_cartera,
+                        'id_nit' => $documento->id_nit,
+                        'numero_documento' => $documento->numero_documento,
+                        'nombre_nit' => $documento->nombre_nit,
+                        'razon_social' => $documento->razon_social,
+                        'apartamento_nit' => $documento->apartamentos,
+                        'id_cuenta' => $documento->id_cuenta,
+                        'cuenta' => $documento->numero_documento,
+                        'naturaleza_cuenta' => $documento->naturaleza_cuenta,
+                        'nombre_cuenta' => $documento->nombre_cuenta,
+                        'documento_referencia' => '',
+                        'id_centro_costos' => $documento->id_centro_costos,
+                        'id_comprobante' => $documento->id_comprobante,
+                        'codigo_comprobante' => $documento->codigo_comprobante,
+                        'nombre_comprobante' => $documento->nombre_comprobante,
+                        'codigo_cecos' => $documento->codigo_cecos,
+                        'nombre_cecos' => $documento->nombre_cecos,
+                        'consecutivo' => $documento->consecutivo,
+                        'concepto' => '',
+                        'fecha_manual' => '',
+                        'fecha_creacion' => $documento->fecha_creacion,
+                        'fecha_edicion' => $documento->fecha_edicion,
+                        'created_by' => $documento->created_by,
+                        'updated_by' => $documento->updated_by,
+                        'dias_cumplidos' => '',
+                        'mora' => $documento->saldo_0_30,
+                        'saldo_anterior' => $documento->saldo_30_60,
+                        'total_abono' => $documento->saldo_60_90,
+                        'total_facturas' => $documento->saldo_mas_90,
+                        'saldo' => $documento->saldo_final,
+                        'nivel' => 0,
+                        'errores' => $documento->error
+                    ];
+                });
+            });
+    }
+
     private function carteraDocumentosQuery($documento_referencia = NULL, $id_nit = NULL, $id_cuenta = NULL)
     {
         $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
@@ -704,12 +817,12 @@ class ProcessInformeCartera implements ShouldQueue
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
             ->whereIn('PCT.id_tipo_cuenta', $this->tipoCuentas())
-            ->when($this->request['fecha_desde'] ? true : false, function ($query) {
-				$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde']);
-			}) 
-            ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
-				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
-			})
+            // ->when($this->request['fecha_desde'] ? true : false, function ($query) {
+			// 	$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde']);
+			// }) 
+            // ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
+			// 	$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
+			// })
             ->when($this->request['id_nit'] ? true : false, function ($query) {
 				$query->where('DG.id_nit', $this->request['id_nit']);
 			})
