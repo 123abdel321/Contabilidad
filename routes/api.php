@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use App\Events\PrivateMessage;
 use Illuminate\Support\Facades\Route;
+//SISTEMA
+use App\Http\Controllers\PosController;
 use App\Http\Controllers\InstaladorController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
@@ -92,6 +94,10 @@ Route::controller(UbicacionController::class)->group(function () {
     Route::get('departamentos', 'getDepartamento');
 });
 
+Route::prefix('pos')->controller(PosController::class)->group(function () {
+    Route::post('login', 'login');
+});
+
 Route::group(['middleware' => ['auth:sanctum']], function() {
 
     //EMPRESA
@@ -110,6 +116,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     
     //EMPRESA SELECCIONADA
     Route::group(['middleware' => ['clientconnection']], function() {
+
+        //SISTEMA POS
+        Route::prefix('pos')->controller(PosController::class)->group(function () {
+            Route::get('validate', 'posValidate');
+            Route::get('pedidos', 'pedidos');
+            Route::post('pedido', 'pedido');
+            Route::post('venta', 'venta');
+        });
 
         //IMPORTADORES PRECIO PRODUCTOS
         Route::controller(ProductoImportadorController::class)->group(function () {

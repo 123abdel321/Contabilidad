@@ -635,6 +635,14 @@ class ProductosController extends Controller
             ->where('estado', 1);
 
         // Filter by 'q' (search term)
+        if ($request->get("search")) {
+            $producto->where(function($query) use ($request) {
+                $query->where('codigo', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('nombre', 'LIKE', '%' . $request->get("search") . '%');
+            });
+        }
+
+        // Filter by 'q' (search term)
         if ($request->get("q")) {
             $producto->where(function($query) use ($request) {
                 $query->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
