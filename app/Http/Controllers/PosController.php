@@ -741,7 +741,8 @@ class PosController extends Controller
                         $user->save();
                     }
                     
-                    $empresaSelect = UsuarioEmpresa::where('id_usuario', $user->id)
+                    $empresaSelect = UsuarioEmpresa::with('empresa')
+                        ->where('id_usuario', $user->id)
                         ->where('id_empresa', $user->id_empresa)
                         ->first();
                     
@@ -755,7 +756,7 @@ class PosController extends Controller
                         ], 200);
                     }
 
-                    $user->has_empresa = $empresaSelect->token_db;
+                    $user->has_empresa = $empresaSelect->empresa->token_db;
                     $user->save();
 
                     $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', $user->id)
@@ -767,7 +768,7 @@ class PosController extends Controller
                     return response()->json([
                         'success'=>	true,
                         'access_token' => $token,
-                        'empresa' => $empresaSelect ? $empresaSelect->razon_social : '',
+                        'empresa' => $empresaSelect ? $empresaSelect->empresa->razon_social : '',
                         'token_type' => 'Bearer',
                         'message'=> 'Usuario logeado con exito!'
                     ], 200);
