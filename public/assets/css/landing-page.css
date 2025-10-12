@@ -1163,113 +1163,267 @@ p {
   }
 }
 
-/* Estilos para la nueva sección de Portafolio Integrado */
-
+/* Estilos para la sección de Portafolio Integrado - Versión Mejorada */
 .integrated-portfolio {
-    padding: 80px 0;
-    background-color: var(--color-background-secondary); /* Usa un color de fondo sutil */
+    padding: 100px 0;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.integrated-portfolio::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(124, 58, 237, 0.08) 0%, transparent 50%);
+    z-index: 0;
+}
+
+.integrated-portfolio .section-header {
+    text-align: center;
+    margin-bottom: 60px;
+    position: relative;
+    z-index: 1;
+}
+
+.section-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.integrated-portfolio .section-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 16px;
+    line-height: 1.2;
+}
+
+.integrated-portfolio .section-header p {
+    font-size: 1.25rem;
+    color: #cbd5e1;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
 }
 
 .integrated-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 30px;
-    margin-top: 40px;
+    gap: 40px;
+    position: relative;
+    z-index: 1;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
     .integrated-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
     }
 }
 
 .integrated-card {
-    background-color: var(--color-card-background);
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    padding: 40px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+    border-radius: 20px;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #334155;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    min-height: 580px;
     display: flex;
     flex-direction: column;
-    min-height: 400px; /* Altura mínima para que se vea robusto */
 }
 
 .integrated-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    border-color: #475569;
+}
+
+.card-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03;
+    background: 
+        radial-gradient(circle at 30% 20%, #2563eb 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, #7c3aed 0%, transparent 50%);
+    transition: opacity 0.3s ease;
+}
+
+.integrated-card:hover .card-background {
+    opacity: 0.05;
+}
+
+.card-content {
+    padding: 40px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 30px;
 }
 
 .integrated-icon {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    margin-bottom: 20px;
+    border-radius: 16px;
+    flex-shrink: 0;
 }
 
-/* Colores específicos para las tarjetas */
 .card-pos .integrated-icon {
-    background-color: var(--color-sky-light);
-    color: var(--color-sky-dark);
+    background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
 }
 
 .card-maximoph .integrated-icon {
-    background-color: var(--color-purple-light);
-    color: var(--color-purple-dark);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+}
+
+.card-badge {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .integrated-card h3 {
     font-size: 1.75rem;
     font-weight: 700;
-    margin-bottom: 15px;
-    color: var(--color-heading);
+    color: #f8fafc;
+    margin-bottom: 20px;
+    line-height: 1.3;
 }
 
 .integrated-card p {
-    font-size: 1rem;
+    font-size: 1.1rem;
     line-height: 1.6;
-    margin-bottom: 20px;
-    flex-grow: 1; /* Permite que el párrafo ocupe el espacio */
+    color: #cbd5e1;
+    margin-bottom: 30px;
+    flex-grow: 1;
 }
 
 .features-list {
     list-style: none;
-    padding: 0;
-    margin-bottom: 20px;
+    margin-bottom: 35px;
 }
 
 .features-list li {
     display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 1rem;
+    color: #e2e8f0;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.feature-icon {
+    width: 24px;
+    height: 24px;
+    background: rgba(34, 197, 94, 0.1);
+    border-radius: 6px;
+    display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 0.95rem;
-    color: var(--color-text-primary);
-    margin-bottom: 8px;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
 }
 
-.features-list svg {
-    color: var(--color-success); /* Icono de check verde */
+.feature-icon svg {
+    color: #22c55e;
+    width: 14px;
+    height: 14px;
 }
 
-.integrated-card .btn-secondary {
-    align-self: flex-start; /* Alinea el botón a la izquierda */
+.card-footer {
+    margin-top: auto;
 }
 
-/* Define variables de color si no las tienes, para un diseño moderno */
-:root {
-    --color-background-secondary: #f9fafb; /* Color claro */
-    --color-sky-light: #e0f2fe;
-    --color-sky-dark: #0284c7;
-    --color-purple-light: #f3e8ff;
-    --color-purple-dark: #a855f7;
-    --color-success: #10b981;
-    /* Asegúrate de que tus variables principales (border, card-background, heading, etc.) estén definidas */
+.integrated-card .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
 }
 
-[data-theme="dark"] {
-    --color-background-secondary: #1f2937; /* Color oscuro */
-    --color-card-background: #111827;
-    /* Ajustar los colores de texto y borde para modo oscuro */
+.integrated-card .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .integrated-portfolio {
+        padding: 60px 0;
+    }
+    
+    .integrated-portfolio .section-header h2 {
+        font-size: 2rem;
+    }
+    
+    .integrated-portfolio .section-header p {
+        font-size: 1.1rem;
+    }
+    
+    .card-content {
+        padding: 30px 25px;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .integrated-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .integrated-card h3 {
+        font-size: 1.5rem;
+    }
 }

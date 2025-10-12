@@ -322,55 +322,121 @@
             </div>
         </section>
 
-        <!-- Pos Section -->
+        <!-- Portafolio integrado Section -->
         <section id="portafolio-integrado" class="integrated-portfolio">
             <div class="container">
                 <div class="section-header animate-on-scroll">
+                    <div class="section-badge">Ecosistema Integrado</div>
                     <h2>Expande tu gestión con el Ecosistema PORTAFOLIOERP</h2>
                     <p>Una plataforma que crece con tu negocio: Módulo POS integrado y Gestión de Propiedad Horizontal.</p>
                 </div>
                 
                 <div class="integrated-grid">
-                    
                     <div class="integrated-card card-pos animate-on-scroll">
-                        <div class="integrated-icon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M6 3h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
-                                <path d="M12 17v-4"></path>
-                                <path d="M8 21h8"></path>
-                                <path d="M5 13l-1 8h16l-1-8"></path>
-                            </svg>
+                        <div class="card-background"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="integrated-icon">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 3h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+                                        <path d="M12 17v-4"></path>
+                                        <path d="M8 21h8"></path>
+                                        <path d="M5 13l-1 8h16l-1-8"></path>
+                                    </svg>
+                                </div>
+                                <div class="card-badge">Solución de Venta</div>
+                            </div>
+                            <h3>Módulo POS: El Poder de tu ERP en el Punto de Venta</h3>
+                            <p>Convierte ventas minoristas rápidas directamente en documentos contables. Nuestro POS sincroniza en tiempo real toda la operación de caja con los datos maestros del ERP, desde el inventario hasta la factura DIAN.</p>
+                            <ul class="features-list">
+                                <li>
+                                    <div class="feature-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <span>Integración Contable Total: Sincroniza ventas, costos y asientos.</span>
+                                </li>
+                                <li>
+                                    <div class="feature-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <span>Gestión de Datos Maestros: Utiliza productos, bodegas y resoluciones del ERP.</span>
+                                </li>
+                                <li>
+                                    <div class="feature-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <span>Manejo de Pedidos y Vendedores: Controla ubicaciones, vendedores y el ciclo de vida del pedido.</span>
+                                </li>
+                            </ul>
+                            <div class="card-footer">
+                                <a href="https://pos.portafolioerp.com/" target="_blank" class="btn btn-primary">
+                                    Ver Módulo POS
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 12h14"></path>
+                                        <path d="m12 5 7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
-                        <h3>Módulo POS: El Poder de tu ERP en el Punto de Venta</h3>
-                        <p>Convierte ventas minoristas rápidas directamente en documentos contables. Nuestro POS sincroniza en tiempo real toda la operación de caja con los datos maestros del ERP, desde el inventario hasta la factura DIAN.</p>
-                        <ul class="features-list">
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Integración Contable Total: Sincroniza ventas, costos y asientos.</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Gestión de Datos Maestros: Utiliza productos, bodegas y resoluciones del ERP.</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Manejo de Pedidos y Vendedores: Controla ubicaciones, vendedores y el ciclo de vida del pedido.</li>
-                        </ul>
-                        <a href="https://pos.portafolioerp.com/" target="_blank" class="btn btn-secondary mt-4">
-                            Ver Módulo POS
-                        </a>
                     </div>
 
                     <div class="integrated-card card-maximoph animate-on-scroll">
-                        <div class="integrated-icon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                                <path d="M2 17l10 5 10-5"></path>
-                                <path d="M2 12l10 5 10-5"></path>
-                            </svg>
+                        <div class="card-background"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="integrated-icon">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                        <path d="M2 17l10 5 10-5"></path>
+                                        <path d="M2 12l10 5 10-5"></path>
+                                    </svg>
+                                </div>
+                                <div class="card-badge">Administración PH</div>
+                            </div>
+                            <h3>Maximoph: La Gestión Contable Precisa para PH</h3>
+                            <p>Software especializado en la administración financiera y operativa de Propiedad Horizontal. Diseñado para ofrecer total transparencia y cumplimiento normativo a administradores y residentes.</p>
+                            <ul class="features-list">
+                                <li>
+                                    <div class="feature-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <span>Facturación y Coeficientes: Facturación automática por coeficientes, con gestión de cuotas y valores fijos.</span>
+                                </li>
+                                <li>
+                                    <div class="feature-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <span>Control de Cartera: Causación de intereses por mora y cruce automático de anticipos en tiempo real.</span>
+                                </li>
+                                <li>
+                                    <div class="feature-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <span>Integración Total: Conexión contable inmediata para reportes financieros y DIAN precisos.</span>
+                                </li>
+                            </ul>
+                            <div class="card-footer">
+                                <a href="https://maximoph.co/" target="_blank" class="btn btn-primary">
+                                    Ver Maximoph
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 12h14"></path>
+                                        <path d="m12 5 7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
-                        <h3>Maximoph: La Gestión Contable Precisa para PH</h3>
-                        <p>Software especializado en la administración financiera y operativa de Propiedad Horizontal. Diseñado para ofrecer total transparencia y cumplimiento normativo a administradores y residentes.</p>
-                        <ul class="features-list">
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Facturación y Coeficientes: Facturación automática por coeficientes, con gestión de cuotas y valores fijos.</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Control de Cartera: Causación de intereses por mora y cruce automático de anticipos en tiempo real.</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Integración Total: Conexión contable inmediata para reportes financieros y DIAN precisos.</li>
-                        </ul>
-                        <a href="https://maximoph.co/" target="_blank" class="btn btn-secondary mt-4">
-                            Ver Maximoph
-                        </a>
                     </div>
                 </div>
             </div>
