@@ -77,7 +77,7 @@
     }
     </script>
 
-    <link id="pagestyle" href="{{ asset('assets/css/landing-page.css') }}" rel="stylesheet" />
+    <link id="pagestyle" href="{{ asset('assets/css/landing-page.css') }}?v={{ config('app.version') }} " rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
