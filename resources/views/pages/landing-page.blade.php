@@ -331,6 +331,7 @@
                 </div>
                 
                 <div class="integrated-grid">
+                    
                     <div class="integrated-card card-pos animate-on-scroll">
                         <div class="integrated-icon">
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -340,12 +341,12 @@
                                 <path d="M5 13l-1 8h16l-1-8"></path>
                             </svg>
                         </div>
-                        <h3>Módulo POS: Punto de Venta Integrado</h3>
-                        <p>Convierte ventas minoristas rápidas directamente en facturas DIAN y actualiza el inventario en tiempo real con tu ERP. Ideal para tiendas, restaurantes y comercio.</p>
+                        <h3>Módulo POS: El Poder de tu ERP en el Punto de Venta</h3>
+                        <p>Convierte ventas minoristas rápidas directamente en documentos contables. Nuestro POS sincroniza en tiempo real toda la operación de caja con los datos maestros del ERP, desde el inventario hasta la factura DIAN.</p>
                         <ul class="features-list">
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Inventario automático</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Facturación en segundos</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Compatible con tótems y cajón</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Integración Contable Total: Sincroniza ventas, costos y asientos.</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Gestión de Datos Maestros: Utiliza productos, bodegas y resoluciones del ERP.</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Manejo de Pedidos y Vendedores: Controla ubicaciones, vendedores y el ciclo de vida del pedido.</li>
                         </ul>
                         <a href="https://pos.portafolioerp.com/" target="_blank" class="btn btn-secondary mt-4">
                             Ver Módulo POS
@@ -360,12 +361,12 @@
                                 <path d="M2 12l10 5 10-5"></path>
                             </svg>
                         </div>
-                        <h3>Maximoph: Gestión de Propiedad Horizontal</h3>
-                        <p>Software especializado en la administración de edificios y conjuntos residenciales. Conciliación bancaria, reportes contables y gestión de cuotas de administración.</p>
+                        <h3>Maximoph: La Gestión Contable Precisa para PH</h3>
+                        <p>Software especializado en la administración financiera y operativa de Propiedad Horizontal. Diseñado para ofrecer total transparencia y cumplimiento normativo a administradores y residentes.</p>
                         <ul class="features-list">
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Conciliación bancaria PH</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Gestión de asambleas</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Portal para residentes</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Facturación y Coeficientes: Facturación automática por coeficientes, con gestión de cuotas y valores fijos.</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Control de Cartera: Causación de intereses por mora y cruce automático de anticipos en tiempo real.</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Integración Total: Conexión contable inmediata para reportes financieros y DIAN precisos.</li>
                         </ul>
                         <a href="https://maximoph.co/" target="_blank" class="btn btn-secondary mt-4">
                             Ver Maximoph
