@@ -118,10 +118,10 @@
                 
                 <nav class="nav mobile-menu" id="mobileMenu">
                     <a href="#modulos" class="nav-link" data-section="modulos">Módulos</a>
+                    <a href="#portafolio-integrado" class="nav-link" data-section="portafolio-integrado">Portafolio Integrado</a>
                     <a href="#beneficios" class="nav-link" data-section="beneficios">Beneficios</a>
                     <a href="#clientes" class="nav-link" data-section="clientes">Clientes</a>
                     <a href="#contacto" class="nav-link" data-section="contacto">Contacto</a>
-                    <!-- Cambiando link de login y quitando demo -->
                     <a href="/login" class="btn btn-outline">Iniciar Sesión</a>
                 </nav>
             </div>
@@ -317,6 +317,59 @@
                         </div>
                         <h3>DIAN</h3>
                         <p>Facturación electrónica, reportes exógenas, medios magnéticos automáticos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pos Section -->
+        <section id="portafolio-integrado" class="integrated-portfolio">
+            <div class="container">
+                <div class="section-header animate-on-scroll">
+                    <h2>Expande tu gestión con el Ecosistema PORTAFOLIOERP</h2>
+                    <p>Una plataforma que crece con tu negocio: Módulo POS integrado y Gestión de Propiedad Horizontal.</p>
+                </div>
+                
+                <div class="integrated-grid">
+                    <div class="integrated-card card-pos animate-on-scroll">
+                        <div class="integrated-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 3h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+                                <path d="M12 17v-4"></path>
+                                <path d="M8 21h8"></path>
+                                <path d="M5 13l-1 8h16l-1-8"></path>
+                            </svg>
+                        </div>
+                        <h3>Módulo POS: Punto de Venta Integrado</h3>
+                        <p>Convierte ventas minoristas rápidas directamente en facturas DIAN y actualiza el inventario en tiempo real con tu ERP. Ideal para tiendas, restaurantes y comercio.</p>
+                        <ul class="features-list">
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Inventario automático</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Facturación en segundos</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Compatible con tótems y cajón</li>
+                        </ul>
+                        <a href="https://pos.portafolioerp.com/" target="_blank" class="btn btn-secondary mt-4">
+                            Ver Módulo POS
+                        </a>
+                    </div>
+
+                    <div class="integrated-card card-maximoph animate-on-scroll">
+                        <div class="integrated-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                <path d="M2 17l10 5 10-5"></path>
+                                <path d="M2 12l10 5 10-5"></path>
+                            </svg>
+                        </div>
+                        <h3>Maximoph: Gestión de Propiedad Horizontal</h3>
+                        <p>Software especializado en la administración de edificios y conjuntos residenciales. Conciliación bancaria, reportes contables y gestión de cuotas de administración.</p>
+                        <ul class="features-list">
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Conciliación bancaria PH</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Gestión de asambleas</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Portal para residentes</li>
+                        </ul>
+                        <a href="https://maximoph.co/" target="_blank" class="btn btn-secondary mt-4">
+                            Ver Maximoph
+                        </a>
                     </div>
                 </div>
             </div>

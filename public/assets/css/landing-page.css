@@ -1162,3 +1162,114 @@ p {
     height: 2.5rem;
   }
 }
+
+/* Estilos para la nueva sección de Portafolio Integrado */
+
+.integrated-portfolio {
+    padding: 80px 0;
+    background-color: var(--color-background-secondary); /* Usa un color de fondo sutil */
+}
+
+.integrated-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+@media (min-width: 768px) {
+    .integrated-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.integrated-card {
+    background-color: var(--color-card-background);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 40px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px; /* Altura mínima para que se vea robusto */
+}
+
+.integrated-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.integrated-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+/* Colores específicos para las tarjetas */
+.card-pos .integrated-icon {
+    background-color: var(--color-sky-light);
+    color: var(--color-sky-dark);
+}
+
+.card-maximoph .integrated-icon {
+    background-color: var(--color-purple-light);
+    color: var(--color-purple-dark);
+}
+
+.integrated-card h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--color-heading);
+}
+
+.integrated-card p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex-grow: 1; /* Permite que el párrafo ocupe el espacio */
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.features-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+}
+
+.features-list svg {
+    color: var(--color-success); /* Icono de check verde */
+}
+
+.integrated-card .btn-secondary {
+    align-self: flex-start; /* Alinea el botón a la izquierda */
+}
+
+/* Define variables de color si no las tienes, para un diseño moderno */
+:root {
+    --color-background-secondary: #f9fafb; /* Color claro */
+    --color-sky-light: #e0f2fe;
+    --color-sky-dark: #0284c7;
+    --color-purple-light: #f3e8ff;
+    --color-purple-dark: #a855f7;
+    --color-success: #10b981;
+    /* Asegúrate de que tus variables principales (border, card-background, heading, etc.) estén definidas */
+}
+
+[data-theme="dark"] {
+    --color-background-secondary: #1f2937; /* Color oscuro */
+    --color-card-background: #111827;
+    /* Ajustar los colores de texto y borde para modo oscuro */
+}
