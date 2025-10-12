@@ -3,37 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PORTAFOLIOERP - ERP Colombiano con Integración DIAN | Software Contable y Facturación Electrónica</title>
-    <meta name="description" content="PORTAFOLIOERP es el ERP colombiano líder con integración oficial DIAN. Contabilidad, nómina, facturación electrónica y reportes en tiempo real. Demo gratuita disponible.">
-    <meta name="keywords" content="ERP Colombia, facturación electrónica DIAN, software contable, nómina Colombia, PORTAFOLIOERP, sistema contable colombiano">
+    
+    <title>PORTAFOLIOERP: Plataforma Integral de ERP, POS y Administración PH | Colombia</title>
+    
+    <meta name="description" content="PORTAFOLIOERP es la plataforma integral líder en Colombia. Unifica tu ERP (Contabilidad DIAN, Nómina, Facturación Electrónica), Módulo POS (Ventas) y Gestión de Propiedad Horizontal (Maximoph.co).">
+    
+    <meta name="keywords" content="ERP Colombia, facturación electrónica DIAN, software contable, nómina Colombia, PORTAFOLIOERP, sistema contable, POS Colombia, software POS, Administración PH, Maximoph, software propiedad horizontal, gestión empresarial">
+    
     <meta name="author" content="PORTAFOLIOERP">
     <meta name="robots" content="index, follow">
     
-    <!-- Open Graph / Facebook -->
+    <link rel="canonical" href="https://portafolioerp.com/">
+    
+    <link rel="related" href="https://pos.portafolioerp.com/" title="Módulo POS de Portafolio ERP">
+    <link rel="related" href="https://maximoph.co/" title="Administración PH - Maximoph">
+
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://PORTAFOLIOERP.com/">
-    <meta property="og:title" content="PORTAFOLIOERP - ERP Colombiano con Integración DIAN">
-    <meta property="og:description" content="El ERP colombiano que integra contabilidad, nómina y facturación DIAN en una sola plataforma. Cumple con la normativa fiscal y optimiza tus procesos empresariales.">
+    <meta property="og:url" content="https://portafolioerp.com/">
+    <meta property="og:title" content="PORTAFOLIOERP: Un solo sistema para ERP, POS y Propiedad Horizontal">
+    <meta property="og:description" content="Centraliza tu Contabilidad DIAN, Ventas POS y Gestión PH. Tres soluciones, un solo ecosistema robusto.">
     <meta property="og:image" content="https://PORTAFOLIOERP.com/og-image.jpg">
     
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://PORTAFOLIOERP.com/">
-    <meta property="twitter:title" content="PORTAFOLIOERP - ERP Colombiano con Integración DIAN">
-    <meta property="twitter:description" content="El ERP colombiano que integra contabilidad, nómina y facturación DIAN en una sola plataforma.">
+    <meta property="twitter:title" content="PORTAFOLIOERP: El ERP + POS + Maximoph para tu empresa.">
+    <meta property="twitter:description" content="Centraliza tu Contabilidad DIAN, Ventas POS y Gestión PH. Tres soluciones, un solo ecosistema.">
     <meta property="twitter:image" content="https://PORTAFOLIOERP.com/og-image.jpg">
     
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://PORTAFOLIOERP.com/">
-    
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-
     <link rel="mask-icon" href="https://maximoph.co/img/logo_contabilidad.png" color="#000000">
     <link rel="alternate icon" class="js-site-favicon" type="image/png" href="/img/logo_contabilidad.png">
     <link rel="icon" class="js-site-favicon" type="image/png" href="/img/logo_contabilidad.png">
     
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://portafolioerp.com/",
+      "name": "PORTAFOLIOERP | Plataforma de Software Empresarial",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://portafolioerp.com/buscar?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "hasPart": [
+        {
+          "@type": "WebPage",
+          "name": "Facturación Electrónica DIAN",
+          "url": "https://portafolioerp.com/#facturacion"
+        },
+        {
+          "@type": "WebPage",
+          "name": "Software Contable y Nómina",
+          "url": "https://portafolioerp.com/#contabilidad-nomina"
+        },
+        {
+          "@type": "WebPage",
+          "name": "Módulo POS (Punto de Venta)",
+          "url": "https://pos.portafolioerp.com/"
+        },
+        {
+          "@type": "WebPage",
+          "name": "Maximoph - Administración PH",
+          "url": "https://maximoph.co/"
+        },
+        {
+          "@type": "WebPage",
+          "name": "Ingresar",
+          "url": "https://app.portafolioerp.com/login" 
+        }
+      ]
+    }
+    </script>
+
     <link id="pagestyle" href="{{ asset('assets/css/landing-page.css') }}" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
 </head>
