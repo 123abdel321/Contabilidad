@@ -112,6 +112,7 @@ class CarteraExport implements FromView, WithColumnWidths, WithStyles, WithColum
 			'F' => 20,
 			'G' => 20,
 			'H' => 20,
+			'I' => 20,
         ];
 	}
 }
