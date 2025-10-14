@@ -729,9 +729,9 @@ class ProcessInformeCartera implements ShouldQueue
 
                     $mora = $documento->dias_cumplidos - $documento->plazo;
 
-                    $saldo_0_30   = ($mora >= 0   && $mora <= 29) ? $documento->saldo_final : 0;
-                    $saldo_30_60  = ($mora >= 30  && $mora <= 59) ? $documento->saldo_final : 0;
-                    $saldo_60_90  = ($mora >= 60  && $mora <= 90) ? $documento->saldo_final : 0;
+                    $saldo_0_30   = ($mora >= 0   && $mora <= 30) ? $documento->saldo_final : 0;
+                    $saldo_30_60  = ($mora >= 31  && $mora <= 60) ? $documento->saldo_final : 0;
+                    $saldo_60_90  = ($mora >= 61  && $mora <= 90) ? $documento->saldo_final : 0;
                     $saldo_mas_90 = ($mora > 90) ? $documento->saldo_final : 0;
                     
                     if ($this->hasCuentaData($key)) {
