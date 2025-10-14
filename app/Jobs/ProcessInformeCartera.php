@@ -701,10 +701,10 @@ class ProcessInformeCartera implements ShouldQueue
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
                 DB::raw('SUM(total_columnas) AS total_columnas'),
-                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 0 AND 30 THEN (saldo_anterior + debito - credito) ELSE 0 END) AS saldo_0_30"),
-                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 31 AND 60 THEN (saldo_anterior + debito - credito) ELSE 0 END) AS saldo_30_60"),
-                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 61 AND 90 THEN (saldo_anterior + debito - credito) ELSE 0 END) AS saldo_60_90"),
-                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) > 90 THEN (saldo_anterior + debito - credito) ELSE 0 END) AS saldo_mas_90"),
+                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 0 AND 30 THEN (debito - credito) ELSE 0 END) AS saldo_0_30"),
+                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 31 AND 60 THEN (debito - credito) ELSE 0 END) AS saldo_30_60"),
+                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 61 AND 90 THEN (debito - credito) ELSE 0 END) AS saldo_60_90"),
+                DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) > 90 THEN (debito - credito) ELSE 0 END) AS saldo_mas_90"),
                 DB::raw("(CASE
 					WHEN naturaleza_cuenta = 0 AND SUM(debito) < 0 THEN 1
 					WHEN naturaleza_cuenta = 1 AND SUM(credito) < 0 THEN 1
