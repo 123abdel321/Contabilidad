@@ -661,6 +661,7 @@ class ProcessInformeCartera implements ShouldQueue
     private function carteraEdades()
     {
         $query = $this->carteraDocumentosQueryHasta();
+        $fechaHasta = $this->request['fecha_hasta'];
         // $query->unionAll($this->carteraAnteriorQuery());
         $datos = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS cartera"))
@@ -699,7 +700,7 @@ class ProcessInformeCartera implements ShouldQueue
                 DB::raw('SUM(saldo_anterior) + SUM(debito) - SUM(credito) AS saldo_final'),
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
-                DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
+                DB::raw("DATEDIFF('$fechaHasta', fecha_manual) AS dias_cumplidos"),
                 DB::raw('SUM(total_columnas) AS total_columnas'),
                 DB::raw("(CASE
 					WHEN naturaleza_cuenta = 0 AND SUM(debito) < 0 THEN 1
@@ -732,7 +733,7 @@ class ProcessInformeCartera implements ShouldQueue
                     $saldo_30_60  = ($mora >= 31  && $mora <= 60) ? $documento->saldo_final : 0;
                     $saldo_60_90  = ($mora >= 61  && $mora <= 90) ? $documento->saldo_final : 0;
                     $saldo_mas_90 = ($mora > 90) ? $documento->saldo_final : 0;
-
+                    
                     if ($this->hasCuentaData($key)) {
                         
                         $this->carteraCollection[$key]['mora']+= $saldo_0_30;
