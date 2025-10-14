@@ -662,7 +662,6 @@ class ProcessInformeCartera implements ShouldQueue
     {
         $query = $this->carteraDocumentosQueryHasta();
         // $query->unionAll($this->carteraAnteriorQuery());
-        
         $datos = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS cartera"))
             ->mergeBindings($query)
