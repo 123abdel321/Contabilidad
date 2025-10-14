@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>PORTAFOLIOERP: Plataforma Integral de ERP, POS y Administración PH | Colombia</title>
+    <title>Portafolio ERP: Plataforma Integral de ERP, POS y Administración PH | Colombia</title>
     
     <meta name="description" content="PORTAFOLIOERP es la plataforma integral líder en Colombia. Unifica tu ERP (Contabilidad DIAN, Nómina, Facturación Electrónica), Módulo POS (Ventas) y Gestión de Propiedad Horizontal (Maximoph.co).">
     
