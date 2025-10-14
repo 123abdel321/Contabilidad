@@ -661,7 +661,7 @@ class ProcessInformeCartera implements ShouldQueue
     private function carteraEdades()
     {
         $query = $this->carteraDocumentosQuery();
-        $query->unionAll($this->carteraAnteriorQuery());
+        // $query->unionAll($this->carteraAnteriorQuery());
         
         $datos = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS cartera"))
@@ -721,7 +721,7 @@ class ProcessInformeCartera implements ShouldQueue
                     $key = '';
 
                     if ($this->request['agrupar_cartera'] == 'id_nit') {
-                        $key = $documento->numero_documento;
+                        $key = $documento->numero_documento.$documento->id_cuenta;
                     }
                     if ($this->request['agrupar_cartera'] == 'id_cuenta') {
                         $key = $documento->cuenta;
@@ -832,12 +832,12 @@ class ProcessInformeCartera implements ShouldQueue
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
             ->whereIn('PCT.id_tipo_cuenta', $this->tipoCuentas())
-            // ->when($this->request['fecha_desde'] ? true : false, function ($query) {
-			// 	$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde']);
-			// }) 
-            // ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
-			// 	$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
-			// })
+            ->when($this->request['fecha_desde'] ? true : false, function ($query) {
+				$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde']);
+			}) 
+            ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
+				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
+			})
             ->when($this->request['id_nit'] ? true : false, function ($query) {
 				$query->where('DG.id_nit', $this->request['id_nit']);
 			})
