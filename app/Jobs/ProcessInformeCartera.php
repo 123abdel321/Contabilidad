@@ -671,6 +671,7 @@ class ProcessInformeCartera implements ShouldQueue
                 'numero_documento',
                 'nombre_nit',
                 'razon_social',
+                'plazo',
                 'id_cuenta',
                 'cuenta',
                 'naturaleza_cuenta',
@@ -700,7 +701,6 @@ class ProcessInformeCartera implements ShouldQueue
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono"),
                 DB::raw("IF(naturaleza_cuenta = 0, SUM(debito), SUM(credito)) AS total_facturas"),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
-                DB::raw('SUM(total_columnas) AS total_columnas'),
                 DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 0 AND 30 THEN (debito - credito) ELSE 0 END) AS saldo_0_30"),
                 DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 31 AND 60 THEN (debito - credito) ELSE 0 END) AS saldo_30_60"),
                 DB::raw("SUM(CASE WHEN DATEDIFF(now(), fecha_manual) BETWEEN 61 AND 90 THEN (debito - credito) ELSE 0 END) AS saldo_60_90"),
@@ -713,59 +713,110 @@ class ProcessInformeCartera implements ShouldQueue
             )
             ->groupBy([
                 'id_nit',
-                'id_cuenta'
+                'id_cuenta',
+                'documento_referencia'   // <--- agregado tal como pediste
             ])
-            ->orderByRaw('id_nit')
+            ->orderByRaw('cuenta, id_nit, documento_referencia, created_at') // orden solicitado
             ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
-                    
-                    $key = '';
 
+                    // key según tu request (no lo cambié)
+                    $key = '';
                     if ($this->request['agrupar_cartera'] == 'id_nit') {
                         $key = $documento->numero_documento;
-                    }
-                    if ($this->request['agrupar_cartera'] == 'id_cuenta') {
+                    } elseif ($this->request['agrupar_cartera'] == 'id_cuenta') {
                         $key = $documento->cuenta;
+                    } else {
+                        // fallback: nit|cuenta|ref para evitar colisiones
+                        $key = ($documento->numero_documento ?? '0') . '|' . ($documento->cuenta ?? '0') . '|' . ($documento->documento_referencia ?? '');
                     }
 
-                    $this->carteraCollection[$key] = [
-                        'id_cartera' => $this->id_cartera,
-                        'id_nit' => $documento->id_nit,
-                        'numero_documento' => $documento->numero_documento,
-                        'nombre_nit' => $documento->nombre_nit,
-                        'razon_social' => $documento->razon_social,
-                        'apartamento_nit' => $documento->apartamentos,
-                        'id_cuenta' => $documento->id_cuenta,
-                        'cuenta' => $documento->numero_documento,
-                        'naturaleza_cuenta' => $documento->naturaleza_cuenta,
-                        'nombre_cuenta' => $documento->nombre_cuenta,
-                        'documento_referencia' => '',
-                        'id_centro_costos' => $documento->id_centro_costos,
-                        'id_comprobante' => $documento->id_comprobante,
-                        'codigo_comprobante' => $documento->codigo_comprobante,
-                        'nombre_comprobante' => $documento->nombre_comprobante,
-                        'codigo_cecos' => $documento->codigo_cecos,
-                        'nombre_cecos' => $documento->nombre_cecos,
-                        'consecutivo' => $documento->consecutivo,
-                        'concepto' => '',
-                        'fecha_manual' => '',
-                        'fecha_creacion' => $documento->fecha_creacion,
-                        'fecha_edicion' => $documento->fecha_edicion,
-                        'created_by' => $documento->created_by,
-                        'updated_by' => $documento->updated_by,
-                        'dias_cumplidos' => '',
-                        'mora' => $documento->saldo_0_30,
-                        'saldo_anterior' => $documento->saldo_30_60,
-                        'total_abono' => $documento->saldo_60_90,
-                        'total_facturas' => $documento->saldo_mas_90,
-                        'saldo' => $documento->saldo_final,
-                        'nivel' => 0,
-                        'errores' => $documento->error
-                    ];
+                    // Calcula mora (tal como dijiste)
+                    $plazo = isset($documento->plazo) ? (int)$documento->plazo : 0;
+                    $dias_cumplidos = isset($documento->dias_cumplidos) ? (int)$documento->dias_cumplidos : 0;
+                    $mora = $dias_cumplidos - $plazo;
+
+                    // Valores que se van a sumar si ya existe la key
+                    $saldo_ant = isset($documento->saldo_30_60) ? (float)$documento->saldo_30_60 : 0.0;
+                    $saldo_60 = isset($documento->saldo_60_90) ? (float)$documento->saldo_60_90 : 0.0;
+                    $saldo_90 = isset($documento->saldo_mas_90) ? (float)$documento->saldo_mas_90 : 0.0;
+                    $saldo_final = isset($documento->saldo_final) ? (float)$documento->saldo_final : 0.0;
+                    $errores = isset($documento->error) ? (int)$documento->error : 0;
+
+                    // Si ya existe el key: sumar los campos solicitados (sin tocar la estructura)
+                    if ($this->hasCuentaData($key)) {
+                        // Sumar numéricos (manteniendo 2 decimales)
+                        $this->carteraCollection[$key]['saldo_anterior'] = number_format(
+                            (float)$this->carteraCollection[$key]['saldo_anterior'] + $saldo_ant,
+                            2, '.', ''
+                        );
+
+                        $this->carteraCollection[$key]['total_abono'] = number_format(
+                            (float)$this->carteraCollection[$key]['total_abono'] + $saldo_60,
+                            2, '.', ''
+                        );
+
+                        $this->carteraCollection[$key]['total_facturas'] = number_format(
+                            (float)$this->carteraCollection[$key]['total_facturas'] + $saldo_90,
+                            2, '.', ''
+                        );
+
+                        $this->carteraCollection[$key]['saldo'] = number_format(
+                            (float)$this->carteraCollection[$key]['saldo'] + $saldo_final,
+                            2, '.', ''
+                        );
+
+                        // acumular errores y total_columnas
+                        $this->carteraCollection[$key]['errores'] = (int)$this->carteraCollection[$key]['errores'] + $errores;
+
+                        // opcional: actualizar mora con la mayor (o última) según prefieras — aquí dejo la última fila
+                        $this->carteraCollection[$key]['mora'] = $mora;
+                        $this->carteraCollection[$key]['dias_cumplidos'] = $dias_cumplidos;
+                        // si quieres mantener la referencia o fecha_creacion/edicion más relevante, no la sobreescribo aquí
+                    } else {
+                        // crear la entrada exactamente con la estructura solicitada
+                        $this->carteraCollection[$key] = [
+                            'id_cartera' => $this->id_cartera,
+                            'id_nit' => $documento->id_nit,
+                            'numero_documento' => $documento->numero_documento,
+                            'nombre_nit' => $documento->nombre_nit,
+                            'razon_social' => $documento->razon_social,
+                            'apartamento_nit' => $documento->apartamentos,
+                            'id_cuenta' => $documento->id_cuenta,
+                            'cuenta' => $documento->numero_documento,
+                            'naturaleza_cuenta' => $documento->naturaleza_cuenta,
+                            'nombre_cuenta' => $documento->nombre_cuenta,
+                            'documento_referencia' => $documento->documento_referencia ?? '',
+                            'id_centro_costos' => $documento->id_centro_costos,
+                            'id_comprobante' => $documento->id_comprobante,
+                            'codigo_comprobante' => $documento->codigo_comprobante,
+                            'nombre_comprobante' => $documento->nombre_comprobante,
+                            'codigo_cecos' => $documento->codigo_cecos,
+                            'nombre_cecos' => $documento->nombre_cecos,
+                            'consecutivo' => $documento->consecutivo,
+                            'concepto' => $documento->concepto ?? '',
+                            'fecha_manual' => $documento->fecha_manual ?? '',
+                            'fecha_creacion' => $documento->fecha_creacion,
+                            'fecha_edicion' => $documento->fecha_edicion,
+                            'created_by' => $documento->created_by,
+                            'updated_by' => $documento->updated_by,
+                            'dias_cumplidos' => $dias_cumplidos,
+                            'mora' => $mora,
+                            // aquí asigno los campos que pediste
+                            'mora' => $mora,
+                            'saldo_anterior' => number_format((float)$saldo_ant, 2, '.', ''),
+                            'total_abono' => number_format((float)$saldo_60, 2, '.', ''),
+                            'total_facturas' => number_format((float)$saldo_90, 2, '.', ''),
+                            'saldo' => number_format((float)$saldo_final, 2, '.', ''),
+                            'nivel' => 0,
+                            'errores' => $errores,
+                        ];
+                    }
                 });
             });
     }
+
 
     private function carteraDocumentosQuery($documento_referencia = NULL, $id_nit = NULL, $id_cuenta = NULL)
     {
