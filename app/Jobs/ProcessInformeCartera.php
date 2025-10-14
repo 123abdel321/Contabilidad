@@ -721,7 +721,7 @@ class ProcessInformeCartera implements ShouldQueue
                     $key = '';
 
                     if ($this->request['agrupar_cartera'] == 'id_nit') {
-                        $key = $documento->numero_documento.$documento->id_cuenta;
+                        $key = $documento->numero_documento;
                     }
                     if ($this->request['agrupar_cartera'] == 'id_cuenta') {
                         $key = $documento->cuenta;
