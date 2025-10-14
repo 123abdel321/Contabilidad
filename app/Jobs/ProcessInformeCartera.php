@@ -660,7 +660,7 @@ class ProcessInformeCartera implements ShouldQueue
 
     private function carteraEdades()
     {
-        $query = $this->carteraDocumentosQuery();
+        $query = $this->carteraDocumentosQueryHasta();
         // $query->unionAll($this->carteraAnteriorQuery());
         
         $datos = DB::connection('sam')
@@ -832,9 +832,72 @@ class ProcessInformeCartera implements ShouldQueue
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
             ->whereIn('PCT.id_tipo_cuenta', $this->tipoCuentas())
-            // ->when($this->request['fecha_desde'] ? true : false, function ($query) {
-			// 	$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde']);
-			// }) 
+            ->when($this->request['fecha_desde'] ? true : false, function ($query) {
+				$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde']);
+			}) 
+            ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
+				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
+			})
+            ->when($this->request['id_nit'] ? true : false, function ($query) {
+				$query->where('DG.id_nit', $this->request['id_nit']);
+			})
+			->when($this->request['id_cuenta'] ? true : false, function ($query) {
+				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+			});
+
+        return $documentosQuery;
+    }
+
+    private function carteraDocumentosQueryHasta($documento_referencia = NULL, $id_nit = NULL, $id_cuenta = NULL)
+    {
+        $documentosQuery = DB::connection('sam')->table('documentos_generals AS DG')
+            ->select(
+                'N.id AS id_nit',
+                'N.numero_documento',
+                DB::raw("(CASE
+                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    ELSE NULL
+                END) AS nombre_nit"),
+                "N.razon_social",
+                "N.plazo",
+                "N.apartamentos",
+                "PC.id AS id_cuenta",
+                "PC.cuenta",
+                "PC.naturaleza_cuenta",
+                "PC.auxiliar",
+                "PC.nombre AS nombre_cuenta",
+                "PCT.id_tipo_cuenta",
+                "DG.documento_referencia",
+                "DG.id_centro_costos",
+                "CC.codigo AS codigo_cecos",
+                "CC.nombre AS nombre_cecos",
+                "CO.id AS id_comprobante",
+                "CO.codigo AS codigo_comprobante",
+                "CO.nombre AS nombre_comprobante",
+                "DG.consecutivo",
+                "DG.concepto",
+                "DG.fecha_manual",
+                DB::raw("DATE_FORMAT(DG.fecha_manual, '%Y-%m') AS fecha_mes"),
+                "DG.created_at",
+                DB::raw("DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
+                DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                "DG.created_by",
+                "DG.updated_by",
+                "DG.anulado",
+                DB::raw("0 AS saldo_anterior"),
+                DB::raw("DG.debito AS debito"),
+                DB::raw("DG.credito AS credito"),
+                DB::raw("DG.debito - DG.credito AS saldo_final"),
+                DB::raw("1 AS total_columnas")
+            )
+            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
+            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+            ->leftJoin('plan_cuentas_tipos AS PCT', 'PC.id', 'PCT.id_cuenta')
+            ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
+            ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
+            ->where('anulado', 0)
+            ->whereIn('PCT.id_tipo_cuenta', $this->tipoCuentas())
             ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
 			})
