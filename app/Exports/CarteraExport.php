@@ -23,17 +23,30 @@ class CarteraExport implements FromView, WithColumnWidths, WithStyles, WithColum
     use Exportable;
 
     protected $id_cartera;
+    protected $empresa;
+    protected $cabeza;
 
-    public function __construct(int $id)
+    public function __construct(int $id, $empresa)
 	{
 		$this->id_cartera = $id;
+        $this->empresa = $empresa;
+		$this->cabeza = InfCartera::where('id', $this->id_cartera)->first();
+
 	}
 
     public function view(): View
 	{
-		return view('excel.cartera.cartera', [
-            'cabeza' => InfCartera::where('id', $this->id_cartera)->first(),
-			'documentos' => InfCarteraDetalle::whereIdCartera($this->id_cartera)->get()
+        $platilla = 'excel.cartera.cartera';
+        if ($this->cabeza->tipo_informe == 'por_edades') {
+            $platilla = 'excel.cartera.edades';
+        }
+        
+		return view($platilla, [
+            'cabeza' => $this->cabeza,
+			'documentos' => InfCarteraDetalle::whereIdCartera($this->id_cartera)->get(),
+            'nombre_informe' => 'CARTERA',
+            'nombre_empresa' => $this->empresa->razon_social,
+            'logo_empresa' => $this->empresa->logo ?? 'https://app.portafolioerp.com/img/logo_contabilidad.png',
 		]);
 	}
 
@@ -44,7 +57,7 @@ class CarteraExport implements FromView, WithColumnWidths, WithStyles, WithColum
 
     public function headings(): array
     {
-        return [
+        $headings = [
             'Cuenta',
             'Nit',
             'Saldo anterior',
@@ -52,16 +65,40 @@ class CarteraExport implements FromView, WithColumnWidths, WithStyles, WithColum
             'Total abono',
             'Saldo final'
         ];
+        if ($this->cabeza->tipo_informe == 'por_edades') {
+            $headings = [
+                'Documento',
+                'Nombre',
+                'Ubicación',
+                'Detalle',
+                'De 0 a 30',
+                'De 30 a 60',
+                'De 60 a 90',
+                'Más de 90',
+                'Saldo fina'
+            ];
+        }
+        return $headings;
     }
 
     public function columnFormats(): array
     {
-        return [
+        $columnFormats = [
 			'E' => NumberFormat::FORMAT_CURRENCY_USD,
 			'F' => NumberFormat::FORMAT_CURRENCY_USD,
 			'G' => NumberFormat::FORMAT_CURRENCY_USD,
 			'H' => NumberFormat::FORMAT_CURRENCY_USD,
         ];
+        if ($this->cabeza->tipo_informe == 'por_edades') {
+            $columnFormats = [
+                'E' => NumberFormat::FORMAT_CURRENCY_USD,
+                'F' => NumberFormat::FORMAT_CURRENCY_USD,
+                'G' => NumberFormat::FORMAT_CURRENCY_USD,
+                'H' => NumberFormat::FORMAT_CURRENCY_USD,
+                'I' => NumberFormat::FORMAT_CURRENCY_USD,
+            ];
+        }
+        return $columnFormats;
 	}
 
     public function columnWidths(): array

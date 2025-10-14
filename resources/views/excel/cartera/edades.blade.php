@@ -16,17 +16,18 @@
             <td style="font-size: 14px;">Fecha de generación: {{ \Carbon\Carbon::now()->format('Y-m-d H:i') }}</td>
         </tr>
     </table>
-    
+
 	<table>
 		<thead>
 		<tr>
-            <th>Cuenta</th>
-            <th>Nit</th>
-            <th>Zona</th>
+            <th>Documento</th>
+            <th>Nombre</th>
             <th>Ubicación</th>
-            <th>Saldo anterior</th>
-            <th>Total factura</th>
-            <th>Total abono</th>
+            <th>Detalle</th>
+            <th>De 0 a 30</th>
+            <th>De 30 a 60</th>
+            <th>De 60 a 90</th>
+            <th>Más de 90</th>
             <th>Saldo final</th>
 		</tr>
 		</thead>
@@ -34,11 +35,9 @@
 		@foreach($documentos as $documento)
 			<tr>
                 @if ($documento->nivel == 1)
-                    @include('excel.cartera.celdas', ['style' => 'background-color: #b3dbed; font-weight: bold;', 'documento' => $documento, 'cabeza' => $cabeza])
-                @elseif ($documento->nivel == 0)
-                    @include('excel.cartera.celdas', ['style' => 'background-color: #1c4587; font-weight: bold; color: #FFF;', 'documento' => $documento, 'cabeza' => $cabeza])
+                    @include('excel.cartera.celdas_edades', ['style' => 'background-color: #212329; font-weight: bold; color: white;', 'documento' => $documento, 'cabeza' => $cabeza])
                 @else
-                    @include('excel.cartera.celdas', ['style' => 'background-color: #FFF;', 'documento' => $documento, 'cabeza' => $cabeza])
+                    @include('excel.cartera.celdas_edades', ['style' => 'background-color: #FFF;', 'documento' => $documento, 'cabeza' => $cabeza])
                 @endif
 			</tr>
 		@endforeach

@@ -76,17 +76,21 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="generarCartera" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; margin-right: 5px;">
+                    <span id="generarCartera" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px; margin-right: 5px;">
                         <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">BUSCAR</b>
                     </span>
-                    <span id="generarCarteraLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-right: 5px; margin-bottom: 16px;">
+                    <span id="generarCarteraLoading" class="badge bg-gradient-info btn-bg-gold-loading" style="display:none; min-width: 40px; margin-right: 5px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">BUSCANDO</b>
                     </span>
                     <!-- BOTON EXCEL -->
-                    <span id="descargarExcelCartera" class="btn badge bg-gradient-success btn-bg-success" style="min-width: 40px; display:none;">
+                    <span id="descargarExcelCartera" class="btn badge bg-gradient-success btn-bg-success btn-bg-excel btn-bg-excel-loading" style="min-width: 40px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
+                    </span>
+                    <span id="descargarExcelCarteraLoading" class="badge bg-gradient-info btn-bg-excel-loading" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                     </span>
                     <span id="descargarExcelCarteraDisabled" class="badge bg-gradient-dark" style="min-width: 40px; color: #adadad; margin-right: 3px;">

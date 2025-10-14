@@ -348,8 +348,16 @@ function cargarTablasCartera() {
                 return result;
             }
         },
+        rowCallback: function(row, data, index) {
+            if (data.nivel == 1) {
+                $('td', row).css('background-color', '#212329');
+                $('td', row).css('color', '#FFF');
+                $('td', row).css('font-weight', '700');
+                return;
+            }
+        },
         columns: [
-            { data: function (row, type, set){
+            { data: function (row, type, set) {
                 var agrupado = $('#agrupar_cartera').val();
                 if (agrupado == 'id_cuenta') {
                     if (row.nivel == 1) {
@@ -528,6 +536,11 @@ function cargarFechasCartera() {
 }
 
 $(document).on('click', '#descargarExcelCartera', function () {
+
+    $("#descargarExcelCartera").hide();
+    $("#descargarExcelCarteraLoading").show();
+    $("#descargarExcelCarteraDisabled").hide();
+
     $.ajax({
         url: base_url + 'cartera-excel',
         method: 'POST',
@@ -541,25 +554,18 @@ $(document).on('click', '#descargarExcelCartera', function () {
                     window.open('https://'+res.url_file, "_blank");
                     agregarToast('info', 'Generando excel', res.message, true);
                     return;
-                },300);
-                
+                },1000);
             } else {
                 agregarToast('info', 'Generando excel', res.message, true);
             }
         }
     }).fail((err) => {
-        var errorsMsg = "";
+        $("#descargarExcelCartera").show();
+        $("#descargarExcelCarteraLoading").hide();
+        $("#descargarExcelCarteraDisabled").hide();
+
         var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
-        }
+        var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Error al generar excel', errorsMsg);
     });
 });

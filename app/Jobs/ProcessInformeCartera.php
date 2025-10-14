@@ -65,6 +65,7 @@ class ProcessInformeCartera implements ShouldQueue
 				'fecha_desde' => $this->request['fecha_desde'],
 				'fecha_hasta' => $this->request['fecha_hasta'],
 				'agrupar_cartera' => $this->request['agrupar_cartera'],
+                'tipo_informe' => $this->request['tipo_informe'],
 				'nivel' => $this->request['nivel'],
 			]);
             $this->id_cartera = $cartera->id;
@@ -745,23 +746,23 @@ class ProcessInformeCartera implements ShouldQueue
                     } else { 
                         $this->carteraCollection[$key] = [
                             'id_cartera' => $this->id_cartera,
-                            'id_nit' => $documento->id_nit,
-                            'numero_documento' => $documento->numero_documento,
-                            'nombre_nit' => $documento->nombre_nit,
-                            'razon_social' => $documento->razon_social,
-                            'apartamento_nit' => $documento->apartamentos,
-                            'id_cuenta' => $documento->id_cuenta,
+                            'id_nit' => '',
+                            'numero_documento' => '',
+                            'nombre_nit' => '',
+                            'razon_social' => '',
+                            'apartamento_nit' => '',
+                            'id_cuenta' => '',
                             'cuenta' => $documento->numero_documento,
-                            'naturaleza_cuenta' => $documento->naturaleza_cuenta,
+                            'naturaleza_cuenta' => '',
                             'nombre_cuenta' => $documento->nombre_cuenta,
                             'documento_referencia' => '',
-                            'id_centro_costos' => $documento->id_centro_costos,
-                            'id_comprobante' => $documento->id_comprobante,
-                            'codigo_comprobante' => $documento->codigo_comprobante,
-                            'nombre_comprobante' => $documento->nombre_comprobante,
-                            'codigo_cecos' => $documento->codigo_cecos,
-                            'nombre_cecos' => $documento->nombre_cecos,
-                            'consecutivo' => $documento->consecutivo,
+                            'id_centro_costos' => '',
+                            'id_comprobante' => '',
+                            'codigo_comprobante' => '',
+                            'nombre_comprobante' => '',
+                            'codigo_cecos' => '',
+                            'nombre_cecos' => '',
+                            'consecutivo' => '',
                             'concepto' => '',
                             'fecha_manual' => '',
                             'fecha_creacion' => $documento->fecha_creacion,
@@ -779,8 +780,65 @@ class ProcessInformeCartera implements ShouldQueue
                         ];
                     }
 
+                    $this->addTotalesEdades($documento->numero_documento, $documento);
+
                 });
             });
+    }
+
+    private function addTotalesEdades($key, $documento)
+    {
+        $mora = $documento->dias_cumplidos - $documento->plazo;
+        $mora = $mora > 1 ? $mora - 1 : $mora;
+
+        $saldo_0_30   = ($mora >= 0   && $mora <= 30) ? $documento->saldo_final : 0;
+        $saldo_30_60  = ($mora >= 31  && $mora <= 60) ? $documento->saldo_final : 0;
+        $saldo_60_90  = ($mora >= 61  && $mora <= 90) ? $documento->saldo_final : 0;
+        $saldo_mas_90 = ($mora > 90) ? $documento->saldo_final : 0;
+        
+        if ($this->hasCuentaData($key)) {
+            
+            $this->carteraCollection[$key]['mora']+= $saldo_0_30;
+            $this->carteraCollection[$key]['saldo_anterior']+= $saldo_30_60;
+            $this->carteraCollection[$key]['total_abono']+= $saldo_60_90;
+            $this->carteraCollection[$key]['total_facturas']+= $saldo_mas_90;
+            $this->carteraCollection[$key]['saldo']+= $documento->saldo_final;
+        } else { 
+            $this->carteraCollection[$key] = [
+                'id_cartera' => $this->id_cartera,
+                'id_nit' => $documento->id_nit,
+                'numero_documento' => $documento->numero_documento,
+                'nombre_nit' => $documento->nombre_nit,
+                'razon_social' => $documento->razon_social,
+                'apartamento_nit' => $documento->apartamentos,
+                'id_cuenta' => $documento->id_cuenta,
+                'cuenta' => '',
+                'naturaleza_cuenta' => $documento->naturaleza_cuenta,
+                'nombre_cuenta' => '',
+                'documento_referencia' => '',
+                'id_centro_costos' => $documento->id_centro_costos,
+                'id_comprobante' => $documento->id_comprobante,
+                'codigo_comprobante' => $documento->codigo_comprobante,
+                'nombre_comprobante' => $documento->nombre_comprobante,
+                'codigo_cecos' => $documento->codigo_cecos,
+                'nombre_cecos' => $documento->nombre_cecos,
+                'consecutivo' => $documento->consecutivo,
+                'concepto' => '',
+                'fecha_manual' => '',
+                'fecha_creacion' => '',
+                'fecha_edicion' => '',
+                'created_by' => '',
+                'updated_by' => '',
+                'dias_cumplidos' => '',
+                'mora' => $saldo_0_30,
+                'saldo_anterior' => $saldo_30_60,
+                'total_abono' => $saldo_60_90,
+                'total_facturas' => $saldo_mas_90,
+                'saldo' => $documento->saldo_final,
+                'nivel' => 1,
+                'errores' => ''
+            ];
+        }
     }
 
     private function carteraDocumentosQuery($documento_referencia = NULL, $id_nit = NULL, $id_cuenta = NULL)

@@ -153,18 +153,20 @@ class CarteraController extends Controller
             $fileName = 'export/cartera_'.uniqid().'.xlsx';
             $url = $fileName;
 
-            // $informeCartera->exporta_excel = 1;
-            // $informeCartera->archivo_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
+            $informeCartera->exporta_excel = 1;
+            $informeCartera->archivo_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
             $informeCartera->save();
 
             $has_empresa = $request->user()['has_empresa'];
             $user_id = $request->user()->id;
             $id_informe = $request->get('id');
 
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
             Bus::chain([
-                function () use ($id_informe, &$fileName) {
+                function () use ($id_informe, &$fileName, $empresa) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
-                    (new CarteraExport($id_informe))->store($fileName, 'do_spaces', null, [
+                    (new CarteraExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
                     ]);
                 },

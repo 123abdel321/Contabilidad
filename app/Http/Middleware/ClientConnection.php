@@ -18,12 +18,11 @@ class ClientConnection
     public function handle($request, Closure $next)
     {
         $user = $request->user();
-
         if (!$user || !$user->has_empresa) {
             return response()->json([
                 "success" => false,
                 "message" => "Para acceder a esta opción debes seleccionar una empresa o iniciar sesión.",
-            ], 401);
+            ], 402);
         }
 
         $desiredDatabase = $user->has_empresa;

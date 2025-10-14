@@ -1,0 +1,9 @@
+<!-- A --><td style="{{ $style }}">{{ $documento->numero_documento }}</td>
+<!-- B --><td style="{{ $style }}">{{ $documento->nombre_nit }}</td>
+<!-- C --><td style="{{ $style }}">{{ $documento->apartamento_nit }}</td>
+<!-- D --><td style="{{ $style }}">{{ $documento->nombre_cuenta }}</td>
+<!-- E --><td style="{{ $style }}">{{ $documento->mora }}</td>
+<!-- F --><td style="{{ $style }}">{{ $documento->saldo_anterior }}</td>
+<!-- G --><td style="{{ $style }}">{{ $documento->total_abono }}</td>
+<!-- H --><td style="{{ $style }}">{{ $documento->total_facturas }}</td>
+<!-- I --><td style="{{ $style }}">{{ $documento->saldo }}</td>
