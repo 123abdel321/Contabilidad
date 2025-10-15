@@ -35,7 +35,7 @@
 		@foreach($documentos as $documento)
 			<tr>
                 @if ($documento->nivel == 1)
-                    @include('excel.cartera.celdas_edades', ['style' => 'background-color: #212329; font-weight: bold; color: white;', 'documento' => $documento, 'cabeza' => $cabeza])
+                    @include('excel.cartera.celdas_edades', ['style' => 'background-color: #33849e; font-weight: 600; color: white;', 'documento' => $documento, 'cabeza' => $cabeza])
                 @else
                     @include('excel.cartera.celdas_edades', ['style' => 'background-color: #FFF;', 'documento' => $documento, 'cabeza' => $cabeza])
                 @endif

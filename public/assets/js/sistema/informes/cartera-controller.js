@@ -350,9 +350,9 @@ function cargarTablasCartera() {
         },
         rowCallback: function(row, data, index) {
             if (data.nivel == 1) {
-                $('td', row).css('background-color', '#212329');
+                $('td', row).css('background-color', '#33849e');
                 $('td', row).css('color', '#FFF');
-                $('td', row).css('font-weight', '700');
+                $('td', row).css('font-weight', '600');
                 return;
             }
         },
@@ -548,6 +548,11 @@ $(document).on('click', '#descargarExcelCartera', function () {
         headers: headers,
         dataType: 'json',
     }).done((res) => {
+
+        $("#descargarExcelCartera").show();
+        $("#descargarExcelCarteraLoading").hide();
+        $("#descargarExcelCarteraDisabled").hide();
+
         if(res.success){
             if(res.url_file){
                 setTimeout(function(){
