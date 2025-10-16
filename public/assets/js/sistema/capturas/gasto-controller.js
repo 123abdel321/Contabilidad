@@ -845,9 +845,9 @@ function changeValorDescuentoGasto (idGasto, event = null) {
         var valorReteIca = 0;
         var valorIva = 0;
 
-        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU);
+        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU, idGasto);
         valorRetencion = redondear(valorRetencion, redondeoGastos);
-
+        
         if (baseAIU) {
             valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? baseAIU * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
             valorIva = dataGasto[indexGasto].porcentaje_iva ? baseAIU * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
@@ -911,7 +911,7 @@ function changeValorNoIvaGasto (idGasto, event = null) {
         var valorReteIca = 0;
         var valorIva = 0;
 
-        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU);
+        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU, idGasto);
         valorRetencion = redondear(valorRetencion, redondeoGastos);
 
         if (baseAIU) {
@@ -1714,9 +1714,6 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
                 const gastos = res.data;
                 const pagos = gastos.pagos;
                 const detalles = gastos.detalles;
-
-                console.log('pagos: ', pagos);
-                console.log('detalles: ', detalles);
 
                 $("#id_gasto_up").val(gastos.id);
                 $("#fecha_manual_gasto").val(gastos.fecha_manual);
