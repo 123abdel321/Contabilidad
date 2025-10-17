@@ -142,6 +142,7 @@ var moduloCreado = {
     'ventasacumuladas': false,
     'cesantiasintereses': false,
     'reuniones': false,
+    'impuesto': false,
 };
 
 var moduloRoute = {
@@ -206,6 +207,7 @@ var moduloRoute = {
     'ventasacumuladas': 'informes',
     'cesantiasintereses': 'capturas',
     'reuniones': 'configuracion',
+    'impuesto': 'tablas',
 }
 
 function iniciarCanalesDeNotificacion () {

@@ -29,6 +29,7 @@ use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\ExogenaController;
 use App\Http\Controllers\Tablas\BodegasController;
 use App\Http\Controllers\Tablas\FamiliasController;
+use App\Http\Controllers\Tablas\ImpuestoController;
 use App\Http\Controllers\Tablas\ProductosController;
 use App\Http\Controllers\Tablas\PlanCuentaController;
 use App\Http\Controllers\Tablas\FormasPagoController;
@@ -207,8 +208,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/exogena', [ExogenaController::class, 'index'])->name('exogena');
 		//COMPROBANTES
 		Route::get('/comprobante', [ComprobantesController::class, 'index'])->name('comprobante');
-		//COMPROBANTES
+		//CENTRO DE COSTOS
 		Route::get('/cecos', [CentroCostoController::class, 'index'])->name('cecos');
+		//IMPUESTOS
+		Route::get('/impuesto', [ImpuestoController::class, 'index'])->name('impuesto');
 		//UBICACIONES
 		Route::get('/ubicaciones', [UbicacionesController::class, 'index'])->name('ubicaciones');
 		//COMPROBANTES

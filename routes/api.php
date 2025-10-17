@@ -247,7 +247,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
         //IMPUESTOS
         Route::controller(ImpuestoController::class)->group(function () {
+            Route::get('impuesto', 'generate');
+            Route::post('impuesto', 'create');
+            Route::put('impuesto', 'update');
             Route::get('impuesto/combo-impuesto', 'comboImpuesto');
+            Route::get('impuesto/combo-tipo-impuesto', 'comboTipoImpuesto');
         });
         //PLAN DE CUENTAS
         Route::controller(PlanCuentaController::class)->group(function () {
