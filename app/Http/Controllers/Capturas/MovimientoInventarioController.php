@@ -116,6 +116,15 @@ class MovimientoInventarioController extends Controller
                 //AGREGAR MOVIMIENTO CONTABLE DEBITO
                 $cuentaDebito = PlanCuentas::where('id', $cargueDescargue->id_cuenta_debito)
                     ->first();
+
+                if (!$cuentaDebito) {
+                    DB::connection('sam')->rollback();
+                    return response()->json([
+                        "success"=>false,
+                        'data' => [],
+                        "message"=> ['Cuenta contable' => ['La cuenta debito del Cargue / Descargue no fue encontrada!']]
+                    ], 422);
+                }
                     
                 $doc = new DocumentosGeneral([
                     "id_cuenta" => $cuentaDebito->id,
@@ -134,6 +143,15 @@ class MovimientoInventarioController extends Controller
                 //AGREGAR MOVIMIENTO CONTABLE CREDITO
                 $cuentaCredito = PlanCuentas::where('id', $cargueDescargue->id_cuenta_credito)
                     ->first();
+
+                if (!$cuentaDebito) {
+                    DB::connection('sam')->rollback();
+                    return response()->json([
+                        "success"=>false,
+                        'data' => [],
+                        "message"=> ['Cuenta contable' => ['La cuenta credito del Cargue / Descargue no fue encontrada!']]
+                    ], 422);
+                }
                     
                 $doc = new DocumentosGeneral([
                     "id_cuenta" => $cuentaCredito->id,
