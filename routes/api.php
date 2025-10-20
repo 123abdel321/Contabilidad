@@ -123,6 +123,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('pedidos', 'pedidos');
             Route::post('pedido', 'pedido');
             Route::post('venta', 'venta');
+            Route::delete('pedidos', 'deletePedido');
         });
 
         //IMPORTADORES PRECIO PRODUCTOS

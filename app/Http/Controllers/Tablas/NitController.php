@@ -367,47 +367,39 @@ class NitController extends Controller
 
     public function comboNit(Request $request)
     {
-        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
-        $ubicacion_maximoph ? $ubicacion_maximoph->valor : null;
-        $totalRows = $request->has("totalRows") ? $request->get("totalRows") : 20;
-        
-        $text = \DB::raw("(CASE
-                WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)
-                WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( numero_documento, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
-                ELSE NULL
-            END) AS text");
+        // Eliminas la búsqueda de $ubicacion_maximoph y toda la lógica $text = DB::raw(...)
+        // Laravel ya manejará el campo 'text' a través del Accessor en el modelo Nits.
 
-        if ($ubicacion_maximoph) {
-            $text = \DB::raw("(CASE
-                WHEN apartamentos IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(razon_social, ' - ', apartamentos)
-                WHEN apartamentos IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido), ' - ', apartamentos  )
-                WHEN apartamentos IS NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT( numero_documento, ' - ', CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido))
-                WHEN apartamentos IS NULL AND razon_social IS NOT NULL AND razon_social != '' THEN CONCAT(numero_documento, ' - ', razon_social)
-                ELSE NULL
-            END) AS text");
-        }
+        $totalRows = $request->has("totalRows") ? $request->get("totalRows") : 20;
+
+        // Seleccionas solo los campos de la base de datos que la función y el Accessor necesitan.
+        // El campo 'text' se agregará automáticamente al final.
         $nits = Nits::select(
             'id',
             'id_tipo_documento',
             'id_ciudad',
             'primer_nombre',
-            \DB::raw('numero_documento AS segundo_nombre'),
+            \DB::raw('numero_documento AS segundo_nombre'), // Mantienes esto para compatibilidad
             'primer_apellido',
             'segundo_apellido',
+            'razon_social', // Necesario para el Accessor
+            'numero_documento', // Necesario para el Accessor
+            'apartamentos', // Necesario para el Accessor
+            'otros_nombres', // Necesario para el Accessor
             'email',
-            // 'declarante',
             'sumar_aiu',
             'porcentaje_aiu',
             'porcentaje_reteica',
-            'apartamentos',
             'id_responsabilidades',
-            \DB::raw('telefono_1 AS telefono'),
-            $text
+            \DB::raw('telefono_1 AS telefono')
+            // No incluyas $text aquí.
         );
 
         if ($request->get("id_nits")) {
             $nits->whereIn('id', $request->get("id_nits"));
         } else {
+            // La lógica de búsqueda (where/orWhere) se mantiene igual
+            // porque se basa en campos de la base de datos como numero_documento, razon_social, etc.
             if ($request->get("q")) {
                 $nits->where('numero_documento', 'LIKE', '%' .$request->get("q") . '%')
                     ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("q") . '%')
@@ -415,17 +407,17 @@ class NitController extends Controller
                     ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("q") . '%')
                     ->orWhere('razon_social', 'LIKE', '%' . $request->get("q") . '%')
                     ->orWhere('email', 'LIKE', $request->get("q") . '%')
-                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),'-',digito_verificacion,' - ',razon_social)"), "like", $request->get("q") . "%")
-                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),' - ',razon_social)"), "like", $request->get("q") . "%")
-                    ->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,primer_apellido,segundo_apellido)"), "like", $request->get("q") . "%")
-					->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", $request->get("q") . "%")
-                    ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
-					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
+                    ->orWhere(\DB::raw("CONCAT(FORMAT(numero_documento, 0),'-',digito_verificacion,' - ',razon_social)"), "like", $request->get("q") . "%")
+                    ->orWhere(\DB::raw("CONCAT(FORMAT(numero_documento, 0),' - ',razon_social)"), "like", $request->get("q") . "%")
+                    ->orWhere(\DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,primer_apellido,segundo_apellido)"), "like", $request->get("q") . "%")
+                    ->orWhere(\DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", $request->get("q") . "%")
+                    ->orWhere(\DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
+                    ->orWhere(\DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
                     ->orWhere('primer_apellido', 'LIKE', '%' . $request->get("q") . '%')
                     ->orWhere('apartamentos', 'LIKE', $request->get("q") . '%')
                     ;
             }
-    
+
             if ($request->get("search")) {
                 $nits->where('numero_documento', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("search") . '%')
@@ -433,17 +425,18 @@ class NitController extends Controller
                     ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('razon_social', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('email', 'LIKE', '%' . $request->get("search") . '%')
-                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),'-',digito_verificacion,' - ',razon_social)"), "like", "%" . $request->get("search") . "%")
-                    ->orWhere(DB::raw("CONCAT(FORMAT(numero_documento, 0),' - ',razon_social)"), "like", "%" . $request->get("search") . "%")
-                    ->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
-					->orWhere(DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
-                    ->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
-					->orWhere(DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(\DB::raw("CONCAT(FORMAT(numero_documento, 0),'-',digito_verificacion,' - ',razon_social)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(\DB::raw("CONCAT(FORMAT(numero_documento, 0),' - ',razon_social)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(\DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(\DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(\DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
+                    ->orWhere(\DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("search") . "%")
                     ->orWhere('primer_apellido', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('apartamentos', 'LIKE', '%' . $request->get("search") . '%');
             }
         }
 
+        // La paginación automáticamente aplicará el Accessor 'text' a cada resultado.
         return $nits->paginate($totalRows);
     }
 

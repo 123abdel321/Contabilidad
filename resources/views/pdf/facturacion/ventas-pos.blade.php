@@ -309,44 +309,42 @@
 
 
         @if ($qrCode)
-        <table>
-            <thead class="">
-                <tr>
-					<td class="spacer padding5"></td>
-				</tr>
-                <tr>
-                    <td colspan="8 padding5">
-						<table>
-                            <tr>
-                                <td class="aling-top padding5">
-                                    <img src="{{ $qrCode }}" alt="QR Code" style="width: 150px; height: 150px;">
-                                </td>
-                                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                <td>
-                                    <p>
-                                        <b>Resolución: </b> <br>
-                                        AUTORIZACION {{ $factura->resolucion->numero_resolucion }} DE {{ $factura->resolucion->fecha }} DE
-                                        {{ $factura->resolucion->prefijo }}{{ $factura->resolucion->consecutivo_desde }} HASTA {{ $factura->resolucion->prefijo }}{{ $factura->resolucion->consecutivo_hasta }} VIGENCIA
-                                        {{ $factura->resolucion->vigencia }} MESES
-                                    </p>
-                                    @if ($factura->fe_codigo_identificador)
-                                    <p>
-                                        <b>Cufe: </b> <br>
-                                        <span class="no-transform break-word">
-                                            {{ $factura->fe_codigo_identificador }}
-                                        </span>
-                                    </p>
-                                    @endif
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </thead>
-        </table>
+            <table>
+                <thead class="">
+                    <tr>
+                        <td class="spacer padding5"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8 padding5">
+                            <table>
+                                <tr>
+                                    <td class="aling-top padding5">
+                                        <img src="{{ $qrCode }}" alt="QR Code" style="width: 150px; height: 150px;">
+                                    </td>
+                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                    <td>
+                                        <p>
+                                            <b>Resolución: </b> <br>
+                                            AUTORIZACION {{ $factura->resolucion->numero_resolucion }} DE {{ $factura->resolucion->fecha }} DE
+                                            {{ $factura->resolucion->prefijo }}{{ $factura->resolucion->consecutivo_desde }} HASTA {{ $factura->resolucion->prefijo }}{{ $factura->resolucion->consecutivo_hasta }} VIGENCIA
+                                            {{ $factura->resolucion->vigencia }} MESES
+                                        </p>
+                                        @if ($factura->fe_codigo_identificador)
+                                        <p>
+                                            <b>Cufe: </b> <br>
+                                            <span class="no-transform break-word">
+                                                {{ $factura->fe_codigo_identificador }}
+                                            </span>
+                                        </p>
+                                        @endif
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
         @endif
-
-
 
         <table class="width-100">
             <thead class="center-item">

@@ -208,22 +208,26 @@ class UbicacionesController extends Controller
         return $ubicacionesTipo->paginate(40);
     }
 
-    public function comboUbicacion (Request $request)
+    public function comboUbicacion(Request $request)
     {
-        $ubicacionesTipo = Ubicacion::with([
+        $query = Ubicacion::with([
             'pedido' => function($query) {
                 $query->whereNull('id_venta')->orWhere('id_venta', '');
             }
         ])
         ->select(
-            \DB::raw('*'),
+            '*',
             \DB::raw("CONCAT(nombre) as text")
         );
 
         if ($request->get("search")) {
-            $ubicacionesTipo->where('nombre', 'LIKE', '%' . $request->get("search") . '%');
+            $searchTerm = $request->get("search");
+            $query->where('nombre', 'LIKE', '%' . $searchTerm . '%');
         }
 
-        return $ubicacionesTipo->paginate(40);
+        // Ordenar por nombre para mejor UX
+        $query->orderBy('nombre');
+
+        return $query->paginate(40);
     }
 }

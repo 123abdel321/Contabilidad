@@ -5,6 +5,7 @@ namespace App\Models\Sistema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 //MODELS
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\Nomina\NomContratos;
 
 class Nits extends Model
@@ -67,7 +68,7 @@ class Nits extends Model
 		'updated_at',
 	];
 
-	protected $appends = ['nombre_completo'];
+	protected $appends = ['nombre_completo', 'text'];
 
 	public function tipo_documento()
     {
@@ -105,6 +106,49 @@ class Nits extends Model
 	public function contrato()
     {
         return $this->belongsTo(NomContratos::class, "id", "id_empleado");
+    }
+
+	protected function getTextAttribute()
+    {
+        // 1. Obtener la variable de entorno (asumiendo que este modelo está disponible)
+        $ubicacion_maximoph = VariablesEntorno::where('nombre', 'ubicacion_maximoph')->first();
+        $use_maximoph_logic = $ubicacion_maximoph && $ubicacion_maximoph->valor;
+
+        $primer_nombre = $this->primer_nombre;
+        $otros_nombres = $this->otros_nombres;
+        $primer_apellido = $this->primer_apellido;
+        $segundo_apellido = $this->segundo_apellido;
+        $razon_social = $this->razon_social;
+        $numero_documento = $this->numero_documento;
+        $apartamentos = $this->apartamentos;
+
+        // Concatenación de nombres para personas naturales
+        $nombre_completo_natural = trim(implode(' ', array_filter([$primer_nombre, $otros_nombres, $primer_apellido, $segundo_apellido])));
+
+
+        if ($use_maximoph_logic) {
+            // Lógica de ubicacion_maximoph (más compleja)
+            if ($apartamentos) {
+                if ($razon_social) {
+                    return "{$razon_social} - {$apartamentos}";
+                } else {
+                    return "{$nombre_completo_natural} - {$apartamentos}";
+                }
+            } else {
+                if ($razon_social) {
+                    return "{$numero_documento} - {$razon_social}";
+                } else {
+                    return "{$numero_documento} - {$nombre_completo_natural}";
+                }
+            }
+        }
+
+        // Lógica por defecto (la primera lógica de tu comboNit)
+        if ($razon_social) {
+            return "{$numero_documento} - {$razon_social}";
+        } else {
+            return "{$numero_documento} - {$nombre_completo_natural}";
+        }
     }
 
 }

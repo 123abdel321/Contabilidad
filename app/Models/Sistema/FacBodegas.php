@@ -13,7 +13,8 @@ class FacBodegas extends Model
 
     protected $table = "fac_bodegas";
 
-    protected $fillable = [ 
+    protected $fillable = [
+        'id',
         'codigo',
         'nombre',
         'ubicacion',

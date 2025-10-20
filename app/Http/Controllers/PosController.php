@@ -121,7 +121,9 @@ class PosController extends Controller
         $rowperpage = 20;
 
         $facPedidos = FacPedidos::with(
+                'bodega',
                 'cliente',
+                'ubicacion.pedido',
                 'detalles.cuenta_iva',
                 'detalles.cuenta_retencion',
             )
@@ -790,6 +792,47 @@ class PosController extends Controller
         }
     }
 
+    public function deletePedido(Request $request)
+    {
+        $rules = [
+            'id' => 'required|exists:sam.fac_pedidos,id',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            DB::connection('sam')->beginTransaction();
+
+            FacPedidos::where('id', $request->get('id'))->delete();
+            FacPedidoDetalles::where('id_pedido', $request->get('id'))->delete();
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => '',
+                'message'=> 'Pedido eliminado con exito!'
+            ]);
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
     private function createFacturaVenta ($request)
     {
         $this->calcularTotales($request->get('productos'));
@@ -801,7 +844,7 @@ class PosController extends Controller
             'id_resolucion' => $request->get('id_resolucion'),
             'id_comprobante' => $this->resolucion->comprobante->id,
             'id_bodega' => $request->get('id_bodega'),
-            'id_centro_costos' => $this->bodega->id_centro_costos,
+            'id_centro_costos' => $this->bodega?->id_centro_costos,
             'id_vendedor' => $request->get('id_vendedor'),
             'fecha_manual' => $request->get('fecha_manual'),
             'consecutivo' => $request->get('consecutivo'),
@@ -851,7 +894,7 @@ class PosController extends Controller
         $pedido = FacPedidos::create([
             'id_cliente' => $request->get('id_cliente'),
             'id_bodega' => $request->get('id_bodega'),
-            'id_centro_costos' => $this->bodega->id_centro_costos,
+            'id_centro_costos' => $this->bodega?->id_centro_costos,
             'id_ubicacion' => $request->get('id_ubicacion'),
             'id_vendedor' => $request->get('id_vendedor'),
             'consecutivo' => $request->get('consecutivo'),
@@ -877,7 +920,7 @@ class PosController extends Controller
 
         $pedido->id_cliente = $request->get('id_cliente');
         $pedido->id_bodega = $request->get('id_bodega');
-        $pedido->id_centro_costos = $this->bodega->id_centro_costos;
+        $pedido->id_centro_costos = $this->bodega?->id_centro_costos;
         $pedido->id_ubicacion = $request->get('id_ubicacion');
         $pedido->id_vendedor = $request->get('id_vendedor');
         $pedido->consecutivo = $request->get('consecutivo');
