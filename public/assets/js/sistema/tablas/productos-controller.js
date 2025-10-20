@@ -774,7 +774,7 @@ $('.form-control').keyup(function() {
 $(document).on('click', '#createProducto', function () {
     clearFormProductos();
 
-    if (primeraBodegas.length == 1) addBodegaToProduct(primeraBodegas[0], false);
+    if (primeraBodegas.length > 0) addBodegaToProduct(primeraBodegas[0], false);
     else {
         agregarToast('error', 'Error al crear producto', 'No se encontraron bodegas en el sistema', true);
         return;
