@@ -99,8 +99,15 @@ class PosController extends Controller
         $ivaIncluido = $ivaIncluido && $ivaIncluido->valor == '1' ? true : false;
         $vendedorVentas = VariablesEntorno::where('nombre', 'vendedores_ventas')->first();
 
+        $usuarioPermisos = UsuarioPermisos::where('id_user', request()->user()->id)
+            ->where('id_empresa', request()->user()->id_empresa)
+            ->first();
+
+        $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
+
         $data = [
             'cliente' => Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222222%')->first(),
+            'bodega' => FacBodegas::whereIn('id', $bodegas)->first(),
             'iva_incluido' => $ivaIncluido,
             'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : '',
             'valor_uvt' => $valorUVT ? $valorUVT->valor : 0
@@ -166,7 +173,9 @@ class PosController extends Controller
                         ->with('familia')
                         ->first();
 
-                    if (!$producto->id_familia) {
+                    if (!$producto) {
+                        $fail("El producto no fue encontrado");
+                    } else if (!$producto->id_familia) {
                         $fail("El producto (".$producto->codigo." - ".$producto->nombre.") no tiene familia venta configurada");
                     } else if (!$producto->familia->id_cuenta_venta) {
                         $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta venta configurada");
@@ -831,6 +840,24 @@ class PosController extends Controller
                 "message"=>$e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+    }
+
+    public function showPdf(Request $request, $id)
+    {
+        $pedido = FacPedidos::whereId($id)->first();
+
+        if(!$pedido) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'El pedido no existe'
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+        $data = (new PedidosPdf($empresa, $pedido))->buildPdf()->getData();
+        return view('pdf.facturacion.pedidos-pos', $data);
     }
 
     private function createFacturaVenta ($request)
