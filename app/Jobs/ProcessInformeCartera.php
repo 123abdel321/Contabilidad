@@ -781,7 +781,7 @@ class ProcessInformeCartera implements ShouldQueue
                     }
 
                     $this->addTotalesEdades($documento->numero_documento, $documento, 1);
-                    $this->addTotalesEdades(9999999999999999999999999999, $documento, 2);
+                    $this->addTotalesEdades('ZZZZZZZZZZZZZZZZZZZZZZZZZZ', $documento, 2);
 
                 });
             });
