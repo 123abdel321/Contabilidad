@@ -36,7 +36,9 @@
 			<tr>
                 @if ($documento->nivel == 1)
                     @include('excel.cartera.celdas_edades', ['style' => 'background-color: #33849e; font-weight: 600; color: white;', 'documento' => $documento, 'cabeza' => $cabeza])
-                @else
+                @else if ($documento->nivel == 2)
+                    @include('excel.cartera.celdas_edades', ['style' => 'background-color: #212329; font-weight: 800; color: white;', 'documento' => $documento, 'cabeza' => $cabeza])
+                @else 
                     @include('excel.cartera.celdas_edades', ['style' => 'background-color: #FFF;', 'documento' => $documento, 'cabeza' => $cabeza])
                 @endif
 			</tr>

@@ -780,13 +780,14 @@ class ProcessInformeCartera implements ShouldQueue
                         ];
                     }
 
-                    $this->addTotalesEdades($documento->numero_documento, $documento);
+                    $this->addTotalesEdades($documento->numero_documento, $documento, 1);
+                    $this->addTotalesEdades(9999999999999999999999999999, $documento, 2);
 
                 });
             });
     }
 
-    private function addTotalesEdades($key, $documento)
+    private function addTotalesEdades($key, $documento, $nivel)
     {
         $mora = $documento->dias_cumplidos - $documento->plazo;
         $mora = $mora > 1 ? $mora - 1 : $mora;
@@ -835,7 +836,7 @@ class ProcessInformeCartera implements ShouldQueue
                 'total_abono' => $saldo_60_90,
                 'total_facturas' => $saldo_mas_90,
                 'saldo' => $documento->saldo_final,
-                'nivel' => 1,
+                'nivel' => $nivel,
                 'errores' => ''
             ];
         }

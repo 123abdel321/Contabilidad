@@ -355,10 +355,19 @@ function cargarTablasCartera() {
                 $('td', row).css('font-weight', '600');
                 return;
             }
+            if (data.nivel == 2) {
+                $('td', row).css('background-color', '#212329');
+                $('td', row).css('color', '#FFF');
+                $('td', row).css('font-weight', 'bold');
+                return;
+            }
         },
         columns: [
             { data: function (row, type, set) {
                 var agrupado = $('#agrupar_cartera').val();
+                if (row.nivel == 2) {
+                    return 'TOTALES';
+                }
                 if (agrupado == 'id_cuenta') {
                     if (row.nivel == 1) {
                         return row.nombre_cuenta;
@@ -370,6 +379,9 @@ function cargarTablasCartera() {
             }},
             { data: function (row, type, set){
                 var agrupado = $('#agrupar_cartera').val();
+                if (row.nivel == 2) {
+                    return '';
+                }
                 if (agrupado == 'id_cuenta') {
                     if (row.nivel == 1) {
                         return row.nombre_cuenta;
@@ -379,8 +391,18 @@ function cargarTablasCartera() {
                 }
                 return row.nombre_nit;
             }},
-            { data: 'apartamento_nit' },
-            { data: 'nombre_cuenta' },
+            { data: function (row, type, set) {
+                if (row.nivel == 2) {
+                    return '';
+                }
+                return row.apartamento_nit;
+            }},
+            { data: function (row, type, set) {
+                if (row.nivel == 2) {
+                    return '';
+                }
+                return row.nombre_cuenta;
+            }},
             { data: 'mora', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
             { data: 'saldo_anterior', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
             { data: 'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
