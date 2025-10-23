@@ -172,14 +172,6 @@ class VentaController extends Controller
             ], 422);
         }
 
-        if (!$this->resolucion->isActive) {
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está vencida"]]
-            ], 422);
-        }
-
         $consecutivo = $this->getNextConsecutive($this->resolucion->comprobante->id, $request->get('fecha_manual'));
         
         $request->request->add([
@@ -424,7 +416,7 @@ class VentaController extends Controller
                     }
                 } else {
                     $doc = $this->addFormaPago(
-                        null,
+                        $venta->documento_referencia,
                         $formaPago,
                         $this->nit,
                         $pagoItem,
@@ -716,7 +708,7 @@ class VentaController extends Controller
             'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
             'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $venta->id_centro_costos : null,
             'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
-            'documento_referencia' => $documentoReferencia,
+            'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $documentoReferencia : null,
             'debito' => $valor,
             'credito' => $valor,
             'created_by' => request()->user()->id,
@@ -796,7 +788,7 @@ class VentaController extends Controller
         $this->calcularTotales($request->get('productos'));
         $this->calcularFormasPago($request->get('pagos'));
         $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
-
+        
         $venta = FacVentas::create([
             'id_cliente' => $request->get('id_cliente'),
             'id_resolucion' => $request->get('id_resolucion'),
