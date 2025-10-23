@@ -2,6 +2,7 @@ var idDocumento = 0;
 var rowExtracto = '';
 var cambiarNit = true;
 var editandoCaptura = 0;
+var tipo_consecutivo = 0;
 var tipo_comprobante = '';
 var validarFactura = null;
 var calcularCabeza = true;
@@ -10,6 +11,8 @@ var cuentaExtractoDg = null
 var askSaveDocumentos = true;
 var $comboComprobante = null;
 var documento_extracto = null;
+var consecutivoUltimo = false;
+var consecutivoEditado = false;
 var guardarDocumentoDG = false;
 var documento_general_table = null;
 var guardarDocumentoGeneral = false;
@@ -325,6 +328,8 @@ function initCombosActionDocumentoGeneral() {
                 $('#fecha_manual_documento').select();
             },10);
             tipo_comprobante = data[0].tipo_comprobante;
+            console.log(data[0]);
+            tipo_consecutivo = parseInt(data[0].tipo_consecutivo);
             if (tipo_comprobante == 5) tipo_comprobante = 2;
             consecutivoSiguiente();
         }
@@ -332,6 +337,9 @@ function initCombosActionDocumentoGeneral() {
 
     $('#fecha_manual_documento').on( "focusout", function() {
         validarFechaManualDocumentos();
+        if (tipo_consecutivo == 1) {
+            consecutivoSiguiente();
+        }
     });
 }
 
@@ -609,7 +617,25 @@ function changeCecosRow(idRow) {
 
 function changeConsecutivo(event) {
     if(event.keyCode == 13){
+        console.log('changeConsecutivo: ',consecutivoEditado);
         document.getElementById('iniciarCapturaDocumentos').click();
+        if (!consecutivoEditado) {
+            var consecutivoActual = parseInt($("#consecutivo").val());
+            if (consecutivoUltimo !== undefined && consecutivoUltimo !== null) {
+                var diferenciaConsecutivos = Math.abs(consecutivoUltimo - consecutivoActual);
+                if (diferenciaConsecutivos >= 2 && consecutivoActual > 2) {
+
+                    var mensajeDetallado = 
+                        'El consecutivo actual (' + consecutivoActual + 
+                        ') está ' + diferenciaConsecutivos + 
+                        ' números alejado del último consecutivo utilizado (' + numConsecutivoUltimo + 
+                        '). Confirme si desea saltar esta numeración.';
+
+                    agregarToast('warning', 'Salto de Consecutivo', mensajeDetallado);
+                }
+            }
+        }
+        consecutivoEditado = true;
     }
 }
 
@@ -798,6 +824,35 @@ function changeConceptoRow(idRow, event) {
 function changeConcecutivo(event) {
     if(event.keyCode == 13){
         searchCaptura();
+        console.log('consecutivoEditado: ',consecutivoEditado);
+        if (!consecutivoEditado) {
+            var consecutivoActual = parseInt($("#consecutivo").val());
+            console.log('consecutivoActual: ',consecutivoActual);
+            
+            if (consecutivoUltimo !== undefined && consecutivoUltimo !== null) {
+                
+                // 👈 AQUI DEBE IR LA DEFINICIÓN DE numConsecutivoUltimo
+                var numConsecutivoUltimo = parseInt(consecutivoUltimo); 
+                console.log('numConsecutivoUltimo: ',numConsecutivoUltimo);
+                // Verifica si la conversión fue exitosa (no es NaN)
+                if (!isNaN(numConsecutivoUltimo)) {
+                    
+                    var diferenciaConsecutivos = Math.abs(numConsecutivoUltimo - consecutivoActual);
+                    
+                    if (diferenciaConsecutivos >= 2 && consecutivoActual > 2) {
+                        
+                        var mensajeDetallado = 
+                            'El consecutivo actual (' + consecutivoActual + 
+                            ') está ' + diferenciaConsecutivos + 
+                            ' números alejado del último consecutivo utilizado (' + numConsecutivoUltimo + 
+                            '). Confirme si desea saltar esta numeración.';
+
+                        agregarToast('warning', 'Salto de Consecutivo', mensajeDetallado);
+                    }
+                }
+            }
+        }
+        consecutivoEditado = true;
     }
 }
 
@@ -1426,6 +1481,7 @@ function cargarNuevoConsecutivo() {
         ("0" + dateNow.getDate()).slice(-2) + 'T' + 
         ("0" + dateNow.getHours()).slice(-2) + ':' + 
         ("0" + dateNow.getMinutes()).slice(-2);
+
     $('#fecha_manual_documento').val(fechaHoraDG);
     $("#iniciarCapturaDocumentos").show();
     $("#agregarDocumentos").hide();
@@ -1499,6 +1555,7 @@ function consecutivoSiguiente() {
             //     $('#consecutivo').select();
             // },100);
             if(res.success){
+                consecutivoUltimo = parseInt(res.data);
                 $("#consecutivo").val(res.data);
                 $("#consecutivo").prop('disabled', false);
             }

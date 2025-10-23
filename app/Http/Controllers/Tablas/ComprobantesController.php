@@ -237,6 +237,7 @@ class ComprobantesController extends Controller
             'nombre',
             'consecutivo_siguiente',
             'tipo_comprobante',
+            'tipo_consecutivo',
             \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
         )->orderBy('codigo');
 
