@@ -244,6 +244,7 @@ class FormasPagoController extends Controller
                 case 'compras':
                     $this->filterTiposCuenta($formasPago, [
                         FacFormasPago::TIPO_CUENTA_CAJA_BANCOS,
+                        FacFormasPago::TIPO_CUENTA_CXP,
                         FacFormasPago::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC
                     ]);
                     break;
