@@ -109,124 +109,153 @@ function initTablaDocumentoGeneral() {
 }
 
 function initSelect2CombosDG() {
-    initComboCuentaTableDG();
-    initComboNitsTableDG();
-    initComboCecosTableDG();
-    initComboExtractoTableDG();
+    initComboCuentaTableDG(0);
+    // initComboCuentaTableDG();
+    // initComboNitsTableDG();
+    // initComboCecosTableDG();
+    // initComboExtractoTableDG();
 }
 
-function initComboCuentaTableDG() {
-    $('.combo_cuenta').select2({
-        theme: 'bootstrap-5',
-        dropdownCssClass: 'custom-documentogeneral_cuenta',
-        delay: 250,
-        minimumInputLength: 2,
-        ajax: {
-            url: 'api/plan-cuenta/combo-cuenta',
-            headers: headers,
-            data: function (params) {
-                var query = {
-                    q: params.term,
-                    id_comprobante: $("#id_comprobante").val(),
-                    _type: 'query'
+function initComboCuentaTableDG(rowId = null) {
+    const selector = rowId !== null ? `#combo_cuenta_${rowId}` : '.combo_cuenta';
+    
+    $(selector).not('.select2-hidden-accessible').each(function() {
+        const $combo = $(this);
+        if (!$combo.hasClass('select2-hidden-accessible')) {
+            $combo.select2({
+                theme: 'bootstrap-5',
+                dropdownCssClass: 'custom-documentogeneral_cuenta',
+                delay: 250,
+                minimumInputLength: 2,
+                ajax: {
+                    url: 'api/plan-cuenta/combo-cuenta',
+                    headers: headers,
+                    data: function (params) {
+                        var query = {
+                            q: params.term,
+                            id_comprobante: $("#id_comprobante").val(),
+                            _type: 'query'
+                        }
+                        return query;
+                    },
+                    dataType: 'json',
+                    processResults: function (data) {
+                        var data_modified = $.map(data.data, function (obj) {
+                            obj.disabled = obj.auxiliar ? false : true;
+                            return obj;
+                        });
+                        return {
+                            results: data_modified
+                        };
+                    }
                 }
-                return query;
-            },
-            dataType: 'json',
-            processResults: function (data) {
-                var data_modified = $.map(data.data, function (obj) {
-                    obj.disabled = obj.auxiliar ? false : true;
-                    return obj;
-                });
-                return {
-                    results: data_modified
-                };
-            }
+            });
         }
     });
 }
 
-function initComboNitsTableDG() {
-    $('.combo_nits').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        minimumInputLength: 1,
-        dropdownCssClass: 'custom-documentogeneral_nit',
-        ajax: {
-            url: 'api/nit/combo-nit',
-            headers: headers,
-            dataType: 'json',
-            data: function (params) {
-                var query = {
-                    q: params.term,
-                    totalRows: 3,
-                    _type: 'query'
+
+function initComboNitsTableDG(rowId = null) {
+    const selector = rowId !== null ? `#combo_nits_${rowId}` : '.combo_nits';
+    
+    $(selector).not('.select2-hidden-accessible').each(function() {
+        const $combo = $(this);
+        if (!$combo.hasClass('select2-hidden-accessible')) {
+            $combo.select2({
+                theme: 'bootstrap-5',
+                delay: 250,
+                minimumInputLength: 1,
+                dropdownCssClass: 'custom-documentogeneral_nit',
+                ajax: {
+                    url: 'api/nit/combo-nit',
+                    headers: headers,
+                    dataType: 'json',
+                    data: function (params) {
+                        var query = {
+                            q: params.term,
+                            totalRows: 3,
+                            _type: 'query'
+                        }
+                        return query;
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.data
+                        };
+                    }
                 }
-                return query;
-            },
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
+            });
         }
     });
 }
 
-function initComboCecosTableDG() {
-    $('.combo_cecos').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        // minimumInputLength: 1,
-        ajax: {
-            url: 'api/centro-costos/combo-centro-costo',
-            headers: headers,
-            dataType: 'json',
-            data: function (params) {
-                var query = {
-                    q: params.term,
-                    totalRows: 3,
-                    _type: 'query'
+function initComboCecosTableDG(rowId = null) {
+    const selector = rowId !== null ? `#combo_cecos_${rowId}` : '.combo_cecos';
+    
+    $(selector).not('.select2-hidden-accessible').each(function() {
+        const $combo = $(this);
+        if (!$combo.hasClass('select2-hidden-accessible')) {
+            $combo.select2({
+                theme: 'bootstrap-5',
+                delay: 250,
+                ajax: {
+                    url: 'api/centro-costos/combo-centro-costo',
+                    headers: headers,
+                    dataType: 'json',
+                    data: function (params) {
+                        var query = {
+                            q: params.term,
+                            totalRows: 3,
+                            _type: 'query'
+                        }
+                        return query;
+                    },
+                    processResults: function (data) {
+                        if (data.total.length == 1) {
+                            $("#product_id").append($("<option />")
+                                .attr("value", data.results[0].id)
+                                .html(data.results[0].text)
+                            ).val(data.results[0].id).trigger("change").select2("close");
+                        }
+                        return {
+                            results: data.data
+                        };
+                    }
                 }
-                return query;
-            },
-            processResults: function (data) {
-                if (data.total.length == 1) {
-                    $("#product_id").append($("<option />")
-                        .attr("value", data.results[0].id)
-                        .html(data.results[0].text)
-                    ).val(data.results[0].id).trigger("change").select2("close");
-                }
-                return {
-                    results: data.data
-                };
-            }
+            });
         }
     });
 }
 
-function initComboExtractoTableDG() {
-    $('.combo_extracto').select2({
-        theme: 'bootstrap-5',
-        delay: 250,
-        ajax: {
-            url: 'api/extracto',
-            headers: headers,
-            dataType: 'json',
-            data: function (params) {
-                var query = {
-                    q: params.term,
-                    id_tipo_cuenta: 3,
-                    id_nit: $("#combo_nits_"+rowExtracto).val(),
-                    _type: 'query'
+function initComboExtractoTableDG(rowId = null) {
+    const selector = rowId !== null ? `#combo_extracto_${rowId}` : '.combo_extracto';
+    
+    $(selector).not('.select2-hidden-accessible').each(function() {
+        const $combo = $(this);
+        if (!$combo.hasClass('select2-hidden-accessible')) {
+            $combo.select2({
+                theme: 'bootstrap-5',
+                delay: 250,
+                ajax: {
+                    url: 'api/extracto',
+                    headers: headers,
+                    dataType: 'json',
+                    data: function (params) {
+                        var query = {
+                            q: params.term,
+                            id_tipo_cuenta: 3,
+                            id_nit: $("#combo_nits_"+rowExtracto).val(),
+                            _type: 'query'
+                        }
+                        return query;
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.data
+                        };
+                    }
                 }
-                return query;
-            },
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
+            });
         }
     });
 }
@@ -440,6 +469,10 @@ function addRow(openCuenta = true) {
     if (dataLast) {
         var cuentaLast = $('#combo_cuenta_'+dataLast.id).val();
         if (!cuentaLast) {
+            // Asegurar que el Select2 de cuenta esté inicializado
+            if (!$('#combo_cuenta_'+dataLast.id).hasClass('select2-hidden-accessible')) {
+                initComboCuentaTableDG(dataLast.id);
+            }
             $('#combo_cuenta_'+dataLast.id).select2('open');
             document.getElementById("card-documento-general").scrollLeft = 0;
             return;
@@ -456,6 +489,9 @@ function addRow(openCuenta = true) {
         "credito": '',
         "concepto": '',
     }).draw(false);
+
+    // Inicializar solo el combo de cuenta para la nueva fila
+    initComboCuentaTableDG(idDocumento);
 
     $('#card-documento-general').focus();
     document.getElementById("card-documento-general").scrollLeft = 0;
@@ -1008,6 +1044,15 @@ function focusNextRow(columnIndex, rowId) {
         }
 
         if (["#combo_nits", "#combo_cecos"].includes(inputIds[nextColumn])) {
+            // Inicializar Select2 on-demand si no está inicializado
+            if (!$input.hasClass('select2-hidden-accessible')) {
+                if (inputIds[nextColumn] === "#combo_nits") {
+                    initComboNitsTableDG(rowId);
+                } else if (inputIds[nextColumn] === "#combo_cecos") {
+                    initComboCecosTableDG(rowId);
+                }
+            }
+
             // Autocompletar NIT desde fila anterior si está vacío
             if (inputIds[nextColumn] === "#combo_nits" && !$input.val() && rowId > 0) {
                 
@@ -1338,7 +1383,11 @@ function searchCaptura() {
                         var newOptionCuenta = new Option(dataCuenta.text, dataCuenta.id, false, false);
                         $('#combo_cuenta_'+index).append(newOptionCuenta).trigger('change');
 
+                        // Inicializar Select2 para NIT si hay datos
                         if(documento.nit) {
+                            if (!$('#combo_nits_'+index).hasClass('select2-hidden-accessible')) {
+                                initComboNitsTableDG(index);
+                            }
                             var nombre = documento.nit.tipo_contribuyente == 1 ? documento.nit.razon_social : documento.nit.primer_nombre+' '+documento.nit.primer_apellido;
                             var dataNit = {
                                 id: documento.nit.id,
@@ -1348,7 +1397,11 @@ function searchCaptura() {
                             $('#combo_nits_'+index).append(newOptionNit).trigger('change');
                         }
 
+                        // Inicializar Select2 para CECOS si hay datos
                         if(documento.centro_costos) {
+                            if (!$('#combo_cecos_'+index).hasClass('select2-hidden-accessible')) {
+                                initComboCecosTableDG(index);
+                            }
                             var dataCecos = {
                                 id: documento.centro_costos.id,
                                 text: documento.centro_costos.codigo+ ' - ' +documento.centro_costos.nombre,
