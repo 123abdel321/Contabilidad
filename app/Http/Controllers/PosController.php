@@ -311,6 +311,7 @@ class PosController extends Controller
     {
         $rules = [
             'id_cliente' => 'required|exists:sam.nits,id',
+            'id_pedido' => 'required|exists:sam.fac_pedidos,id',
             'id_bodega' => 'required|exists:sam.fac_bodegas,id',
             'fecha_manual' => 'required|date',
             'documento_referencia' => 'nullable|string',
@@ -373,6 +374,15 @@ class PosController extends Controller
             ], 422);
         }
 
+        $pedido = FacPedidos::where('id', $request->get('id_pedido'))->first();
+        if ($pedido->id_venta) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>["Pedido" => ["El pedido ya ha sido facturado"]]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $consecutivo = $this->getNextConsecutive($this->resolucion->comprobante->id, $request->get('fecha_manual'));
         
         $request->request->add([
@@ -385,6 +395,7 @@ class PosController extends Controller
         try {
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA VENTA
+            
             $this->nit = $this->findCliente($request->get('id_cliente'));
             $venta = $this->createFacturaVenta($request);
             $enviarFacturaElectronica = false;
@@ -617,7 +628,7 @@ class PosController extends Controller
                     }
                 } else {
                     $doc = $this->addFormaPago(
-                        null,
+                        $venta->documento_referencia,
                         $formaPago,
                         $this->nit,
                         $pagoItem,
@@ -629,8 +640,7 @@ class PosController extends Controller
                 }
             }
             
-            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
-
+            //GUARDAR DOCUMENTOS
             if (!$documentoGeneral->save()) {
 
 				DB::connection('sam')->rollback();
@@ -641,8 +651,13 @@ class PosController extends Controller
 				], 422);
 			}
 
-            $feSended = false;
-            $hasCufe = false;
+            //ACTUALIZAR CONSECUTIVO
+            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
+
+            //ACTUALIZAR PEDIDO
+            $pedido->id_venta = $venta->id;
+            $pedido->estado = 2;
+            $pedido->save();
 
             //FACTURAR ELECTRONICAMENTE
             if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
@@ -688,20 +703,10 @@ class PosController extends Controller
 
             DB::connection('sam')->commit();
 
-            // if ($enviarFacturaElectronica) {
-            //     $pdf = (new VentasPdf($empresa, $venta))->buildPdf()->getPdf();
-
-            //     $this->sendEmailFactura(
-            //         $request->user()['has_empresa'],
-            //         $venta->cliente->email,
-            //         $venta,
-            //         $pdf
-            //     );
-            // }
-
             return response()->json([
 				'success'=>	true,
 				'data' => $documentoGeneral->getRows(),
+                'id_venta' => $venta->id,
 				'impresion' => $this->resolucion->comprobante->imprimir_en_capturas ? $venta->id : '',
 				'message'=> 'Venta creada con exito!'
 			], 200);
@@ -1006,7 +1011,7 @@ class PosController extends Controller
             'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
             'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $venta->id_centro_costos : null,
             'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
-            'documento_referencia' => $documentoReferencia,
+            'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $documentoReferencia : null,
             'debito' => $valor,
             'credito' => $valor,
             'created_by' => request()->user()->id,
