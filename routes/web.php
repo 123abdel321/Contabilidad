@@ -1,14 +1,15 @@
 <?php
 //SISTEMA
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ResetPassword;
+use App\Http\Controllers\ApiController;
+use App\Http\Controllers\PosController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\UserProfileController;
-use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\UserProfileController;
 //INFORMES
 use App\Http\Controllers\Informes\CarteraController;
 use App\Http\Controllers\Informes\BalanceController;
@@ -182,6 +183,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		//PEDIDOS
 		Route::get('/pedido', [PedidoController::class, 'index'])->name('pedido');
 		Route::get('/pedido-print/{id}', [PedidoController::class, 'showPdf'])->name('pedido-pdf');
+		//PEDIDOS POS
+		Route::prefix('pos')->controller(PosController::class)->group(function () {
+			Route::get('pedido-print/{id}', 'showPdfPedido');
+			Route::get('venta-print/{id}', 'showPdfVenta');
+		});
 		//PARQUEADEROS
 		Route::get('/parqueadero', [ParqueaderoController::class, 'index'])->name('parqueadero');
 		Route::get('/parqueadero-print/{id}', [ParqueaderoController::class, 'showPdf'])->name('parqueadero-pdf');

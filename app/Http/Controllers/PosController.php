@@ -842,7 +842,7 @@ class PosController extends Controller
         }
     }
 
-    public function showPdf(Request $request, $id)
+    public function showPdfPedido(Request $request, $id)
     {
         $pedido = FacPedidos::whereId($id)->first();
 
@@ -858,6 +858,32 @@ class PosController extends Controller
 
         $data = (new PedidosPdf($empresa, $pedido))->buildPdf()->getData();
         return view('pdf.facturacion.pedidos-pos', $data);
+    }
+
+    public function showPdfVenta(Request $request, $id)
+    {
+        $factura = FacVentas::whereId($id)
+            ->with('resolucion')
+            ->first();
+
+        if(!$factura) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'La factura no existe'
+            ], 422);
+        }
+
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        
+        if ($factura->resolucion->tipo_impresion == 0) {
+            $data = (new VentasPdf($empresa, $factura))->buildPdf()->getData();
+            return view('pdf.facturacion.ventas-pos', $data);
+        }
+ 
+        return (new VentasPdf($empresa, $factura))
+            ->buildPdf()
+            ->showPdf();
     }
 
     private function createFacturaVenta ($request)
