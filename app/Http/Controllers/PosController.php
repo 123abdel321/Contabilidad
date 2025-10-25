@@ -311,7 +311,7 @@ class PosController extends Controller
     {
         $rules = [
             'id_cliente' => 'required|exists:sam.nits,id',
-            // 'id_pedido' => 'required|exists:sam.fac_pedidos,id',
+            'id_pedido' => 'required|exists:sam.fac_pedidos,id',
             'id_bodega' => 'required|exists:sam.fac_bodegas,id',
             'fecha_manual' => 'required|date',
             'documento_referencia' => 'nullable|string',
