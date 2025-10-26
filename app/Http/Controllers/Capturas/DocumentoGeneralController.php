@@ -521,13 +521,13 @@ class DocumentoGeneralController extends Controller
 				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
-			if(!$request->get('editing_documento')) {
-				$this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
-			} else {
+			if($request->get('editing_documento')) {
 				$facDocumento->debito = $debito;
 				$facDocumento->credito = $credito;
 				$facDocumento->saldo_final = $debito - $credito;
 				$facDocumento->updated_by = request()->user()->id;
+			} else {
+				$this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 			}
 
 			DB::connection('sam')->commit();

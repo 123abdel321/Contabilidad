@@ -57,6 +57,7 @@ use App\Http\Controllers\Capturas\RecibosController;
 use App\Http\Controllers\Capturas\ReservaController;
 use App\Http\Controllers\Capturas\ParqueaderoController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
+use App\Http\Controllers\Capturas\CambiosDatosController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\DocumentoEliminarController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
@@ -242,6 +243,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/conceptosnomina', [ConceptosNominaController::class, 'index'])->name('conceptosnomina');
 		//CONTRATOS
 		Route::get('/contratos', [ContratosController::class, 'index'])->name('contratos');
+		//CAMBIOS EN LOS DATOS
+		Route::get('/cambiodatos', [CambiosDatosController::class, 'index'])->name('cambiodatos');
 		
 		//CARGUE DESCARGUE
 		Route::get('/carguedescargue', [CargueDescargueController::class, 'index']);

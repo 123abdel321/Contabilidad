@@ -143,6 +143,7 @@ var moduloCreado = {
     'cesantiasintereses': false,
     'reuniones': false,
     'impuesto': false,
+    'cambiodatos': false,
 };
 
 var moduloRoute = {
@@ -208,6 +209,7 @@ var moduloRoute = {
     'cesantiasintereses': 'capturas',
     'reuniones': 'configuracion',
     'impuesto': 'tablas',
+    'cambiodatos': 'capturas',
 }
 
 function iniciarCanalesDeNotificacion () {

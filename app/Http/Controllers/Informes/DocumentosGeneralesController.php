@@ -53,36 +53,44 @@ class DocumentosGeneralesController extends Controller
         if ($request->get('id_centro_costos') == "null") $request->merge(['id_centro_costos' => null]);
         if ($request->get('id_nit') == "null") $request->merge(['id_nit' => null]);
 
-        $requestData = $request->all();
-
         $documentosGenerales = InfDocumentosGenerales::where('id_empresa', $empresa->id)
-            ->where('fecha_hasta', $requestData['fecha_hasta'])
-            ->where('fecha_desde', $requestData['fecha_desde'])
-            ->where('precio_desde', $requestData['precio_desde'])
-            ->where('precio_hasta', $requestData['precio_hasta'])
-            ->where('id_nit', $requestData['id_nit'])
-            ->where('id_cuenta', $requestData['id_cuenta'])
-            ->where('id_usuario', $requestData['id_usuario'])
-            ->where('id_comprobante', $requestData['id_comprobante'])
-            ->where('id_centro_costos', $requestData['id_centro_costos'])
-            ->where('documento_referencia', $requestData['documento_referencia'])
-            ->where('consecutivo', $requestData['consecutivo'])
-            ->where('concepto', $requestData['concepto'])
-            ->where('agrupar', $requestData['agrupar'])
-            ->where('agrupado', $requestData['agrupado'])
+            ->where('fecha_hasta', $request->get('fecha_hasta', null))
+            ->where('fecha_desde', $request->get('fecha_desde', null))
+            ->where('precio_desde', $request->get('precio_desde', null))
+            ->where('precio_hasta', $request->get('precio_hasta', null))
+            ->where('id_nit', $request->get('id_nit', null))
+            ->where('id_cuenta', $request->get('id_cuenta', null))
+            ->where('id_usuario', $request->get('id_usuario', null))
+            ->where('id_comprobante', $request->get('id_comprobante', null))
+            ->where('id_centro_costos', $request->get('id_centro_costos', null))
+            ->where('documento_referencia', $request->get('documento_referencia', null))
+            ->where('consecutivo', $request->get('consecutivo', null))
+            ->where('concepto', $request->get('concepto', null))
+            ->where('agrupar', $request->get('agrupar', null))
+            ->where('agrupado', $request->get('agrupado', null))
 			->first();
+
+        $cambioDatos = false;
+        if ($request->get('cambio_datos')) {
+            $cambioDatos = true;
+        }
+
+        $request->request->add(['cambio_datos' => $cambioDatos]);
+
             
         if($documentosGenerales) {
             InfDocumentosGeneralesDetalle::where('id_documentos_generales', $documentosGenerales->id)->delete();
             $documentosGenerales->delete();
         }
-
-        if($requestData['id_cuenta']) {
-            $cuenta = PlanCuentas::find($requestData['id_cuenta']);
-            $requestData['cuenta'] = $cuenta->cuenta;
+        
+        if($request->get('id_cuenta')) {
+            $cuenta = PlanCuentas::find($request->get('id_cuenta'));
+            if ($cuenta) {
+                $request->request->add(['cuenta' => $cuenta->cuenta]);
+            }
         }
 
-        ProcessInformeDocumentosGenerales::dispatch($requestData, $request->user()->id, $empresa->id);
+        ProcessInformeDocumentosGenerales::dispatch($request->all(), $request->user()->id, $empresa->id);
 
         return response()->json([
     		'success'=>	true,

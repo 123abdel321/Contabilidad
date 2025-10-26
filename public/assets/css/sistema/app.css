@@ -978,3 +978,17 @@ div.dataTables_processing {
     line-clamp: 1;
     -webkit-box-orient: vertical;
 }
+
+.tab-porta-15px {
+    font-size: 15px !important;
+    font-weight: bold;
+    margin-right: 2px;
+    color: black;
+}
+
+.tab-porta-13 {
+    font-size: 12px !important;
+    font-weight: bold;
+    margin-right: 2px;
+    color: black;
+}

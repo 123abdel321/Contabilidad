@@ -48,6 +48,7 @@ use App\Http\Controllers\Capturas\ReservaController;
 use App\Http\Controllers\Capturas\RecibosController;
 use App\Http\Controllers\Capturas\ParqueaderoController;
 use App\Http\Controllers\Capturas\NotaCreditoController;
+use App\Http\Controllers\Capturas\CambiosDatosController;
 use App\Http\Controllers\Capturas\VentasGeneralesController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
@@ -512,6 +513,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::delete('ubicaciones', 'delete');
             Route::get('ubicaciones-combo-general', 'comboUbicacion');
         });
+        //CAMBIO DATOS
+        Route::controller(CambiosDatosController::class)->group(function () {
+            Route::post('cambio-datos', 'change');
+        });
+        
 
         //CAPTURA CESANTIAS INTERESES
         Route::controller(CesantiasInteresController::class)->group(function () {

@@ -51,20 +51,20 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
 
             $documentosGenerales = InfDocumentosGenerales::create([
                 'id_empresa' => $this->id_empresa,
-                'fecha_desde' => $this->request['fecha_desde'],
-                'fecha_hasta' => $this->request['fecha_hasta'],
-                'precio_desde' => $this->request['precio_desde'],
-                'precio_hasta' => $this->request['precio_hasta'],
-                'id_nit' => $this->request['id_nit'],
-                'id_cuenta' => $this->request['id_cuenta'],
-                'id_usuario' => $this->request['id_usuario'],
-                'id_comprobante' => $this->request['id_comprobante'],
-                'id_centro_costos' => $this->request['id_centro_costos'],
-                'documento_referencia' => $this->request['documento_referencia'],
-                'consecutivo' => $this->request['consecutivo'],
-                'concepto' => $this->request['concepto'],
-                'agrupar' => $this->request['agrupar'],
-                'agrupado' => $this->request['agrupado'],
+                'fecha_desde' => $this->request['fecha_desde'] ?? null,
+                'fecha_hasta' => $this->request['fecha_hasta'] ?? null,
+                'precio_desde' => $this->request['precio_desde'] ?? null,
+                'precio_hasta' => $this->request['precio_hasta'] ?? null,
+                'id_nit' => $this->request['id_nit'] ?? null,
+                'id_cuenta' => $this->request['id_cuenta'] ?? null,
+                'id_usuario' => $this->request['id_usuario'] ?? null,
+                'id_comprobante' => $this->request['id_comprobante'] ?? null,
+                'id_centro_costos' => $this->request['id_centro_costos'] ?? null,
+                'documento_referencia' => $this->request['documento_referencia'] ?? null,
+                'consecutivo' => $this->request['consecutivo'] ?? null,
+                'concepto' => $this->request['concepto'] ?? null,
+                'agrupar' => $this->request['agrupar'] ?? null,
+                'agrupado' => $this->request['agrupado'] ?? null,
             ]);
 
             $this->id_documentos_generales = $documentosGenerales->id;
@@ -81,13 +81,18 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
 
             DB::connection('informes')->commit();
 
-            event(new PrivateMessageEvent('informe-documentos-generales-'.$empresa->token_db.'_'.$this->id_usuario, [
+            $chanelNotificacion = 'informe-documentos-generales-';
+            if ($this->request['cambio_datos']) {
+                $chanelNotificacion = 'cambio_datos-';
+            }
+
+            event(new PrivateMessageEvent($chanelNotificacion.$empresa->token_db.'_'.$this->id_usuario, [
                 'tipo' => 'exito',
                 'mensaje' => 'Informe generado con exito!',
                 'titulo' => 'Documentos generales generado',
                 'id_documento_general' => $this->id_documentos_generales,
                 'autoclose' => false
-            ]));            
+            ]));
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
@@ -105,10 +110,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             ->mergeBindings($query)
             ->orderByRaw($this->request['agrupar'])
             ->chunk(233, function ($documentos) {
-                $count = 0;
-                $documentos->each(function ($documento) use($count){
+                $documentos->each(function ($documento) {
                     $agrupacionesTotales = [];
-                    $count++;
+
                     foreach ($this->agrupacion as $key => $agrupacion) {
                         $agrupacionesTotales[] = $agrupacion;
                         $cuentaDetalle = $this->getCuentaPadre($documento, $agrupacionesTotales);
@@ -349,6 +353,12 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             })
             ->when(isset($this->request['consecutivo']) ? $this->request['consecutivo'] : false, function ($query) {
                 $query->where('DG.consecutivo', $this->request['consecutivo']);
+            })
+            ->when(isset($this->request['consecutivo_desde']), function ($query) {
+                $query->where('DG.consecutivo', '>=', $this->request['consecutivo_desde']);
+            })
+            ->when(isset($this->request['consecutivo_hasta']), function ($query) {
+                $query->where('DG.consecutivo', '<=', $this->request['consecutivo_hasta']);
             })
             ->when(isset($this->request['concepto']) ? $this->request['concepto'] : false, function ($query) {
                 $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');

@@ -5461,9 +5461,10 @@ textarea.form-control-lg {
 }
 
 .alert-warning {
-  color: #973b26;
+  color: #6f2b1c;
   background-color: #fee0d9;
   border-color: #fed0c6;
+  font-size: 14px;
 }
 .alert-warning .alert-link {
   color: #792f1e;
