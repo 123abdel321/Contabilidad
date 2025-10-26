@@ -38,22 +38,17 @@ class CambiosDatosController extends Controller
         $query = $this->documentosGeneralesQuery($filtros);
 
         $total_items = $query->count();
-
+        
         try {
             DB::connection('sam')->beginTransaction();
 
-            // ✅ chunkById() funciona igual, pero ahora devolverá modelos Eloquent completos
             $query->chunkById(500, function ($documentos) use ($tipo_cambio, $datos_destino) {
                 
                 foreach ($documentos as $documento) {
 
-                    // Aquí $documento es una instancia de DocumentosGeneral
-                    // Así que puedes acceder a sus relaciones directamente:
-                    // $documento->nit->razon_social, $documento->cuenta->nombre, etc.
                     $resultado = $this->aplicarCambioDocumento($documento, $tipo_cambio, $datos_destino);
                     
                     if ($resultado['error']) {
-                        // Lanzamos excepción para hacer rollback
                         throw new \Exception($resultado['mensaje'], 500); 
                     }
                 }
@@ -163,22 +158,121 @@ class CambiosDatosController extends Controller
         $updateDataDG = []; // Datos para actualizar documentos_generals
         $updateDataCabecera = []; // Datos para actualizar la cabecera (FacDocumentos, ConRecibos, etc.)
 
-        // --- 1. Lógica de Validación y Preparación de Datos ---
+        // =========================================================================
+        // CAMBIO DE NIT
+        // =========================================================================
         if ($tipo_cambio === 'nit') {
             $id_nit_destino = $datos_destino['id_nit_destino'] ?? null;
             
-            // 1.1. Validar requisito: exige_nit (De la cuenta actual)
             if ($documento->exige_nit == 1 && empty($id_nit_destino)) {
                 $error = true;
                 $mensaje = 'La cuenta asociada al documento (' . $documento->cuenta . ') exige NIT y no se proporcionó un NIT de destino.';
             }
 
-            // 1.2. Aplicar el cambio
             if (!$error) {
                 $updateDataDG['id_nit'] = $id_nit_destino;
                 $updateDataCabecera['id_nit'] = $id_nit_destino; // Mapeo común para las cabeceras
             }
-        } 
+        }
+        // =========================================================================
+        // CAMBIO DE COMPROBANTE
+        // =========================================================================
+        elseif ($tipo_cambio === 'comprobante') {
+            $id_comprobante_destino = $datos_destino['id_comprobante_destino'] ?? null;
+            
+            if (empty($id_comprobante_destino)) {
+                $error = true;
+                $mensaje = 'Debe especificar un Comprobante de destino válido.';
+            }
+
+            if (!$error) {
+                $updateDataDG['id_comprobante'] = $id_comprobante_destino;
+                $updateDataCabecera['id_comprobante'] = $id_comprobante_destino; // Mapeo común
+            }
+        }
+        // =========================================================================
+        // CAMBIO DE CENTRO DE COSTOS
+        // =========================================================================
+        elseif ($tipo_cambio === 'centro_costos') {
+            $id_centro_costos_destino = $datos_destino['id_centro_costos_destino'] ?? null;
+
+            // 1.1. Validar requisito: exige_centro_costos (De la cuenta actual)
+            if ($documento->exige_centro_costos == 1 && empty($id_centro_costos_destino)) {
+                $error = true;
+                $mensaje = 'La cuenta asociada al documento (' . $documento->cuenta . ') exige Centro de Costos y no se proporcionó uno de destino.';
+            }
+
+            // 1.2. Aplicar el cambio
+            if (!$error) {
+                $updateDataDG['id_centro_costos'] = $id_centro_costos_destino;
+                $updateDataCabecera['id_centro_costos'] = $id_centro_costos_destino; // Mapeo común
+            }
+        }
+        // =========================================================================
+        // CAMBIO DE CUENTA
+        // =========================================================================
+        elseif ($tipo_cambio === 'cuenta') {
+            $id_cuenta_destino = $datos_destino['id_cuenta_destino'] ?? null;
+            
+            if (empty($id_cuenta_destino)) {
+                $error = true;
+                $mensaje = 'Debe especificar una Cuenta de destino válida.';
+            } else {
+                $nuevaCuenta = PlanCuenta::find($id_cuenta_destino);
+                
+                if (!$nuevaCuenta) {
+                    $error = true;
+                    $mensaje = "La cuenta destino con ID {$id_cuenta_destino} no fue encontrada.";
+                } else {
+                    
+                    // --- 1. Exigencia de NIT ---
+                    if ($nuevaCuenta->exige_nit == 1 && empty($documento->id_nit)) {
+                        $error = true;
+                        $mensaje = 'La cuenta destino (' . $nuevaCuenta->cuenta . ') exige NIT, pero el documento actual no tiene un NIT asignado.';
+                    }
+
+                    // --- 2. Exigencia de Documento de Referencia ---
+                    if (!$error && $nuevaCuenta->exige_documento_referencia == 1 && empty($documento->documento_referencia)) {
+                        $error = true;
+                        $mensaje = 'La cuenta destino (' . $nuevaCuenta->cuenta . ') exige Documento de Referencia, pero el documento actual no lo tiene.';
+                    }
+
+                    // --- 3. Exigencia de Concepto ---
+                    if (!$error && $nuevaCuenta->exige_concepto == 1 && empty($documento->concepto)) {
+                        $error = true;
+                        $mensaje = 'La cuenta destino (' . $nuevaCuenta->cuenta . ') exige Concepto, pero el documento actual no lo tiene.';
+                    }
+
+                    // --- 4. Exigencia de Centro de Costos ---
+                    if (!$error && $nuevaCuenta->exige_centro_costos == 1 && empty($documento->id_centro_costos)) {
+                        $error = true;
+                        $mensaje = 'La cuenta destino (' . $nuevaCuenta->cuenta . ') exige Centro de Costos, pero el documento actual no lo tiene asignado.';
+                    }
+                    
+                    // Aplicar el cambio
+                    if (!$error) {
+                        $updateDataDG['id_cuenta'] = $id_cuenta_destino;
+                    }
+                }
+            }
+        }
+        // =========================================================================
+        // CAMBIO DE FECHA
+        // =========================================================================
+        elseif ($tipo_cambio === 'fecha') {
+            $fecha_destino = $datos_destino['fecha_manual_destino'] ?? null;
+            
+            if (empty($fecha_destino) || !strtotime($fecha_destino)) {
+                $error = true;
+                $mensaje = 'Debe especificar una Fecha de destino válida.';
+            }
+
+            if (!$error) {
+                // La fecha se debe actualizar tanto en el detalle como en la cabecera
+                $updateDataDG['fecha_manual'] = $fecha_destino;
+                $updateDataCabecera['fecha_manual'] = $fecha_destino; // Mapeo común
+            }
+        }
         
         // --- 2. Validación de Duplicados (Se aplica después de preparar el cambio) ---
         if (!$error && !empty($updateDataDG)) {

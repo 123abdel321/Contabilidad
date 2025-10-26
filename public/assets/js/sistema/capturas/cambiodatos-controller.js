@@ -498,8 +498,7 @@ function getDatosCambio() {
     };
 }
 
-$(document).on('click', '#generarCambioDatos', function () {
-
+function generarCambioDatos() {
     $("#generarCambioDatos").hide();
     $("#generarCambioDatosLoading").show();
 
@@ -536,6 +535,10 @@ $(document).on('click', '#generarCambioDatos', function () {
             agregarToast('info', 'Generando documentos generales', 'En un momento se le notificará cuando el informe esté generado...', true );
         }
     });
+}
+
+$(document).on('click', '#generarCambioDatos', function () {
+    generarCambioDatos();
 });
 
 $(document).on('click', '#descargarCambioDatos', function () {
@@ -570,6 +573,11 @@ $(document).on('click', '#confirmarCambioDatos', function (e) {
         success: function(response) {
             $('#confirmarCambioDatos').show();
             $('#confirmarCambioLoading').hide();
+
+            $("#cambioDatosFormModal").modal('hide');
+            generarCambioDatos();
+
+            agregarToast('exito', 'Cambios existodos', response.message);
         },
         error: function(err) {
 
