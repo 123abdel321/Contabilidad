@@ -58,7 +58,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 			$this->id_resumen_comprobante = $resumenComprobante->id;
 
 			$this->documentosResumenComprobante();
-			$this->agrupadoResumenComprobante();
+			$this->agrupadoResumenComprobante();	
 			$this->detallarResumenComprobante();
 			$this->totalesResumenComprobante();
 
@@ -135,7 +135,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 	{
 		if (!$this->request['agrupado']) return;
 		$query = $this->queryResumenComprobantes();
-		$query->groupby('id_comprobante', $this->request['agrupado'])
+		$query->groupby('id_comprobante', 'id_nit', $this->request['agrupado'])
 			->orderByRaw('PC.cuenta ASC')
 			->chunk(233, function ($documentos) {
 				$documentos->each(function ($documento) {
@@ -148,11 +148,13 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 						$key = $documento->cuenta;
 					}
 
-					// $key = $documento->numero_documento;
+					$groupKey = "{$documento->codigo_comprobante}A-{$key}";
 
-					// dd($key, $this->request['agrupado']);
+					// if (isset($this->resumenComprobanteCollection[$groupKey])) {
+					// 	info("Llave existente: {$groupKey}");
+					// }
 					
-					$this->resumenComprobanteCollection[$documento->codigo_comprobante.'A-'.$key] = [
+					$this->resumenComprobanteCollection[$groupKey] = [
 						'id_resumen_comprobante' => $this->id_resumen_comprobante,
 						'id_nit' => $documento->id_nit,
 						'id_cuenta' => $documento->id_cuenta,
