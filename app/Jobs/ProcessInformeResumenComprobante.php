@@ -150,9 +150,9 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 
 					$groupKey = "{$documento->codigo_comprobante}A-{$key}";
 
-					// if (isset($this->resumenComprobanteCollection[$groupKey])) {
-					// 	info("Llave existente: {$groupKey}");
-					// }
+					if (isset($this->resumenComprobanteCollection[$groupKey])) {
+						info("Llave existente: {$groupKey}");
+					}
 					
 					$this->resumenComprobanteCollection[$groupKey] = [
 						'id_resumen_comprobante' => $this->id_resumen_comprobante,
