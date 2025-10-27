@@ -147,6 +147,10 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 					if ($this->request['agrupado'] == 'id_cuenta') {
 						$key = $documento->cuenta;
 					}
+
+					$key = $documento->numero_documento;
+
+					// dd($key, $this->request['agrupado']);
 					
 					$this->resumenComprobanteCollection[$documento->codigo_comprobante.'A-'.$key] = [
 						'id_resumen_comprobante' => $this->id_resumen_comprobante,
