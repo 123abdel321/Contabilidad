@@ -39,6 +39,11 @@ class ProcessInformeResumenComprobante implements ShouldQueue
         copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $empresa->token_db);
 
+		info('Modo SQL: '.DB::selectOne("SELECT @@sql_mode AS mode")->mode);
+		info('Base: '.config('database.connections.sam.database'));
+		info('Total documentos: '.DB::connection('sam')->table('documentos_generals')->count());
+
+
         DB::connection('informes')->beginTransaction();
 		
 		try {
@@ -148,7 +153,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 						$key = $documento->cuenta;
 					}
 
-					$key = $documento->numero_documento;
+					// $key = $documento->numero_documento;
 
 					// dd($key, $this->request['agrupado']);
 					
