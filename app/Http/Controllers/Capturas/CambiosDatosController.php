@@ -58,7 +58,8 @@ class CambiosDatosController extends Controller
 
             return response()->json([
                 'success' => true, 
-                'message' => 'El proceso de cambio de datos ha finalizado sin errores. Total: ' . $total_items . ' documentos afectados.'
+                'data' => [],
+                'message' => 'El proceso de cambio de datos ha finalizado sin errores. Total: ' . $total_items . ' documentos afectados.',
             ], 200);
 
         } catch (\Exception $e) {
@@ -68,7 +69,7 @@ class CambiosDatosController extends Controller
                 'success' => false, 
                 'message' => 'Proceso revertido. Error en Documento ' . ($documento->id ?? 'desconocido') . ': ' . $e->getMessage(),
                 'line' => $e->getLine()
-            ], $e->getCode() == 500 ? 400 : 500);
+            ], 400);
         }
     }
 

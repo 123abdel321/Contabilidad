@@ -7,9 +7,6 @@
             </div>
 
             <div class="modal-body">
-                <p class="mb-3">
-                    Se cambiarán los datos para <span id="totalDocumentos" class="fw-bold text-primary">0</span> documentos encontrados.
-                </p>
 
                 <!-- Tabs -->
                 <ul class="nav nav-tabs" id="cambioDatosTabs" role="tablist">
