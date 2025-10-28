@@ -90,6 +90,10 @@ function resumencomprobanteInit() {
             { data: 'registros'}
         ],
         'rowCallback': function(row, data, index){
+            if(data.nivel == 6){
+                $('td', row).css('background-color', '#ff8f003b');
+                return;
+            }
             if(data.nivel == 4){
                 $('td', row).css('background-color', 'rgb(28 69 135)');
                 $('td', row).css('font-weight', 'bold');
@@ -306,17 +310,13 @@ $(document).on('click', '#generarResumenComprobantes', function () {
     $('#generarResumenComprobantes').hide();
     $('#generarResumenComprobantesLoading').show();
 
-    const picker = $('#fecha_manual_comprobantes').data('daterangepicker');
-    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
-    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
-
     generarEstadoActual = false;
     initResumenComprobante = true;
 
     var url = base_url + 'resumen-comprobante';
 
-    url+= '?fecha_desde='+fecha_desde;
-    url+= '&fecha_hasta='+fecha_hasta;
+    url+= '?fecha_desde='+$('#fecha_manual_comprobantes').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
+    url+= '&fecha_hasta='+$('#fecha_manual_comprobantes').data('daterangepicker').endDate.format('YYYY-MM-DD');
     url+= '&id_comprobante='+$('#id_comprobante_comprobantes').val();
     url+= '&id_cuenta='+$('#id_cuenta_comprobantes').val();
     url+= '&id_nit='+$('#id_nit_comprobantes').val();

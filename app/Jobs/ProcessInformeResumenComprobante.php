@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use DB;
 use Exception;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -20,8 +21,12 @@ class ProcessInformeResumenComprobante implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 	public $request;
+	public $keyActual;
+	public $faltantes;
     public $id_usuario;
 	public $id_empresa;
+	public $fechaHasta;
+	public $consecutivoActual;
     public $id_resumen_comprobante;
     public $resumenComprobanteCollection = [];
 
@@ -30,6 +35,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
         $this->request = $request;
 		$this->id_usuario = $id_usuario;
 		$this->id_empresa = $id_empresa;
+		$this->fechaHasta = Carbon::parse($this->request['fecha_hasta'])->endOfDay()->format('Y-m-d H:i:s');
     }
 
 	public function handle()
@@ -40,7 +46,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
         setDBInConnection('sam', $empresa->token_db);
 
         DB::connection('informes')->beginTransaction();
-		
+
 		try {
 			$resumenComprobante = InfResumenComprobante::create([
                 'id_empresa' => $this->id_empresa,
@@ -57,10 +63,10 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 
 			$this->id_resumen_comprobante = $resumenComprobante->id;
 
-			$this->documentosResumenComprobante();
-			$this->agrupadoResumenComprobante();	
-			$this->detallarResumenComprobante();
-			$this->totalesResumenComprobante();
+			// $this->documentosResumenComprobante();
+			$this->agrupadoResumenComprobante();
+			// $this->detallarResumenComprobante();
+			// $this->totalesResumenComprobante();
 
 			uksort($this->resumenComprobanteCollection, function($a, $b) {
 
@@ -96,10 +102,11 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 	private function documentosResumenComprobante()
 	{
 		$query = $this->queryResumenComprobantes();
+
 		$query->groupby('id_comprobante')
 			->orderByRaw('PC.cuenta, CO.codigo, DG.consecutivo ASC')
 			->chunk(233, function ($documentos) {
-				$documentos->each(function ($documento) {
+				foreach ($documentos as $documento) {
 					$this->resumenComprobanteCollection[$documento->codigo_comprobante.""] = [
 						'id_resumen_comprobante' => $this->id_resumen_comprobante,
 						'id_nit' => '',
@@ -127,19 +134,23 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 						'registros' => $documento->registros,
 						'nivel' => $this->nivel(1),
 					];
-				});
+				}
+				unset($documentos);
 			});
 	}
 
 	private function agrupadoResumenComprobante()
 	{
+		$this->faltantes = 0;
+		$this->keyActual = 0;
+		$this->consecutivoActual = 0;
+
 		if (!$this->request['agrupado']) return;
 		$query = $this->queryResumenComprobantes();
 		$query->groupby('id_comprobante', 'id_nit', $this->request['agrupado'])
-			->orderByRaw('PC.cuenta ASC')
+			->orderByRaw('CAST(DG.consecutivo AS UNSIGNED) ASC')
 			->chunk(233, function ($documentos) {
-				$documentos->each(function ($documento) {
-					
+				foreach ($documentos as $documento) {
 					$key = $documento->{$this->request['agrupado']};
 					if ($this->request['agrupado'] == 'id_nit') {
 						$key = $documento->numero_documento;
@@ -153,7 +164,46 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 					if (isset($this->resumenComprobanteCollection[$groupKey])) {
 						$groupKey.='9';
 					}
-					
+
+					if ($this->request['agrupado'] == 'consecutivo' && $this->consecutivoActual && $this->consecutivoActual + 1 != intval($documento->consecutivo)) {
+						
+						$diferencia = intval($documento->consecutivo) - intval($this->consecutivoActual + 1);
+                        $diferencia = $diferencia < 0 ? $diferencia * -1 : $diferencia;
+
+						$nuevaKey = $this->incrementarKey($this->keyActual);
+
+						$this->resumenComprobanteCollection[$nuevaKey] = [
+							'id_resumen_comprobante' => $this->id_resumen_comprobante,
+							'id_nit' => '',
+							'id_cuenta' => '',
+							'id_usuario' => '',
+							'id_comprobante' => '',
+							'id_centro_costos' => '',
+							'cuenta' => '',
+							'nombre_cuenta' => '',
+							'numero_documento' => '',
+							'nombre_nit' => '',
+							'razon_social' => '',
+							'apartamento_nit' => '',
+							'codigo_cecos' => '',
+							'nombre_cecos' => '',
+							'codigo_comprobante' => '',
+							'nombre_comprobante' => '',
+							'documento_referencia' => '',
+							'consecutivo' => 'Faltantes ('.$diferencia.')',
+							'concepto' => '',
+							'fecha_manual' => '',
+							'debito' => '',
+							'credito' => '',
+							'diferencia' => '',
+							'registros' => '',
+							'nivel' => 6,
+						];
+					}
+
+					$this->keyActual = $groupKey;
+					$this->consecutivoActual = intval($documento->consecutivo);
+
 					$this->resumenComprobanteCollection[$groupKey] = [
 						'id_resumen_comprobante' => $this->id_resumen_comprobante,
 						'id_nit' => $documento->id_nit,
@@ -181,8 +231,20 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 						'registros' => $documento->registros,
 						'nivel' => $this->nivel(2),
 					];
-				});
+				}
+				unset($documentos);
 			});
+	}
+
+	private function incrementarKey($key) {
+		$partes = explode('-', $key);
+		if (count($partes) === 2 && is_numeric($partes[1])) {
+			$texto = $partes[0];
+			$numero = intval($partes[1]);
+			$nuevoNumero = $numero + 1;
+			return $texto . '-' . str_pad($nuevoNumero, strlen($partes[1]), '0', STR_PAD_LEFT);
+		}
+		return $key; // Retorna original si no puede incrementar
 	}
 
 	private function detallarResumenComprobante()
@@ -192,7 +254,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 		$query = $this->queryResumenComprobanteDetalle()
 			->orderByRaw('PC.cuenta, CO.codigo, CAST(DG.consecutivo AS UNSIGNED) ASC')
 			->chunk(233, function ($documentos) {
-				$documentos->each(function ($documento) {
+				foreach ($documentos as $documento) {
 					$key = $this->request['agrupado'] ? $documento->{$this->request['agrupado']} : $documento->cuenta;
 					if ($this->request['agrupado'] == 'id_nit') {
 						$key = $documento->numero_documento;
@@ -228,7 +290,8 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 						'registros' => $documento->registros,
 						'nivel' => 0,
 					];
-				});
+				}
+				unset($documentos);
 			});
 	}
 
@@ -269,8 +332,9 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 	{
 		return DB::connection('sam')->table('documentos_generals AS DG')
 			->select(
-				'N.id AS id_nit',
-                'N.numero_documento',
+				"DG.id",
+				"N.id AS id_nit",
+                "N.numero_documento",
                 DB::raw("(CASE
                     WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
                     WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
@@ -298,7 +362,6 @@ class ProcessInformeResumenComprobante implements ShouldQueue
                 DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
                 "DG.created_by",
                 "DG.updated_by",
-				DB::raw("CONCAT(CO.codigo, ' - ', CO.nombre) AS comprobantes"),
 				DB::raw('SUM(debito) AS debito'),
 				DB::raw('SUM(credito) AS credito'),
 				DB::raw('SUM(debito) - SUM(credito) AS diferencia'),
@@ -310,7 +373,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 			->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
 			->where('anulado', 0)
 			->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
-			->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
+			->where('DG.fecha_manual', '<=', $this->fechaHasta)
 			->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
 				$query->where('DG.id_nit', $this->request['id_nit']);
 			})
