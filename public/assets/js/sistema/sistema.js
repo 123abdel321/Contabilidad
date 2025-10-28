@@ -856,7 +856,7 @@ function loadExcel(data) {
     setTimeout(function(){
         window.open('https://'+data.url_file, "_blank");
         agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
-    },5000);
+    },10000);
 }
 
 function loadPdf(data) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Informes;
 
 use DB;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
 use App\Events\PrivateMessageEvent;
@@ -53,14 +54,20 @@ class DocumentosGeneralesController extends Controller
         if ($request->get('id_centro_costos') == "null") $request->merge(['id_centro_costos' => null]);
         if ($request->get('id_nit') == "null") $request->merge(['id_nit' => null]);
 
+        $fechaHasta = $request->get('fecha_hasta');
+        $fechaDesde = $request->get('fecha_desde');
+        $fechaHastaFormateada = $fechaHasta ? Carbon::parse($fechaHasta)->format('Y-m-d') : null;
+        $fechaDesdeFormateada = $fechaDesde ? Carbon::parse($fechaDesde)->format('Y-m-d') : null;
+
         $documentosGenerales = InfDocumentosGenerales::where('id_empresa', $empresa->id)
-            ->where('fecha_hasta', $request->get('fecha_hasta', null))
-            ->where('fecha_desde', $request->get('fecha_desde', null))
+            ->where('id_empresa', $empresa->id)
+            ->where('fecha_hasta', $fechaHastaFormateada) 
+            ->where('fecha_desde', $fechaDesdeFormateada)
             ->where('precio_desde', $request->get('precio_desde', null))
             ->where('precio_hasta', $request->get('precio_hasta', null))
             ->where('id_nit', $request->get('id_nit', null))
             ->where('id_cuenta', $request->get('id_cuenta', null))
-            ->where('id_usuario', $request->get('id_usuario', null))
+            // ->where('id_usuario', $request->get('id_usuario', null))
             ->where('id_comprobante', $request->get('id_comprobante', null))
             ->where('id_centro_costos', $request->get('id_centro_costos', null))
             ->where('documento_referencia', $request->get('documento_referencia', null))
