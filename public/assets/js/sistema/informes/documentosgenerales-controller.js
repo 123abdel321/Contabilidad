@@ -496,11 +496,11 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
         agruparDocumentosText = agruparDocumentosText.slice(0, -1);
     }
 
-    var id_nit = $('#id_nit_documentos_generales').val();
-    var id_comprobante= $('#id_comprobante_documentos_generales').val();
-    var id_centro_costos= $('#id_cecos_documentos_generales').val();
-    var id_cuenta= $('#id_cuenta_documentos_generales').val();
-    var id_usuario= $('#id_usuario_documentos_generales').val();
+    var id_nit = $('#id_nit_documentos_generales').val() ?? '';
+    var id_comprobante= $('#id_comprobante_documentos_generales').val() ?? '';
+    var id_centro_costos= $('#id_cecos_documentos_generales').val() ?? '';
+    var id_cuenta= $('#id_cuenta_documentos_generales').val() ?? '';
+    var id_usuario= $('#id_usuario_documentos_generales').val() ?? '';
 
     var url = base_url + 'documentos-generales';
     url+= '?fecha_desde='+$('#fecha_manual_documentos_generales').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
