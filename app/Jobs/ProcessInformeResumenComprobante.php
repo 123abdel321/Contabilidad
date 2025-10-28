@@ -63,10 +63,10 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 
 			$this->id_resumen_comprobante = $resumenComprobante->id;
 
-			// $this->documentosResumenComprobante();
+			$this->documentosResumenComprobante();
 			$this->agrupadoResumenComprobante();
-			// $this->detallarResumenComprobante();
-			// $this->totalesResumenComprobante();
+			$this->detallarResumenComprobante();
+			$this->totalesResumenComprobante();
 
 			uksort($this->resumenComprobanteCollection, function($a, $b) {
 
