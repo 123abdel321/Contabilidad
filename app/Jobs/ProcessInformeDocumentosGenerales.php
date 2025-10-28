@@ -92,7 +92,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 'titulo' => 'Documentos generales generado',
                 'id_documento_general' => $this->id_documentos_generales,
                 'autoclose' => false
-            ]));
+            ]));            
 
         } catch (Exception $exception) {
             DB::connection('informes')->rollback();
@@ -134,18 +134,33 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
     {
         $query = $this->DocumentosGeneralesQuery();
 
-        DB::connection('sam')
-            ->table(DB::raw("({$query->toSql()}) AS documentosgeneralesdata"))
-            ->mergeBindings($query)
-            ->orderByRaw($this->request['agrupar'])
-            ->chunk(233, function ($documentos) {
-                $documentos->each(function ($documento) {
-                    $cuentaPadre = $this->getCuentaPadre($documento);
-                    if ($this->hasCuentaData($cuentaPadre)) $this->sumCuentaData($cuentaPadre, $documento);
-                    else $this->newCuentaTotal($cuentaPadre, $documento);
-                    $this->newCuentaDetalle($cuentaPadre, $documento, false);
-                });
-            });
+        $totalData = $query->get();
+
+        foreach ($totalData as $key => $documento) {
+            $cuentaPadre = $this->getCuentaPadre($documento);
+            if ($this->hasCuentaData($cuentaPadre)) $this->sumCuentaData($cuentaPadre, $documento);
+            else $this->newCuentaTotal($cuentaPadre, $documento);
+            
+            $this->newCuentaDetalle($cuentaPadre, $documento);
+        }
+
+        // dd($debito, $credito);
+
+        // DB::connection('sam')
+        //     ->table(DB::raw("({$query->toSql()}) AS documentosgeneralesdata"))
+        //     // ->groupByRaw('id')
+        //     ->mergeBindings($query)
+        //     ->orderByRaw($this->request['agrupar'])
+        //     ->chunk(233, function ($documentos) {
+        //         $documentos->each(function ($documento) {
+        //             $cuentaPadre = $this->getCuentaPadre($documento);
+        //             // dd($documento, $cuentaPadre);
+        //             // if ($this->hasCuentaData($cuentaPadre)) $this->sumCuentaData($cuentaPadre, $documento);
+        //             // else $this->newCuentaTotal($cuentaPadre, $documento);
+
+        //             $this->newCuentaDetalle2($documento);
+        //         });
+        //     });
             
         $this->addTotalData($query);
     }
@@ -329,48 +344,49 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
-            ->where(function ($query) {
-                $query->when(isset($this->request['precio_desde']), function ($query) {
-                    $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) >= ?', [$this->request['precio_desde']]);
-                })->when(isset($this->request['precio_hasta']), function ($query) {
-                    $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) <= ?', [$this->request['precio_hasta']]);
-                });
-            })
-            ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-                $query->where('DG.id_nit', $this->request['id_nit']);
-            })
+            // ->where(function ($query) {
+            //     $query->when(isset($this->request['precio_desde']), function ($query) {
+            //         $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) >= ?', [$this->request['precio_desde']]);
+            //     })->when(isset($this->request['precio_hasta']), function ($query) {
+            //         $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) <= ?', [$this->request['precio_hasta']]);
+            //     });
+            // })
+            // ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
+            //     $query->where('DG.id_nit', $this->request['id_nit']);
+            // })
             ->when(isset($this->request['id_comprobante']) ? $this->request['id_comprobante'] : false, function ($query) {
                 $query->where('DG.id_comprobante', $this->request['id_comprobante']);
             })
-            ->when(isset($this->request['id_centro_costos']) ? $this->request['id_centro_costos'] : false, function ($query) {
-                $query->where('DG.id_centro_costos', $this->request['id_centro_costos']);
-            })
-            ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
-                $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
-            })
-            ->when(isset($this->request['documento_referencia']) ? $this->request['documento_referencia'] : false, function ($query) {
-                $query->where('DG.documento_referencia', $this->request['documento_referencia']);
-            })
-            ->when(isset($this->request['consecutivo']) ? $this->request['consecutivo'] : false, function ($query) {
-                $query->where('DG.consecutivo', $this->request['consecutivo']);
-            })
-            ->when(isset($this->request['consecutivo_desde']), function ($query) {
-                $query->where('DG.consecutivo', '>=', $this->request['consecutivo_desde']);
-            })
-            ->when(isset($this->request['consecutivo_hasta']), function ($query) {
-                $query->where('DG.consecutivo', '<=', $this->request['consecutivo_hasta']);
-            })
-            ->when(isset($this->request['concepto']) ? $this->request['concepto'] : false, function ($query) {
-                $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
-            })
-            ->when(isset($this->request['id_usuario']) ? $this->request['id_usuario'] : false, function ($query) {
-                $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
-            })
-            ->when(true, function ($query) {
-                if ($this->request['anulado'] != null) {
-                    $query->where('DG.anulado', $this->request['anulado']);
-                }
-            });
+            // ->when(isset($this->request['id_centro_costos']) ? $this->request['id_centro_costos'] : false, function ($query) {
+            //     $query->where('DG.id_centro_costos', $this->request['id_centro_costos']);
+            // })
+            // ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
+            //     $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+            // })
+            // ->when(isset($this->request['documento_referencia']) ? $this->request['documento_referencia'] : false, function ($query) {
+            //     $query->where('DG.documento_referencia', $this->request['documento_referencia']);
+            // })
+            // ->when(isset($this->request['consecutivo']) ? $this->request['consecutivo'] : false, function ($query) {
+            //     $query->where('DG.consecutivo', $this->request['consecutivo']);
+            // })
+            // ->when(isset($this->request['consecutivo_desde']), function ($query) {
+            //     $query->where('DG.consecutivo', '>=', $this->request['consecutivo_desde']);
+            // })
+            // ->when(isset($this->request['consecutivo_hasta']), function ($query) {
+            //     $query->where('DG.consecutivo', '<=', $this->request['consecutivo_hasta']);
+            // })
+            // ->when(isset($this->request['concepto']) ? $this->request['concepto'] : false, function ($query) {
+            //     $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
+            // })
+            // ->when(isset($this->request['id_usuario']) ? $this->request['id_usuario'] : false, function ($query) {
+            //     $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
+            // })
+            // ->when(true, function ($query) {
+            //     if ($this->request['anulado'] != null) {
+            //         $query->where('DG.anulado', $this->request['anulado']);
+            //     }
+            // })
+            ;
     }
 
     private function newCuentaTotal($cuenta, $documento)
@@ -477,6 +493,44 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'debito' => $documento->debito,
             'credito' => $documento->credito,
             'diferencia' => $detallar ? $documento->diferencia : '',
+            'nivel' => 0,
+            'anulado' => $documento->anulado,
+            'total_columnas' => '',
+            'fecha_creacion' => $documento->fecha_creacion,
+            'fecha_edicion' => $documento->fecha_edicion,
+            'created_by' => $documento->created_by,
+            'updated_by' => $documento->updated_by,
+        ];
+    }
+
+    private function newCuentaDetalle2($documento)
+    {
+        $this->documentosCollection[] = [
+            'id_documentos_generales' => $this->id_documentos_generales,
+            'id_nit' => $documento->id_nit,
+            'id_cuenta' => $documento->id_cuenta,
+            'id_usuario' => $documento->created_by,
+            'id_comprobante' => $documento->id_comprobante,
+            'id_centro_costos' => $documento->id_centro_costos,
+            'cuenta' => $documento->cuenta,
+            'nombre_cuenta' => $documento->nombre_cuenta,
+            'base_cuenta' =>$documento->base_cuenta,
+            'porcentaje_cuenta' =>$documento->porcentaje_cuenta,
+            'numero_documento' => $documento->numero_documento,
+            'nombre_nit' => $documento->nombre_nit,
+            'apartamento_nit' => $documento->apartamentos,
+            'razon_social' => $documento->razon_social,
+            'codigo_cecos' => $documento->codigo_cecos,
+            'nombre_cecos' => $documento->nombre_cecos,
+            'codigo_comprobante' => $documento->codigo_comprobante,
+            'nombre_comprobante' => $documento->nombre_comprobante,
+            'documento_referencia' => $documento->documento_referencia,
+            'consecutivo' => $documento->consecutivo,
+            'concepto' => $documento->concepto,
+            'fecha_manual' => $documento->fecha_manual,
+            'debito' => $documento->debito,
+            'credito' => $documento->credito,
+            'diferencia' => '',
             'nivel' => 0,
             'anulado' => $documento->anulado,
             'total_columnas' => '',
