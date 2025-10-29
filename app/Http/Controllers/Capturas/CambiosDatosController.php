@@ -276,13 +276,13 @@ class CambiosDatosController extends Controller
         }
         
         // --- 2. Validación de Duplicados (Se aplica después de preparar el cambio) ---
-        if (!$error && !empty($updateDataDG)) {
-            $errorDuplicado = $this->validarDuplicado($documento, $updateDataDG);
-            if ($errorDuplicado['error']) {
-                $error = true;
-                $mensaje = $errorDuplicado['mensaje'];
-            }
-        }
+        // if (!$error && !empty($updateDataDG)) {
+        //     $errorDuplicado = $this->validarDuplicado($documento, $updateDataDG);
+        //     if ($errorDuplicado['error']) {
+        //         $error = true;
+        //         $mensaje = $errorDuplicado['mensaje'];
+        //     }
+        // }
 
         // --- 3. Ejecución del UPDATE (DocumentosGeneral y Cabecera) ---
         if (!$error && !empty($updateDataDG)) {
