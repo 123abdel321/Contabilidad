@@ -308,38 +308,62 @@ class CambiosDatosController extends Controller
 
     private function validarDuplicado($documento, $updateData)
     {
-        // Las columnas originales combinadas con las nuevas
+        // Combinar datos originales con los nuevos (sin perder claves)
         $checkData = array_merge([
             'id_nit' => $documento->id_nit,
             'id_cuenta' => $documento->id_cuenta,
-            'fecha_manual' => substr($documento->fecha_manual, 0, 10),
+            'fecha_manual' => $documento->fecha_manual,
             'debito' => $documento->debito,
             'credito' => $documento->credito,
         ], $updateData);
 
-        // Formatear la fecha manualmente si se modificó
-        if (isset($checkData['fecha_manual'])) {
-            $fecha_check = substr($checkData['fecha_manual'], 0, 10);
-        } else {
-            $fecha_check = substr($documento->fecha_manual, 0, 10);
+        // Formatear fecha (solo YYYY-MM-DD)
+        $fecha_check = null;
+        if (!empty($checkData['fecha_manual'])) {
+            try {
+                $fecha_check = Carbon::parse($checkData['fecha_manual'])->format('Y-m-d');
+            } catch (\Exception $e) {
+                $fecha_check = substr($checkData['fecha_manual'], 0, 10); // fallback
+            }
         }
 
-        $duplicado = DB::connection('sam')->table('documentos_generals')
-            ->where('id', '!=', $documento->id) // No es el mismo documento
-            ->where('id_nit', $checkData['id_nit'] ?? null)
-            ->where('id_cuenta', $checkData['id_cuenta'] ?? null)
-            ->whereRaw("DATE(fecha_manual) = ?", [$fecha_check])
-            ->where('debito', $checkData['debito'])
-            ->where('credito', $checkData['credito'])
-            ->exists();
+        // Evitar comparar con su propio ID
+        $query = DB::connection('sam')->table('documentos_generals')
+            ->where('id', '!=', $documento->id);
+
+        // Agregar filtros solo si existen (evita nulls raros)
+        if (!is_null($checkData['id_nit'])) {
+            $query->where('id_nit', $checkData['id_nit']);
+        }
+        if (!is_null($checkData['id_cuenta'])) {
+            $query->where('id_cuenta', $checkData['id_cuenta']);
+        }
+        if ($fecha_check) {
+            $query->whereRaw("DATE(fecha_manual) = ?", [$fecha_check]);
+        }
+        $query->where('debito', $checkData['debito'] ?? 0)
+            ->where('credito', $checkData['credito'] ?? 0);
+
+        // Verificar duplicado
+        $duplicado = $query->exists();
 
         if ($duplicado) {
+            // Construir mensaje detallado
+            $detalle = sprintf(
+                "NIT: %s | Cuenta: %s | Fecha: %s | Débito: %.2f | Crédito: %.2f",
+                $checkData['id_nit'] ?? 'N/A',
+                $checkData['id_cuenta'] ?? 'N/A',
+                $fecha_check ?? 'N/A',
+                $checkData['debito'] ?? 0,
+                $checkData['credito'] ?? 0
+            );
+
             return [
                 'error' => true,
-                'mensaje' => 'La actualización del documento (ID: ' . $documento->id . ') genera un registro duplicado basado en las claves (NIT, Cuenta, Fecha, Débito, Crédito).'
+                'mensaje' => "El documento (ID: {$documento->id}) genera un registro duplicado con los siguientes valores: {$detalle}"
             ];
         }
-        
+
         return ['error' => false, 'mensaje' => ''];
     }
 
