@@ -720,16 +720,15 @@ class ProcessInformeCartera implements ShouldQueue
                 $documentos->each(function ($documento) {
                     
                     $key = '';
-
                     if ($this->request['agrupar_cartera'] == 'id_nit') {
-                        $key = $documento->numero_documento.$documento->id_cuenta;
+                        $key = str_pad($documento->numero_documento, 12, '0', STR_PAD_LEFT).'A';
                     }
                     if ($this->request['agrupar_cartera'] == 'id_cuenta') {
                         $key = $documento->cuenta;
                     }
 
                     $mora = $documento->dias_cumplidos - $documento->plazo;
-                    // $mora = $mora > 1 ? $mora - 1 : $mora;
+                    $mora = $mora > 1 ? $mora - 1 : $mora;
 
                     $saldo_0_30   = ($mora >= 0   && $mora <= 30) ? $documento->saldo_final : 0;
                     $saldo_30_60  = ($mora >= 31  && $mora <= 60) ? $documento->saldo_final : 0;
@@ -780,7 +779,7 @@ class ProcessInformeCartera implements ShouldQueue
                         ];
                     }
 
-                    $this->addTotalesEdades($documento->numero_documento, $documento, 1);
+                    $this->addTotalesEdades(substr($key, 0, -1), $documento, 1);
                     $this->addTotalesEdades('9999999999-ZZZZZZZZZZ-9999', $documento, 2);
 
                 });
@@ -790,6 +789,7 @@ class ProcessInformeCartera implements ShouldQueue
     private function addTotalesEdades($key, $documento, $nivel)
     {
         $mora = $documento->dias_cumplidos - $documento->plazo;
+        $mora = $mora > 1 ? $mora - 1 : $mora;
 
         $saldo_0_30   = ($mora >= 0   && $mora <= 30) ? $documento->saldo_final : 0;
         $saldo_30_60  = ($mora >= 31  && $mora <= 60) ? $documento->saldo_final : 0;
