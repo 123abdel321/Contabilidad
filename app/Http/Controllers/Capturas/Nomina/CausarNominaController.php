@@ -171,14 +171,14 @@ class CausarNominaController extends Controller
         }
 
         try {
-
-            $mes = CarbonImmutable::parse($request->get('meses'));
+            
+            $mes = CarbonImmutable::parse($request->get('mes'));
             $idsPeriodoPago = $request->get('id');
             $fechasPeriodos = (new CalcularPeriodo())->calcularNominas($mes->format('Y-m'), null, $idsPeriodoPago);
 
             return response()->json([
                 "success"=> true,
-                'data' => [],
+                'data' => $fechasPeriodos,
                 "message"=> 'Calculo realizado con exito'
             ], Response::HTTP_OK);
             

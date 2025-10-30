@@ -12,6 +12,10 @@ class NomConceptos extends Model
     use HasFactory;
 
     const CODE_INTERES_CESANTIAS = '031';
+    const CODE_PRIMA = '032';
+
+    const TIPO_LIQUIDACION_DEFINITIVA = 'cesantias';
+    const TIPO_PRIMAS = 'primas';
 
     protected $connection = 'sam';
 

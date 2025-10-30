@@ -25,7 +25,7 @@ use App\Http\Controllers\Informes\VentasAcumuladasController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
 use App\Http\Controllers\Informes\DocumentosGeneralesController;
 use App\Http\Controllers\Informes\ResumenComprobantesController;
-//TABLAS
+//TABLAS -> FACTURACION / CONTABILIDAD
 use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\ExogenaController;
 use App\Http\Controllers\Tablas\BodegasController;
@@ -42,12 +42,13 @@ use App\Http\Controllers\Tablas\ComprobantesController;
 use App\Http\Controllers\Tablas\ResolucionesController;
 use App\Http\Controllers\Tablas\ConceptoGastosController;
 use App\Http\Controllers\Tablas\CargueDescargueController;
+//TABLAS -> NOMINA
 use App\Http\Controllers\Tablas\Nomina\PeriodosController;
 use App\Http\Controllers\Tablas\Nomina\ContratosController;
 use App\Http\Controllers\Tablas\Nomina\ConfiguracionProvisiones;
 use App\Http\Controllers\Tablas\Nomina\ConceptosNominaController;
 use App\Http\Controllers\Tablas\Nomina\AdministradorasController;
-//CAPTURAS
+//CAPTURAS -> FACTURACION / CONTABILIDAD
 use App\Http\Controllers\Capturas\VentaController;
 use App\Http\Controllers\Capturas\PagosController;
 use App\Http\Controllers\Capturas\CompraController;
@@ -61,12 +62,13 @@ use App\Http\Controllers\Capturas\CambiosDatosController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\DocumentoEliminarController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
+//CAPTURAS -> NOMINA
+use App\Http\Controllers\Capturas\Nomina\PrimasController;
 use App\Http\Controllers\Capturas\Nomina\VacacionesController;
 use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
 use App\Http\Controllers\Capturas\Nomina\CesantiasInteresController;
 use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
 use App\Http\Controllers\Capturas\Nomina\LiquidacionDefinitivaController;
-
 //CONFIGURACION
 use App\Http\Controllers\InstaladorController;
 use App\Http\Controllers\Configuracion\EntornoController;
@@ -170,6 +172,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/liquidaciondefinitiva', [LiquidacionDefinitivaController::class, 'index']);
 		//VACACIONES
 		Route::get('/vacaciones', [VacacionesController::class, 'index']);
+		//PRIMAS
+		Route::get('/primas', [PrimasController::class, 'index']);
 		// >> NOMINA << \\
 
 		//COMPRAS

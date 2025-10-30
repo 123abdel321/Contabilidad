@@ -11,16 +11,19 @@ use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Helpers\Nomina\CalcularPeriodo;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Pagination\LengthAwarePaginator;
 //MODELS
+use App\Models\Sistema\Nits;
+use App\Models\Sistema\VariablesEntorno;
+use App\Models\Sistema\Nomina\NomPrimas;
 use App\Models\Sistema\Nomina\NomConceptos;
 use App\Models\Sistema\Nomina\NomContratos;
+use App\Models\Sistema\Nomina\NomVacaciones;
 use App\Models\Sistema\Nomina\NomPeriodoPagos;
-use App\Models\Sistema\Nomina\NomCesantiasInteres;
+use App\Models\Sistema\Nomina\NomVacacionDetalles;
 use App\Models\Sistema\Nomina\NomNovedadesGenerales;
 use App\Models\Sistema\Nomina\NomPeriodoPagoDetalles;
 
-class CesantiasInteresController extends Controller
+class PrimasController extends Controller
 {
     protected $messages = null;
 
@@ -38,7 +41,7 @@ class CesantiasInteresController extends Controller
 
     public function index ()
     {
-        return view('pages.capturas.cesantias_intereses.cesantias_intereses-view');
+        return view('pages.capturas.primas.primas-view');
     }
 
     public function generate (Request $request)
@@ -78,7 +81,7 @@ class CesantiasInteresController extends Controller
 
             $consecutivo = 0;
 
-            $cesantiasEmpleados = $contratos->filter(fn($c) => $c->periodo_pago->isNotEmpty())
+            $primaEmpleados = $contratos->filter(fn($c) => $c->periodo_pago->isNotEmpty())
                 ->map(function ($contrato) use ($request, &$consecutivo) {
                     $consecutivo++;
                     $dateRange = $this->getContractDateRange($contrato, $request);
@@ -89,7 +92,7 @@ class CesantiasInteresController extends Controller
                     $base = $this->calculateBase($periodosPago);
                     $dias = $this->calculateDays($periodosPago, $contrato->periodo);
 
-                    $calculations = $this->calculateBenefits($base, $dias);
+                    $calculations = $this->calculatePrima($base, $dias);
 
                     return [
                         'id' => $consecutivo,
@@ -102,9 +105,9 @@ class CesantiasInteresController extends Controller
                         'base' => $base,
                         'dias' => $dias,
                         'promedio' => $calculations['promedio'],
-                        'cesantias' => $calculations['cesantias'],
-                        'intereses' => $calculations['intereses'],
-                        'editado' => false, // Mejor usar booleano en lugar de 0/1
+                        'valor' => $calculations['valor'],
+                        'dias_promedio' => $calculations['diasPromedio'],
+                        'editado' => false,
                     ];
                 })
                 ->filter()
@@ -112,7 +115,7 @@ class CesantiasInteresController extends Controller
 
             return response()->json([
                 "success" => true,
-                'data' => $cesantiasEmpleados,
+                'data' => $primaEmpleados,
                 "message" => ''
             ], Response::HTTP_OK);
 
@@ -123,6 +126,7 @@ class CesantiasInteresController extends Controller
                 "message"=>$e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+
     }
 
     public function detalles (Request $request)
@@ -176,7 +180,7 @@ class CesantiasInteresController extends Controller
                     ->join('nom_contratos', 'nom_periodo_pagos.id_contrato', 'nom_contratos.id')
                     ->join('nom_periodos', 'nom_contratos.id_periodo', 'nom_periodos.id')
                     ->whereIn('id_periodo_pago', $periodosPago)
-                    ->where('nom_conceptos.base_cesantia', 1)
+                    ->where('nom_conceptos.base_prima', 1)
                     ->orderBy('fecha_fin_periodo');
 
             return response()->json([
@@ -208,8 +212,8 @@ class CesantiasInteresController extends Controller
             'data.*.base' => 'required|numeric',
             'data.*.dias' => 'required|numeric|min:0',
             'data.*.promedio' => 'required|numeric|min:0',
-            'data.*.cesantias' => 'required|numeric|min:0',
-            'data.*.intereses' => 'required|numeric|min:0',
+            'data.*.valor' => 'required|numeric|min:0',
+            'data.*.dias_promedio' => 'required|numeric|min:0',
             'data.*.editado' => 'required|boolean',
         ];
 
@@ -226,40 +230,44 @@ class CesantiasInteresController extends Controller
         try {
             DB::connection('sam')->beginTransaction();
 
-            $cesantiasData = $request->get('data');
+            $primaData = $request->get('data');
             $fechaDesde = $request->get('fecha_desde');
             $fechaHasta = $request->get('fecha_hasta');
             $fechaPersonalizada = $request->get('fecha_personalizada', false);
-            
-            $concepto = NomConceptos::where('codigo', NomConceptos::CODE_INTERES_CESANTIAS)->first();
+
+            $concepto = NomConceptos::where('codigo', NomConceptos::CODE_PRIMA)->first();
             
             if (!$concepto) {
-                throw new Exception('Concepto de cesantías no encontrado');
+                throw new Exception('Concepto de prima no encontrado');
             }
 
             $periodosPago = [];
-            $cesantiasCreadas = [];
+            $primasCreadas = [];
 
-            foreach ($cesantiasData as $cesantia) {
-                $idContrato = $cesantia['id_contrato'];
-                
+            foreach ($primaData as $prima) {
+                $idContrato = $prima['id_contrato'];
+
                 // Gestionar periodo de pago
                 if ($fechaPersonalizada) {
-                    $periodoPago = NomPeriodoPagos::create([
-                        'id_contrato' => $idContrato,
-                        'id_empleado' => $cesantia['id_empleado'],
-                        'fecha_inicio_periodo' => $cesantia['fecha_inicio'],
-                        'fecha_fin_periodo' => $cesantia['fecha_fin'],
-                        'estado' => NomPeriodoPagos::ESTADO_PENDIENTE,
-                        'created_by' => auth()->id(),
-                        'updated_by' => auth()->id(),
-                    ]);
+                    $periodoPago = NomPeriodoPagos::firstOrCreate(
+                        [
+                            'id_contrato' => $idContrato,
+                            'id_empleado' => $prima['id_empleado'],
+                            'fecha_inicio_periodo' => $prima['fecha_inicio'],
+                            'fecha_fin_periodo' => $prima['fecha_fin'],
+                            'estado' => NomPeriodoPagos::ESTADO_PENDIENTE,
+                        ],
+                        [
+                            'created_by' => auth()->id(),
+                            'updated_by' => auth()->id(),
+                        ]
+                    );
                     $periodosPago[$idContrato] = $periodoPago;
                 } else {
                     if (!isset($periodosPago[$idContrato])) {
                         $periodoPago = NomPeriodoPagos::where('id_contrato', $idContrato)
-                            ->whereDate('fecha_inicio_periodo', '>=', $cesantia['fecha_inicio'])
-                            ->whereDate('fecha_fin_periodo', '<=', $cesantia['fecha_fin'])
+                            ->whereDate('fecha_inicio_periodo', '>=', $prima['fecha_inicio'])
+                            ->whereDate('fecha_fin_periodo', '<=', $prima['fecha_fin'])
                             ->first();
 
                         if (!$periodoPago) {
@@ -271,46 +279,46 @@ class CesantiasInteresController extends Controller
 
                 $periodoPago = $periodosPago[$idContrato];
 
-                // Crear cesantía
-                $cesantiaCreada = $periodoPago->cesantiasIntereses()->create([
-                    'id_empleado' => $cesantia['id_empleado'],
+                // Crear prima
+                $primaCreada = $periodoPago->primas()->create([
+                    'id_empleado' => $prima['id_empleado'],
                     'id_periodo_pago' => $periodoPago->id,
                     'fecha_inicio' => $fechaDesde,
                     'fecha_fin' => $fechaHasta,
-                    'base' => $cesantia['base'],
-                    'dias' => $cesantia['dias'],
-                    'promedio' => $cesantia['promedio'],
-                    'cesantias' => $cesantia['cesantias'],
-                    'intereses' => $cesantia['intereses'],
-                    'editado' => $cesantia['editado'],
+                    'base' => $prima['base'],
+                    'dias' => $prima['dias'],
+                    'promedio' => $prima['promedio'],
+                    'valor' => $prima['valor'],
+                    'dias_promedio' => $prima['dias_promedio'],
+                    'editado' => $prima['editado'],
                     'created_by' => auth()->id(),
                     'updated_by' => auth()->id(),
                 ]);
 
                 // Crear novedad
                 $novedad = new NomNovedadesGenerales([
-                    'id_empleado' => $cesantia['id_empleado'],
+                    'id_empleado' => $prima['id_empleado'],
                     'id_contrato' => $idContrato,
                     'id_concepto' => $concepto->id,
                     'id_periodo_pago' => $periodoPago->id,
                     'tipo_unidad' => NomPeriodoPagoDetalles::TIPO_UNIDAD_DIAS,
-                    'unidades' => $cesantia['dias'],
-                    'valor' => $cesantia['cesantias'],
+                    'unidades' => $prima['dias'],
+                    'valor' => $prima['valor'],
                     'porcentaje' => 0,
-                    'base' => $cesantia['base'],
-                    'observacion' => "Cesantías generadas para el periodo {$fechaDesde} - {$fechaHasta}",
+                    'base' => $prima['base'],
+                    'observacion' => "Prima generada para el periodo {$fechaDesde} - {$fechaHasta}",
                     'created_by' => auth()->id(),
                     'updated_by' => auth()->id(),
                 ]);
 
                 $periodoPago->novedades()->save($novedad);
 
-                $cesantiasCreadas[] = $cesantiaCreada;
+                $primasCreadas[] = $primaCreada;
             }
 
             // Calcular nóminas para todos los periodos afectados
             $periodosIds = array_map(fn($pp) => $pp->id, $periodosPago);
-            
+
             (new CalcularPeriodo())->calcularNominas(
                 $request->get('fecha_novedad'),
                 null,
@@ -320,8 +328,8 @@ class CesantiasInteresController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $cesantiasCreadas,
-                'message' => 'Cesantías e intereses creados con éxito!'
+                'data' => $primasCreadas,
+                'message' => 'Primas creadas con éxito!'
             ], Response::HTTP_OK);
 
         } catch (Exception $e) {
@@ -338,7 +346,7 @@ class CesantiasInteresController extends Controller
     protected function filterPaymentPeriods($query, Request $request)
     {
         return $query->whereDate('fecha_inicio_periodo', '>=', $request->fecha_desde)
-                    ->whereDate('fecha_fin_periodo', '<=', $request->fecha_hasta);
+            ->whereDate('fecha_fin_periodo', '<=', $request->fecha_hasta);
     }
 
     protected function filterContractDates($query, Request $request)
@@ -371,7 +379,7 @@ class CesantiasInteresController extends Controller
     protected function calculateBase($periodosPago)
     {
         return $periodosPago->sum(fn($pp) => $pp->detalles
-            ->filter(fn($det) => $det->concepto->base_cesantia)
+            ->filter(fn($det) => $det->concepto->base_prima)
             ->sum('valor'));
     }
 
@@ -380,7 +388,7 @@ class CesantiasInteresController extends Controller
         $excludedTypes = ['auxilio_transporte', 'heds', 'hens', 'heddfs', 'hendfs'];
 
         return $periodosPago->sum(fn($pp) => $pp->detalles
-            ->filter(fn($det) => $det->concepto->base_cesantia)
+            ->filter(fn($det) => $det->concepto->base_prima)
             ->sum(function ($det) use ($periodo, $excludedTypes) {
                 if (in_array($det->concepto->tipo_concepto, $excludedTypes)) {
                     return 0;
@@ -396,17 +404,17 @@ class CesantiasInteresController extends Controller
             }));
     }
 
-    protected function calculateBenefits($base, $dias)
+    protected function calculatePrima($base, $dias)
     {
         $DIAS_YEAR = 360;
         $DIAS_MES = 30;
-        $PORCENTAJE_CESANTIAS = 12;
+        $DIAS_SEMESTRE = 180;
 
-        $promedio = $base ? ($base / $dias) * $DIAS_MES : 0;
-        $cesantias = (int) round($promedio * ($dias / $DIAS_YEAR));
-        $intereses = (int) round(($cesantias * $dias * ($PORCENTAJE_CESANTIAS / 100)) / $DIAS_YEAR);
+        $promedio = $dias > 0 ? ($base / $dias) * $DIAS_MES : 0;
+        $valor = round($dias * $promedio) / $DIAS_YEAR;
+        $diasPromedio = round(($dias * 15) / $DIAS_SEMESTRE);
 
-        return compact('promedio', 'cesantias', 'intereses');
+        return compact('promedio', 'valor', 'diasPromedio');
     }
 
 }

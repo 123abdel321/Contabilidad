@@ -403,6 +403,11 @@ function initTablesCausar() {
                 if (res.success) {
 
                     const dataPeriodo = res.data.length ? res.data[0].periodo_pago : null;
+                    if (!dataPeriodo) {
+                        agregarToast('info', 'Periodo sin detalles', 'El periodo no tiene detalles');
+                        return;
+                    }
+
                     if (dataPeriodo.empleado) {
                         $("#textPeriodoPagoDetalle").html(`${dataPeriodo.empleado.numero_documento} - ${dataPeriodo.empleado.nombre_completo}`);
                     }

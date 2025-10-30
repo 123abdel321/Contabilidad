@@ -132,7 +132,12 @@ class CausarProvicionadaController extends Controller
             $fecha = Carbon::parse($request->get('meses'), 'UTC')->addDay();
             $empleados = $this->getEmpleadosParaProvision($fecha);
             $configuraciones = $this->getConfiguracionesParafiscales();
-            $provisiones = $this->calcularParafiscalesParaEmpleados($empleados, $fecha, $configuraciones);
+
+            $provisiones = $this->calcularParafiscalesParaEmpleados(
+                $empleados,
+                $fecha,
+                $configuraciones
+            );
 
             return response()->json([
                 "success" => true,
@@ -273,7 +278,7 @@ class CausarProvicionadaController extends Controller
                 }
 
                 $idNitAdministradora = $this->getAdministradoraNitId($record->id_administradora);
-
+                
                 // Crear documentos contables
                 $this->createAccountingDocument(
                     $cuentaDebito,
@@ -303,10 +308,11 @@ class CausarProvicionadaController extends Controller
 
             if (!$this->documento->save()) {
                 DB::connection('sam')->rollback();
+
                 return response()->json([
                     "success" => false,
                     'data' => [],
-                    "message" => "Error al guardar documentos"
+                    "message" => $this->documento->getErrors()
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 

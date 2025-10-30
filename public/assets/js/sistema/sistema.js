@@ -144,6 +144,7 @@ var moduloCreado = {
     'reuniones': false,
     'impuesto': false,
     'cambiodatos': false,
+    'primas': false,
 };
 
 var moduloRoute = {
@@ -210,6 +211,7 @@ var moduloRoute = {
     'reuniones': 'configuracion',
     'impuesto': 'tablas',
     'cambiodatos': 'capturas',
+    'primas': 'capturas',
 }
 
 function iniciarCanalesDeNotificacion () {

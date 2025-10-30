@@ -6,6 +6,7 @@ use Carbon\CarbonImmutable;
 use App\Helpers\Nomina\Calculator\PeriodoPagoDetalleFactory;
 //MODELS
 use App\Models\Sistema\Nomina\NomPeriodos;
+use App\Models\Sistema\Nomina\NomConceptos;
 use App\Models\Sistema\Nomina\NomContratos;
 use App\Models\Sistema\Nomina\NomPeriodoPagos;
 
@@ -48,7 +49,7 @@ class CalcularPeriodo
             }
 
             // Procesar cada contrato
-            $query->chunk(200, function($contratos) use (&$periodoPagos, $fechaPeriodo) {
+            $query->chunk(233, function($contratos) use (&$periodoPagos, $fechaPeriodo) {
 
                 foreach ($contratos as $contrato) {
 
@@ -114,20 +115,29 @@ class CalcularPeriodo
 		$novedades = $periodoPago->novedades->sortBy(function($novedad, $key) {
 			return $novedad->concepto->id_concepto_porcentaje;
 		});
-        
-        foreach ($novedades as $novedad) {
-            if(count(explode("liquidacion/:",$novedad->observacion)) > 1) {
-				$periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleNovedadGeneralLiquidacion($novedad);
-			} else {
-				$periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleNovedadGeneral($contrato, $periodoPago, $novedad, $periodoPagoDetalles);
-			}
-        }
 
+        foreach ($novedades as $key => $novedad) {
+            if ($key == 1) {
+                if(count(explode("liquidacion/:",$novedad->observacion)) > 1) {
+                    $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleNovedadGeneralLiquidacion($novedad);
+                } else if ($novedad->concepto->codigo == NomConceptos::CODE_PRIMA) {
+                    $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetallePrima($novedad);
+                } else {
+                    $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleNovedadGeneral(
+                        $contrato,
+                        $periodoPago,
+                        $novedad,
+                        $periodoPagoDetalles
+                    );
+                }
+            }
+        }
+        
         $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleSalud($contrato, $periodoPago, $periodoPagoDetalles);
         $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetallePension($contrato, $periodoPago, $periodoPagoDetalles);
 
         $periodoPago->detalles()->saveMany($periodoPagoDetalles);
-        
+
         return $periodoPagoDetalles;
     }
 

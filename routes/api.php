@@ -52,7 +52,8 @@ use App\Http\Controllers\Capturas\CambiosDatosController;
 use App\Http\Controllers\Capturas\VentasGeneralesController;
 use App\Http\Controllers\Capturas\DocumentoGeneralController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
-
+//CAPTURAS -> NOMINA
+use App\Http\Controllers\Capturas\Nomina\PrimasController;
 use App\Http\Controllers\Capturas\Nomina\VacacionesController;
 use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
 use App\Http\Controllers\Capturas\Nomina\CesantiasInteresController;
@@ -524,6 +525,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('cesantias-intereses', 'create');
             Route::get('cesantias-intereses', 'generate');
             Route::get('cesantias-intereses-detalle', 'detalles');
+        });
+        //CAPTURA PRIMAS
+        Route::controller(PrimasController::class)->group(function () {
+            Route::post('primas', 'create');
+            Route::get('primas', 'generate');
+            Route::get('primas-detalle', 'detalles');
         });
         //CAPTURA NOVEDADES GENERALES
         Route::controller(NovedadesGeneralesController::class)->group(function () {
