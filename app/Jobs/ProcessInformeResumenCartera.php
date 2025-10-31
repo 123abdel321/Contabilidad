@@ -132,6 +132,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
         $query = $this->resumenCarteraQuery();
 
+
         $consulta = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
             ->mergeBindings($query)
@@ -147,14 +148,14 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 'cuenta',
                 'anulado',
                 'plazo',
-                'debito',
-                'credito',
-                'saldo_final',
-                'total_columnas',
+                DB::raw("SUM(debito) AS debito"),
+                DB::raw("SUM(credito) AS credito"),
+                DB::raw("SUM(debito) - SUM(credito) AS saldo_final"),
+                DB::raw("SUM(debito) - SUM(credito) AS saldo_final"),
                 DB::raw('DATEDIFF(NOW(), fecha_manual) - plazo AS dias_mora'),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos')
             )
-            
+            ->groupByRaw('id_nit, id_cuenta')
             ->orderByRaw('apartamentos')
         ->havingRaw('saldo_final != 0');
 
@@ -242,10 +243,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 "DG.documento_referencia",
                 "DG.fecha_manual",
                 "DG.anulado",
-                DB::raw("COUNT(DG.id) AS total_columnas"),
-                DB::raw("SUM(DG.debito) AS debito"),
-                DB::raw("SUM(DG.credito) AS credito"),
-                DB::raw("SUM(DG.debito) - SUM(DG.credito) AS saldo_final"),
+                "DG.debito",
+                "DG.credito"
             )
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
@@ -257,8 +256,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'].' 23:59:59');
 			})
             ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
-            ->where('anulado', 0)
-            ->groupByRaw('id_nit, id_cuenta, documento_referencia');
+            ->where('anulado', 0);
     }
 
     private function buscarCuenta($buscarCuenta)
