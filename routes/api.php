@@ -123,6 +123,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::prefix('pos')->controller(PosController::class)->group(function () {
             Route::get('validate', 'posValidate');
             Route::get('pedidos', 'pedidos');
+            Route::get('pedidos/{id}', 'findPedidos');
+            Route::get('pedidos/ubicacion/{id}', 'findUbicacionPedidos');
 
             Route::post('pedido', 'pedido');
             Route::post('venta', 'venta');

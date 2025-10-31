@@ -891,6 +891,69 @@ class PosController extends Controller
             ->showPdf();
     }
 
+    public function findPedidos(Request $request, $id)
+    {
+        try{
+
+        $pedido = FacPedidos::with('bodega', 'ubicacion', 'cliente', 'centro_costo', 'detalles', 'venta')
+            ->whereId($id)
+            ->first();
+
+        if(!$pedido) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'El pedido no existe'
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return response()->json([
+            'success'=>	true,
+            'data' => $pedido,
+            'message'=> 'Pedido cargado con exito!'
+        ], 200);
+
+        } catch (Exception $e) {
+
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public function findUbicacionPedidos(Request $request, $id)
+    {
+        try{
+
+        $ubicacion = Ubicacion::with(
+                'pedido.bodega',
+                'pedido.ubicacion',
+                'pedido.cliente',
+                'pedido.centro_costo',
+                'pedido.detalles',
+                'pedido.venta'
+            )
+            ->whereId($id)
+        ->first();
+
+        return response()->json([
+            'success'=>	true,
+            'data' => $ubicacion?->pedido,
+            'message'=> 'Pedido cargado desde la ubicación con exito!'
+        ], 200);
+
+        } catch (Exception $e) {
+
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
     private function createFacturaVenta ($request)
     {
         $this->calcularTotales($request->get('productos'));
