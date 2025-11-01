@@ -13,41 +13,81 @@
                 <form id="auxiliarInformeForm" style="margin-top: 10px;">
                     <div class="row">
                         <input name="id_auxiliar_cargado" id="id_auxiliar_cargado" class="form-control form-control-sm" type="text" style="display: none;">
-                        <div class="form-group col-12 col-sm-4 col-md-4">
-                            <label for="example-text-input" class="form-control-label">Fecha</label>
-                            <input name="fecha_manual_auxiliar" id="fecha_manual_auxiliar" class="form-control form-control-sm" require>
-                        </div>
-                        <div class="form-group col-12 col-sm-4 col-md-4">
-                            <label for="exampleFormControlSelect1" style=" width: 100%;">Cuenta</label>
-                            <select name="id_cuenta_auxiliar" id="id_cuenta_auxiliar" class="form-control form-control-sm">
-                                <option value="">Ninguna</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-12 col-sm-4 col-md-4">
-                            <label for="exampleFormControlSelect1" style=" width: 100%;">Nit</label>
+
+                        <div class="form-group col-12 col-sm-4 col-md-3">
+                            <label for="id_nit_auxiliar" style="width: 100%;">Nit</label>
                             <select class="form-control form-control-sm" name="id_nit_auxiliar" id="id_nit_auxiliar">
                                 <option value="">Ninguno</option>
                             </select>
                         </div>
-                        
-                    </div>  
-                    <div class="form-group col-12 col-sm-3 col-md-1" style="margin-left: 5px; display: none;">
-                        <div class="row">
-                            <div class="form-check col-12 col-sm-12 col-md-12" style="margin-left: 5px;">
-                                <input class="form-check-input" type="radio" name="tipo_documento" id="tipo_documento1" checked>
-                                <label class="form-check-label" for="tipo_documento1">
-                                    Todas
+
+                        <div class="form-group col-12 col-sm-4 col-md-3">
+                            <label for="id_cuenta_auxiliar" style="width: 100%;">Cuenta</label>
+                            <select name="id_cuenta_auxiliar" id="id_cuenta_auxiliar" class="form-control form-control-sm">
+                                <option value="">Ninguna</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-12 col-sm-4 col-md-2">
+                            <label for="fecha_manual_auxiliar" class="form-control-label">Fecha</label>
+                            <input name="fecha_manual_auxiliar" id="fecha_manual_auxiliar" class="form-control form-control-sm" required>
+                        </div>
+
+                        <div class="form-group col-12 col-sm-4 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                            <label class="form-control-label">Niveles</label>
+
+                            <div class="form-check col-12 col-md-12 col-sm-12" 
+                                style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="checkbox" name="niveles_auxiliar[]" id="nivel_auxiliar1" value="cuentas_padres" style="font-size: 11px;" checked>
+                                <label class="form-check-label" for="nivel_auxiliar1" style="font-size: 11px;">Cuentas Padre</label>
+                            </div>
+
+                            <div class="form-check col-12 col-md-12 col-sm-12" 
+                                style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="checkbox" name="niveles_auxiliar[]" id="nivel_auxiliar2" value="totales_nits" style="font-size: 11px;" checked>
+                                <label class="form-check-label" for="nivel_auxiliar2" style="font-size: 11px;">Totales Nit</label>
+                            </div>
+
+                            <div class="form-check col-12 col-md-12 col-sm-12" 
+                                style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="checkbox" name="niveles_auxiliar[]" id="nivel_auxiliar3" value="detalles_nits" style="font-size: 11px;" checked>
+                                <label class="form-check-label" for="nivel_auxiliar3" style="font-size: 11px;">Detalles Nit</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-12 col-sm-4 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                            <label for="example-text-input" class="form-control-label">Documentos</label>
+                            <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="errores_auxiliar" id="errores_auxiliar1" style="font-size: 11px;" checked>
+                                <label class="form-check-label" for="errores_auxiliar1" style="font-size: 11px;">
+                                    Todos
                                 </label>
                             </div>
-                            <div class="form-check col-12 col-sm-12 col-md-12" style="margin-left: 5px;">
-                                <input class="form-check-input" type="radio" name="tipo_documento" id="tipo_documento2">
-                                <label class="form-check-label" for="tipo_documento2">
-                                    Anuladas
+                            <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="errores_auxiliar" id="errores_auxiliar2" style="font-size: 11px;">
+                                <label class="form-check-label" for="errores_auxiliar2" style="font-size: 11px;">
+                                    Errores
                                 </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- OPCIONES DE TIPO DE DOCUMENTO (OCULTAS) -->
+                    <div class="form-group col-12 col-sm-3 col-md-1" style="margin-left: 5px; display: none;">
+                        <div class="row">
+                            <div class="form-check col-12" style="margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="tipo_documento" id="tipo_documento1" checked>
+                                <label class="form-check-label" for="tipo_documento1">Todas</label>
+                            </div>
+                            <div class="form-check col-12" style="margin-left: 5px;">
+                                <input class="form-check-input" type="radio" name="tipo_documento" id="tipo_documento2">
+                                <label class="form-check-label" for="tipo_documento2">Anuladas</label>
                             </div>
                         </div>
                     </div>
                 </form>
+
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
                     <span id="generarAuxiliar" href="javascript:void(0)" class="btn badge bg-gradient-primary btn-bg-gold" style="min-width: 40px; margin-right: 3px;">

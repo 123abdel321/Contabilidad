@@ -18,6 +18,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 //MODELS
+use App\Models\Informes\InfAuxiliar;
 use App\Models\Informes\InfAuxiliarDetalle;
 
 class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColumnFormatting, ShouldQueue
@@ -37,6 +38,7 @@ class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColu
 	{
 		return view('excel.auxiliar.auxiliar', [
 			'auxiliares' => InfAuxiliarDetalle::whereIdAuxiliar($this->id_auxiliar)->get(),
+            'auxiliar' => InfAuxiliar::whereId($this->id_auxiliar)->first(),
             'nombre_informe' => 'AUXILIAR',
             'nombre_empresa' => $this->empresa->razon_social,
             'logo_empresa' => $this->empresa->logo ?? 'https://app.portafolioerp.com/img/logo_contabilidad.png',
@@ -45,10 +47,10 @@ class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColu
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('5')->getFont()->setBold(true);
+        $sheet->getStyle('7')->getFont()->setBold(true);
 
         // Estilo para el nombre empresa
-        $sheet->mergeCells('B1:H1'); // Merges celdas para el título
+        $sheet->mergeCells('B1:H1');
         $sheet->getStyle('B1')->applyFromArray([
             'font' => [
                 'bold' => true,
@@ -61,7 +63,7 @@ class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColu
         ]);
 
         // Estilo para el título
-        $sheet->mergeCells('B2:H2'); // Merges celdas para el título
+        $sheet->mergeCells('B2:H2');
         $sheet->getStyle('B2')->applyFromArray([
             'font' => [
                 'bold' => true,
@@ -73,7 +75,7 @@ class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColu
             ],
         ]);
 
-        // Estilo para la fecha
+        // Estilo para la fecha de generación
         $sheet->mergeCells('B3:F3');
         $sheet->getStyle('B3')->applyFromArray([
             'font' => [
@@ -85,8 +87,38 @@ class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColu
             ],
         ]);
 
-        // Estilo para los encabezados (fila 4)
-        $sheet->getStyle('A5:L5')->applyFromArray([
+        // Estilo para los filtros
+        $sheet->mergeCells('B4:F4');
+        $sheet->getStyle('B4')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 12,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT,
+            ],
+        ]);
+
+        $sheet->getStyle('B5:F5')->applyFromArray([
+            'font' => [
+                'size' => 11,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT,
+            ],
+        ]);
+
+        $sheet->getStyle('B6:F6')->applyFromArray([
+            'font' => [
+                'size' => 11,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_LEFT,
+            ],
+        ]);
+
+        // Estilo para los encabezados (fila 7)
+        $sheet->getStyle('A7:L7')->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -102,9 +134,9 @@ class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColu
             ],
         ]);
 
-        // Aplica bordes finos a toda la tabla (desde la fila 5 en adelante)
+        // Aplica bordes finos a toda la tabla (desde la fila 7 en adelante)
         $highestRow = $sheet->getHighestRow();
-        $sheet->getStyle("A5:L{$highestRow}")->applyFromArray([
+        $sheet->getStyle("A7:L{$highestRow}")->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,

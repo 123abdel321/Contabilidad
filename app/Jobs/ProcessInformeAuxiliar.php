@@ -52,12 +52,28 @@ class ProcessInformeAuxiliar implements ShouldQueue
         DB::connection('informes')->beginTransaction();
         
         try {
-            
-            $this->addTotalNits();
-            $this->addTotalsData();
-            $this->addDetilsData();
-            $this->addTotalNitsData();
-            $this->addTotalsPadresData();
+
+            if ($this->request['errores']) {
+                $this->addTotalNitsData();
+            } else {
+                
+                $niveles = $this->request['niveles'] ?? [];
+                
+                if (in_array('detalles_nits', $niveles)) {
+                    $this->addDetilsData();
+                }
+
+                if (in_array('totales_nits', $niveles)) {
+                    $this->addTotalNitsData();
+                }
+
+                if (in_array('cuentas_padres', $niveles)) {
+                    $this->addTotalsPadresData();
+                }
+
+                $this->addTotalNits();
+                $this->addTotalsData();
+            }
             
             ksort($this->auxiliarCollection, SORT_STRING | SORT_FLAG_CASE);
             foreach (array_chunk($this->auxiliarCollection,233) as $auxiliarCollection){
@@ -373,12 +389,14 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 foreach ($documentos as $documento) {
                     $cuentaNumero = 1;
                     $cuentaNueva = "{$documento->cuenta}-{$documento->numero_documento}B{$documento->documento_referencia}B{$cuentaNumero}A";
+
                     while ($this->hasCuentaData($cuentaNueva)) {
                         $cuentaNumero++;
                         $cuentaNueva = "{$documento->cuenta}-{$documento->numero_documento}B{$documento->documento_referencia}B{$cuentaNumero}A";
                     }
 
                     $this->newCuentaTotalNitsData($cuentaNueva, $documento);
+
                 }
                 unset($documentos);//Liberar memoria
             });
@@ -521,7 +539,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             'id_cuenta' => $cuentaData->id,
             'cuenta' => $cuentaData->cuenta,
             'naturaleza_cuenta' => $cuentaData->naturaleza_cuenta,
-            'auxiliar' => $cuentaData->auxiliar,
+            'auxiliar' => '',
             'nombre_cuenta' => $cuentaData->nombre,
             'apartamento_nit' => '',
             'id_centro_costos' => '',
@@ -543,8 +561,8 @@ class ProcessInformeAuxiliar implements ShouldQueue
             'debito' => number_format((float)$auxiliar->debito, 2, '.', ''),
             'credito' => number_format((float)$auxiliar->credito, 2, '.', ''),
             'saldo_final' => number_format((float)$auxiliar->saldo_final, 2, '.', ''),
-            'detalle' => $detalle,
-            'detalle_group' => $detalleGroup,
+            'detalle' => '',
+            'detalle_group' => '',
         ];
     }
 
@@ -562,7 +580,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             'naturaleza_cuenta' => $documento->naturaleza_cuenta,
             'auxiliar' => '',
             'nombre_cuenta' => $documento->nombre_cuenta,
-            'documento_referencia' => $documento->documento_referencia,
+            'documento_referencia' => '',
             'saldo_anterior' => $documento->saldo_anterior,
             'id_centro_costos' => '',
             'id_comprobante' => '',
@@ -629,15 +647,15 @@ class ProcessInformeAuxiliar implements ShouldQueue
         $this->auxiliarCollection[$cuenta] = [
             'id_auxiliar' => $this->id_auxiliar,
             'id_nit' => $documento->id_nit,
-            'numero_documento' => $documento->numero_documento,
-            'nombre_nit' => $documento->nombre_nit,
+            'numero_documento' => '',
+            'nombre_nit' => '',
             'apartamento_nit' => $documento->apartamentos,
             'razon_social' => $documento->razon_social,
             'id_cuenta' => $documento->id_cuenta,
-            'cuenta' => $documento->cuenta,
+            'cuenta' => '',
             'naturaleza_cuenta' => $documento->naturaleza_cuenta,
             'auxiliar' => $documento->auxiliar,
-            'nombre_cuenta' => $documento->nombre_cuenta,
+            'nombre_cuenta' => '',
             'documento_referencia' => $documento->documento_referencia,
             'saldo_anterior' => $documento->saldo_anterior,
             'id_centro_costos' => $documento->id_centro_costos,
@@ -663,40 +681,65 @@ class ProcessInformeAuxiliar implements ShouldQueue
 
     private function newCuentaTotalNitsData($cuenta, $documento)
     {
-        $this->auxiliarCollection[$cuenta] = [
-            'id_auxiliar' => $this->id_auxiliar,
-            'id_nit' => $documento->id_nit,
-            'numero_documento' => $documento->numero_documento,
-            'nombre_nit' => $documento->nombre_nit,
-            'apartamento_nit' => $documento->apartamentos,
-            'razon_social' => $documento->razon_social,
-            'id_cuenta' => $documento->id_cuenta,
-            'cuenta' => $documento->cuenta,
-            'naturaleza_cuenta' => $documento->naturaleza_cuenta,
-            'auxiliar' => $documento->auxiliar,
-            'nombre_cuenta' => $documento->nombre_cuenta,
-            'documento_referencia' => $documento->documento_referencia,
-            'saldo_anterior' => $documento->saldo_anterior,
-            'id_centro_costos' => $documento->documento_referencia ? $documento->id_centro_costos : '',
-            'id_comprobante' => $documento->documento_referencia ? $documento->id_comprobante : '',
-            'codigo_comprobante' => $documento->documento_referencia ? $documento->codigo_comprobante : '',
-            'nombre_comprobante' => $documento->documento_referencia ? $documento->nombre_comprobante : '',
-            'codigo_cecos' => $documento->documento_referencia ? $documento->codigo_cecos : '',
-            'nombre_cecos' => $documento->documento_referencia ? $documento->nombre_cecos : '',
-            'consecutivo' => $documento->documento_referencia ? $documento->consecutivo : '',
-            'concepto' => $documento->documento_referencia ? $documento->concepto : '',
-            'fecha_manual' => $documento->documento_referencia ? $documento->fecha_manual : '',
-            'fecha_creacion' => $documento->documento_referencia ? $documento->fecha_creacion : NULL,
-            'fecha_edicion' => $documento->documento_referencia ? $documento->fecha_edicion : NULL,
-            'created_by' => $documento->documento_referencia ? $documento->created_by : NULL,
-            'updated_by' => $documento->documento_referencia ? $documento->updated_by : NULL,
-            // 'anulado' => $detalle[0]->documento_referencia ? $detalle[0]->anulado : '',
-            'debito' => $documento->debito,
-            'credito' => $documento->credito,
-            'saldo_final' => $documento->saldo_final,
-            'detalle' => false,
-            'detalle_group' => 'nits',
-        ];
+        $agregar = true;
+
+        if ($this->request['errores']) {
+            // Replicar exactamente la misma lógica de JavaScript
+            $naturaleza = $documento->naturaleza_cuenta;
+            $saldoFinal = intval($documento->saldo_final);
+            
+            // Primera condición: naturaleza 0 y saldo final negativo
+            if ($naturaleza == 0 && $saldoFinal < 0) {
+                $primerosDosDigitos = substr($documento->cuenta, 0, 2);
+                if ($primerosDosDigitos != '11') {
+                    $agregar = true;
+                }
+            } else if ($naturaleza == 1 && $saldoFinal > 0) {
+                $primerosDosDigitos = substr($documento->cuenta, 0, 2);
+                if ($primerosDosDigitos != '11') {
+                    $agregar = true;
+                }
+            } else {
+                $agregar = false;
+            }
+        }
+
+        if ($agregar) {
+            $this->auxiliarCollection[$cuenta] = [
+                'id_auxiliar' => $this->id_auxiliar,
+                'id_nit' => $documento->id_nit,
+                'numero_documento' => $documento->numero_documento,
+                'nombre_nit' => $documento->nombre_nit,
+                'apartamento_nit' => $documento->apartamentos,
+                'razon_social' => $documento->razon_social,
+                'id_cuenta' => $documento->id_cuenta,
+                'cuenta' => '',
+                'naturaleza_cuenta' => $documento->naturaleza_cuenta,
+                'auxiliar' => false,
+                'nombre_cuenta' => '',
+                'documento_referencia' => '',
+                'saldo_anterior' => $documento->saldo_anterior,
+                'id_centro_costos' => '',
+                'id_comprobante' => '',
+                'codigo_comprobante' => '',
+                'nombre_comprobante' => '',
+                'codigo_cecos' => '',
+                'nombre_cecos' => '',
+                'consecutivo' => '',
+                'concepto' => '',
+                'fecha_manual' =>'',
+                'fecha_creacion' =>'',
+                'fecha_edicion' => '',
+                'created_by' => '',
+                'updated_by' => '',
+                // 'anulado' => $detalle[0]->documento_referencia ? $detalle[0]->anulado : '',
+                'debito' => $documento->debito,
+                'credito' => $documento->credito,
+                'saldo_final' => $documento->saldo_final,
+                'detalle' => false,
+                'detalle_group' => 'nits',
+            ];
+        }
     }
 
     private function auxiliarDocumentosQuery($documento_referencia = NULL, $id_nit = NULL, $id_cuenta = NULL)

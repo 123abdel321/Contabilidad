@@ -80,16 +80,16 @@ function cargarTablasAuxiliar() {
             if(data.naturaleza_cuenta == 0 && parseInt(data.saldo_final) < 0 && data.detalle_group == 'nits') {
                 var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
                 if (cuenta != '11') {
-                    $('td', row).css('background-color', '#ff00004d');
-                    $('td', row).css('color', 'black');
+                    $('td', row).css('background-color', '#ff0000b9');
+                    $('td', row).css('font-weight', 'bold');
                     return;
                 }
             }
             if(data.naturaleza_cuenta == 1 && parseInt(data.saldo_final) > 0 && data.detalle_group == 'nits') {
                 var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
                 if (cuenta != '11') {
-                    $('td', row).css('background-color', '#ff00004d');
-                    $('td', row).css('color', 'black');
+                    $('td', row).css('background-color', '#ff00009c');
+                    $('td', row).css('font-weight', 'bold');
                     return;
                 }
             }
@@ -97,13 +97,13 @@ function cargarTablasAuxiliar() {
                 return;
             }
             if(data.detalle_group == 'nits-totales'){
-                $('td', row).css('background-color', '#9bd8e9ff');
+                $('td', row).css('background-color', '#1797c16e');
                 $('td', row).css('font-weight', '600');
                 return;
             }
             if(data.detalle_group == 'nits'){
-                $('td', row).css('background-color', '#9bd8e9ff');
-                $('td', row).css('font-weight', '600');
+                $('td', row).css('background-color', 'rgb(128 128 128 / 23%)');
+                $('td', row).css('font-weight', '500');
                 return;
             }
             if(data.cuenta == "TOTALES"){
@@ -131,8 +131,15 @@ function cargarTablasAuxiliar() {
                 return;
             }
             if(data.cuenta.length == 6){//
-                $('td', row).css('background-color', '#9bd8e9ff');
+                $('td', row).css('background-color', '#3d9dbdff');
                 $('td', row).css('font-weight', '600');
+                $('td', row).css('color', 'white');
+                return;
+            }
+            if(data.cuenta.length > 6){//
+                $('td', row).css('background-color', '#48b9dfff');
+                $('td', row).css('font-weight', '600');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.detalle == 0 && data.detalle_group == 0){
@@ -164,7 +171,10 @@ function cargarTablasAuxiliar() {
         },
         "columns": [
             {"data": function (row, type, set){
-                return row.cuenta + ' - ' +row.nombre_cuenta;
+                if (row.cuenta) {
+                    return row.cuenta + ' - ' +row.nombre_cuenta;
+                }
+                return '';
             }},
             {"data": function (row, type, set){
                 if(!row.numero_documento){
@@ -253,16 +263,22 @@ function cargarTablasAuxiliar() {
                 return row.concepto;
             }},
             {"data": function (row, type, set){  
-                var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
-                if(!row.created_by && !row.fecha_creacion) return '';
-                if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
-                return html;
+                if (row.auxiliar) {
+                    var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
+                    if(!row.created_by && !row.fecha_creacion) return '';
+                    if(!row.created_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_creacion+'</div>';
+                    return html;
+                }
+                return '';
             }},
             {"data": function (row, type, set){
-                var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
-                if(!row.updated_by && !row.fecha_edicion) return '';
-                if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
-                return html;
+                if (row.auxiliar) {
+                    var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                    if(!row.updated_by && !row.fecha_edicion) return '';
+                    if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
+                    return html;
+                }
+                return '';
             }},
         ]
     });
@@ -314,16 +330,22 @@ $(document).on('click', '#generarAuxiliar', function () {
 
     $(".cardTotalAuxiliar").css("background-color", "white");
 
-    $("#auxiliar_anterior").text('$0');
-    $("#auxiliar_debito").text('$0');
-    $("#auxiliar_credito").text('$0');
-    $("#auxiliar_diferencia").text('$0');
+    $("#auxiliar_anterior").text('0');
+    $("#auxiliar_debito").text('0');
+    $("#auxiliar_credito").text('0');
+    $("#auxiliar_diferencia").text('0');
 
     var url = base_url + 'auxiliares';
-    url+= '?fecha_desde='+$('#fecha_desde_auxiliar').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_auxiliar').val();
-    url+= '&id_cuenta='+$('#id_cuenta_auxiliar').val();
-    url+= '&generar='+generarAuxiliar;
+    url+= '?fecha_desde='+ $('#fecha_desde_auxiliar').val();
+    url+= '&fecha_hasta='+ $('#fecha_hasta_auxiliar').val();
+    url+= '&id_cuenta='+ $('#id_cuenta_auxiliar').val();
+    url+= '&errores='+ getErroresAuxiliar();
+    url+= '&generar='+ generarAuxiliar;
+
+    // Agregar niveles como parámetros múltiples
+    $('input[name="niveles_auxiliar[]"]:checked').each(function(index) {
+        url += '&niveles[]=' + this.value;
+    });
     
     auxiliar_table.ajax.url(url).load(function(res) {
         $("#generarAuxiliar").show();
@@ -406,12 +428,9 @@ function loadAuxiliarById(id_auxiliar) {
 
             $('#generarAuxiliarUltimo').hide();
             $('#generarAuxiliarUltimoLoading').hide();
+            
             if(res.descuadre) {
-                Swal.fire(
-                    'Auxiliar descuadrado',
-                    '',
-                    'warning'
-                );
+                agregarToast('warning', 'Auxiliar descuadrado', 'El libro auxiliar presenta diferencias en sus saldos. Esto puede deberse a: asientos incompletos, errores en digitación, o movimientos sin contrapartida. Revise detenidamente cada transacción.', false);
             } else {
                 agregarToast('exito', 'Auxiliar cargado', 'Informe cargado con exito!', true);
             }
@@ -425,15 +444,15 @@ function mostrarTotalesAuxiliar(data, filtros = false) {
         return;
     }
     if(!filtros && parseInt(data.saldo_anterior)){
-        cambiarColorTotales('#ff0000');
+        cambiarColorTotalesAuxiliares('#ff0000');
     } else if (!filtros && !parseInt(data.saldo_anterior)){
-        cambiarColorTotales('#0002ff');
+        cambiarColorTotalesAuxiliares('#0002ff');
     } else if (!filtros && parseInt(data.saldo_final)){
-        cambiarColorTotales('#ff0000');
+        cambiarColorTotalesAuxiliares('#ff0000');
     } else if (!filtros && !parseInt(data.saldo_final)) {
-        cambiarColorTotales('#0002ff');
+        cambiarColorTotalesAuxiliares('#0002ff');
     } else {
-        cambiarColorTotales('#0002ff');
+        cambiarColorTotalesAuxiliares('#0002ff');
     }
 
     $("#auxiliar_anterior").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_anterior));
@@ -442,7 +461,7 @@ function mostrarTotalesAuxiliar(data, filtros = false) {
     $("#auxiliar_diferencia").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_final));
 }
 
-function cambiarColorTotales(color) {
+function cambiarColorTotalesAuxiliares(color) {
     $('#auxiliar_anterior').css("color", color);
     $('#auxiliar_debito').css("color", color);
     $('#auxiliar_credito').css("color", color);
@@ -487,10 +506,14 @@ $(document).on('click', '#descargarExcelAuxiliar', function () {
     }).done((res) => {
         if(res.success){
             if(res.url_file){
-                window.open('https://'+res.url_file, "_blank");
-                return; 
+                setTimeout(function(){
+                    window.open('https://'+res.url_file, "_blank");
+                    agregarToast('info', 'Generando excel', res.message, true);
+                    return;
+                },1000);
+            } else {
+                agregarToast('info', 'Generando excel', res.message, true);
             }
-            agregarToast('info', 'Generando excel', res.message, true);
         }
     }).fail((err) => {
 
@@ -602,4 +625,11 @@ function formatNitAuxiliar (nit) {
 
 function formatRepoSelectionAuxiliar (nit) {
     return nit.full_name || nit.text;
+}
+
+function getErroresAuxiliar() {
+    if($("input[type='radio']#errores_auxiliar1").is(':checked')) return '';
+    if($("input[type='radio']#errores_auxiliar2").is(':checked')) return 1;
+
+    return '';
 }

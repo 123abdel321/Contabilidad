@@ -42,7 +42,7 @@ class AuxiliarController extends Controller
                     'message'=> 'Por favor ingresar un rango de fechas válido.'
                 ], Response::HTTP_NO_CONTENT);
             }
-    
+            
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
     
             $auxiliar = InfAuxiliar::where('id_empresa', $empresa->id)

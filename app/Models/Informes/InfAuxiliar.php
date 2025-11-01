@@ -5,6 +5,9 @@ namespace App\Models\Informes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+//MODELS
+use App\Models\Sistema\Nits;
+use App\Models\Sistema\PlanCuentas;
 
 class InfAuxiliar extends Model
 {
@@ -32,6 +35,17 @@ class InfAuxiliar extends Model
 
     public function detalle(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Informes\InfAuxiliarDetalle', 'id_auxiliar', 'id');
+        return $this->belongsToMany(InfAuxiliarDetalle::class, 'id_auxiliar', 'id');
     }
+
+    public function nit()
+    {
+        return $this->belongsTo(Nits::class, 'id_nit');
+	}
+
+    public function cuenta()
+    {
+        return $this->belongsTo(PlanCuentas::class, 'id_cuenta');
+	}
+
 }
