@@ -641,7 +641,7 @@ class VentaController extends Controller
                 "fecha_manual" => $value->fecha_manual,
                 "subtotal" => $value->subtotal,
                 "iva_porcentaje" => "",
-                "nombre_vendedor" => $value->id_vendedor ? $value->vendedor->nit?->nombre_completo : "",
+                "nombre_vendedor" => $value->vendedor && $value->vendedor->nit ? $value->vendedor->nit->nombre_completo : "",
                 "total_iva" => $value->total_iva,
                 "descuento_porcentaje" => "",
                 "total_descuento" => $value->total_descuento,
