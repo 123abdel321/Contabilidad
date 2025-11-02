@@ -652,10 +652,10 @@ class ProcessInformeAuxiliar implements ShouldQueue
             'apartamento_nit' => $documento->apartamentos,
             'razon_social' => $documento->razon_social,
             'id_cuenta' => $documento->id_cuenta,
-            'cuenta' => '',
+            'cuenta' => $documento->cuenta,
             'naturaleza_cuenta' => $documento->naturaleza_cuenta,
             'auxiliar' => $documento->auxiliar,
-            'nombre_cuenta' => '',
+            'nombre_cuenta' => $documento->nombre_cuenta,
             'documento_referencia' => $documento->documento_referencia,
             'saldo_anterior' => $documento->saldo_anterior,
             'id_centro_costos' => $documento->id_centro_costos,
@@ -682,8 +682,8 @@ class ProcessInformeAuxiliar implements ShouldQueue
     private function newCuentaTotalNitsData($cuenta, $documento)
     {
         $agregar = true;
-
         if ($this->request['errores']) {
+            $agregar = false;
             // Replicar exactamente la misma lógica de JavaScript
             $naturaleza = $documento->naturaleza_cuenta;
             $saldoFinal = intval($documento->saldo_final);
@@ -691,6 +691,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             // Primera condición: naturaleza 0 y saldo final negativo
             if ($naturaleza == 0 && $saldoFinal < 0) {
                 $primerosDosDigitos = substr($documento->cuenta, 0, 2);
+                
                 if ($primerosDosDigitos != '11') {
                     $agregar = true;
                 }
@@ -713,10 +714,10 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 'apartamento_nit' => $documento->apartamentos,
                 'razon_social' => $documento->razon_social,
                 'id_cuenta' => $documento->id_cuenta,
-                'cuenta' => '',
+                'cuenta' => $documento->cuenta,
                 'naturaleza_cuenta' => $documento->naturaleza_cuenta,
                 'auxiliar' => false,
-                'nombre_cuenta' => '',
+                'nombre_cuenta' => $documento->nombre_cuenta,
                 'documento_referencia' => '',
                 'saldo_anterior' => $documento->saldo_anterior,
                 'id_centro_costos' => '',
