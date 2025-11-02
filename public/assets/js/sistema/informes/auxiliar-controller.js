@@ -189,12 +189,6 @@ function cargarTablasAuxiliar() {
                 return html;
             }},
             { data: 'apartamento_nit'},
-            {"data": function (row, type, set){
-                if(!row.codigo_cecos){
-                    return '';
-                }
-                return row.codigo_cecos + ' - ' +row.nombre_cecos;
-            }},
             { data: 'documento_referencia'},
             { "data": function (row, type, set){
                 var saldo_anterior = parseFloat(row.saldo_anterior);
@@ -249,6 +243,12 @@ function cargarTablasAuxiliar() {
                     return '';
                 }
                 return row.consecutivo;
+            }},
+            {"data": function (row, type, set){
+                if(!row.codigo_cecos){
+                    return '';
+                }
+                return row.codigo_cecos + ' - ' +row.nombre_cecos;
             }},
             {"data": function (row, type, set){
                 if(!row.fecha_manual){

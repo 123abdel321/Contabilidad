@@ -4,7 +4,6 @@
             <th style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
             <th>Nit</th>
             <th>Ubicación</th>
-            <th>Centro costos</th>
             <th>Factura</th>
             <th>Saldo anterior</th>
             <th>Debito</th>
@@ -12,6 +11,7 @@
             <th>Saldo final</th>
             <th>Comprobante</th>
             <th>Consecutivo</th>
+            <th>Centro costos</th>
             <th>Fecha</th>
             <th>Concepto</th>
             <th>Creación registro</th>
