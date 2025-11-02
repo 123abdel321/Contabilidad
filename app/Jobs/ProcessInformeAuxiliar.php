@@ -66,13 +66,10 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 if (in_array('totales_nits', $niveles)) {
                     $this->addTotalNitsData();
                 }
-
-                if (in_array('cuentas_padres', $niveles)) {
-                    $this->addTotalsPadresData();
-                }
-
+                
                 $this->addTotalNits();
                 $this->addTotalsData();
+                $this->addTotalsPadresData();
             }
             
             ksort($this->auxiliarCollection, SORT_STRING | SORT_FLAG_CASE);
@@ -517,12 +514,13 @@ class ProcessInformeAuxiliar implements ShouldQueue
     {
         $detalle = false;
         $detalleGroup = false;
+        $countCuentas = count($cuentasAsociadas);
 
         if(strlen($cuenta) >= strlen($cuentasAsociadas[count($cuentasAsociadas)-1])){
             $detalle = true;
         }
-
-        if(strlen($cuenta) >= strlen($cuentasAsociadas[count($cuentasAsociadas)-2])){
+        
+        if($countCuentas > 1 && strlen($cuenta) >= strlen($cuentasAsociadas[count($cuentasAsociadas)-2])){
             $detalleGroup = true;
         }
         
@@ -530,6 +528,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
         if(!$cuentaData){
             return;
         }
+        
         $this->auxiliarCollection[$cuenta] = [
             'id_auxiliar' => $this->id_auxiliar,
             'id_nit' => '',
@@ -880,6 +879,12 @@ class ProcessInformeAuxiliar implements ShouldQueue
     private function getCuentas($cuenta)
     {
         $dataCuentas = NULL;
+        $niveles = $this->request['niveles'] ?? [];
+        if (!in_array('cuentas_padres', $niveles)) {
+            return [
+                $cuenta,
+            ]; 
+        }
 
         if(strlen($cuenta) > 6){
             $dataCuentas =[
