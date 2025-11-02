@@ -718,7 +718,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 'naturaleza_cuenta' => $documento->naturaleza_cuenta,
                 'auxiliar' => false,
                 'nombre_cuenta' => $documento->nombre_cuenta,
-                'documento_referencia' => '',
+                'documento_referencia' => $documento->documento_referencia,
                 'saldo_anterior' => $documento->saldo_anterior,
                 'id_centro_costos' => '',
                 'id_comprobante' => '',
