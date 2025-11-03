@@ -54,7 +54,8 @@ class AuxiliarPdf extends AbstractPrinterPdf
 			'empresa' => $this->empresa,
 			'auxiliares' => InfAuxiliarDetalle::where('id_auxiliar', $this->id_auxiliar)->get(),
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
-			'usuario' => request()->user()->username
+			// 'usuario' => request()->user()->username
+			'usuario' => 'Portafolio ERP'
 		];
     }
 }
