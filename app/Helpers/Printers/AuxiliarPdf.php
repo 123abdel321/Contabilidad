@@ -5,6 +5,7 @@ namespace App\Helpers\Printers;
 use Illuminate\Support\Carbon;
 //MODELS
 use App\Models\Empresas\Empresa;
+use App\Models\Informes\InfAuxiliarDetalle;
 
 class AuxiliarPdf extends AbstractPrinterPdf
 {
