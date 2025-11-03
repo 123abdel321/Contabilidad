@@ -82,6 +82,7 @@ function cargarTablasAuxiliar() {
                 if (cuenta != '11') {
                     $('td', row).css('background-color', '#ff0000b9');
                     $('td', row).css('font-weight', 'bold');
+                    $('td', row).css('color', 'white');
                     return;
                 }
             }
@@ -90,6 +91,7 @@ function cargarTablasAuxiliar() {
                 if (cuenta != '11') {
                     $('td', row).css('background-color', '#ff00009c');
                     $('td', row).css('font-weight', 'bold');
+                    $('td', row).css('color', 'white');
                     return;
                 }
             }
@@ -428,9 +430,12 @@ function loadAuxiliarById(id_auxiliar) {
 
             $('#generarAuxiliarUltimo').hide();
             $('#generarAuxiliarUltimoLoading').hide();
+
+            const id_cuenta = $('#id_cuenta_auxiliar').val()
+            const id_nit = $('#id_nit_auxiliar').val()
             
-            if(res.descuadre) {
-                agregarToast('warning', 'Auxiliar descuadrado', 'El libro auxiliar presenta diferencias en sus saldos. Esto puede deberse a: asientos incompletos, errores en digitación, o movimientos sin contrapartida. Revise detenidamente cada transacción.', false);
+            if(res.descuadre && !id_cuenta && !id_nit) {
+                agregarToast('warning', 'Auxiliar descuadrado', 'Existen documentos descuadrados. Consulta los detalles en Informes → Estadísticas generales.', false);
             } else {
                 agregarToast('exito', 'Auxiliar cargado', 'Informe cargado con exito!', true);
             }
