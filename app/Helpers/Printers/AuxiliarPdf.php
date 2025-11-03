@@ -10,16 +10,17 @@ class AuxiliarPdf extends AbstractPrinterPdf
 {
     public $detalles;
 	public $empresa;
+	public $id_auxiliar;
 
-    public function __construct(Empresa $empresa, $detalle)
+    public function __construct($id_auxiliar, Empresa $empresa)
 	{
 		parent::__construct($empresa);
 
 		copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $empresa->token_db);
 
-		$this->detalles = $detalle;
 		$this->empresa = $empresa;
+		$this->id_auxiliar = $id_auxiliar;
 	}
 
     public function view()
@@ -47,9 +48,10 @@ class AuxiliarPdf extends AbstractPrinterPdf
 
     public function data()
     {
+
         return [
 			'empresa' => $this->empresa,
-			'auxiliares' => $this->detalles,
+			'auxiliares' => InfAuxiliarDetalle::where('id_auxiliar', $this->id_auxiliar)->get(),
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user()->username
 		];

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeAuxiliar;
 use App\Helpers\Printers\AuxiliarPdf;
+use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -21,6 +22,18 @@ use App\Models\Informes\InfAuxiliarDetalle;
 class AuxiliarController extends Controller
 {
     public $auxiliarCollection = [];
+
+    public function __construct()
+	{
+		$this->messages = [
+            'required' => 'El campo :attribute es requerido.',
+            'exists' => 'El :attribute es inválido.',
+            'numeric' => 'El campo :attribute debe ser un valor numérico.',
+            'string' => 'El campo :attribute debe ser texto',
+            'array' => 'El campo :attribute debe ser un arreglo.',
+            'date' => 'El campo :attribute debe ser una fecha válida.',
+        ];
+	}
 
     public function index ()
     {
@@ -280,9 +293,9 @@ class AuxiliarController extends Controller
 	{
         try {
 
-            $detalle = InfAuxiliarDetalle::where('id_auxiliar', $id)->get();
+            $auxiliar = InfAuxiliar::where('id', $id)->first();
 
-            if(!count($detalle)) {
+            if(!$auxiliar) {
                 return response()->json([
                     'success'=>	false,
                     'data' => [],
@@ -293,7 +306,7 @@ class AuxiliarController extends Controller
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
             // $data = (new AuxiliarPdf($empresa, $detalle))->buildPdf()->getData();
             // return view('pdf.informes.auxiliar.auxiliar', $data);
-            return (new AuxiliarPdf($empresa, $detalle))
+            return (new AuxiliarPdf($empresa, $id))
                 ->buildPdf()
                 ->showPdf();
 
