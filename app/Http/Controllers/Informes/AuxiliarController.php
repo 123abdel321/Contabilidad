@@ -306,7 +306,7 @@ class AuxiliarController extends Controller
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
             // $data = (new AuxiliarPdf($empresa, $detalle))->buildPdf()->getData();
             // return view('pdf.informes.auxiliar.auxiliar', $data);
-            return (new AuxiliarPdf($empresa, $id))
+            return (new AuxiliarPdf($id, $empresa))
                 ->buildPdf()
                 ->showPdf();
 
