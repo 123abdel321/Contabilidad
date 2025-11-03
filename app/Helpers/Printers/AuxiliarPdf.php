@@ -9,7 +9,6 @@ use App\Models\Informes\InfAuxiliarDetalle;
 
 class AuxiliarPdf extends AbstractPrinterPdf
 {
-    public $detalles;
 	public $empresa;
 	public $id_auxiliar;
 

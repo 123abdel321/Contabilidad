@@ -9,8 +9,10 @@ use App\Exports\BalanceExport;
 use App\Events\PrivateMessageEvent;
 use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
-use App\Jobs\ProcessInformeBalance;
 use App\Helpers\Printers\BalancePdf;
+//JOBS
+use App\Jobs\ProcessInformeBalance;
+use App\Jobs\GenerateBalancePdfJob;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -282,26 +284,38 @@ class BalanceController extends Controller
         }
     }
 
-    public function showPdf(Request $request, $id)
+    public function showPdf(Request $request)
 	{
-        $detalle = InfBalanceDetalle::where('id_balance', $id)->get();
+        try {
+            $balance = InfBalance::where('id', $request->get('id'))->get();
 
-		if(!count($detalle)) {
-			return response()->json([
-				'success'=>	false,
-				'data' => [],
-				'message'=> 'El balance no existe'
-			], 422);
-		}
+            if(!count($balance)) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'El balance no existe'
+                ], 422);
+            }
 
-		$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+            $user_id = $request->user()->id;
+            $has_empresa = $request->user()['has_empresa'];
 
-		// $data = (new BalancePdf($empresa, $detalle))->buildPdf()->getData();
-		// return view('pdf.informes.balance.balance', $data);
+            GenerateBalancePdfJob::dispatch($request->get('id'), $user_id, $has_empresa);
 
-        return (new BalancePdf($empresa, $detalle))
-            ->buildPdf()
-            ->showPdf();
+            return response()->json([
+                'success'=> true,
+                'data' => [],
+                'message'=> 'Generando PDF... Te notificaremos cuando esté listo.'
+            ], 202);
+
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
 	}
 
 }

@@ -167,6 +167,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('balances', 'App\Http\Controllers\Informes\BalanceController@generate');
         Route::get('balances-show', 'App\Http\Controllers\Informes\BalanceController@show');
         Route::get('balances-find', 'App\Http\Controllers\Informes\BalanceController@find');
+        Route::post('balances-pdf', 'App\Http\Controllers\Informes\BalanceController@showPdf');
         Route::post('balances-excel', 'App\Http\Controllers\Informes\BalanceController@exportExcel');
         //AUXILIAR
         Route::get('auxiliares', 'App\Http\Controllers\Informes\AuxiliarController@generate');
@@ -178,6 +179,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('cartera', 'App\Http\Controllers\Informes\CarteraController@generate');
         Route::get('cartera-show', 'App\Http\Controllers\Informes\CarteraController@show');
         Route::get('cartera-find', 'App\Http\Controllers\Informes\CarteraController@find');
+        Route::post('cartera-pdf', 'App\Http\Controllers\Informes\CarteraController@showPdf');
         Route::post('cartera-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
         //CARTERA
         Route::controller(ImpuestosController::class)->group(function () {

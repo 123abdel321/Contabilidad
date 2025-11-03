@@ -94,7 +94,7 @@ function balanceInit() {
                 $('td', row).css('color', 'white');
                 return;
             }
-            if (data.auxiliar) {
+            if (data.balance) {
                 return;
             }
             if(data.balance){//
@@ -130,7 +130,7 @@ function balanceInit() {
                 $('td', row).css('font-weight', '600');
                 return;
             }
-            if (!data.auxiliar) {
+            if (!data.balance) {
                 $('td', row).css('background-color', 'rgb(33 35 41 / 10%)');
                 $('td', row).css('font-weight', '700');
                 return;
@@ -151,19 +151,19 @@ function balanceInit() {
         },
         "columns": [
             {"data": function (row, type, set){
-                if(row.cuenta && row.auxiliar != 5){
+                if(row.cuenta && row.balance != 5){
                     return row.cuenta;
                 }
                 return '';
             }},
             {"data": function (row, type, set){
-                if(row.cuenta && row.auxiliar != 5){
+                if(row.cuenta && row.balance != 5){
                     return row.nombre_cuenta;
                 }
                 return '';
             }},
             {"data": function (row, type, set){
-                if(row.cuenta && row.auxiliar == 5){
+                if(row.cuenta && row.balance == 5){
                     return row.cuenta +' - '+ row.nombre_cuenta;
                 }
                 return '';
@@ -305,15 +305,31 @@ function generarConsultaBalance() {
 }
 
 channelBalance.bind('notificaciones', function(data) {
-    if(data.url_file){
-        loadExcel(data);
-        return;
-    }
+
     if(data.id_balance){
         $('#id_balance_cargado').val(data.id_balance);
         loadBalanceById(data.id_balance);
         return;
     }
+
+    if(data.url_file){
+        $("#descargarExcelBalance").show();
+        $("#descargarExcelBalanceLoading").hide();
+        $("#descargarExcelBalanceDisabled").hide();
+
+        loadExcel(data);
+        return;
+    }
+
+    if (data.url_file_pdf) {
+        $("#descargarPdfBalance").show();
+        $("#descargarPdfBalanceLoading").hide();
+        $("#descargarPdfBalanceDisabled").hide();
+
+        loadPdf(data);
+        return;
+    }
+
     if(data.tipo == 'error'){
         console.log('data: ',data);
     }
@@ -354,15 +370,15 @@ function mostrarTotalesBalance(data, filtros = false) {
         return;
     }
     if(!filtros && parseInt(data.saldo_anterior)){
-        cambiarColorTotales('#ff0000');
+        cambiarColorTotalesBalance('#ff0000');
     } else if (!filtros && !parseInt(data.saldo_anterior)){
-        cambiarColorTotales('#0002ff');
+        cambiarColorTotalesBalance('#0002ff');
     } else if (!filtros && parseInt(data.saldo_final)){
-        cambiarColorTotales('#ff0000');
+        cambiarColorTotalesBalance('#ff0000');
     } else if (!filtros && !parseInt(data.saldo_final)) {
-        cambiarColorTotales('#0002ff');
+        cambiarColorTotalesBalance('#0002ff');
     } else {
-        cambiarColorTotales('#0002ff');
+        cambiarColorTotalesBalance('#0002ff');
     }
 
     $("#balance_anterior").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_anterior));
@@ -371,7 +387,7 @@ function mostrarTotalesBalance(data, filtros = false) {
     $("#balance_diferencia").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.saldo_final));
 }
 
-function cambiarColorTotales(color) {
+function cambiarColorTotalesBalance(color) {
     $('#balance_anterior').css("color", color);
     $('#balance_debito').css("color", color);
     $('#balance_credito').css("color", color);
@@ -442,14 +458,44 @@ $(document).on('click', '#descargarExcelBalance', function () {
 });
 
 $(document).on('click', '#descargarPdfBalance', function () {
-    var id_balance = $('#id_balance_cargado').val();
-    if (id_balance) {
-        window.open(base_web+'balance-pdf/'+id_balance, "_blank");
-    } else {
-        $("#descargarPdfBalance").hide();
-        $("#descargarPdfBalanceDisabled").show();
-        agregarToast('error', 'Error al generar pdf', 'No se ha encontrado el id del informe');
-    }
+
+    $("#descargarPdfBalance").hide();
+    $("#descargarPdfBalanceLoading").show();
+    $("#descargarPdfBalanceDisabled").hide();
+
+    $.ajax({
+        url: base_url + 'balances-pdf',
+        method: 'POST',
+        data: JSON.stringify({id: $('#id_balance_cargado').val()}),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            if(res.url_file){
+
+                $("#descargarPdfBalance").show();
+                $("#descargarPdfBalanceLoading").hide();
+                $("#descargarPdfBalanceDisabled").hide();
+
+                setTimeout(function(){
+                    window.open('https://'+res.url_file, "_blank");
+                    agregarToast('info', 'Generando pdf', res.message, true);
+                    return;
+                },1000);
+            } else {
+                agregarToast('info', 'Generando pdf', res.message, true);
+            }
+        }
+    }).fail((err) => {
+
+        $("#descargarPdfBalance").show();
+        $("#descargarPdfBalanceLoading").hide();
+        $("#descargarPdfBalanceDisabled").hide();
+
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Error al generar pdf', errorsMsg);
+    });
 });
 
 $(document).on('click', '#generarBalanceUltimo', function () {

@@ -314,7 +314,7 @@ class AuxiliarController extends Controller
                 'success'=> true,
                 'data' => [],
                 'message'=> 'Generando PDF... Te notificaremos cuando esté listo.'
-            ], 202); // 202 Accepted
+            ], 202);
 
         } catch (Exception $e) {
             return response()->json([
