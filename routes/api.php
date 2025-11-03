@@ -172,6 +172,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('auxiliares', 'App\Http\Controllers\Informes\AuxiliarController@generate');
         Route::get('auxiliares-show', 'App\Http\Controllers\Informes\AuxiliarController@show');
         Route::get('auxiliares-find', 'App\Http\Controllers\Informes\AuxiliarController@find');
+        Route::post('auxiliares-pdf', 'App\Http\Controllers\Informes\AuxiliarController@showPdf');
         Route::post('auxiliares-excel', 'App\Http\Controllers\Informes\AuxiliarController@exportExcel');
         //CARTERA
         Route::get('cartera', 'App\Http\Controllers\Informes\CarteraController@generate');

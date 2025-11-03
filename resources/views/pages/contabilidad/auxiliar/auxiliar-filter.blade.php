@@ -117,6 +117,10 @@
                         <i class="fas fa-file-pdf" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">&nbsp;PDF</b>
                     </span>
+                    <span id="descargarPdfAuxiliarLoading" class="badge bg-gradient-info btn-bg-danger-loading" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;PDF</b>
+                    </span>
                     <span id="descargarPdfAuxiliarDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">&nbsp;PDF</b>

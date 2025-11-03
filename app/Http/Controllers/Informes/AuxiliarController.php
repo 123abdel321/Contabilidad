@@ -9,9 +9,11 @@ use App\Exports\AuxiliarExport;
 use App\Events\PrivateMessageEvent;
 use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
-use App\Jobs\ProcessInformeAuxiliar;
 use App\Helpers\Printers\AuxiliarPdf;
 use Illuminate\Support\Facades\Validator;
+//JOBS
+use App\Jobs\ProcessInformeAuxiliar;
+use App\Jobs\GenerateAuxiliarPdfJob;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -289,34 +291,38 @@ class AuxiliarController extends Controller
         }
     }
 
-    public function showPdf(Request $request, $id)
-	{
+    public function showPdf(Request $request)
+    {
         try {
-
-            $auxiliar = InfAuxiliar::where('id', $id)->first();
+            $auxiliar = InfAuxiliar::where('id', $request->get('id'))->first();
 
             if(!$auxiliar) {
                 return response()->json([
-                    'success'=>	false,
+                    'success'=> false,
                     'data' => [],
                     'message'=> 'El auxiliar no existe'
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                ], 422);
             }
 
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-            // $data = (new AuxiliarPdf($empresa, $detalle))->buildPdf()->getData();
-            // return view('pdf.informes.auxiliar.auxiliar', $data);
-            return (new AuxiliarPdf($id, $empresa))
-                ->buildPdf()
-                ->showPdf();
+            $user_id = $request->user()->id;
+            $has_empresa = $request->user()['has_empresa'];
+
+            GenerateAuxiliarPdfJob::dispatch($request->get('id'), $user_id, $has_empresa);
+
+            return response()->json([
+                'success'=> true,
+                'data' => [],
+                'message'=> 'Generando PDF... Te notificaremos cuando esté listo.'
+            ], 202); // 202 Accepted
 
         } catch (Exception $e) {
             return response()->json([
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            ], 422);
         }
-	}
+    }
 
 }

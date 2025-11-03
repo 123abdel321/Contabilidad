@@ -13,7 +13,7 @@ class AuxiliarPdf extends AbstractPrinterPdf
 	public $empresa;
 	public $id_auxiliar;
 
-    public function __construct($id_auxiliar, Empresa $empresa)
+    public function __construct(Empresa $empresa, $id_auxiliar)
 	{
 		parent::__construct($empresa);
 

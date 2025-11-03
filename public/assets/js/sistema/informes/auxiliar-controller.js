@@ -404,7 +404,17 @@ channelInformeAuxiliar.bind('notificaciones', function(data) {
         $("#descargarExcelAuxiliar").show();
         $("#descargarExcelAuxiliarLoading").hide();
         $("#descargarExcelAuxiliarDisabled").hide();
+        
         loadExcel(data);
+        return;
+    }
+
+    if (data.url_file_pdf) {
+        $("#descargarPdfAuxiliar").show();
+        $("#descargarPdfAuxiliarLoading").hide();
+        $("#descargarPdfAuxiliarDisabled").hide();
+
+        loadPdf(data);
         return;
     }
 
@@ -511,6 +521,11 @@ $(document).on('click', '#descargarExcelAuxiliar', function () {
     }).done((res) => {
         if(res.success){
             if(res.url_file){
+
+                $("#descargarExcelAuxiliar").show();
+                $("#descargarExcelAuxiliarLoading").hide();
+                $("#descargarExcelAuxiliarDisabled").hide();
+
                 setTimeout(function(){
                     window.open('https://'+res.url_file, "_blank");
                     agregarToast('info', 'Generando excel', res.message, true);
@@ -533,14 +548,44 @@ $(document).on('click', '#descargarExcelAuxiliar', function () {
 });
 
 $(document).on('click', '#descargarPdfAuxiliar', function () {
-    var id_auxiliar = $('#id_auxiliar_cargado').val();
-    if (id_auxiliar) {
-        window.open(base_web+'auxiliar-pdf/'+id_auxiliar, "_blank");
-    } else {
-        $("#descargarPdfAuxiliar").hide();
-        $("#descargarPdfAuxiliarDisabled").show();
-        agregarToast('error', 'Error al generar pdf', 'No se ha encontrado el id del informe');
-    }
+
+    $("#descargarPdfAuxiliar").hide();
+    $("#descargarPdfAuxiliarLoading").show();
+    $("#descargarPdfAuxiliarDisabled").hide();
+
+    $.ajax({
+        url: base_url + 'auxiliares-pdf',
+        method: 'POST',
+        data: JSON.stringify({id: $('#id_auxiliar_cargado').val()}),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            if(res.url_file){
+
+                $("#descargarPdfAuxiliar").show();
+                $("#descargarPdfAuxiliarLoading").hide();
+                $("#descargarPdfAuxiliarDisabled").hide();
+
+                setTimeout(function(){
+                    window.open('https://'+res.url_file, "_blank");
+                    agregarToast('info', 'Generando pdf', res.message, true);
+                    return;
+                },1000);
+            } else {
+                agregarToast('info', 'Generando pdf', res.message, true);
+            }
+        }
+    }).fail((err) => {
+
+        $("#descargarPdfAuxiliar").show();
+        $("#descargarPdfAuxiliarLoading").hide();
+        $("#descargarPdfAuxiliarDisabled").hide();
+
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Error al generar pdf', errorsMsg);
+    });
 });
 
 $(document).on('click', '#generarAuxiliarUltimo', function () {
