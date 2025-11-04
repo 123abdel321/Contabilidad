@@ -41,7 +41,7 @@ class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColu
             'auxiliar' => InfAuxiliar::whereId($this->id_auxiliar)->first(),
             'nombre_informe' => 'AUXILIAR',
             'nombre_empresa' => $this->empresa->razon_social,
-            'logo_empresa' => $this->empresa->logo ?? 'https://app.portafolioerp.com/img/logo_contabilidad.png',
+            'logo_empresa' => $this->empresa->logo ? $this->empresa->logo: 'https://app.portafolioerp.com/img/logo_contabilidad.png',
 		]);
 	}
 

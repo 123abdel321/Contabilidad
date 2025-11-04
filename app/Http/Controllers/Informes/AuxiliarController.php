@@ -319,11 +319,7 @@ class AuxiliarController extends Controller
                     'message'=> ''
                 ]);
             }
-
-            $fileName = 'export/auxiliar_'.uniqid().'.pdf';
-            $url = $fileName;
-
-            $auxiliar->exporta_pdf = 1;
+            // $auxiliar->exporta_pdf = 1;
             $auxiliar->save();
 
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();

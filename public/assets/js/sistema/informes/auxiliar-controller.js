@@ -396,7 +396,7 @@ channelInformeAuxiliar.bind('notificaciones', function(data) {
 
         $('#generarAuxiliarUltimo').hide();
         $('#generarAuxiliarUltimoLoading').hide();
-        agregarToast('error', 'Error al cargar informe de auxiliar', data.mensaje, false);
+        agregarToast('error', 'Error al cargar informe de auxiliar', data.mensaje);
         return;
     }
 

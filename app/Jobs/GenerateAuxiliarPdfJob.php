@@ -18,9 +18,6 @@ class GenerateAuxiliarPdfJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 1;
-    public $timeout = 600; // 5 minutos
-
     public function __construct(
         public int $id_auxiliar,
         public int $user_id,
@@ -31,7 +28,7 @@ class GenerateAuxiliarPdfJob implements ShouldQueue
     public function handle()
     {
         try {
-
+            
             $empresa = Empresa::where('token_db', $this->has_empresa)->first();
 
             copyDBConnection('sam', 'sam');
@@ -45,7 +42,7 @@ class GenerateAuxiliarPdfJob implements ShouldQueue
                 ->buildPdf()
                 ->saveStorage();
 
-            $urlFile = "porfaolioerpbucket.nyc3.digitaloceanspaces.com{$auxiliarPdf}";
+            $urlFile = "porfaolioerpbucket.nyc3.digitaloceanspaces.com/{$auxiliarPdf}";
 
             $this->auxiliar->exporta_pdf = 2;
             $this->auxiliar->archivo_pdf = $urlFile;

@@ -48,7 +48,7 @@ class GenerateBalancePdfJob implements ShouldQueue
                 'tipo' => 'exito',
                 'mensaje' => 'PDF de Balance generado con éxito!',
                 'titulo' => 'PDF generado',
-                'url_file_pdf' => "porfaolioerpbucket.nyc3.digitaloceanspaces.com{$balancePdf}",
+                'url_file_pdf' => "porfaolioerpbucket.nyc3.digitaloceanspaces.com/{$balancePdf}",
                 'autoclose' => false
             ]));
 

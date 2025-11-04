@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Printers;
 use Illuminate\Support\Facades\Storage;
+use PDF; // Agregamos el Facade PDF para que esté disponible en las clases hijas
 //MODELS
 use App\Models\Empresas\Empresa;
 
@@ -13,7 +14,9 @@ abstract class AbstractPrinterPdf
     public $name;
     public $data;
     public $url;
-    public $pdf;
+    
+    // **NUEVO:** Almacenará el contenido binario del PDF (ya sea de Dompdf o Snappy)
+    public $pdf_binary_content; 
 
     abstract public function view();
     abstract public function data();
@@ -38,36 +41,42 @@ abstract class AbstractPrinterPdf
         return $this;
     }
 
+    /**
+     * Versión DOMPDF por defecto. Las clases hijas que necesiten 
+     * rendimiento deben SOBREESCRIBIR este método usando Snappy.
+     */
     public function generatePdf()
     {
-        $this->pdf = app('dompdf.wrapper');
-        $this->pdf->loadView($this->view, $this->data);
-        $this->pdf->setPaper($this->formato, $this->paper);
+        // Esta es la implementación LENTA (Dompdf)
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView($this->view, $this->data);
+        $pdf->setPaper($this->formato, $this->paper);
+        
+        // Almacenamos el binario para que saveStorage pueda usarlo
+        $this->pdf_binary_content = $pdf->output(); 
     }
 
-    public function getPdf()
-	{
-		if (!$this->pdf) $this->imprimir();
-
-		return $this->pdf->output();
-	}
-
-    public function showPdf()
-    {
-        return $this->pdf->stream($this->name);
-    }
+    // Eliminamos getPdf y showPdf ya que ahora usamos el contenido binario
 
     public function getData()
     {
         return $this->data;
     }
 
+    /**
+     * Utilizamos el contenido binario almacenado para guardar el archivo.
+     */
     public function saveStorage()
     {
-        $pdfBuilder = $this->pdf->output();
-        $nameFile = "/pdf/{$this->name}.pdf";
+        if (empty($this->pdf_binary_content)) {
+            throw new \Exception('El contenido binario del PDF está vacío. Asegúrate de llamar a buildPdf() primero.');
+        }
 
-        $url = Storage::disk('do_spaces')->put($nameFile, $pdfBuilder, 'public');
+        $pdfBuilder = $this->pdf_binary_content;
+        $nameFile = "export/{$this->name}.pdf"; // Cambiado a 'export/' para que coincida con tu Job
+
+        // Asumimos que 'do_spaces' es tu disco configurado (DigitalOcean Spaces).
+        Storage::disk('do_spaces')->put($nameFile, $pdfBuilder, 'public');
 
         return $nameFile;
     }
