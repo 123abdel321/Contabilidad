@@ -32,6 +32,9 @@ class GenerateBalancePdfJob implements ShouldQueue
         try {
 
             $empresa = Empresa::where('token_db', $this->has_empresa)->first();
+
+            copyDBConnection('sam', 'sam');
+            setDBInConnection('sam', $empresa->token_db);
             
             if (!$empresa) {
                 throw new \Exception('Empresa no encontrada');
