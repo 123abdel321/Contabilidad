@@ -210,7 +210,7 @@ return [
                 'maxProcesses' => 2,
                 'memory' => 512,
                 'tries' => 1,
-                'timeout' => 500,
+                'timeout' => 600,
                 'nice' => 10,
             ],
             'supervisor-pdfs' => [
@@ -220,7 +220,7 @@ return [
                 'maxProcesses' => 1,
                 'memory' => 1024,
                 'tries' => 1,
-                'timeout' => 900,
+                'timeout' => 600,
             ],
         ],
 
