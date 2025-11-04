@@ -47,13 +47,57 @@ abstract class AbstractPrinterPdf
      */
     public function generatePdf()
     {
-        // Esta es la implementación LENTA (Dompdf)
-        $pdf = app('dompdf.wrapper');
-        $pdf->loadView($this->view, $this->data);
-        $pdf->setPaper($this->formato, $this->paper);
+        try {
+            // 1. Renderizar el HTML de la vista
+            $html = view($this->view(), $this->data())->render();
+            
+            // 2. Limpiar HTML de posibles problemas (opcional)
+            $html = $this->cleanHtmlForPdf($html);
+
+            // 3. Usar Snappy para generar el PDF
+            $pdf = PDF::loadHTML($html)
+                ->setPaper($this->formatPaper(), $this->paper())
+                ->setOption('enable-local-file-access', true)
+                ->setOption('no-stop-slow-scripts', true)
+                ->setOption('load-error-handling', 'ignore')
+                ->setOption('load-media-error-handling', 'ignore')
+                ->setOption('orientation', 'landscape')
+                ->setOption('page-size', 'A4')
+                ->setOption('encoding', 'UTF-8');
+
+            // 4. Almacenar el contenido binario
+            $this->pdf_binary_content = $pdf->output();
+            
+        } catch (\Exception $e) {
+            // Fallback: intentar con menos opciones si falla
+            $html = view($this->view(), $this->data())->render();
+            
+            $pdf = PDF::loadHTML($html)
+                ->setPaper($this->formatPaper(), $this->paper())
+                ->setOption('enable-local-file-access', true)
+                ->setOption('load-error-handling', 'ignore');
+                
+            $this->pdf_binary_content = $pdf->output();
+        }
+    }
+
+    private function cleanHtmlForPdf($html)
+    {
+        // Remover tags problemáticas que puedan causar el error "about:blank"
+        $html = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $html);
+        $html = preg_replace('/<link\b[^>]*>/is', '', $html);
+        $html = preg_replace('/<meta[^>]*>/is', '', $html);
         
-        // Almacenamos el binario para que saveStorage pueda usarlo
-        $this->pdf_binary_content = $pdf->output(); 
+        // Asegurar que las imágenes tengan URLs absolutas
+        if (isset($this->empresa->logo)) {
+            $html = str_replace(
+                'src="' . $this->empresa->logo . '"',
+                'src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/' . $this->empresa->logo . '"',
+                $html
+            );
+        }
+        
+        return $html;
     }
 
     // Eliminamos getPdf y showPdf ya que ahora usamos el contenido binario
