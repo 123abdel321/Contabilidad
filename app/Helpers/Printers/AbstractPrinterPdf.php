@@ -57,6 +57,10 @@ abstract class AbstractPrinterPdf
     }
 
     // Eliminamos getPdf y showPdf ya que ahora usamos el contenido binario
+    public function showPdf()
+    {
+        return $this->pdf->stream($this->name);
+    }
 
     public function getData()
     {
