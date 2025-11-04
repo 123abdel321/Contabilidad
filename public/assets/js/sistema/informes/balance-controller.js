@@ -101,13 +101,13 @@ function balanceInit() {
                 $('td', row).css('background-color', 'rgb(64 164 209 / 10%)');
                 return;
             }
-            if(data.cuenta.length == 1){//
+            if(data.cuenta && data.cuenta.length == 1){//
                 $('td', row).css('background-color', 'rgb(33 35 41)');
                 $('td', row).css('font-weight', '700');
                 $('td', row).css('color', 'white');
                 return;
             }
-            if(data.cuenta.length == 2){//
+            if(data.cuenta && data.cuenta.length == 2){//
                 if (getNivel() == 1) {
                     return;
                 }
@@ -116,7 +116,7 @@ function balanceInit() {
                 $('td', row).css('color', 'white');
                 return;
             }
-            if(data.cuenta.length == 4){//
+            if(data.cuenta && data.cuenta.length == 4){//
                 if (getNivel() == 2) {
                     return;
                 }
@@ -125,7 +125,7 @@ function balanceInit() {
                 $('td', row).css('color', 'white');
                 return;
             }
-            if(data.cuenta.length == 6){//
+            if(data.cuenta && data.cuenta.length == 6){//
                 $('td', row).css('background-color', '#9bd8e9ff');
                 $('td', row).css('font-weight', '600');
                 return;
