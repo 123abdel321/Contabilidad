@@ -110,16 +110,28 @@ Route::get('/', function () {
 	return view('pages.landing-page');
 });
 
-Route::get('/test-pdf', function() {
+// En routes/web.php
+Route::get('/test-auxiliar-pdf', function() {
     try {
-        $html = '<h1>Test PDF</h1><p>This is a test</p>';
+        // Simular los datos que usas en tu vista
+        $data = [
+            'empresa' => \App\Models\Empresas\Empresa::first(),
+            'auxiliares' => \App\Models\Informes\InfAuxiliarDetalle::limit(10)->get(),
+            'fecha_pdf' => now()->format('Y-m-d H:i:s'),
+            'usuario' => 'Usuario Test'
+        ];
+        
+        $html = view('pdf.informes.auxiliar.auxiliar', $data)->render();
         
         $pdf = PDF::loadHTML($html)
             ->setOption('enable-local-file-access', true)
             ->setOption('no-stop-slow-scripts', true)
-            ->setPaper('a4', 'landscape');
+            ->setOption('load-error-handling', 'ignore')
+            ->setOption('load-media-error-handling', 'ignore')
+            ->setOption('orientation', 'landscape')
+            ->setOption('page-size', 'A4');
             
-        return $pdf->download('test.pdf');
+        return $pdf->download('test-auxiliar.pdf');
         
     } catch (\Exception $e) {
         dd("Error: " . $e->getMessage());

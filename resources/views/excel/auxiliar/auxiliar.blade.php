@@ -1,100 +1,234 @@
 <html>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        /* Estilos compatibles con wkhtmltopdf */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 10px;
+        }
+        
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .header-table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+        
+        .logo-cell {
+            width: 120px;
+            text-align: center;
+            vertical-align: middle !important;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+        
+        .data-table th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 8px 4px;
+            text-align: left;
+            border: 1px solid #34495e;
+            font-weight: bold;
+        }
+        
+        .data-table td {
+            padding: 6px 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .empresa-nombre {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .informe-nombre {
+            font-size: 16px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .fecha-info {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        
+        .filtros {
+            font-size: 11px;
+            background-color: #ecf0f1;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        /* Colores para diferentes niveles */
+        .nivel-0 { background-color: #000000; color: white; font-weight: bold; }
+        .nivel-1 { background-color: #2c3e50; color: white; font-weight: bold; }
+        .nivel-2 { background-color: #34495e; color: white; font-weight: bold; }
+        .nivel-4 { background-color: #2980b9; color: white; font-weight: 600; }
+        .nivel-6 { background-color: #3498db; color: white; font-weight: 600; }
+        .nivel-8 { background-color: #5dade2; color: white; font-weight: 600; }
+        
+        .grupo-nits { background-color: #d4d4d4; font-weight: 500; }
+        .grupo-totales { background-color: #1797c1; font-weight: 600; color: white; }
+        .total-final { background-color: #000000; font-weight: bold; color: white; }
+        
+        /* Estados de saldo */
+        .saldo-alerta { background-color: #ff6666; font-weight: bold; }
+        .saldo-normal { background-color: #ffffff; }
+        
+        .numero {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .texto-centro {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
 
-    <table>
+    <!-- Encabezado mejorado -->
+    <table class="header-table">
         <tr>
-            <td rowspan="4" style="vertical-align: middle; align-items: center; text-align: center;">
-                <img src="{{ $logo_empresa }}" width="100" />
+            <td class="logo-cell" rowspan="4">
+                <img src="{{ $logo_empresa }}" width="80" style="max-width: 80px;" />
             </td>
-            <td style="font-size: 25px; font-weight: bold;">{{ $nombre_empresa }}</td>
+            <td class="empresa-nombre">{{ $nombre_empresa }}</td>
         </tr>
         <tr>
-            <td style="font-size: 20px; font-weight: bold;">{{ $nombre_informe }}</td>
+            <td class="informe-nombre">{{ $nombre_informe }}</td>
         </tr>
         <tr>
-            <td style="font-size: 14px;">Fecha de generación: {{ \Carbon\Carbon::now()->format('Y-m-d H:i') }}</td>
+            <td class="fecha-info">
+                <strong>Fecha generación:</strong> {{ \Carbon\Carbon::now()->format('Y-m-d H:i') }} | 
+                <strong>Usuario:</strong> {{ $usuario ?? 'Sistema' }}
+            </td>
         </tr>
         <tr>
-            <td style="font-size: 14px; font-weight: bold;">Filtros aplicados:</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td style="font-size: 12px;">
-                <strong>Fecha desde:</strong> {{ $auxiliar->fecha_desde ?? 'No especificado' }} | 
-                <strong>Fecha hasta:</strong> {{ $auxiliar->fecha_hasta ?? 'No especificado' }} | 
-                <strong>Nit:</strong> {{ $auxiliar->nit ? $auxiliar->nit->numero_documento . ' - ' . ($auxiliar->nit->nombre_completo ?? $auxiliar->nit->nombre) : 'Todos los nits' }} | 
-                <strong>Cuenta:</strong> {{ $auxiliar->cuenta ? $auxiliar->cuenta->cuenta . ' - ' . ($auxiliar->cuenta->nombre ?? $auxiliar->cuenta->nombre_cuenta) : 'Todas las cuentas' }}
+            <td>
+                <div class="filtros">
+                    <strong>FILTROS APLICADOS:</strong><br>
+                    <strong>Fecha:</strong> {{ $auxiliar->fecha_desde ?? 'No especificado' }} al {{ $auxiliar->fecha_hasta ?? 'No especificado' }} | 
+                    <strong>Nit:</strong> {{ $auxiliar->nit ? $auxiliar->nit->numero_documento . ' - ' . ($auxiliar->nit->nombre_completo ?? $auxiliar->nit->nombre) : 'Todos' }} | 
+                    <strong>Cuenta:</strong> {{ $auxiliar->cuenta ? $auxiliar->cuenta->cuenta . ' - ' . ($auxiliar->cuenta->nombre ?? $auxiliar->cuenta->nombre_cuenta) : 'Todas' }}
+                </div>
             </td>
         </tr>
     </table>
 
-	<table>
-		<thead>
+    <!-- Tabla de datos -->
+    <table class="data-table">
+        <thead>
             <tr>
-                <th>Cuenta</th>
-                <th>Nit</th>
-                <th>Centro costos</th>
-                <th>Dcto refe</th>
-                <th>Saldo anterior</th>
-                <th>Debito</th>
-                <th>Credito</th>
-                <th>Saldo final</th>
-                <th>Comprobante</th>
-                <th>Consecutivo</th>
-                <th>Fecha</th>
-                <th>Concepto</th>
+                <th width="12%">Cuenta</th>
+                <th width="15%">Nit</th>
+                <th width="10%">Centro Costos</th>
+                <th width="8%">Doc. Ref.</th>
+                <th width="8%" class="numero">Saldo Anterior</th>
+                <th width="8%" class="numero">Débito</th>
+                <th width="8%" class="numero">Crédito</th>
+                <th width="8%" class="numero">Saldo Final</th>
+                <th width="8%">Comprobante</th>
+                <th width="6%">Consecutivo</th>
+                <th width="7%">Fecha</th>
+                <th width="12%">Concepto</th>
             </tr>
-		</thead>
-		<tbody>
-		@foreach($auxiliares as $auxiliarItem)
-            <tr>
-                @if($auxiliarItem->naturaleza_cuenta == 0 && intval($auxiliarItem->saldo_final) < 0 && $auxiliarItem->detalle_group == 'nits')
-                    @php
-                        $primerosDos = substr($auxiliarItem->cuenta, 0, 2);
-                    @endphp
-                    @if($primerosDos != '11')
-                        @include('excel.auxiliar.celdas', ['style' => 'background-color: #ff6666; font-weight: bold;', 'auxiliar' => $auxiliarItem])
-                    @else
-                        @include('excel.auxiliar.celdas', ['style' => 'background-color: #FFF;', 'auxiliar' => $auxiliarItem])
+        </thead>
+        <tbody>
+        @foreach($auxiliares as $auxiliarItem)
+            @php
+                $claseFila = 'saldo-normal';
+                $claseNumero = 'numero';
+                
+                // Determinar la clase según el tipo de registro
+                if($auxiliarItem->detalle_group == 'nits-totales') {
+                    $claseFila = 'grupo-totales';
+                } elseif($auxiliarItem->detalle_group == 'nits') {
+                    $claseFila = 'grupo-nits';
+                } elseif($auxiliarItem->cuenta == 'TOTALES') {
+                    $claseFila = 'total-final';
+                } elseif(strlen($auxiliarItem->cuenta) == 1) {
+                    $claseFila = 'nivel-0';
+                } elseif(strlen($auxiliarItem->cuenta) == 2) {
+                    $claseFila = 'nivel-1';
+                } elseif(strlen($auxiliarItem->cuenta) == 4) {
+                    $claseFila = 'nivel-4';
+                } elseif(strlen($auxiliarItem->cuenta) == 6) {
+                    $claseFila = 'nivel-6';
+                } elseif(strlen($auxiliarItem->cuenta) > 6) {
+                    $claseFila = 'nivel-8';
+                }
+                
+                // Validación de saldos problemáticos
+                if($auxiliarItem->naturaleza_cuenta == 0 && intval($auxiliarItem->saldo_final) < 0 && $auxiliarItem->detalle_group == 'nits') {
+                    $primerosDos = substr($auxiliarItem->cuenta, 0, 2);
+                    if($primerosDos != '11') {
+                        $claseFila = 'saldo-alerta';
+                    }
+                } elseif($auxiliarItem->naturaleza_cuenta == 1 && intval($auxiliarItem->saldo_final) > 0 && $auxiliarItem->detalle_group == 'nits') {
+                    $primerosDos = substr($auxiliarItem->cuenta, 0, 2);
+                    if($primerosDos != '11') {
+                        $claseFila = 'saldo-alerta';
+                    }
+                }
+            @endphp
+            
+            <tr class="{{ $claseFila }}">
+                <td>{{ $auxiliarItem->cuenta }} 
+                    @if($auxiliarItem->nombre_cuenta && $auxiliarItem->cuenta != 'TOTALES')
+                    - {{ $auxiliarItem->nombre_cuenta }}
                     @endif
-                @elseif($auxiliarItem->naturaleza_cuenta == 1 && intval($auxiliarItem->saldo_final) > 0 && $auxiliarItem->detalle_group == 'nits')
-                    @php
-                        $primerosDos = substr($auxiliarItem->cuenta, 0, 2);
-                    @endphp
-                    @if($primerosDos != '11')
-                        @include('excel.auxiliar.celdas', ['style' => 'background-color: #ff8585; font-weight: bold;', 'auxiliar' => $auxiliarItem])
-                    @else
-                        @include('excel.auxiliar.celdas', ['style' => 'background-color: #FFF;', 'auxiliar' => $auxiliarItem])
+                </td>
+                <td>
+                    @if($auxiliarItem->numero_documento)
+                        {{ $auxiliarItem->numero_documento }} - 
+                        {{ $auxiliarItem->razon_social ?? $auxiliarItem->nombre_nit ?? '' }}
                     @endif
-                @elseif($auxiliarItem->auxiliar)
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #FFF;', 'auxiliar' => $auxiliarItem])
-                @elseif($auxiliarItem->detalle_group == 'nits-totales')
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #1797c1; font-weight: 600;', 'auxiliar' => $auxiliarItem])
-                @elseif($auxiliarItem->detalle_group == 'nits')
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #d4d4d4; font-weight: 500;', 'auxiliar' => $auxiliarItem])
-                @elseif($auxiliarItem->cuenta == 'TOTALES')
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #000000; font-weight: bold; color: white;', 'auxiliar' => $auxiliarItem])
-                @elseif(strlen($auxiliarItem->cuenta) == 1)
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #212329; font-weight: bold; color: white;', 'auxiliar' => $auxiliarItem])
-                @elseif(strlen($auxiliarItem->cuenta) == 2)
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #292b32; font-weight: bold; color: white;', 'auxiliar' => $auxiliarItem])
-                @elseif(strlen($auxiliarItem->cuenta) == 4)
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #33849e; font-weight: 600; color: white;', 'auxiliar' => $auxiliarItem])
-                @elseif(strlen($auxiliarItem->cuenta) == 6)
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #3d9dbd; font-weight: 600; color: white;', 'auxiliar' => $auxiliarItem])
-                @elseif(strlen($auxiliarItem->cuenta) > 6)
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #48b9df; font-weight: 600; color: white;', 'auxiliar' => $auxiliarItem])
-                @elseif($auxiliarItem->detalle == 0 && $auxiliarItem->detalle_group == 0)
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #FFFFFF;', 'auxiliar' => $auxiliarItem])
-                @elseif($auxiliarItem->detalle_group && !$auxiliarItem->detalle)
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #9bd8e9; font-weight: 600;', 'auxiliar' => $auxiliarItem])
-                @elseif($auxiliarItem->detalle)
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #9bd8e9; font-weight: 600;', 'auxiliar' => $auxiliarItem])
-                @else
-                    @include('excel.auxiliar.celdas', ['style' => 'background-color: #FFFFFF;', 'auxiliar' => $auxiliarItem])
-                @endif
+                </td>
+                <td class="texto-centro">
+                    @if($auxiliarItem->codigo_cecos)
+                        {{ $auxiliarItem->codigo_cecos }}
+                    @endif
+                </td>
+                <td class="texto-centro">{{ $auxiliarItem->documento_referencia }}</td>
+                <td class="{{ $claseNumero }}">{{ number_format($auxiliarItem->saldo_anterior, 2) }}</td>
+                <td class="{{ $claseNumero }}">{{ number_format($auxiliarItem->debito, 2) }}</td>
+                <td class="{{ $claseNumero }}">{{ number_format($auxiliarItem->credito, 2) }}</td>
+                <td class="{{ $claseNumero }}">{{ number_format($auxiliarItem->saldo_final, 2) }}</td>
+                <td class="texto-centro">
+                    @if($auxiliarItem->codigo_comprobante)
+                        {{ $auxiliarItem->codigo_comprobante }}
+                    @endif
+                </td>
+                <td class="texto-centro">{{ $auxiliarItem->consecutivo }}</td>
+                <td class="texto-centro">
+                    @if($auxiliarItem->fecha_manual)
+                        {{ \Carbon\Carbon::parse($auxiliarItem->fecha_manual)->format('d/m/Y') }}
+                    @endif
+                </td>
+                <td>{{ $auxiliarItem->concepto }}</td>
             </tr>
         @endforeach
-		</tbody>
-	</table>
+        </tbody>
+    </table>
+
+    <!-- Pie de página -->
+    <div style="margin-top: 20px; font-size: 10px; color: #7f8c8d; text-align: center; border-top: 1px solid #bdc3c7; padding-top: 10px;">
+        Generado el {{ \Carbon\Carbon::now()->format('Y-m-d H:i:s') }} | 
+        Página 1 de 1
+    </div>
+
+</body>
 </html>
