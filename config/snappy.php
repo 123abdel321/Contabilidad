@@ -35,18 +35,29 @@ return [
     
     'pdf' => [
         'enabled' => true,
-        'binary'  => env('WKHTML_PDF_BINARY', '/usr/local/bin/wkhtmltopdf'),
-        'timeout' => false,
-        'options' => [],
-        'env'     => [],
+        'binary' => '/usr/local/bin/wkhtmltopdf',
+        'timeout' => 120,
+        'options' => [
+            'enable-local-file-access' => true,
+            'no-stop-slow-scripts' => true,
+            'load-error-handling' => 'ignore', 
+            'load-media-error-handling' => 'ignore',
+            'disable-javascript' => true,
+            'images' => true,
+            'disable-smart-shrinking' => true,
+            'dpi' => 96,
+        ],
+        'env' => [],
     ],
     
     'image' => [
         'enabled' => true,
-        'binary'  => env('WKHTML_IMG_BINARY', '/usr/local/bin/wkhtmltoimage'),
-        'timeout' => false,
-        'options' => [],
-        'env'     => [],
+        'binary' => '/usr/local/bin/wkhtmltoimage',
+        'timeout' => 120,
+        'options' => [
+            'enable-local-file-access' => true,
+        ],
+        'env' => [],
     ],
 
 ];
