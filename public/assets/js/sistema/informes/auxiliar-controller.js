@@ -560,13 +560,13 @@ $(document).on('click', '#descargarPdfAuxiliar', function () {
         headers: headers,
         dataType: 'json',
     }).done((res) => {
+        
+        $("#descargarPdfAuxiliar").show();
+        $("#descargarPdfAuxiliarLoading").hide();
+        $("#descargarPdfAuxiliarDisabled").hide();
+
         if(res.success){
             if(res.url_file){
-
-                $("#descargarPdfAuxiliar").show();
-                $("#descargarPdfAuxiliarLoading").hide();
-                $("#descargarPdfAuxiliarDisabled").hide();
-
                 setTimeout(function(){
                     window.open('https://'+res.url_file, "_blank");
                     agregarToast('info', 'Generando pdf', res.message, true);
