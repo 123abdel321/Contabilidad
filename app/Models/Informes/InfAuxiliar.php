@@ -27,6 +27,8 @@ class InfAuxiliar extends Model
         'estado',
         'exporta_excel',
         'archivo_excel',
+        'exporta_pdf',
+        'archivo_pdf',
         'created_by',
         'updated_by',
         'created_at',

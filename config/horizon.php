@@ -213,6 +213,15 @@ return [
                 'timeout' => 500,
                 'nice' => 10,
             ],
+            'supervisor-pdfs' => [
+                'connection' => 'redis',
+                'queue' => ['pdfs'],
+                'balance' => 'simple',
+                'maxProcesses' => 1,
+                'memory' => 1024,
+                'tries' => 1,
+                'timeout' => 900,
+            ],
         ],
 
         'local' => [

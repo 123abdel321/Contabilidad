@@ -296,7 +296,7 @@ class AuxiliarController extends Controller
         try {
             $auxiliar = InfAuxiliar::where('id', $request->get('id'))->first();
 
-            if(!$auxiliar) {
+            if (!$auxiliar) {
                 return response()->json([
                     'success'=> false,
                     'data' => [],
@@ -304,11 +304,38 @@ class AuxiliarController extends Controller
                 ], 422);
             }
 
+            if($auxiliar && $auxiliar->exporta_pdf == 1) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => '',
+                    'message'=> 'Actualmente se esta generando el pdf de auxiliar'
+                ]);
+            }
+
+            if($auxiliar && $auxiliar->exporta_pdf == 2) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => $auxiliar->archivo_pdf,
+                    'message'=> ''
+                ]);
+            }
+
+            $fileName = 'export/auxiliar_'.uniqid().'.pdf';
+            $url = $fileName;
+
+            $auxiliar->exporta_pdf = 1;
+            $auxiliar->save();
+
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
             $user_id = $request->user()->id;
             $has_empresa = $request->user()['has_empresa'];
 
-            GenerateAuxiliarPdfJob::dispatch($request->get('id'), $user_id, $has_empresa);
+            GenerateAuxiliarPdfJob::dispatch(
+                $request->get('id'),
+                $user_id,
+                $has_empresa,
+                $auxiliar
+            )->onQueue('pdfs');
 
             return response()->json([
                 'success'=> true,
