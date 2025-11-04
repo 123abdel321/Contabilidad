@@ -59,7 +59,14 @@ abstract class AbstractPrinterPdf
     // Eliminamos getPdf y showPdf ya que ahora usamos el contenido binario
     public function showPdf()
     {
-        return $this->pdf->stream($this->name);
+        if (empty($this->pdf_binary_content)) {
+            throw new \Exception('El contenido binario del PDF está vacío. Asegúrate de llamar a buildPdf() primero.');
+        }
+
+        // Devolvemos una respuesta con el contenido binario para mostrar en el navegador
+        return response($this->pdf_binary_content)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="' . $this->name . '.pdf"');
     }
 
     public function getData()
