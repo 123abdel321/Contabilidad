@@ -31,17 +31,73 @@ class AuxiliarPdf extends AbstractPrinterPdf
      */
     public function generatePdf()
     {
-        // 1. Renderizar el HTML de la vista
-        $html = view($this->view(), $this->data())->render();
+        try {
+            // 1. Renderizar el HTML de la vista
+            $html = view($this->view(), $this->data())->render();
+            
+            // 2. Limpiar HTML de posibles problemas
+            $html = $this->cleanHtmlForPdf($html);
 
-        // 2. Usar Snappy para generar el PDF (MUCHO más rápido)
-        // Usamos las propiedades de papel definidas en los métodos abstractos
-        $pdf = PDF::loadHTML($html)
-            ->setPaper($this->formatPaper(), $this->paper());
+            // 3. Usar Snappy para generar el PDF con TODAS las opciones necesarias
+            $pdf = PDF::loadHTML($html)
+                ->setPaper($this->formatPaper(), $this->paper())
+                ->setOption('enable-local-file-access', true)
+                ->setOption('no-stop-slow-scripts', true)
+                ->setOption('load-error-handling', 'ignore')
+                ->setOption('load-media-error-handling', 'ignore')
+                ->setOption('javascript-delay', 5000)
+                ->setOption('images', true)
+                ->setOption('disable-external-links', false)
+                ->setOption('disable-internal-links', false)
+                ->setOption('disable-javascript', false)
+                ->setOption('dpi', 300)
+                ->setOption('margin-top', 10)
+                ->setOption('margin-right', 10)
+                ->setOption('margin-bottom', 20)
+                ->setOption('margin-left', 10)
+                ->setOption('encoding', 'UTF-8')
+                ->setOption('orientation', 'landscape')
+                ->setOption('page-size', 'A4');
 
-        // 3. Almacenar el contenido binario en la propiedad de la clase Abstracta
-        // La clase AbstractPrinterPdf ahora tiene $this->pdf_binary_content y el método saveStorage
-        $this->pdf_binary_content = $pdf->output();
+            // 4. Almacenar el contenido binario
+            $this->pdf_binary_content = $pdf->output();
+            
+        } catch (\Exception $e) {
+            // Fallback: intentar con menos opciones si falla
+            \Log::error("Error generando PDF: " . $e->getMessage());
+            
+            $html = view($this->view(), $this->data())->render();
+            $html = $this->cleanHtmlForPdf($html);
+            
+            $pdf = PDF::loadHTML($html)
+                ->setPaper($this->formatPaper(), $this->paper())
+                ->setOption('enable-local-file-access', true)
+                ->setOption('load-error-handling', 'ignore')
+                ->setOption('load-media-error-handling', 'ignore')
+                ->setOption('orientation', 'landscape')
+                ->setOption('page-size', 'A4');
+                
+            $this->pdf_binary_content = $pdf->output();
+        }
+    }
+
+     private function cleanHtmlForPdf($html)
+    {
+        // Remover tags problemáticas que puedan causar el error "about:blank"
+        $html = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $html);
+        $html = preg_replace('/<link\b[^>]*>/is', '', $html);
+        $html = preg_replace('/<meta[^>]*>/is', '', $html);
+        
+        // Asegurar que las imágenes tengan URLs absolutas
+        if (isset($this->empresa->logo)) {
+            $html = str_replace(
+                'src="' . $this->empresa->logo . '"',
+                'src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/' . $this->empresa->logo . '"',
+                $html
+            );
+        }
+        
+        return $html;
     }
 
     public function view()
@@ -56,8 +112,6 @@ class AuxiliarPdf extends AbstractPrinterPdf
 
     public function paper()
     {
-        // Retorna solo 'landscape'
-        // Eliminé los 'return' redundantes que estaban comentados/sin usar
         return 'landscape'; 
     }
 
