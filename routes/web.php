@@ -110,6 +110,22 @@ Route::get('/', function () {
 	return view('pages.landing-page');
 });
 
+Route::get('/test-pdf', function() {
+    try {
+        $html = '<h1>Test PDF</h1><p>This is a test</p>';
+        
+        $pdf = PDF::loadHTML($html)
+            ->setOption('enable-local-file-access', true)
+            ->setOption('no-stop-slow-scripts', true)
+            ->setPaper('a4', 'landscape');
+            
+        return $pdf->download('test.pdf');
+        
+    } catch (\Exception $e) {
+        dd("Error: " . $e->getMessage());
+    }
+});
+
 Auth::routes();
 
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
