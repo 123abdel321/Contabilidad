@@ -335,7 +335,7 @@ class AuxiliarController extends Controller
                 $user_id,
                 $has_empresa,
                 $auxiliar
-            )->onQueue('pdfs');
+            )->onQueue('long-running');
 
             return response()->json([
                 'success'=> true,
