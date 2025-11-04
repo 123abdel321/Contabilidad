@@ -193,11 +193,7 @@
                                 </td>
                                 
                                 <td class="logo padding5">
-                                    @if ($empresa->logo)
-                                        <img style="height:70px;" src="{{ $empresa->logo }}">
-                                    @else
-                                        <img style="height:70px;" src="https://app.portafolioerp.com/img/logo_contabilidad.png">
-                                    @endif
+                                    LOGO
                                 </td>
                             </tr>
                         </table>
