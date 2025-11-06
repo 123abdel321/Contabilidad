@@ -410,6 +410,12 @@ function cargarTablasCartera() {
             { data: 'saldo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' }
         ]
     });
+
+    var columnUbicacionEdades = cartera_edades_table.column(2);
+    var columnUbicacionCartera = cartera_table.column(2);
+
+    if (ubicacion_maximoph_cartera) columnUbicacionEdades.visible(true);
+    else columnUbicacionEdades.visible(false);
 }
 
 function cargarCombosCartera() {
