@@ -488,7 +488,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'fecha_manual' => $documento->fecha_manual,
             'debito' => $documento->debito,
             'credito' => $documento->credito,
-            'diferencia' => $detallar ? $documento->diferencia : '',
+            'diferencia' => '',
             'nivel' => 0,
             'anulado' => $documento->anulado,
             'total_columnas' => '',
