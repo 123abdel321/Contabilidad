@@ -52,6 +52,7 @@ class CreateNitsTable extends Migration
             $table->boolean('inactivar')->nullable();
             $table->boolean('declarante')->nullable();
             $table->boolean('sumar_aiu')->nullable();
+            $table->boolean('proveedor')->nullable();
             $table->longText('observaciones')->nullable();
             $table->string('email_1', 250)->nullable();
             $table->string('email_2', 250)->nullable();

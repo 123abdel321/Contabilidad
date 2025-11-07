@@ -56,7 +56,7 @@ class ProcessInformeCartera implements ShouldQueue
         setDBInConnection('sam', $empresa->token_db);
 
         DB::connection('informes')->beginTransaction();
-        
+
         try {
             $cartera = InfCartera::create([
 				'id_empresa' => $this->id_empresa,
@@ -663,7 +663,7 @@ class ProcessInformeCartera implements ShouldQueue
     {
         $query = $this->carteraDocumentosQueryHasta();
         $fechaHasta = $this->request['fecha_hasta'];
-        // $query->unionAll($this->carteraAnteriorQuery());
+        
         $datos = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS cartera"))
             ->mergeBindings($query)
@@ -957,6 +957,12 @@ class ProcessInformeCartera implements ShouldQueue
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->where('anulado', 0)
             ->whereIn('PCT.id_tipo_cuenta', $this->tipoCuentas())
+            ->when($this->request['ubicaciones'], function ($query) {
+                $query->whereNotNull('N.apartamentos');
+            })
+            ->when(!$this->request['proveedor'], function ($query) {
+                $query->where('N.proveedor', 0);
+            })
             ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
 			})

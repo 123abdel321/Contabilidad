@@ -180,6 +180,12 @@ function nitInit() {
                 $('#sumar_aiu_nits').prop('checked', false);
             }
 
+            if (data.proveedor) {
+                $('#proveedor_nit').prop('checked', true);
+            } else {
+                $('#proveedor_nit').prop('checked', false);
+            }
+
             if (data.id_responsabilidades) {
                 var id_responsabilidades = data.id_responsabilidades.split(",");
                 $("#id_responsabilidades").val(id_responsabilidades).change();
@@ -493,6 +499,7 @@ $(document).on('click', '#updateNit', function () {
             id_actividad_economica: $("#id_actividad_economica_nit").val(),
             // declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
+            proveedor: $("input[type='checkbox']#proveedor_nit").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
 
@@ -567,6 +574,7 @@ $(document).on('click', '#saveNit', function () {
             id_actividad_economica: $("#id_actividad_economica_nit").val(),
             // declarante: $("input[type='checkbox']#declarante_nit").is(':checked') ? '1' : '',
             sumar_aiu: $("input[type='checkbox']#sumar_aiu_nits").is(':checked') ? '1' : '',
+            proveedor: $("input[type='checkbox']#proveedor_nit").is(':checked') ? '1' : '',
             avatar: newImgProfile
         }
 

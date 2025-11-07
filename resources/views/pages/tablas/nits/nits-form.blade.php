@@ -148,14 +148,14 @@
                         </select>
                     </div>
 
+                    <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6">
+                        <input class="form-check-input" type="checkbox" name="proveedor_nit" id="proveedor_nit" style="height: 20px;" checked>
+                        <label class="form-check-label" for="proveedor_nit">Proveedor</label>
+                    </div>
+
                     <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6" id="div_sumar_aiu">
                         <input class="form-check-input" type="checkbox" name="sumar_aiu_nits" id="sumar_aiu_nits" style="height: 20px;">
                         <label class="form-check-label" for="sumar_aiu_nits">Sumar calculo AIU</label>
-                    </div>
-
-                    <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6" id="div_declarante">
-                        <input class="form-check-input" type="checkbox" name="declarante_nit" id="declarante_nit" style="height: 20px;" checked>
-                        <label class="form-check-label" for="declarante_nit">Declara Renta</label>
                     </div>
 
                 </form>

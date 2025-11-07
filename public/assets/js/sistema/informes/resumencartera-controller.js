@@ -65,6 +65,7 @@ function resumencarteraInit() {
             data: function ( d ) {
                 d.fecha_hasta = $('#fecha_hasta_resumen_cartera').val();
                 d.ubicaciones = getUbicacionesResumenCartera();
+                d.proveedor = getProveedoresResumenCartera();
                 d.dias_mora = $('#mora_resumen_cartera').val();
             }
         },
@@ -203,6 +204,13 @@ channelResumenComprobante.bind('notificaciones', function(data) {
 function getUbicacionesResumenCartera() {
     if($("input[type='radio']#ubicaciones_resumen_cartera0").is(':checked')) return '';
     if($("input[type='radio']#ubicaciones_resumen_cartera1").is(':checked')) return 1;
+
+    return '';
+}
+
+function getProveedoresResumenCartera() {
+    if($("input[type='radio']#proveedores_resumen_cartera0").is(':checked')) return '';
+    if($("input[type='radio']#proveedores_resumen_cartera1").is(':checked')) return 1;
 
     return '';
 }

@@ -227,6 +227,7 @@ class NitController extends Controller
                 'observaciones' => $request->get('observaciones'),
                 // 'declarante' => $request->get('declarante'),
                 'sumar_aiu' => $request->get('sumar_aiu'),
+                'proveedor' => $request->get('proveedor'),
                 'plazo' => 0,
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
@@ -303,7 +304,7 @@ class NitController extends Controller
                 'observaciones' => $request->get('observaciones'),
                 'porcentaje_aiu' => $request->get('porcentaje_aiu'),
                 'porcentaje_reteica' => $request->get('porcentaje_reteica'),
-                // 'declarante' => $request->get('declarante'),
+                'proveedor' => $request->get('proveedor'),
                 'sumar_aiu' => $request->get('sumar_aiu'),
                 'updated_by' => request()->user()->id,
             ]);

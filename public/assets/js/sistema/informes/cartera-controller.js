@@ -747,6 +747,8 @@ $(document).on('click', '#generarCartera', function () {
     url+= '&tipo_informe='+tipo_informe;
     url+= '&nivel='+getNivelCartera();
     url+= '&ubicaciones='+getUbicacionesCartera();
+    url+= '&proveedor='+getProveedoresResumenCartera();
+    
 
     if (tipo_informe == 'por_edades') {
         cartera_edades_table.ajax.url(url).load(function(res) {
@@ -823,6 +825,7 @@ function findCartera() {
     url+= '&tipo_informe='+$("#tipo_informe_cartera").val();
     url+= '&nivel='+getNivelCartera();
     url+= '&ubicaciones='+getUbicacionesCartera();
+    url+= '&proveedor='+getProveedoresResumenCartera();
     
     $.ajax({
         url: url,
@@ -869,6 +872,7 @@ function GenerateCartera() {
     url+= '&tipo_informe='+$("#tipo_informe_cartera").val();
     url+= '&nivel='+getNivelCartera();
     url+= '&ubicaciones='+getUbicacionesCartera();
+    url+= '&proveedor='+getProveedoresResumenCartera();
     url+= '&generar='+generarCartera;
 
     if (tipoInforme == 'por_edades') {
@@ -938,6 +942,13 @@ function formatRepoCartera (nit) {
 function getUbicacionesCartera() {
     if($("input[type='radio']#ubicaciones_cartera0").is(':checked')) return '';
     if($("input[type='radio']#ubicaciones_cartera1").is(':checked')) return 1;
+
+    return '';
+}
+
+function getProveedoresResumenCartera() {
+    if($("input[type='radio']#proveedores_cartera0").is(':checked')) return '';
+    if($("input[type='radio']#proveedores_cartera1").is(':checked')) return 1;
 
     return '';
 }
