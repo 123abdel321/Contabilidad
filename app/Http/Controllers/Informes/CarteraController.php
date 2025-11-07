@@ -41,7 +41,7 @@ class CarteraController extends Controller
 		}
         
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-
+        
         $cartera = InfCartera::where('id_empresa', $empresa->id)
             ->where('fecha_desde', $request->get('fecha_desde'))
             ->where('fecha_hasta', $request->get('fecha_hasta'))

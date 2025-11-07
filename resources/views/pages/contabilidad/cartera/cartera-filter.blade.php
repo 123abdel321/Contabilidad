@@ -72,6 +72,25 @@
                                 </label>
                             </div>
                         </div>
+
+                        @if ($ubicacion_maximoph)
+                            <div class="form-group col-12 col-sm-4 col-md-3 row" style="margin-bottom: 0.1rem !important;">
+                                <label for="example-text-input" class="form-control-label">Ubicaciones</label>
+                                <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                    <input class="form-check-input" type="radio" name="ubicaciones_cartera" id="ubicaciones_cartera0" style="font-size: 11px;">
+                                    <label class="form-check-label" for="ubicaciones_cartera0" style="font-size: 11px;">
+                                        No
+                                    </label>
+                                </div>
+                                <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                    <input class="form-check-input" type="radio" name="ubicaciones_cartera" id="ubicaciones_cartera1" style="font-size: 11px;" checked>
+                                    <label class="form-check-label" for="ubicaciones_cartera1" style="font-size: 11px;">
+                                        Si
+                                    </label>
+                                </div>
+                            </div>
+                        @endif
+
                     </div>  
                 </form>
                 <div class="col-md normal-rem">
