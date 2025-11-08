@@ -536,11 +536,23 @@ function toggleSidenavMaximoClose() {
 const lenguajeDatatable = {
     "sProcessing":     "",
     "sLengthMenu":     "Mostrar _MENU_ registros",
-    "sZeroRecords":    "No se encontraron resultados",
-    "sEmptyTable":     "Ningún registro disponible",
-    "sInfo":           "Registros del _START_ al _END_ de un total de _TOTAL_ ",
-    "sInfoEmpty":      "Registros del 0 al 0 de un total de 0 ",
-    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+    "sZeroRecords":    `<div style="text-align: center; padding: 40px 20px;">
+        <div style="background: #f8f9fa; border-radius: 50%; width: 80px; height: 80px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+            <i class="fas fa-search" style="font-size: 32px; color: #6c757d;"></i>
+        </div>
+        <h4 style="color: #495057; margin: 0 0 8px 0; font-weight: 500;">Sin resultados</h4>
+        <p style="color: #6c757d; margin: 0; font-size: 14px;">Intenta con otros términos de búsqueda</p>
+    </div>`,
+    "sEmptyTable":     `<div style="text-align: center; padding: 40px 20px;">
+        <div style="background: #e7f3ff; border-radius: 50%; width: 80px; height: 80px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+            <i class="fas fa-table" style="font-size: 32px; color: #007bff;"></i>
+        </div>
+        <h4 style="color: #495057; margin: 0 0 8px 0; font-weight: 500;">Tabla vacía</h4>
+        <p style="color: #6c757d; margin: 0; font-size: 14px;">No hay registros para mostrar en este momento</p>
+    </div>`,
+    "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+    "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
+    "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
     "sInfoPostFix":    "",
     "sSearch":         "Buscar:",
     "sUrl":            "",
@@ -548,8 +560,8 @@ const lenguajeDatatable = {
     "oPaginate": {
         "sFirst":    "Primero",
         "sLast":     "Último",
-        "sNext":     ">",
-        "sPrevious": "<"
+        "sNext":     "›",
+        "sPrevious": "‹"
     },
     "oAria": {
         "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",

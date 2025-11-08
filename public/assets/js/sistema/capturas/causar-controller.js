@@ -157,22 +157,37 @@ function initTablesCausar() {
             },
             {
                 "data": function (row, type, set){
-                    let html = '';
-                    // html+= `
-                    //     <span id="causarnomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-primary calcular-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Causar</span>
-                    //     <span id="causandonomina_${row.id}" class="badge bg-gradient-primary" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
-                    //         <b style="opacity: 0.3; text-transform: capitalize;">Causar</b>
-                    //         <i style="position: absolute; color: white; font-size: 15px; margin-left: -24px; margin-top: -2px;" class="fas fa-spinner fa-spin"></i>
-                    //     </span>
-                    //     &nbsp;`;
-                    html+= `
-                        <span id="detallenomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-info detalle-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Ver detalle</span>
-                        <span id="detallandonomina_${row.id}" class="badge bg-gradient-info" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
+                    var botonCausar = ``;
+                    var botonDescausar = ``;
+                    if (row.estado == 0) {
+                        botonCausar=`
+                        <span id="causarnomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-primary causar-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Causar</span>
+                        <span id="causandonomina_${row.id}" class="badge bg-gradient-danger" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
+                            <b style="opacity: 0.3; text-transform: math-auto;">Causar</b>
+                            <i style="position: absolute; color: white; font-size: 15px; margin-left: -32px; margin-top: -2px;" class="fas fa-spinner fa-spin"></i>
+                        </span>
+                        `;
+                    } else if (row.estado == 1) {
+                        botonDescausar=`
+                        <span id="descausarnomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger descausar-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Descausar</span>
+                        <span id="descausandonomina_${row.id}" class="badge bg-gradient-danger" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
+                            <b style="opacity: 0.3; text-transform: math-auto;">Descausar</b>
+                            <i style="position: absolute; color: white; font-size: 15px; margin-left: -35px; margin-top: -2px;" class="fas fa-spinner fa-spin"></i>
+                        </span>
+                        `;
+                    }
+                    var botonDetalle = `
+                        <span id="detallenomina_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-success detalle-nomina" style="margin-bottom: 0rem !important; min-width: 50px;">Ver detalle</span>
+                        <span id="detallandonomina_${row.id}" class="badge bg-gradient-success" style="margin-bottom: 0rem !important; min-width: 50px; display: none;">
                             <b style="opacity: 0.3; text-transform: math-auto;">Ver detalle</b>
                             <i style="position: absolute; color: white; font-size: 15px; margin-left: -35px; margin-top: -2px;" class="fas fa-spinner fa-spin"></i>
                         </span>
-                        &nbsp;`;
-                    return html;
+                    `;
+                    return `
+                        ${botonCausar}
+                        ${botonDescausar}
+                        ${botonDetalle}
+                    `;
                 }
             },
         ],
@@ -192,8 +207,7 @@ function initTablesCausar() {
             let groupTotals = { devengado: 0, deduccion: 0, neto: 0 };
             let $lastGroupRow = null;
 
-            // $('.group-header').remove(); // Limpia grupos anteriores
-            $('.group-header, .group-footer').remove();
+            $('.group-header-causar, .group-footer-causar').remove();
 
             data.each(function (row, i) {
                 const groupKey = `${row.fecha_inicio_periodo_formatted} - ${row.fecha_fin_periodo_formatted}`;
@@ -204,7 +218,7 @@ function initTablesCausar() {
                     // Si había un grupo anterior, insertar su footer al final de sus datos
                     if (lastGroup !== null && $lastGroupRow) {
                         const footerRow = $(`
-                            <tr class="group-footer" style="background-color: white; font-weight: bold;">
+                            <tr class="group-footer-causar" style="background-color: white; font-weight: bold;">
                                 <td colspan="5" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                                 <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(groupTotals.devengado)}</b></td>
                                 <td class="text-end"><b style="color: red;">${formatNumberWithSmallDecimals(groupTotals.deduccion * -1)}</b></td>
@@ -215,14 +229,40 @@ function initTablesCausar() {
                         $lastGroupRow.after(footerRow);
                     }
 
+                    // Recopilar TODOS los IDs del periodo para este grupo
+                    const groupPeriodIds = [];
+                    data.each(function (innerRow, j) {
+                        const innerGroupKey = `${innerRow.fecha_inicio_periodo_formatted} - ${innerRow.fecha_fin_periodo_formatted}`;
+                        if (innerGroupKey === groupKey && innerRow.sum_detalles && innerRow.sum_detalles.id_periodo_pago) {
+                            groupPeriodIds.push(innerRow.sum_detalles.id_periodo_pago);
+                        }
+                    });
+
+                    // Eliminar duplicados (por si acaso)
+                    const uniquePeriodIds = [...new Set(groupPeriodIds)];
+
                     const groupRow = $(`
-                        <tr class="group-header" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
+                        <tr class="group-header-causar" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
                             <td colspan="9">
-                                <i class="fas fa-minus-square toggle-icon" style="margin-right: 5px; color: #003883;"></i>
-                                <b style="font-weight: 500; font-size: 14px;">Periodo desde <b>${row.fecha_inicio_periodo_formatted}</b> hasta <b>${row.fecha_fin_periodo_formatted}</b></b>
+                                <div style="display: flex; align-items: center;">
+                                    
+                                    <div style="display: flex; align-items: center; white-space: nowrap;">
+                                        <i class="fas fa-minus-square toggle-icon" style="margin-right: 5px; color: #003883;"></i>
+                                        <b style="font-weight: 500; font-size: 14px;">Periodo desde <b>${row.fecha_inicio_periodo_formatted}</b> hasta <b>${row.fecha_fin_periodo_formatted}</b></b>
+                                    </div>
+
+                                    <div style="margin-left: 25px; white-space: nowrap;">
+                                        <label class="form-check-label" style="font-size: 14px; font-weight: 500; color: #003883; cursor: pointer; display: flex; align-items: center;">
+                                            <input class="form-check-input check-causar-periodo" type="checkbox" data-periodo-ids="${uniquePeriodIds.join(',')}" style="margin-right: 5px; margin-top: 0;">
+                                            Causar Periodo (${uniquePeriodIds.length} empleados)
+                                        </label>
+                                    </div>
+
+                                </div>
                             </td>
                         </tr>
                     `);
+                    
                     $row.before(groupRow);
 
                     lastGroup = groupKey;
@@ -241,7 +281,7 @@ function initTablesCausar() {
             // Agregar footer del último grupo
             if (lastGroup !== null && $lastGroupRow) {
                 const footerRow = $(`
-                    <tr class="group-footer" style="background-color: white; font-weight: bold;">
+                    <tr class="group-footer-causar" style="background-color: white; font-weight: bold;">
                         <td colspan="5" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                         <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(groupTotals.devengado)}</b></td>
                         <td class="text-end"><b style="color: red;">${formatNumberWithSmallDecimals(groupTotals.deduccion * -1)}</b></td>
@@ -253,18 +293,27 @@ function initTablesCausar() {
             }
 
             // Manejo de colapsar/expandir grupos
-            $('.group-header').off('click').on('click', function () {
+            $('.group-header-causar').off('click').on('click', function (e) {
+                const target = $(e.target);
+                if (target.hasClass('form-check-input') || target.closest('.form-check-label').length) {
+                    return; 
+                }
+
                 const $this = $(this);
                 const $icon = $this.find('.toggle-icon');
                 let $next = $this.next();
 
-                while ($next.length && !$next.hasClass('group-header')) {
-                    if (!$next.hasClass('group-footer')) $next.toggle();
+                while ($next.length && !$next.hasClass('group-header-causar')) {
+                    if (!$next.hasClass('group-footer-causar')) $next.toggle();
                     $next = $next.next();
                 }
 
                 $icon.toggleClass('fa-minus-square fa-plus-square');
             });
+
+            setTimeout(function() {
+                updateCausarNominaButton();
+            }, 100);
         }
     });
 
@@ -364,9 +413,6 @@ function initTablesCausar() {
             const id = this.id.split('_')[1];
             const data = getDataById(id, causar_nomina_table);
 
-            $(`#causarnomina_${id}`).hide();
-            $(`#causandonomina_${id}`).show();
-
             $.ajax({
                 url: base_url + 'calcular-nomina',
                 method: 'POST',
@@ -440,6 +486,77 @@ function initTablesCausar() {
                 }
             });
         });
+
+        causar_nomina_table.on('click', '.causar-nomina', function() {
+            const id = this.id.split('_')[1];
+
+            $(`#causarnomina_${id}`).hide();
+            $(`#causandonomina_${id}`).show();
+
+            $('#causarNominaBtn').hide();
+            $('#causarNominaLoading').show();
+
+            // Llamada AJAX para causar nómina
+            $.ajax({
+                url: base_url + 'causar-nomina',
+                method: 'POST',
+                data: JSON.stringify({
+                    ids_periodos_pago: [id],
+                }),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                if(res.success){
+                    agregarToast('exito', 'Causación exitosa', 'Nómina causada con éxito!', true);
+                    causar_nomina_table.ajax.reload();
+                } else {
+                    agregarToast('error', 'Causación errada', res.message);
+                }
+            }).fail((err) => {
+                var mensaje = err.responseJSON.message;
+                var errorsMsg = arreglarMensajeError(mensaje);
+                agregarToast('error', 'Causación errada', errorsMsg);
+            }).always(() => {
+                $('#causarNominaBtn').show();
+                $('#causarNominaLoading').hide();
+
+                $(`#causarnomina_${id}`).show();
+                $(`#causandonomina_${id}`).hide();
+            });
+        });
+
+        causar_nomina_table.on('click', '.descausar-nomina', function() {
+            const id = this.id.split('_')[1];
+
+            $(`#descausarnomina_${id}`).hide();
+            $(`#descausandonomina_${id}`).show();
+
+            // Llamada AJAX para causar nómina
+            $.ajax({
+                url: base_url + 'descausar-nomina',
+                method: 'POST',
+                data: JSON.stringify({
+                    ids_periodos_pago: [id],
+                }),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                if(res.success){
+                    agregarToast('exito', 'Causación exitosa', 'Nómina causada con éxito!', true);
+                    causar_nomina_table.ajax.reload();
+                } else {
+                    agregarToast('error', 'Causación errada', res.message);
+                }
+            }).fail((err) => {
+                var mensaje = err.responseJSON.message;
+                var errorsMsg = arreglarMensajeError(mensaje);
+                agregarToast('error', 'Causación errada', errorsMsg);
+            }).always(() => {
+                $(`#descausarnomina_${id}`).show();
+                $(`#descausandonomina_${id}`).hide();
+            });
+        });
+        
     }
 }
 
@@ -554,8 +671,8 @@ function initPrestacionesSociales() {
             let provision = 0;
             let $lastGroupRow = null;
 
-            // $('.group-header').remove(); // Limpia grupos anteriores
-            $('.group-header-prestaciones-sociales, .group-footer-prestaciones-sociales').remove();
+            // $('.group-header-causar').remove(); // Limpia grupos anteriores
+            $('.group-header-causar-prestaciones-sociales, .group-footer-causar-prestaciones-sociales').remove();
 
             data.each(function (row, i) {
 
@@ -567,7 +684,7 @@ function initPrestacionesSociales() {
                     // Si había un grupo anterior, insertar su footer al final de sus datos
                     if (lastGroup !== null && $lastGroupRow) {
                         const footerRow = $(`
-                            <tr class="group-footer-prestaciones-sociales" style="background-color: white; font-weight: bold;">
+                            <tr class="group-footer-causar-prestaciones-sociales" style="background-color: white; font-weight: bold;">
                                 <td colspan="3" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                                 <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(provision)}</b></td>
                                 <td colspan="4"></td>
@@ -577,7 +694,7 @@ function initPrestacionesSociales() {
                     }
 
                     const groupRow = $(`
-                        <tr class="group-header-prestaciones-sociales" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
+                        <tr class="group-header-causar-prestaciones-sociales" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
                             <td colspan="9">
                                 <i class="fas fa-minus-square toggle-icon" style="margin-right: 5px; color: #003883;"></i>
                                 <b style="font-size: 14px;">${row.numero_documento} - ${row.empleado}</b></b>
@@ -600,7 +717,7 @@ function initPrestacionesSociales() {
             // Agregar footer del último grupo
             if (lastGroup !== null && $lastGroupRow) {
                 const footerRow = $(`
-                    <tr class="group-footer-prestaciones-sociales" style="background-color: white; font-weight: bold;">
+                    <tr class="group-footer-causar-prestaciones-sociales" style="background-color: white; font-weight: bold;">
                         <td colspan="3" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                         <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(provision)}</b></td>
                         <td colspan="4"></td>
@@ -610,13 +727,13 @@ function initPrestacionesSociales() {
             }
 
             // Manejo de colapsar/expandir grupos
-            $('.group-header-prestaciones-sociales').off('click').on('click', function () {
+            $('.group-header-causar-prestaciones-sociales').off('click').on('click', function () {
                 const $this = $(this);
                 const $icon = $this.find('.toggle-icon');
                 let $next = $this.next();
 
-                while ($next.length && !$next.hasClass('group-header-prestaciones-sociales')) {
-                    if (!$next.hasClass('group-footer-prestaciones-sociales')) $next.toggle();
+                while ($next.length && !$next.hasClass('group-header-causar-prestaciones-sociales')) {
+                    if (!$next.hasClass('group-footer-causar-prestaciones-sociales')) $next.toggle();
                     $next = $next.next();
                 }
 
@@ -747,8 +864,8 @@ function initSeguridadSocial() {
             let lastGroup = null;
             let provision = 0;
             let $lastGroupRow = null;
-            // $('.group-header').remove(); // Limpia grupos anteriores
-            $('.group-header-seguridad_social, .group-footer-seguridad_social').remove();
+            // $('.group-header-causar').remove(); // Limpia grupos anteriores
+            $('.group-header-causar-seguridad_social, .group-footer-causar-seguridad_social').remove();
 
             data.each(function (row, i) {
 
@@ -760,7 +877,7 @@ function initSeguridadSocial() {
                     // Si había un grupo anterior, insertar su footer al final de sus datos
                     if (lastGroup !== null && $lastGroupRow) {
                         const footerRow = $(`
-                            <tr class="group-footer-seguridad_social" style="background-color: white; font-weight: bold;">
+                            <tr class="group-footer-causar-seguridad_social" style="background-color: white; font-weight: bold;">
                                 <td colspan="3" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                                 <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(provision)}</b></td>
                                 <td colspan="4"></td>
@@ -770,7 +887,7 @@ function initSeguridadSocial() {
                     }
 
                     const groupRow = $(`
-                        <tr class="group-header-seguridad_social" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
+                        <tr class="group-header-causar-seguridad_social" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
                             <td colspan="9">
                                 <i class="fas fa-minus-square toggle-icon" style="margin-right: 5px; color: #003883;"></i>
                                 <b style="font-size: 14px;">${row.numero_documento} - ${row.empleado}</b></b>
@@ -793,7 +910,7 @@ function initSeguridadSocial() {
             // Agregar footer del último grupo
             if (lastGroup !== null && $lastGroupRow) {
                 const footerRow = $(`
-                    <tr class="group-footer-seguridad_social" style="background-color: white; font-weight: bold;">
+                    <tr class="group-footer-causar-seguridad_social" style="background-color: white; font-weight: bold;">
                         <td colspan="3" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                         <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(provision)}</b></td>
                         <td colspan="4"></td>
@@ -803,13 +920,13 @@ function initSeguridadSocial() {
             }
 
             // Manejo de colapsar/expandir grupos
-            $('.group-header-seguridad_social').off('click').on('click', function () {
+            $('.group-header-causar-seguridad_social').off('click').on('click', function () {
                 const $this = $(this);
                 const $icon = $this.find('.toggle-icon');
                 let $next = $this.next();
 
-                while ($next.length && !$next.hasClass('group-header-seguridad_social')) {
-                    if (!$next.hasClass('group-footer-seguridad_social')) $next.toggle();
+                while ($next.length && !$next.hasClass('group-header-causar-seguridad_social')) {
+                    if (!$next.hasClass('group-footer-causar-seguridad_social')) $next.toggle();
                     $next = $next.next();
                 }
 
@@ -940,8 +1057,8 @@ function initParafiscales() {
             let lastGroup = null;
             let provision = 0;
             let $lastGroupRow = null;
-            // $('.group-header').remove(); // Limpia grupos anteriores
-            $('.group-header-parafiscales, .group-footer-parafiscales').remove();
+            // $('.group-header-causar').remove(); // Limpia grupos anteriores
+            $('.group-header-causar-parafiscales, .group-footer-causar-parafiscales').remove();
 
             data.each(function (row, i) {
 
@@ -953,7 +1070,7 @@ function initParafiscales() {
                     // Si había un grupo anterior, insertar su footer al final de sus datos
                     if (lastGroup !== null && $lastGroupRow) {
                         const footerRow = $(`
-                            <tr class="group-footer-parafiscales" style="background-color: white; font-weight: bold;">
+                            <tr class="group-footer-causar-parafiscales" style="background-color: white; font-weight: bold;">
                                 <td colspan="3" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                                 <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(provision)}</b></td>
                                 <td colspan="4"></td>
@@ -963,7 +1080,7 @@ function initParafiscales() {
                     }
 
                     const groupRow = $(`
-                        <tr class="group-header-parafiscales" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
+                        <tr class="group-header-causar-parafiscales" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
                             <td colspan="9">
                                 <i class="fas fa-minus-square toggle-icon" style="margin-right: 5px; color: #003883;"></i>
                                 <b style="font-size: 14px;">${row.numero_documento} - ${row.empleado}</b></b>
@@ -986,7 +1103,7 @@ function initParafiscales() {
             // Agregar footer del último grupo
             if (lastGroup !== null && $lastGroupRow) {
                 const footerRow = $(`
-                    <tr class="group-footer-parafiscales" style="background-color: white; font-weight: bold;">
+                    <tr class="group-footer-causar-parafiscales" style="background-color: white; font-weight: bold;">
                         <td colspan="3" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                         <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(provision)}</b></td>
                         <td colspan="4"></td>
@@ -996,13 +1113,13 @@ function initParafiscales() {
             }
 
             // Manejo de colapsar/expandir grupos
-            $('.group-header-parafiscales').off('click').on('click', function () {
+            $('.group-header-causar-parafiscales').off('click').on('click', function () {
                 const $this = $(this);
                 const $icon = $this.find('.toggle-icon');
                 let $next = $this.next();
 
-                while ($next.length && !$next.hasClass('group-header-parafiscales')) {
-                    if (!$next.hasClass('group-footer-parafiscales')) $next.toggle();
+                while ($next.length && !$next.hasClass('group-header-causar-parafiscales')) {
+                    if (!$next.hasClass('group-footer-causar-parafiscales')) $next.toggle();
                     $next = $next.next();
                 }
 
@@ -1133,6 +1250,38 @@ function actualizarProviciones(provicionada_tabla) {
     $('#causarProvisionModal').modal('hide');
     agregarToast('exito', 'Cambios guardados', 'Cambios guardados localmente!', true );
 }
+
+// Función para actualizar el estado del botón de Causar Nómina
+function updateCausarNominaButton() {
+    const selectedCheckboxes = $('.check-causar-periodo:checked');
+    
+    if (selectedCheckboxes.length > 0) {
+        $('#causarNominaBtn').show();
+    } else {
+        $('#causarNominaBtn').hide();
+    }
+}
+
+// Función para obtener los IDs seleccionados de TODOS los grupos
+function getSelectedPeriodIds() {
+    const selectedIds = [];
+    
+    // Buscar todos los checkboxes de grupo seleccionados
+    $('.check-causar-periodo:checked').each(function() {
+        const periodoIds = $(this).data('periodo-ids');
+        if (periodoIds) {
+            // Convertir el string de IDs separados por comas en array
+            const idsArray = periodoIds.split(',').map(id => id.trim());
+            selectedIds.push(...idsArray);
+        }
+    });
+    
+    return selectedIds.filter(id => id !== '' && id !== undefined);
+}
+
+$(document).on('change', '.check-causar-periodo', function() {
+    updateCausarNominaButton();
+});
 
 $(document).on('click', '#savePrestacionesSociales', function () {
     actualizarProviciones(prestaciones_sociales_table);
@@ -1297,4 +1446,43 @@ $("input[data-type='currency']").on({
     blur: function() {
         formatCurrency($(this), "blur");
     }
+});
+
+$('#causarNominaBtn').on('click', function() {
+    const selectedPeriods = getSelectedPeriodIds();
+    
+    if (selectedPeriods.length === 0) {
+        agregarToast('warning', 'Selección requerida', 'Por favor seleccione al menos un período para causar');
+        return;
+    }
+    
+    // Mostrar loading
+    $('#causarNominaBtn').hide();
+    $('#causarNominaLoading').show();
+
+    // Llamada AJAX para causar nómina
+    $.ajax({
+        url: base_url + 'causar-nomina',
+        method: 'POST',
+        data: JSON.stringify({
+            ids_periodos_pago: selectedPeriods,
+            mes: $('#meses_causar_nomina_filter').val()
+        }),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            agregarToast('exito', 'Causación exitosa', 'Nómina causada con éxito!', true);
+            causar_nomina_table.ajax.reload();
+        } else {
+            agregarToast('error', 'Causación errada', res.message);
+        }
+    }).fail((err) => {
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Causación errada', errorsMsg);
+    }).always(() => {
+        $('#causarNominaBtn').show();
+        $('#causarNominaLoading').hide();
+    });
 });

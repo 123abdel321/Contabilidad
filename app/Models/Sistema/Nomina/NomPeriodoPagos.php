@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 //MODELS
 use App\Models\Sistema\Nits;
+use App\Models\Sistema\DocumentosGeneral;
 
 class NomPeriodoPagos extends Model
 {
@@ -35,6 +36,11 @@ class NomPeriodoPagos extends Model
         'fecha_inicio_periodo_formatted',
         'fecha_fin_periodo_formatted'
     ];
+
+    public function documentos()
+    {
+        return $this->morphMany(DocumentosGeneral::class, 'relation');
+	}
 
     public function getFechaInicioPeriodoFormattedAttribute()
     {
@@ -69,6 +75,11 @@ class NomPeriodoPagos extends Model
     public function primas()
 	{
 		return $this->hasMany(NomPrimas::class, 'id_periodo_pago', 'id');
+	}
+
+    public function contrato()
+	{
+		return $this->hasOne(NomContratos::class, 'id', 'id_contrato');
 	}
 
     public function sumDetalles()

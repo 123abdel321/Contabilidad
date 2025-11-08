@@ -21,6 +21,11 @@
                             Causar nomina
                         </button>
                     </li>
+                    <!-- <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="causar-nomina-tab" style="font-size: 15px !important; font-weight: bold; margin-right: 2px; color: black;" data-bs-toggle="tab" data-bs-target="#causar_nomina" type="button" role="tab" aria-controls="causar_nomina" aria-selected="true">
+                            Detalle
+                        </button>
+                    </li> -->
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="parafiscales-tab" style="font-size: 15px !important; font-weight: bold; margin-right: 2px; color: black;" data-bs-toggle="tab" data-bs-target="#parafiscales" type="button" role="tab" aria-controls="parafiscales" aria-selected="false">
                             Parafiscales

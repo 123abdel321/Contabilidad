@@ -29,7 +29,7 @@ class PeriodoPagoDetalleFactory
 		$base = $contrato->salario;
 		$base = (float) $novedad->concepto->valor_mensual ? $novedad->concepto->valor_mensual : $base;
 		$base = (float) $novedad->valor ? $novedad->valor : $base;
-
+		
 		if ($novedad->concepto->id_concepto_porcentaje) {
 			$base = array_reduce($periodoPagoDetalles, function ($base, $detalle) use ($novedad) {
 				if ($detalle->id_concepto == $novedad->concepto->id_concepto_porcentaje) {
@@ -87,4 +87,49 @@ class PeriodoPagoDetalleFactory
 			'base' => $novedad->base
 		]);
 	}
+
+	public function createPeriodoPagoDetallePrima(NomNovedadesGenerales $novedad)
+	{
+		return new NomPeriodoPagoDetalles([
+			'id_concepto' => $novedad->concepto->id,
+			'tipo_unidad' => $novedad->concepto->unidad,
+			'porcentaje' => $novedad->porcentaje ? $novedad->porcentaje : '0,0000',
+			'observacion' => $novedad->observacion,
+			'unidades' => $novedad->unidades,
+			'valor' => $novedad->valor,
+			'base' => $novedad->base
+		]);
+	}
+
+	// public function createPeriodoPagoDetalleSolidaridad(NomContratos $contrato, $periodoPago, $periodoPagoDetalles): NomPeriodoPagoDetalles
+	// {
+	// 	$base = array_reduce($periodoPagoDetalles, function ($base, $detalle) {
+
+	// 		$detalle->loadMissing('concepto');
+
+	// 		if (!$detalle->concepto->base_salud || !$detalle->concepto->base_pension) return $base;
+
+	// 		return $base + $detalle->valor;
+	// 	}, 0);
+
+	// 	return (new PeriodoPagoDetalleSolidaridad($contrato, $periodoPago))
+	// 		->setBase($base)
+	// 		->getInstance();
+	// }
+
+	// public function createPeriodoPagoDetalleSubsistencia(NomContratos $contrato, $periodoPago, $periodoPagoDetalles): NomPeriodoPagoDetalles
+	// {
+	// 	$base = array_reduce($periodoPagoDetalles, function ($base, $detalle) {
+
+	// 		$detalle->loadMissing('concepto');
+
+	// 		if (!$detalle->concepto->base_salud || !$detalle->concepto->base_pension) return $base;
+
+	// 		return $base + $detalle->valor;
+	// 	}, 0);
+
+	// 	return (new PeriodoPagoDetalleSubsistencia($contrato, $periodoPago))
+	// 		->setBase($base)
+	// 		->getInstance();
+	// }
 }

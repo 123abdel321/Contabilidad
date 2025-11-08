@@ -20,6 +20,8 @@ use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\ConPagos;
 use App\Models\Sistema\ConGastos;
 use App\Models\Sistema\ConRecibos;
+//MODELS NOM
+use App\Models\Sistema\Nomina\NomPeriodoPagos;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -38,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
             '6' => ConRecibos::class,
             '7' => ConGastos::class,
             '8' => ConPagos::class,
+            '9' => NomPeriodoPagos::class,
 		]);
     }
 
