@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Relations\Relation;
 //MODELS
+use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
 
@@ -219,7 +220,7 @@ class CambiosDatosController extends Controller
                 $error = true;
                 $mensaje = 'Debe especificar una Cuenta de destino válida.';
             } else {
-                $nuevaCuenta = PlanCuenta::find($id_cuenta_destino);
+                $nuevaCuenta = PlanCuentas::find($id_cuenta_destino);
                 
                 if (!$nuevaCuenta) {
                     $error = true;
