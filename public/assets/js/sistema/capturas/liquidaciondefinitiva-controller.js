@@ -133,9 +133,9 @@ function initTablesLiquidacionDefinitiva() {
             let totals = 0;
             let $lastGroupRow = null;
 
-            // $('.group-header').remove(); // Limpia grupos anteriores
-            $('.group-header, .group-footer').remove();
-
+            // $('.group-header-liquidar').remove(); // Limpia grupos anteriores
+            $('.group-header-liquidar, .group-header-liquidar').remove();
+group-header-liquidar
             data.each(function (row, i) {
 
                 const groupKey = `${row.id_empleado} - ${row.fecha_fin_periodo_formatted}`;
@@ -146,7 +146,7 @@ function initTablesLiquidacionDefinitiva() {
                     // Si había un grupo anterior, insertar su footer al final de sus datos
                     if (lastGroup !== null && $lastGroupRow) {
                         const footerRow = $(`
-                            <tr class="group-footer-liquidacion_definitiva" data-group="${groupKey}" style="background-color: white; font-weight: bold;">
+                            <tr class="group-header-liquidar-liquidacion_definitiva" data-group="${groupKey}" style="background-color: white; font-weight: bold;">
                                 <td colspan="6" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                                 <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(totals)}</b></td>
                                 <td colspan="2"></td>
@@ -156,7 +156,7 @@ function initTablesLiquidacionDefinitiva() {
                     }
 
                     const groupRow = $(`
-                        <tr class="group-header-liquidacion_definitiva" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
+                        <tr class="group-header-liquidar-liquidacion_definitiva" style="background-color: #d9e9ff !important; font-weight: bold; cursor: pointer;" data-group="${groupKey}">
                             <td colspan="9">
                                 <i class="fas fa-minus-square toggle-icon" style="margin-right: 5px; color: #003883;"></i>
                                 <b style="font-size: 14px;">${row.numero_documento} - ${row.empleado}</b></b>
@@ -179,7 +179,7 @@ function initTablesLiquidacionDefinitiva() {
             // Agregar footer del último grupo
             if (lastGroup !== null && $lastGroupRow) {
                 const footerRow = $(`
-                    <tr class="group-footer-liquidacion_definitiva" style="background-color: white; font-weight: bold;">
+                    <tr class="group-header-liquidar-liquidacion_definitiva" style="background-color: white; font-weight: bold;">
                         <td colspan="6" class="text-end" style="letter-spacing: 4px;">TOTALES</td>
                         <td class="text-end"><b style="color: #01a401;">${formatNumberWithSmallDecimals(totals)}</b></td>
                         <td colspan="2"></td>
@@ -189,13 +189,13 @@ function initTablesLiquidacionDefinitiva() {
             }
 
             // Manejo de colapsar/expandir grupos
-            $('.group-header-liquidacion_definitiva').off('click').on('click', function () {
+            $('.group-header-liquidar-liquidacion_definitiva').off('click').on('click', function () {
                 const $this = $(this);
                 const $icon = $this.find('.toggle-icon');
                 let $next = $this.next();
 
-                while ($next.length && !$next.hasClass('group-header-liquidacion_definitiva')) {
-                    if (!$next.hasClass('group-footer-liquidacion_definitiva')) $next.toggle();
+                while ($next.length && !$next.hasClass('group-header-liquidar-liquidacion_definitiva')) {
+                    if (!$next.hasClass('group-header-liquidar-liquidacion_definitiva')) $next.toggle();
                     $next = $next.next();
                 }
 
@@ -251,7 +251,7 @@ $(document).on('click', '#saveLiquidacionDefinitiva', function () {
 
     // Actualizar el footer correspondiente
     var groupKey = `${rowData.id_empleado} - ${rowData.fecha_fin_periodo_formatted}`;
-    var $footer = $(`.group-footer-liquidacion_definitiva[data-group="${groupKey}"]`);
+    var $footer = $(`.group-header-liquidar-liquidacion_definitiva[data-group="${groupKey}"]`);
     
     if ($footer.length) {
         var currentTotalText = $footer.find('td:eq(1) b').text();

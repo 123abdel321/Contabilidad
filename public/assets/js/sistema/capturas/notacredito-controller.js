@@ -14,6 +14,7 @@ var facturaDevolucion = {
 var nota_credito_table = null;
 var nota_credito_table_pagos = null;
 var nota_credito_table_facturas = null;
+var nota_credito_table_movimiento = null;
 
 var $comboBodegaNotaCredito = null;
 var $comboClienteNotaCredito = null;
@@ -23,6 +24,13 @@ function notacreditoInit () {
     fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
     $('#fecha_manual_nota_credito').val(fecha);
 
+    cargarTablasNotasCredito();
+    cargarCombosNotasCredito();
+
+    loadFormasPagoNotasCredito();
+}
+
+function cargarTablasNotasCredito() {
     nota_credito_table = $('#notaCreditoTable').DataTable({
         dom: '',
         responsive: false,
@@ -41,7 +49,7 @@ function notacreditoInit () {
                     var cantidadActual = parseInt(row.data.cantidad);
                     var cantidadDevuelta = parseInt(row.data.cantidad_devuelta);
                     if ((cantidadActual - cantidadDevuelta) > 0) {
-                        return `<input type="number" class="form-control form-control-sm" style="min-width: 30px; text-align: right;" id="nota_credito_cantidad_${row.id_factura_detalle}" onkeypress="calcularNotaCreditoCantidad(event, ${row.id_factura_detalle})" onfocusout="calcularNotaCreditoCantidadOut(${row.id_factura_detalle})" value="${row.cantidad_devuelta}">`;
+                        return `<input type="number" class="form-control form-control-sm" style="min-width: 30px; text-align: right;" id="nota_credito_cantidad_${row.id_factura_detalle}" onkeypress="calcularNotaCreditoCantidad(event, ${row.id_factura_detalle})" onfocusout="calcularNotaCreditoCantidadOut(${row.id_factura_detalle})" onfocus="calcularNotasCreditoFocus(${row.id_factura_detalle})" value="${row.cantidad_devuelta}">`;
                     }
                     return `<input type="number" class="form-control form-control-sm" style="min-width: 30px; text-align: right;" id="nota_credito_cantidad_${row.id_factura_detalle}" value="0" disabled>`;
                 }
@@ -191,6 +199,77 @@ function notacreditoInit () {
         ]
     });
 
+    nota_credito_table_movimiento = $('#notasCreditoMovimientoTable').DataTable({
+        pageLength: -1,
+        deferRender: true,
+        deferLoading: true,
+        dom: 'Brtip',
+        paging: false,
+        responsive: false,
+        processing: true,
+        serverSide: false,
+        fixedHeader: true,
+        deferLoading: 0,
+        language: {
+            ...lenguajeDatatable,
+            info: "",
+            infoEmpty: "",
+            infoFiltered: "",
+        },
+        ordering: false,
+        scrollX: true,
+        scrollCollapse: true,
+        sScrollX: "100%",
+        autoWidth: false,
+        info: false,
+        ajax:  {
+            type: "GET",
+            headers: headers,
+            url: base_url + 'nota-credito-movimiento',
+            data: function ( d ) {
+                d.id_factura = idNotaCreditoFactura,
+                d.id_cliente = $('#id_cliente_nota_credito').val();
+                d.documento_referencia = $("#consecutivo_nota_credito").val(),
+                d.pagos = getNotasCreditoPagos(),
+                d.productos = getProductosNotaCredito()
+            }
+        },
+        rowCallback: function(row, data, index){
+            if(data.id_cuenta == "TOTALES"){
+                $('td', row).css('background-color', '#000');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
+                return;
+            }
+        },
+        columns: [
+            {
+                "data": function (row, type, set){
+                    if(row.id_cuenta == "TOTALES") return "TOTALES";
+                    if(row.cuenta) return row.cuenta.cuenta;
+                    return '';
+                }
+            },
+            {
+                "data": function (row, type, set){
+                    if(row.cuenta) return row.cuenta.nombre;
+                    return '';
+                }
+            },
+            {"data":'debito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data":'credito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {
+                "data": function (row, type, set){
+                    const diferencia = parseFloat(row.concepto);
+                    if(row.id_cuenta == "TOTALES") {
+                        return diferencia.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                    }
+                    return row.concepto;
+                }
+            }
+        ]
+    });
+
     if (nota_credito_table_facturas) {
         nota_credito_table_facturas.on('click', '.select-venta-nota-credito', function() {
             var id = this.id.split('_')[1];
@@ -289,7 +368,9 @@ function notacreditoInit () {
             });
         });
     }
+}
 
+function cargarCombosNotasCredito() {
     $comboClienteNotaCredito = $('#id_cliente_nota_credito').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -376,7 +457,15 @@ function notacreditoInit () {
         }
     });
 
-    loadFormasPagoNotasCredito();
+    if(primeraResolucionNotaCredito && primeraResolucionNotaCredito.length > 0){
+        var dataResolucion = {
+            id: primeraResolucionNotaCredito[0].id,
+            text: primeraResolucionNotaCredito[0].prefijo + ' - ' + primeraResolucionNotaCredito[0].nombre
+        };
+        var newOption = new Option(dataResolucion.text, dataResolucion.id, false, false);
+        $comboResolucionNotaCredito.append(newOption).trigger('change');
+        $comboResolucionNotaCredito.val(dataResolucion.id).trigger('change');
+    }
 }
 
 function loadFormasPagoNotasCredito() {
@@ -401,15 +490,6 @@ function clearFormasPagoNotaCredito() {
     }
     calcularNotaCreditoPagos();
 }
-
-$(document).on('click', '#iniciarCapturaNotaCredito', function () {
-    nota_credito_table_facturas.ajax.reload();
-    $("#modalFacturasDevolucion").modal('show');
-});
-
-$("#id_resolucion_nota_credito").on('change', function(event) {
-    consecutivoSiguienteNotaCredito();
-});
 
 function iniciarNotaCredito(event) {
 
@@ -465,12 +545,22 @@ function calcularNotaCreditoCantidadOut(idDetalle) {
     clearFormasPagoNotaCredito();
 }
 
+function calcularNotasCreditoFocus(idDetalle) {
+    const [dataRow, keyRow] = dataTableFactura(idDetalle);
+    const cantidadDisponible = dataRow.cantidad - dataRow.cantidad_devuelta;
+
+    const input = document.getElementById(`nota_credito_cantidad_${idDetalle}`);
+    input.value = cantidadDisponible;
+    input.select();
+}
+
 function calcularNotaCreditoPorCantidad (idDetalle) {
     [dataRow, keyRow] = dataTableFactura(idDetalle);
 
     var cantidadDevolucion = $('#nota_credito_cantidad_'+idDetalle).val();
     var dataDetalle = dataRow.data;
-    var cantidadDisponible = dataDetalle.cantidad - dataDetalle.cantidad_devuelta;
+
+    const cantidadDisponible = dataDetalle.cantidad - dataDetalle.cantidad_devuelta;
 
     if (cantidadDevolucion > cantidadDisponible) {
         cantidadDevolucion = cantidadDisponible;
@@ -491,15 +581,16 @@ function calcularNotaCreditoPorCantidad (idDetalle) {
     var proporcion = costoCantidad / totalDisponible;
 
     var descuento = 0;
-    if (dataDetalle.descuento_porcentaje > 0) {
-        descuento = dataDetalle.descuento_valor * proporcion;
-        dataRow.descuento_valor = dataDetalle.descuento_valor - descuento;
+    if (cantidadDevolucion && parseFloat(dataDetalle.descuento_porcentaje) > 0) {
+        descuento = parseFloat(dataDetalle.descuento_valor) * proporcion;
+        dataRow.descuento_valor = descuento;
     }
 
     var iva = 0;
-    if (dataDetalle.iva_porcentaje > 0) {
-        iva = dataDetalle.iva_valor * proporcion;
-        dataRow.valor_iva = dataDetalle.iva_valor - iva;
+    console.log('parseFloat(dataDetalle.iva_porcentaje): ',parseFloat(dataDetalle.iva_porcentaje));
+    if (cantidadDevolucion && parseFloat(dataDetalle.iva_porcentaje) > 0) {
+        iva = parseFloat(dataDetalle.iva_valor) * proporcion;
+        dataRow.valor_iva = iva;
     }
 
     var subtotal = parseFloat(costoCantidad).toFixed(2);
@@ -512,9 +603,10 @@ function calcularNotaCreditoPorCantidad (idDetalle) {
     dataRow.cantidad = cantidadDisponible - cantidadDevolucion,
     dataRow.devolucion_total = subtotal;
     dataRow.total_devolucion = subtotal;
-    dataRow.total_disponible = ((dataDetalle.total - dataDetalle.total_devuelto) - (subtotal));
+    dataRow.total_disponible = ((parseFloat(dataDetalle.total) - parseFloat(dataDetalle.total_devuelto)) - (subtotal));
     
-    nota_credito_table.row(keyRow).data(dataRow).draw();
+    nota_credito_table.row(keyRow).data(dataRow).invalidate().draw(false);
+
 
     mostrarValoresNotaCredito();
 }
@@ -575,6 +667,9 @@ function mostrarValoresNotaCredito() {
 
     if (productos) $('#totales_productos_nota_credito').show();
     else $('#totales_productos_nota_credito').hide();
+
+    if (total > 0) $("#movimientoContableNotaCredito").show();
+    else $("#movimientoContableNotaCredito").hide();
 
     $("#nota_credito_total_iva").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(iva));
     $("#nota_credito_total_descuento").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(descuento));
@@ -785,14 +880,6 @@ function validateSaveNotaCredito() {
     }
 }
 
-$(document).on('click', '#crearCapturaNotaCredito', function () {
-    validateSaveNotaCredito();
-});
-
-$(document).on('click', '#cancelarCapturaNotaCredito', function () {
-    cancelarNotaCredito();
-});
-
 function saveNotaCredito() {
     
     $("#iniciarCapturaNotaCredito").hide();
@@ -836,23 +923,6 @@ function saveNotaCredito() {
             mostrarValoresNotaCredito();
             agregarToast('exito', 'Creación exitosa', 'Nota Credito creada con exito!', true);
             cancelarNotaCredito();
-        } else {
-            $("#agregarNotaCredito").show();
-            $("#crearCapturaNotaCredito").show();
-            $("#iniciarCapturaNotaCredito").hide();
-            $("#cancelarCapturaNotaCredito").show();
-            $("#crearCapturaNotaCreditoDisabled").hide();
-            $("#iniciarCapturaNotaCreditoLoading").hide();
-            
-            var mensaje = res.mensages;
-            var errorsMsg = "";
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-            agregarToast('error', 'Creación errada', errorsMsg);
         }
     }).fail((err) => {
         guardandoNotaCredito = false;
@@ -944,3 +1014,25 @@ function getNotasCreditoPagos() {
 
     return data;
 }
+
+$(document).on('click', '#iniciarCapturaNotaCredito', function () {
+    nota_credito_table_facturas.ajax.reload();
+    $("#modalFacturasDevolucion").modal('show');
+});
+
+$(document).on('click', '#crearCapturaNotaCredito', function () {
+    validateSaveNotaCredito();
+});
+
+$(document).on('click', '#cancelarCapturaNotaCredito', function () {
+    cancelarNotaCredito();
+});
+
+$(document).on('click', '#movimientoContableNotaCredito', function () {
+    $("#notasCreditoMovimientoModal").modal('show');
+    nota_credito_table_movimiento.ajax.reload();
+});
+
+$("#id_resolucion_nota_credito").on('change', function(event) {
+    consecutivoSiguienteNotaCredito();
+});

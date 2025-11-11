@@ -25,10 +25,9 @@ class FacResoluciones extends Model
 
     const TIPO_POS = 0;
 	const TIPO_FACTURA_ELECTRONICA = 1;
-	const TIPO_CONTINGENCIA = 2;
-	const TIPO_NOTA_DEBITO = 3;
-	const TIPO_NOTA_CREDITO = 4;
-	const TIPO_DOCUEMNTO_EQUIVALENTE = 5;
+	const TIPO_NOTA_DEBITO = 2;
+	const TIPO_NOTA_CREDITO = 3;
+	const TIPO_DOCUEMNTO_EQUIVALENTE = 4;
 
     protected $fillable = [
         'id_comprobante',

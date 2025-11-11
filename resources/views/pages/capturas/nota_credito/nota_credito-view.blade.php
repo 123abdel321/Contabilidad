@@ -199,9 +199,11 @@
     </div>
 
     @include('pages.capturas.nota_credito.nota_credito-facturas')
+    @include('pages.capturas.nota_credito.nota_credito-movimiento')
 
     <script>
-        var ivaIncluidoNotaCredito = '<?php echo $iva_incluido; ?>';
+        var ivaIncluidoNotaCredito = @json($iva_incluido);
+        var primeraResolucionNotaCredito = @json($resolucion);
     </script>
     
 </div>

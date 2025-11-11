@@ -182,18 +182,9 @@ $(document).on('click', '#saveCecos', function () {
     }).fail((err) => {
         $('#saveCecos').show();
         $('#saveCecosLoading').hide();
-        var errorsMsg = "";
+        
         var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
-        }
+        var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Creación errada', errorsMsg);
     });
 });
@@ -236,18 +227,9 @@ $(document).on('click', '#updateCecos', function () {
     }).fail((err) => {
         $('#updateCecos').show();
         $('#saveCecosLoading').hide();
-        var errorsMsg = "";
+        
         var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
-        }
-        agregarToast('error', 'Error al actualizar Centro de costos!', errorsMsg);
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
 });

@@ -509,6 +509,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('nota-credito/factura-detalle', 'detalleFactura');
             Route::post('nota-credito-fe', 'facturacionElectronica');
             Route::post('nota-credito', 'create');
+            Route::get('nota-credito-movimiento', 'movimientoContable');
         });
         //UBICACIONES
         Route::controller(UbicacionesController::class)->group(function () {
@@ -549,8 +550,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('causar-periodos-pago', 'generate');
             Route::get('causar-meses-combo', 'comboMeses');
             Route::get('detalle-periodo', 'detallePeriodo');
-            Route::post('calcular-nomina', 'calcularNomina');
             Route::get('periodos-pagos-combo', 'comboPeriodoPago');
+
+            Route::post('causar-nomina', 'causarNomina');
+            Route::post('descausar-nomina', 'descausarNomina');
+            Route::post('calcular-nomina', 'calcularNomina');
         });
         //CAUSAR PRESTACIONES SOCIALES
         Route::controller(CausarProvicionadaController::class)->group(function () {

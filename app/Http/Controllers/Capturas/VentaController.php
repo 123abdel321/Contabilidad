@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Capturas;
 use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Jobs\ProcessConsultarFE;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;  
@@ -95,12 +96,15 @@ class VentaController extends Controller
         $vendedorVentas = VariablesEntorno::where('nombre', 'vendedores_ventas')->first();
 
         $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
-        $resoluciones = explode(",", $usuarioPermisos->ids_resolucion_responsable);
+        $resolucionesId = explode(",", $usuarioPermisos->ids_resolucion_responsable);
+        $resolucionesData = FacResoluciones::whereIn('id', $resolucionesId)
+            ->whereIn('tipo_resolucion', [FacResoluciones::TIPO_POS, FacResoluciones::TIPO_FACTURA_ELECTRONICA])
+            ->get();
 
         $data = [
             'cliente' => Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222222%')->first(),
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
-            'resolucion' => FacResoluciones::whereIn('id', $resoluciones)->get(),
+            'resolucion' => $resolucionesData,
             'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : '',
             'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : '',
             'valor_uvt' => $valorUVT ? $valorUVT->valor : 0
@@ -157,7 +161,7 @@ class VentaController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $this->resolucion = FacResoluciones::whereId($request->get('id_resolucion'))
@@ -169,7 +173,7 @@ class VentaController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está agotada"]]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $consecutivo = $this->getNextConsecutive($this->resolucion->comprobante->id, $request->get('fecha_manual'));
@@ -219,7 +223,7 @@ class VentaController extends Controller
                         "success"=>false,
                         'data' => [],
                         "message"=> ['Cantidad bodega' => ['La cantidad del producto '.$productoDb->codigo. ' - ' .$productoDb->nombre. ' supera la cantidad en bodega']]
-                    ], 422);
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
 
                 $costo = $producto->costo;
@@ -284,7 +288,7 @@ class VentaController extends Controller
                                 "success"=>false,
                                 'data' => [],
                                 "message"=> [$productoDb->codigo.' - '.$productoDb->nombre => ['La cuenta '.str_replace('cuenta_venta_', '', $cuentaKey). ' no se encuentra configurada en la familia: '. $productoDb->familia->codigo. ' - '. $productoDb->familia->nombre]]
-                            ], 422);
+                            ], Response::HTTP_UNPROCESSABLE_ENTITY);
                         }
 
                         $concepto = "VENTA: {$this->nit->nombre_nit} - {$this->nit->documento} - {$venta->documento_referencia}";
@@ -367,7 +371,7 @@ class VentaController extends Controller
                         "success"=>false,
                         'data' => [],
                         "message"=> ['Cuenta retención' => ['La cuenta '.$cuentaRetencion->cuenta. ' - ' .$cuentaRetencion->nombre. ' no tiene naturaleza en ventas']]
-                    ], 422);
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
             }
 
@@ -437,7 +441,7 @@ class VentaController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
             $feSended = false;
@@ -462,7 +466,7 @@ class VentaController extends Controller
                             "success"=>false,
                             'data' => [],
                             "message" => $ventaElectronica["error_message"] 
-                        ], 422);
+                        ], Response::HTTP_UNPROCESSABLE_ENTITY);
                     }
                 }
 
@@ -512,7 +516,7 @@ class VentaController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -843,7 +847,7 @@ class VentaController extends Controller
                 'success'=>	false,
                 'data' => [],
                 'message'=> 'La factura no existe'
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
@@ -869,7 +873,7 @@ class VentaController extends Controller
         //         'success'=>	false,
         //         'data' => [],
         //         'message'=> 'La factura no existe'
-        //     ], 422);
+        //     ], Response::HTTP_UNPROCESSABLE_ENTITY);
         // }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
@@ -891,7 +895,7 @@ class VentaController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $venta = FacVentas::where('id', $request->id_venta)->first();
@@ -902,7 +906,7 @@ class VentaController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>['factura_electronica' => ['mensaje' => "La factura $venta->consecutivo ya fue emitida."]]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
 
         try {
@@ -969,7 +973,7 @@ class VentaController extends Controller
                     "success" => false,
                     'data' => [],
                     "message" => $ventaElectronica["error_message"]
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             if ($ventaElectronica["status"] == 200) {
@@ -1000,7 +1004,7 @@ class VentaController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -1018,7 +1022,7 @@ class VentaController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         
 		try {
@@ -1032,7 +1036,7 @@ class VentaController extends Controller
                     "success" => false,
                     'data' => [],
                     "message" => "La factura electrónica $venta->documento_referencia_fe no tiene cufe generado.",
-                ], 422);
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
@@ -1064,7 +1068,7 @@ class VentaController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 	}
 

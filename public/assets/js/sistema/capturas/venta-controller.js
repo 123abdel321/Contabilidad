@@ -8,7 +8,7 @@ var $comboVendedor = null;
 var retencionesVentas = [];
 var topeRetencionVenta = 0;
 var guardandoVenta = false;
-var $comboResolucion = null;
+var $comboResolucionVentas = null;
 var $comboBodegaVenta = null;
 var key13PressNewRow = false;
 var redondearFactura = false;
@@ -387,7 +387,7 @@ function ventaInit () {
         }
     });
 
-    $comboResolucion = $('#id_resolucion_venta').select2({
+    $comboResolucionVentas = $('#id_resolucion_venta').select2({
         theme: 'bootstrap-5',
         delay: 250,
         language: {
@@ -485,8 +485,8 @@ function ventaInit () {
             text: primeraResolucionVenta[0].prefijo + ' - ' + primeraResolucionVenta[0].nombre
         };
         var newOption = new Option(dataResolucion.text, dataResolucion.id, false, false);
-        $comboResolucion.append(newOption).trigger('change');
-        $comboResolucion.val(dataResolucion.id).trigger('change');
+        $comboResolucionVentas.append(newOption).trigger('change');
+        $comboResolucionVentas.val(dataResolucion.id).trigger('change');
     }
 
     if(primeraBodegaVenta && primeraBodegaVenta.length > 0){
