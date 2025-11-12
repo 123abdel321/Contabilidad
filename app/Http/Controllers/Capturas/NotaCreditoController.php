@@ -326,7 +326,7 @@ class NotaCreditoController extends Controller
 
                 //AGREGAR IVA
                 $cuentaVentaDevolucion = $productoDb->familia->cuenta_venta_devolucion_iva;
-                if ($detalleProducto->iva_valor && !$cuentaVentaDevolucion) {
+                if ($totalesProducto->iva && !$cuentaVentaDevolucion) {
                     return response()->json([
                         'success'=>	false,
                         'data' => [],
