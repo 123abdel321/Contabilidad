@@ -447,6 +447,15 @@ class DocumentoGeneralController extends Controller
 				$facDocumento = $facDocumento->relation;
 				$fechaManual = $facDocumento->fecha_manual;
 
+				$documentosEliminar = DocumentosGeneral::with('relation')
+					->where('id_comprobante', $request->get('id_comprobante'))
+					->where('consecutivo', $request->get('consecutivo'));
+
+				if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
+                    $this->filterCapturaMensual($documentosEliminar, $fechaManual);
+                }
+
+				$documentosEliminar->delete();
 				$facDocumento->documentos()->delete();
 
 			} else {
