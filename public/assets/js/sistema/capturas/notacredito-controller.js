@@ -1031,6 +1031,15 @@ $(document).on('click', '#cancelarCapturaNotaCredito', function () {
 $(document).on('click', '#movimientoContableNotaCredito', function () {
     $("#notasCreditoMovimientoModal").modal('show');
     nota_credito_table_movimiento.ajax.reload();
+    
+    nota_credito_table_movimiento.on('error.dt', function(e, settings, techNote, message) {
+        var xhr = settings.jqXHR;
+        if (xhr && xhr.responseJSON) {
+            var mensaje = xhr.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Error al cargar movimiento', errorsMsg);
+        }
+    });
 });
 
 $("#id_resolucion_nota_credito").on('change', function(event) {

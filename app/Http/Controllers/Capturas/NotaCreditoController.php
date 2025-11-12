@@ -100,46 +100,17 @@ class NotaCreditoController extends Controller
         return view('pages.capturas.nota_credito.nota_credito-view', $data);
     }
 
-    public function create (Request $request)
+    // Método principal para crear la nota de crédito
+    public function create(Request $request)
     {
-        $rules = [
-            'id_factura' => 'required|exists:sam.fac_ventas,id',
-            'id_resolucion' => 'required|exists:sam.fac_resoluciones,id',
-            'fecha_manual' => 'required|date',
-            'documento_referencia' => 'required|string',
-            'productos' => 'array|required',
-            'productos.*.id_factura_detalle' => 'required|exists:sam.fac_venta_detalles,id',
-            'productos.*.id_producto' => [
-                'required',
-                'exists:sam.fac_productos,id',
-                function ($attribute, $value, $fail) {
-					$producto = FacProductos::whereId($value)
-                        ->with('familia')
-                        ->first();
-
-                    if (!$producto) {
-                        $fail("El producto id: ". $value. " , No existe");
-                    } else if (!$producto->familia->id_cuenta_venta_devolucion) {
-                        $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta de venta devolución configurada");
-                    }
-
-                    
-				}
-            ],
-            'productos.*.cantidad' => 'required|numeric|min:0',
-            'productos.*.total_devolucion' => 'required|numeric|min:1',
-            'pagos' => 'array|required',
-            'pagos.*.id' => 'required|exists:sam.fac_formas_pagos,id',
-            'pagos.*.valor' => 'required|numeric|min:1',
-        ];
-
+        $rules = $this->getValidationRules();
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
-		if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$validator->errors()
+                "message" => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -148,20 +119,10 @@ class NotaCreditoController extends Controller
             ->with('comprobante')
             ->first();
 
-        if (!$this->resolucion->isValid) {
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está agotada"]]
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        if (!$this->resolucion->isActive) {
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está vencida"]]
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        // Validar resolución
+        $resolucionValidation = $this->validateResolucion();
+        if ($resolucionValidation) {
+            return $resolucionValidation;
         }
 
         $consecutivo = $this->getNextConsecutive($this->resolucion->comprobante->id, $request->get('fecha_manual'));
@@ -176,536 +137,96 @@ class NotaCreditoController extends Controller
 
             $enviarFacturaElectronica = false;
             $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
-            //CREAR NOTA CREDITO
+            
+            // Crear nota crédito
             $notaCredito = $this->createNotaCredito($request);
 
-            //GUARDAR DETALLE & MOVIMIENTO CONTABLE VENTAS
-            $documentoGeneral = new Documento(
-                $this->resolucion->comprobante->id,
+            // Generar documento contable (LÓGICA REUTILIZADA)
+            $documentoGeneral = $this->generarMovimientoContable(
+                $request,
                 $notaCredito,
-                $request->get('fecha_manual'),
-                $request->get('consecutivo'),
-                false
+                true // indica que se debe guardar en BD
             );
-            
-            foreach ($request->get('productos') as $producto) {
-                $producto = (object)$producto;
-                $nit = $this->findCliente($notaCredito->id_cliente);
-                $productoDb = $this->findProducto($producto->id_producto);
-                $detalleProducto = FacFacturaDetalle::find($producto->id_factura_detalle);
 
-                //AGREGAR MOVIMIENTO BODEGA
-                if ($producto->cantidad && $productoDb->familia->inventario) {
-                    $bodegaProducto = FacProductosBodegas::where('id_bodega', $this->bodega->id)
-                        ->where('id_producto', $producto->id_producto)
-                        ->first();
-
-                    if (!$bodegaProducto) {
-                        $bodegaProducto = FacProductosBodegas::create([
-                            'id_producto' => $producto->id_producto,
-                            'id_bodega' => $notaCredito->id_bodega,
-                            'cantidad' => 0,
-                            'created_by' => request()->user()->id,
-                            'updated_by' => request()->user()->id
-                        ]);
-                    }
-
-                    $movimiento = new FacProductosBodegasMovimiento([
-                        'id_producto' => $producto->id_producto,
-                        'id_bodega' => $notaCredito->id_bodega,
-                        'cantidad_anterior' => $bodegaProducto->cantidad,
-                        'cantidad' => $producto->cantidad,
-                        'tipo_tranferencia' => 1,
-                        'inventario' => $productoDb->familia->inventario ? 1 : 0,
-                        'created_by' => request()->user()->id,
-                        'updated_by' => request()->user()->id
-                    ]);
-
-                    if ($bodegaProducto) {
-                        $bodegaProducto->updated_by = request()->user()->id;
-                        $bodegaProducto->cantidad+= $producto->cantidad;
-                        $bodegaProducto->save();
-                    }
-                    $movimiento->relation()->associate($notaCredito);
-                    $notaCredito->bodegas()->save($movimiento);
-
-                    //AGREGAR INVENTARIO
-                    if ($productoDb->precio_inicial && $productoDb->familia->cuenta_costos) {
-                        $cuentaCosto = $productoDb->familia->cuenta_costos;
-                        $cuentaOpuestoCosto = PlanCuentas::CREDITO == $cuentaCosto->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-
-                        $docCosto = new DocumentosGeneral([
-                            "id_cuenta" => $cuentaCosto->id,
-                            "id_nit" => $cuentaCosto->exige_nit ? $notaCredito->id_cliente : null,
-                            "id_centro_costos" => $cuentaCosto->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                            "concepto" => $cuentaCosto->exige_concepto ? 'NOTA CREDITO: '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
-                            "documento_referencia" => $cuentaCosto->exige_documento_referencia ? $notaCredito->documento_referencia : null,
-                            "debito" => $productoDb->precio_inicial * $producto->cantidad,
-                            "credito" => $productoDb->precio_inicial * $producto->cantidad,
-                            "created_by" => request()->user()->id,
-                            "updated_by" => request()->user()->id
-                        ]);
-                        $documentoGeneral->addRow($docCosto, $cuentaOpuestoCosto);
-                    }
-                }
-
-                $totalesProducto = $this->calcularTotalesProducto($producto);
-                //CREAR NOTA CREDITO DETALLE
-                FacVentaDetalles::create([
-                    'id_venta' => $notaCredito->id,
-                    'id_venta_detalle' => $detalleProducto->id,
-                    'id_producto' => $productoDb->id,
-                    'id_cuenta_venta' => $productoDb->familia->id_cuenta_venta_devolucion,
-                    'id_cuenta_venta_retencion' => $productoDb->familia->id_cuenta_venta_retencion,
-                    'id_cuenta_venta_iva' => $productoDb->familia->id_cuenta_venta_devolucion_iva,
-                    'id_cuenta_venta_descuento' => $productoDb->familia->id_cuenta_venta_descuento,
-                    'descripcion' => $productoDb->codigo.' - '.$productoDb->nombre,
-                    'cantidad' => $producto->cantidad,
-                    'costo' => $detalleProducto->costo,
-                    'subtotal' => $totalesProducto->subtotal,
-                    'descuento_porcentaje' => $detalleProducto->descuento_porcentaje,
-                    'descuento_valor' => $totalesProducto->descuento,
-                    'iva_porcentaje' => $detalleProducto->iva_porcentaje,
-                    'iva_valor' => $totalesProducto->iva,
-                    'total' => $producto->total_devolucion,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
-
-                //AGREGAR DEVOLUCION
-                $cuentaDevolucion = $productoDb->familia->cuenta_venta_devolucion;
-                $docDevolucion = new DocumentosGeneral([
-                    "id_cuenta" => $cuentaDevolucion->id,
-                    "id_nit" => $cuentaDevolucion->exige_nit ? $notaCredito->id_cliente : null,
-                    "id_centro_costos" => $cuentaDevolucion->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                    "concepto" => $cuentaDevolucion->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
-                    "documento_referencia" => $cuentaDevolucion->exige_documento_referencia ? $notaCredito->documento_referencia : null,
-                    "debito" => $totalesProducto->subtotal,
-                    "credito" => $totalesProducto->subtotal,
-                    "created_by" => request()->user()->id,
-                    "updated_by" => request()->user()->id
-                ]);
-                $documentoGeneral->addRow($docDevolucion, $cuentaDevolucion->naturaleza_ventas);
-
-                //AGREGAR COSTO
-                if ($totalesProducto->subtotal && $productoDb->familia->cuenta_compra_devolucion) {
-                    $cuentaCosto = $productoDb->familia->cuenta_compra_devolucion;
-
-                    $docCosto = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaCosto->id,
-                        "id_nit" => $cuentaCosto->exige_nit ? $notaCredito->id_cliente : null,
-                        "id_centro_costos" => $cuentaCosto->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                        "concepto" => $cuentaCosto->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
-                        "documento_referencia" => $cuentaCosto->exige_documento_referencia ? $notaCredito->documento_referencia : null,
-                        "debito" => $productoDb->precio_inicial * $producto->cantidad,
-                        "credito" => $productoDb->precio_inicial * $producto->cantidad,
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($docCosto, $cuentaCosto->cuenta_compra_devolucion);
-                }
-
-                //AGREGAR DESCUENTO
-                if ($totalesProducto->descuento && $productoDb->familia->cuenta_venta_descuento) {
-                    $cuentaDescuento = $productoDb->familia->cuenta_venta_descuento;
-                    $cuentaOpuestoDescuento = PlanCuentas::CREDITO == $cuentaDescuento->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-
-                    $docDevolucion = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaDescuento->id,
-                        "id_nit" => $cuentaDescuento->exige_nit ? $notaCredito->id_cliente : null,
-                        "id_centro_costos" => $cuentaDescuento->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                        "concepto" => $cuentaDescuento->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
-                        "documento_referencia" => $cuentaDescuento->exige_documento_referencia ? $notaCredito->documento_referencia : null,
-                        "debito" => $totalesProducto->descuento,
-                        "credito" => $totalesProducto->descuento,
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($docDevolucion, $cuentaOpuestoDescuento);
-                }
-
-                //AGREGAR IVA
-                $cuentaVentaDevolucion = $productoDb->familia->cuenta_venta_devolucion_iva;
-                if ($totalesProducto->iva && !$cuentaVentaDevolucion) {
-                    return response()->json([
-                        'success'=>	false,
-                        'data' => [],
-                        "message"=>["Tablas <b style='color: #000'>→</b> Familias" => ['mensaje' => "La familia <b style='color:#481897'>{$productoDb->familia->codigo}</b> - <b style='color:#481897'>{$productoDb->familia->nombre}</b> no tiene configurada la cuenta devolución iva en ventas."]]
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                }
-                if ($totalesProducto->iva && $cuentaVentaDevolucion) {
-                    $cuentaIva = $productoDb->familia->cuenta_venta_devolucion_iva;
-                    $cuentaOpuestoIva = PlanCuentas::CREDITO == $cuentaIva->cuenta_venta_devolucion_iva ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-                    
-                    $docDevolucion = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaIva->id,
-                        "id_nit" => $cuentaIva->exige_nit ? $notaCredito->id_cliente : null,
-                        "id_centro_costos" => $cuentaIva->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                        "concepto" => $cuentaIva->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
-                        "documento_referencia" => $cuentaIva->exige_documento_referencia ? $notaCredito->documento_referencia : null,
-                        "debito" => $totalesProducto->iva,
-                        "credito" => $totalesProducto->iva,
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($docDevolucion, $cuentaIva->cuenta_venta_devolucion_iva);
-                }
-                //AGREGAR RETE FUENTE
-                if ($this->totalesFactura['total_rete_fuente'] && $this->totalesFactura['id_cuenta_rete_fuente']) {
-                    $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
-                    if ($cuentaRetencion) {
-                        $cuentaOpuestoRetencion = PlanCuentas::CREDITO == $cuentaRetencion->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-    
-                        $doc = new DocumentosGeneral([
-                            "id_cuenta" => $cuentaRetencion->id,
-                            "id_nit" => $cuentaRetencion->exige_nit ? $notaCredito->id_cliente : null,
-                            "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                            "concepto" => $cuentaRetencion->exige_concepto ? 'TOTAL: '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
-                            "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $notaCredito->documento_referencia : null,
-                            "debito" => $this->totalesFactura['total_rete_fuente'],
-                            "credito" => $this->totalesFactura['total_rete_fuente'],
-                            "created_by" => request()->user()->id,
-                            "updated_by" => request()->user()->id
-                        ]);
-                        $documentoGeneral->addRow($doc, $cuentaOpuestoRetencion);
-                    }
-                }
-
-                $totalProductos = $this->totalesFactura['total_factura'];
-
-                //AGREGAR FORMAS DE PAGO
-                foreach ($request->get('pagos') as $pago) {
-                    $pago = (object)$pago;
-                    $formaPago = $this->findFormaPago($pago->id);
-                    $pagoValor = $pago->id == 1 ? $pago->valor - $this->totalesPagos['total_cambio'] : $pago->valor;
-                    $cuentaOpuestoPago = PlanCuentas::CREDITO == $formaPago->cuenta->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-
-                    $totalProductos-= $pagoValor;
-
-                    FacVentaPagos::create([
-                        'id_venta' => $notaCredito->id,
-                        'id_forma_pago' => $formaPago->id,
-                        'valor' => $pagoValor,
-                        'saldo' => $totalProductos,
-                        'created_by' => request()->user()->id,
-                        'updated_by' => request()->user()->id
-                    ]);
-
-                    $doc = new DocumentosGeneral([
-                        'id_cuenta' => $formaPago->cuenta->id,
-                        'id_nit' => $formaPago->cuenta->exige_nit ? $notaCredito->id_cliente : null,
-                        'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $notaCredito->id_centro_costos : null,
-                        'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL: '.$nit->nombre_nit.' - '.$notaCredito->documento_referencia : null,
-                        'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $notaCredito->documento_referencia : null,
-                        'debito' => $pagoValor,
-                        'credito' => $pagoValor,
-                        'created_by' => request()->user()->id,
-                        'updated_by' => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($doc, $cuentaOpuestoPago);
-                }
+            if (!$documentoGeneral['success']) {
+                DB::connection('sam')->rollback();
+                return response()->json([
+                    'success' => false,
+                    'data' => [],
+                    'message' => $documentoGeneral['message']
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 
-            if (!$documentoGeneral->save()) {
-
-
+            if (!$documentoGeneral['documento']->save()) {
                 DB::connection('sam')->rollback();
                 return response()->json([
-                    'success'=>	false,
+                    'success' => false,
                     'data' => [],
-                    'message'=> $documentoGeneral->getErrors()
+                    'message' => $documentoGeneral['documento']->getErrors()
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            if ($this->facturaVentas->fe_codigo_identificador) {
-                $notaCreditoElectronica = (new NotaCreditoElectronicaSender($notaCredito))->send();
-
-                if ($notaCreditoElectronica["status"] >= 400) {
-                    if ($notaCreditoElectronica["zip_key"]) {
-                        $notaCredito->fe_zip_key = $notaCreditoElectronica["zip_key"];
-                        $notaCredito->save();
-
-                        if ($notaCreditoElectronica["message_object"] == 'Batch en proceso de validación.') {
-                            //JOB CONSULTAR FACTURA EN 1MN
-                            ProcessConsultarFE::dispatch($notaCredito->id, $notaCreditoElectronica["zip_key"], $request->user()->id, $empresa->id);
-
-                            DB::connection('sam')->commit();
-
-                            return response()->json([
-                                "success" => false,
-                                'data' => [],
-                                "message" => 'Batch en proceso de validación, el sistema le notificará una vez haya consultado la información'
-                            ], 300);
-                        }
-
-                    }
-                    if (!$notaCreditoElectronica["zip_key"] && $notaCreditoElectronica["status"] == 500) {
-                        return response()->json([
-                            "success"=>false,
-                            'data' => [],
-                            "message" => $notaCreditoElectronica["error_message"] 
-                        ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                    }
-
-                    DB::connection('sam')->commit();
-
-                    return response()->json([
-                        "success" => false,
-                        'data' => [],
-                        "message" => $notaCreditoElectronica["error_message"]
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                }
-
-                if ($notaCreditoElectronica["status"] == 200) {
-                    $feSended = $notaCreditoElectronica['status'] == 200;
-                    $hasCufe = (isset($notaCreditoElectronica['cufe']) && $notaCreditoElectronica['cufe']);
-
-                    if($feSended || $hasCufe){
-                        $notaCreditoElectronica['status'] = 200;
-                        $notaCredito = $this->SetFeFields($notaCredito, $notaCreditoElectronica['cufe'], $empresa->nit);
-                        $notaCredito->fe_zip_key = $notaCreditoElectronica['zip_key'];
-                        $notaCredito->fe_xml_file = $notaCreditoElectronica['xml_url'];
-                        $notaCredito->save();
-
-                        if ($notaCredito->cliente->email) {
-                            $enviarFacturaElectronica = true;
-                        }
-
-                    }
-                }
+            // Facturación electrónica
+            $feResponse = $this->procesarFacturaElectronica($notaCredito, $empresa, $request);
+            if ($feResponse) {
+                return $feResponse;
             }
 
             DB::connection('sam')->commit();
 
-            // if ($enviarFacturaElectronica) {
-            //     $pdf = (new VentasPdf($empresa, $notaCredito))->buildPdf()->getPdf();
-
-            //     $this->sendEmailFactura(
-            //         $request->user()['has_empresa'],
-            //         $notaCredito->cliente->email,
-            //         $notaCredito,
-            //         $pdf
-            //     );
-            // }
-
             return response()->json([
-                'success'=>	true,
-                'data' => $documentoGeneral->getRows(),
+                'success' => true,
+                'data' => $documentoGeneral['documento']->getRows(),
                 'impresion' => $this->resolucion->comprobante->imprimir_en_capturas ? $notaCredito->id : '',
-                'message'=> 'Nota credito creado con exito!'
+                'message' => 'Nota credito creado con exito!'
             ], 200);
 
         } catch (Exception $e) {
-
-			DB::connection('sam')->rollback();
+            DB::connection('sam')->rollback();
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$e->getMessage()
+                "message" => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
-    public function movimientoContable (Request $request)
+    // Método para consultar el movimiento contable sin guardar
+    public function movimientoContable(Request $request)
     {
-        $rules = [
-            'id_factura' => 'required|exists:sam.fac_ventas,id',
-            'productos' => 'array|required',
-            'productos.*.id_factura_detalle' => 'required|exists:sam.fac_venta_detalles,id',
-            'productos.*.id_producto' => [
-                'required',
-                'exists:sam.fac_productos,id',
-                function ($attribute, $value, $fail) {
-					$producto = FacProductos::whereId($value)
-                        ->with('familia')
-                        ->first();
-
-                    if (!$producto) {
-                        $fail("El producto id: ". $value. " , No existe");
-                    } else if (!$producto->familia->id_cuenta_venta_devolucion) {
-                        $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta de venta devolución configurada");
-                    }
-
-                    
-				}
-            ],
-            'productos.*.cantidad' => 'required|numeric|min:0',
-            'productos.*.total_devolucion' => 'required|numeric|min:1',
-            'pagos' => 'array|nullable',
-            'pagos.*.id' => 'nullable|exists:sam.fac_formas_pagos,id',
-            'pagos.*.valor' => 'nullable|numeric|min:1',
-        ];
-
+        $rules = $this->getValidationRulesMovimiento();
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
-		if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$validator->errors()
+                "message" => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
-            
-            //GUARDAR DETALLE & MOVIMIENTO CONTABLE VENTAS
-            $documentoGeneral = new Documento();
             $this->facturaVentas = FacFactura::find($request->get('id_factura'));
 
-            $this->calcularTotales($request->get('productos'));
-            
-            foreach ($request->get('productos') as $producto) {
-                $producto = (object)$producto;
-                $nit = $this->findCliente($request->get('id_cliente'));
-                $productoDb = $this->findProducto($producto->id_producto);
-                $totalesProducto = $this->calcularTotalesProducto($producto);
-                $detalleProducto = FacFacturaDetalle::find($producto->id_factura_detalle);
+            // Generar documento contable (LÓGICA REUTILIZADA)
+            $resultado = $this->generarMovimientoContable(
+                $request,
+                null,
+                false // NO guardar en BD
+            );
 
-                //AGREGAR INVENTARIO
-                if ($productoDb->precio_inicial && $productoDb->familia->cuenta_costos) {
-                    $cuentaCosto = $productoDb->familia->cuenta_costos;
-                    $cuentaOpuestoCosto = PlanCuentas::CREDITO == $cuentaCosto->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-
-                    $docCosto = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaCosto->id,
-                        "id_nit" => null,
-                        "id_centro_costos" => null,
-                        "concepto" => $cuentaCosto->exige_concepto ? 'NOTA CREDITO: '.$nit->nombre_nit.' - '.$request->get('documento_referencia') : null,
-                        "documento_referencia" => $cuentaCosto->exige_documento_referencia ? $request->get('documento_referencia') : null,
-                        "debito" => $productoDb->precio_inicial * $producto->cantidad,
-                        "credito" => $productoDb->precio_inicial * $producto->cantidad,
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($docCosto, $cuentaOpuestoCosto);
-                }
-
-                //AGREGAR DEVOLUCION
-                $cuentaDevolucion = $productoDb->familia->cuenta_venta_devolucion;
-                $docDevolucion = new DocumentosGeneral([
-                    "id_cuenta" => $cuentaDevolucion->id,
-                    "id_nit" => $cuentaDevolucion->exige_nit ? $request->get('id_cliente') : null,
-                    "id_centro_costos" => null,
-                    "concepto" => $cuentaDevolucion->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$request->get('documento_referencia') : null,
-                    "documento_referencia" => $cuentaDevolucion->exige_documento_referencia ? $request->get('documento_referencia') : null,
-                    "debito" => $totalesProducto->subtotal,
-                    "credito" => $totalesProducto->subtotal,
-                    "created_by" => request()->user()->id,
-                    "updated_by" => request()->user()->id
-                ]);
-                $documentoGeneral->addRow($docDevolucion, $cuentaDevolucion->naturaleza_ventas);
-
-                //AGREGAR COSTO
-                if ($totalesProducto->subtotal && $productoDb->familia->cuenta_compra_devolucion) {
-                    $cuentaCosto = $productoDb->familia->cuenta_compra_devolucion;
-
-                    $docCosto = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaCosto->id,
-                        "id_nit" => $cuentaCosto->exige_nit ? $request->get('id_cliente') : null,
-                        "id_centro_costos" => null,
-                        "concepto" => $cuentaCosto->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$request->get('documento_referencia') : null,
-                        "documento_referencia" => $cuentaCosto->exige_documento_referencia ? $request->get('documento_referencia') : null,
-                        "debito" => $productoDb->precio_inicial * $producto->cantidad,
-                        "credito" => $productoDb->precio_inicial * $producto->cantidad,
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($docCosto, $cuentaCosto->cuenta_compra_devolucion);
-                }
-
-                //AGREGAR DESCUENTO
-                $cuentaVentaDevolucion = $productoDb->familia->cuenta_venta_devolucion_iva;
-                if ($totalesProducto->descuento && $productoDb->familia->cuenta_venta_descuento) {
-                    $cuentaDescuento = $productoDb->familia->cuenta_venta_descuento;
-                    $cuentaOpuestoDescuento = PlanCuentas::CREDITO == $cuentaDescuento->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-
-                    $docDevolucion = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaDescuento->id,
-                        "id_nit" => $cuentaDescuento->exige_nit ? $request->get('id_cliente') : null,
-                        "id_centro_costos" => null,
-                        "concepto" => $cuentaDescuento->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$request->get('documento_referencia') : null,
-                        "documento_referencia" => $cuentaDescuento->exige_documento_referencia ? $request->get('documento_referencia') : null,
-                        "debito" => $totalesProducto->descuento,
-                        "credito" => $totalesProducto->descuento,
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($docDevolucion, $cuentaOpuestoDescuento);
-                }
-
-                //AGREGAR IVA
-                $cuentaVentaDevolucion = $productoDb->familia->cuenta_venta_devolucion_iva;
-                if ($totalesProducto->iva && $cuentaVentaDevolucion) {
-                    $cuentaIva = $productoDb->familia->cuenta_venta_devolucion_iva;
-                    $cuentaOpuestoIva = PlanCuentas::CREDITO == $cuentaIva->cuenta_venta_devolucion_iva ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-                    
-                    $docDevolucion = new DocumentosGeneral([
-                        "id_cuenta" => $cuentaIva->id,
-                        "id_nit" => $cuentaIva->exige_nit ? $request->get('id_cliente') : null,
-                        "id_centro_costos" => null,
-                        "concepto" => $cuentaIva->exige_concepto ? 'NOTA: CREDITO '.$nit->nombre_nit.' - '.$request->get('documento_referencia') : null,
-                        "documento_referencia" => $cuentaIva->exige_documento_referencia ? $request->get('documento_referencia') : null,
-                        "debito" => $totalesProducto->iva,
-                        "credito" => $totalesProducto->iva,
-                        "created_by" => request()->user()->id,
-                        "updated_by" => request()->user()->id
-                    ]);
-                    $documentoGeneral->addRow($docDevolucion, $cuentaIva->cuenta_venta_devolucion_iva);
-                }
-                //AGREGAR RETE FUENTE
-                if ($this->totalesFactura['total_rete_fuente'] && $this->totalesFactura['id_cuenta_rete_fuente']) {
-                    $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
-                    if ($cuentaRetencion) {
-                        $cuentaOpuestoRetencion = PlanCuentas::CREDITO == $cuentaRetencion->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-    
-                        $doc = new DocumentosGeneral([
-                            "id_cuenta" => $cuentaRetencion->id,
-                            "id_nit" => $cuentaRetencion->exige_nit ? $request->get('id_cliente') : null,
-                            "id_centro_costos" => null,
-                            "concepto" => $cuentaRetencion->exige_concepto ? 'TOTAL: '.$nit->nombre_nit.' - '.$request->get('documento_referencia') : null,
-                            "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $request->get('documento_referencia') : null,
-                            "debito" => $this->totalesFactura['total_rete_fuente'],
-                            "credito" => $this->totalesFactura['total_rete_fuente'],
-                            "created_by" => request()->user()->id,
-                            "updated_by" => request()->user()->id
-                        ]);
-                        $documentoGeneral->addRow($doc, $cuentaOpuestoRetencion);
-                    }
-                }
-
-                $totalProductos = $this->totalesFactura['total_factura'];
-
-                //AGREGAR FORMAS DE PAGO
-                if ($request->has('pagos')) {
-                    $this->calcularFormasPago($request->get('pagos'));
-                    foreach ($request->get('pagos') as $pago) {
-                        $pago = (object)$pago;
-                        $formaPago = $this->findFormaPago($pago->id);
-                        $pagoValor = $pago->id == 1 ? $pago->valor - $this->totalesPagos['total_cambio'] : $pago->valor;
-                        $cuentaOpuestoPago = PlanCuentas::CREDITO == $formaPago->cuenta->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-    
-                        $totalProductos-= $pagoValor;
-    
-                        $doc = new DocumentosGeneral([
-                            'id_cuenta' => $formaPago->cuenta->id,
-                            'id_nit' => null,
-                            'id_centro_costos' => null,
-                            'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL: '.$nit->nombre_nit.' - '.$request->get('documento_referencia') : null,
-                            'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $request->get('documento_referencia') : null,
-                            'debito' => $pagoValor,
-                            'credito' => $pagoValor,
-                            'created_by' => request()->user()->id,
-                            'updated_by' => request()->user()->id
-                        ]);
-                        $documentoGeneral->addRow($doc, $cuentaOpuestoPago);
-                    }
-                }
+            if (!$resultado['success']) {
+                return response()->json([
+                    'success' => false,
+                    'data' => [],
+                    'message' => $resultado['message']
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            $movimientoGeneral = $documentoGeneral->getRows();
-            $totales = $documentoGeneral->getTotals();
+            $movimientoGeneral = $resultado['documento']->getRows();
+            $totales = $resultado['documento']->getTotals();
 
             $movimientoGeneral[] = [
                 'id_cuenta' => 'TOTALES',
@@ -718,18 +239,577 @@ class NotaCreditoController extends Controller
             ];
 
             return response()->json([
-                'success'=>	true,
+                'success' => true,
                 'data' => $movimientoGeneral,
-                'message'=> 'Movimiento contable generado con exito!'
+                'message' => 'Movimiento contable generado con exito!'
             ], Response::HTTP_OK);
 
         } catch (Exception $e) {
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$e->getMessage()
+                "message" => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+    }
+
+    // ============================================================
+    // MÉTODO CENTRAL: Genera el movimiento contable (REUTILIZABLE)
+    // ============================================================
+    private function generarMovimientoContable(Request $request, $notaCredito = null, $guardarEnBD = false)
+    {
+        $documentoGeneral = $guardarEnBD && $notaCredito
+            ? new Documento(
+                $this->resolucion->comprobante->id,
+                $notaCredito,
+                $request->get('fecha_manual'),
+                $request->get('consecutivo'),
+                false
+            )
+            : new Documento();
+
+        $this->calcularTotales($request->get('productos'));
+
+        foreach ($request->get('productos') as $producto) {
+            $producto = (object)$producto;
+            $clienteId = $guardarEnBD ? $notaCredito->id_cliente : $request->get('id_cliente');
+            $nit = $this->findCliente($clienteId);
+            $productoDb = $this->findProducto($producto->id_producto);
+            $detalleProducto = FacFacturaDetalle::find($producto->id_factura_detalle);
+            $totalesProducto = $this->calcularTotalesProducto($producto);
+
+            // Procesar movimiento de bodega (solo si se guarda)
+            if ($guardarEnBD && $notaCredito) {
+                $bodegaResult = $this->procesarMovimientoBodega($producto, $productoDb, $notaCredito);
+                if ($bodegaResult) {
+                    $resultInventario = $this->agregarMovimientoInventario(
+                        $documentoGeneral,
+                        $productoDb,
+                        $producto,
+                        $nit,
+                        $notaCredito
+                    );
+                    
+                    if (isset($resultInventario['error'])) {
+                        return ['success' => false, 'message' => $resultInventario['error']];
+                    }
+                    $documentoGeneral = $resultInventario;
+                }
+            }
+
+            // Guardar detalle (solo si se guarda)
+            if ($guardarEnBD && $notaCredito) {
+                $this->crearNotaCreditoDetalle($notaCredito, $productoDb, $detalleProducto, $producto, $totalesProducto);
+            }
+
+            // Agregar movimientos contables
+            $resultMovimientos = $this->agregarMovimientosProducto(
+                $documentoGeneral,
+                $productoDb,
+                $producto,
+                $totalesProducto,
+                $nit,
+                $clienteId,
+                $request->get('documento_referencia') ?? ($notaCredito ? $notaCredito->documento_referencia : null)
+            );
+            
+            if (isset($resultMovimientos['error'])) {
+                return ['success' => false, 'message' => $resultMovimientos['error']];
+            }
+            $documentoGeneral = $resultMovimientos;
+
+            // Validar cuenta IVA
+            $validacionIva = $this->validarCuentaIva($productoDb, $totalesProducto);
+            if ($validacionIva) {
+                return ['success' => false, 'message' => $validacionIva];
+            }
+
+            // Agregar retención fuente
+            $resultReteFuente = $this->agregarReteFuente(
+                $documentoGeneral,
+                $nit,
+                $clienteId,
+                $request->get('documento_referencia') ?? ($notaCredito ? $notaCredito->documento_referencia : null)
+            );
+            
+            if (isset($resultReteFuente['error'])) {
+                return ['success' => false, 'message' => $resultReteFuente['error']];
+            }
+            $documentoGeneral = $resultReteFuente;
+
+            // Agregar formas de pago
+            if ($request->has('pagos') && $request->get('pagos')) {
+                $this->calcularFormasPago($request->get('pagos'));
+                $resultFormasPago = $this->agregarFormasPago(
+                    $documentoGeneral,
+                    $request,
+                    $nit,
+                    $clienteId,
+                    $notaCredito
+                );
+                
+                if (isset($resultFormasPago['error'])) {
+                    return ['success' => false, 'message' => $resultFormasPago['error']];
+                }
+                $documentoGeneral = $resultFormasPago;
+            }
+        }
+
+        return ['success' => true, 'documento' => $documentoGeneral];
+    }
+
+    // ============================================================
+    // MÉTODOS AUXILIARES
+    // ============================================================
+
+    private function getValidationRules()
+    {
+        return [
+            'id_factura' => 'required|exists:sam.fac_ventas,id',
+            'id_resolucion' => 'required|exists:sam.fac_resoluciones,id',
+            'fecha_manual' => 'required|date',
+            'documento_referencia' => 'required|string',
+            'productos' => 'array|required',
+            'productos.*.id_factura_detalle' => 'required|exists:sam.fac_venta_detalles,id',
+            'productos.*.id_producto' => [
+                'required',
+                'exists:sam.fac_productos,id',
+                function ($attribute, $value, $fail) {
+                    $producto = FacProductos::whereId($value)->with('familia')->first();
+                    if (!$producto) {
+                        $fail("El producto id: $value, No existe");
+                    } else if (!$producto->familia->id_cuenta_venta_devolucion) {
+                        $fail("La familia ({$producto->familia->codigo} - {$producto->familia->nombre}) no tiene cuenta de venta devolución configurada");
+                    }
+                }
+            ],
+            'productos.*.cantidad' => 'required|numeric|min:0',
+            'productos.*.total_devolucion' => 'required|numeric|min:1',
+            'pagos' => 'array|required',
+            'pagos.*.id' => 'required|exists:sam.fac_formas_pagos,id',
+            'pagos.*.valor' => 'required|numeric|min:1',
+        ];
+    }
+
+    private function getValidationRulesMovimiento()
+    {
+        $rules = $this->getValidationRules();
+        $rules['pagos'] = 'array|nullable';
+        $rules['pagos.*.id'] = 'nullable|exists:sam.fac_formas_pagos,id';
+        $rules['pagos.*.valor'] = 'nullable|numeric|min:1';
+        unset($rules['id_resolucion']);
+        unset($rules['fecha_manual']);
+        unset($rules['documento_referencia']);
+        return $rules;
+    }
+
+    private function validateResolucion()
+    {
+        if (!$this->resolucion->isValid) {
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => ["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está agotada"]]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (!$this->resolucion->isActive) {
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => ["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está vencida"]]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return null;
+    }
+
+    private function procesarMovimientoBodega($producto, $productoDb, $notaCredito)
+    {
+        if (!$producto->cantidad || !$productoDb->familia->inventario) {
+            return null;
+        }
+
+        $bodegaProducto = FacProductosBodegas::where('id_bodega', $this->bodega->id)
+            ->where('id_producto', $producto->id_producto)
+            ->first();
+
+        if (!$bodegaProducto) {
+            $bodegaProducto = FacProductosBodegas::create([
+                'id_producto' => $producto->id_producto,
+                'id_bodega' => $notaCredito->id_bodega,
+                'cantidad' => 0,
+                'created_by' => request()->user()->id,
+                'updated_by' => request()->user()->id
+            ]);
+        }
+
+        $movimiento = new FacProductosBodegasMovimiento([
+            'id_producto' => $producto->id_producto,
+            'id_bodega' => $notaCredito->id_bodega,
+            'cantidad_anterior' => $bodegaProducto->cantidad,
+            'cantidad' => $producto->cantidad,
+            'tipo_tranferencia' => 1,
+            'inventario' => $productoDb->familia->inventario ? 1 : 0,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        $bodegaProducto->updated_by = request()->user()->id;
+        $bodegaProducto->cantidad += $producto->cantidad;
+        $bodegaProducto->save();
+        
+        $movimiento->relation()->associate($notaCredito);
+        $notaCredito->bodegas()->save($movimiento);
+
+        return $bodegaProducto;
+    }
+
+    private function agregarMovimientoInventario($documentoGeneral, $productoDb, $producto, $nit, $notaCredito)
+    {
+        if ($productoDb->precio_inicial && $productoDb->familia->cuenta_costos) {
+            $cuentaCosto = $productoDb->familia->cuenta_costos;
+            
+            // Validar naturaleza_ventas
+            if (is_null($cuentaCosto->naturaleza_ventas)) {
+                return [
+                    'error' => [
+                        "Cuenta costos" => [
+                            "La cuenta de costos ({$cuentaCosto->cuenta} - {$cuentaCosto->nombre}) " .
+                            "no tiene configurada la naturaleza de ventas. " .
+                            "Familia: {$productoDb->familia->codigo} - {$productoDb->familia->nombre}"
+                        ]
+                    ]
+                ];
+            }
+            
+            $cuentaOpuestoCosto = PlanCuentas::CREDITO == $cuentaCosto->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
+
+            $docCosto = new DocumentosGeneral([
+                "id_cuenta" => $cuentaCosto->id,
+                "id_nit" => $cuentaCosto->exige_nit ? $notaCredito->id_cliente : null,
+                "id_centro_costos" => $cuentaCosto->exige_centro_costos ? $notaCredito->id_centro_costos : null,
+                "concepto" => $cuentaCosto->exige_concepto ? 'NOTA CREDITO: ' . $nit->nombre_nit . ' - ' . $notaCredito->documento_referencia : null,
+                "documento_referencia" => $cuentaCosto->exige_documento_referencia ? $notaCredito->documento_referencia : null,
+                "debito" => $productoDb->precio_inicial * $producto->cantidad,
+                "credito" => $productoDb->precio_inicial * $producto->cantidad,
+                "created_by" => request()->user()->id,
+                "updated_by" => request()->user()->id
+            ]);
+            $documentoGeneral->addRow($docCosto, $cuentaOpuestoCosto);
+        }
+
+        return $documentoGeneral;
+    }
+
+    private function crearNotaCreditoDetalle($notaCredito, $productoDb, $detalleProducto, $producto, $totalesProducto)
+    {
+        FacVentaDetalles::create([
+            'id_venta' => $notaCredito->id,
+            'id_venta_detalle' => $detalleProducto->id,
+            'id_producto' => $productoDb->id,
+            'id_cuenta_venta' => $productoDb->familia->id_cuenta_venta_devolucion,
+            'id_cuenta_venta_retencion' => $productoDb->familia->id_cuenta_venta_retencion,
+            'id_cuenta_venta_iva' => $productoDb->familia->id_cuenta_venta_devolucion_iva,
+            'id_cuenta_venta_descuento' => $productoDb->familia->id_cuenta_venta_descuento,
+            'descripcion' => $productoDb->codigo . ' - ' . $productoDb->nombre,
+            'cantidad' => $producto->cantidad,
+            'costo' => $detalleProducto->costo,
+            'subtotal' => $totalesProducto->subtotal,
+            'descuento_porcentaje' => $detalleProducto->descuento_porcentaje,
+            'descuento_valor' => $totalesProducto->descuento,
+            'iva_porcentaje' => $detalleProducto->iva_porcentaje,
+            'iva_valor' => $totalesProducto->iva,
+            'total' => $producto->total_devolucion,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+    }
+
+    private function agregarMovimientosProducto($documentoGeneral, $productoDb, $producto, $totalesProducto, $nit, $clienteId, $docReferencia)
+    {
+        // Devolución
+        $cuentaDevolucion = $productoDb->familia->cuenta_venta_devolucion;
+        
+        // Validar naturaleza_ventas
+        if (is_null($cuentaDevolucion->naturaleza_ventas)) {
+            return [
+                'error' => [
+                    "Cuenta venta devolución" => [
+                        "La cuenta de venta devolución ({$cuentaDevolucion->cuenta} - {$cuentaDevolucion->nombre}) " .
+                        "no tiene configurada la naturaleza de ventas. " .
+                        "Familia: {$productoDb->familia->codigo} - {$productoDb->familia->nombre}"
+                    ]
+                ]
+            ];
+        }
+        
+        $docDevolucion = new DocumentosGeneral([
+            "id_cuenta" => $cuentaDevolucion->id,
+            "id_nit" => $cuentaDevolucion->exige_nit ? $clienteId : null,
+            "id_centro_costos" => null,
+            "concepto" => $cuentaDevolucion->exige_concepto ? 'NOTA: CREDITO ' . $nit->nombre_nit . ' - ' . $docReferencia : null,
+            "documento_referencia" => $cuentaDevolucion->exige_documento_referencia ? $docReferencia : null,
+            "debito" => $totalesProducto->subtotal,
+            "credito" => $totalesProducto->subtotal,
+            "created_by" => request()->user()->id,
+            "updated_by" => request()->user()->id
+        ]);
+        $documentoGeneral->addRow($docDevolucion, $cuentaDevolucion->naturaleza_ventas);
+
+        // Costo
+        if ($totalesProducto->subtotal && $productoDb->familia->cuenta_compra_devolucion) {
+            $cuentaCosto = $productoDb->familia->cuenta_compra_devolucion;
+            
+            // Validar que tenga naturaleza configurada
+            if (is_null($cuentaCosto->cuenta_compra_devolucion)) {
+                return [
+                    'error' => [
+                        "Cuenta compra devolución" => [
+                            "La cuenta de compra devolución ({$cuentaCosto->cuenta} - {$cuentaCosto->nombre}) " .
+                            "no tiene configurada la naturaleza (cuenta_compra_devolucion). " .
+                            "Familia: {$productoDb->familia->codigo} - {$productoDb->familia->nombre}"
+                        ]
+                    ]
+                ];
+            }
+            
+            $docCosto = new DocumentosGeneral([
+                "id_cuenta" => $cuentaCosto->id,
+                "id_nit" => $cuentaCosto->exige_nit ? $clienteId : null,
+                "id_centro_costos" => null,
+                "concepto" => $cuentaCosto->exige_concepto ? 'NOTA: CREDITO ' . $nit->nombre_nit . ' - ' . $docReferencia : null,
+                "documento_referencia" => $cuentaCosto->exige_documento_referencia ? $docReferencia : null,
+                "debito" => $productoDb->precio_inicial * $producto->cantidad,
+                "credito" => $productoDb->precio_inicial * $producto->cantidad,
+                "created_by" => request()->user()->id,
+                "updated_by" => request()->user()->id
+            ]);
+            $documentoGeneral->addRow($docCosto, $cuentaCosto->cuenta_compra_devolucion);
+        }
+
+        // Descuento
+        if ($totalesProducto->descuento && $productoDb->familia->cuenta_venta_descuento) {
+            $cuentaDescuento = $productoDb->familia->cuenta_venta_descuento;
+            
+            // Validar naturaleza_ventas
+            if (is_null($cuentaDescuento->naturaleza_ventas)) {
+                return [
+                    'error' => [
+                        "Cuenta venta descuento" => [
+                            "La cuenta de venta descuento ({$cuentaDescuento->cuenta} - {$cuentaDescuento->nombre}) " .
+                            "no tiene configurada la naturaleza de ventas. " .
+                            "Familia: {$productoDb->familia->codigo} - {$productoDb->familia->nombre}"
+                        ]
+                    ]
+                ];
+            }
+            
+            $cuentaOpuestoDescuento = PlanCuentas::CREDITO == $cuentaDescuento->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
+            $docDescuento = new DocumentosGeneral([
+                "id_cuenta" => $cuentaDescuento->id,
+                "id_nit" => $cuentaDescuento->exige_nit ? $clienteId : null,
+                "id_centro_costos" => null,
+                "concepto" => $cuentaDescuento->exige_concepto ? 'NOTA: CREDITO ' . $nit->nombre_nit . ' - ' . $docReferencia : null,
+                "documento_referencia" => $cuentaDescuento->exige_documento_referencia ? $docReferencia : null,
+                "debito" => $totalesProducto->descuento,
+                "credito" => $totalesProducto->descuento,
+                "created_by" => request()->user()->id,
+                "updated_by" => request()->user()->id
+            ]);
+            $documentoGeneral->addRow($docDescuento, $cuentaOpuestoDescuento);
+        }
+
+        // IVA
+        $cuentaVentaDevolucion = $productoDb->familia->cuenta_venta_devolucion_iva;
+        if ($totalesProducto->iva && $cuentaVentaDevolucion) {
+            $cuentaIva = $productoDb->familia->cuenta_venta_devolucion_iva;
+            
+            // Validar que tenga cuenta_venta_devolucion_iva configurada
+            if (is_null($cuentaIva->cuenta_venta_devolucion_iva)) {
+                return [
+                    'error' => [
+                        "Cuenta venta devolución IVA" => [
+                            "La cuenta de venta devolución IVA ({$cuentaIva->cuenta} - {$cuentaIva->nombre}) " .
+                            "no tiene configurada la naturaleza (cuenta_venta_devolucion_iva). " .
+                            "Familia: {$productoDb->familia->codigo} - {$productoDb->familia->nombre}"
+                        ]
+                    ]
+                ];
+            }
+            
+            $cuentaOpuestoIva = PlanCuentas::CREDITO == $cuentaIva->cuenta_venta_devolucion_iva ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
+            $docIva = new DocumentosGeneral([
+                "id_cuenta" => $cuentaIva->id,
+                "id_nit" => $cuentaIva->exige_nit ? $clienteId : null,
+                "id_centro_costos" => null,
+                "concepto" => $cuentaIva->exige_concepto ? 'NOTA: CREDITO ' . $nit->nombre_nit . ' - ' . $docReferencia : null,
+                "documento_referencia" => $cuentaIva->exige_documento_referencia ? $docReferencia : null,
+                "debito" => $totalesProducto->iva,
+                "credito" => $totalesProducto->iva,
+                "created_by" => request()->user()->id,
+                "updated_by" => request()->user()->id
+            ]);
+            $documentoGeneral->addRow($docIva, $cuentaIva->cuenta_venta_devolucion_iva);
+        }
+
+        return $documentoGeneral;
+    }
+
+    private function validarCuentaIva($productoDb, $totalesProducto)
+    {
+        $cuentaVentaDevolucion = $productoDb->familia->cuenta_venta_devolucion_iva;
+        if ($totalesProducto->iva && !$cuentaVentaDevolucion) {
+            return ["Tablas <b style='color: #000'>→</b> Familias" => 
+                ['mensaje' => "La familia <b style='color:#481897'>{$productoDb->familia->codigo}</b> - <b style='color:#481897'>{$productoDb->familia->nombre}</b> no tiene configurada la cuenta devolución iva en ventas."]
+            ];
+        }
+        return null;
+    }
+
+    private function agregarReteFuente($documentoGeneral, $nit, $clienteId, $docReferencia)
+    {
+        if ($this->totalesFactura['total_rete_fuente'] && $this->totalesFactura['id_cuenta_rete_fuente']) {
+            $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
+            if ($cuentaRetencion) {
+                // Validar naturaleza_ventas
+                if (is_null($cuentaRetencion->naturaleza_ventas)) {
+                    return [
+                        'error' => [
+                            "Cuenta retención fuente" => [
+                                "La cuenta de retención en la fuente ({$cuentaRetencion->cuenta} - {$cuentaRetencion->nombre}) " .
+                                "no tiene configurada la naturaleza de ventas."
+                            ]
+                        ]
+                    ];
+                }
+                
+                $cuentaOpuestoRetencion = PlanCuentas::CREDITO == $cuentaRetencion->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
+                $doc = new DocumentosGeneral([
+                    "id_cuenta" => $cuentaRetencion->id,
+                    "id_nit" => $cuentaRetencion->exige_nit ? $clienteId : null,
+                    "id_centro_costos" => null,
+                    "concepto" => $cuentaRetencion->exige_concepto ? 'TOTAL: ' . $nit->nombre_nit . ' - ' . $docReferencia : null,
+                    "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $docReferencia : null,
+                    "debito" => $this->totalesFactura['total_rete_fuente'],
+                    "credito" => $this->totalesFactura['total_rete_fuente'],
+                    "created_by" => request()->user()->id,
+                    "updated_by" => request()->user()->id
+                ]);
+                $documentoGeneral->addRow($doc, $cuentaOpuestoRetencion);
+            }
+        }
+        return $documentoGeneral;
+    }
+
+    private function agregarFormasPago($documentoGeneral, $request, $nit, $clienteId, $notaCredito = null)
+    {
+        $totalProductos = $this->totalesFactura['total_factura'];
+        
+        foreach ($request->get('pagos') as $pago) {
+            $pago = (object)$pago;
+            $formaPago = $this->findFormaPago($pago->id);
+            
+            // Validar naturaleza_ventas
+            if (is_null($formaPago->cuenta->naturaleza_ventas)) {
+                return [
+                    'error' => [
+                        "Cuenta forma de pago" => [
+                            "La cuenta de la forma de pago ({$formaPago->cuenta->cuenta} - {$formaPago->cuenta->nombre}) " .
+                            "no tiene configurada la naturaleza de ventas. " .
+                            "Forma de pago: {$formaPago->nombre}"
+                        ]
+                    ]
+                ];
+            }
+            
+            $pagoValor = $pago->id == 1 ? $pago->valor - $this->totalesPagos['total_cambio'] : $pago->valor;
+            $cuentaOpuestoPago = PlanCuentas::CREDITO == $formaPago->cuenta->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
+
+            $totalProductos -= $pagoValor;
+
+            if ($notaCredito) {
+                FacVentaPagos::create([
+                    'id_venta' => $notaCredito->id,
+                    'id_forma_pago' => $formaPago->id,
+                    'valor' => $pagoValor,
+                    'saldo' => $totalProductos,
+                    'created_by' => request()->user()->id,
+                    'updated_by' => request()->user()->id
+                ]);
+            }
+
+            $docReferencia = $notaCredito ? $notaCredito->documento_referencia : $request->get('documento_referencia');
+            $doc = new DocumentosGeneral([
+                'id_cuenta' => $formaPago->cuenta->id,
+                'id_nit' => null,
+                'id_centro_costos' => null,
+                'concepto' => $formaPago->cuenta->exige_concepto ? 'TOTAL: ' . $nit->nombre_nit . ' - ' . $docReferencia : null,
+                'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $docReferencia : null,
+                'debito' => $pagoValor,
+                'credito' => $pagoValor,
+                'created_by' => request()->user()->id,
+                'updated_by' => request()->user()->id
+            ]);
+            $documentoGeneral->addRow($doc, $cuentaOpuestoPago);
+        }
+
+        return $documentoGeneral;
+    }
+
+    private function procesarFacturaElectronica($notaCredito, $empresa, $request)
+    {
+        if (!$this->facturaVentas->fe_codigo_identificador) {
+            return null;
+        }
+
+        $notaCreditoElectronica = (new NotaCreditoElectronicaSender($notaCredito))->send();
+
+        if ($notaCreditoElectronica["status"] >= 400) {
+            if ($notaCreditoElectronica["zip_key"]) {
+                $notaCredito->fe_zip_key = $notaCreditoElectronica["zip_key"];
+                $notaCredito->save();
+
+                if ($notaCreditoElectronica["message_object"] == 'Batch en proceso de validación.') {
+                    ProcessConsultarFE::dispatch($notaCredito->id, $notaCreditoElectronica["zip_key"], $request->user()->id, $empresa->id);
+                    DB::connection('sam')->commit();
+                    return response()->json([
+                        "success" => false,
+                        'data' => [],
+                        "message" => 'Batch en proceso de validación, el sistema le notificará una vez haya consultado la información'
+                    ], 300);
+                }
+            }
+
+            if (!$notaCreditoElectronica["zip_key"] && $notaCreditoElectronica["status"] == 500) {
+                return response()->json([
+                    "success" => false,
+                    'data' => [],
+                    "message" => $notaCreditoElectronica["error_message"]
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            DB::connection('sam')->commit();
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => $notaCreditoElectronica["error_message"]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ($notaCreditoElectronica["status"] == 200) {
+            $feSended = $notaCreditoElectronica['status'] == 200;
+            $hasCufe = (isset($notaCreditoElectronica['cufe']) && $notaCreditoElectronica['cufe']);
+
+            if ($feSended || $hasCufe) {
+                $notaCredito = $this->SetFeFields($notaCredito, $notaCreditoElectronica['cufe'], $empresa->nit);
+                $notaCredito->fe_zip_key = $notaCreditoElectronica['zip_key'];
+                $notaCredito->fe_xml_file = $notaCreditoElectronica['xml_url'];
+                $notaCredito->save();
+            }
+        }
+
+        return null;
     }
 
     public function facturacionElectronica(Request $request)
