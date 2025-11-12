@@ -125,7 +125,7 @@ function cargarTablasNotasCredito() {
             type: "GET",
             headers: headers,
             data: {
-                type: 'notas',
+                type: 'ventas',
             },
             url: base_url + 'forma-pago/combo-forma-pago',
         },
