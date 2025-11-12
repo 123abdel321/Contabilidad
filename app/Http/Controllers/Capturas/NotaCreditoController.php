@@ -306,14 +306,6 @@ class NotaCreditoController extends Controller
                 }
 
                 //AGREGAR DESCUENTO
-                $cuentaVentaDevolucion = $productoDb->familia->cuenta_venta_devolucion_iva;
-                if ($detalleProducto->iva_valor && !$cuentaVentaDevolucion) {
-                    return response()->json([
-                        'success'=>	false,
-                        'data' => [],
-                        "message"=>["Tablas <b style='color: #000'>→</b> Familias" => ['mensaje' => "La familia <b style='color:#481897'>{$productoDb->familia->codigo}</b> - <b style='color:#481897'>{$productoDb->familia->nombre}</b> no tiene configurada la cuenta devolución descuento en ventas."]]
-                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                }
                 if ($totalesProducto->descuento && $productoDb->familia->cuenta_venta_descuento) {
                     $cuentaDescuento = $productoDb->familia->cuenta_venta_descuento;
                     $cuentaOpuestoDescuento = PlanCuentas::CREDITO == $cuentaDescuento->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
