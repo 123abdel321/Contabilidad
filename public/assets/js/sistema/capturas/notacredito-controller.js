@@ -125,7 +125,7 @@ function cargarTablasNotasCredito() {
             type: "GET",
             headers: headers,
             data: {
-                type: 'ventas'
+                type: 'notas',
             },
             url: base_url + 'forma-pago/combo-forma-pago',
         },
@@ -465,7 +465,9 @@ function cargarCombosNotasCredito() {
         var newOption = new Option(dataResolucion.text, dataResolucion.id, false, false);
         $comboResolucionNotaCredito.append(newOption).trigger('change');
         $comboResolucionNotaCredito.val(dataResolucion.id).trigger('change');
+        consecutivoSiguienteNotaCredito();
     }
+
 }
 
 function loadFormasPagoNotasCredito() {

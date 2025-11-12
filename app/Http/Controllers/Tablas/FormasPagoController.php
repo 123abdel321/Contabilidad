@@ -255,6 +255,7 @@ class FormasPagoController extends Controller
                         FacFormasPago::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC
                     ]);
                     break;
+
                 case 'ingresos':
                     $this->filterTiposCuenta($formasPago, [
                         FacFormasPago::TIPO_CUENTA_CAJA_BANCOS,
@@ -266,6 +267,11 @@ class FormasPagoController extends Controller
                         FacFormasPago::TIPO_CUENTA_CAJA_BANCOS,
                         FacFormasPago::TIPO_CUENTA_CXC,
                         FacFormasPago::TIPO_CUENTA_ANTICIPO_CLIENTES_XP
+                    ]);
+                case 'notas':
+                    $this->filterTiposCuenta($formasPago, [
+                        FacFormasPago::TIPO_CUENTA_CXC,
+                        FacFormasPago::TIPO_CUENTA_ANTICIPO_CLIENTES_XP,
                     ]);
                     break;
                 default:

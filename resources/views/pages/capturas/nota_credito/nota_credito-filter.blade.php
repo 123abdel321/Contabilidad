@@ -87,7 +87,7 @@
                         <i class="fa-solid fa-calculator" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">VER MOVIMIENTO CONTABLE</b>
                     </span>
-                    <span id="crearCapturaNotaCreditoLoading" class="badge bg-gradient-success" style="display:none; min-width: 40px; margin-bottom: 16px; float: right;">
+                    <span id="crearCapturaNotaCreditoLoading" class="badge bg-gradient-success btn-bg-excel" style="display:none; min-width: 40px; margin-bottom: 16px; float: right;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>
