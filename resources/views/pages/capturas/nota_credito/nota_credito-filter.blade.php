@@ -2,7 +2,7 @@
     <div class="accordion-item">
         <h5 class="accordion-header">
             <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNotaCreditoGeneral" aria-expanded="false" aria-controls="collapseNotaCreditoGeneral">
-                Datos de factura devoluciones
+                <div id="texto-nota-credito">Datos de factura devoluciones</div>
                 <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
                 <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
             </button>
