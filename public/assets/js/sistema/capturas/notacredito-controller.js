@@ -283,7 +283,6 @@ function cargarTablasNotasCredito() {
         nota_credito_table_facturas.on('click', '.select-venta-nota-credito', function() {
             var id = this.id.split('_')[1];
             var dataFactura = getDataById(id, nota_credito_table_facturas);
-            
             idNotaCreditoFactura = dataFactura.id;
             totalReteFuente = dataFactura.total_rete_fuente;
             totalFacturaNotaCredito = dataFactura.total_factura,
@@ -292,6 +291,8 @@ function cargarTablasNotasCredito() {
             $('#iniciarCapturaNotaCreditoLoading').show();
 
             $("#modalFacturasDevolucion").modal('hide');
+
+            $("#texto-nota-credito").html(`Datos de factura devoluciones <span class="text-success">${dataFactura.documento_referencia}</span>`);
 
             if(dataFactura.cliente){
                 var dataCliente = {
@@ -953,6 +954,7 @@ function saveNotaCredito() {
 
 function cancelarNotaCredito() {
     idNotaCreditoFactura = 0;
+    
     var totalRows = nota_credito_table.rows().data().length;
 
     if(nota_credito_table.rows().data().length){
@@ -970,6 +972,7 @@ function cancelarNotaCredito() {
     $comboClienteNotaCredito.prop('disabled', false);
 
     $('#consecutivo_nota_credito').val('');
+    $("#texto-nota-credito").html(`Datos de factura devoluciones`);
 
     $('#iniciarCapturaNotaCredito').show();
     $("#crearCapturaNotaCredito").hide();
