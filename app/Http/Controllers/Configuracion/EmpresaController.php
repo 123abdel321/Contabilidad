@@ -89,6 +89,7 @@ class EmpresaController extends Controller
             $columnSortOrder = $order_arr[0]['dir']; // asc or desc
 
             $empresas = Empresa::orderBy($columnName,$columnSortOrder)
+                ->where('estado', '!=', 4)
                 ->with('usuario');
 
             if ($request->get('search')) {

@@ -24,34 +24,47 @@
                 <input type="file" name="imagen_empresa_edit" id="imagen_empresa_edit" onchange="readURLEmpresaEdit(this);" style="display: none" />
 
                 <div class="form-group col-12 col-sm-6 col-md-6">
-                    <label for="example-text-input" class="form-control-label">Razon social</label>
+                    <label for="razon_social_empresa_edit" class="form-control-label">Razon social</label>
                     <input type="text" class="form-control form-control-sm" name="razon_social_empresa_edit" id="razon_social_empresa_edit" onfocus="this.select();" required>
                 </div>
 
                 <div class="form-group col-12 col-sm-6 col-md-6">
-                    <label for="example-text-input" class="form-control-label">Nit</label>
+                    <label for="nit_empresa_edit" class="form-control-label">Nit</label>
                     <input type="text" class="form-control form-control-sm" name="nit_empresa_edit" id="nit_empresa_edit" onfocus="this.select();" required>
                 </div>
 
                 <div class="form-group col-12 col-sm-6 col-md-6">
-                    <label for="example-text-input" class="form-control-label">D.V.</label>
+                    <label for="dv_empresa_edit" class="form-control-label">D.V.</label>
                     <input type="text" class="form-control form-control-sm" name="dv_empresa_edit" id="dv_empresa_edit" onfocus="this.select();" required>
                 </div>
 
                 <div class="form-group col-12 col-sm-6 col-md-6">
-                    <label for="example-text-input" class="form-control-label">Email</label>
+                    <label for="email_empresa_edit" class="form-control-label">Email</label>
                     <input type="text" class="form-control form-control-sm" name="email_empresa_edit" id="email_empresa_edit" onfocus="this.select();" required>
                 </div>
 
                 <div class="form-group col-12 col-sm-6 col-md-6">
-                    <label for="example-text-input" class="form-control-label">Telefono</label>
+                    <label for="telefono_empresa_edit" class="form-control-label">Telefono</label>
                     <input type="text" class="form-control form-control-sm" name="telefono_empresa_edit" id="telefono_empresa_edit" onfocus="this.select();">
                 </div>
 
                 <div class="form-group col-12 col-sm-6 col-md-6">
-                    <label for="example-text-input" class="form-control-label">Dirección</label>
+                    <label for="direccion_empresa_edit" class="form-control-label">Dirección</label>
                     <input type="text" class="form-control form-control-sm" name="direccion_empresa_edit" id="direccion_empresa_edit" onfocus="this.select();">
                 </div>
+
+                @if(request()->user()->rol_portafolio)
+                <div class="form-group col-12 col-sm-6 col-md-6">
+                    <label for="estado_empresa_edit" class="form-control-label">Estado</label>
+                    <select class="form-control form-control-sm" name="estado_empresa_edit" id="estado_empresa_edit" required>
+                        <option value="0">Inactivo</option>
+                        <option value="1">Activo</option>
+                        <option value="2">Periodo de Gracia</option>
+                        <option value="3">Moroso</option>
+                        <option value="4">Retirado</option>
+                    </select>
+                </div>
+                @endif
 
             </div>
 

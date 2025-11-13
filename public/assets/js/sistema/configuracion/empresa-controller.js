@@ -44,6 +44,14 @@ function empresaInit() {
                 />`;
             }, className: 'dt-body-center'},
             {"data":'razon_social'},
+            {"data": function (row, type, set){  
+                if (row.estado === 0) return '<span class="badge bg-secondary">Inactivo</span>';
+                if (row.estado === 1) return '<span class="badge bg-success">Activo</span>';
+                if (row.estado === 2) return '<span class="badge bg-warning">Periodo de Gracia</span>';
+                if (row.estado === 3) return '<span class="badge bg-danger">Moroso</span>';
+                if (row.estado === 4) return '<span class="badge bg-dark">Retirado</span>';
+                return '';
+            }},
             {"data":'nit'},
             {"data":'dv'},
             {"data":'telefono'},
@@ -103,7 +111,6 @@ function empresaInit() {
 
             var id = this.id.split('_')[1];
             var data = getDataById(id, empresas_table);
-
             clearFormularioEditEmpresa();
 
             if (data.logo) {
@@ -123,6 +130,8 @@ function empresaInit() {
             $("#telefono_empresa_edit").val(data.telefono);
             $("#direccion_empresa_edit").val(data.direccion);
             $("#correo_empresa_edit").val(data.correo);
+            $("#estado_empresa_edit").val(data.estado).trigger('change');
+
             $("#empresaEditFormModal").modal('show');
         });
 

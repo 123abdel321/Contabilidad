@@ -463,6 +463,7 @@ class InstaladorController extends Controller
 							'telefono' => $request->telefono_empresa_edit,
 							'direccion' => $request->direccion_empresa_edit,
 							'email' => $request->email_empresa_edit,
+							'estado' => $request->estado_empresa_edit,
 						]);
 
 					$file = $request->file('imagen_empresa_edit');
@@ -489,6 +490,7 @@ class InstaladorController extends Controller
 						'telefono' => $request->telefono_empresa_edit,
 						'direccion' => $request->direccion_empresa_edit,
 						'email' => $request->email_empresa_edit,
+						'estado' => $request->estado_empresa_edit,
 					]);
 
 				$file = $request->file('imagen_empresa_edit');
