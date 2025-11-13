@@ -196,6 +196,14 @@ class NotaCreditoController extends Controller
     // Método para consultar el movimiento contable sin guardar
     public function movimientoContable(Request $request)
     {
+        if (!$request->get('id_factura')) {
+            return response()->json([
+                'success' => true,
+                'data' => [],
+                'message' => 'Movimiento contable generado con exito!'
+            ], Response::HTTP_OK);
+        }
+        
         $rules = $this->getValidationRulesMovimiento();
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
