@@ -69,6 +69,12 @@
         </ul>
     </div>
 
+    @if ($empresa->estado != 1)
+        <div style="place-self: center;">
+            {!! $empresa->badge_estado !!}
+        </div>
+    @endif
+
     <ul class="collapse navbar-collapse navbar-nav" id="sidenav-collapse-main" style="height: 100%; width: auto; margin-left: 10px;">
 
             @foreach ($menus as $menu)

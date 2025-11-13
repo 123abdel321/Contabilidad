@@ -39,19 +39,36 @@ class HomeController extends Controller
             $suscripciones[] = $componentes->id_componente;
         }
 
-        $menus = ComponentesMenu::whereIn('id_componente', $suscripciones)
-            ->where('estado', 1)
-            ->with('padre')
-            ->get();
+        $menus = [];
+        if (in_array($empresa->estado, [Empresa::ESTADO_INACTIVO, Empresa::ESTADO_RETIRADO]) && $request->user()->rol_portafolio == 0) {
+            $menus = ComponentesMenu::where('nombre', 'Empresa')
+                ->with('padre')
+                ->get();
 
-        foreach ($menus as $key => $menu) {
-            if ($menu->code_name && !$request->user()->hasPermissionTo($menu->code_name.' read')) {
-                unset($menus[$key]);
+            foreach ($menus as $key => $menu) {
+                if ($menu->code_name && !$request->user()->hasPermissionTo($menu->code_name.' read')) {
+                    unset($menus[$key]);
+                }
+            }
+        } else {
+            $menus = ComponentesMenu::whereIn('id_componente', $suscripciones)
+                ->where('estado', 1)
+                ->with('padre')
+                ->get();
+
+            foreach ($menus as $key => $menu) {
+                if ($menu->code_name && !$request->user()->hasPermissionTo($menu->code_name.' read')) {
+                    unset($menus[$key]);
+                }
             }
         }
+
+
+        
         
         $data = [
             'menus' => $menus->groupBy('id_padre'),
+            'empresa' => $empresa,
             'usuario_empresa' => UsuarioEmpresa::where('id_empresa', $request->user()['id_empresa'])
                 ->where('id_usuario', $request->user()['id'])
                 ->first()

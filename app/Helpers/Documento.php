@@ -499,6 +499,38 @@ class Documento
             return false;
         }
 
+        // 4. Validarción de consecutivo
+        // $comprobante = Comprobantes::find($this->head['id_comprobante']);
+        // if (!$comprobante) {
+        //     $this->errors['comprobante'][] = "El comprobante no existe";
+        //     return false;
+        // }
+
+        // // Validar si el consecutivo ya existe
+        // $query = DocumentosGeneral::where('id_comprobante', $this->head['id_comprobante'])
+        //     ->where('consecutivo', $this->head['consecutivo']);
+
+        // if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
+        //     // Para consecutivo mensual, validar dentro del mismo mes
+        //     $fecha = $this->head['fecha'];
+        //     $query->whereYear('fecha_manual', date('Y', strtotime($fecha)))
+        //         ->whereMonth('fecha_manual', date('m', strtotime($fecha)));
+        // }
+
+        // $existingDocument = $query->first();
+
+        // if ($existingDocument) {
+        //     $this->errors['consecutivo'][] = sprintf(
+        //         "El consecutivo %d ya existe para el comprobante %s%s",
+        //         $this->head['consecutivo'],
+        //         $comprobante->nombre,
+        //         $comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL 
+        //             ? " en el mes " . date('m/Y', strtotime($this->head['fecha']))
+        //             : ""
+        //     );
+        //     return false;
+        // }
+
         // 4. Guardar documentos según el contexto
         try {
             if ($this->captura) {
