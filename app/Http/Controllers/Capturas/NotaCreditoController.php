@@ -290,7 +290,7 @@ class NotaCreditoController extends Controller
                         $notaCredito
                     );
                     
-                    if (isset($resultInventario['error'])) {
+                    if (is_array($resultInventario) && isset($resultInventario['error'])) {
                         return ['success' => false, 'message' => $resultInventario['error']];
                     }
                     $documentoGeneral = $resultInventario;
@@ -313,7 +313,7 @@ class NotaCreditoController extends Controller
                 $request->get('documento_referencia') ?? ($notaCredito ? $notaCredito->documento_referencia : null)
             );
             
-            if (isset($resultMovimientos['error'])) {
+            if (is_array($resultMovimientos) && isset($resultMovimientos['error'])) {
                 return ['success' => false, 'message' => $resultMovimientos['error']];
             }
             $documentoGeneral = $resultMovimientos;
@@ -332,7 +332,7 @@ class NotaCreditoController extends Controller
                 $request->get('documento_referencia') ?? ($notaCredito ? $notaCredito->documento_referencia : null)
             );
             
-            if (isset($resultReteFuente['error'])) {
+            if (is_array($resultReteFuente) && isset($resultReteFuente['error'])) {
                 return ['success' => false, 'message' => $resultReteFuente['error']];
             }
             $documentoGeneral = $resultReteFuente;
@@ -348,7 +348,7 @@ class NotaCreditoController extends Controller
                     $notaCredito
                 );
                 
-                if (isset($resultFormasPago['error'])) {
+                if (is_array($resultFormasPago) && isset($resultFormasPago['error'])) {
                     return ['success' => false, 'message' => $resultFormasPago['error']];
                 }
                 $documentoGeneral = $resultFormasPago;
@@ -529,7 +529,7 @@ class NotaCreditoController extends Controller
     {
         // Devolución
         $cuentaDevolucion = $productoDb->familia->cuenta_venta_devolucion;
-        
+        // dd($cuentaDevolucion);
         // Validar naturaleza_ventas
         if (is_null($cuentaDevolucion->naturaleza_ventas)) {
             return [
