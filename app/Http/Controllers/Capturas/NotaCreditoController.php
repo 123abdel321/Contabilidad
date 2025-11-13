@@ -484,7 +484,6 @@ class NotaCreditoController extends Controller
             }
             
             $cuentaOpuestoCosto = PlanCuentas::CREDITO == $cuentaCosto->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-
             $docCosto = new DocumentosGeneral([
                 "id_cuenta" => $cuentaCosto->id,
                 "id_nit" => $cuentaCosto->exige_nit ? $notaCredito->id_cliente : null,
@@ -562,12 +561,12 @@ class NotaCreditoController extends Controller
             $cuentaCosto = $productoDb->familia->cuenta_compra_devolucion;
             
             // Validar que tenga naturaleza configurada
-            if (is_null($cuentaCosto->cuenta_compra_devolucion)) {
+            if (is_null($cuentaCosto->naturaleza_ventas)) {
                 return [
                     'error' => [
                         "Cuenta compra devolución" => [
                             "La cuenta de compra devolución ({$cuentaCosto->cuenta} - {$cuentaCosto->nombre}) " .
-                            "no tiene configurada la naturaleza (cuenta_compra_devolucion). " .
+                            "no tiene configurada la naturaleza de ventas. " .
                             "Familia: {$productoDb->familia->codigo} - {$productoDb->familia->nombre}"
                         ]
                     ]
@@ -621,24 +620,23 @@ class NotaCreditoController extends Controller
         }
 
         // IVA
-        $cuentaVentaDevolucion = $productoDb->familia->cuenta_venta_devolucion_iva;
-        if ($totalesProducto->iva && $cuentaVentaDevolucion) {
-            $cuentaIva = $productoDb->familia->cuenta_venta_devolucion_iva;
+        $cuentaIva = $productoDb->familia->cuenta_venta_devolucion_iva;
+        if ($totalesProducto->iva && $cuentaIva) {
             
             // Validar que tenga cuenta_venta_devolucion_iva configurada
-            if (is_null($cuentaIva->cuenta_venta_devolucion_iva)) {
+            if (is_null($cuentaIva->naturaleza_ventas)) {
                 return [
                     'error' => [
                         "Cuenta venta devolución IVA" => [
                             "La cuenta de venta devolución IVA ({$cuentaIva->cuenta} - {$cuentaIva->nombre}) " .
-                            "no tiene configurada la naturaleza (cuenta_venta_devolucion_iva). " .
+                            "no tiene configurada la naturaleza de ventas. " .
                             "Familia: {$productoDb->familia->codigo} - {$productoDb->familia->nombre}"
                         ]
                     ]
                 ];
             }
             
-            $cuentaOpuestoIva = PlanCuentas::CREDITO == $cuentaIva->cuenta_venta_devolucion_iva ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
+            $cuentaOpuestoIva = PlanCuentas::CREDITO == $cuentaIva->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
             $docIva = new DocumentosGeneral([
                 "id_cuenta" => $cuentaIva->id,
                 "id_nit" => $cuentaIva->exige_nit ? $clienteId : null,
@@ -650,7 +648,7 @@ class NotaCreditoController extends Controller
                 "created_by" => request()->user()->id,
                 "updated_by" => request()->user()->id
             ]);
-            $documentoGeneral->addRow($docIva, $cuentaIva->cuenta_venta_devolucion_iva);
+            $documentoGeneral->addRow($docIva, $cuentaOpuestoIva);
         }
 
         return $documentoGeneral;
@@ -709,7 +707,6 @@ class NotaCreditoController extends Controller
         foreach ($request->get('pagos') as $pago) {
             $pago = (object)$pago;
             $formaPago = $this->findFormaPago($pago->id);
-            
             // Validar naturaleza_ventas
             if (is_null($formaPago->cuenta->naturaleza_ventas)) {
                 return [
