@@ -502,7 +502,7 @@ class Documento
                 return false; 
             }
         }
-        dd($validarSaltoConsecutivos);
+        
         $maxRetries = 3;
         // Bucle de reintento para manejar la concurrencia en la asignación del consecutivo
         for ($i = 0; $i < $maxRetries; $i++) {
