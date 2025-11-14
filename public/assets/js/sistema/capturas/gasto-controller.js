@@ -831,14 +831,14 @@ function changeValorDescuentoGasto (idGasto, event = null) {
 
         var baseAIU = 0;
 
-        var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
-        var valorGasto = redondear(dataGasto[indexGasto].valor_gasto, redondeoGastos);
-        var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
-        var valorDescuento = redondear(stringToNumberFloat($("#gastovalordescuento_"+idGasto).val()), redondeoGastos);
-        var valorNoiva = redondear(stringToNumberFloat($("#gasto_no_iva_valor_"+idGasto).val()), redondeoGastos);
+        const indexGasto = dataGasto.findIndex(item => item.id == idGasto);
+        const valorGasto = parseFloat(dataGasto[indexGasto].valor_gasto);
+        const dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
+        const valorDescuento = redondear(stringToNumberFloat($("#gastovalordescuento_"+idGasto).val()), redondeoGastos);
+        const valorNoiva = redondear(stringToNumberFloat($("#gasto_no_iva_valor_"+idGasto).val()), redondeoGastos);
 
-        var valorPorcentajeDescuento = (valorDescuento / valorGasto) * 100;
-        var valorSubtotal = redondear(valorGasto - (valorDescuento), redondeoGastos);
+        const valorPorcentajeDescuento = (valorDescuento / valorGasto) * 100;
+        const valorSubtotal = redondear(valorGasto - (valorDescuento), redondeoGastos);
 
         if (porcentajeAIUGastos) baseAIU = valorSubtotal * (porcentajeAIUGastos / 100);
         var valorRetencion = 0;
@@ -898,7 +898,7 @@ function changeValorNoIvaGasto (idGasto, event = null) {
         var baseAIU = 0;
 
         var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
-        var valorGasto = dataGasto[indexGasto].valor_gasto;
+        var valorGasto = parseFloat(dataGasto[indexGasto].valor_gasto);
         var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
         var valorDescuento = redondear(stringToNumberFloat($("#gastovalordescuento_"+idGasto).val()), redondeoGastos);
         var valorNoiva = redondear(stringToNumberFloat($("#gasto_no_iva_valor_"+idGasto).val()), redondeoGastos);
@@ -1012,7 +1012,7 @@ function changePorcentajeDescuentoGasto (idGasto, event = null) {
 
         var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
         var dataConcepto = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
-        var valorGasto = dataGasto[indexGasto].valor_gasto;
+        var valorGasto = parseFloat(dataGasto[indexGasto].valor_gasto);
         var valorNoiva = stringToNumberFloat($("#gasto_no_iva_valor_"+idGasto).val());
 
         var valorPorcentajeDescuento = stringToNumberFloat($("#gastoporcentajedescuento_"+idGasto).val());
@@ -1062,12 +1062,10 @@ function changeValorGasto (idGasto, event = null) {
 
     if(!event || event.keyCode == 13){
         
-        var valorGasto = stringToNumberFloat($("#gastovalor_"+idGasto).val());
+        const valorGasto = stringToNumberFloat($("#gastovalor_"+idGasto).val());
         if (!valorGasto) return;
         if (!calculandoDatos) return;
         calculandoDatos = false;
-        
-        valorGasto = redondear(valorGasto, redondeoGastos);
         
         var baseAIU = 0;
 
