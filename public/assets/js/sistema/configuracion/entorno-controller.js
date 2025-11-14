@@ -20,6 +20,7 @@ function cargarVariablesDeEntorno() {
         const checksEntorno = [
             'iva_incluido',
             'capturar_documento_descuadrado',
+            'validar_salto_consecutivos',
             'vendedores_ventas',
             'ubicacion_maximoph',
             'fecha_ultimo_cierre',
@@ -244,6 +245,7 @@ $(document).on('click', '#updateEntorno', function () {
         observacion_venta: quill.root.innerHTML,
         iva_incluido: $("input[type='checkbox']#iva_incluido").is(':checked') ? '1' : '',
         capturar_documento_descuadrado: $("input[type='checkbox']#capturar_documento_descuadrado").is(':checked') ? '1' : '0',
+        validar_salto_consecutivos: $("input[type='checkbox']#validar_salto_consecutivos").is(':checked') ? '1' : '0',
         vendedores_ventas: $("input[type='checkbox']#vendedores_ventas").is(':checked') ? '1' : '',
         ubicacion_maximoph: $("input[type='checkbox']#ubicacion_maximoph").is(':checked') ? '1' : '',
         salario_minimo: stringToNumberFloat($("#salario_minimo").val()),

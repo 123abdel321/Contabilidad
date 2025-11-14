@@ -51,6 +51,7 @@ class EntornoController extends Controller
             $variablesEntorno = [
                 'iva_incluido',
                 'capturar_documento_descuadrado',
+                'validar_salto_consecutivos',
                 'valor_uvt',
                 'vendedores_ventas',
                 'porcentaje_iva_aiu',

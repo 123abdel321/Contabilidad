@@ -71,6 +71,16 @@
                             </div>
 
                             <div class="form-check form-switch col-12 col-sm-6 col-md-4">
+                                <input class="form-check-input" type="checkbox" name="validar_salto_consecutivos" id="validar_salto_consecutivos" style="height: 20px;">
+                                <label class="form-check-label" for="validar_salto_consecutivos">
+                                    Validar salto de consecutivos
+                                </label>
+                            </div>
+
+
+                            
+
+                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
                                 <input class="form-check-input" type="checkbox" name="vendedores_ventas" id="vendedores_ventas" style="height: 20px;">
                                 <label class="form-check-label" for="vendedores_ventas">
                                     Vendedores captura ventas
