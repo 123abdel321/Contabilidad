@@ -115,7 +115,10 @@ class RecibosController extends Controller
             
             $extractos = (new Extracto(
                 $idNit,
-                [PlanCuentasTipo::TIPO_CUENTA_CXC, PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC],
+                [
+                    PlanCuentasTipo::TIPO_CUENTA_CXC,
+                    PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC
+                ],
                 null,
                 $fechaManual
             ))->actual()->get();
@@ -139,6 +142,8 @@ class RecibosController extends Controller
             } else {
                 $extractos = $extractos->sortBy('cuenta')->values();
             }
+
+            // $extractos = $extractos->sortBy('orden, cuenta')->values();
 
             $hasError = false;
             $dataRecibos = [];
@@ -597,6 +602,7 @@ class RecibosController extends Controller
         $rules = [
             'id_nit' => 'required|exists:sam.nits,id',
             'id_comprobante' => 'required|exists:sam.comprobantes,id',
+            'id_forma_pago_comprobante' => 'required|exists:sam.fac_formas_pagos,id',
             'numero_documento' => 'required|exists:sam.nits,numero_documento',
             'fecha_pago' => 'nullable',
             'valor_comprobante' => 'nullable',
@@ -619,7 +625,7 @@ class RecibosController extends Controller
             //CREAR FACTURA RECIBO
             $recibo = $this->createReciboComprobante($request);
             $nit = $this->findNit($recibo->id_nit);
-            $formaPago = $this->findFormaPagoCuenta($request->get('id_cuenta_ingreso'));
+            $formaPago = $this->findFormaPagoCuenta($request->get('id_forma_pago_comprobante'));
 
             //AGREGAR MOVIMIENTO PAGO
             if (!$formaPago) {
@@ -627,7 +633,7 @@ class RecibosController extends Controller
                 return response()->json([
                     "success"=>false,
                     'data' => [],
-                    "message"=>'La forma de pago con el id_cuenta_ingreso: '.$request->get('id_cuenta_ingreso').' No existe!'
+                    "message"=>'La forma de pago con el id: '.$request->get('id_forma_pago_comprobante').' No existe!'
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
@@ -661,6 +667,7 @@ class RecibosController extends Controller
                 null,
                 $request->get('fecha_pago')
             ))->actual()->get();
+            // $extractos = $extractos->sortBy('orden, cuenta')->values();
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE RECIBOS
             $documentoGeneral = new Documento(
@@ -875,6 +882,7 @@ class RecibosController extends Controller
                 null,
                 $recibo->fecha_manual
             ))->actual()->get();
+            // $extractos = $extractos->sortBy('orden, cuenta')->values();
 
             if (!count($extractos)) {
                 DB::connection('sam')->rollback();
@@ -1446,9 +1454,9 @@ class RecibosController extends Controller
             ->first();
     }
 
-    private function findFormaPagoCuenta ($idCuenta)
+    private function findFormaPagoCuenta ($id_forma_pago_comprobante)
     {
-        return FacFormasPago::where('id_cuenta', $idCuenta)
+        return FacFormasPago::where('id', $id_forma_pago_comprobante)
         ->with(
             'cuenta.tipos_cuenta'
         )
