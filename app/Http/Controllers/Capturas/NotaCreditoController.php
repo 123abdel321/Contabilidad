@@ -767,8 +767,6 @@ class NotaCreditoController extends Controller
             }
             
             $pagoValor = $pago->id == 1 ? $pago->valor - $this->totalesPagos['total_cambio'] : $pago->valor;
-            $cuentaOpuestoPago = PlanCuentas::CREDITO == $formaPago->cuenta->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
-
             $totalProductos -= $pagoValor;
 
             if ($notaCredito) {
@@ -782,8 +780,9 @@ class NotaCreditoController extends Controller
                 ]);
             }
 
-            $docReferencia = $notaCredito ? $notaCredito->documento_referencia : $request->get('documento_referencia');
             $cuentaFormaPago = $formaPago->cuenta;
+            $docReferencia = $notaCredito ? $notaCredito->documento_referencia : $request->get('documento_referencia');
+
             $doc = new DocumentosGeneral([
                 'id_cuenta' => $cuentaFormaPago->id,
                 'id_nit' => $cuentaFormaPago->exige_nit ? $this->facturaVentas->id_cliente : null,
@@ -795,7 +794,7 @@ class NotaCreditoController extends Controller
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id
             ]);
-            $documentoGeneral->addRow($doc, $cuentaOpuestoPago);
+            $documentoGeneral->addRow($doc, $cuentaFormaPago->naturaleza_ventas);
         }
 
         return $documentoGeneral;
