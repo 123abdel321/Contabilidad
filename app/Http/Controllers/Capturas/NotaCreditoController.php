@@ -588,7 +588,6 @@ class NotaCreditoController extends Controller
             ];
         }
         
-        $cuentaOpuestoDevolucion = PlanCuentas::CREDITO == $cuentaDevolucion->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
         $docDevolucion = new DocumentosGeneral([
             "id_cuenta" => $cuentaDevolucion->id,
             "id_nit" => $cuentaDevolucion->exige_nit ? $this->facturaVentas->id_cliente : null,
@@ -600,7 +599,7 @@ class NotaCreditoController extends Controller
             "created_by" => request()->user()->id,
             "updated_by" => request()->user()->id
         ]);
-        $documentoGeneral->addRow($docDevolucion, $cuentaOpuestoDevolucion);
+        $documentoGeneral->addRow($docDevolucion, $cuentaDevolucion->naturaleza_ventas);
 
         // Costo
         if ($totalesProducto->subtotal && $productoDb->familia->cuenta_compra_devolucion) {
@@ -682,7 +681,7 @@ class NotaCreditoController extends Controller
                 ];
             }
             
-            $cuentaOpuestoIva = PlanCuentas::CREDITO == $cuentaIva->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
+            // $cuentaOpuestoIva = PlanCuentas::CREDITO == $cuentaIva->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
             $docIva = new DocumentosGeneral([
                 "id_cuenta" => $cuentaIva->id,
                 "id_nit" => $cuentaIva->exige_nit ? $this->facturaVentas->id_cliente : null,
@@ -694,7 +693,7 @@ class NotaCreditoController extends Controller
                 "created_by" => request()->user()->id,
                 "updated_by" => request()->user()->id
             ]);
-            $documentoGeneral->addRow($docIva, $cuentaOpuestoIva);
+            $documentoGeneral->addRow($docIva, $cuentaIva->naturaleza_ventas);
         }
 
         return $documentoGeneral;
@@ -782,6 +781,7 @@ class NotaCreditoController extends Controller
 
             $cuentaFormaPago = $formaPago->cuenta;
             $docReferencia = $notaCredito ? $notaCredito->documento_referencia : $request->get('documento_referencia');
+            $cuentaOpuestoPago = PlanCuentas::CREDITO == $cuentaFormaPago->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
 
             $doc = new DocumentosGeneral([
                 'id_cuenta' => $cuentaFormaPago->id,
@@ -794,7 +794,7 @@ class NotaCreditoController extends Controller
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id
             ]);
-            $documentoGeneral->addRow($doc, $cuentaFormaPago->naturaleza_ventas);
+            $documentoGeneral->addRow($doc, $cuentaOpuestoPago);
         }
 
         return $documentoGeneral;
