@@ -558,11 +558,11 @@ function calcularNotaCreditoCantidadOut(idDetalle) {
 }
 
 function calcularNotasCreditoFocus(idDetalle) {
-    const [dataRow, keyRow] = dataTableFactura(idDetalle);
-    const cantidadDisponible = dataRow.cantidad - dataRow.cantidad_devuelta;
+    // const [dataRow, keyRow] = dataTableFactura(idDetalle);
+    // const cantidadDisponible = dataRow.cantidad - dataRow.cantidad_devuelta;
 
     const input = document.getElementById(`nota_credito_cantidad_${idDetalle}`);
-    input.value = cantidadDisponible;
+    // input.value = cantidadDisponible;
     input.select();
 }
 
@@ -899,6 +899,7 @@ function saveNotaCredito() {
     $("#crearCapturaNotaCreditoDisabled").hide();
     $("#crearCapturaNotaCredito").hide();
     $("#cancelarCapturaNotaCredito").hide();
+    $("#movimientoContableNotaCredito").hide();
     $('#crearCapturaNotaCreditoLoading').show();
 
     let data = {
@@ -925,6 +926,7 @@ function saveNotaCredito() {
             idNotaCreditoFactura = null;
             $('#iniciarCapturaNotaCredito').hide();
             $('#iniciarCapturaNotaCreditoLoading').hide();
+            $("#movimientoContableNotaCredito").show();
             $('#consecutivo_nota_credito').val('');
 
             var totalRows = nota_credito_table.rows().data().length;
@@ -942,6 +944,7 @@ function saveNotaCredito() {
         $("#crearCapturaNotaCredito").show();
         $("#iniciarCapturaNotaCredito").hide();
         $("#cancelarCapturaNotaCredito").show();
+        $("#movimientoContableNotaCredito").show();
         $("#crearCapturaNotaCreditoLoading").hide();
         $("#crearCapturaNotaCreditoDisabled").hide();
         $("#iniciarCapturaNotaCreditoLoading").hide();
