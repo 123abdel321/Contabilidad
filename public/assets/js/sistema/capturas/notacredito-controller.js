@@ -707,9 +707,9 @@ function totalValoresNotaCredito() {
             if (notaCredito.total_devolucion) {
                 var proporcion = notaCredito.total_devolucion / notaCredito.data.total;
                 totalDisponible+= parseFloat(notaCredito.data.total) - parseFloat(notaCredito.data.total_devuelto);
-                productos+= parseInt(notaCredito.cantidad_devuelta);
-                total+= notaCredito.total_devolucion;
-                valorBruto+= notaCredito.total_devolucion;
+                productos+= parseFloat(notaCredito.cantidad_devuelta);
+                total+= parseFloat(notaCredito.total_devolucion);
+                valorBruto+= parseFloat(notaCredito.total_devolucion);
                 
                 if (notaCredito.data.descuento_porcentaje > 0) {
                     descuento+= notaCredito.data.descuento_valor * proporcion;
