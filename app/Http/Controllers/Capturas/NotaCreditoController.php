@@ -348,22 +348,23 @@ class NotaCreditoController extends Controller
             }
             $documentoGeneral = $resultReteFuente;
 
-            // Agregar formas de pago
-            if ($request->has('pagos') && $request->get('pagos')) {
-                $this->calcularFormasPago($request->get('pagos'));
-                $resultFormasPago = $this->agregarFormasPago(
-                    $documentoGeneral,
-                    $request,
-                    $nit,
-                    $clienteId,
-                    $notaCredito
-                );
-                
-                if (is_array($resultFormasPago) && isset($resultFormasPago['error'])) {
-                    return ['success' => false, 'message' => $resultFormasPago['error']];
-                }
-                $documentoGeneral = $resultFormasPago;
+        }
+
+        // Agregar formas de pago
+        if ($request->has('pagos') && $request->get('pagos')) {
+            $this->calcularFormasPago($request->get('pagos'));
+            $resultFormasPago = $this->agregarFormasPago(
+                $documentoGeneral,
+                $request,
+                $nit,
+                $clienteId,
+                $notaCredito
+            );
+            
+            if (is_array($resultFormasPago) && isset($resultFormasPago['error'])) {
+                return ['success' => false, 'message' => $resultFormasPago['error']];
             }
+            $documentoGeneral = $resultFormasPago;
         }
 
         return ['success' => true, 'documento' => $documentoGeneral];
@@ -751,6 +752,7 @@ class NotaCreditoController extends Controller
         
         foreach ($request->get('pagos') as $pago) {
             $pago = (object)$pago;
+            
             $formaPago = $this->findFormaPago($pago->id);
             // Validar naturaleza_ventas
             if (is_null($formaPago->cuenta->naturaleza_ventas)) {
