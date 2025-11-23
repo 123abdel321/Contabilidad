@@ -145,7 +145,8 @@ class DocumentoController extends Controller
         }
         
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        if ($documento->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
+
+        if ($comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
             $recibo = ConRecibos::where('id', $documento->relation_id)->first();
             if ($recibo) {
                 return (new RecibosPdf($empresa, $recibo))
@@ -205,6 +206,12 @@ class DocumentoController extends Controller
                 'data' => [],
                 'message'=> 'La factura no existe'
             ]);
+        }
+
+        if ($comprobante->tipo_comprobante == Comprobantes::TIPO_OTROS && count($facDocumento->documentos)) {
+            return (new DocumentosPdf($empresa, $facDocumento, 'pdf.facturacion.documentos_otros'))
+                ->buildPdf()
+                ->showPdf();
         }
 
         if (count($facDocumento->documentos)) {

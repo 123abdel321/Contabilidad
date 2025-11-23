@@ -12,17 +12,19 @@ use App\Models\Sistema\FacDocumentos;
 
 class DocumentosPdf extends AbstractPrinterPdf
 {
+	public $view;
 	public $factura;
 	public $empresa;
 	public $tipoEmpresion;
 
-	public function __construct(Empresa $empresa, FacDocumentos $factura)
+	public function __construct(Empresa $empresa, FacDocumentos $factura, $view = 'pdf.facturacion.documentos')
 	{
 		parent::__construct($empresa);
 
 		copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $empresa->token_db);
 
+		$this->view = $view;
 		$this->factura = $factura;
 		$this->empresa = $empresa;
 		$this->tipoEmpresion = $this->factura->comprobante->tipo_impresion;
@@ -30,7 +32,7 @@ class DocumentosPdf extends AbstractPrinterPdf
 
     public function view()
 	{
-		return 'pdf.facturacion.documentos';
+		return $this->view;
 	}
 
     public function name()
@@ -40,8 +42,13 @@ class DocumentosPdf extends AbstractPrinterPdf
 
     public function paper()
 	{
-		if ($this->tipoEmpresion == 1) return 'landscape';
-		if ($this->tipoEmpresion == 2) return 'portrait';
+		
+		if ($this->view == 'pdf.facturacion.documentos') {
+			if ($this->tipoEmpresion == 1) return 'landscape';
+			if ($this->tipoEmpresion == 2) return 'portrait';
+		} else {
+			return 'landscape';
+		}
 
 		return '';
 	}
@@ -68,6 +75,8 @@ class DocumentosPdf extends AbstractPrinterPdf
 		$observacion = NULL;
 		$totalFactura = 0;
 		$calcularTotal = false;
+		$debitoTotal = 0;
+		$creditoTotal = 0;
 
 		if($this->factura->comprobante && $this->factura->comprobante->tipo_comprobante != 4) {
 			$calcularTotal = true;
@@ -120,6 +129,7 @@ class DocumentosPdf extends AbstractPrinterPdf
 				if($getNit){ 
 					$nit = (object)[
 						'nombre_nit' => $getNit->nombre_completo,
+						'razon_social' => $getNit->razon_social,
 						'telefono' =>  $getNit->telefono_1,
 						'email' => $getNit->email,
 						'direccion' => $getNit->direccion,
@@ -128,6 +138,7 @@ class DocumentosPdf extends AbstractPrinterPdf
 						"ciudad" => $getNit->ciudad ? $getNit->ciudad->nombre_completo : '',
 					];
 				}
+				$documento->nit = $nit;
 			}
 			//CALCULAR TOTAL INGRESO/EGRESO
 			if($calcularTotal && mb_substr($documento->cuenta->cuenta, 0, 2) == '11'){
@@ -142,6 +153,11 @@ class DocumentosPdf extends AbstractPrinterPdf
 				$totalFactura+= $documento->cuenta->naturaleza_cuenta == 1 ? $documento->debito : $documento->credito;
 			}
 
+			if ($this->factura->comprobante && $this->factura->comprobante->tipo_comprobante == 4) {
+				$debitoTotal+= $documento->debito;
+				$creditoTotal+= $documento->credito;
+			}
+
 			$documentos[] = $documento;
 		}
 
@@ -154,6 +170,8 @@ class DocumentosPdf extends AbstractPrinterPdf
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'total_factura' => number_format($totalFactura),
 			'nombre_usuario' => $nombre_usuario,
+			'debitoTotal' => number_format($debitoTotal),
+			'creditoTotal' => number_format($creditoTotal),
 		];
 	}
 
