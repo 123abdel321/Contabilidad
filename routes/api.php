@@ -184,7 +184,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //CARTERA
         Route::controller(ImpuestosController::class)->group(function () {
             Route::get('impuestos', 'generate');
-            Route::get('documentos', 'show');
+            Route::get('impuestos-show', 'show');
             Route::get('impuestos-find', 'find');
         });
         //DOCUMENTOS GENERALES
