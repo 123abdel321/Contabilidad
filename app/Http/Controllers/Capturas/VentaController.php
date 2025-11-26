@@ -640,7 +640,7 @@ class VentaController extends Controller
                 "cantidad" => $value->detalles()->sum('cantidad'),
                 "costo" => "",
                 "nombre_bodega" => $value->id_bodega ? $value->bodega->codigo.' - '.$value->bodega->nombre : "",
-                "nombre_completo" => $value->id_cliente ? $value->cliente->nombre_completo : "",
+                "nombre_completo" => $value->id_cliente ? $value->cliente?->nombre_completo : $value->id_cliente,
                 "documento_referencia" => $value->documento_referencia,
                 "fecha_manual" => $value->fecha_manual,
                 "subtotal" => $value->subtotal,
@@ -1097,7 +1097,8 @@ class VentaController extends Controller
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
         $this->ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
         $responsabilidades = $this->getResponsabilidades();
-        
+        $count = 0;
+        // dd($productos);
         foreach ($productos as $producto) {
             $producto = (object)$producto;
             
@@ -1142,16 +1143,17 @@ class VentaController extends Controller
                 $iva = round($iva, 2);
             }
 
-            if ($this->ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
-                $costo = round((float)$producto->costo / (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 2);
-            }
+            // if ($this->ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
+            //     $costo = round((float)$producto->costo / (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 2);
+            // }
 
             $subtotal = round(($producto->cantidad * $costo) - $producto->descuento_valor, 2);
 
-            $this->totalesFactura['subtotal']+= $subtotal;
+            $this->totalesFactura['subtotal']+= ($subtotal);
             $this->totalesFactura['total_iva']+= $iva;
             $this->totalesFactura['total_descuento']+= $producto->descuento_valor;
-            $this->totalesFactura['total_factura']+= $subtotal + $iva;
+            $this->totalesFactura['total_factura']+= ($subtotal);
+            
         }
 
         //CALCULAR RETENCIÓN EN LA FUENTE
