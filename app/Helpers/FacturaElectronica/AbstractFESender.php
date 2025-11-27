@@ -67,7 +67,6 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
-
 		$url = $this->getUrl() . $setTestId;
 
 		$response = Http::withHeaders([
@@ -218,9 +217,8 @@ abstract class AbstractFESender
 		$invoiceLines = [];
 		
 		foreach ($this->detalles as $key => $detalle) {
-
 			$tax_totals = $this->taxTotalsDetalle($detalle, [1, 5]);
-			if (isset($tax_totals)) {
+			if (!count($tax_totals)) {
 				$tax_totals[] = [
 					"tax_id" => 1, //IVA
 					"tax_amount" => $detalle->iva_valor,
@@ -343,7 +341,7 @@ abstract class AbstractFESender
 				}
 			}
 		}
-		
+
 		return $taxTotalsDetalle;
 	}
 
