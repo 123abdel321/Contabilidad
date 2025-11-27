@@ -67,6 +67,7 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
+
 		$url = $this->getUrl() . $setTestId;
 
 		$response = Http::withHeaders([
@@ -217,13 +218,24 @@ abstract class AbstractFESender
 		$invoiceLines = [];
 		
 		foreach ($this->detalles as $key => $detalle) {
+
+			$tax_totals = $this->taxTotalsDetalle($detalle, [1, 5]);
+			if (isset($tax_totals)) {
+				$tax_totals[] = [
+					"tax_id" => 1, //IVA
+					"tax_amount" => $detalle->iva_valor,
+					"percent" => $detalle->iva_porcentaje ?? "0.00",
+					"taxable_amount" => number_format($this->iva_inluido ? $detalle->subtotal : $detalle->subtotal, 2, '.', '')
+				];
+			}
+
 			$invoiceLines[] = [
 				"unit_measure_id" => 642, // Unidad de medida que se maneja
 				"invoiced_quantity" => $detalle->cantidad, // Cantidad de productos
 				"line_extension_amount" =>  $this->iva_inluido ? $detalle->subtotal : $detalle->subtotal, // Total producto incluyento impuestos
 				"free_of_charge_indicator" => false, // Indica si el producto es una muestra gratis
 				// "allowance_charges" => $this->totalDescuento($detalle),
-				"tax_totals" => $this->taxTotalsDetalle($detalle, [1, 5]),
+				"tax_totals" => $tax_totals,
 				"description" => $detalle->producto->nombre, // Descripcion del producto
 				"code" => $detalle->producto->codigo, // (SKU) Codigo del producto
 				"type_item_identification_id" => 1, //
@@ -331,6 +343,7 @@ abstract class AbstractFESender
 				}
 			}
 		}
+		
 		return $taxTotalsDetalle;
 	}
 
