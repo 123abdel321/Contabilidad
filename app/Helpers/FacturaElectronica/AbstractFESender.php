@@ -67,7 +67,6 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
-		
 		$url = $this->getUrl() . $setTestId;
 
 		$response = Http::withHeaders([
@@ -216,6 +215,7 @@ abstract class AbstractFESender
 	protected function invoiceLines()
 	{
 		$invoiceLines = [];
+		
 		foreach ($this->detalles as $key => $detalle) {
 			$invoiceLines[] = [
 				"unit_measure_id" => 642, // Unidad de medida que se maneja
@@ -249,7 +249,7 @@ abstract class AbstractFESender
 
 				switch ($tax) {
 					case 1: //IVA
-						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1]))) $dataTaxTotals['iva'][] = $dIva[0];
+						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1])) && intval($dIva[0]["tax_amount"])) $dataTaxTotals['iva'][] = $dIva[0];
 						break;
 					case 5: // RETE IVA
 						if (!empty($dRete = $this->taxTotalsDetalle($detalle, [5])) && intval($dRete[0]["tax_amount"])) $dataTaxTotals['reteIva'][] = $dRete[0];
@@ -304,7 +304,6 @@ abstract class AbstractFESender
 			}
 			if ($data) $decoreTax[$key] = $data;
 		}
-
 		//ACTUALIZAR FORMATOS
 		foreach ($decoreTax as $key => $value) {
 			if (count($value)) {
@@ -327,7 +326,7 @@ abstract class AbstractFESender
 		foreach ($impuestos as $impuesto) {
 			$existencia = $data ? in_array($impuesto['tax_id'], $data) : true;
 			if ($existencia) {
-				if (intval($impuesto['tax_amount']) || $impuesto['tax_id'] == 1) {
+				if (intval($impuesto['tax_amount'])) {
 					$taxTotalsDetalle[] = $this->decoreTax($impuesto);
 				}
 			}

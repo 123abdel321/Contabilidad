@@ -48,8 +48,8 @@ class VentaElectronicaSender extends AbstractFESender
 	protected function legalMonetaryTotals()
 	{
 		return [
-			'line_extension_amount' => number_format($this->factura->subtotal, 2, '.', ''), // Total con Impuestos
-			'tax_exclusive_amount' => $this->factura->total_iva ? number_format($this->factura->subtotal, 2, '.', '') : "0.00", // Total sin impuestos pero con descuentos
+			'line_extension_amount' => number_format($this->factura->subtotal - $this->factura->total_iva, 2, '.', ''), // Total con Impuestos
+			'tax_exclusive_amount' => $this->factura->total_iva ? number_format($this->factura->subtotal - $this->factura->total_iva, 2, '.', '') : "0.00", // Total sin impuestos pero con descuentos
 			'tax_inclusive_amount' => $this->factura->total_factura + $this->factura->total_rete_fuente, // Total con Impuestos
 			'allowance_total_amount' => $this->factura->total_descuento, // Descuentos nivel de factura
 			'charge_total_amount' => "0.00", // Cargos
