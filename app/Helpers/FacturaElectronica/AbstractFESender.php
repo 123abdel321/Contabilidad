@@ -67,6 +67,7 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
+		// dd(json_encode($params));
 		$url = $this->getUrl() . $setTestId;
 
 		$response = Http::withHeaders([
@@ -220,7 +221,7 @@ abstract class AbstractFESender
 			$tax_totals = $this->taxTotalsDetalle($detalle, [1, 5]);
 			if (!count($tax_totals)) {
 				$tax_totals[] = [
-					"tax_id" => 0, //IVA
+					"tax_id" => 1, //IVA
 					"tax_amount" => $detalle->iva_valor,
 					"percent" => $detalle->iva_porcentaje ?? "0.00",
 					"taxable_amount" => number_format($this->iva_inluido ? $detalle->subtotal : $detalle->subtotal, 2, '.', '')
@@ -254,12 +255,14 @@ abstract class AbstractFESender
 			"reteFuente" => [],
 		];
 		//AGREGAR DETALLE DE LOS ITEMS
+		
 		foreach ($this->detalles as $detalle) {
+			
 			foreach ($taxs as $tax) {
 
 				switch ($tax) {
 					case 1: //IVA
-						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1])) && intval($dIva[0]["tax_amount"])) $dataTaxTotals['iva'][] = $dIva[0];
+						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1]))) $dataTaxTotals['iva'][] = $dIva[0];
 						break;
 					case 5: // RETE IVA
 						if (!empty($dRete = $this->taxTotalsDetalle($detalle, [5])) && intval($dRete[0]["tax_amount"])) $dataTaxTotals['reteIva'][] = $dRete[0];
@@ -336,7 +339,7 @@ abstract class AbstractFESender
 		foreach ($impuestos as $impuesto) {
 			$existencia = $data ? in_array($impuesto['tax_id'], $data) : true;
 			if ($existencia) {
-				if (intval($impuesto['tax_amount'])) {
+				if (intval($impuesto['tax_amount']) || $impuesto['tax_id'] == 1) {
 					$taxTotalsDetalle[] = $this->decoreTax($impuesto);
 				}
 			}
