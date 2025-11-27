@@ -181,7 +181,6 @@ abstract class AbstractFESender
 
 	public function getParams(): array
 	{
-		
 		$params = array(
 			'number' => $this->factura->consecutivo,
 			'prefix' => $this->factura->resolucion->prefijo,
@@ -218,23 +217,13 @@ abstract class AbstractFESender
 		$invoiceLines = [];
 		
 		foreach ($this->detalles as $key => $detalle) {
-			$tax_totals = $this->taxTotalsDetalle($detalle, [1, 5]);
-			if (!count($tax_totals)) {
-				$tax_totals[] = [
-					"tax_id" => 1, //IVA
-					"tax_amount" => $detalle->iva_valor,
-					"percent" => $detalle->iva_porcentaje ?? "0.00",
-					"taxable_amount" => number_format($this->iva_inluido ? $detalle->subtotal : $detalle->subtotal, 2, '.', '')
-				];
-			}
-
 			$invoiceLines[] = [
 				"unit_measure_id" => 642, // Unidad de medida que se maneja
 				"invoiced_quantity" => $detalle->cantidad, // Cantidad de productos
 				"line_extension_amount" =>  $this->iva_inluido ? $detalle->subtotal : $detalle->subtotal, // Total producto incluyento impuestos
 				"free_of_charge_indicator" => false, // Indica si el producto es una muestra gratis
 				// "allowance_charges" => $this->totalDescuento($detalle),
-				"tax_totals" => $tax_totals,
+				"tax_totals" => $this->taxTotalsDetalle($detalle, [1, 5]),
 				"description" => $detalle->producto->nombre, // Descripcion del producto
 				"code" => $detalle->producto->codigo, // (SKU) Codigo del producto
 				"type_item_identification_id" => 1, //
@@ -262,7 +251,7 @@ abstract class AbstractFESender
 
 				switch ($tax) {
 					case 1: //IVA
-						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1]))) $dataTaxTotals['iva'][] = $dIva[0];
+						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1])) && intval($dIva[0]["tax_amount"])) $dataTaxTotals['iva'][] = $dIva[0];
 						break;
 					case 5: // RETE IVA
 						if (!empty($dRete = $this->taxTotalsDetalle($detalle, [5])) && intval($dRete[0]["tax_amount"])) $dataTaxTotals['reteIva'][] = $dRete[0];
@@ -287,10 +276,11 @@ abstract class AbstractFESender
 					$data["tax_amount"] =  number_format($data["tax_amount"] + $impuesto['tax_amount'], 2, '.', '');
 					$data["taxable_amount"] = number_format($data["taxable_amount"] + $impuesto['taxable_amount'], 2, '.', '');
 				} else if (!$data["tax_subtotal"]) { // SI SON DIFERENTES % Y NO SE HA CREADO EL []SUBTOTAL
-					$data["tax_subtotal"][] = $this->decoreTax($data);
-					// $data["percent"] = 0;
+					// $data["tax_subtotal"][] = $this->decoreTax($data);
+					$data["percent"] = 0;
 					$data["tax_subtotal"][] = $this->decoreTax($impuesto);
 				} else { // SI SON DIFERENTES % Y YA SE CREO EL []SUBTOTAL
+
 					$exists = false;
 					foreach ($data["tax_subtotal"] as $k => $tax_subtotal) { //BUSCAR [KEY] CORRESPONDIENTE AL %
 						if ($tax_subtotal["percent"] == $impuesto['percent']) {
@@ -307,7 +297,7 @@ abstract class AbstractFESender
 				}
 			}
 			if ($data && $data['tax_subtotal'] && count($data['tax_subtotal']) > 0) { // SI TIENE SUBTOTAL VOLVER A CALCULAR
-				// $data["percent"] = 0;
+				$data["percent"] = 0;
 				$data["tax_amount"] = 0;
 				$data["taxable_amount"] = 0;
 				foreach ($data['tax_subtotal'] as $k => $v) {
@@ -340,7 +330,7 @@ abstract class AbstractFESender
 		foreach ($impuestos as $impuesto) {
 			$existencia = $data ? in_array($impuesto['tax_id'], $data) : true;
 			if ($existencia) {
-				if (intval($impuesto['tax_amount']) || $impuesto['tax_id'] == 1) {
+				if (intval($impuesto['tax_amount'])) {
 					$taxTotalsDetalle[] = $this->decoreTax($impuesto);
 				}
 			}

@@ -49,12 +49,24 @@ class VentaElectronicaSender extends AbstractFESender
 	{
 		return [
 			'line_extension_amount' => number_format($this->factura->subtotal - $this->factura->total_iva, 2, '.', ''), // Total con Impuestos
-			'tax_exclusive_amount' => $this->factura->total_iva ? number_format($this->factura->subtotal - $this->factura->total_iva, 2, '.', '') : "0.00", // Total sin impuestos pero con descuentos
+			'tax_exclusive_amount' => $this->getSubtotalTax(), // Base gravable
 			'tax_inclusive_amount' => $this->factura->total_factura + $this->factura->total_rete_fuente, // Total con Impuestos
 			'allowance_total_amount' => $this->factura->total_descuento, // Descuentos nivel de factura
 			'charge_total_amount' => "0.00", // Cargos
 			'payable_amount' => $this->factura->total_factura + $this->factura->total_rete_fuente, // Valor total a pagar
 		];
+	}
+
+	protected function getSubtotalTax()
+	{
+		$subtotalTax = 0;
+		foreach ($this->factura->detalles as $key => $detalle) {
+			if ((int)$detalle->iva_porcentaje) {
+				$subtotalTax+= $detalle->subtotal;
+			}
+		}
+
+		return number_format($subtotalTax, 2, '.', '');
 	}
 
 }
