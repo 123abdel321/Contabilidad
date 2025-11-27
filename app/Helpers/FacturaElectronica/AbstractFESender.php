@@ -220,7 +220,7 @@ abstract class AbstractFESender
 			$tax_totals = $this->taxTotalsDetalle($detalle, [1, 5]);
 			if (!count($tax_totals)) {
 				$tax_totals[] = [
-					"tax_id" => 1, //IVA
+					"tax_id" => 0, //IVA
 					"tax_amount" => $detalle->iva_valor,
 					"percent" => $detalle->iva_porcentaje ?? "0.00",
 					"taxable_amount" => number_format($this->iva_inluido ? $detalle->subtotal : $detalle->subtotal, 2, '.', '')
