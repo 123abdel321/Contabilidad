@@ -67,7 +67,7 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
-		// dd(json_encode($params));
+		// dd($params, json_encode($params));
 		$url = $this->getUrl() . $setTestId;
 
 		$response = Http::withHeaders([
@@ -181,6 +181,7 @@ abstract class AbstractFESender
 
 	public function getParams(): array
 	{
+		
 		$params = array(
 			'number' => $this->factura->consecutivo,
 			'prefix' => $this->factura->resolucion->prefijo,
@@ -196,7 +197,6 @@ abstract class AbstractFESender
 		);
 		
 		if (empty($params["holding_tax_totals"])) unset($params["holding_tax_totals"]);
-
 		return array_merge($params, $this->getExtraParams());
 	}
 
@@ -288,7 +288,7 @@ abstract class AbstractFESender
 					$data["taxable_amount"] = number_format($data["taxable_amount"] + $impuesto['taxable_amount'], 2, '.', '');
 				} else if (!$data["tax_subtotal"]) { // SI SON DIFERENTES % Y NO SE HA CREADO EL []SUBTOTAL
 					$data["tax_subtotal"][] = $this->decoreTax($data);
-					$data["percent"] = 0;
+					// $data["percent"] = 0;
 					$data["tax_subtotal"][] = $this->decoreTax($impuesto);
 				} else { // SI SON DIFERENTES % Y YA SE CREO EL []SUBTOTAL
 					$exists = false;
@@ -307,13 +307,14 @@ abstract class AbstractFESender
 				}
 			}
 			if ($data && $data['tax_subtotal'] && count($data['tax_subtotal']) > 0) { // SI TIENE SUBTOTAL VOLVER A CALCULAR
-				$data["percent"] = 0;
+				// $data["percent"] = 0;
 				$data["tax_amount"] = 0;
 				$data["taxable_amount"] = 0;
 				foreach ($data['tax_subtotal'] as $k => $v) {
 					$data["tax_amount"] += $v["tax_amount"];
 					$data["taxable_amount"] += $v["taxable_amount"];
 				}
+				$data["taxable_amount"] = number_format($data["taxable_amount"], 2, '.', '');
 			}
 			if ($data) $decoreTax[$key] = $data;
 		}
