@@ -3,7 +3,6 @@
         <tr>
             <th data-name="concepto">Concepto</th>
             <th data-name="cuenta">Cuenta</th>
-            <th data-name="nombre">Nombre</th>
             <th data-name="tipo_documento">Tipo documento</th>
             <th data-name="numero_documento">Numero documento</th>
             <th data-name="digito_verificacion">D.V.</th>

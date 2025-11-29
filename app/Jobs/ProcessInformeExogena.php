@@ -167,7 +167,7 @@ class ProcessInformeExogena implements ShouldQueue
                     $newRowExogena['id_exogena_formato'] = $formato->id;
                     $newRowExogena['id_exogena_formato_concepto'] = $cuenta->id_exogena_formato_concepto;
                     $newRowExogena['id_nit'] = $documento->id_nit;
-                    $newRowExogena['cuenta'] = $cuenta->cuenta;
+                    $newRowExogena['cuenta'] = "{$cuenta->cuenta} - {$cuenta->nombre}";
 
                     // Obtener el concepto
                     $concepto = ExogenaFormatoConcepto::find($cuenta->id_exogena_formato_concepto);

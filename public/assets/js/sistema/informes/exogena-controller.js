@@ -213,27 +213,23 @@ function initTablesExogena() {
         "columns": [
             {data: 'concepto', name: 'concepto'},
             {data: 'cuenta', name: 'cuenta'},
-            {
-                data: null,
-                name: 'nombre',
-                render: function(row, type, set, col) {
-                    if (row.primer_nombre) {
-                        return `${row.primer_nombre}`;
-                    }
-                    return '';
-                }
-            },
             {data: 'tipo_documento', name: 'tipo_documento'},
             {data: 'numero_documento', name: 'numero_documento'},
             {data: 'digito_verificacion', name: 'digito_verificacion'},
             {
                 data: null,
                 name: 'nombre_completo',
-                render: function(row, type, set, col) {
-                    if (row.primer_nombre) {
-                        return `${row.primer_nombre} - ${row.primer_apellido}`;
-                    }
-                    return '';
+                render: function(row) {
+
+                    const partes = [
+                        row.primer_nombre,
+                        row.otros_nombres,
+                        row.primer_apellido,
+                        row.segundo_apellido
+                    ];
+
+                    // Filtra null, undefined, '', etc.
+                    return partes.filter(Boolean).join(' ');
                 }
             },
             {data: 'direccion', name: 'direccion'},
