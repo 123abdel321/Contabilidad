@@ -27,12 +27,12 @@ class CalcularPeriodo
 
             $query = NomContratos::with(['periodo', 'concepto_basico'])
                 ->where('estado', NomContratos::ESTADO_ACTIVO);
-
+            
             // Filtro por fecha
             if (!empty($fechaPeriodo)) {
                 $query->where(function($q) use ($fechaPeriodo) {
                     $q->where('fecha_inicio_contrato', 'like', $fechaPeriodo . '%')
-						->orWhere('fecha_inicio_contrato', '<=', $fechaPeriodo);
+						->orWhereDate('fecha_inicio_contrato', '<=', $fechaPeriodo.".01");
                 });
             }
 
@@ -50,12 +50,12 @@ class CalcularPeriodo
 
             // Procesar cada contrato
             $query->chunk(233, function($contratos) use (&$periodoPagos, $fechaPeriodo) {
-
+                
                 foreach ($contratos as $contrato) {
-
+                    
                     $periodo = $contrato->periodo;
                     $fechasPeriodos = $this->getPeriodoPago($contrato, $fechaPeriodo);
-
+                    
                     foreach ($fechasPeriodos as $fechasPeriodo) {
                         $inicioPeriodo = CarbonImmutable::parse($fechasPeriodo['fecha_inicio']);
 						$finPeriodo = CarbonImmutable::parse($fechasPeriodo['fecha_fin']);
@@ -210,10 +210,11 @@ class CalcularPeriodo
     public function getPeriodoPago ($contrato, $fecha)
     {
         $periodo = $contrato->periodo;
-
+        
         if ($periodo->tipo_dia_pago == NomPeriodos::TIPO_DIA_PAGO_ORDINAL) {
             $periodoDiasOrdinales = str_replace(' ', '', $periodo->periodo_dias_ordinales);
             $periodoDiasOrdinales = explode(',', $periodo->periodo_dias_ordinales);
+            // dd($fecha, $periodoDiasOrdinales);
             $fechasPeriodos = $this->getPeriodosOrdinales($fecha, $periodoDiasOrdinales);
         }
 
