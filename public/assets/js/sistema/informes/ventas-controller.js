@@ -86,6 +86,10 @@ function ventasInit() {
                     var html = '';
                     if (row.id) {
                         html+= '<span id="imprimirventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info imprimir-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">PDF &nbsp;<i class="fas fa-print"></i></span>';
+                        if (eliminarVentas && !row.fe_codigo_identificador) {
+                            html+= '&nbsp;<span id="eliminarventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger eliminar-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">ELIMINAR &nbsp;<i class="fa-solid fa-trash-can"></i></span>';
+                            html+= '&nbsp;<span id="eliminarventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="margin-bottom: 0rem !important; color: white; background-color: white !important; display: none;" disabled>ELIMINANDO &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                        }
                     }
                     
                     if (row.resolucion && !row.fe_codigo_identificador){
@@ -304,6 +308,65 @@ $(document).on('click', '.imprimir-venta', function () {
     var id = this.id.split('_')[1];
     window.open("/ventas-print/"+id, "_blank");
 });
+$(document).on('click', '.eliminar-venta', function () {
+
+    var id = this.id.split('_')[1];
+    var data = getDataById(id, ventas_table);
+
+    Swal.fire({
+        title: 'Eliminar factura',
+        text: "Desea eliminar la factura a "+data.documento_referencia+"?",
+        type: 'warning',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Eliminar facturas!',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.value){
+            
+            $("#eliminarventa_"+id).hide();
+            $("#eliminarventaloading_"+id).show();
+            $.ajax({
+                url: base_url + 'ventas',
+                method: 'DELETE',
+                data: JSON.stringify({
+                    id_venta: id
+                }),
+                headers: headers,
+                dataType: 'json',
+            }).done((res) => {
+                ventas_table.ajax.reload(function (res) {
+                    showTotalsVentas(res);
+                });
+            }).fail((err) => {
+                $("#eliminarventa_"+id).show();
+                $("#eliminarventaloading_"+id).hide();
+
+                $("#crearCapturaVenta").show();
+                $("#crearCapturaVentaLoading").hide();
+                
+                const mensajes = err.responseJSON.message;
+                let errorsMsg = '';
+                let countError = 0;
+
+                if (typeof mensajes === 'string') {
+                    agregarToast('error', 'Envio a la dian errado', mensajes);
+                    return;
+                }
+
+                mensajes.forEach(mensaje => {
+                    countError++;
+                    errorsMsg+='<b>'+countError+'-</b> '+mensaje+'<br/>';
+                });
+
+                agregarToast('error', 'Envio a la dian errado', errorsMsg);
+            });
+        }
+    })
+});
+
 //REENVIAR FACTURACIÓN ELECTRONICA
 $(document).on('click', '.enviar-fe-venta', function () {
     var id = this.id.split('_')[1];

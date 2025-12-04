@@ -452,6 +452,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('ventas', 'generate');
             Route::get('facturas', 'read');
             Route::post('ventas', 'create');
+            Route::delete('ventas', 'delete');
             Route::post('ventas-fe', 'facturacionElectronica');
             Route::post('ventas-notificar', 'sendNotification');
         });

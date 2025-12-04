@@ -632,98 +632,6 @@ class VentaController extends Controller
         ]);
     }
 
-    private function generarVentaDetalles($dataVentas, $detallar = true)
-    {
-        foreach ($dataVentas as $value) {
-            $resolucion = $value->resolucion && $value->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA ? $value->resolucion : null;
-            $this->ventaData[] = [
-                "id" => $value->id,
-                "descripcion" => "",
-                "cantidad" => $value->detalles()->sum('cantidad'),
-                "costo" => "",
-                "nombre_bodega" => $value->id_bodega ? $value->bodega->codigo.' - '.$value->bodega->nombre : "",
-                "nombre_completo" => $value->id_cliente ? $value->cliente?->nombre_completo : $value->id_cliente,
-                "documento_referencia" => $value->documento_referencia,
-                "fecha_manual" => $value->fecha_manual,
-                "subtotal" => $value->subtotal,
-                "iva_porcentaje" => "",
-                "nombre_vendedor" => $value->vendedor && $value->vendedor->nit ? $value->vendedor->nit->nombre_completo : "",
-                "total_iva" => $value->total_iva,
-                "descuento_porcentaje" => "",
-                "total_descuento" => $value->total_descuento,
-                "rete_fuente_porcentaje" => "",
-                "total_rete_fuente" => $value->total_rete_fuente,
-                "total_factura" => $value->total_factura,
-                "anulado" => $value->anulado,
-                "fecha_creacion" => $value->fecha_creacion,
-                "fecha_edicion" => $value->fecha_edicion,
-                "created_by" => $value->created_by,
-                "updated_by" => $value->updated_by,
-                "detalle" => $detallar ? false : true,
-                "resolucion" => $resolucion,
-                "factura" => $value->factura ?? null,
-                'fe_codigo_identificador' => $value->fe_codigo_identificador
-            ];
-            if ($detallar) {
-                foreach ($value->detalles as $ventaDetalle) {
-                    $this->ventaData[] = [
-                        "id" => "",
-                        "descripcion" => $ventaDetalle->descripcion,
-                        "cantidad" => $ventaDetalle->cantidad,
-                        "costo" => $ventaDetalle->costo,
-                        "subtotal" => $ventaDetalle->subtotal,
-                        "nombre_bodega" => "",
-                        "nombre_completo" => "",
-                        "documento_referencia" => "",
-                        "fecha_manual" => "",
-                        "iva_porcentaje" => $ventaDetalle->iva_porcentaje,
-                        "nombre_vendedor" => "",
-                        "total_iva" => $ventaDetalle->iva_valor,
-                        "descuento_porcentaje" => $ventaDetalle->descuento_porcentaje,
-                        "total_descuento" => $ventaDetalle->descuento_valor,
-                        "rete_fuente_porcentaje" => "",
-                        "total_rete_fuente" => "",
-                        "total_factura" => $ventaDetalle->total,
-                        "anulado" => "",
-                        "fecha_creacion" => "",
-                        "fecha_edicion" => "",
-                        "created_by" => "",
-                        "updated_by" => "",
-                        "detalle" => true,
-                        "resolucion" => null,
-                        'fe_codigo_identificador' => null
-                    ];
-                }
-            }
-        }
-    }
-
-    private function addFormaPago($documentoReferencia, $formaPago, $nit, $pagoItem, $venta, $valor, $saldo)
-    {
-        FacVentaPagos::create([
-            'id_venta' => $venta->id,
-            'id_forma_pago' => $pagoItem->id,
-            'valor' => $valor,
-            'saldo' => $saldo,
-            'created_by' => request()->user()->id,
-            'updated_by' => request()->user()->id
-        ]);
-
-        $doc = new DocumentosGeneral([
-            'id_cuenta' => $formaPago->cuenta->id,
-            'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
-            'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $venta->id_centro_costos : null,
-            'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
-            'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $documentoReferencia : null,
-            'debito' => $valor,
-            'credito' => $valor,
-            'created_by' => request()->user()->id,
-            'updated_by' => request()->user()->id
-        ]);
-
-        return $doc;
-    }
-
     public function read(Request $request)
     {
         $draw = $request->get('draw');
@@ -787,55 +695,6 @@ class VentaController extends Controller
             'perPage' => 10,
             'message'=> 'Facturas generados con exito!'
         ]);
-    }
-
-    private function createFacturaVenta ($request)
-    {
-        $this->calcularTotales($request->get('productos'));
-        $this->calcularFormasPago($request->get('pagos'));
-        $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
-        
-        $venta = FacVentas::create([
-            'id_cliente' => $request->get('id_cliente'),
-            'id_resolucion' => $request->get('id_resolucion'),
-            'id_comprobante' => $this->resolucion->comprobante->id,
-            'id_bodega' => $request->get('id_bodega'),
-            'id_centro_costos' => $this->bodega->id_centro_costos,
-            'id_vendedor' => $request->get('id_vendedor'),
-            'fecha_manual' => $request->get('fecha_manual'),
-            'consecutivo' => $request->get('consecutivo'),
-            'documento_referencia' => $request->get('documento_referencia'),
-            'subtotal' => $this->totalesFactura['subtotal'],
-            'total_iva' => $this->totalesFactura['total_iva'],
-            'total_descuento' => $this->totalesFactura['total_descuento'],
-            'total_rete_fuente' => $this->totalesFactura['total_rete_fuente'],
-            'total_cambio' => $this->totalesPagos['total_cambio'],
-            'porcentaje_rete_fuente' => $this->totalesFactura['porcentaje_rete_fuente'],
-            'codigo_tipo_documento_dian' => CodigoDocumentoDianTypes::VENTA_NACIONAL,
-            'total_factura' => $this->totalesFactura['total_factura'],
-            'observacion' => $request->get('observacion'),
-            'created_by' => request()->user()->id,
-            'updated_by' => request()->user()->id,
-        ]);
-
-        return $venta;
-    }
-
-    private function calcularFormasPago($pagos)
-    {
-        $totalCambio = 0;
-        $totalPagos = 0;
-        foreach ($pagos as $pago) {
-            $pago = (object)$pago;
-            $totalPagos+= $pago->valor;
-            if ($pago->id == 1) $this->totalesPagos['total_efectivo']+= $pago->valor;
-            else $this->totalesPagos['total_otrospagos']+= $pago->valor;
-        }
-        if ($this->totalesFactura['total_factura'] < $totalPagos) {
-            $totalCambio = $totalPagos - $this->totalesFactura['total_factura'];
-        }
-        
-        $this->totalesPagos['total_cambio'] = $totalCambio;
     }
 
     public function showPdf(Request $request, $id)
@@ -1073,6 +932,203 @@ class VentaController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 	}
+
+    public function delete(Request $request)
+    {
+        $rules = [
+            'id_venta' => 'required|exists:sam.fac_ventas,id',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+
+            DB::connection('sam')->beginTransaction();
+
+            $venta = FacVentas::with('bodegas')
+                ->where("id", $request->get("id_venta"))
+                ->first();
+
+            foreach ($venta->bodegas as $bodega) {
+                if ($bodega->cantidad) {
+                    FacProductosBodegas::where('id_producto', $bodega->id_producto)
+                        ->increment('cantidad', $bodega->cantidad);
+                }
+            }
+
+            $venta->documentos()->delete();
+            $venta->detalles()->delete();
+            $venta->bodegas()->delete();
+            $venta->pagos()->delete();
+            $venta->delete();
+
+            DB::connection('sam')->commit();
+
+            return response()->json([
+                'success' => true,
+                'data' => [],
+                'message' => 'Venta eliminada con exito!'
+            ], 200);
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    private function createFacturaVenta ($request)
+    {
+        $this->calcularTotales($request->get('productos'));
+        $this->calcularFormasPago($request->get('pagos'));
+        $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
+        
+        $venta = FacVentas::create([
+            'id_cliente' => $request->get('id_cliente'),
+            'id_resolucion' => $request->get('id_resolucion'),
+            'id_comprobante' => $this->resolucion->comprobante->id,
+            'id_bodega' => $request->get('id_bodega'),
+            'id_centro_costos' => $this->bodega->id_centro_costos,
+            'id_vendedor' => $request->get('id_vendedor'),
+            'fecha_manual' => $request->get('fecha_manual'),
+            'consecutivo' => $request->get('consecutivo'),
+            'documento_referencia' => $request->get('documento_referencia'),
+            'subtotal' => $this->totalesFactura['subtotal'],
+            'total_iva' => $this->totalesFactura['total_iva'],
+            'total_descuento' => $this->totalesFactura['total_descuento'],
+            'total_rete_fuente' => $this->totalesFactura['total_rete_fuente'],
+            'total_cambio' => $this->totalesPagos['total_cambio'],
+            'porcentaje_rete_fuente' => $this->totalesFactura['porcentaje_rete_fuente'],
+            'codigo_tipo_documento_dian' => CodigoDocumentoDianTypes::VENTA_NACIONAL,
+            'total_factura' => $this->totalesFactura['total_factura'],
+            'observacion' => $request->get('observacion'),
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id,
+        ]);
+
+        return $venta;
+    }
+
+    private function generarVentaDetalles($dataVentas, $detallar = true)
+    {
+        foreach ($dataVentas as $value) {
+            $resolucion = $value->resolucion && $value->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA ? $value->resolucion : null;
+            $this->ventaData[] = [
+                "id" => $value->id,
+                "descripcion" => "",
+                "cantidad" => $value->detalles()->sum('cantidad'),
+                "costo" => "",
+                "nombre_bodega" => $value->id_bodega ? $value->bodega->codigo.' - '.$value->bodega->nombre : "",
+                "nombre_completo" => $value->id_cliente ? $value->cliente?->nombre_completo : $value->id_cliente,
+                "documento_referencia" => $value->documento_referencia,
+                "fecha_manual" => $value->fecha_manual,
+                "subtotal" => $value->subtotal,
+                "iva_porcentaje" => "",
+                "nombre_vendedor" => $value->vendedor && $value->vendedor->nit ? $value->vendedor->nit->nombre_completo : "",
+                "total_iva" => $value->total_iva,
+                "descuento_porcentaje" => "",
+                "total_descuento" => $value->total_descuento,
+                "rete_fuente_porcentaje" => "",
+                "total_rete_fuente" => $value->total_rete_fuente,
+                "total_factura" => $value->total_factura,
+                "anulado" => $value->anulado,
+                "fecha_creacion" => $value->fecha_creacion,
+                "fecha_edicion" => $value->fecha_edicion,
+                "created_by" => $value->created_by,
+                "updated_by" => $value->updated_by,
+                "detalle" => $detallar ? false : true,
+                "resolucion" => $resolucion,
+                "factura" => $value->factura ?? null,
+                'fe_codigo_identificador' => $value->fe_codigo_identificador
+            ];
+            if ($detallar) {
+                foreach ($value->detalles as $ventaDetalle) {
+                    $this->ventaData[] = [
+                        "id" => "",
+                        "descripcion" => $ventaDetalle->descripcion,
+                        "cantidad" => $ventaDetalle->cantidad,
+                        "costo" => $ventaDetalle->costo,
+                        "subtotal" => $ventaDetalle->subtotal,
+                        "nombre_bodega" => "",
+                        "nombre_completo" => "",
+                        "documento_referencia" => "",
+                        "fecha_manual" => "",
+                        "iva_porcentaje" => $ventaDetalle->iva_porcentaje,
+                        "nombre_vendedor" => "",
+                        "total_iva" => $ventaDetalle->iva_valor,
+                        "descuento_porcentaje" => $ventaDetalle->descuento_porcentaje,
+                        "total_descuento" => $ventaDetalle->descuento_valor,
+                        "rete_fuente_porcentaje" => "",
+                        "total_rete_fuente" => "",
+                        "total_factura" => $ventaDetalle->total,
+                        "anulado" => "",
+                        "fecha_creacion" => "",
+                        "fecha_edicion" => "",
+                        "created_by" => "",
+                        "updated_by" => "",
+                        "detalle" => true,
+                        "resolucion" => null,
+                        'fe_codigo_identificador' => null
+                    ];
+                }
+            }
+        }
+    }
+
+    private function addFormaPago($documentoReferencia, $formaPago, $nit, $pagoItem, $venta, $valor, $saldo)
+    {
+        FacVentaPagos::create([
+            'id_venta' => $venta->id,
+            'id_forma_pago' => $pagoItem->id,
+            'valor' => $valor,
+            'saldo' => $saldo,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        $doc = new DocumentosGeneral([
+            'id_cuenta' => $formaPago->cuenta->id,
+            'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
+            'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $venta->id_centro_costos : null,
+            'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$venta->documento_referencia : null,
+            'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $documentoReferencia : null,
+            'debito' => $valor,
+            'credito' => $valor,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
+
+        return $doc;
+    }
+
+    private function calcularFormasPago($pagos)
+    {
+        $totalCambio = 0;
+        $totalPagos = 0;
+        foreach ($pagos as $pago) {
+            $pago = (object)$pago;
+            $totalPagos+= $pago->valor;
+            if ($pago->id == 1) $this->totalesPagos['total_efectivo']+= $pago->valor;
+            else $this->totalesPagos['total_otrospagos']+= $pago->valor;
+        }
+        if ($this->totalesFactura['total_factura'] < $totalPagos) {
+            $totalCambio = $totalPagos - $this->totalesFactura['total_factura'];
+        }
+        
+        $this->totalesPagos['total_cambio'] = $totalCambio;
+    }
 
     private function isAnticiposDocumentoRefe($formaPago, $idNit)
     {

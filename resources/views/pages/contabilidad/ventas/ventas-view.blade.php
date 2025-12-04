@@ -114,3 +114,7 @@
 </div>
 
 @include('pages.contabilidad.ventas.ventas-informeZ')
+
+<script>
+    var eliminarVentas = @json(auth()->user()->can('ventas delete'));
+</script>
