@@ -265,12 +265,12 @@
 				@foreach ($productos as $producto)
 					<tr>
 						<td class="padding5 detalle-factura-descripcion">{{ $producto->descripcion }} {{ $producto->observacion }}</td>
-						<td class="padding5 valor">{{ number_format($producto->cantidad) }}</td>
-						<td class="padding5 valor">{{ number_format($producto->costo) }}</td>
-						<td class="padding5 valor">{{ number_format($producto->subtotal) }}</td>
-						<td class="padding5 valor">{{ number_format($producto->descuento_valor) }}</td>
-						<td class="padding5 valor">{{ number_format($producto->iva_valor) }}</td>
-						<td class="padding5 valor">{{ number_format($producto->total) }}</td>
+						<td class="padding5 valor">{{ number_format($producto->cantidad, 2) }}</td>
+						<td class="padding5 valor">{{ number_format($producto->costo, 2) }}</td>
+						<td class="padding5 valor">{{ number_format($producto->subtotal, 2) }}</td>
+						<td class="padding5 valor">{{ number_format($producto->descuento_valor, 2) }}</td>
+						<td class="padding5 valor">{{ number_format($producto->iva_valor, 2) }}</td>
+						<td class="padding5 valor">{{ number_format($producto->total, 2) }}</td>
 					</tr>
 				@endforeach
 			</tbody>
@@ -299,24 +299,24 @@
 													@if ($pago->forma_pago->id == 1)
 														<tr>
 															<td class="font-13" style="width:55%;">{{ $pago->forma_pago->nombre }}</td>
-															<td class="font-13" style="width:45%;text-align:right;">{{ number_format($pago->valor + $factura->total_cambio) }}</td>
+															<td class="font-13" style="width:45%;text-align:right;">{{ number_format($pago->valor + $factura->total_cambio, 2) }}</td>
 														</tr>
 													@else
 														<tr>
 															<td class="font-13" style="width:55%;">{{ $pago->forma_pago->nombre }}</td>
-															<td class="font-13" style="width:45%;text-align:right;">{{ number_format($pago->valor) }}</td>
+															<td class="font-13" style="width:45%;text-align:right;">{{ number_format($pago->valor, 2) }}</td>
 														</tr>
 													@endif
 												@endforeach
 											@endif
 											<tr>
 												<td class="font-13" style="width:55%;">CAMBIO:</td>
-												<td class="font-13" style="width:45%;text-align:right;">{{ number_format($factura->total_cambio) }}</td>
+												<td class="font-13" style="width:45%;text-align:right;">{{ number_format($factura->total_cambio, 2) }}</td>
 											</tr>
 											
 											<tr>
 												<td style="font-weight: bold;">TOTAL</td>
-												<td class="font-13" style="width:45%;text-align:right;">{{ number_format($pagos->sum('valor')) }}</td>
+												<td class="font-13" style="width:45%;text-align:right;">{{ number_format($pagos->sum('valor'), 2) }}</td>
 											</tr>
 											<tr>
 												<td class="spacer-10 padding5"></td>
@@ -338,19 +338,19 @@
 										<tbody>
                                             <tr>
                                                 <td >SUBTOTAL</td>
-                                                <td class="valor ">{{ number_format($factura->subtotal) }}</td>
+                                                <td class="valor ">{{ number_format($factura->subtotal, 2) }}</td>
                                             </tr>
 											<tr>
                                                 <td >IVA</td>
-                                                <td class="valor ">{{ number_format($factura->total_iva) }}</td>
+                                                <td class="valor ">{{ number_format($factura->total_iva, 2) }}</td>
                                             </tr>
 											<tr>
                                                 <td >RETE FUENTE {{ $factura->porcentaje_rete_fuente }}%</td>
-                                                <td class="valor ">{{ number_format($factura->total_rete_fuente) }}</td>
+                                                <td class="valor ">{{ number_format($factura->total_rete_fuente, 2) }}</td>
                                             </tr>
 											<tr>
                                                 <td style="font-weight: bold;">TOTAL</td>
-                                                <td class="valor ">{{ number_format($factura->total_factura) }}</td>
+                                                <td class="valor ">{{ number_format($factura->total_factura, 2) }}</td>
                                             </tr>
 										</tbody>
 									</table>
