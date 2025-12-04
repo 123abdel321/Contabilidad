@@ -405,7 +405,8 @@ class PosController extends Controller
                 $this->resolucion->comprobante->id,
                 $venta,
                 $request->get('fecha_manual'),
-                $request->get('consecutivo')
+                $request->get('consecutivo'),
+                false
             );
 
             //AGREGAR DETALLE DE PRODUCTOS

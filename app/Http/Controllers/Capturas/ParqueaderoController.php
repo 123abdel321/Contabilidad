@@ -361,7 +361,8 @@ class ParqueaderoController extends Controller
                 $this->resolucion->comprobante->id,
                 $venta,
                 $request->get('fecha_manual'),
-                $request->get('consecutivo')
+                $request->get('consecutivo'),
+                false
             );
 
             $nit = $this->findCliente($venta->id_cliente);

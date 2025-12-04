@@ -23,10 +23,11 @@ use App\Models\Sistema\ConPagos;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\CentroCostos;
-use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\ConPagoPagos;
-use App\Models\Sistema\DocumentosGeneral;
+use App\Models\Sistema\FacFormasPago;
+use App\Models\Sistema\PlanCuentasTipo;
 use App\Models\Sistema\ConPagoDetalles;
+use App\Models\Sistema\DocumentosGeneral;
 use App\Models\Sistema\ArchivosGenerales;
 
 class PagosController extends Controller
@@ -114,7 +115,10 @@ class PagosController extends Controller
 
             $extractos = (new Extracto(
                 $idNit,
-                [4,8],
+                [
+                    PlanCuentasTipo::TIPO_CUENTA_CXP,
+                    PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_CLIENTES_XP
+                ],
                 null,
                 $fechaManual
             ))->actual()->get();
@@ -126,6 +130,8 @@ class PagosController extends Controller
                     'message'=> 'Pago generado con exito!'
                 ], Response::HTTP_OK);
             }
+
+            // $extractos = $extractos->sortBy('orden, cuenta')->values();
 
             if ($request->get('orden_cuentas')) {
 
@@ -655,6 +661,7 @@ class PagosController extends Controller
                 null,
                 $request->get('fecha_pago')
             ))->actual()->get();
+            // $extractos = $extractos->sortBy('orden, cuenta')->values();
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE RECIBOS
             $documentoGeneral = new Documento(
@@ -870,6 +877,8 @@ class PagosController extends Controller
                     "message"=>'El nit no tiene cuentas por cobrar'
                 ], Response::HTTP_UNPROCESSABLE_ENTITY); 
             }
+
+            // $extractos = $extractos->sortBy('orden, cuenta')->values();
 
             $valorPagado = $pago->total_abono;
 

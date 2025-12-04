@@ -180,7 +180,8 @@ class CompraController extends Controller
                 $request->get('id_comprobante'),
                 $compra,
                 $request->get('fecha_manual'),
-                $request->get('consecutivo')
+                $request->get('consecutivo'),
+                null
             );
             
             foreach ($request->get('productos') as $producto) {

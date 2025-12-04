@@ -674,7 +674,8 @@ class RecibosController extends Controller
                 $request->get('id_comprobante'),
                 $recibo,
                 $request->get('fecha_manual'),
-                $request->get('consecutivo')
+                $request->get('consecutivo'),
+                false
             );
 
             $valorPagado = $request->get('valor_pago');

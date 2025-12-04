@@ -197,7 +197,8 @@ class VentaController extends Controller
                 $this->resolucion->comprobante->id,
                 $venta,
                 $request->get('fecha_manual'),
-                $request->get('consecutivo')
+                $request->get('consecutivo'),
+                false
             );
 
             //AGREGAR DETALLE DE PRODUCTOS
@@ -434,6 +435,7 @@ class VentaController extends Controller
             
             $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 
+            
             if (!$documentoGeneral->save()) {
 
 				DB::connection('sam')->rollback();
