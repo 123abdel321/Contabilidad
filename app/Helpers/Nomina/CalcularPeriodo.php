@@ -117,19 +117,17 @@ class CalcularPeriodo
 		});
 
         foreach ($novedades as $key => $novedad) {
-            if ($key == 1) {
-                if(count(explode("liquidacion/:",$novedad->observacion)) > 1) {
-                    $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleNovedadGeneralLiquidacion($novedad);
-                } else if ($novedad->concepto->codigo == NomConceptos::CODE_PRIMA) {
-                    $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetallePrima($novedad);
-                } else {
-                    $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleNovedadGeneral(
-                        $contrato,
-                        $periodoPago,
-                        $novedad,
-                        $periodoPagoDetalles
-                    );
-                }
+            if(count(explode("liquidacion/:",$novedad->observacion)) > 1) {
+                $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleNovedadGeneralLiquidacion($novedad);
+            } else if ($novedad->concepto->codigo == NomConceptos::CODE_PRIMA) {
+                $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetallePrima($novedad);
+            } else {
+                $periodoPagoDetalles[] = $this->periodoPagoDetalleFactory->createPeriodoPagoDetalleNovedadGeneral(
+                    $contrato,
+                    $periodoPago,
+                    $novedad,
+                    $periodoPagoDetalles
+                );
             }
         }
         
