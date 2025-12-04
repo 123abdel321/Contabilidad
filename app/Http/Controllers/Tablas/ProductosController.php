@@ -13,6 +13,7 @@ use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\FacFamilias;
 use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacParqueadero;
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\FacProductosBodegas;
 use App\Models\Sistema\FacVariantesOpciones;
 use App\Models\Sistema\FacProductosVariantes;
@@ -612,6 +613,10 @@ class ProductosController extends Controller
 
     public function comboProducto(Request $request)
     {
+        $recordarUltimoPrecio = VariablesEntorno::where('nombre', 'recordar_ultimo_precio_venta')->first();
+        $recordarUltimoPrecio = $recordarUltimoPrecio ? $recordarUltimoPrecio->valor : null;
+        $idCliente = $request->get('id_cliente', null);
+        
         $producto = FacProductos::select(
                 \DB::raw('*'),
                 \DB::raw("CONCAT(codigo, ' - ', nombre) as text")
@@ -634,45 +639,78 @@ class ProductosController extends Controller
             ])
             ->where('estado', 1);
 
-        // Filter by 'q' (search term)
-        if ($request->get("search")) {
-            $producto->where(function($query) use ($request) {
-                $query->where('codigo', 'LIKE', '%' . $request->get("search") . '%')
-                    ->orWhere('nombre', 'LIKE', '%' . $request->get("search") . '%');
+        // Si se solicita recordar el último precio y hay un cliente específico
+        if ($recordarUltimoPrecio && $idCliente) {
+            $producto->addSelect([
+                \DB::raw('(
+                    SELECT vd.costo 
+                    FROM fac_venta_detalles vd
+                    INNER JOIN fac_ventas v ON vd.id_venta = v.id
+                    WHERE vd.id_producto = fac_productos.id
+                    AND v.id_cliente = ' . $idCliente . '
+                    ORDER BY v.created_at DESC
+                    LIMIT 1
+                ) as ultimo_costo_venta_cliente'),
+                \DB::raw('(
+                    SELECT v.created_at 
+                    FROM fac_venta_detalles vd
+                    INNER JOIN fac_ventas v ON vd.id_venta = v.id
+                    WHERE vd.id_producto = fac_productos.id
+                    AND v.id_cliente = ' . $idCliente . '
+                    ORDER BY v.created_at DESC
+                    LIMIT 1
+                ) as fecha_ultima_venta_cliente')
+            ]);
+        }
+
+        // ------------------------
+        // BUSQUEDA
+        // ------------------------
+        $search = $request->get("q")
+            ?? $request->get("search")
+            ?? $request->get("query")
+            ?? $request->input("search.value")
+            ?? null;
+
+        if ($search) {
+            $producto->where(function ($query) use ($search) {
+                $query->where('codigo', 'LIKE', "%{$search}%")
+                    ->orWhere('nombre', 'LIKE', "%{$search}%");
             });
         }
 
-        // Filter by 'q' (search term)
-        if ($request->get("q")) {
-            $producto->where(function($query) use ($request) {
-                $query->where('codigo', 'LIKE', '%' . $request->get("q") . '%')
-                    ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%');
+        $producto->with('inventarios');
+
+        $productos = $producto->paginate(40);
+
+        // Si se solicitó recordar el último precio, sobrescribir el precio
+        if ($recordarUltimoPrecio) {
+            $productos->getCollection()->transform(function ($item) use ($idCliente) {
+                $item = clone $item;
+                
+                if ($idCliente) {
+                    // Si hay cliente específico, usar ese precio
+                    if ($item->ultimo_costo_venta_cliente) {
+                        $item->precio = $item->ultimo_costo_venta_cliente;
+                        $item->precio_original = $item->getOriginal('precio');
+                        $item->ultimo_costo_venta_tipo = 'cliente_especifico';
+                    } else {
+                        $item->ultimo_costo_venta_tipo = 'sin_ventas_cliente';
+                    }
+                } else {
+                    // Si no hay cliente específico, usar el último precio general
+                    if ($item->ultimo_costo_venta) {
+                        $item->precio = $item->ultimo_costo_venta;
+                        $item->precio_original = $item->getOriginal('precio');
+                        $item->ultimo_costo_venta_tipo = 'general';
+                    }
+                }
+                
+                return $item;
             });
         }
 
-        // Filter by 'query' (another search term) - Consider combining this with the 'q' filter
-        if ($request->get("query")) {
-            $producto->where(function($query) use ($request) {
-                $query->where('codigo', 'LIKE', '%' . $request->get("query") . '%')
-                    ->orWhere('nombre', 'LIKE', '%' . $request->get("query") . '%');
-            });
-        }
-
-        // Filter by family ID
-        if ($request->get("id_familia")) {
-            $producto->where('id_familia', $request->get("id_familia"));
-        }
-
-        // Eager load inventories with a specific condition if id_bodega exists
-        if ($request->has("id_bodega")) {
-            $producto->with(['inventarios' => function ($query) use ($request) {
-                $query->where('id_bodega', $request->get("id_bodega"));
-            }]);
-        } else {
-            $producto->with('inventarios');
-        }
-
-        return $producto->paginate(40);
+        return $productos;
     }
 
     public function comboParqueadero (Request $request)

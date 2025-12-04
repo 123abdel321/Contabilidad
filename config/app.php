@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'version' => '1.20.310 - 2025/11/29',
+    'version' => '1.20.311 - 2025/11/29',
 
     /*
     |--------------------------------------------------------------------------
@@ -179,7 +179,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\HorizonServiceProvider::class,
+        // App\Providers\HorizonServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,

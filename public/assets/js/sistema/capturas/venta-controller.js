@@ -140,6 +140,7 @@ function ventaInit () {
                             var query = {
                                 q: params.term,
                                 id_bodega: $("#id_bodega_venta").val(),
+                                id_cliente: $("#id_cliente_venta").val(),
                                 captura: 'venta',
                                 _type: 'query'
                             }

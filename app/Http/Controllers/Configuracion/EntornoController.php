@@ -54,6 +54,7 @@ class EntornoController extends Controller
                 'validar_salto_consecutivos',
                 'valor_uvt',
                 'vendedores_ventas',
+                'recordar_ultimo_precio_venta',
                 'porcentaje_iva_aiu',
                 'redondeo_gastos',
                 'ubicacion_maximoph',

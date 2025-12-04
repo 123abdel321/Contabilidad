@@ -230,7 +230,7 @@ class VentaController extends Controller
                 if ($this->ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
                     $costo = round((float)$producto->costo / (1 + ($producto->iva_porcentaje / 100)), 2);
                 }
-
+                
                 //CREAR VENTA DETALLE
                 FacVentaDetalles::create([
                     'id_venta' => $venta->id,
@@ -241,7 +241,7 @@ class VentaController extends Controller
                     'id_cuenta_venta_descuento' => $productoDb->familia->id_cuenta_venta_descuento,
                     'descripcion' => $productoDb->codigo.' - '.$productoDb->nombre,
                     'cantidad' => $producto->cantidad,
-                    'costo' => $costo,
+                    'costo' => $producto->costo,
                     'subtotal' => $costo * $producto->cantidad,
                     'descuento_porcentaje' => $producto->descuento_porcentaje,
                     'descuento_valor' => $producto->descuento_valor,
@@ -1097,8 +1097,7 @@ class VentaController extends Controller
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
         $this->ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
         $responsabilidades = $this->getResponsabilidades();
-        $count = 0;
-        // dd($productos);
+        
         foreach ($productos as $producto) {
             $producto = (object)$producto;
             
