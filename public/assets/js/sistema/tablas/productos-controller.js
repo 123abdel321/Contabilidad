@@ -103,7 +103,7 @@ function productosInit() {
                 }
                 if (row.id_familia && row.familia.inventario && inventarios.length > 0 && row.tipo_producto != 1) {
                     inventarios.forEach(inventario => {
-                        totalUnidades+= parseInt(inventario.cantidad);
+                        totalUnidades+= parseFloat(inventario.cantidad);
                     });
                     if (totalUnidades > 0) {
                         return totalUnidades;

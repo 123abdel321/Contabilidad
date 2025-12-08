@@ -17,6 +17,7 @@
             <th>Exo. Formato</th>
             <th>Exo. Concepto</th>
             <th>Exo. Columna</th>
+            <th>Orden</th>
             <th>Creación registro</th>
             <th>Ultima actualización</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Acciones</th>

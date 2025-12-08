@@ -129,6 +129,11 @@
                             </select>
                         </div>
 
+                        <div class="form-group form-group col-12 col-sm-6 col-md-6">
+                            <label for="">Orden</label>
+                            <input name="orden_cuenta" id="orden_cuenta" class="form-control form-control-sm" type="number">
+                        </div>
+
                     </div>  
                 </form>
             </div>

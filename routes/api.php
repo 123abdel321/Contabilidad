@@ -55,6 +55,7 @@ use App\Http\Controllers\Capturas\MovimientoInventarioController;
 //CAPTURAS -> NOMINA
 use App\Http\Controllers\Capturas\Nomina\PrimasController;
 use App\Http\Controllers\Capturas\Nomina\VacacionesController;
+use App\Http\Controllers\Capturas\Nomina\PagosNominaController;
 use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
 use App\Http\Controllers\Capturas\Nomina\CesantiasInteresController;
 use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
@@ -556,6 +557,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('causar-nomina', 'causarNomina');
             Route::post('descausar-nomina', 'descausarNomina');
             Route::post('calcular-nomina', 'calcularNomina');
+        });
+        //CAUSAR NOMINA GENERALES
+        Route::controller(PagosNominaController::class)->group(function () {
+            Route::get('pagar-periodos-pago', 'generate');
+            Route::get('detalle-periodos-pago', 'detalle');
+            Route::post('pagar-periodos-pago', 'pagar');
         });
         //CAUSAR PRESTACIONES SOCIALES
         Route::controller(CausarProvicionadaController::class)->group(function () {

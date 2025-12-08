@@ -14,16 +14,17 @@
                     <div class="row">
 
                         <input name="id_extracto_cargado" id="id_extracto_cargado" class="form-control form-control-sm" type="text" style="display: none;">
-                        <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="fecha_manual_extracto" class="form-control-label">Fecha</label>
-                            <input name="fecha_manual_extracto" id="fecha_manual_extracto" class="form-control form-control-sm" require>
-                        </div>
 
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="id_nit_extracto" style=" width: 100%;">Nit</label>
                             <select class="form-control form-control-sm" name="id_nit_extracto" id="id_nit_extracto">
                                 <option value="">Ninguno</option>
                             </select>
+                        </div>
+
+                        <div class="form-group col-12 col-sm-4 col-md-3">
+                            <label for="fecha_manual_extracto" class="form-control-label">Fecha</label>
+                            <input name="fecha_manual_extracto" id="fecha_manual_extracto" class="form-control form-control-sm" require>
                         </div>
 
                         <div class="form-group col-12 col-sm-4 col-md-3">

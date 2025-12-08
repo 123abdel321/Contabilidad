@@ -156,8 +156,54 @@ class CausarNominaController extends Controller
                 'perPage' => $rowperpage,
                 'message'=> 'Periodo pago generados con exito!'
             ]);
+
         } catch (Exception $e) {
             DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public function detallePeriodo(Request $request)
+    {
+        try {
+
+            $detallePeriodoPago = NomPeriodoPagoDetalles::select([
+                    '*',
+                    DB::raw('IF (valor >= 0, valor, 0) AS devengados'),
+                    DB::raw('IF (valor < 0, valor, 0) AS deducciones'),
+                ])
+                ->with([
+                    'concepto:id,codigo,nombre',
+                    'periodoPago:id,id_empleado,estado',
+                    'periodoPago.empleado:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido,numero_documento,digito_verificacion',
+                ])
+                ->when($request->has('id_periodo_pago'), function ($q) use ($request) {
+                    $q->where('id_periodo_pago', $request->get('id_periodo_pago'));
+                })
+                ->orderBy('id_concepto')
+                ->get();
+
+            $sumDevengados = $detallePeriodoPago->sum('devengados');
+            $sumDeducciones = abs($detallePeriodoPago->sum('deducciones'));
+            $neto = $sumDevengados - $sumDeducciones;
+
+            return response()->json([
+                'success'=>	true,
+                'data' => $detallePeriodoPago,
+                'totales' => (object)[
+                    'devengados' => $sumDevengados,
+                    'deducciones' => $sumDeducciones,
+                    'neto' => $neto,
+                ],
+                'message'=> 'Periodo pago generados con exito!'
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            
             return response()->json([
                 "success"=>false,
                 'data' => [],
@@ -271,7 +317,11 @@ class CausarNominaController extends Controller
                 }
 
                 // Procesar el período
-                $processResult = $this->processSinglePeriodo($periodoPago, $cuentaXPagarEmpleado, $comprobante);
+                $processResult = $this->processSinglePeriodo(
+                    $periodoPago,
+                    $cuentaXPagarEmpleado,
+                    $comprobante
+                );
                 
                 if (!$processResult['success']) {
                     $errors = array_merge($errors, $processResult['errors']);
@@ -383,9 +433,6 @@ class CausarNominaController extends Controller
         }
     }
 
-    /**
-     * Procesar un solo período de pago
-     */
     private function processSinglePeriodo($periodoPago, $cuentaXPagarEmpleado, $comprobante)
     {
         $errors = [];
@@ -396,7 +443,14 @@ class CausarNominaController extends Controller
 
         $datosConcepto =  'Periodo ' . $periodoPago->fecha_fin_periodo . ' / ' . $empleado->numero_documento_completo . ' ' . $empleado->nombre_completo;
         
-        $documentoGeneral = new Documento($comprobante->id, $periodoPago, $fecha, $consecutivo);
+        $documentoGeneral = new Documento(
+            $comprobante->id,
+            $periodoPago,
+            $fecha,
+            $consecutivo,
+            false
+        );
+
         $documentoGeneral->setConceptoDefault('NÓMINA GENERADA POR EL SISTEMA');
 
         // Calcular valor neto
@@ -461,7 +515,6 @@ class CausarNominaController extends Controller
         $periodoPago->estado = NomPeriodoPagos::ESTADO_CAUSADO;
         $periodoPago->save();
         
-        $documentoGeneral->setShouldUpdateConsecutivo(true);
         if (!$documentoGeneral->save()) {
             return [
                 'success' => false,
@@ -469,12 +522,11 @@ class CausarNominaController extends Controller
             ];
         }
 
+        $documentoGeneral->setShouldUpdateConsecutivo(true);
+
         return ['success' => true];
     }
 
-    /**
-     * Determinar NIT según el concepto (empleado o administradora)
-     */
     private function determineNitForConcepto($concepto, $contrato, $empleado)
     {
         $codigosConceptos = [
@@ -501,50 +553,4 @@ class CausarNominaController extends Controller
 
         return ['id_nit' => $empleado->id];
     }
-
-    public function detallePeriodo(Request $request)
-    {
-        try {
-
-            $detallePeriodoPago = NomPeriodoPagoDetalles::select([
-                    '*',
-                    DB::raw('IF (valor >= 0, valor, 0) AS devengados'),
-                    DB::raw('IF (valor < 0, valor, 0) AS deducciones'),
-                ])
-                ->with([
-                    'concepto:id,codigo,nombre',
-                    'periodoPago:id,id_empleado,estado',
-                    'periodoPago.empleado:id,razon_social,primer_nombre,otros_nombres,primer_apellido,segundo_apellido,numero_documento,digito_verificacion',
-                ])
-                ->when($request->has('id_periodo_pago'), function ($q) use ($request) {
-                    $q->where('id_periodo_pago', $request->get('id_periodo_pago'));
-                })
-                ->orderBy('id_concepto')
-                ->get();
-
-            $sumDevengados = $detallePeriodoPago->sum('devengados');
-            $sumDeducciones = abs($detallePeriodoPago->sum('deducciones'));
-            $neto = $sumDevengados - $sumDeducciones;
-
-            return response()->json([
-                'success'=>	true,
-                'data' => $detallePeriodoPago,
-                'totales' => (object)[
-                    'devengados' => $sumDevengados,
-                    'deducciones' => $sumDeducciones,
-                    'neto' => $neto,
-                ],
-                'message'=> 'Periodo pago generados con exito!'
-            ], Response::HTTP_OK);
-
-        } catch (Exception $e) {
-            
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$e->getMessage()
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-    }
-
 }

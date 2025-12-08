@@ -239,7 +239,9 @@ class ExtractoController extends Controller
                 $request->get('documento_referencia', null),
                 $fechaManual,
                 $request->get('id_cuenta', null)
-            ))->actual();
+            ))->anticiposDiscriminados();
+
+            $extractos = $extractos->sortBy('orden, cuenta')->values();
             
             return response()->json([
                 'success'=>	true,
@@ -273,16 +275,18 @@ class ExtractoController extends Controller
             $sin_documento = $request->get('sin_documento');
         }
         
-        $extracto = (new Extracto(
+        $extractos = (new Extracto(
             $request->get('id_nit'),
             $tiposCuentas,
             null,
             $fechaManual
-        ))->anticipos($sin_documento);
+        ))->anticipos($sin_documento)->get();
+
+        $extractos = $extractos->sortBy('orden, cuenta')->values();
 
         return response()->json([
             'success'=>	true,
-            'data' => $extracto->get(),
+            'data' => $extractos,
             'message'=> 'Anticipos consultados con exito!'
         ]);
     }

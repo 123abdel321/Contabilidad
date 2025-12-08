@@ -185,6 +185,11 @@ function plancuentaInit() {
                     return '';
                 }
             },
+            {
+                "data": function (row, type, set){
+                    return row.orden;
+                }
+            },
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
@@ -290,6 +295,7 @@ function plancuentaInit() {
             $("#naturaleza_egresos").val(data.naturaleza_egresos).change();
             $("#naturaleza_compras").val(data.naturaleza_compras).change();
             $("#naturaleza_ventas").val(data.naturaleza_ventas).change();
+            $("#orden_cuenta").val(data.order);
             
             $("#exige_nit").prop( "checked", data.exige_nit == 1 ? true : false );
             $("#exige_documento_referencia").prop( "checked", data.exige_documento_referencia == 1 ? true : false );
@@ -521,6 +527,7 @@ $(document).on('click', '#savePlanCuenta', function () {
         exige_documento_referencia: $("#exige_documento_referencia:checked").val() ? 1 : 0,
         exige_concepto: $("#exige_concepto:checked").val() ? 1 : 0,
         exige_centro_costos: $("#exige_centro_costos:checked").val() ? 1 : 0,
+        order: $("#orden_cuenta").val()
     }
 
     $.ajax({
@@ -618,6 +625,7 @@ $(document).on('click', '#updatePlanCuenta', function () {
         exige_documento_referencia: $("#exige_documento_referencia:checked").val() ? 1 : 0,
         exige_concepto: $("#exige_concepto:checked").val() ? 1 : 0,
         exige_centro_costos: $("#exige_centro_costos:checked").val() ? 1 : 0,
+        order: $("#orden_cuenta").val()
     }
 
     $.ajax({

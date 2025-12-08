@@ -64,6 +64,7 @@ use App\Http\Controllers\Capturas\DocumentoEliminarController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
 //CAPTURAS -> NOMINA
 use App\Http\Controllers\Capturas\Nomina\PrimasController;
+use App\Http\Controllers\Capturas\Nomina\PagosNominaController;
 use App\Http\Controllers\Capturas\Nomina\VacacionesController;
 use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
 use App\Http\Controllers\Capturas\Nomina\CesantiasInteresController;
@@ -198,6 +199,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/causar', [CausarNominaController::class, 'index']);
 		//LIQUIDACIÓN DEFINITIVA
 		Route::get('/liquidaciondefinitiva', [LiquidacionDefinitivaController::class, 'index']);
+		//PAGOS 
+		Route::get('/pagos', [PagosNominaController::class, 'index']);
+		
 		//VACACIONES
 		Route::get('/vacaciones', [VacacionesController::class, 'index']);
 		//PRIMAS

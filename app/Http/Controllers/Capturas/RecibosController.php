@@ -116,8 +116,8 @@ class RecibosController extends Controller
             $extractos = (new Extracto(
                 $idNit,
                 [
-                    PlanCuentasTipo::TIPO_CUENTA_CXC,
-                    PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC
+                    PlanCuentasTipo::TIPO_CUENTA_CXC,//3
+                    PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC//7
                 ],
                 null,
                 $fechaManual
@@ -131,19 +131,7 @@ class RecibosController extends Controller
                 ], Response::HTTP_OK);
             }
 
-            if ($request->get('orden_cuentas')) {
-
-                $ordenFacturacion = $request->get('orden_cuentas');
-                asort($ordenFacturacion);
-
-                $extractos = $extractos->sortBy(function ($item) use ($ordenFacturacion) {
-                    return $ordenFacturacion[$item->id_cuenta] ?? 9999;
-                })->values();
-            } else {
-                $extractos = $extractos->sortBy('cuenta')->values();
-            }
-
-            // $extractos = $extractos->sortBy('orden, cuenta')->values();
+            $extractos = $extractos->sortBy('orden, cuenta')->values();
 
             $hasError = false;
             $dataRecibos = [];
@@ -663,11 +651,12 @@ class RecibosController extends Controller
 
             $extractos = (new Extracto(
                 $nit->id,
-                3,
+                PlanCuentasTipo::TIPO_CUENTA_CXC,//3
                 null,
                 $request->get('fecha_pago')
             ))->actual()->get();
-            // $extractos = $extractos->sortBy('orden, cuenta')->values();
+
+            $extractos = $extractos->sortBy('orden, cuenta')->values();
 
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE RECIBOS
             $documentoGeneral = new Documento(
@@ -879,11 +868,10 @@ class RecibosController extends Controller
             //BUSCAMOS CUENTAS POR COBRAR
             $extractos = (new Extracto(
                 $recibo->id_nit,
-                3,
+                PlanCuentasTipo::TIPO_CUENTA_CXC,//3
                 null,
                 $recibo->fecha_manual
             ))->actual()->get();
-            // $extractos = $extractos->sortBy('orden, cuenta')->values();
 
             if (!count($extractos)) {
                 DB::connection('sam')->rollback();
@@ -894,6 +882,7 @@ class RecibosController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY); 
             }
 
+            $extractos = $extractos->sortBy('orden, cuenta')->values();
             $valorPagado = $recibo->total_abono;
 
             foreach ($extractos as $extracto) {
@@ -1130,7 +1119,7 @@ class RecibosController extends Controller
                         }
 
                         $pagoAnticipos-= $anticipoUsado;
-
+                        
                         $doc = new DocumentosGeneral([
                             'id_cuenta' => $formaPago->cuenta->id,
                             'id_nit' => $formaPago->cuenta->exige_nit ? $nit->id : null,
@@ -1269,7 +1258,7 @@ class RecibosController extends Controller
             'id_cuenta' =>  $extracto->id_cuenta,
             'codigo_cuenta' => $extracto->cuenta,
             'nombre_cuenta' => $extracto->nombre_cuenta,
-            'fecha_manual' => $extracto->fecha_manual,
+            'fecha_manual' => Carbon::parse($extracto->fecha_manual)->format('Y-m-d'),
             'dias_cumplidos' => $extracto->dias_cumplidos,
             'plazo' => $extracto->plazo,
             'documento_referencia' => $extracto->documento_referencia,
@@ -1292,7 +1281,7 @@ class RecibosController extends Controller
             'id_cuenta' =>  $detalle->id_cuenta,
             'codigo_cuenta' => $cuentaData->cuenta,
             'nombre_cuenta' => $cuentaData->nombre,
-            'fecha_manual' => $detalle->fecha_manual,
+            'fecha_manual' => Carbon::parse($detalle->fecha_manual)->format('Y-m-d'),
             'dias_cumplidos' => 0,
             'plazo' => 0,
             'documento_referencia' => $detalle->documento_referencia,
@@ -1313,7 +1302,7 @@ class RecibosController extends Controller
             'id_cuenta' => $detalle->id_cuenta,
             'cuenta' => $cuenta->cuenta,
             'nombre_cuenta' => $cuenta->nombre,
-            'fecha_manual' => $detalle->fecha_manual,
+            'fecha_manual' => Carbon::parse($detalle->fecha_manual)->format('Y-m-d'),
             'concepto' => $detalle->concepto,
             'dias_cumplidos' => 0,
             'plazo' => 0,
@@ -1476,6 +1465,8 @@ class RecibosController extends Controller
                     Carbon::now()->format('Y-m-d H:i:s'),
                     $formaPago->cuenta->id
                 ))->anticiposDiscriminados()->get();
+
+                $anticipoCuenta = $anticipoCuenta->sortBy('orden, cuenta')->values();
 
                 return $anticipoCuenta;
             }

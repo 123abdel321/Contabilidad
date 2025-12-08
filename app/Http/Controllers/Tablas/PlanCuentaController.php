@@ -99,6 +99,8 @@ class PlanCuentaController extends Controller
                     $cuentas->orderBy('created_at',$columnSortOrder);
                 } else if ($columnIndex == '15') {
                     $cuentas->orderBy('updated_at',$columnSortOrder);
+                } else if ($columnIndex == '16') {
+                    $cuentas->orderBy('orden',$columnSortOrder);
                 } else if ($columnName) {
                     $cuentas->orderBy($columnName,$columnSortOrder);
                 }
@@ -213,6 +215,7 @@ class PlanCuentaController extends Controller
                 'naturaleza_egresos' => $request->get('naturaleza_egresos'),
                 'naturaleza_compras' => $request->get('naturaleza_compras'),
                 'naturaleza_ventas' => $request->get('naturaleza_ventas'),
+                // 'order' => $request->get('order'),
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
             ]);
@@ -322,6 +325,7 @@ class PlanCuentaController extends Controller
                     'naturaleza_egresos' => $request->get('naturaleza_egresos'),
                     'naturaleza_compras' => $request->get('naturaleza_compras'),
                     'naturaleza_ventas' => $request->get('naturaleza_ventas'),
+                    'orden' => $request->get('order'),
                     'updated_by' => request()->user()->id,
                 ]);
             

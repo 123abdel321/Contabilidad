@@ -37,6 +37,7 @@ class Extracto
         $extracto = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS extracto"))
             ->mergeBindings($query)
+
             ->select(
                 'id_nit',
                 "tipo_documento",
@@ -70,6 +71,7 @@ class Extracto
                 'naturaleza_compras',
                 'naturaleza_ventas',
                 'naturaleza_cuenta',
+                'orden',
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
                 'dias_cumplidos',
@@ -81,7 +83,7 @@ class Extracto
                 DB::raw('SUM(total_facturas) AS total_facturas'),
                 DB::raw('CASE WHEN (SUM(saldo)) < 0 THEN SUM(saldo) ELSE SUM(saldo) END AS saldo'),
             )
-            ->orderByRaw('cuenta, fecha_manual, documento_referencia ASC')
+            ->orderByRaw('fecha_manual, documento_referencia ASC')
             ->groupByRaw('documento_referencia, id_cuenta, id_nit');
 
         return $extracto;
@@ -196,6 +198,10 @@ class Extracto
                 "consecutivo",
                 "documento_referencia",
                 "naturaleza_cuenta",
+                "naturaleza_ingresos",
+                "naturaleza_egresos",
+                "naturaleza_compras",
+                "naturaleza_ventas",
                 DB::raw('IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono'),
                 DB::raw('IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) AS saldo'),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
@@ -351,6 +357,10 @@ class Extracto
                 "DG.concepto",
                 "DG.anulado",
                 "PC.naturaleza_cuenta",
+                "PC.naturaleza_ingresos",
+                "PC.naturaleza_egresos",
+                "PC.naturaleza_compras",
+                "PC.naturaleza_ventas",
                 "PC.cuenta",
                 "PC.nombre",
                 "FP.id AS forma_pago_id"
@@ -424,6 +434,7 @@ class Extracto
                 "PC.naturaleza_compras",
                 "PC.naturaleza_ventas",
                 "PC.naturaleza_cuenta",
+                DB::raw('IFNULL(PC.orden, 0) AS orden'),
                 "PCT.id_tipo_cuenta",
                 DB::raw("SUM(DG.debito) AS debito"),
                 DB::raw("SUM(DG.credito) AS credito"),

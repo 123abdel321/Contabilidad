@@ -135,7 +135,6 @@ function initTablesLiquidacionDefinitiva() {
 
             // $('.group-header-liquidar').remove(); // Limpia grupos anteriores
             $('.group-header-liquidar, .group-header-liquidar').remove();
-group-header-liquidar
             data.each(function (row, i) {
 
                 const groupKey = `${row.id_empleado} - ${row.fecha_fin_periodo_formatted}`;

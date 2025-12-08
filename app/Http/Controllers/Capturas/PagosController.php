@@ -131,19 +131,7 @@ class PagosController extends Controller
                 ], Response::HTTP_OK);
             }
 
-            // $extractos = $extractos->sortBy('orden, cuenta')->values();
-
-            if ($request->get('orden_cuentas')) {
-
-                $ordenFacturacion = $request->get('orden_cuentas');
-                asort($ordenFacturacion);
-
-                $extractos = $extractos->sortBy(function ($item) use ($ordenFacturacion) {
-                    return $ordenFacturacion[$item->id_cuenta] ?? 9999;
-                })->values();
-            } else {
-                $extractos = $extractos->sortBy('cuenta')->values();
-            }
+            $extractos = $extractos->sortBy('orden, cuenta')->values();
 
             $dataPagos = [];
             $dataPagosAnticipos = [];

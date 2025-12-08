@@ -31,6 +31,6 @@
 </div>
 
 <script>
-    var editarCecos = '<?php echo auth()->user()->can('centro_costos update'); ?>';
-    var eliminarCecos = '<?php echo auth()->user()->can('centro_costos delete'); ?>';
+    var editarCecos = @json(auth()->user()->can('centro_costos update'));
+    var eliminarCecos = @json(auth()->user()->can('centro_costos delete'));
 </script>
