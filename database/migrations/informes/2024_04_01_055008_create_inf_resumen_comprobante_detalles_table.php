@@ -38,6 +38,7 @@ return new class extends Migration
             $table->decimal('diferencia', 15)->nullable();
             $table->integer('registros')->default(1)->nullable();
             $table->integer('nivel')->nullable();
+            $table->integer('errores')->nullable();
             $table->dateTime('fecha_creacion')->nullable();
             $table->dateTime('fecha_edicion')->nullable();
             $table->integer('created_by')->nullable();

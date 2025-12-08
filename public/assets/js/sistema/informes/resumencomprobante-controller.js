@@ -90,6 +90,13 @@ function resumencomprobanteInit() {
             { data: 'registros'}
         ],
         'rowCallback': function(row, data, index){
+            const agrupado = $('#agrupar_comprobantes').val();
+            if (data.nivel == 0 && agrupado == 'consecutivo' && parseFloat(data.diferencia) > 0) {
+                $('td', row).css('background-color', 'red');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
+                return;
+            }
             if(data.nivel == 6){
                 $('td', row).css('background-color', '#ff8f003b');
                 return;

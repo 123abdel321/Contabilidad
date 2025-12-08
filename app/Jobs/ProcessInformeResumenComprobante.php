@@ -147,7 +147,13 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 
 		if (!$this->request['agrupado']) return;
 		$query = $this->queryResumenComprobantes();
-		$query->groupby('id_comprobante', 'id_nit', $this->request['agrupado'])
+		
+
+		$groupBy = $this->request['agrupado'] === 'consecutivo' 
+			? ['id_comprobante', 'id_nit', $this->request['agrupado']]
+			: ['id_comprobante', $this->request['agrupado']];
+
+		$query->groupby($groupBy)
 			->orderByRaw('CAST(DG.consecutivo AS UNSIGNED) ASC')
 			->chunk(233, function ($documentos) {
 				foreach ($documentos as $documento) {
@@ -299,7 +305,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 	{
 		$totalesResumen = $this->queryResumenComprobantes()->first();
 
-		$this->resumenComprobanteCollection['9999999A-9999999B-99999999'] = [
+		$this->resumenComprobanteCollection['9999999999A-9999999999B-99999999999'] = [
 			'id_resumen_comprobante' => $this->id_resumen_comprobante,
 			'id_nit' => '',
 			'id_cuenta' => '',
