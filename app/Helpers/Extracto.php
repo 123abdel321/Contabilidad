@@ -202,6 +202,7 @@ class Extracto
                 "naturaleza_egresos",
                 "naturaleza_compras",
                 "naturaleza_ventas",
+                'orden',
                 DB::raw('IF(naturaleza_cuenta = 0, SUM(credito), SUM(debito)) AS total_abono'),
                 DB::raw('IF(naturaleza_cuenta = 0, SUM(debito - credito), SUM(credito - debito)) AS saldo'),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos'),
@@ -361,6 +362,7 @@ class Extracto
                 "PC.naturaleza_egresos",
                 "PC.naturaleza_compras",
                 "PC.naturaleza_ventas",
+                DB::raw('IFNULL(PC.orden, 0) AS orden'),
                 "PC.cuenta",
                 "PC.nombre",
                 "FP.id AS forma_pago_id"
