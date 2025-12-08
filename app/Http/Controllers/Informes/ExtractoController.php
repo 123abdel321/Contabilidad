@@ -233,7 +233,7 @@ class ExtractoController extends Controller
                 $horaManual = $fechaHora->format('H:i:s');
             }
 
-            $extracto = (new Extracto(
+            $extractos = (new Extracto(
                 $request->get('id_nit', null),
                 $request->get('id_tipo_cuenta', null),
                 $request->get('documento_referencia', null),
