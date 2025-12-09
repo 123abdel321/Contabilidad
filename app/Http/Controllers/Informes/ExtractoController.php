@@ -239,13 +239,13 @@ class ExtractoController extends Controller
                 $request->get('documento_referencia', null),
                 $fechaManual,
                 $request->get('id_cuenta', null)
-            ))->anticiposDiscriminados();
+            ))->anticiposDiscriminados()->get();
 
             $extractos = $extractos->sortBy('orden, cuenta')->values();
             
             return response()->json([
                 'success'=>	true,
-                'data' => $extracto->get(),
+                'data' => $extractos,
                 'message'=> 'Extracto consultados con exito!'
             ]);
         }
