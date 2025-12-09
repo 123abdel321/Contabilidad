@@ -1,20 +1,28 @@
 #!/bin/bash
 
+set -e # Detener script si hay error
+
 echo "🚀 Iniciando despliegue..."
+LOG_FILE="deploy_$(date +%Y%m%d_%H%M%S).log"
 
-# Obtener últimos cambios del repositorio
-echo "📥 Ejecutando git pull..."
-git pull
+# Función para loguear
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
+}
 
-# Limpiar configuraciones y cachés
-echo "🧹 Limpiando cachés de Laravel..."
-php artisan config:clear
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
+log_message "📥 Ejecutando git pull..."
+git pull 2>&1 | tee -a "$LOG_FILE"
 
-# Reconstruir la caché de configuración
-echo "📦 Generando config:cache..."
-php artisan config:cache
+log_message "🧹 Limpiando cachés de Laravel..."
+php artisan config:clear 2>&1 | tee -a "$LOG_FILE"
+php artisan cache:clear 2>&1 | tee -a "$LOG_FILE"
+php artisan route:clear 2>&1 | tee -a "$LOG_FILE"
+php artisan view:clear 2>&1 | tee -a "$LOG_FILE"
 
-echo "✅ Despliegue completado."
+log_message "🔄 Reiniciando Horizon..."
+php artisan horizon:terminate 2>&1 | tee -a "$LOG_FILE"
+
+log_message "📦 Generando config:cache..."
+php artisan config:cache 2>&1 | tee -a "$LOG_FILE"
+
+log_message "✅ Despliegue completado. Ver log: $LOG_FILE"
