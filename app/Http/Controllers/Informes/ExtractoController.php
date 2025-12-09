@@ -240,8 +240,6 @@ class ExtractoController extends Controller
                 $fechaManual,
                 $request->get('id_cuenta', null)
             ))->anticiposDiscriminados()->get();
-
-            $extractos = $extractos->sortBy('orden, cuenta')->values();
             
             return response()->json([
                 'success'=>	true,
@@ -281,8 +279,6 @@ class ExtractoController extends Controller
             null,
             $fechaManual
         ))->anticipos($sin_documento)->get();
-
-        $extractos = $extractos->sortBy('orden, cuenta')->values();
 
         return response()->json([
             'success'=>	true,

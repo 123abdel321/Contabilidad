@@ -101,7 +101,6 @@ class RecibosPdfMultiple extends AbstractPrinterPdf
 						null,
 						$recibo->fecha_manual
 					))->actual()->get();
-					$extractos = $extractos->sortBy('orden, cuenta')->values();
 
 					$fechaAnterior = Carbon::parse($recibo->fecha_manual)->subMinute(); 
 					
@@ -111,7 +110,6 @@ class RecibosPdfMultiple extends AbstractPrinterPdf
 						null,
 						$fechaAnterior
 					))->actual()->get();
-					$extractoAnterior = $extractoAnterior->sortBy('orden, cuenta')->values();
 
 					if (isset($extractos)) {
 						foreach ($extractos as $extracto) {

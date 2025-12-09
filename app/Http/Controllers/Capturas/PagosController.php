@@ -866,8 +866,6 @@ class PagosController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY); 
             }
 
-            // $extractos = $extractos->sortBy('orden, cuenta')->values();
-
             $valorPagado = $pago->total_abono;
 
             foreach ($extractos as $extracto) {

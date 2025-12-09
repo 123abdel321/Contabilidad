@@ -1000,8 +1000,6 @@ class PosController extends Controller
                     $formaPago->cuenta->id
                 ))->anticiposDiscriminados()->get();
 
-                $anticipoCuenta = $anticipoCuenta->sortBy('orden, cuenta')->values();
-
                 return $anticipoCuenta;
             }
         }

@@ -121,7 +121,7 @@ class RecibosController extends Controller
                     ],
                     null,
                     $fechaManual
-                ))->actual()->orderByRaw('orden, cuenta, fecha_manual, documento_referencia ASC')->get();
+                ))->actual()->get();
             
             if (!count($extractos) && !$idNit && !$reciboEdit) {
                 return response()->json([
