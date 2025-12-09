@@ -147,12 +147,8 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 
 		if (!$this->request['agrupado']) return;
 		$query = $this->queryResumenComprobantes();
-		
-		$groupBy = $this->request['agrupado'] === 'consecutivo' 
-			? ['id_comprobante', 'consecutivo']
-			: ['id_comprobante', $this->request['agrupado']];
 
-		$query->groupby($groupBy)
+		$query->groupby(['id_comprobante', $this->request['agrupado']])
 			->orderByRaw('CAST(DG.consecutivo AS UNSIGNED) ASC')
 			->chunk(233, function ($documentos) {
 				foreach ($documentos as $documento) {
