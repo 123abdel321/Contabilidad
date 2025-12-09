@@ -145,6 +145,7 @@ var moduloCreado = {
     'impuesto': false,
     'cambiodatos': false,
     'primas': false,
+    'pagos:': false,
 };
 
 var moduloRoute = {
@@ -212,6 +213,7 @@ var moduloRoute = {
     'impuesto': 'tablas',
     'cambiodatos': 'capturas',
     'primas': 'capturas',
+    'pagos': 'capturas',
 }
 
 function iniciarCanalesDeNotificacion () {

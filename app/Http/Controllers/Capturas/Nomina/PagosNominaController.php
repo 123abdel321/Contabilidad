@@ -13,10 +13,14 @@ use App\Helpers\Nomina\CalcularPeriodo;
 use Illuminate\Support\Facades\Validator;
 //HELPER
 use App\Helpers\Documento;
+//TRAITS
+use App\Http\Controllers\Traits\BegConsecutiveTrait;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\Comprobantes;
+use App\Models\Sistema\FacDocumentos;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
 use App\Models\Sistema\Nomina\NomConceptos;
@@ -27,6 +31,9 @@ use App\Models\Sistema\Nomina\NomPeriodoPagoDetalles;
 
 class PagosNominaController extends Controller
 {
+    use BegConsecutiveTrait;
+	use BegDocumentHelpersTrait;
+
     protected $messages = null;
 
     public function __construct()
@@ -183,7 +190,7 @@ class PagosNominaController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        if (!$cuentaXPagarEmpleado) {
+        if (!$cuentaXpagarEmpleados) {
             return response()->json([
                 "success"=>false,
                 'data' => [],
@@ -215,19 +222,6 @@ class PagosNominaController extends Controller
             $errors = [];
             $processedCount = 0;
 
-            $facDocumento = FacDocumentos::create([
-                'id_nit' => $docGroup[0]->id_tercero_erp,
-                'id_comprobante' => $docGroup[0]->id_comprobante,
-                'fecha_manual' => $docGroup[0]->fecha_factura,
-                'consecutivo' => $docGroup[0]->consecutivo_factura,
-                'token_factura' => $tokenFactura,
-                'debito' => 0,
-                'credito' => 0,
-                'saldo_final' => 0,
-                'created_by' => request()->user()->id,
-                'updated_by' => request()->user()->id,
-            ]);
-
             foreach ($periodosPago as $periodoPago) {
                 // Validar estado del período
                 if ($periodoPago->estado === NomPeriodoPagos::ESTADO_PENDIENTE) {
@@ -245,7 +239,7 @@ class PagosNominaController extends Controller
                 // Procesar el período
                 $processResult = $this->processSinglePeriodo(
                     $periodoPago,
-                    $cuentaXPagarEmpleado,
+                    $cuentaXpagarEmpleados,
                     $cuentaContablesEmpleados,
                     $comprobante
                 );
@@ -286,7 +280,7 @@ class PagosNominaController extends Controller
         }
     }
 
-    private function processSinglePeriodo($periodoPago, $cuentaXPagarEmpleado, $cuentaContablesEmpleados, $comprobante)
+    private function processSinglePeriodo($periodoPago, $cuentaXpagarEmpleados, $cuentaContablesEmpleados, $comprobante)
     {
         $errors = [];
         $contrato = $periodoPago->contrato;
@@ -310,12 +304,12 @@ class PagosNominaController extends Controller
         $valorNeto = $periodoPago->detalles->sum('valor');
 
         $docEmpleado = new DocumentosGeneral([
-            "id_cuenta" => $cuentaXPagarEmpleado->id,
-            "id_nit" => $cuentaXPagarEmpleado->exige_nit ? $periodoPago->id_empleado : null,
-            "id_centro_costos" => $cuentaXPagarEmpleado->exige_centro_costos ? $periodoPago->contrato->id_centro_costo : null,
-            "documento_referencia" => $cuentaXPagarEmpleado->exige_documento_referencia ? $periodoPago->contrato->id : '',
-            "concepto" => $cuentaXPagarEmpleado->exige_concepto ? 'PAGO NOMINA' : null,
-            "credito" => 0,
+            "id_cuenta" => $cuentaXpagarEmpleados->id,
+            "id_nit" => $cuentaXpagarEmpleados->exige_nit ? $periodoPago->id_empleado : null,
+            "id_centro_costos" => $cuentaXpagarEmpleados->exige_centro_costos ? $periodoPago->contrato->id_centro_costo : null,
+            "documento_referencia" => $cuentaXpagarEmpleados->exige_documento_referencia ? $periodoPago->contrato->id : '',
+            "concepto" => $cuentaXpagarEmpleados->exige_concepto ? 'PAGO NOMINA' : null,
+            "credito" => $valorNeto,
             "debito" => $valorNeto,
         ]);
 
@@ -326,11 +320,11 @@ class PagosNominaController extends Controller
             "documento_referencia" => $cuentaContablesEmpleados->exige_documento_referencia ? $periodoPago->contrato->id : '',
             "concepto" => $cuentaContablesEmpleados->exige_concepto ? 'PAGO NOMINA' : null,
             "debito" => $valorNeto,
-            "credito" => 0,
+            "credito" => $valorNeto,
         ]);
 
-        $documento->addRow($docEmpleado, PlanCuentas::DEBITO);
-        $documento->addRow($docEmpresa, PlanCuentas::CREDITO);
+        $documentoGeneral->addRow($docEmpleado, PlanCuentas::DEBITO);
+        $documentoGeneral->addRow($docEmpresa, PlanCuentas::CREDITO);
 
         // Actualizar estado y guardar
         $periodoPago->estado = NomPeriodoPagos::ESTADO_PAGADO;
