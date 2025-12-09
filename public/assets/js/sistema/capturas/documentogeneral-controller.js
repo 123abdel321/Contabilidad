@@ -296,7 +296,7 @@ function initTablaDocumentoGeneralExtracto() {
         },
         columns: [
             {"data":'cuenta'}, 
-            {"data":'nombre_cuenta'},
+            {"data":'nombre'},
             {"data":'documento_referencia'},
             {"data":'total_facturas', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data":'total_abono', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
