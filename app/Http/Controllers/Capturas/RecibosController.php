@@ -114,14 +114,14 @@ class RecibosController extends Controller
             }
             
             $extractos = (new Extracto(
-                $idNit,
-                [
-                    PlanCuentasTipo::TIPO_CUENTA_CXC,//3
-                    PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC//7
-                ],
-                null,
-                $fechaManual
-            ))->actual()->get();
+                    $idNit,
+                    [
+                        PlanCuentasTipo::TIPO_CUENTA_CXC,//3
+                        PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC//7
+                    ],
+                    null,
+                    $fechaManual
+                ))->actual()->orderByRaw('orden, cuenta, fecha_manual, documento_referencia ASC')->get();
             
             if (!count($extractos) && !$idNit && !$reciboEdit) {
                 return response()->json([
@@ -131,12 +131,10 @@ class RecibosController extends Controller
                 ], Response::HTTP_OK);
             }
 
-            $extractos = $extractos->sortBy('orden, cuenta')->values();
-
             $hasError = false;
             $dataRecibos = [];
             $dataRecibosAnticipos = [];
-            
+
             if ($reciboEdit) {
                 $detalles = $reciboEdit['detalles'];
 
@@ -170,12 +168,11 @@ class RecibosController extends Controller
                         }
                     }
                 }
-            } else {
-                if (isset($extractos)) {
-                    foreach ($extractos as $extracto) {
-                        if ($extracto->saldo < 0) $hasError = true;
-                        $dataRecibos[] = $this->formatExtracto($extracto);
-                    }
+            } else if (isset($extractos)) {
+
+                foreach ($extractos as $extracto) {
+                    if ($extracto->saldo < 0) $hasError = true;
+                    $dataRecibos[] = $this->formatExtracto($extracto);
                 }
             }
 
@@ -220,6 +217,8 @@ class RecibosController extends Controller
                     $anticipos[] = $anticipo->documento_referencia;
                 }
             }
+
+            // dd($dataRecibos);
 
             return response()->json([
                 'success'=>	true,
@@ -294,6 +293,8 @@ class RecibosController extends Controller
                 ->where('total_abono', '>', 0);
 
             $recibosTotals = $recibos->get();
+
+            dd('aca');
 
             $recibosPaginate = $recibos->skip($start)
                 ->take($rowperpage);
