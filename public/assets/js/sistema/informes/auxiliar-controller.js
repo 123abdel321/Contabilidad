@@ -441,10 +441,11 @@ function loadAuxiliarById(id_auxiliar) {
             $('#generarAuxiliarUltimo').hide();
             $('#generarAuxiliarUltimoLoading').hide();
 
-            const id_cuenta = $('#id_cuenta_auxiliar').val()
-            const id_nit = $('#id_nit_auxiliar').val()
+            const id_cuenta = $('#id_cuenta_auxiliar').val();
+            const id_nit = $('#id_nit_auxiliar').val();
+            const errores = getErroresAuxiliar();
             
-            if(res.descuadre && !id_cuenta && !id_nit) {
+            if(res.descuadre && !id_cuenta && !id_nit && !errores) {
                 agregarToast('warning', 'Auxiliar descuadrado', 'Existen documentos descuadrados. Consulta los detalles en Informes → Estadísticas generales.', false);
             } else {
                 agregarToast('exito', 'Auxiliar cargado', 'Informe cargado con exito!', true);
