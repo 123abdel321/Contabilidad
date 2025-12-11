@@ -295,7 +295,8 @@ function plancuentaInit() {
             $("#naturaleza_egresos").val(data.naturaleza_egresos).change();
             $("#naturaleza_compras").val(data.naturaleza_compras).change();
             $("#naturaleza_ventas").val(data.naturaleza_ventas).change();
-            $("#orden_cuenta").val(data.order);
+            $("#orden_cuenta").val(data.orden);
+
             
             $("#exige_nit").prop( "checked", data.exige_nit == 1 ? true : false );
             $("#exige_documento_referencia").prop( "checked", data.exige_documento_referencia == 1 ? true : false );
