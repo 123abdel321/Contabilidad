@@ -40,7 +40,7 @@
                 <div class="col-12 col-md-3 col-sm-6" style="margin-top: 5px; padding-bottom: 5px;">
                     <div class="card">
                         <div class="card-body p-2">
-                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Costo</p>
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Debito</p>
                             <div style="display: flex;">
                                 <h5 id="balance_debito" class="font-weight-bolder">
                                     0
@@ -56,7 +56,7 @@
                 <div class="col-12 col-md-3 col-sm-6" style="margin-top: 5px; padding-bottom: 5px;">
                     <div class="card">
                         <div class="card-body p-2">
-                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Venta</p>
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Credito</p>
                             <div style="display: flex;">
                                 <h5 id="balance_credito" class="font-weight-bolder">
                                     0
@@ -72,7 +72,7 @@
                 <div class="col-12 col-md-3 col-sm-6" style="margin-top: 5px; padding-bottom: 5px;">
                     <div class="card">
                         <div class="card-body p-2">
-                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Venta</p>
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Diferencia</p>
                             <div style="display: flex;">
                                 <h5 id="balance_diferencia" class="font-weight-bolder">
                                     0

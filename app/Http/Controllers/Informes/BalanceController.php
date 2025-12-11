@@ -156,7 +156,7 @@ class BalanceController extends Controller
 
         $balance = InfBalance::where('id', $request->get('id'))->first();
 		$informe = InfBalanceDetalle::where('id_balance', $balance->id);
-		$total = InfBalanceDetalle::where('id_balance', $balance->id)->orderBy('id', 'desc')->first();
+		$total = InfBalanceDetalle::where('id_balance', $balance->id)->where('cuenta', 'TOTALES')->first();
         $descuadre = false;
         $filtros = true;
 
