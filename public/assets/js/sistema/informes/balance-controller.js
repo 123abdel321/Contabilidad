@@ -94,7 +94,7 @@ function balanceInit() {
                 $('td', row).css('color', 'white');
                 return;
             }
-            if (data.balance) {
+            if (data.balance || data.auxiliar) {
                 return;
             }
             if(data.balance){//
