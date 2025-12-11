@@ -126,6 +126,7 @@ class ProcessInformeBalance implements ShouldQueue
             )
             ->groupByRaw('cuenta')
             ->orderByRaw('cuenta')
+            ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 foreach ($documentos as $documento) {
                     $cuentasAsociadas = $this->getCuentas($documento->cuenta);
