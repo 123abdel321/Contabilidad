@@ -5,6 +5,7 @@ namespace App\Helpers\Printers;
 use Illuminate\Support\Carbon;
 //MODELS
 use App\Models\Empresas\Empresa;
+use App\Models\Informes\InfBalance;
 use App\Models\Informes\InfBalanceDetalle;
 
 class BalancePdf extends AbstractPrinterPdf
@@ -49,11 +50,18 @@ class BalancePdf extends AbstractPrinterPdf
 
     public function data()
     {
+		$titulo = 'Balance General';
+		$balance = InfBalance::where('id', $this->id_balance)->first();
+		$balanceDetalle = InfBalanceDetalle::where('id_balance', $this->id_balance)->get();
+		if ($balance->tipo == 1) $titulo = 'Balance de Prueba';
+		if ($balance->tipo == 2) $titulo = 'Balance de Terceros';
+
         return [
 			'empresa' => $this->empresa,
-			'balances' => InfBalanceDetalle::where('id_balance', $this->id_balance)->get(),
+			'cabeza' => $balance,
+			'balances' => $balanceDetalle,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
-			// 'usuario' => request()->user()->username
+			'titulo' => $titulo,
 			'usuario' => 'Portafolio ERP'
 		];
     }

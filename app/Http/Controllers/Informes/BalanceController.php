@@ -288,6 +288,7 @@ class BalanceController extends Controller
 	{
         try {
             $balance = InfBalance::where('id', $request->get('id'))->get();
+            // $balance = InfBalance::orderBy('id', 'DESC')->first();
 
             if(!count($balance)) {
                 return response()->json([
@@ -317,5 +318,27 @@ class BalanceController extends Controller
             ], 422);
         }
 	}
+
+    // public function showPdf(Request $request, $id)
+	// {
+    //     $detalle = InfBalanceDetalle::where('id_balance', $id)->get();
+    //     // dd($detalle);
+	// 	if(!count($detalle)) {
+	// 		return response()->json([
+	// 			'success'=>	false,
+	// 			'data' => [],
+	// 			'message'=> 'El balance no existe'
+	// 		], 422);
+	// 	}
+
+	// 	$empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+	// 	$data = (new BalancePdf($empresa, $id))->buildPdf()->getData();
+	// 	return view('pdf.informes.balance.balance', $data);
+
+    //     return (new BalancePdf($empresa, $detalle))
+    //         ->buildPdf()
+    //         ->showPdf();
+	// }
 
 }

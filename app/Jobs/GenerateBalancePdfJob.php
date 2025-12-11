@@ -22,7 +22,7 @@ class GenerateBalancePdfJob implements ShouldQueue
     public $timeout = 300; // 5 minutos
 
     public function __construct(
-        public int $id_balance,
+        public $id_balance,
         public int $user_id,
         public string $has_empresa
     ) {}

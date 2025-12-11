@@ -8,9 +8,9 @@
         <style>
             body {
                 margin: 0;
-                font-family: "Segoe UI", "Lato", Arial, sans-serif;
+                font-family: Arial, "Segoe UI", "Lato", sans-serif;
                 line-height: 1.4;
-                font-size: 11px;
+                font-size: 10px; /* Tamaño de fuente ligeramente menor */
                 width: 100%;
                 text-transform: uppercase;
                 color: #2c3e50;
@@ -18,8 +18,8 @@
             }
 
             .text-title {
-                font-size: 15px;
-                font-weight: bold;
+                font-size: 11px; /* Ajuste */
+                font-weight: 500;
             }
 
             .detalle-factura td {
@@ -34,7 +34,7 @@
             }
 
             .spacer {
-                height: 30px;
+                height: 10px; /* Reducción de espacio */
             }
 
             .valor {
@@ -47,7 +47,7 @@
             }
 
             .table-detail {
-                font-size: 12px;
+                font-size: 10px;
                 width: 100%;
                 border-collapse: collapse;
                 height: 100%;
@@ -55,7 +55,11 @@
 
             .header-factura > th {
                 border: 1px solid #ddd;
-                background-color: #58978423;
+                background-color: #2c3e50; /* Color oscuro profesional */
+                color: #ffffff;
+                font-size: 11px;
+                font-weight: bold;
+                padding: 5px 3px; /* Relleno compacto */
             }
 
             thead {
@@ -71,7 +75,7 @@
             }
 
             .padding3 {
-                padding: 2px;
+                padding: 2px; /* Relleno muy compacto para cabecera */
             }
 
             .logo {
@@ -82,12 +86,18 @@
             }
 
             .logo img {
-                height: 90px;
+                height: 70px; /* Reducción de altura del logo */
             }
 
             .empresa {
                 text-align: center;
                 width: 50%;
+            }
+            /* Estilo para comprimir el título de la empresa */
+            .empresa h1 {
+                font-size: 16px;
+                margin: 0 0 5px 0; 
+                line-height: 1.2;
             }
 
             .empresa-footer {
@@ -103,12 +113,18 @@
                 width: 25%;
                 text-align: center;
                 border: 1px solid #f2f2f2;
-                line-height: 3em;
+                line-height: 1em; /* Ajuste para reducir altura */
+            }
+
+            .consecutivo h2 {
+                font-size: 12px;
+                margin: 0;
             }
 
             .numero-consecutivo {
                 color: #8d00ff;
-                font-size: 2.8em;
+                font-size: 1.8em; /* Reducción de tamaño */
+                line-height: 1.2;
             }
             
             .generado {
@@ -117,9 +133,9 @@
 
             .footer {
                 position: fixed;
-                bottom: 35px;
-                line-height: 15px;
-                font-size: 8px;
+                bottom: 20px; /* Subida ligera del footer */
+                line-height: 12px; /* Reducción de espacio */
+                font-size: 7px;
             }
 
             .header-total {
@@ -135,6 +151,22 @@
                 vertical-align: top;
             }
 
+
+            .info-fecha {
+                width: 100%;
+                margin-top: 5px; 
+                margin-bottom: 5px; /* Espacio para separar de la tabla de detalles */
+                border-top: 1px solid #ddd; /* Línea sutil en la parte superior */
+                border-bottom: 1px solid #ddd; /* Línea sutil en la parte inferior */
+            }
+
+            .info-fecha td {
+                font-size: 11px; /* Destacar ligeramente */
+                font-weight: bold; /* Hacer el texto más legible */
+                padding: 5px 0 5px 0; /* Relleno superior/inferior para darle altura */
+                text-align: center; /* Centrar el rango de fechas */
+            }
+
         </style>
 
     </head>
@@ -144,17 +176,14 @@
         <table>
             <thead>
                 <tr>
-                    <td class="spacer padding5"></td>
-                </tr>
+                    <td class="spacer"></td> </tr>
                 <tr>
-                    <td colspan="7 padding5">
+                    <td colspan="7 padding3">
                         <table>
                             <tr>
-                                <td class="consecutivo padding5">
-                                    <h2> INFORME BALANCE </h2>
-                                </td>
-                                <td class="empresa padding5">
-                                    <h1>{{ $empresa->razon_social }}</h1>
+                                <td class="consecutivo padding3"> <h2> {{ $titulo }} </h2>
+                                    </td>
+                                <td class="empresa padding3"> <h1>{{ $empresa->razon_social }}</h1>
                                     <span class="text-title">NIT: 
                                         @if ($empresa->dv)
                                             {{ $empresa->nit }}-{{ $empresa->dv }}
@@ -170,8 +199,7 @@
                                     @endif
                                 </td>
                                 
-                                <td class="logo padding5">
-                                    @if ($empresa->logo)
+                                <td class="logo padding3"> @if ($empresa->logo)
                                         <img style="height:70px;" src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}">
                                     @else
                                         <img style="height:70px;" src="img/logo_contabilidad.png">
@@ -184,18 +212,25 @@
             </thead>
         </table>
 
+        <table class="info-fecha">
+            <tr>
+                <td>
+                    RANGO DE FECHAS: {{ $cabeza->fecha_desde ?? 'NO ESPECIFICADO' }} AL {{ $cabeza->fecha_hasta ?? 'NO ESPECIFICADO' }}
+                </td>
+            </tr>
+        </table>
+
         <table class="tabla-detalle-factura">
             <thead class="">
                 <tr>
                     <td class="spacer"></td>
                 </tr>
-                <tr class="header-factura padding5">
-                    <th class="padding5">CUENTA</th>
-                    <th class="padding5">NOMBRE</th>
-                    <th class="padding5">SAL. ANTERIOR</th>
-                    <th class="padding5">DEBITO</th>
-                    <th class="padding5">CREDITO</th>
-                    <th class="padding5">SAL. FINAL</th>
+                <tr class="header-factura"> <th>CUENTA</th>
+                    <th>NOMBRE</th>
+                    <th>SAL. ANTERIOR</th>
+                    <th>DEBITO</th>
+                    <th>CREDITO</th>
+                    <th>SAL. FINAL</th>
                 </tr>
             </thead>
             <tbody class="">
