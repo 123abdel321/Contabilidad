@@ -1012,13 +1012,13 @@ function setDisabledRows(data, idRow) {
     // Lógica para Débito/Crédito
     if (tipo_comprobante !== 4) {
         const esNaturalezaDebito = naturalezaCuenta == 1;
-        inputDebito.prop('disabled', esNaturalezaDebito);
-        inputCredito.prop('disabled', !esNaturalezaDebito);
+        // inputDebito.prop('disabled', esNaturalezaDebito);
+        // inputCredito.prop('disabled', !esNaturalezaDebito);
     } else {
         // Para Nota Crédito (o tipo 4), ambos habilitados
-        inputDebito.prop('disabled', false);
-        inputCredito.prop('disabled', false);
     }    
+    inputDebito.prop('disabled', false);
+    inputCredito.prop('disabled', false);
 }
 
 function focusNextRow(columnIndex, rowId) {

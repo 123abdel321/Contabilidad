@@ -361,7 +361,7 @@ class DocumentoGeneralController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
+                "message"=> ['Comprobante recibo' => ['El Comprobante del es incorrecto!']]
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
