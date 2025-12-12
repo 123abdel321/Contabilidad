@@ -90,6 +90,33 @@ abstract class AbstractFESender
 			];
 		}
 
+		if (property_exists($data, 'status') && $data->status == 400) {
+			// Verificar si existe CUFE y si el error es por documento ya procesado
+			$hasCufe = isset($data->response['cufe']);
+			$isAlreadyProcessed = false;
+			
+			// Buscar el mensaje "Documento procesado anteriormente"
+			if (isset($data->response['mensajesValidacion']['string'])) {
+				foreach ($data->response['mensajesValidacion']['string'] as $mensaje) {
+					if (strpos($mensaje, 'Documento procesado anteriormente') !== false) {
+						$isAlreadyProcessed = true;
+						break;
+					}
+				}
+			}
+			
+			// Si tiene CUFE y es por documento ya procesado, tratarlo como éxito
+			if ($hasCufe && $isAlreadyProcessed) {
+				return [
+					"zip_key" => '',
+					"status" => 200, // Cambiamos a 200 para indicar éxito
+					"cufe" => $data->response['cufe'],
+					"xml_url" => '', // No hay URL porque ya fue procesado
+					"mensaje" => "Documento ya fue procesado anteriormente",
+				];
+			}
+		}
+
 		if (property_exists($data, 'response')) {
 			$response = $data->response;
 			if (array_key_exists('unexpected', $response)) {
