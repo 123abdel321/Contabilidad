@@ -195,6 +195,7 @@ class Extracto
                 "id_centro_costos",
                 "cuenta",
                 "nombre",
+                "nombre_cuenta",
                 "fecha_manual",
                 "consecutivo",
                 "documento_referencia",
@@ -367,6 +368,7 @@ class Extracto
                 DB::raw('IFNULL(PC.orden, 0) AS orden'),
                 "PC.cuenta",
                 "PC.nombre",
+                "PC.nombre AS nombre_cuenta",
                 "FP.id AS forma_pago_id"
             )
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
