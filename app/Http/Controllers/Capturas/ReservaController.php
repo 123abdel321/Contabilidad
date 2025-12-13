@@ -129,7 +129,7 @@ class ReservaController extends Controller
                 'id' => $reserva->id,
                 'ubicacion' => $reserva->ubicacion,
                 'nit' => $reserva->nit,
-                'title' => $reserva->ubicacion->codigo .' - '. $reserva->ubicacion->nombre,
+                'title' => $reserva->ubicacion?->codigo .' - '. $reserva->ubicacion?->nombre,
                 'start' => $horaInicio == "00:00:00" ? $fechaInicio : $fechaInicio.' '.$horaInicio,
                 'end' => $horaFin == "00:00:00" ? $fechaFin : $fechaFin.' '.$horaFin,
             ));
