@@ -256,10 +256,16 @@ function initTableReserva() {
         columns: [
             {"data":'id'},
             {"data": function (row, type, set){
-                return `<div  class="text-wrap">${row.ubicacion.codigo} - ${row.ubicacion.nombre}</div >`;
+                if (row.ubicacion) {
+                    return `<div  class="text-wrap">${row.ubicacion.codigo} - ${row.ubicacion.nombre}</div >`;
+                }
+                return 'SIN UBICACIÓN';
             }},
             {"data": function (row, type, set){
-                return `<div  class="text-wrap">${row.nit.numero_documento} - ${row.nit.nombre_completo}</div >`;
+                if (row.nit) {
+                    return `<div  class="text-wrap">${row.nit.numero_documento} - ${row.nit.nombre_completo}</div >`;
+                }
+                return 'SIN NIT';
             }},
             {"data": function (row, type, set){
                 return `<div  class="text-wrap">${row.observacion}</div >`;
@@ -583,6 +589,7 @@ function mostrarModalEvento(info) {
 
     $('#hora_inicio_reserva').val(horaInicio);
     $('#hora_fin_reserva').val(horaFin);
+    $('#observacion_reserva').val(info.extendedProps.observacion);
 
     if(info.extendedProps && info.extendedProps.ubicacion){
         const ubicacion = info.extendedProps.ubicacion;
@@ -597,7 +604,6 @@ function mostrarModalEvento(info) {
 
     if(info.extendedProps && info.extendedProps.nit){
         const nit = info.extendedProps.nit;
-        console.log('nit: ',nit);
         var dataNit = {
             id: nit.id,
             text: nit.numero_documento+' - '+nit.nombre_completo

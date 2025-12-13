@@ -129,6 +129,7 @@ class ReservaController extends Controller
                 'id' => $reserva->id,
                 'ubicacion' => $reserva->ubicacion,
                 'nit' => $reserva->nit,
+                'observacion' => $reserva->observacion,
                 'title' => $reserva->ubicacion?->codigo .' - '. $reserva->ubicacion?->nombre,
                 'start' => $horaInicio == "00:00:00" ? $fechaInicio : $fechaInicio.' '.$horaInicio,
                 'end' => $horaFin == "00:00:00" ? $fechaFin : $fechaFin.' '.$horaFin,
@@ -225,15 +226,24 @@ class ReservaController extends Controller
             $fechaInicio = $request->get("fecha_inicio").' '.$request->get("hora_inicio");
             $fechaFin = $request->get("fecha_fin").' '.$request->get("hora_fin");
 
-            Reserva::where('id', $request->get('id'))
-                ->update([
-                    'id_nit' => $request->get('id_nit'),
-                    'id_ubicacion' => $request->get('id_ubicacion'),
-                    'fecha_inicio' => $fechaInicio,
-                    'fecha_fin' => $fechaFin,
-                    'observacion' => $request->get('observacion'),
-                    'updated_by' => request()->user()->id
-                ]);
+            $reserva = Reserva::where('id', $request->get('id'))->first();
+
+            if (!$reserva){
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=> 'La reserva no fue encontrada'
+                ], 422);
+            }
+
+            if ($request->get('id_nit')) $reserva->id_nit = $request->get('id_nit');
+            if ($request->get('id_ubicacion')) $reserva->id_ubicacion = $request->get('id_ubicacion');
+            if ($request->get('observacion')) $reserva->observacion = $request->get('observacion');
+
+            $reserva->fecha_inicio = $fechaInicio;
+            $reserva->fecha_fin = $fechaFin;
+            $reserva->updated_by = request()->user()->id;
+            $reserva->save();
 
             DB::connection('sam')->commit();
 
