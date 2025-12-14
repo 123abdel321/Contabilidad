@@ -75,13 +75,13 @@ function documentosgeneralesInit() {
                 return;
             }
             if(data.nivel == 99){
-                $('td', row).css('background-color', '#000');
+                $('td', row).css('background-color', '#33849e');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
             }
             if(data.nivel == 1){
-                $('td', row).css('background-color', '#000');
+                $('td', row).css('background-color', '#33849e');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;

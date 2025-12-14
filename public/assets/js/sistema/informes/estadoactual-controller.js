@@ -44,11 +44,13 @@ function estadoactualInit() {
         'rowCallback': function(row, data, index){
             var mes = data.mes;
             var detalleActual = parseInt(getDellarEstadoActual());
-            if (data.total == 0 && (data.diferencia > 0 || data.diferencia < 0)) {
-                $('td', row).css('background-color', '#ff00004d');
-                $('td', row).css('color', 'black');
+            if (data.total == 0 && parseInt(data.diferencia) != 0) {
+                $('td', row).css('background-color', 'red');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
+            
             if(data.total == 4){
                 $('td', row).css('background-color', 'rgb(64 164 209 / 70%)');
                 $('td', row).css('font-weight', 'bold');
