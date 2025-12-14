@@ -83,7 +83,9 @@ function estadoactualInit() {
                 (!isNaN(data.errores) && parseInt(data.errores) > 0) || 
                 (typeof data.errores === 'string' && data.errores !== '0' && data.errores.includes('La cuenta'))
             ) {
-                $('td', row).css('background-color', 'rgb(255 0 0 / 45%)');
+                $('td', row).css('background-color', 'red');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.total == 2){
