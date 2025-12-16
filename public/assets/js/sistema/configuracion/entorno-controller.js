@@ -261,6 +261,7 @@ $(document).on('click', '#updateEntorno', function () {
         id_comprobante_parafiscales: $("#id_comprobante_parafiscales").val(),
         id_comprobante_seguridad_social: $("#id_comprobante_seguridad_social").val(),
         id_comprobante_prestaciones_sociales: $("#id_comprobante_prestaciones_sociales").val(),
+        encabezado_ventas_regimen: $('#encabezado_ventas_regimen').val(),
     };
 
     $.ajax({

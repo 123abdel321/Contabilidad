@@ -47,6 +47,7 @@ class VentasPdf extends AbstractPrinterPdf
 		if ($this->tipoEmpresion == 2) return 'portrait';
 
 		return '';
+
 	}
 
 	public function formatPaper()
@@ -96,6 +97,15 @@ class VentasPdf extends AbstractPrinterPdf
 
 		$observacion_general = VariablesEntorno::where('nombre', 'observacion_venta')->first();
 		$observacion_general = $observacion_general ? $observacion_general->valor : NULL;
+		
+		$mensajeVentasRegimen = null;
+		$responsabilidades = $this->getResponsabilidades($this->venta->cliente);
+
+		//VENTAS REGIMEN
+        if (in_array('12', $responsabilidades) || in_array('11', $responsabilidades)) {
+			$mensajeVentasRegimen = VariablesEntorno::where('nombre', 'encabezado_ventas_regimen')->first();
+			$mensajeVentasRegimen = $mensajeVentasRegimen ? $mensajeVentasRegimen->valor : NULL;
+        }
 
         return [
 			'empresa' => $this->empresa,
@@ -106,10 +116,19 @@ class VentasPdf extends AbstractPrinterPdf
 			'pagos' => $this->venta->pagos,
 			'impuestosIva' => $impuestosIva,
 			'observacion' => $this->venta->observacion,
+			'mensaje_regimen' => $mensajeVentasRegimen,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user()->username,
 			'observacion_general' => $observacion_general,
 			'total_factura' => number_format($this->venta->total_factura)
 		];
+    }
+
+	private function getResponsabilidades($cliente)
+    {
+        if ($cliente->id_responsabilidades) {
+            return explode(",", $cliente->id_responsabilidades);
+        }
+        return [];
     }
 }

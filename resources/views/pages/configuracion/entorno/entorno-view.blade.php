@@ -104,13 +104,24 @@
 
                     </div>
                     <div class="tab-pane fade" id="facturacion" role="tabpanel" aria-labelledby="facturacion-tab">
+
                         <div class="row" style="margin-top: 10px; padding-left: 10px;">
+
+                            <div class="form-group col-12">
+                                <label for="example-text-input" class="form-control-label">Encabezado ventas regimen</label>
+                                <input type="text" class="form-control form-control-sm" name="encabezado_ventas_regimen" id="encabezado_ventas_regimen">
+                            </div>
+
                             <div class="form-group col-12">
                                 <label for="editor-container" class="form-control-label">Observación general factura venta</label>
                                 <div id="editor-container" style="height: 150px;"></div>
                                 <textarea name="observacion_venta" id="observacion_venta" hidden></textarea>
                             </div>
+
                         </div>
+
+
+
                     </div>
                     <div class="tab-pane fade" id="nomina" role="tabpanel" aria-labelledby="nomina-tab">
                         <div class="row" style="margin-top: 10px; padding-left: 10px;">

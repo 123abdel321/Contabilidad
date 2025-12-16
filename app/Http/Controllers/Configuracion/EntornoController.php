@@ -73,10 +73,12 @@ class EntornoController extends Controller
                 'id_comprobante_parafiscales',
                 'id_comprobante_seguridad_social',
                 'id_comprobante_prestaciones_sociales',
+                'encabezado_ventas_regimen',
             ];
             
             foreach ($variablesEntorno as $variable) {
-                VariablesEntorno::updateOrCreate([
+
+                $variableData = VariablesEntorno::updateOrCreate([
                     'nombre' => $variable,
                 ],[
                     'nombre' => $variable,

@@ -101,25 +101,30 @@
 					<th class="spacer-10"></th>
 				</tr>
 
-                <tr><th class="font-12">
-                    FACTURA VENTA P.O.S: {{ $factura->documento_referencia }}
-                </th></tr>
-                
-                @if ($factura->resolucion)
+                @if ($mensaje_regimen)
                     <tr><th class="font-12">
-                        RESOLUCION DIAN {{ $factura->resolucion->numero_resolucion }}
+                        {{ $mensaje_regimen }}
                     </th></tr>
+                @else
                     <tr><th class="font-12">
-                        DEL {{ $factura->resolucion->fecha }} N. {{ $factura->consecutivo }} DE LA #{{ $factura->resolucion->consecutivo_desde }} HASTA LA #{{ $factura->resolucion->consecutivo_hasta }}
+                        FACTURA VENTA P.O.S: {{ $factura->documento_referencia }}
                     </th></tr>
-                    <tr><th class="font-12">
-                        VIGANCIA: {{ $factura->resolucion->vigencia }} MESES
-                    </th></tr>
+                    
+                    @if ($factura->resolucion)
+                        <tr><th class="font-12">
+                            RESOLUCION DIAN {{ $factura->resolucion->numero_resolucion }}
+                        </th></tr>
+                        <tr><th class="font-12">
+                            DEL {{ $factura->resolucion->fecha }} N. {{ $factura->consecutivo }} DE LA #{{ $factura->resolucion->consecutivo_desde }} HASTA LA #{{ $factura->resolucion->consecutivo_hasta }}
+                        </th></tr>
+                        <tr><th class="font-12">
+                            VIGANCIA: {{ $factura->resolucion->vigencia }} MESES
+                        </th></tr>
+                        <tr><th class="font-12">
+                            FECHA: {{ $factura->fecha_manual }}
+                        </th></tr>
+                    @endif
                 @endif
-                
-                <tr><th class="font-12">
-                    FECHA: {{ $factura->fecha_manual }}
-                </th></tr>
 
                 <tr>
 					<th class="spacer padding5"></th>
