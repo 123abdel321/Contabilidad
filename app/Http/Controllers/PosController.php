@@ -106,7 +106,7 @@ class PosController extends Controller
         $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
 
         $data = [
-            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222222%')->first(),
+            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222%')->first(),
             'bodega' => FacBodegas::whereIn('id', $bodegas)->first(),
             'iva_incluido' => $ivaIncluido,
             'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : '',
