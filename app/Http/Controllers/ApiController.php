@@ -198,10 +198,14 @@ class ApiController extends Controller
         }
         
 		if($check){
+
+            $request->user()->tokens()->delete();
+            $token = $request->user()->createToken("api_token")->plainTextToken;
             
             $user = $request->user();
             $user->id_empresa = $empresaSelect->id;
             $user->has_empresa = $empresaSelect->token_db;
+            $user->remember_token = $token;
             $user->save();
 
             $notificacionCode = $empresaSelect->token_db.'_'.$user->id;
@@ -215,7 +219,9 @@ class ApiController extends Controller
 			return response()->json([
 				"success"=>true,
 				"empresa"=>$empresaSelect,
-                "notificacion_code"=>$notificacionCode
+                "notificacion_code"=>$notificacionCode,
+                'access_token' => $token,
+                'token_type' => 'Bearer',
 			]);
 		}else{
 			return response()->json([

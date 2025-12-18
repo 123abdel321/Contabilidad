@@ -317,6 +317,7 @@ function seleccionarEmpresa(hash, id) {
             localStorage.setItem("empresa_nombre", res.empresa.razon_social);
             localStorage.setItem("empresa_logo", res.empresa.logo);
             localStorage.setItem("notificacion_code", res.notificacion_code);
+            localStorage.setItem("auth_token", res.token_type+' '+res.access_token);
             location.reload();
         }
     }).fail((err) => {
