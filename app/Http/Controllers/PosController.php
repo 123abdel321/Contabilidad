@@ -182,7 +182,7 @@ class PosController extends Controller
                     }
 				}
             ],
-            'productos.*.cantidad' => 'required|numeric|min:1',
+            'productos.*.cantidad' => 'required|numeric|min:0.001',
             'productos.*.costo' => 'required|min:0',
             'productos.*.descuento_porcentaje' => 'required|numeric|min:0|max:100',
             'productos.*.descuento_valor' => 'required|numeric|min:0',

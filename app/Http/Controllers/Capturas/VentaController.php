@@ -452,6 +452,7 @@ class VentaController extends Controller
             //FACTURAR ELECTRONICAMENTE
             if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
                 $ventaElectronica = (new VentaElectronicaSender($venta))->send();
+                
                 if ($ventaElectronica["status"] >= 400) {
                     if ($ventaElectronica["zip_key"]) {
                         $venta->fe_zip_key = $ventaElectronica["zip_key"];
@@ -713,7 +714,7 @@ class VentaController extends Controller
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         
-        if ($factura->resolucion->tipo_impresion == 0) {
+        if ($factura->resolucion?->tipo_impresion == 0) {
             $data = (new VentasPdf($empresa, $factura))->buildPdf()->getData();
             return view('pdf.facturacion.ventas-pos', $data);
         }
