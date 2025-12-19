@@ -98,6 +98,7 @@ class PosController extends Controller
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
         $ivaIncluido = $ivaIncluido && $ivaIncluido->valor == '1' ? true : false;
         $vendedorVentas = VariablesEntorno::where('nombre', 'vendedores_ventas')->first();
+        $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
 
         $usuarioPermisos = UsuarioPermisos::where('id_user', request()->user()->id)
             ->where('id_empresa', request()->user()->id_empresa)
@@ -110,7 +111,8 @@ class PosController extends Controller
             'bodega' => FacBodegas::whereIn('id', $bodegas)->first(),
             'iva_incluido' => $ivaIncluido,
             'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : '',
-            'valor_uvt' => $valorUVT ? $valorUVT->valor : 0
+            'valor_uvt' => $valorUVT ? $valorUVT->valor : 0,
+            'empresa' => $empresa
         ];
 
 		return response()->json([
