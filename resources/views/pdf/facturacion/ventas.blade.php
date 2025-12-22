@@ -265,7 +265,15 @@
 				@foreach ($productos as $producto)
 					<tr>
 						<td class="padding5 detalle-factura-descripcion">{{ $producto->descripcion }} {{ $producto->observacion }}</td>
-						<td class="padding5 valor">{{ number_format($producto->cantidad, 2) }}</td>
+						<td class="padding5 valor">
+                            @php
+                                // Formatear a máximo 5 decimales y eliminar ceros
+                                $formatted = number_format($producto->cantidad, 5, '.', '');
+                                $formatted = rtrim($formatted, '0');
+                                $formatted = rtrim($formatted, '.');
+                                echo $formatted ?: '0';
+                            @endphp
+                        </td>
 						<td class="padding5 valor">{{ number_format($producto->costo, 2) }}</td>
 						<td class="padding5 valor">{{ number_format($producto->subtotal, 2) }}</td>
 						<td class="padding5 valor">{{ number_format($producto->descuento_valor, 2) }}</td>

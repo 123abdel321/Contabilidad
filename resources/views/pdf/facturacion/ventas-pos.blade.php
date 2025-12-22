@@ -150,7 +150,15 @@
                 @foreach ($productos as $producto)
                     <tr>
                         <td class="font-13" style="width:55%;">{{ $producto->descripcion }}</td>
-                        <td class="font-13" style="width:5%;text-align:center;">{{ number_format($producto->cantidad, 2) }}</td>
+                        <td class="font-13" style="width:5%;text-align:center;">
+                            @php
+                                // Formatear a máximo 5 decimales y eliminar ceros
+                                $formatted = number_format($producto->cantidad, 5, '.', '');
+                                $formatted = rtrim($formatted, '0');
+                                $formatted = rtrim($formatted, '.');
+                                echo $formatted ?: '0';
+                            @endphp
+                        </td>
                         <td class="font-13" style="width:20%;text-align:center;">{{ number_format($producto->costo, 2) }}</td>
                         @if ($factura->total_descuento)
                             <td class="font-13" style="width:auto;text-align:center;">{{ number_format($producto->descuento_valor, 2) }}</td>
