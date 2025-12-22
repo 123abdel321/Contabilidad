@@ -263,7 +263,7 @@ function ventaInit () {
                 let stylesInfo = null;
                 let naturaleza = 'Dedito - Ventas';
                 if (row.cuenta.naturaleza_ventas) {
-                    naturaleza = 'Error de naturaleza en egreso';
+                    naturaleza = 'Error de naturaleza en ventas';
                     stylesInfo = "border: solid 1px red !important; color: red !important;"
                 }
                 let dataContent = `<b class='titulo-popover'>Cuenta:</b> ${naturaleza}<br/> ${row.cuenta.cuenta} - ${row.cuenta.nombre}`;

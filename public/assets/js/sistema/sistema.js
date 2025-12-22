@@ -146,6 +146,7 @@ var moduloCreado = {
     'cambiodatos': false,
     'primas': false,
     'pagos:': false,
+    'nominaelectronica': false,
 };
 
 var moduloRoute = {
@@ -214,6 +215,7 @@ var moduloRoute = {
     'cambiodatos': 'capturas',
     'primas': 'capturas',
     'pagos': 'capturas',
+    'nominaelectronica': 'capturas',
 }
 
 function iniciarCanalesDeNotificacion () {
@@ -1089,10 +1091,18 @@ function formatCurrency(input, blur) {
     input[0].setSelectionRange(caret_pos, caret_pos);
 }
 
-function stringToNumberFloat (value) {
-    value = value+'';
-    if (value) value = parseFloat(parseFloat(value.replaceAll(',', '')).toFixed(2));
-    return value ? value : 0;
+function stringToNumberFloat(value) {
+    if (!value && value !== 0) return 0;
+    
+    value = value.toString();
+    // Eliminar comas y convertir
+    const cleaned = value.replaceAll(',', '');
+    const num = parseFloat(cleaned);
+    
+    // Verificar si es un número válido
+    if (isNaN(num)) return 0;
+    
+    return num;
 }
 
 function arreglarMensajeError(mensaje) {
