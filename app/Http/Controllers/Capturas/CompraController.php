@@ -72,11 +72,17 @@ class CompraController extends Controller
             ->where('id_empresa', request()->user()->id_empresa)
             ->first();
 
+        $valorUVT = VariablesEntorno::where('nombre', 'valor_uvt')->first();
+        $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
+
         $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
 
         $data = [
+            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222222%')->first(),
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
-            'comprobante' => Comprobantes::where('tipo_comprobante', 2)->first()
+            'comprobante' => Comprobantes::where('tipo_comprobante', 2)->first(),
+            'iva_incluido' => false,
+            'valor_uvt' => $valorUVT ? $valorUVT->valor : 0
         ];
         
         return view('pages.capturas.compra.compra-view', $data);
@@ -91,6 +97,46 @@ class CompraController extends Controller
 
     public function create (Request $request)
     {
+        $rules = [
+            'id_proveedor' => 'required|exists:sam.nits,id',
+            'id_bodega' => 'required|exists:sam.fac_bodegas,id',
+            'id_comprobante' => 'required|exists:sam.comprobantes,id',
+            'fecha_manual' => 'required|date',
+            'documento_referencia' => 'required |string',
+            'productos' => 'array|required',
+            'productos.*.id_producto' => [
+                'required',
+                'exists:sam.fac_productos,id',
+                function ($attribute, $value, $fail) {
+
+					$producto = FacProductos::whereId($value)
+                        ->with('familia')
+                        ->first();
+                    
+                    if (!$producto->familia->id_cuenta_compra) {
+                        $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta compra configurada");
+                    }
+				}
+            ],
+            'productos.*.cantidad' => 'required|min:0.001',
+            'productos.*.costo' => 'required|min:0',
+            'productos.*.descuento_porcentaje' => 'required|min:0|max:99',
+            'productos.*.descuento_valor' => 'required|min:0',
+            'productos.*.iva_porcentaje' => 'required|min:0|max:99',
+            'productos.*.iva_valor' => 'required|min:0',
+            'productos.*.total' => 'required|min:0',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+        
         $comprobanteCompras = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
         if(!$comprobanteCompras) {
@@ -117,46 +163,6 @@ class CompraController extends Controller
             ], 422);
         }
 
-        $rules = [
-            'id_proveedor' => 'required|exists:sam.nits,id',
-            'id_bodega' => 'required|exists:sam.fac_bodegas,id',
-            'id_comprobante' => 'required|exists:sam.comprobantes,id',
-            'fecha_manual' => 'required|date',
-            'documento_referencia' => 'required |string',
-            'productos' => 'array|required',
-            'productos.*.id_producto' => [
-                'required',
-                'exists:sam.fac_productos,id',
-                function ($attribute, $value, $fail) {
-
-					$producto = FacProductos::whereId($value)
-                        ->with('familia')
-                        ->first();
-                    
-                    if (!$producto->familia->id_cuenta_compra) {
-                        $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta compra configurada");
-                    }
-				}
-            ],
-            'productos.*.cantidad' => 'required|min:1',
-            'productos.*.costo' => 'required|min:0',
-            'productos.*.descuento_porcentaje' => 'required|min:0|max:99',
-            'productos.*.descuento_valor' => 'required|min:0',
-            'productos.*.iva_porcentaje' => 'required|min:0|max:99',
-            'productos.*.iva_valor' => 'required|min:0',
-            'productos.*.total' => 'required|min:0',
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $this->messages);
-
-		if ($validator->fails()){
-            return response()->json([
-                "success"=>false,
-                'data' => [],
-                "message"=>$validator->errors()
-            ], 422);
-        }
-
         $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
 		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
         $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
@@ -174,7 +180,7 @@ class CompraController extends Controller
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA COMPRAR
             $compra = $this->createFacturaCompra($request);
-
+            
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE COMPRAS
             $documentoGeneral = new Documento(
                 $request->get('id_comprobante'),
@@ -585,6 +591,7 @@ class CompraController extends Controller
     {
         foreach ($productos as $producto) {
             $producto = (object)$producto;
+
 
             $productoDb = FacProductos::where('id', $producto->id_producto)
                 ->with(

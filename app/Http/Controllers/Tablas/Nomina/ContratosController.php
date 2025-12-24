@@ -101,7 +101,7 @@ class ContratosController extends Controller
 			"id_fondo_arl" => "nullable|exists:sam.nom_administradoras,id",
 			"fecha_inicio_contrato" => "required",
 			"estado" => "required|in:0,1,2",
-			"termino" => "required|in:0,1,2,3",
+			"termino" => "required|in:1,2,3,4,5",
 			"tipo_salario" => "required|in:0,1,2,3,4",
 			"tipo_empleado" => "nullable|in:0,1,2,3",
 			"tipo_cotizante" => "nullable|in:1,12,19",

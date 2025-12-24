@@ -11,47 +11,41 @@
             <div class="accordion-body text-sm" style="padding: 0 !important;">
 
                 <form id="compraFilterForm" class="needs-validation row" style="margin-top: 10px;" novalidate>
-                    
-                    <div class="col-6 col-sm-5 col-md-3">
-                        <label for="id_cliente_compra">Proveedor<span style="color: red">*</span></label>
-                        <div class="input-group">
-                            <select name="id_cliente_compra" id="id_cliente_compra" class="form-control form-control-sm" style="font-size: 13px;" required>
-                            </select>
-                            <span id="" href="javascript:void(0)" onclick="openModalNewNit()" class="btn badge bg-gradient-light" style="min-width: 40px; position: static; height: 30px; border-radius: 0px 5px 5px 0px; box-shadow: 0px 0px 0px 0px, 0px 0px 0px 0px;">
-                                <i class="fas fa-user-plus" style="font-size: 15px; margin-top: 2px;"></i>
-                            </span>
-                            <div class="invalid-feedback">
-                                El proveedor es requerido
-                            </div>
+
+                    <div class="form-group col-6 col-sm-4 col-md-3">
+                        <label>Proveedor<span style="color: red">*</span></label>
+                        <select name="id_proveedor_compra" id="id_proveedor_compra" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
+                        </select>
+                        
+                        <div class="invalid-feedback">
+                            El proveedor es requerido
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-3 col-md-3">
-                        <label for="id_comprobante_compra">Comprobante<span style="color: red">*</span></label>
+                    <div class="form-group col-6 col-sm-4 col-md-3">
+                        <label>Comprobante <span style="color: red">*</span></label>
                         <select name="id_comprobante_compra" id="id_comprobante_compra" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
                         
                         <div class="invalid-feedback">
-                            El comprobante es requerida
+                            El comprobante es requerido
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-3 col-md-2">
-                        <label for="id_bodega_compra">Bodega<span style="color: red">*</span></label>
+                    <div class="form-group col-6 col-sm-4 col-md-2">
+                        <label>Bodega<span style="color: red">*</span></label>
                         <select name="id_bodega_compra" id="id_bodega_compra" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
                         
                         <div class="invalid-feedback">
-                            La bodega es requerida
+                            La bodega es requerido
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-3 col-md-2">
-                        <label for="fecha_manual_compra" class="form-control-label">Fecha <span style="color: red">*</span></label>
-                        <input name="fecha_manual_compra" id="fecha_manual_compra" class="form-control form-control-sm" type="datetime-local" required>
-                        <div class="invalid-feedback">
-                            La fecha es requerida
-                        </div>
+                    <div class="form-group col-6 col-sm-4 col-md-2">
+                        <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
+                        <input name="fecha_manual_compra" id="fecha_manual_compra" class="form-control form-control-sm" type="date" required>
+                        <div id="fecha_manual_compra-feedback" class="invalid-feedback"></div>
                     </div>
 
                     <div class="form-group col-6 col-sm-4 col-md-2">
@@ -62,45 +56,34 @@
                             El No. factura requerido
                         </div>
                     </div>
-
-                    <!-- <div class="form-group col-6 col-sm-5 col-md-3">
-                        <label for="observacion_compra" class="form-control-label">Observación </label>
-                        <input type="text" class="form-control form-control-sm" name="observacion_compra" id="observacion_compra">
-                    </div> -->
                     
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="iniciarCapturaCompra" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;">
+                    <span id="iniciarCapturaCompra" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
                         <i class="fas fa-folder-open" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">INICIAR COMPRA</b>
                     </span>
-                    <span id="iniciarCapturaCompraLoading" class="badge bg-gradient-info btn-bg-gold" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                    <span id="iniciarCapturaCompraLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>
-                    <span id="cancelarCapturaCompra" href="javascript:void(0)" class="btn badge bg-gradient-danger btn-bg-danger" style="min-width: 40px; display:none;">
+                    <span id="cancelarCapturaCompra" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="min-width: 40px; display:none;">
                         <i class="fas fa-times-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">CANCELAR COMPRA</b>
                     </span>
-                    
-                    <span id="agregarCompraProducto" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-info" style="min-width: 40px; display:none;">
+                    <span id="agregarCompra" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; display:none;">
                         <i class="fas fa-plus-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">AGREGAR PRODUCTO</b>
                     </span>
-                    <!-- GRABAR COMPRA -->
-                    <span id="crearCapturaCompraDisabled" href="javascript:void(0)" class="badge bg-gradient-dark" style="min-width: 40px; display:none; float: right; cursor: no-drop; margin-top: 5px;">
+                    <span id="crearCapturaCompraDisabled" href="javascript:void(0)" class="badge bg-success" style="min-width: 40px; display:none; float: right; background-color: #2dce899c !important; cursor: no-drop;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR COMPRA</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
-                    <span id="crearCapturaCompra" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; display:none; float: right;">
+                    <span id="crearCapturaCompra" href="javascript:void(0)" class="btn badge bg-gradient-success" style="min-width: 40px; display:none; float: right;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR COMPRA</b>
-                    </span>
-                    <span id="crearCapturaCompraLoading" class="badge bg-gradient-success btn-bg-excel" style="display:none; min-width: 40px; margin-bottom: 16px; float: right;">
-                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>
                 </div>
             </div>

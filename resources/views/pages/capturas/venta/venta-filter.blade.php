@@ -60,7 +60,7 @@
 
                     <div class="form-group col-6 col-sm-3 col-md-1">
                         <label for="fecha_manual_venta" class="form-control-label">Fecha <span style="color: red">*</span></label>
-                        <input name="fecha_manual_venta" id="fecha_manual_venta" class="form-control form-control-sm" type="date" required disabled>
+                        <input name="fecha_manual_venta" id="fecha_manual_venta" class="form-control form-control-sm" type="datetime-local" required disabled>
                         <div class="invalid-feedback">
                             La fecha es requerida
                         </div>

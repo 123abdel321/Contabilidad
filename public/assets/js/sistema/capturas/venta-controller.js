@@ -24,9 +24,7 @@ var validarExistenciasProducto = null;
 
 function ventaInit () {
 
-    fecha = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
-    $('#fecha_manual_venta').val(fecha);
-
+    cargarFechasVentas()
     if (ventaFecha) $("#fecha_manual_venta").prop('disabled', false);
     else $("#fecha_manual_venta").prop('disabled', true);
 
@@ -583,6 +581,17 @@ function ventaInit () {
         container: 'body',
         customClass: 'popover-formas-pagos'
     });
+}
+
+function cargarFechasVentas() {
+    var dateNow = new Date();
+
+    var fechaHoraVenta = dateNow.getFullYear() + '-' + 
+        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
+        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
+        ("0" + dateNow.getHours()).slice(-2) + ':' + 
+        ("0" + dateNow.getMinutes()).slice(-2);
+    $('#fecha_manual_venta').val(fechaHoraVenta);
 }
 
 function focusCantidadVenta (idRow) {
@@ -1365,6 +1374,8 @@ function cancelarVenta() {
     $("#crearCapturaVentaDisabled").hide();
     $('#input-anticipos-venta').hide();
 
+    cargarFechasVentas();
+
     setTimeout(function(){
         $comboCliente.select2("open");
     },10);
@@ -1621,6 +1632,7 @@ function saveVenta() {
             consecutivoSiguienteVenta();
             loadAnticiposCliente();
             disabledFormasPagoVenta();
+            cargarFechasVentas();
 
         } else {
 
