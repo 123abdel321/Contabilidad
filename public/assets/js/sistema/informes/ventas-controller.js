@@ -556,6 +556,10 @@ $(document).on('click', '#generarInformeZ', function () {
     // }
 
     if (errorCount) {
+        
+        $("#generarInformeZ").show();
+        $("#generarInformeZLoading").hide();
+        $("#generarInformeZDisabled").hide();
         agregarToast('warning', 'Informe Z', mensajeError, true);
         return;
     }
