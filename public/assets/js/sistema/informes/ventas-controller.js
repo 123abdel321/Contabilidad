@@ -560,7 +560,7 @@ $(document).on('click', '#generarInformeZ', function () {
         $("#generarInformeZ").show();
         $("#generarInformeZLoading").hide();
         $("#generarInformeZDisabled").hide();
-        agregarToast('warning', 'Informe Z', mensajeError, true);
+        agregarToast('warning', 'Informe Z', mensajeError, false);
         return;
     }
 
