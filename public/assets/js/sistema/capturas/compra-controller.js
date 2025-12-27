@@ -25,8 +25,6 @@ var validarExistenciasProducto = null;
 function compraInit () {
 
     cargarFechasCompras();
-    if (compraFecha) $("#fecha_manual_compra").prop('disabled', false);
-    else $("#fecha_manual_compra").prop('disabled', true);
 
     compra_table = $('#compraTable').DataTable({
         dom: '',

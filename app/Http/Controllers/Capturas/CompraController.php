@@ -164,7 +164,9 @@ class CompraController extends Controller
         }
 
         $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
-		$fechaCierre= DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
+
+        $hoy = new DateTimeImmutable('today');
+		$fechaCierre = DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
         $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
 
         if ($fechaManual < $fechaCierre) {
@@ -174,6 +176,16 @@ class CompraController extends Controller
                 "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
             ], 422);
 		}
+
+        if ($fechaManual > $hoy) {
+            return response()->json([
+                "success" => false,
+                "data" => [],
+                "message" => [
+                    'fecha_manual' => ['mensaje' => 'La fecha no puede ser mayor al día de hoy']
+                ]
+            ], 422);
+        }
 
         try {
             
