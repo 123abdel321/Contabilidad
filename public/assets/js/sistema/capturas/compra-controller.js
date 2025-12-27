@@ -1336,6 +1336,7 @@ function saveCompra() {
             $("#crearCapturaCompra").show();
             $("#crearCapturaCompraLoading").hide();
             
+            disabledFormasPagoCompra(false);
             var mensaje = res.responseJSON.message;
             var errorsMsg = arreglarMensajeError(mensaje);
             agregarToast('error', 'Creación errada', errorsMsg);
