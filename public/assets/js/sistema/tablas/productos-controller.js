@@ -2149,17 +2149,75 @@ function calcularValorUtilidad() {
 
 function readURL(input) {
     if (input.files && input.files[0]) {
-        var reader = new FileReader();
-
+        const file = input.files[0];
+        
+        // Verificar formato
+        const fileName = file.name.toLowerCase();
+        const validFormats = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+        const isHeic = fileName.endsWith('.heic') || fileName.endsWith('.heif');
+        
+        if (isHeic) {
+            alert('Formato HEIC no compatible. Por favor, tome la foto en formato JPEG o cambie la configuración:\n' +
+                  'Configuración > Cámara > Formatos > Seleccione "Más Compatible"');
+            input.value = ''; // Limpiar input
+            return;
+        }
+        
+        const reader = new FileReader();
+        
         reader.onload = function (e) {
-            nuevoProducto.imagen = e.target.result;
-            $('#new_produc_img').attr('src', e.target.result);
+            const img = new Image();
+            
+            img.onload = function() {
+                // Limitar tamaño máximo si es necesario
+                const maxWidth = 800;
+                const maxHeight = 800;
+                let width = img.width;
+                let height = img.height;
+                
+                // Redimensionar si es muy grande
+                if (width > maxWidth || height > maxHeight) {
+                    if (width > height) {
+                        height = (maxWidth / width) * height;
+                        width = maxWidth;
+                    } else {
+                        width = (maxHeight / height) * width;
+                        height = maxHeight;
+                    }
+                }
+                
+                // Crear canvas
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // Rotar 90 grados si es necesario (para iPhone en modo retrato)
+                if (img.width < img.height) {
+                    canvas.width = height;
+                    canvas.height = width;
+                    ctx.translate(height / 2, width / 2);
+                    ctx.rotate(90 * Math.PI / 180);
+                    ctx.drawImage(img, -width / 2, -height / 2, width, height);
+                } else {
+                    ctx.drawImage(img, 0, 0, width, height);
+                }
+                
+                // Convertir a base64
+                const base64Image = canvas.toDataURL('image/jpeg', 0.7);
+                
+                // Asignar a tu objeto
+                nuevoProducto.imagen = base64Image;
+                $('#new_produc_img').attr('src', base64Image);
+                $('#default_produc_img').hide();
+                $('#new_produc_img').show();
+            };
+            
+            img.src = e.target.result;
         };
-
-        reader.readAsDataURL(input.files[0]);
-
-        $('#default_produc_img').hide();
-        $('#new_produc_img').show();
+        
+        reader.readAsDataURL(file);
     }
 }
 
