@@ -55,7 +55,7 @@ class UsuariosController extends Controller
         return view('pages.configuracion.usuarios.usuarios-view', $data);
     }
 
-    public function generate (Request $request)
+    public function generate(Request $request)
     {
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -71,11 +71,16 @@ class UsuariosController extends Controller
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
-        $usuarios = User::orderBy($columnName,$columnSortOrder)
-            ->with('roles', 'permissions')
-            ->where('id_empresa', $request->user()['id_empresa'])
-            ->withWhereHas('permisos', function ($query) use ($request){
-                $query->where('id_empresa', $request->user()['id_empresa']);
+        $idEmpresa = $request->user()['id_empresa'];
+        
+        // Consulta base: usuarios que pertenecen a la empresa actual
+        $usuarios = User::orderBy($columnName, $columnSortOrder)
+            ->with(['roles', 'permissions'])
+            ->whereHas('empresasExternas', function ($query) use ($idEmpresa) {
+                $query->where('id_empresa', $idEmpresa);
+            })
+            ->withWhereHas('permisos', function ($query) use ($idEmpresa) {
+                $query->where('id_empresa', $idEmpresa);
             })
             ->select(
                 '*',
@@ -85,35 +90,40 @@ class UsuariosController extends Controller
                 'updated_by'
             );
 
+        // Aplicar búsqueda si existe
         if ($searchValue) {
-            $usuarios = $usuarios->where('username', 'like', '%' .$searchValue. '%')
-                ->orWhere('firstname', 'like', '%' .$searchValue. '%')
-                ->orWhere('lastname', 'like', '%' .$searchValue. '%')
-                ->orWhere('email', 'like', '%' .$searchValue. '%');
+            $usuarios->where(function($query) use ($searchValue) {
+                $query->where('username', 'like', '%' . $searchValue . '%')
+                    ->orWhere('firstname', 'like', '%' . $searchValue . '%')
+                    ->orWhere('lastname', 'like', '%' . $searchValue . '%')
+                    ->orWhere('email', 'like', '%' . $searchValue . '%');
+            });
         }
 
-        $usuarios = $usuarios->where('id_empresa', $request->user()['id_empresa']);
+        // Obtener el total de registros
         $usuariosTotals = $usuarios->get();
 
+        // Obtener datos paginados
         $usuariosPaginate = $usuarios->skip($start)
-            ->take($rowperpage);
+            ->take($rowperpage)
+            ->get();
 
         return response()->json([
-            'success'=>	true,
+            'success' => true,
             'draw' => $draw,
             'iTotalRecords' => $usuariosTotals->count(),
             'iTotalDisplayRecords' => $usuariosTotals->count(),
-            'data' => $usuariosPaginate->get(),
+            'data' => $usuariosPaginate,
             'perPage' => $rowperpage,
-            'message'=> 'Usuarios cargados con exito!'
+            'message' => 'Usuarios cargados con éxito!'
         ]);
     }
 
-    public function create (Request $request)
+    public function create(Request $request)
     {        
         $rules = [
-            'usuario' => 'required|string|min:1|unique:App\Models\User,username',
-            'email' => 'required|email|string|max:255|unique:App\Models\User,email',
+            'usuario' => 'required|string|min:1',
+            'email' => 'required|email|string|max:255',
             'firstname' => 'nullable|string|max:255',
             'lastname' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
@@ -124,43 +134,119 @@ class UsuariosController extends Controller
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
         if ($validator->fails()){
-            
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$validator->errors()
+                "message" => $validator->errors()
             ], 422);
         }
 
         try {
-            
             DB::connection('sam')->beginTransaction();
 
+            // Verificar si el usuario ya existe por username o email
+            $usuarioExistente = User::where('username', $request->get('usuario'))
+                ->orWhere('email', $request->get('email'))
+                ->first();
+
+            $empresaActualId = $request->user()['id_empresa'];
+            $empresaActualHash = $request->user()['has_empresa'];
+            $usuarioCreadorId = request()->user()->id;
+
+            // Verificar si el usuario ya está asociado a esta empresa
+            $yaAsociadoEmpresa = false;
+            if ($usuarioExistente) {
+                $yaAsociadoEmpresa = UsuarioEmpresa::where('id_usuario', $usuarioExistente->id)
+                    ->where('id_empresa', $empresaActualId)
+                    ->exists();
+            }
+
+            // Si el usuario existe y ya está asociado a esta empresa, retornar error
+            if ($usuarioExistente && $yaAsociadoEmpresa) {
+                DB::connection('sam')->rollback();
+                return response()->json([
+                    "success" => false,
+                    'data' => [],
+                    "message" => "El usuario ya existe y está asociado a esta empresa"
+                ], 422);
+            }
+
+            $usuario = null;
+
+            if ($usuarioExistente && !$yaAsociadoEmpresa) {
+                // CASO 1: Usuario existe pero no está asociado a esta empresa
+                $usuario = $usuarioExistente;
+                
+                // Actualizar datos del usuario si se proporcionaron
+                $actualizacionUsuario = [
+                    'updated_by' => $usuarioCreadorId,
+                ];
+                
+                // Solo actualizar campos si se proporcionan y son diferentes
+                if ($request->has('firstname')) {
+                    $actualizacionUsuario['firstname'] = $request->get('firstname');
+                }
+                if ($request->has('lastname')) {
+                    $actualizacionUsuario['lastname'] = $request->get('lastname');
+                }
+                if ($request->has('address')) {
+                    $actualizacionUsuario['address'] = $request->get('address');
+                }
+                if ($request->has('telefono')) {
+                    $actualizacionUsuario['telefono'] = $request->get('telefono');
+                }
+                
+                $usuario->update($actualizacionUsuario);
+                
+            } else {
+                // CASO 2: Usuario no existe, crearlo nuevo
+                // Validar unicidad para nuevo usuario
+                $uniqueRules = [
+                    'usuario' => 'unique:App\Models\User,username',
+                    'email' => 'unique:App\Models\User,email',
+                ];
+                
+                $uniqueValidator = Validator::make($request->all(), $uniqueRules);
+                
+                if ($uniqueValidator->fails()) {
+                    DB::connection('sam')->rollback();
+                    return response()->json([
+                        "success" => false,
+                        'data' => [],
+                        "message" => $uniqueValidator->errors()
+                    ], 422);
+                }
+
+                $usuario = User::create([
+                    'username' => $request->get('usuario'),
+                    'id_empresa' => $empresaActualId,
+                    'has_empresa' => $empresaActualHash,
+                    'firstname' => $request->get('firstname'),
+                    'lastname' => $request->get('lastname'),
+                    'email' => $request->get('email'),
+                    'address' => $request->get('address'),
+                    'telefono' => $request->get('telefono'),
+                    'created_by' => $usuarioCreadorId,
+                    'updated_by' => $usuarioCreadorId,
+                ]);
+
+                // Actualizar password si se proporciona
+                if ($request->get('password')) {
+                    $usuario->update([
+                        'password' => $request->get('password')
+                    ]);
+                }
+            }
+
+            // Obtener el rol
             $rol = Role::where('id', $request->get('rol_usuario'))->first();
+            
+            if (!$rol) {
+                throw new Exception("El rol especificado no existe");
+            }
 
-            $usuario = User::create([
-                'username' => $request->get('usuario'),
-                'id_empresa' => $request->user()['id_empresa'],
-                'has_empresa' => $request->user()['has_empresa'],
-                'firstname' => $request->get('firstname'),
-                'lastname' => $request->get('lastname'),
-                'email' => $request->get('email'),
-                'address' => $request->get('address'),
-                'telefono' => $request->get('telefono'),
-                'created_by' => request()->user()->id,
-                'updated_by' => request()->user()->id,
-            ]);
-
-            UsuarioPermisos::updateOrCreate([
-                'id_user' => $usuario->id,
-                'id_empresa' => $request->user()['id_empresa']
-            ],[
-                'ids_bodegas_responsable' => implode(",",$request->get('id_bodega')),
-                'ids_resolucion_responsable' => implode(",",$request->get('id_resolucion')),
-            ]);
-
+            // Procesar permisos
             $permisos = [];
-
             if (count($request->get('permisos')) > 0) {
                 foreach ($request->get('permisos') as $permiso) {
                     if ($permiso['value'] == "1") {
@@ -169,43 +255,54 @@ class UsuariosController extends Controller
                 }
             }
 
-            if ($request->get('password')) {
-                $usuario->update([
-                    'password' => $request->get('password')
-                ]);
-            }
+            // Asociar usuario a la empresa (crear o actualizar)
+            UsuarioEmpresa::updateOrCreate(
+                [
+                    'id_usuario' => $usuario->id,
+                    'id_empresa' => $empresaActualId
+                ],
+                [
+                    'id_rol' => $request->get('rol_usuario'), 
+                    'estado' => 1,
+                ]
+            );
 
-            UsuarioEmpresa::create([
-                'id_usuario' => $usuario->id,
-                'id_empresa' => $request->user()['id_empresa'],
-                'id_rol' => $request->get('rol_usuario'), 
-                'estado' => 1,
-            ]);
-
+            // Sincronizar roles y permisos
             $usuario->syncRoles($rol);
             $usuario->syncPermissions($permisos);
 
-            UsuarioPermisos::updateOrCreate([
-                'id_user' => $usuario->id,
-                'id_empresa' => $request->user()['id_empresa']
-            ],[
-                'ids_permission' => implode(',', $permisos)
-            ]);
+            // Crear o actualizar permisos específicos del usuario
+            UsuarioPermisos::updateOrCreate(
+                [
+                    'id_user' => $usuario->id,
+                    'id_empresa' => $empresaActualId
+                ],
+                [
+                    'ids_bodegas_responsable' => implode(",", $request->get('id_bodega', [])),
+                    'ids_resolucion_responsable' => implode(",", $request->get('id_resolucion', [])),
+                    'ids_permission' => implode(',', $permisos)
+                ]
+            );
 
             DB::connection('sam')->commit();
 
+            $mensaje = $usuarioExistente 
+                ? "Usuario asociado a la empresa con éxito!" 
+                : "Usuario creado con éxito!";
+
             return response()->json([
-                'success'=>	true,
+                'success' => true,
                 'data' => $usuario,
-                'message'=> 'Usuario creado con exito!'
+                'message' => $mensaje,
+                'nuevo_usuario' => !$usuarioExistente
             ]);
 
         } catch (Exception $e) {
             DB::connection('sam')->rollback();
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$e->getMessage()
+                "message" => $e->getMessage()
             ], 422);
         }
     }
