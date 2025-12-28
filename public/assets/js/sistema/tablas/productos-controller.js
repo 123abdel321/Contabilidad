@@ -2157,8 +2157,8 @@ function readURL(input) {
         const isHeic = fileName.endsWith('.heic') || fileName.endsWith('.heif');
         
         if (isHeic) {
-            alert('Formato HEIC no compatible. Por favor, tome la foto en formato JPEG o cambie la configuración:\n' +
-                  'Configuración > Cámara > Formatos > Seleccione "Más Compatible"');
+            agregarToast('exito', 'Creación exitosa', 'Formato HEIC no compatible. Por favor, tome la foto en formato JPEG o cambie la configuración:\n' +
+                'Configuración > Cámara > Formatos > Seleccione "Más Compatible"', false);
             input.value = ''; // Limpiar input
             return;
         }
