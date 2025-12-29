@@ -294,8 +294,6 @@ class RecibosController extends Controller
 
             $recibosTotals = $recibos->get();
 
-            dd('aca');
-
             $recibosPaginate = $recibos->skip($start)
                 ->take($rowperpage);
 
