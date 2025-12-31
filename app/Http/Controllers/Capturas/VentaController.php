@@ -749,7 +749,7 @@ class VentaController extends Controller
         $rules = [
 			'id_venta' => "required|exists:sam.fac_ventas,id",
 		];
-
+         
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
 		if ($validator->fails()){
@@ -1151,11 +1151,15 @@ class VentaController extends Controller
         return [];
     }
 
-    private function calcularTotales ($productos)
+    private function calcularTotales($productos)
     {
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
         $this->ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
         $responsabilidades = $this->getResponsabilidades();
+        
+        // INICIALIZAR NUEVOS CAMPOS
+        $this->totalesFactura['subtotal_sin_iva'] = 0;
+        $this->totalesFactura['subtotal_con_iva'] = 0;
         
         foreach ($productos as $producto) {
             $producto = (object)$producto;
@@ -1169,7 +1173,7 @@ class VentaController extends Controller
                 )
                 ->first();
             
-            //BUSCAR BASE Y PORCENTAJE RETENCIÓN
+            // BUSCAR BASE Y PORCENTAJE RETENCIÓN
             $cuentaRetencion = $productoDb->familia->cuenta_venta_retencion;
             if ($cuentaRetencion && $cuentaRetencion->impuesto) {
                 $impuesto = $cuentaRetencion->impuesto;
@@ -1194,36 +1198,75 @@ class VentaController extends Controller
                     $this->totalesFactura['id_cuenta_iva'] = $cuentaIva->id;
                 }
 
-                $iva = (($totalPorCantidad - $producto->descuento_valor) * ($this->totalesFactura['porcentaje_iva'] / 100));
+                // CALCULAR IVA DEPENDIENDO SI ESTÁ INCLUIDO O NO
                 if ($this->ivaIncluido) {
-                    $iva = round(($totalPorCantidad - $producto->descuento_valor) - (($totalPorCantidad - $producto->descuento_valor) / (1 + ($this->totalesFactura['porcentaje_iva'] / 100))), 2);
+                    // Cuando el precio INCLUYE IVA
+                    $iva = round(($totalPorCantidad - $producto->descuento_valor) - 
+                        (($totalPorCantidad - $producto->descuento_valor) / 
+                        (1 + ($this->totalesFactura['porcentaje_iva'] / 100))), 2);
+                    
+                    // Calcular valor sin IVA
+                    $valor_linea_sin_iva = round(
+                        ($totalPorCantidad - $producto->descuento_valor) / 
+                        (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 
+                        2
+                    );
+                    
+                    // Valor con IVA
+                    $valor_linea_con_iva = $valor_linea_sin_iva + $iva;
+                    
+                } else {
+                    // Cuando el precio NO incluye IVA
+                    $iva = round(
+                        ($totalPorCantidad - $producto->descuento_valor) * 
+                        ($this->totalesFactura['porcentaje_iva'] / 100), 
+                        2
+                    );
+                    
+                    // Valor sin IVA
+                    $valor_linea_sin_iva = round(
+                        ($producto->cantidad * $costo) - $producto->descuento_valor, 
+                        2
+                    );
+                    
+                    // Valor con IVA
+                    $valor_linea_con_iva = $valor_linea_sin_iva + $iva;
                 }
-                $iva = round($iva, 2);
+                
+            } else {
+                // Si no hay IVA
+                $valor_linea_sin_iva = round(
+                    ($producto->cantidad * $costo) - $producto->descuento_valor, 
+                    2
+                );
+                $valor_linea_con_iva = $valor_linea_sin_iva;
             }
 
-            // if ($this->ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
-            //     $costo = round((float)$producto->costo / (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 2);
-            // }
-
-            $subtotal = round(($producto->cantidad * $costo) - $producto->descuento_valor, 2);
-
-            $this->totalesFactura['subtotal']+= ($subtotal);
-            $this->totalesFactura['total_iva']+= $iva;
-            $this->totalesFactura['total_descuento']+= $producto->descuento_valor;
-            $this->totalesFactura['total_factura']+= ($subtotal);
+            // ACTUALIZAR TOTALES
+            $this->totalesFactura['subtotal_sin_iva'] += $valor_linea_sin_iva;
+            $this->totalesFactura['subtotal_con_iva'] += $valor_linea_con_iva;
+            $this->totalesFactura['total_iva'] += $iva;
+            $this->totalesFactura['total_descuento'] += $producto->descuento_valor;
             
+            // Mantener compatibilidad con código existente
+            $this->totalesFactura['subtotal'] = $this->totalesFactura['subtotal_sin_iva'];
+            $this->totalesFactura['total_factura'] = $this->totalesFactura['subtotal_con_iva'];
         }
 
-        //CALCULAR RETENCIÓN EN LA FUENTE
+        // CALCULAR RETENCIÓN EN LA FUENTE
         if (in_array('7', $responsabilidades) &&
             $this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] &&
             $this->totalesFactura['porcentaje_rete_fuente'] > 0
         ) {
-                $total_rete_fuente = $ivaIncluido ? $this->totalesFactura['total_factura'] * ($this->totalesFactura['porcentaje_rete_fuente'] / 100) : $this->totalesFactura['subtotal'] * ($this->totalesFactura['porcentaje_rete_fuente'] / 100);
-                $this->totalesFactura['total_rete_fuente'] = round($total_rete_fuente);
-                $this->totalesFactura['total_factura'] = round($this->totalesFactura['total_factura'] - $total_rete_fuente, 1);
+            // Base para retención: usar subtotal sin IVA (más común)
+            $base_retencion = $this->totalesFactura['subtotal_sin_iva'];
+            $total_rete_fuente = $base_retencion * ($this->totalesFactura['porcentaje_rete_fuente'] / 100);
+            
+            $this->totalesFactura['total_rete_fuente'] = round($total_rete_fuente);
+            $this->totalesFactura['total_factura'] = round($this->totalesFactura['total_factura'] - $total_rete_fuente, 2);
         } else {
             $this->totalesFactura['id_cuenta_rete_fuente'] = null;
+            $this->totalesFactura['total_rete_fuente'] = 0;
         }
     }
 
