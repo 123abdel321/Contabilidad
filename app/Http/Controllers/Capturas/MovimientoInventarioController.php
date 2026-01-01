@@ -57,7 +57,7 @@ class MovimientoInventarioController extends Controller
             'id_bodega_destino' => 'nullable|required_if:tipo,=,2|exists:sam.fac_bodegas,id',
             'productos' => 'array|required',
             'productos.*.id_producto' => 'required|exists:sam.fac_productos,id',
-            'productos.*.cantidad' => 'required|numeric|min:0.001',
+            'productos.*.cantidad' => 'required|numeric|min:0.000001',
             'productos.*.costo' => 'required|min:0',
             'productos.*.total' => 'required|numeric|min:0'
         ];
