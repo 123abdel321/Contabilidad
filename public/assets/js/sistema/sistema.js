@@ -777,7 +777,7 @@ function cerrarToast(id){
 }
 
 // Función para agregar la clase de cerrando al toast.
-function agregarToast (tipo, titulo, descripcion, autoCierre = false) {
+function agregarToast(tipo, titulo, descripcion, autoCierre = false, tiempoCierre = 3000) {
     // Crear el nuevo toast
     const nuevoToast = document.createElement('div');
 
@@ -788,7 +788,7 @@ function agregarToast (tipo, titulo, descripcion, autoCierre = false) {
 
     // Agregar id del toast
     const numeroAlAzar = Math.floor(Math.random() * 100);
-    var fecha = Date.now();
+    const fecha = Date.now();
     const toastId = fecha + numeroAlAzar;
     nuevoToast.id = toastId;
 
@@ -816,18 +816,23 @@ function agregarToast (tipo, titulo, descripcion, autoCierre = false) {
                 </svg>`,
     };
 
-    // Plantilla del toast
+    // Detectar si la descripción tiene tablas
+    const tieneTabla = descripcion.includes('<table');
+    
+    // Plantilla del toast - VERSION SIMPLIFICADA
     var toast = `
-        <div class="contenido toast-general">
+        <div class="contenido ${tieneTabla ? 'con-tabla' : ''}">
             <div class="icono">
                 ${iconos[tipo]}
             </div>
             <div class="texto">
                 <p class="titulo">${titulo}</p>
-                <p class="descripcion">${descripcion}</p>
+                <div class="descripcion ${tieneTabla ? 'contenido-tabla' : ''}">
+                    ${descripcion}
+                </div>
             </div>
         </div>
-        <button class="btn-cerrar"  onclick="cerrarToast('${toastId}')" href="javascript:void(0)">
+        <button class="btn-cerrar" onclick="cerrarToast('${toastId}')" href="javascript:void(0)">
             <div class="icono">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                     <path
@@ -844,7 +849,45 @@ function agregarToast (tipo, titulo, descripcion, autoCierre = false) {
     // Agregamos el nuevo toast al contenedor
     contenedorToast.appendChild(nuevoToast);
 
-    // Función para menajera el cierre del toast
+    // Ajustar el tamaño PARA EVITAR DOBLE SCROLL
+    if (tieneTabla) {
+        setTimeout(() => {
+            const descripcionDiv = nuevoToast.querySelector('.descripcion');
+            const tablas = descripcionDiv.querySelectorAll('table');
+            
+            tablas.forEach(tabla => {
+                // Quitar cualquier altura máxima o scroll
+                tabla.style.width = '100%';
+                tabla.style.maxWidth = '300px';
+                tabla.style.margin = '8px 0';
+                tabla.style.borderCollapse = 'collapse';
+                
+                // Asegurar que la tabla no tenga scroll interno
+                tabla.style.overflow = 'visible';
+                
+                // Añadir clases de Bootstrap si están disponibles
+                if (typeof bootstrap !== 'undefined') {
+                    tabla.classList.add('table', 'table-sm', 'table-bordered');
+                }
+            });
+            
+            // IMPORTANTE: NO limitar la altura del texto para evitar scroll interno
+            const texto = nuevoToast.querySelector('.texto');
+            texto.style.overflowY = 'visible'; // Cambiado de 'auto' a 'visible'
+            texto.style.maxHeight = 'none'; // Quitar altura máxima
+            
+            // En su lugar, ajustar el toast para que sea más grande
+            nuevoToast.style.maxWidth = '500px'; // Más ancho para tablas
+            nuevoToast.style.minWidth = '350px'; // Ancho mínimo
+            
+            // Ajustar el contenedor del contenido
+            const contenido = nuevoToast.querySelector('.contenido');
+            contenido.style.maxHeight = 'none';
+            
+        }, 10);
+    }
+
+    // Función para manejar el cierre del toast
     const handleAnimacionCierre = (e) => {
         if (e.animationName === 'cierre') {
             nuevoToast.removeEventListener('animationend', handleAnimacionCierre);
@@ -853,7 +896,7 @@ function agregarToast (tipo, titulo, descripcion, autoCierre = false) {
     };
 
     if (autoCierre) {
-        setTimeout(() => cerrarToast(toastId), 3000);
+        setTimeout(() => cerrarToast(toastId), tiempoCierre);
     }
 
     // Agregamos event listener para detectar cuando termine la animación

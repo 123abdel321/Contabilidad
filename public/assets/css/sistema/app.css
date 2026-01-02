@@ -415,29 +415,39 @@ th.dtfc-fixed-right {
 .toast.exito {
     background: var(--bs-success);
     color: white !important;
+    min-height: 140px;
+    max-height: 300px;
 }
 .toast.error {
     background: var(--bs-danger);
     color: white !important;
+    min-height: 140px;
+    max-height: 300px;
 }
 .toast.info {
     background: var(--bs-info);
     color: white !important;
+    min-height: 140px;
+    max-height: 300px;
 }
 .toast.warning {
     background: var(--bs-warning);
     color: white !important;
+    min-height: 140px;
+    max-height: 300px;
 }
 
 .toast .contenido {
     display: grid;
     grid-template-columns: 30px auto;
-    align-items: flex-start;
+    align-items: center;
     gap: 15px;
-    padding: 16px 18px;
+    padding: 15px;
     z-index: 9;
-    overflow-y: auto;
-    max-height: 220px; /* un poco más de altura */
+    overflow: auto;
+    max-width: 400px;
+    max-height: 300px;
+    min-height: 140px;
 }
 
 .toast .icono {
