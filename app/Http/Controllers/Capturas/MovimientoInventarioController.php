@@ -44,10 +44,7 @@ class MovimientoInventarioController extends Controller
 
     public function create (Request $request)
     {
-        if ($request->get('id_bodega_origen') == $request->get('id_bodega_destino')) {
-			return response()->json(["success" => false, "message" => "La bodega de origen no puede ser igual a la bodega destino."], 422);
-		}
-
+        
         $rules = [
             'tipo' => 'required|min:1',
             'fecha_manual' => 'required|min:1',
@@ -57,7 +54,7 @@ class MovimientoInventarioController extends Controller
             'id_bodega_destino' => 'nullable|required_if:tipo,=,2|exists:sam.fac_bodegas,id',
             'productos' => 'array|required',
             'productos.*.id_producto' => 'required|exists:sam.fac_productos,id',
-            'productos.*.cantidad' => 'required|numeric|min:0.000001',
+            'productos.*.cantidad' => 'required|numeric|gt:0',
             'productos.*.costo' => 'required|min:0',
             'productos.*.total' => 'required|numeric|min:0'
         ];
@@ -71,6 +68,10 @@ class MovimientoInventarioController extends Controller
                 "message"=>$validator->errors()
             ], 422);
         }
+
+        if ($request->get('id_bodega_origen') == $request->get('id_bodega_destino')) {
+			return response()->json(["success" => false, "message" => "La bodega de origen no puede ser igual a la bodega destino."], 422);
+		}
         
         try {
             DB::connection('sam')->beginTransaction();
@@ -87,7 +88,7 @@ class MovimientoInventarioController extends Controller
 
             //CREAR MOVIMIENTO INVENTARIO
             $movimiento = $this->createMovimientoInventario($request);
-
+            
             //INIT DOCUMENTOS TARRO
             $documentoGeneral = new Documento(
                 $cargueDescargue->id_comprobante,

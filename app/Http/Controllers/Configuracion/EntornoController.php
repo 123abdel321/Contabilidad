@@ -55,6 +55,7 @@ class EntornoController extends Controller
                 'valor_uvt',
                 'vendedores_ventas',
                 'recordar_ultimo_precio_venta',
+                'precio_ponderado',
                 'porcentaje_iva_aiu',
                 'redondeo_gastos',
                 'ubicacion_maximoph',

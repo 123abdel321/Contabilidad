@@ -33,8 +33,8 @@ function carguedescargueInit() {
                 if (row.tipo == 2) return 'TRASLADO';
                 return 'DESCARGUE';
             }},
-            {"data": function (row, type, set){  
-                if (row.id_comprobante) {
+            {"data": function (row, type, set){
+                if (row.id_comprobante && row.comprobante) {
                     return row.comprobante.codigo +' - '+ row.comprobante.nombre;
                 }
                 return;

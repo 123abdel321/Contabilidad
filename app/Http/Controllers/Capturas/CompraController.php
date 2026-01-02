@@ -118,7 +118,7 @@ class CompraController extends Controller
                     }
 				}
             ],
-            'productos.*.cantidad' => 'required|min:0.001',
+            'productos.*.cantidad' => 'required|numeric|gt:0',
             'productos.*.costo' => 'required|min:0',
             'productos.*.descuento_porcentaje' => 'required|min:0|max:99',
             'productos.*.descuento_valor' => 'required|min:0',
@@ -228,7 +228,9 @@ class CompraController extends Controller
                 ]);
 
                 //PROMEDIAR PRECIO
-                if ($productoDb->precio_inicial != $producto->costo) {
+                $promediarPrecio = VariablesEntorno::where('nombre', 'precio_ponderado')->first();
+			    $promediarPrecio = $promediarPrecio ? $promediarPrecio->valor : false;
+                if ($promediarPrecio && $productoDb->precio_inicial != $producto->costo) {
                     $existenciasBodega = FacProductosBodegas::where('id_producto', $producto->id_producto)
                         ->where('id_bodega', $this->bodega->id)
                         ->sum('cantidad');

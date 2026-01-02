@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('id_producto')->nullable();
             $table->integer('id_bodega')->nullable();
-            $table->decimal('cantidad', 15)->default(0);
+            $table->decimal('cantidad', 15,5)->default(0);
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

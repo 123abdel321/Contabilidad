@@ -364,7 +364,7 @@ function changeProductoMovimientoInventario (idRow) {
     data = data[0];
 
     if (data.inventarios.length > 0 && data.familia.inventario) {
-        var totalInventario = parseFloat(data.inventarios[0].cantidad);
+        var totalInventario = data.inventarios[0].cantidad;
 
         if (tipoMovimiento != "1") {
             $("#movimiento-inventario_cantidad_"+idRow).attr({"max" : totalInventario});
@@ -556,7 +556,7 @@ function calcularProductoMovimientoInventario(idRow, validarCantidad = false) {
 function mostrarValoresMovimientoInventario () {
     var [cantidad, total] = totalValoresMovimientoInventario();
 
-    $("#movimiento_inventario_cantidad").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(cantidad));
+    $("#movimiento_inventario_cantidad").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 5 }).format(cantidad));
     $("#movimiento_inventario_total_valor").text(new Intl.NumberFormat('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total));
 }
 
@@ -576,8 +576,8 @@ function totalValoresMovimientoInventario() {
                 var costo = $('#movimiento-inventario_costo_'+dataMovimientoInventario[index].id).val();
 
                 if (cantidad && costo) {
-                    cantidadTotal+= parseInt(cantidad);
-                    total+= parseFloat(cantidad * costo);
+                    cantidadTotal+= cantidad;
+                    total+= cantidad * costo;
                 }
             }
         }
@@ -610,7 +610,7 @@ function validarExistenciasMovimientoInventario (idRow) {
             consultarExistenciasMovimientoInventario(idRow);
             return false;
         } else {
-            if (cantidad > parseInt(producto.inventarios[0].cantidad)) {
+            if (cantidad > producto.inventarios[0].cantidad) {
                 $('#movimiento-inventario_cantidad_text_'+idRow).text("Se ha superado las existencias");
                 $('#movimiento-inventario_cantidad_'+idRow).addClass("is-invalid");
                 $('#movimiento-inventario_cantidad_'+idRow).removeClass("is-valid");
@@ -667,12 +667,12 @@ function consultarExistenciasMovimientoInventario(idRow) {
             validarExistenciasProductoMI = null;
             $('#movimiento-inventario_producto_load_'+idRow).hide();
             if (res.data) {
-                if (cantidadActualRow + cantidadTotal > parseInt(res.data.cantidad)) {
+                if (cantidadActualRow + cantidadTotal > res.data.cantidad) {
                     $('#movimiento-inventario_cantidad_text_'+idRow).text("Se ha superado las existencias");
                     $('#movimiento-inventario_cantidad_'+idRow).addClass("is-invalid");
                     $('#movimiento-inventario_cantidad_'+idRow).removeClass("is-valid");
 
-                    if (1 + cantidadTotal > parseInt(res.data.cantidad)) $('#movimiento-inventario_'+idRow).val(0);
+                    if (1 + cantidadTotal > res.data.cantidad) $('#movimiento-inventario_'+idRow).val(0);
                     else $('#movimiento-inventario_cantidad_'+idRow).val(1);
                     
                     setTimeout(function(){
@@ -722,11 +722,11 @@ function totalCantidadProductoMovimientoInventario(idRow) {
 }
 
 $(document).on('click', '#crearCapturaMovimientoInventario', function () {
-    validateSaveVenta();
+    validateSaveMovimientoInventario();
 });
 
 
-function validateSaveVenta() {
+function validateSaveMovimientoInventario() {
     if (!guardandoMovimientoContable) {
         guardandoMovimientoContable = true;
         saveMovimientoInventario();
@@ -812,7 +812,7 @@ function getProductosMovimientoInventario() {
 
             data.push({
                 id_producto: parseInt(id_producto),
-                cantidad: parseInt(cantidad),
+                cantidad: cantidad,
                 costo: costo ? parseFloat(costo) : 0,
                 total: total ? parseFloat(total) : 0,
             });
