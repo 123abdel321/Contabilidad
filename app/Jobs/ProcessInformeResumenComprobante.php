@@ -153,19 +153,19 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 			->chunk(233, function ($documentos) {
 				foreach ($documentos as $documento) {
 					$key = $documento->{$this->request['agrupado']};
+					
 					if ($this->request['agrupado'] == 'id_nit') {
 						$key = $documento->numero_documento;
 					}
 					if ($this->request['agrupado'] == 'id_cuenta') {
-						$key = $documento->cuenta;
+						$key = str_pad($documento->cuenta, 10, '0', STR_PAD_RIGHT);
 					}
 
 					$groupKey = "{$documento->codigo_comprobante}A-{$key}";
-
+					
 					if (isset($this->resumenComprobanteCollection[$groupKey])) {
 						$groupKey.='9';
 					}
-
 					if ($this->request['agrupado'] == 'consecutivo' && $this->consecutivoActual && $this->consecutivoActual + 1 != intval($documento->consecutivo)) {
 						
 						$diferencia = intval($documento->consecutivo) - intval($this->consecutivoActual + 1);
@@ -261,7 +261,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 						$key = $documento->numero_documento;
 					}
 					if ($this->request['agrupado'] == 'id_cuenta') {
-						$key = $documento->cuenta;
+						$key = str_pad($documento->cuenta, 10, '0', STR_PAD_RIGHT);
 					}
 
 					$this->resumenComprobanteCollection[$documento->codigo_comprobante.'A'.$key.'B-'.$documento->consecutivo] = [

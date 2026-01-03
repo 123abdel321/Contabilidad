@@ -237,7 +237,7 @@ function loadResumenComprobanteById(id_resumen_comprobante) {
                 tabla.column(1).visible(false);// NOMBRE CUENTA
                 tabla.column(2).visible(false);// DOCUMENTO NIT
                 tabla.column(3).visible(false);// NOMBRE  NIT
-                tabla.column(4).visible(true);// UBICACION
+                tabla.column(4).visible(false);// UBICACION
                 tabla.column(5).visible(false);// CONSECUTIVO
                 // tabla.column(6).visible(false);// FECHA MANUAL
                 tabla.column(10).visible(false);// CONCEPTO
