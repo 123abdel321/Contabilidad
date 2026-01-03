@@ -778,7 +778,11 @@ function cerrarToast(id){
 
 // Función para agregar la clase de cerrando al toast.
 function agregarToast(tipo, titulo, descripcion, autoCierre = false, tiempoCierre = 3000) {
-    // Crear el nuevo toast
+    // Crear el nuevo toast7
+    if (descripcion === null || descripcion === undefined || !descripcion) {
+        return;
+    }
+    
     const nuevoToast = document.createElement('div');
 
     // Agregar clases correspondientes
