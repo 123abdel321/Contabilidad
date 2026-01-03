@@ -657,19 +657,19 @@ function changeConsecutivo(event) {
         document.getElementById('iniciarCapturaDocumentos').click();
         if (!consecutivoEditado) {
             var consecutivoActual = parseInt($("#consecutivo").val());
-            if (consecutivoUltimo !== undefined && consecutivoUltimo !== null) {
-                var diferenciaConsecutivos = Math.abs(consecutivoUltimo - consecutivoActual);
-                if (diferenciaConsecutivos >= 2 && consecutivoActual > 2) {
+            // if (consecutivoUltimo !== undefined && consecutivoUltimo !== null) {
+            //     var diferenciaConsecutivos = Math.abs(consecutivoUltimo - consecutivoActual);
+            //     if (diferenciaConsecutivos >= 2 && consecutivoActual > 2) {
 
-                    var mensajeDetallado = 
-                        'El consecutivo actual (' + consecutivoActual + 
-                        ') está ' + diferenciaConsecutivos + 
-                        ' números alejado del último consecutivo utilizado (' + numConsecutivoUltimo + 
-                        '). Confirme si desea saltar esta numeración.';
+            //         var mensajeDetallado = 
+            //             'El consecutivo actual (' + consecutivoActual + 
+            //             ') está ' + diferenciaConsecutivos + 
+            //             ' números alejado del último consecutivo utilizado (' + numConsecutivoUltimo + 
+            //             '). Confirme si desea saltar esta numeración.';
 
-                    agregarToast('warning', 'Salto de Consecutivo', mensajeDetallado);
-                }
-            }
+            //         agregarToast('warning', 'Salto de Consecutivo', mensajeDetallado);
+            //     }
+            // }
         }
         consecutivoEditado = true;
     }
