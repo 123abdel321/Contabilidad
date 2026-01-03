@@ -14,6 +14,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Events\PrivateMessageEvent;
 //MODELS	
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfResumenComprobante;
 
 class ProcessInformeResumenComprobante implements ShouldQueue
@@ -67,6 +68,9 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 			$this->agrupadoResumenComprobante();
 			$this->detallarResumenComprobante();
 			$this->totalesResumenComprobante();
+			if($this->request['agrupado'] == 'id_cuenta'){
+				$this->cuentasResumenComprobante();
+			}
 
 			uksort($this->resumenComprobanteCollection, function($a, $b) {
 
@@ -161,7 +165,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 						$key = str_pad($documento->cuenta, 10, '0', STR_PAD_RIGHT);
 					}
 
-					$groupKey = "{$documento->codigo_comprobante}A-{$key}";
+					$groupKey = "{$documento->codigo_comprobante}B-{$key}";
 					
 					if (isset($this->resumenComprobanteCollection[$groupKey])) {
 						$groupKey.='9';
@@ -327,6 +331,63 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 			'registros' => $totalesResumen->registros,
 			'nivel' => 4,
 		];
+	}
+
+	private function cuentasResumenComprobante()
+	{
+		$query = $this->queryResumenComprobantes();
+
+		$query->groupby('id_comprobante', 'id_cuenta')
+			->orderByRaw('PC.cuenta, CO.codigo, DG.consecutivo ASC')
+			->chunk(233, function ($documentos) {
+				foreach ($documentos as $documento) {
+
+					$cuentaPadre = substr($documento->cuenta, 0, 2);
+
+					$key = str_pad(substr($documento->cuenta, 0, 2), 10, '0', STR_PAD_RIGHT);
+
+					$groupKey = "{$documento->codigo_comprobante}A-{$key}";
+					// dd($groupKey);
+					// dd(isset($this->resumenComprobanteCollection[$groupKey]));
+					if (isset($this->resumenComprobanteCollection[$groupKey])) {
+						$this->resumenComprobanteCollection[$groupKey]['debito'] += $documento->debito;
+						$this->resumenComprobanteCollection[$groupKey]['credito'] += $documento->credito;
+						$this->resumenComprobanteCollection[$groupKey]['diferencia'] += $documento->diferencia < 0 ? $documento->diferencia * -1 : $documento->diferencia;
+						$this->resumenComprobanteCollection[$groupKey]['registros'] += $documento->registros;
+					} else {
+						$cuenta = PlanCuentas::where('cuenta', 'LIKE', $cuentaPadre.'%')->first();
+						$this->resumenComprobanteCollection[$groupKey] = [
+							'id_resumen_comprobante' => $this->id_resumen_comprobante,
+							'id_nit' => '',
+							'id_cuenta' => '',
+							'id_usuario' => '',
+							'id_comprobante' => '',
+							'id_centro_costos' => '',
+							'cuenta' => $cuenta->cuenta,
+							'nombre_cuenta' => $cuenta->nombre,
+							'numero_documento' => $this->request['detallar'] == '1' ? '' : $documento->codigo_comprobante.' - '.$documento->nombre_comprobante,
+							'nombre_nit' => '',
+							'razon_social' => '',
+							'apartamento_nit' => '',
+							'codigo_cecos' => '',
+							'nombre_cecos' => '',
+							'codigo_comprobante' => $documento->codigo_comprobante,
+							'nombre_comprobante' => $documento->nombre_comprobante,
+							'documento_referencia' => '',
+							'consecutivo' => $this->request['detallar'] == '1' ? '' : $documento->codigo_comprobante.' - '.$documento->nombre_comprobante,
+							'concepto' => '',
+							'fecha_manual' => '',
+							'debito' => $documento->debito,
+							'credito' => $documento->credito,
+							'diferencia' => $documento->diferencia < 0 ? $documento->diferencia * -1 : $documento->diferencia,
+							'registros' => $documento->registros,
+							'nivel' => 17,
+						];
+					}
+
+				}
+				unset($documentos);
+			});
 	}
 
 	private function queryResumenComprobantes()

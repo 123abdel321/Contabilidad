@@ -91,6 +91,12 @@ function resumencomprobanteInit() {
         ],
         'rowCallback': function(row, data, index){
             const agrupado = $('#agrupar_comprobantes').val();
+            
+            if(data.nivel == 17){
+                $('td', row).css('background-color', 'rgb(64 209 155 / 40%)');
+                $('td', row).css('font-weight', 'bold');
+                return;
+            }
             if (data.nivel == 0 && agrupado == 'consecutivo' && parseFloat(data.diferencia) > 0) {
                 $('td', row).css('background-color', 'red');
                 $('td', row).css('font-weight', 'bold');
