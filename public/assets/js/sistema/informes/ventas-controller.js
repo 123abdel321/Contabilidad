@@ -3,11 +3,14 @@ var ventas_table = null;
 
 function ventasInit() {
 
-    fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+    cargarFechasVentas();
+    cargarTablasVentas();
+    cargarCombosVentas();
 
-    $('#fecha_manual_desde_ventas').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-    $('#fecha_manual_hasta_ventas').val(fechaDesde);
+    $('.water').hide();
+}
 
+function cargarTablasVentas() {
     var newLenguaje = lenguajeDatatable;
     newLenguaje.sInfo = "Ventas del _START_ al _END_ de un total de _TOTAL_ ";
     
@@ -30,7 +33,7 @@ function ventasInit() {
         },
         'rowCallback': function(row, data, index){
             if (data.detalle == '') {
-                $('td', row).css('background-color', 'rgb(33 35 41)');
+                $('td', row).css('background-color', 'rgba(33, 35, 41, 0.8)');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
@@ -42,8 +45,8 @@ function ventasInit() {
             url: base_url + 'ventas',
             data: function ( d ) {
                 d.id_cliente = $('#id_cliente_ventas').val();
-                d.fecha_desde = $('#fecha_manual_desde_ventas').val();
-                d.fecha_hasta = $('#fecha_manual_hasta_ventas').val();
+                d.fecha_desde = $('#fecha_manual_ventas').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
+                d.fecha_hasta = $('#fecha_manual_ventas').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
                 d.factura = $('#factura_ventas').val();
                 d.id_resolucion = $('#id_resolucion_ventas').val();
                 d.id_bodega = $('#id_bodega_ventas').val();
@@ -85,24 +88,27 @@ function ventasInit() {
                 "data": function (row, type, set){
                     var html = '';
                     if (row.id) {
-                        html+= '<span id="imprimirventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info imprimir-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">PDF &nbsp;<i class="fas fa-print"></i></span>';
+                        html+= '<span id="imprimirventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-info imprimir-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px;">PDF &nbsp;<i class="fas fa-print"></i></span>';
                         if (eliminarVentas && !row.fe_codigo_identificador) {
-                            html+= '&nbsp;<span id="eliminarventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger eliminar-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">ELIMINAR &nbsp;<i class="fa-solid fa-trash-can"></i></span>';
-                            html+= '&nbsp;<span id="eliminarventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="margin-bottom: 0rem !important; color: white; background-color: white !important; display: none;" disabled>ELIMINANDO &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                            html+= '<span id="eliminarventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger eliminar-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px;">ELIMINAR &nbsp;<i class="fa-solid fa-trash-can"></i></span>';
+                            html+= '<span id="eliminarventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px; display: none;" disabled>ELIMINANDO &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
                         }
                     }
                     
                     if (row.resolucion && !row.fe_codigo_identificador){
-                        html+= '&nbsp;<span id="enviarfeventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary enviar-fe-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">Enviar FE &nbsp;<i class="fas fa-share"></i></span>';
-                        html+= '&nbsp;<span id="enviarfeventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="margin-bottom: 0rem !important; color: white; background-color: white !important; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                        html+= '<span id="enviarfeventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary enviar-fe-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px;">Enviar FE &nbsp;<i class="fas fa-share"></i></span>';
+                        html+= '<span id="enviarfeventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
                     } else if (row.factura && row.factura.resolucion && !row.fe_codigo_identificador) {
-                        html+= '&nbsp;<span id="enviarnceventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary enviar-nce-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">Enviar NCE &nbsp;<i class="fas fa-share"></i></span>';
-                        html+= '&nbsp;<span id="enviarnceventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="margin-bottom: 0rem !important; color: white; background-color: white !important; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                        html+= '<span id="enviarnceventa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary enviar-nce-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">Enviar NCE &nbsp;<i class="fas fa-share"></i></span>';
+                        html+= '<span id="enviarnceventaloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
                     }
 
                     if (row.resolucion && row.fe_codigo_identificador) {
-                        html+= '&nbsp;<span id="reenviaremail_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success reenviar-email-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">Reenviar &nbsp;<i class="fas fa-envelope"></i></span>';
-                        html+= '&nbsp;<span id="reenviaremailloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success" style="margin-bottom: 0rem !important; color: white; background-color: white !important; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>';
+                        html+= '<span id="reenviaremail_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success reenviar-email-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px;">REENVIAR &nbsp;<i class="fas fa-envelope"></i></span>&nbsp;';
+                        html+= '<span id="reenviaremailloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>&nbsp;';
+                    } else if (row.id && enviarEmailVentas){
+                        html+= '<span id="enviaremail_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success enviar-email-venta" style="margin-bottom: 0rem !important; color: white; background-color: white !important;">ENVIAR &nbsp;<i class="fas fa-envelope"></i></span>&nbsp;';
+                        html+= '<span id="enviaremailloading_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success" style="margin-bottom: 0rem !important; color: white; background-color: white !important; margin-right: 3px; display: none;" disabled>Enviando &nbsp;<i class="fa fa-spinner fa-spin"></i></span>&nbsp;';
                     }
                     return html;
                 }
@@ -111,6 +117,75 @@ function ventasInit() {
         ]
     });
 
+    if (ventas_table) {
+        ventas_table.on('click', '.enviar-email-venta', function() {
+            var id = this.id.split('_')[1];
+            var data = getDataById(id, ventas_table);
+
+            Swal.fire({
+                title: "Enviar factura al email : ",
+                input: "text",
+                inputValue: data.email_cliente ? data.email_cliente : '',
+                inputAttributes: {
+                    autocapitalize: "off",
+                },
+                showCancelButton: true,
+                confirmButtonText: "Enviar",
+                showLoaderOnConfirm: true,
+                preConfirm: async (email) => {
+                    $("#enviaremail_"+id).hide();
+                    $("#enviaremailloading_"+id).show();
+                    $.ajax({
+                        url: base_url + 'ventas-email',
+                        method: 'POST',
+                        data: JSON.stringify({
+                            id_venta: id,
+                            email: email
+                        }),
+                        headers: headers,
+                        dataType: 'json',
+                    }).done((res) => {
+                        $("#enviaremail_"+id).show();
+                        $("#enviaremailloading_"+id).hide();
+
+                        agregarToast('exito', 'Envio de email exito', 'el email se ha enviado exitosamente!');
+
+                    }).fail((err) => {
+                        $("#enviaremail_"+id).show();
+                        $("#enviaremailloading_"+id).hide();
+                        
+                        const mensajes = err.responseJSON.message;
+                        let errorsMsg = '';
+                        let countError = 0;
+
+                        if (typeof mensajes === 'string') {
+                            agregarToast('error', 'Envio de email errado', mensajes);
+                            return;
+                        }
+
+                        mensajes.forEach(mensaje => {
+                            countError++;
+                            errorsMsg+='<b>'+countError+'-</b> '+mensaje+'<br/>';
+                        });
+
+                        agregarToast('error', 'Envio de email errado', errorsMsg);
+                    });
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log('result: ',result);
+                }
+            });
+        });
+    }
+    
+    ventas_table.ajax.reload(function (res) {
+        showTotalsVentas(res);
+    });
+}
+
+function cargarCombosVentas() {
     $('#id_resolucion_ventas').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -297,12 +372,36 @@ function ventasInit() {
             }
         }
     });
-
-    $('.water').hide();
-    ventas_table.ajax.reload(function (res) {
-        showTotalsVentas(res);
-    });
 }
+
+function cargarFechasVentas() {
+    const start = moment().startOf("month");
+    const end = moment().endOf("month");
+    
+    $("#fecha_manual_ventas").daterangepicker({
+        startDate: start,
+        endDate: end,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " - ",
+            applyLabel: "Aplicar",
+            cancelLabel: "Cancelar",
+            fromLabel: "Desde",
+            toLabel: "Hasta",
+            customRangeLabel: "Personalizado",
+            daysOfWeek: moment.weekdaysMin(),
+            monthNames: moment.months(),
+            firstDay: 1
+        },
+        ranges: rangoFechas
+    }, formatoFecha);
+
+    formatoFecha(start, end, "fecha_manual_ventas");
+}
+
 //IMPRIMIR VENTAS PDF
 $(document).on('click', '.imprimir-venta', function () {
     var id = this.id.split('_')[1];
@@ -565,8 +664,8 @@ $(document).on('click', '#generarInformeZ', function () {
     }
 
     var url = base_web + 'ventas-print-informez';
-    $('#fecha_manual_desde_ventas').val() ? url+= '?fecha_desde='+$('#fecha_manual_desde_ventas').val() : null;
-    $('#fecha_manual_hasta_ventas').val() ? url+= '&fecha_hasta='+$('#fecha_manual_hasta_ventas').val() : null;
+    $('#fecha_manual_desde_ventas').val() ? url+= '?fecha_desde='+$('#fecha_manual_ventas').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm') : null;
+    $('#fecha_manual_hasta_ventas').val() ? url+= '&fecha_hasta='+$('#fecha_manual_ventas').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm') : null;
     $('#factura_ventas').val() ? url+= '&factura='+$('#factura_ventas').val() : null;
     $('#factura_ventas').val() ? url+= '&id_resolucion='+$('#factura_ventas').val() : null;
     $('#id_bodega_ventas').val() ? url+= '&id_bodega='+$('#id_bodega_ventas').val() : null;

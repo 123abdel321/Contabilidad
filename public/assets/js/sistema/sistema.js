@@ -1,16 +1,20 @@
 const host = window.location.host;
 
-let base_url, base_web;
+let base_url, base_web, base_url_eco;
 
 if (host.includes("app.portafolioerp.com")) {
     base_url = "https://app.portafolioerp.com/api/";
     base_web = "https://app.portafolioerp.com/";
+    base_url_eco = "https://eco.portafolioerp.com/api/";
 } else if (host.includes("test.portafolioerp.com")) {
     base_url = "https://test.portafolioerp.com/api/";
     base_web = "https://test.portafolioerp.com/";
+    base_url_eco = "https://eco.portafolioerp.com/api/";
 } else if (host.includes("localhost:8000")) {
     base_url = 'http://localhost:8000/api/';
     base_web = 'http://localhost:8000/';
+    // base_url_eco = "http://127.0.0.1:8989/api/";
+    base_url_eco = "https://eco.portafolioerp.com/api/";
 }
 
 const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
@@ -147,6 +151,7 @@ var moduloCreado = {
     'primas': false,
     'pagos:': false,
     'nominaelectronica': false,
+    'notificaciones': false,
 };
 
 var moduloRoute = {
@@ -216,6 +221,7 @@ var moduloRoute = {
     'primas': 'capturas',
     'pagos': 'capturas',
     'nominaelectronica': 'capturas',
+    'notificaciones': 'configuracion',
 }
 
 function iniciarCanalesDeNotificacion () {

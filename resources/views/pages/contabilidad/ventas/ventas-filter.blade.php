@@ -20,6 +20,11 @@
                         </div>
 
                         <div class="form-group col-12 col-sm-4 col-md-3">
+                            <label for="fecha_manual_ventas" class="form-control-label">Fecha</label>
+                            <input name="fecha_manual_ventas" id="fecha_manual_ventas" class="form-control form-control-sm" required>
+                        </div>
+
+                        <!-- <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="example-text-input" class="form-control-label">Fecha desde</label>
                             <input name="fecha_manual_desde_ventas" id="fecha_manual_desde_ventas" class="form-control form-control-sm" type="date">
                         </div>
@@ -27,7 +32,7 @@
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="example-text-input" class="form-control-label">Fecha hasta</label>
                             <input name="fecha_manual_hasta_ventas" id="fecha_manual_hasta_ventas" class="form-control form-control-sm" type="date">
-                        </div>
+                        </div> -->
 
                         <div class="form-group col-12 col-sm-4 col-md-3">
                             <label for="example-text-input" class="form-control-label">Factura</label>
