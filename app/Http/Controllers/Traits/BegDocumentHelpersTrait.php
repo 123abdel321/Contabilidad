@@ -28,6 +28,11 @@ trait BegDocumentHelpersTrait
 		$empresa = Empresa::where('token_db', $has_empresa)->first();
 		$ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
 		$ecoToken = $ecoToken?->valor ?? null;
+
+		if (!$ecoToken) {
+			return true;
+		}
+
 		$zip = null;
 		$file = null;
 

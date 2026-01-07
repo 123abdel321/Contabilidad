@@ -896,6 +896,14 @@ class VentaController extends Controller
             $ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
             $ecoToken = $ecoToken?->valor ?? null;
 
+            if (!$ecoToken) {
+                return response()->json([
+                    "success"=>false,
+                    'data' => [],
+                    "message"=> ['token Eco' => ['No se ha configurado el token de ECO en las variables de entorno.']]
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
             $venta = FacVentas::with('cliente')
                 ->where('id', $request->id_venta)
                 ->first();
