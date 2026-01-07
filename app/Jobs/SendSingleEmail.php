@@ -38,8 +38,8 @@ class SendSingleEmail implements ShouldQueue
     public function handle()
     {
         try {
-            copyDBConnection('max', 'max');
-            setDBInConnection('max', $this->empresa->token_db_maximo);
+            copyDBConnection('sam', 'sam');
+            setDBInConnection('sam', $this->empresa->token_db);
 
             $htmlContent = View::make($this->view, $this->emailData)->render();
             
@@ -105,7 +105,7 @@ class SendSingleEmail implements ShouldQueue
             $metadata = array_merge($this->emailData, [
                 'contexto' => $this->view,
                 'envio_id' => '',
-                'empresa_token' => $this->empresa->token_db_maximo,
+                'empresa_token' => $this->empresa->token_db,
             ]);
 
             $sendEcoEmail = new SendEcoEmail(
