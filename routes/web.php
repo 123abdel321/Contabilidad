@@ -10,6 +10,7 @@ use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\Sistema\EcoController;
 //INFORMES
 use App\Http\Controllers\Informes\CarteraController;
 use App\Http\Controllers\Informes\BalanceController;
@@ -64,10 +65,11 @@ use App\Http\Controllers\Capturas\DocumentoEliminarController;
 use App\Http\Controllers\Capturas\MovimientoInventarioController;
 //CAPTURAS -> NOMINA
 use App\Http\Controllers\Capturas\Nomina\PrimasController;
-use App\Http\Controllers\Capturas\Nomina\PagosNominaController;
 use App\Http\Controllers\Capturas\Nomina\VacacionesController;
+use App\Http\Controllers\Capturas\Nomina\PagosNominaController;
 use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
 use App\Http\Controllers\Capturas\Nomina\CesantiasInteresController;
+use App\Http\Controllers\Capturas\Nomina\NominaElectronicaController;
 use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
 use App\Http\Controllers\Capturas\Nomina\LiquidacionDefinitivaController;
 //CONFIGURACION
@@ -201,6 +203,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/liquidaciondefinitiva', [LiquidacionDefinitivaController::class, 'index']);
 		//PAGOS 
 		Route::get('/pagos', [PagosNominaController::class, 'index']);
+		//NOMINA ELECTRONICA
+		Route::get('/nominaelectronica', [NominaElectronicaController::class, 'index']);
 		
 		//VACACIONES
 		Route::get('/vacaciones', [VacacionesController::class, 'index']);
@@ -334,6 +338,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/importdocumentos', [DocumentosImportadorController::class, 'index']);
 		Route::get('/importdocumentos-exportar', [DocumentosImportadorController::class, 'exportar']);
 		Route::post('/importdocumentos-importar', [DocumentosImportadorController::class, 'importar']);
+		//NOTIFICACIONES
+		Route::get('/notificaciones', [EcoController::class, 'index']);
 	});
 
 	//ARGON

@@ -6,10 +6,12 @@ use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Jobs\ProcessConsultarFE;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;  
 use Illuminate\Support\Facades\Validator;
+//JOBS
+use App\Jobs\SendSingleEmail;
+use App\Jobs\ProcessConsultarFE;
 //HELPERS
 use App\Helpers\Extracto;
 use App\Helpers\Documento;
@@ -494,16 +496,16 @@ class VentaController extends Controller
 
             DB::connection('sam')->commit();
 
-            // if ($enviarFacturaElectronica) {
-            //     $pdf = (new VentasPdf($empresa, $venta))->buildPdf()->getPdf();
+            if ($enviarFacturaElectronica) {
+                $pdf = (new VentasPdf($empresa, $venta))->buildPdf()->saveStorage();
 
-            //     $this->sendEmailFactura(
-            //         $request->user()['has_empresa'],
-            //         $venta->cliente->email,
-            //         $venta,
-            //         $pdf
-            //     );
-            // }
+                $this->sendEmailFactura(
+                    $request->user()['has_empresa'],
+                    $venta->cliente->email,
+                    $venta,
+                    $pdf
+                );
+            }
 
             return response()->json([
 				'success'=>	true,
@@ -870,6 +872,84 @@ class VentaController extends Controller
         }
     }
 
+    public function sendEmail(Request $request)
+    {
+        $rules = [
+            'email' => 'required|email',
+			'id_venta' => "required|exists:sam.fac_ventas,id",
+		];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            
+            $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
+
+            $ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
+            $ecoToken = $ecoToken?->valor ?? null;
+
+            $venta = FacVentas::with('cliente')
+                ->where('id', $request->id_venta)
+                ->first();
+
+            $filterData = [
+                'id_nit' => $venta->cliente->id_nit,
+                'nombre_completo' => $venta->cliente->nombre_completo,
+                'numero_documento' => $venta->cliente->numero_documento,
+                'email' => $venta->cliente->email,
+            ];
+
+            $facturaPdf = (new VentasPdf($empresa, $venta))->buildPdf()->saveStorage();
+            $emailData = [
+                'cliente' => $venta->cliente,
+                'factura' => $venta,
+                'empresa' => $empresa
+            ];
+
+            if ($facturaPdf) {
+                $path = stripslashes($facturaPdf);
+                $baseUrl = "https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/";
+                
+                if (!str_contains($path, $baseUrl)) {
+                    $facturaPdf = $baseUrl . $path;
+                }
+            }
+            
+            SendSingleEmail::dispatch(
+                $empresa,
+                $request->get('email'),
+                $emailData,
+                $filterData,
+                $facturaPdf,
+                $ecoToken,
+                'emails.capturas.factura',
+            );
+            
+             return response()->json([
+				'success'=>	true,
+				'data' => [],
+				'message'=> 'Factura enviada con exito!'
+			], 200);
+
+        } catch (Exception $e) {
+
+			DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
     public function sendNotification(Request $request)
 	{
 
@@ -903,12 +983,10 @@ class VentaController extends Controller
 
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
 
-            $pdf = (new VentasPdf($empresa, $venta))
-				->buildPdf()
-				->getPdf();
+            $pdf = (new VentasPdf($empresa, $venta))->buildPdf()->saveStorage();
 
-            $email = $request->get('email') ?: $venta->cliente->email;
-
+            $email = $request->get('email') ?? $venta->cliente->email;
+            
             $this->sendEmailFactura(
                 $request->user()['has_empresa'],
                 $email,
@@ -1033,6 +1111,7 @@ class VentaController extends Controller
                 "costo" => "",
                 "nombre_bodega" => $value->id_bodega ? $value->bodega->codigo.' - '.$value->bodega->nombre : "",
                 "nombre_completo" => $value->id_cliente ? $value->cliente?->nombre_completo : $value->id_cliente,
+                "email_cliente" => $value->cliente?->email,
                 "documento_referencia" => $value->documento_referencia,
                 "fecha_manual" => $value->fecha_manual,
                 "subtotal" => $value->subtotal,

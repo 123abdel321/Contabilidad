@@ -18,31 +18,58 @@ use App\Models\Sistema\envioEmail;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
+//JOBS
+use App\Jobs\SendSingleEmail;
 
 trait BegDocumentHelpersTrait
 {
 	public function sendEmailFactura(string $has_empresa, string $email, FacVentas $factura, $pdf = null, $xml = null)
 	{
 		$empresa = Empresa::where('token_db', $has_empresa)->first();
-		
+		$ecoToken = VariablesEntorno::where('nombre', 'eco_login')->first();
+		$ecoToken = $ecoToken?->valor ?? null;
+		$zip = null;
+		$file = null;
+
         if($this->isFe($factura)) {
 			$xml = $xml ?: $this->getXml($factura);
 			$zip = $this->generateZip($factura->documento_referencia_fe, $pdf, $xml);
-
-			Mail::to($email)
-				->send(new GeneralEmail($empresa->razon_social, 'emails.capturas.factura', [
-					'cliente' => $factura->cliente,
-					'factura' => $factura,
-					'empresa' => $empresa
-				], $zip));
-		} else {
-			Mail::to($email)
-				->send(new GeneralEmail($empresa->razon_social, 'emails.capturas.factura', [
-					'cliente' => $factura->cliente,
-					'factura' => $factura,
-					'empresa' => $empresa
-				], $pdf));
 		}
+
+		if ($pdf) {
+			$path = stripslashes($pdf);
+			$baseUrl = "https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/";
+			
+			if (!str_contains($path, $baseUrl)) {
+				$pdf = $baseUrl . $path;
+			}
+		}
+
+		if ($zip) $file = $zip;
+		else $file = $pdf;
+
+		$filterData = [
+			'id_nit' => $factura->cliente->id_nit,
+			'nombre_completo' => $factura->cliente->nombre_completo,
+			'numero_documento' => $factura->cliente->numero_documento,
+			'email' => $factura->cliente->email,
+		];
+
+		$emailData = [
+			'cliente' => $factura->cliente,
+			'factura' => $factura,
+			'empresa' => $empresa
+		];
+
+		SendSingleEmail::dispatch(
+			$empresa,
+			$email,
+			$emailData,
+			$filterData,
+			$file,
+			$ecoToken,
+			'emails.capturas.factura',
+		);
 
 		return true;
 	}

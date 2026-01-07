@@ -58,6 +58,7 @@ use App\Http\Controllers\Capturas\Nomina\VacacionesController;
 use App\Http\Controllers\Capturas\Nomina\PagosNominaController;
 use App\Http\Controllers\Capturas\Nomina\CausarNominaController;
 use App\Http\Controllers\Capturas\Nomina\CesantiasInteresController;
+use App\Http\Controllers\Capturas\Nomina\NominaElectronicaController;
 use App\Http\Controllers\Capturas\Nomina\NovedadesGeneralesController;
 use App\Http\Controllers\Capturas\Nomina\CausarProvicionadaController;
 use App\Http\Controllers\Capturas\Nomina\LiquidacionDefinitivaController;
@@ -66,6 +67,7 @@ use App\Http\Controllers\Importador\NitsImportadorController;
 use App\Http\Controllers\Importador\ProductoImportadorController;
 use App\Http\Controllers\Importador\DocumentosImportadorController;
 //SISTEMA
+use App\Http\Controllers\Sistema\EcoController;
 use App\Http\Controllers\Sistema\UbicacionController;
 //CONFIGURACION
 use App\Http\Controllers\Configuracion\EmpresaController;
@@ -456,6 +458,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::delete('ventas', 'delete');
             Route::post('ventas-fe', 'facturacionElectronica');
             Route::post('ventas-notificar', 'sendNotification');
+            Route::post('ventas-email', 'sendEmail');
         });
         //PEDIDO VENTA
         Route::controller(PedidoController::class)->group(function () {
@@ -584,6 +587,15 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('vacaciones-calcular', 'calcular');
             Route::post('vacaciones', 'create');
             Route::delete('vacaciones', 'delete');
+        });
+        //NOMINA ELECTRONICA
+        Route::controller(NominaElectronicaController::class)->group(function () {
+            Route::get('nomina-electronica', 'generate');
+            Route::post('nomina-electronica', 'enviar');
+        });
+        //NOTIFICACIONES
+        Route::controller(EcoController::class)->group(function () {
+            Route::post('eco-register', 'register');                     
         });
         
     });

@@ -4,501 +4,443 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="x-apple-disable-message-reformatting" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title></title>
+    <title>Factura {{ $factura->documento_referencia_fe }}</title>
     <style type="text/css" rel="stylesheet" media="all">
-		/* Base ------------------------------ */
+      /* Base ------------------------------ */
+      @import url("https://fonts.googleapis.com/css?family=Nunito+Sans:400,600,700&display=swap");
+      
+      body {
+        width: 100% !important;
+        height: 100%;
+        margin: 0;
+        -webkit-text-size-adjust: none;
+      }
 
-		@import url("https://fonts.googleapis.com/css?family=Nunito+Sans:400,700&display=swap");
-		body {
-		width: 100% !important;
-		height: 100%;
-		margin: 0;
-		-webkit-text-size-adjust: none;
-		}
+      a {
+        color: #3869D4;
+        text-decoration: none;
+      }
 
-		a {
-		color: #3869D4;
-		}
+      a img {
+        border: none;
+      }
 
-		a img {
-		border: none;
-		}
+      td {
+        word-break: break-word;
+      }
 
-		td {
-		word-break: break-word;
-		}
+      .preheader {
+        display: none !important;
+        visibility: hidden;
+        mso-hide: all;
+        font-size: 1px;
+        line-height: 1px;
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+      }
+      
+      /* Type ------------------------------ */
+      body,
+      td,
+      th {
+        font-family: "Nunito Sans", Helvetica, Arial, sans-serif;
+      }
 
-		.preheader {
-		display: none !important;
-		visibility: hidden;
-		mso-hide: all;
-		font-size: 1px;
-		line-height: 1px;
-		max-height: 0;
-		max-width: 0;
-		opacity: 0;
-		overflow: hidden;
-		}
-		/* Type ------------------------------ */
+      h1 {
+        margin-top: 0;
+        color: #2D3748;
+        font-size: 20px;
+        font-weight: 700;
+        text-align: left;
+        margin-bottom: 16px;
+      }
 
-		body,
-		td,
-		th {
-		font-family: "Nunito Sans", Helvetica, Arial, sans-serif;
-		}
+      h2 {
+        margin-top: 0;
+        color: #2D3748;
+        font-size: 16px;
+        font-weight: 600;
+        text-align: left;
+        margin-bottom: 12px;
+      }
 
-		h1 {
-		margin-top: 0;
-		color: #333333;
-		font-size: 22px;
-		font-weight: bold;
-		text-align: left;
-		}
+      h3 {
+        margin-top: 0;
+        color: #2D3748;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: left;
+        margin-bottom: 8px;
+      }
 
-		h2 {
-		margin-top: 0;
-		color: #333333;
-		font-size: 16px;
-		font-weight: bold;
-		text-align: left;
-		}
+      td,
+      th {
+        font-size: 14px;
+      }
 
-		h3 {
-		margin-top: 0;
-		color: #333333;
-		font-size: 14px;
-		font-weight: bold;
-		text-align: left;
-		}
+      p,
+      ul,
+      ol,
+      blockquote {
+        margin: .4em 0 1em;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #4A5568;
+      }
 
-		td,
-		th {
-		font-size: 16px;
-		}
+      p.sub {
+        font-size: 12px;
+        color: #718096;
+      }
+      
+      /* Utilities ------------------------------ */
+      .align-right {
+        text-align: right;
+      }
 
-		p,
-		ul,
-		ol,
-		blockquote {
-		margin: .4em 0 1.1875em;
-		font-size: 16px;
-		line-height: 1.625;
-		}
+      .align-left {
+        text-align: left;
+      }
 
-		p.sub {
-		font-size: 13px;
-		}
-		/* Utilities ------------------------------ */
+      .align-center {
+        text-align: center;
+      }
+      
+      /* Invoice Container ------------------------------ */
+      .invoice-container {
+        background: #FFFFFF;
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        padding: 20px;
+        margin: 20px 0;
+      }
+      
+      .invoice-header {
+        border-bottom: 2px solid #4299E1;
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+      }
+      
+      .invoice-number {
+        font-size: 16px;
+        font-weight: 700;
+        color: #2D3748;
+      }
+      
+      .invoice-date {
+        font-size: 13px;
+        color: #718096;
+      }
+      
+      /* Invoice Details ------------------------------ */
+      .detail-row {
+        padding: 8px 0;
+        border-bottom: 1px solid #EDF2F7;
+      }
+      
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+      
+      .detail-label {
+        display: inline-block;
+        width: 140px;
+        font-weight: 600;
+        color: #4A5568;
+        font-size: 13px;
+      }
+      
+      .detail-value {
+        color: #2D3748;
+      }
+      
+      .total-row {
+        background: #F7FAFC;
+        padding: 12px;
+        border-radius: 6px;
+        margin-top: 12px;
+        font-weight: 700;
+        color: #2D3748;
+      }
+      
+      /* Status Badge ------------------------------ */
+      .status-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-left: 10px;
+      }
+      
+      .status-pending {
+        background: #FEF3C7;
+        color: #92400E;
+      }
+      
+      .status-paid {
+        background: #D1FAE5;
+        color: #065F46;
+      }
+      
+      /* Divider ------------------------------ */
+      .divider {
+        height: 1px;
+        background: #E2E8F0;
+        margin: 20px 0;
+      }
+      
+      /* Email Structure ------------------------------ */
+      body {
+        background-color: #F7FAFC;
+        color: #4A5568;
+      }
 
-		.align-right {
-		text-align: right;
-		}
+      .email-wrapper {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #F7FAFC;
+      }
 
-		.align-left {
-		text-align: left;
-		}
+      .email-content {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      
+      /* Masthead ----------------------- */
+      .email-masthead {
+        padding: 20px 0;
+        text-align: center;
+        background: #FFFFFF;
+        border-bottom: 1px solid #E2E8F0;
+      }
 
-		.align-center {
-		text-align: center;
-		}
-		/* Buttons ------------------------------ */
+      .email-masthead_logo {
+        width: 94px;
+      }
 
-		.button {
-		background-color: #3869D4;
-		border-top: 10px solid #3869D4;
-		border-right: 18px solid #3869D4;
-		border-bottom: 10px solid #3869D4;
-		border-left: 18px solid #3869D4;
-		display: inline-block;
-		color: #FFF;
-		text-decoration: none;
-		border-radius: 3px;
-		box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
-		-webkit-text-size-adjust: none;
-		box-sizing: border-box;
-		text-decoration:none;
-		color:#FFF;
-		margin:2px;
-		}
+      .email-masthead_name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #4A5568;
+        text-decoration: none;
+      }
+      
+      /* Body ------------------------------ */
+      .email-body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #FFFFFF;
+      }
 
-		.button--green {
-		background-color: #009883;
-		border-top: 10px solid #009883;
-		border-right: 18px solid #009883;
-		border-bottom: 10px solid #009883;
-		border-left: 18px solid #009883;
-		}
+      .email-body_inner {
+        width: 570px;
+        margin: 0 auto;
+        padding: 0;
+        background-color: #FFFFFF;
+      }
 
-		.button--red {
-		background-color: #FF6136;
-		border-top: 10px solid #FF6136;
-		border-right: 18px solid #FF6136;
-		border-bottom: 10px solid #FF6136;
-		border-left: 18px solid #FF6136;
-		}
+      .email-footer {
+        width: 570px;
+        margin: 0 auto;
+        padding: 0;
+        text-align: center;
+        background: #F7FAFC;
+      }
 
-		.button--white {
-		color: #222;
-		background-color: #f3f3f3;
-		border-top: 10px solid #f3f3f3;
-		border-right: 18px solid #f3f3f3;
-		border-bottom: 10px solid #f3f3f3;
-		border-left: 18px solid #f3f3f3;
-		}
+      .email-footer p {
+        color: #718096;
+        font-size: 12px;
+      }
 
-		@media only screen and (max-width: 500px) {
-		.button {
-			width: 100% !important;
-			text-align: center !important;
-		}
-		}
-		/* Attribute list ------------------------------ */
+      .content-cell {
+        padding: 30px;
+      }
+      
+      /* Simple Footer ------------------------------ */
+      .simple-footer {
+        padding: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #718096;
+        background: #F7FAFC;
+      }
+      
+      /*Media Queries ------------------------------ */
+      @media only screen and (max-width: 600px) {
+        .email-body_inner,
+        .email-footer {
+          width: 100% !important;
+        }
+        
+        .content-cell {
+          padding: 20px !important;
+        }
+        
+        .detail-label {
+          width: 120px;
+        }
+      }
 
-		.attributes {
-		margin: 0 0 21px;
-		}
-
-		.attributes_content {
-		background-color: #F4F4F7;
-		padding: 16px;
-		}
-
-		.attributes_item {
-		padding: 0;
-		}
-		/* Related Items ------------------------------ */
-
-		.related {
-		width: 100%;
-		margin: 0;
-		padding: 25px 0 0 0;
-		-premailer-width: 100%;
-		-premailer-cellpadding: 0;
-		-premailer-cellspacing: 0;
-		}
-
-		.related_item {
-		padding: 10px 0;
-		color: #CBCCCF;
-		font-size: 15px;
-		line-height: 18px;
-		}
-
-		.related_item-title {
-		display: block;
-		margin: .5em 0 0;
-		}
-
-		.related_item-thumb {
-		display: block;
-		padding-bottom: 10px;
-		}
-
-		.related_heading {
-		border-top: 1px solid #CBCCCF;
-		text-align: center;
-		padding: 25px 0 10px;
-		}
-		/* Discount Code ------------------------------ */
-
-		.discount {
-		width: 100%;
-		margin: 0;
-		padding: 24px;
-		-premailer-width: 100%;
-		-premailer-cellpadding: 0;
-		-premailer-cellspacing: 0;
-		background-color: #F4F4F7;
-		border: 2px dashed #CBCCCF;
-		}
-
-		.discount_heading {
-		text-align: center;
-		}
-
-		.discount_body {
-		text-align: center;
-		font-size: 15px;
-		}
-		/* Social Icons ------------------------------ */
-
-		.social {
-		width: auto;
-		}
-
-		.social td {
-		padding: 0;
-		width: auto;
-		}
-
-		.social_icon {
-		height: 20px;
-		margin: 0 8px 10px 8px;
-		padding: 0;
-		}
-		/* Data table ------------------------------ */
-
-		.purchase {
-		width: 100%;
-		margin: 0;
-		padding: 35px 0;
-		-premailer-width: 100%;
-		-premailer-cellpadding: 0;
-		-premailer-cellspacing: 0;
-		}
-
-		.purchase_content {
-		width: 100%;
-		margin: 0;
-		padding: 25px 0 0 0;
-		-premailer-width: 100%;
-		-premailer-cellpadding: 0;
-		-premailer-cellspacing: 0;
-		}
-
-		.purchase_item {
-		padding: 10px 0;
-		color: #51545E;
-		font-size: 15px;
-		line-height: 18px;
-		}
-
-		.purchase_heading {
-		padding-bottom: 8px;
-		border-bottom: 1px solid #EAEAEC;
-		}
-
-		.purchase_heading p {
-		margin: 0;
-		color: #85878E;
-		font-size: 12px;
-		}
-
-		.purchase_footer {
-		padding-top: 15px;
-		border-top: 1px solid #EAEAEC;
-		}
-
-		.purchase_total {
-		margin: 0;
-		text-align: right;
-		font-weight: bold;
-		color: #333333;
-		}
-
-		.purchase_total--label {
-		padding: 0 15px 0 0;
-		}
-
-		body {
-		background-color: #F4F4F7;
-		color: #51545E;
-		}
-
-		p {
-		color: #51545E;
-		}
-
-		p.sub {
-		color: #6B6E76;
-		}
-
-		.email-wrapper {
-		width: 100%;
-		margin: 0;
-		padding: 0;
-		-premailer-width: 100%;
-		-premailer-cellpadding: 0;
-		-premailer-cellspacing: 0;
-		background-color: #F4F4F7;
-		}
-
-		.email-content {
-		width: 100%;
-		margin: 0;
-		padding: 0;
-		-premailer-width: 100%;
-		-premailer-cellpadding: 0;
-		-premailer-cellspacing: 0;
-		}
-		/* Masthead ----------------------- */
-
-		.email-masthead {
-		padding: 25px 0;
-		text-align: center;
-		}
-
-		.email-masthead_logo {
-		width: 94px;
-		}
-
-		.email-masthead_name {
-		font-size: 16px;
-		font-weight: bold;
-		color: #A8AAAF;
-		text-decoration: none;
-		text-shadow: 0 1px 0 white;
-		}
-		/* Body ------------------------------ */
-
-		.email-body {
-		width: 100%;
-		margin: 0;
-		padding: 0;
-		-premailer-width: 100%;
-		-premailer-cellpadding: 0;
-		-premailer-cellspacing: 0;
-		background-color: #FFFFFF;
-		}
-
-		.email-body_inner {
-		width: 570px;
-		margin: 0 auto;
-		padding: 0;
-		-premailer-width: 570px;
-		-premailer-cellpadding: 0;
-		-premailer-cellspacing: 0;
-		background-color: #FFFFFF;
-		}
-
-		.email-footer {
-		width: 570px;
-		margin: 0 auto;
-		padding: 0;
-		-premailer-width: 570px;
-		-premailer-cellpadding: 0;
-		-premailer-cellspacing: 0;
-		text-align: center;
-		}
-
-		.email-footer p {
-		color: #6B6E76;
-		}
-
-		.body-action {
-		width: 100%;
-		margin: 30px auto;
-		padding: 0;
-		-premailer-width: 100%;
-		-premailer-cellpadding: 0;
-		-premailer-cellspacing: 0;
-		text-align: center;
-		}
-
-		.body-sub {
-		margin-top: 25px;
-		padding-top: 25px;
-		border-top: 1px solid #EAEAEC;
-		}
-
-		.content-cell {
-		padding: 35px;
-		}
-		/*Media Queries ------------------------------ */
-
-		@media only screen and (max-width: 600px) {
-		.email-body_inner,
-		.email-footer {
-			width: 100% !important;
-		}
-		}
-
-		@media (prefers-color-scheme: dark) {
-		body,
-		.email-body,
-		.email-body_inner,
-		.email-content,
-		.email-wrapper,
-		.email-masthead,
-		.email-footer {
-			background-color: rgb(15, 31, 49) !important;
-			color: #FFF !important;
-		}
-		p,
-		ul,
-		ol,
-		blockquote,
-		h1,
-		h2,
-		h3 {
-			color: #FFF !important;
-		}
-		.attributes_content,
-		.discount {
-			background-color: #162e4a !important;
-		}
-		.email-masthead_name {
-			text-shadow: none !important;
-		}
-		}
+      @media (prefers-color-scheme: dark) {
+        body,
+        .email-body,
+        .email-body_inner,
+        .email-content,
+        .email-wrapper,
+        .email-masthead {
+          background-color: #1A202C !important;
+          color: #E2E8F0 !important;
+        }
+        
+        p,
+        ul,
+        ol,
+        blockquote,
+        h1,
+        h2,
+        h3 {
+          color: #E2E8F0 !important;
+        }
+        
+        .invoice-container {
+          background: #2D3748 !important;
+          border: 1px solid #4A5568 !important;
+        }
+        
+        .detail-row {
+          border-bottom: 1px solid #4A5568 !important;
+        }
+        
+        .total-row {
+          background: #4A5568 !important;
+        }
+        
+        .email-footer {
+          background: #1A202C !important;
+        }
+        
+        .simple-footer {
+          background: #1A202C !important;
+        }
+        
+        .detail-label {
+          color: #CBD5E0 !important;
+        }
+        
+        .detail-value {
+          color: #E2E8F0 !important;
+        }
+      }
     </style>
   </head>
   <body>
-    {{-- <span class="preheader">messageText</span> --}}
+    <span class="preheader">Factura {{ $factura->documento_referencia_fe }} - Valor: {{ number_format($factura->total_factura) }}</span>
+    
     <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
       <tr>
         <td align="center">
           <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-		  	<tr>
-				<td class="email-masthead">
-					<a href="https://portafolioerp.com/" class="f-fallback email-masthead_name">
-						<img style='max-height:200px;max-width: 490px;' src="{{$empresa->logo}}">
-					</a>
-				</td>
-			</tr>
+            <tr>
+              <td class="email-masthead align-center">
+                <a href="#" class="f-fallback email-masthead_name align-center">
+                    @if ($empresa->logo)
+                    <img style='max-height:60px;max-width:200px;' src="{{ $empresa->logo }}" alt="{{ $empresa->nombre }}">
+                    @else
+                    <img style='max-height:60px;max-width:200px;' src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="{{ $empresa->nombre }}">
+                  @endif
+                  <br/>
+                  <h2 class="align-center">{{ $empresa->nombre }}</h2>
+                </a>
+              </td>
+            </tr>
+            
             <!-- Email Body -->
             <tr>
               <td class="email-body" width="100%" cellpadding="0" cellspacing="0">
-			  <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
-                  <!-- Body content -->
+                <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
                   <tr>
                     <td class="content-cell">
-                      <div class="f-fallback">
-                        <h1>Hola, {{ $cliente->nombre_completo }}</h1>
-
-                        <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-							<tr>
-								<td colspan="2">
-									Documento: {{ $factura->documento_referencia_fe }}
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2">
-									Fecha documento: {{ $factura->fecha_validacion }}
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2">
-									Fecha vencimiento: {{ $factura->fecha_vencimiento }}
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2">
-									Valor factura: {{ number_format($factura->total_factura) }}
-								</td>
-							</tr>
-							
-						</table>
-
-						<br/>
-
-                        @include('emails.texts.contact')
-
+                      <!-- Saludo -->
+                      <h1>Hola, {{ $cliente->nombre_completo }}</h1>
+                      <p>Te enviamos los detalles de tu factura para tu revisión.</p>
+                      
+                      <!-- Contenedor de Factura -->
+                      <div class="invoice-container">
+                        
+                        <div class="detail-row">
+                          <span class="detail-label">Documento:</span>
+                          <span class="detail-value">{{ $factura->documento_referencia_fe }}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                          <span class="detail-label">Fecha emisión:</span>
+                          <span class="detail-value">{{ $factura->fecha_validacion }}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                          <span class="detail-label">Fecha vencimiento:</span>
+                          <span class="detail-value">{{ $factura->fecha_vencimiento }}</span>
+                        </div>
+                        
+                        <div class="detail-row">
+                          <span class="detail-label">Días restantes:</span>
+                          <span class="detail-value">
+                            {{ \Carbon\Carbon::parse($factura->fecha_vencimiento)->diffInDays(now()) }} días
+                          </span>
+                        </div>
+                        
+                        <div class="total-row">
+                          <span class="detail-label">Valor factura:</span>
+                          <span class="detail-value">${{ number_format($factura->total_factura, 2, ',', '.') }}</span>
+                        </div>
+                      </div>
+                      
+                      <div class="divider"></div>
+                      
+                      <!-- Información de contacto (basada en tus includes) -->
+                      @include('emails.texts.contact')
+                      
+                      <div style="margin-top: 20px;">
                         @include('emails.texts.emittedBy')
-
+                      </div>
+                      
+                      <div style="margin-top: 15px; font-size: 12px; color: #718096;">
                         @include('emails.texts.att')
-
-						@include('emails.texts.unsubscribe')
-
+                      </div>
+                      
+                      <div style="margin-top: 20px; font-size: 11px; color: #A0AEC0;">
+                        @include('emails.texts.unsubscribe')
                       </div>
                     </td>
                   </tr>
                 </table>
               </td>
             </tr>
+            
+            <!-- Footer Simple -->
             <tr>
               <td>
-                @include('emails.footer')
+                <table class="email-footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
+                  <tr>
+                    <td class="content-cell">
+                      <div class="simple-footer">
+                        <p>{{ $empresa->nombre ?? 'Portafolio ERP' }}</p>
+                        <p class="sub">
+                          Este correo fue enviado a {{ $cliente->email }}<br>
+                          © {{ date('Y') }} - Todos los derechos reservados
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
           </table>

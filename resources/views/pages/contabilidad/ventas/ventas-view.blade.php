@@ -117,4 +117,5 @@
 
 <script>
     var eliminarVentas = @json(auth()->user()->can('ventas delete'));
+    var enviarEmailVentas = @json(auth()->user()->can('notificaciones email'));
 </script>

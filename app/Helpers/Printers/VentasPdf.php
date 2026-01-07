@@ -108,6 +108,7 @@ class VentasPdf extends AbstractPrinterPdf
         }
 
         return [
+			'asunto' => 'Factura de venta '.$this->venta->documento_referencia,
 			'empresa' => $this->empresa,
 			'cliente' => $this->venta->cliente,
 			'factura' => $this->venta,

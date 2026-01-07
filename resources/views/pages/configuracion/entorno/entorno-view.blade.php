@@ -15,6 +15,9 @@
                     <li class="nav-item" role="presentation">
                         <button class="tab-porta-15px nav-link" id="nomina-tab" data-bs-toggle="tab" data-bs-target="#nomina" type="button" role="tab" aria-controls="nomina" aria-selected="false">Nomina</button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="tab-porta-15px nav-link" id="notificaciones-tab" data-bs-toggle="tab" data-bs-target="#notificaciones" type="button" role="tab" aria-controls="notificaciones" aria-selected="false">Notificaciones</button>
+                    </li>
                 </ul>
                 <div class="tab-content" id="myTabContent" style="background-color: white;">
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -124,10 +127,7 @@
                                 <div id="editor-container" style="height: 150px;"></div>
                                 <textarea name="observacion_venta" id="observacion_venta" hidden></textarea>
                             </div>
-
                         </div>
-
-
 
                     </div>
                     <div class="tab-pane fade" id="nomina" role="tabpanel" aria-labelledby="nomina-tab">
@@ -223,6 +223,58 @@
 
                         </div> 
                     </div>
+
+                    <div class="tab-pane fade" id="notificaciones" role="tabpanel" aria-labelledby="notificaciones-tab">
+                        <br/>
+                        <div id="div-canales-eco" class="row" style="padding: 5px;">
+                            <h6 class="section-title bg-light p-2 mb-3">1. Canales de Comunicación</h6> <br/>
+                            
+                            <div class="row" id="contenedor-canales">
+                                
+                                <div class="col-12 text-center py-5">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                    <p class="text-sm mt-2 text-secondary">Obteniendo credenciales...</p>
+                                </div>
+
+                            </div>
+                            
+                        </div>
+
+                        <div id="div-token-eco" class="container-fluid py-2" style="display: none;">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="card shadow-sm text-center p-3 border-radius-xl">
+                                        
+                                        <div class="icon icon-shape icon-md bg-gradient-primary shadow mx-auto mb-2 border-radius-md">
+                                            <i class="fas fa-key text-white opacity-10" style="font-size: 1rem;"></i>
+                                        </div>
+
+                                        <h6 class="font-weight-bolder mb-1">Autenticación Requerida</h6>
+                                        
+                                        <p class="text-secondary text-xs mb-3 px-2">
+                                            Genera un token de acceso para configurar WhatsApp/Email.
+                                        </p>
+
+                                        <div id="btn-container-token">
+                                            <button type="button" class="btn btn-sm bg-gradient-dark mb-0 w-100" onclick="generarTokenEco()">
+                                                <i class="fas fa-sync-alt me-1"></i> Generar Token
+                                            </button>
+                                        </div>
+
+                                        <div id="spinner-token" style="display: none;">
+                                            <div class="spinner-border spinner-border-sm text-primary mt-2" role="status"></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                    </div>  
+
+                    
                 </div>
                 <div style="background-color: white;">
                     <button type="button" class="btn btn-primary btn-sm" id="updateEntorno">Actualizar datos</button>
