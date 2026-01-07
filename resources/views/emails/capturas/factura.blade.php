@@ -351,14 +351,41 @@
             <tr>
               <td class="email-masthead align-center">
                 <a href="#" class="f-fallback email-masthead_name align-center">
-                    @if ($empresa->logo)
-                    <img style='max-height:60px;max-width:200px;' src="{{ $empresa->logo }}" alt="{{ $empresa->nombre }}">
-                    @else
-                    <img style='max-height:60px;max-width:200px;' src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="{{ $empresa->nombre }}">
+                  @if ($empresa->logo)
+                      @php
+                          // Función para normalizar la URL del logo
+                          function normalizeLogoUrl($logo) {
+                              // Si ya es una URL completa, retornarla tal cual
+                              if (filter_var($logo, FILTER_VALIDATE_URL)) {
+                                  return $logo;
+                              }
+                              
+                              // Si empieza con http pero no tiene https://, agregarlo
+                              if (strpos($logo, 'http://') === 0 || strpos($logo, 'https://') === 0) {
+                                  return $logo;
+                              }
+                              
+                              // Si es una ruta relativa (como logos_empresas/...), agregar la base URL
+                              $baseUrl = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/';
+                              
+                              // Eliminar slash inicial si existe para evitar doble slash
+                              if (strpos($logo, '/') === 0) {
+                                  $logo = substr($logo, 1);
+                              }
+                              
+                              return $baseUrl . $logo;
+                          }
+                          
+                          $logoUrl = normalizeLogoUrl($empresa->logo);
+                      @endphp
+                      
+                      <img style='max-height:60px;max-width:200px;' src="{{ $logoUrl }}" alt="{{ $empresa->nombre }}">
+                  @else
+                      <img style='max-height:60px;max-width:200px;' src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="{{ $empresa->nombre }}">
                   @endif
                   <br/>
                   <h2 class="align-center">{{ $empresa->nombre }}</h2>
-                </a>
+              </a>
               </td>
             </tr>
             
