@@ -87,7 +87,7 @@ class SendSingleEmail implements ShouldQueue
                         
                         // Determinar MIME type
                         $mimeType = mime_content_type($this->filePath) ?: 
-                                    $this->getMimeTypeFromFileName($fileName);
+                            $this->getMimeTypeFromFileName($fileName);
                         
                         $attachments[] = [
                             "contenido" => $fileContentBase64,
@@ -128,6 +128,28 @@ class SendSingleEmail implements ShouldQueue
             ]);
             throw $exception; 
         }
+    }
+
+    private function getMimeTypeFromFileName(string $fileName): string
+    {
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        
+        $mimeTypes = [
+            'pdf' => 'application/pdf',
+            'zip' => 'application/zip',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'txt' => 'text/plain',
+            'csv' => 'text/csv',
+        ];
+        
+        return $mimeTypes[$extension] ?? 'application/octet-stream';
     }
 
     public function failed(\Throwable $exception)
