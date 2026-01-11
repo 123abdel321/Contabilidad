@@ -37,6 +37,7 @@ class ProductosImport implements
 
     protected $url_notification = null;
     protected $empresa = null;
+    protected $connectionName = 'sam';
 
     public function __construct(string $url_notification, $empresa_id)
     {
@@ -45,25 +46,18 @@ class ProductosImport implements
         
         copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $this->empresa->token_db);
+        $this->connectionName = 'sam';
     }
     
-    private $rowNumber = 2;
+    private $processedRows = 0;
     private $errors = [];
-    private $messages = [
-        'required' => 'El campo :attribute es requerido.',
-        'exists' => 'El :attribute es inválido.',
-        'numeric' => 'El campo :attribute debe ser un valor numérico.',
-        'string' => 'El campo :attribute debe ser texto',
-        'array' => 'El campo :attribute debe ser un arreglo.',
-        'date' => 'El campo :attribute debe ser una fecha válida.',
-    ];
 
     public function collection(Collection $rows)
     {
         $batchData = [];
         
-        foreach ($rows as $row) {
-
+        foreach ($rows as $index => $row) {
+            $rowNumber = $this->headingRow() + $index + 1; // Fila real en Excel
             $estado = 0;
             $observacionGeneral = '';
 
@@ -73,26 +67,27 @@ class ProductosImport implements
                     continue;
                 }
                 
-                $this->rowNumber++;
-                $validator = Validator::make($row->toArray(), $this->rules(), $this->messages);
-
-                if ($validator->fails()){
+                // Validar datos
+                $validationResult = $this->validateRow($row, $rowNumber);
+                
+                if ($validationResult['fails']) {
                     $estado = 1;
-                    $errors = $validator->errors()->all();
-                    $observacionGeneral = implode(", ", $errors);
+                    $observacionGeneral = $validationResult['errors'];
                 }
 
                 $bodega = null;
                 $familia = null;
 
-                if ($row['cod_bodega']) {
-                    $bodega = FacBodegas::where('codigo', $row['cod_bodega'])
+                if ($row['cod_bodega'] && empty($validationResult['errors'])) {
+                    $bodega = FacBodegas::on($this->connectionName)
+                        ->where('codigo', $row['cod_bodega'])
                         ->select('id')
                         ->first();
                 }
 
-                if ($row['cod_familia']) {
-                    $familia = FacFamilias::where('codigo', $row['cod_familia'])
+                if ($row['cod_familia'] && empty($validationResult['errors'])) {
+                    $familia = FacFamilias::on($this->connectionName)
+                        ->where('codigo', $row['cod_familia'])
                         ->select('id')
                         ->first();
                 }
@@ -106,7 +101,7 @@ class ProductosImport implements
                     'venta' => floatval($row['precio'] ?? 0),
                     'existencias' => intval($row['existencias'] ?? 0),
                     'observacion' => $observacionGeneral,
-                    'row' => $this->rowNumber,
+                    'row' => $rowNumber,
                     'estado' => $estado,
                     'created_at' => now(),
                     'updated_at' => now()
@@ -119,25 +114,101 @@ class ProductosImport implements
                 }
                 
             } catch (\Exception $e) {
-                Log::error("Error en fila {$this->rowNumber}: " . $e->getMessage());
+                Log::error("Error en fila {$rowNumber}: " . $e->getMessage());
+                $this->errors[] = [
+                    'row' => $rowNumber,
+                    'error' => $e->getMessage()
+                ];
             }
         }
+        
         // Insertar los registros restantes
         if (!empty($batchData)) {
             $this->insertBatch($batchData);
         }
     }
     
+    private function validateRow($row, $rowNumber): array
+    {
+        $errors = [];
+        
+        // Validación manual
+        if (empty($row['cod_producto'])) {
+            $errors[] = 'El código de producto es requerido';
+        } else {
+            // Verificar unicidad manualmente
+            $exists = FacProductos::on($this->connectionName)
+                ->where('codigo', $row['cod_producto'])
+                ->exists();
+                
+            if ($exists) {
+                $errors[] = 'El código de producto ya existe';
+            }
+        }
+        
+        if (empty($row['nombre'])) {
+            $errors[] = 'El nombre es requerido';
+        } elseif (strlen($row['nombre']) > 255) {
+            $errors[] = 'El nombre no puede exceder 255 caracteres';
+        }
+        
+        if (empty($row['cod_familia'])) {
+            $errors[] = 'El código de familia es requerido';
+        } elseif (strlen($row['cod_familia']) < 1 || strlen($row['cod_familia']) > 10) {
+            $errors[] = 'El código de familia debe tener entre 1 y 10 caracteres';
+        } else {
+            $familiaExists = FacFamilias::on($this->connectionName)
+                ->where('codigo', $row['cod_familia'])
+                ->exists();
+                
+            if (!$familiaExists) {
+                $errors[] = 'El código de familia no existe';
+            }
+        }
+        
+        if (empty($row['cod_bodega'])) {
+            $errors[] = 'El código de bodega es requerido';
+        } elseif (strlen($row['cod_bodega']) < 1 || strlen($row['cod_bodega']) > 10) {
+            $errors[] = 'El código de bodega debe tener entre 1 y 10 caracteres';
+        } else {
+            $bodegaExists = FacBodegas::on($this->connectionName)
+                ->where('codigo', $row['cod_bodega'])
+                ->exists();
+                
+            if (!$bodegaExists) {
+                $errors[] = 'El código de bodega no existe';
+            }
+        }
+        
+        if (empty($row['costo']) || !is_numeric($row['costo']) || $row['costo'] < 0) {
+            $errors[] = 'El costo debe ser un número mayor o igual a 0';
+        }
+        
+        if (empty($row['precio']) || !is_numeric($row['precio']) || $row['precio'] < 0) {
+            $errors[] = 'El precio debe ser un número mayor o igual a 0';
+        }
+        
+        if (!isset($row['existencias']) || !is_numeric($row['existencias']) || $row['existencias'] < 0) {
+            $errors[] = 'Las existencias deben ser un número entero mayor o igual a 0';
+        }
+        
+        return [
+            'fails' => !empty($errors),
+            'errors' => implode(', ', $errors)
+        ];
+    }
+    
     private function insertBatch(array $batchData)
     {
         try {
-            DB::connection('sam')->table('fac_productos_imports')->insert($batchData);
+            DB::connection($this->connectionName)
+                ->table('fac_productos_imports')
+                ->insert($batchData);
         } catch (\Exception $e) {
             Log::error('Error al insertar batch: ' . $e->getMessage());
-            // Puedes intentar insertar uno por uno para identificar el problema
             foreach ($batchData as $data) {
                 try {
-                    FacProductosImport::create($data);
+                    FacProductosImport::on($this->connectionName)->create($data);
                 } catch (\Exception $singleError) {
                     $this->errors[] = [
                         'row' => $data['row'],
@@ -148,37 +219,20 @@ class ProductosImport implements
         }
     }
 
-    public function rules(): array
-    {
-        return [
-            'cod_producto' => 'required|string|unique:sam.fac_productos,codigo',
-            'nombre' => 'required|string|max:255',
-            'cod_familia' => 'required|min:1|max:10|string|exists:sam.fac_familias,codigo',
-            'cod_bodega' => 'required|min:1|max:10|string|exists:sam.fac_bodegas,codigo',
-            'costo' => 'required|numeric|min:0',
-            'precio' => 'required|numeric|min:0',
-            'existencias' => 'required|integer|min:0',
-        ];
-    }
+    // Eliminar el método rules() ya que no lo usamos más
+    // public function rules(): array { ... }
 
-    public function customValidationAttributes()
-    {
-        return [
-            '0' => 'cod_producto',
-            '1' => 'nombre',
-            '2' => 'costo',
-            '3' => 'precio',
-            '4' => 'cod_familia',
-            '5' => 'cod_bodega',
-            '6' => 'existencias',
-        ];
-    }
+    // También puedes eliminar customValidationAttributes()
 
     public function registerEvents(): array
     {
         return [
             AfterImport::class => function(AfterImport $event) {
-                // Este código solo se ejecuta cuando TODOS los chunks han finalizado
+                // Enviar errores si existen
+                if (!empty($this->errors)) {
+                    Log::error('Errores en importación:', $this->errors);
+                }
+                
                 event(new PrivateMessageEvent("importador-productos-" . $this->url_notification, [
                     'tipo' => 'exito',
                     'mensaje' => 'Carga de plantilla de productos finalizado totalmente!',
@@ -191,12 +245,12 @@ class ProductosImport implements
     
     public function chunkSize(): int
     {
-        return 200; // Procesar 200 filas por chunk
+        return 200;
     }
     
     public function batchSize(): int
     {
-        return 200; // Insertar 200 registros por lote
+        return 200;
     }
 
     public function headingRow(): int
