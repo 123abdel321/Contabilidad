@@ -43,10 +43,6 @@ class ProductosImport implements
     {
         $this->url_notification = $url_notification;
         $this->empresa = Empresa::find($empresa_id);
-        
-        copyDBConnection('sam', 'sam');
-        setDBInConnection('sam', $this->empresa->token_db);
-        $this->connectionName = 'sam';
     }
     
     private $processedRows = 0;
@@ -55,6 +51,10 @@ class ProductosImport implements
     public function collection(Collection $rows)
     {
         $batchData = [];
+
+        copyDBConnection('sam', 'sam');
+        setDBInConnection('sam', $this->empresa->token_db);
+        
         
         foreach ($rows as $index => $row) {
             $rowNumber = $this->headingRow() + $index + 1; // Fila real en Excel
