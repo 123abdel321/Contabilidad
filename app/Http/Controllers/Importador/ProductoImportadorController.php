@@ -188,11 +188,21 @@ class ProductoImportadorController extends Controller
         ]);
     }
     
-    public function exportar (Request $request)
+    public function exportarTotales (Request $request)
     {
         return response()->json([
             'success'=>	true,
             'url' => 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/import/importador_precio_productos.xlsx',
+            'message'=> 'Url generada con exito'
+        ]);
+        
+    }
+
+    public function exportar (Request $request)
+    {
+        return response()->json([
+            'success'=>	true,
+            'url' => 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/import/Importador%20de%20Productos.xlsx',
             'message'=> 'Url generada con exito'
         ]);
         

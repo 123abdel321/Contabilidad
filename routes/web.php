@@ -326,10 +326,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 		//IMPORTADORES PRODUCTOS
 		Route::get('/productoprecios', [ProductoImportadorController::class, 'indexPrecios']);
-		Route::get('/productoprecios-exportar', [ProductoImportadorController::class, 'exportar']);
+		Route::get('/productoprecios-exportar', [ProductoImportadorController::class, 'exportarTotales']);
 		Route::post('/productoprecios-importar', [ProductoImportadorController::class, 'importarPrecios']);
 
 		Route::get('/importproductos', [ProductoImportadorController::class, 'index']);
+		Route::get('/productos-exportar', [ProductoImportadorController::class, 'exportar']);
 		Route::post('/productos-importar', [ProductoImportadorController::class, 'importar']);
 
 		//IMPORTADORES NITS
