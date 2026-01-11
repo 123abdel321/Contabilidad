@@ -60,7 +60,7 @@ class ProductoImportadorController extends Controller
             $urlNotificacion = $empresa->token_db.'_'.$request->user()['id'];
 
             $file = $request->file('file');
-            $import = new ProductosImport($urlNotificacion);
+            $import = new ProductosImport($urlNotificacion, $empresa->id);
             $import->import($file);
             
             return response()->json([
