@@ -115,7 +115,7 @@ $(document).on('click', '#reloadImportadorProductos', function () {
 
 $(document).on('click', '#descargarPlantillaProductos', function () {
     $.ajax({
-        url: 'importproductos-exportar',
+        url: 'productos-exportar',
         method: 'GET',
         headers: headers,
         dataType: 'json',
