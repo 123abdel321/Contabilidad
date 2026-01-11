@@ -19,6 +19,7 @@ use Maatwebsite\Excel\Concerns\WithBatchInserts;
 //QUEUE
 use Illuminate\Contracts\Queue\ShouldQueue;
 // MODELS
+use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\FacFamilias;
 use App\Models\Sistema\FacProductos;
