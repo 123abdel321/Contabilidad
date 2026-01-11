@@ -137,8 +137,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
         //IMPORTADORES PRECIO PRODUCTOS
         Route::controller(ProductoImportadorController::class)->group(function () {
-            Route::get('producto-precio-cache-import', 'generate');
-            Route::post('producto-precio-actualizar', 'actualizar');
+            Route::get('producto-precio-cache-import', 'generateTotales');
+            Route::post('producto-precio-actualizar', 'actualizarTotales');
+
+            Route::get('productos-cache-import', 'generate');
+            Route::post('productos-cache-actualizar', 'actualizar');
         });
         //IMPORTADORES NITS
         Route::controller(NitsImportadorController::class)->group(function () {

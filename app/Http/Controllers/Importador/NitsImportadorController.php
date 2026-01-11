@@ -48,6 +48,8 @@ class NitsImportadorController extends Controller
         }
 
         try {
+            DB::beginTransaction();
+
             $file = $request->file('file_import_nits');
             NitsImport::truncate();
 
@@ -56,6 +58,8 @@ class NitsImportadorController extends Controller
 
             $import = new ImportNits($empresa->razon_social, $actualizarValores);
             $import->import($file);
+
+            DB::commit();
 
             return response()->json([
                 'success'=>	true,

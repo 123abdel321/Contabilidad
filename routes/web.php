@@ -325,9 +325,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/reuniones-event', [ReunionesController::class, 'read'])->name('reuniones.event');
 
 		//IMPORTADORES PRODUCTOS
-		Route::get('/productoprecios', [ProductoImportadorController::class, 'index']);
+		Route::get('/productoprecios', [ProductoImportadorController::class, 'indexPrecios']);
 		Route::get('/productoprecios-exportar', [ProductoImportadorController::class, 'exportar']);
-		Route::post('/productoprecios-importar', [ProductoImportadorController::class, 'importar']);
+		Route::post('/productoprecios-importar', [ProductoImportadorController::class, 'importarPrecios']);
+
+		Route::get('/importproductos', [ProductoImportadorController::class, 'index']);
+		Route::post('/productos-importar', [ProductoImportadorController::class, 'importar']);
 
 		//IMPORTADORES NITS
 		Route::get('/importnits', [NitsImportadorController::class, 'index']);

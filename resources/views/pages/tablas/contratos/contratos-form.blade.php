@@ -154,12 +154,14 @@
                                 data-toggle="popover"
                                 data-html="true"
                             ></i>
+                            
                             <select name="termino_contrato_nomina" id="termino_contrato_nomina" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                                 <option value="">Seleccionar</option>
-                                <option value="0">Indefinido</option>
                                 <option value="1">Fijo</option>
-                                <option value="2">Obra-Labor</option>
-                                <option value="3">Transitorio</option>
+                                <option value="2">Indefinido</option>
+                                <option value="3">Obra-Labor</option>
+                                <option value="4">Aprendizaje</option>
+                                <option value="5">Ocasional</option>
                             </select>
                             
                             <div class="invalid-feedback">

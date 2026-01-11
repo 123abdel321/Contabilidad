@@ -1,0 +1,100 @@
+<?php
+
+namespace App\Jobs;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
+use App\Events\PrivateMessageEvent;
+//MODELS
+use App\Models\User;
+use App\Models\Empresas\Empresa;
+use App\Models\Sistema\FacProductos;
+use App\Models\Sistema\FacProductosImport;
+use App\Models\Sistema\FacProductosBodegas;
+
+class ProcessImportProductos implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $timeout = 3600; // 1 hora
+    public $tries = 3;
+    public $backoff = [60, 180, 300];
+    protected $id_usuario;
+    protected $id_empresa;
+
+    public function __construct($id_empresa, $id_usuario)
+    {
+        $this->id_empresa = $id_empresa;
+		$this->id_usuario = $id_usuario;
+    }
+
+    public function handle()
+    {
+        $this->empresa = Empresa::find($this->id_empresa);
+
+        copyDBConnection('sam', 'sam');
+        setDBInConnection('sam', $this->empresa->token_db);
+
+        try {
+
+            DB::connection('sam')->beginTransaction();
+
+            // Procesar en chunks para evitar memory issues
+            FacProductosImport::where('estado', 0)
+                ->chunkById(1000, function ($imports) {
+                    foreach ($imports as $import) {
+                        $this->processProduct($import);
+                    }
+                });
+
+            FacProductosImport::where('estado', 0)->delete();
+
+            DB::connection('sam')->commit();
+
+            event(new PrivateMessageEvent("importador-productos-" .$this->empresa->token_db.'_'.$this->id_usuario, [
+                'tipo' => 'exito',
+                'mensaje' => 'Importador de productos finalizado totalmente!',
+                'titulo' => 'Importador de productos',
+                'autoclose' => false
+            ]));
+
+        } catch (Exception $exception) {
+            DB::connection('sam')->rollback();
+			throw $exception;
+        }        
+    }
+    
+    private function processProduct(FacProductosImport $import)
+    {
+        DB::transaction(function () use ($import) {
+            try {
+                // Buscar o crear producto
+                $producto = FacProductos::Create([
+                    'codigo' => $import->codigo,
+                    'nombre' => $import->nombre,
+                    'id_familia' => $import->id_familia,
+                    'precio_inicial' => $import->costo,
+                    'precio_minimo' => $import->costo,
+                    'precio' => $import->venta,
+                    'porcentaje_utilidad' => (($import->venta - $import->costo) / $import->venta) * 100,
+                    'tipo_producto' => 0,
+                    'estado' => 1
+                ]);
+
+                if ($import->existencias) {
+                    FacProductosBodegas::where('id_producto', $producto->id)
+                        ->where('id_bodega', $import->id_bodega)
+                        ->update([
+                            'cantidad' => $import->existencias
+                        ]);
+                }
+                
+            } catch (\Exception $e) {
+            }
+        });
+    }
+}
