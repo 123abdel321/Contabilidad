@@ -137,6 +137,9 @@ class ProcessImportProductos implements ShouldQueue
     {
         DB::transaction(function () use ($import) {
             try {
+                $margen = ($import->venta > 0) 
+                    ? (($import->venta - $import->costo) / $import->venta) * 100 
+                    : 0;
                 // Buscar o crear producto
                 $producto = FacProductos::Create([
                     'codigo' => $import->codigo,
@@ -145,7 +148,7 @@ class ProcessImportProductos implements ShouldQueue
                     'precio_inicial' => $import->costo,
                     'precio_minimo' => $import->costo,
                     'precio' => $import->venta,
-                    'porcentaje_utilidad' => (($import->venta - $import->costo) / $import->venta) * 100,
+                    'porcentaje_utilidad' => $margen,
                     'tipo_producto' => 0,
                     'estado' => 1
                 ]);
