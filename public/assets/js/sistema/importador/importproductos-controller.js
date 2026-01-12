@@ -3,7 +3,6 @@ var import_productos_table = null;
 var channelImportProductos = pusher.subscribe('importador-productos-'+localStorage.getItem("notificacion_code"));
 
 function importproductosInit() {
-    console.log('importproductosInit');
     import_productos_table = $('#importProductos').DataTable({
         pageLength: 20,
         dom: 'Brtip',
@@ -26,23 +25,41 @@ function importproductosInit() {
         columns: [
             {"data": function (row, type, set){
                 if (row.estado == 1) {
-                    return `<i class="fas fa-minus-circle" style="color: red; font-size: 14px;"></i>&nbsp;${row.row}`;
+                    return `<span class="badge bg-danger" style="font-size: 11px; padding: 4px 8px;">
+                                <i class="fas fa-exclamation-circle"></i> Fila ${row.row}: Errores
+                            </span>`;
                 }
-                return `<i class="fas fa-check-circle" style="color: #03b403; font-size: 14px;"></i>&nbsp;${row.row}`;
+                
+                return `<span class="badge bg-success" style="font-size: 11px; padding: 4px 8px;">
+                            <i class="fas fa-check"></i> Fila ${row.row}: Listo
+                        </span>`;
             }},
             {"data":'codigo'},
             {"data":'nombre'},
             {
                 "data": 'costo',
+                "className": 'dt-body-right',
                 "render": function(data, type, row) {
-                    // parseFloat elimina los ceros innecesarios a la derecha
-                    return data ? parseFloat(data) : 0;
+                    if (data == null || data === '') return '0';
+                    let numero = parseFloat(data);
+
+                    return numero.toLocaleString('en-US', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 5 
+                    });
                 }
             },
             {
                 "data": 'venta',
+                "className": 'dt-body-right',
                 "render": function(data, type, row) {
-                    return data ? parseFloat(data) : 0;
+                    if (data == null || data === '') return '0';
+                    let numero = parseFloat(data);
+
+                    return numero.toLocaleString('en-US', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 5 
+                    });
                 }
             },
             {"data": function (row, type, set){
@@ -59,9 +76,15 @@ function importproductosInit() {
             }},
             {
                 "data": 'existencias',
+                "className": 'dt-body-right',
                 "render": function(data, type, row) {
-                    // parseFloat elimina los ceros innecesarios a la derecha
-                    return data ? parseFloat(data) : 0;
+                    if (data == null || data === '') return '0';
+                    let numero = parseFloat(data);
+
+                    return numero.toLocaleString('en-US', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 5 
+                    });
                 }
             },
             {"data":'observacion'}
@@ -70,47 +93,53 @@ function importproductosInit() {
 
     import_productos_table.ajax.reload(function(res) {
         if (res.success && res.data.length) {
-            $('#importarProductos').show();
+            $('#importarProductos').prop('disabled', false);
+        } else {
+            $('#importarProductos').prop('disabled', true);
         }
     });
 }
 
-$("#form-importador-productos").submit(function(e) {
-    e.preventDefault();
-
+$(document).on('click', '#cargarPlantillaProductos', function () {
     $('#cargarPlantillaProductos').hide();
-    $('#importarProductos').hide();
-    $('#importarProductosLoading').show();
-
-    import_productos_table.rows().remove().draw();
-
+    $('#cargarPlantillaProductosLoading').show();
+    
+    // Mostrar la barra de progreso
+    $('#uploadStatus').show();
+    
+    // Resto del código que ya tienes...
     var ajxForm = document.getElementById("form-importador-productos");
     var data = new FormData(ajxForm);
     var xhr = new XMLHttpRequest();
+    
     xhr.open("POST", "productos-importar");
     xhr.send(data);
+    
     xhr.onload = function(res) {
         var responseData = JSON.parse(res.currentTarget.response);
-        var errorsMsg = '';
-        $('#cargarPlantillaProductos').show();
-        $('#importarProductosLoading').hide();
-
-        agregarToast('info', 'Cargando plantilla', 'La plantilla de productos se esta cargando, se le notificará cuando haya terminado.', true);
-    };
-    xhr.onerror = function (res) {
-        $('#cargarPlantillaProductos').hide();
-        $('#importarProductosLoading').show();
-    };
-    return false;
-});
-
-$(document).on('click', '#reloadImportadorProductos', function () {
-    
-    import_productos_table.ajax.reload(function(res) {
-        if (res.success && res.data.length) {
-            $('#importarProductos').show();
+        if (responseData.success) {
+            // La barra ya se mostrará con los eventos de progreso
+        } else {
+            $('#cargarPlantillaProductos').show();
+            $('#cargarPlantillaProductosLoading').hide();
+            $('#uploadStatus').hide();
+            var mensaje = responseData.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Carga errada', errorsMsg);
         }
-    });
+    };
+    
+    xhr.onerror = function (res) {
+        $('#cargarPlantillaProductos').show();
+        $('#cargarPlantillaProductosLoading').hide();
+        $('#uploadStatus').hide();
+        var responseData = JSON.parse(res.currentTarget.response);
+        var mensaje = responseData.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Carga errada', errorsMsg);
+    };
+    
+    return false;
 });
 
 $(document).on('click', '#descargarPlantillaProductos', function () {
@@ -127,7 +156,6 @@ $(document).on('click', '#descargarPlantillaProductos', function () {
 
 $(document).on('click', '#importarProductos', function () {
 
-    $('#cargarPlantillaProductos').hide();
     $('#importarProductos').hide();
     $('#importarProductosLoading').show();
 
@@ -140,7 +168,6 @@ $(document).on('click', '#importarProductos', function () {
 
         agregarToast('info', 'Importando productos', 'Se le notificará cuando la importación haya terminado!', true);
     }).fail((err) => {
-        $('#cargarPlantillaProductos').show();
         $('#importarProductos').show();
         $('#importarProductosLoading').hide();
 
@@ -151,10 +178,54 @@ $(document).on('click', '#importarProductos', function () {
 });
 
 channelImportProductos.bind('notificaciones', function(data) {
-    import_productos_table.ajax.reload(function(res) {
-        if (res.success && res.data.length) {
-            $('#importarProductos').show();
+    console.log('Evento recibido:', data); // Para depuración
+    
+    // Si es un evento de progreso
+    if (data.name === 'progress') {
+        // Actualizar la barra de progreso y el mensaje
+        $('#uploadProgress').css('width', data.progress + '%');
+        $('#progressText').text(data.progress + '%');
+        $('#statusMessage').text(data.mensaje);
+        $('#processedRows').text(data.processed);
+        $('#totalRows').text(data.total);
+        
+        // Cambiar el color de la barra según el stage
+        if (data.stage === 'completed') {
+            $('#uploadProgress').removeClass('progress-bar-striped progress-bar-animated').addClass('bg-success');
+            
+            $("#cargarPlantillaProductos").show();
+            $("#cargarPlantillaProductosLoading").hide();
+            // Ocultar la barra después de 10 segundos
+            setTimeout(() => {
+                $('#uploadStatus').slideUp();
+            }, 5000);
+            
+            // Recargar la tabla de productos importados
+            if (import_productos_table) {
+                import_productos_table.ajax.reload(function(res) {
+                if (res.success && res.data.length) {
+                    $('#importarProductos').prop('disabled', false);
+                } else {
+                    $('#importarProductos').prop('disabled', true);
+                }
+            });
+            }
         }
-    });
-    agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
+    } 
+    // Si es el evento final de carga (el antiguo)
+    else if (data.name === 'carga') {
+        // Recargar la tabla
+        if (import_productos_table) {
+            import_productos_table.ajax.reload(function(res) {
+                if (res.success && res.data.length) {
+                    $('#importarProductos').prop('disabled', false);
+                } else {
+                    $('#importarProductos').prop('disabled', true);
+                }
+            });
+        }
+        
+        // Mostrar notificación (toast)
+        agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
+    }
 });

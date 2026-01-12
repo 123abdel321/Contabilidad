@@ -56,6 +56,7 @@ class ProcessImportProductos implements ShouldQueue
             DB::connection('sam')->commit();
 
             event(new PrivateMessageEvent("importador-productos-" .$this->empresa->token_db.'_'.$this->id_usuario, [
+                'name' => 'import',
                 'tipo' => 'exito',
                 'mensaje' => 'Importador de productos finalizado totalmente!',
                 'titulo' => 'Importador de productos',

@@ -16,7 +16,7 @@
                     {{ csrf_field() }}
                     
                     <div class="row g-2 align-items-center">
-                        <div class="col-md-7">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                             <div class="border-dashed border-2 rounded p-2 bg-light">
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0">
@@ -34,39 +34,71 @@
                             </div>
                         </div>
                         
-                        <div class="col-md-5">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                             <div class="d-flex flex-wrap gap-2">
 
-                                <button id="descargarPlantillaProductos" class="btn btn-danger btn-sm px-3">
-                                    <i class="fas fa-download me-1"></i>
-                                    <span class="small">Descargar Excel</span>
-                                </button>
+                                <div class="row">
+                                    <div class="col-12 d-flex align-items-center">
+                                        <div style="min-width: 190px;">
+                                            <button type="button" class="btn btn-primary btn-sm btn-bg-danger" id="descargarPlantillaProductos" style="margin-bottom: 5px !important; width: 190px;">
+                                                <i class="fas fa-download" style="margin-right: 5px; font-size: 15px;"></i>&nbsp;
+                                                Descargar Excel
+                                            </button>
+                                        </div>
+                                        <div class="ms-3">
+                                            <p class="mb-0 text-muted small">
+                                                <strong>Paso 1:</strong> Obtén el formato oficial para importar tus productos.
+                                            </p>
+                                        </div>
+                                    </div>
 
-                                <button id="cargarPlantillaProductos" class="btn btn-success btn-sm px-3">
-                                    <i class="far fa-file-excel me-1"></i>
-                                    <span class="small">Cargar plantilla</span>
-                                </button>
-                                
-                                <button id="importarProductos" href="javascript:void(0)" class="btn btn-primary btn-sm px-3" style="display: none;">
-                                    <i class="fas fa-upload me-1"></i>
-                                    <span class="small">Importar productos</span>
-                                </button>
-                                
+                                    <div class="col-12 d-flex align-items-center">
+                                        <div style="min-width: 190px;">
+                                            <button type="button" class="btn btn-primary btn-sm btn-bg-excel" id="cargarPlantillaProductos" style="margin-bottom: 5px !important; width: 190px;">
+                                                <i class="far fa-file-excel" style="margin-right: 5px; font-size: 15px;"></i>&nbsp;
+                                                Cargar plantilla
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm btn-bg-excel-loading" id="cargarPlantillaProductosLoading" style="opacity: 1; box-shadow: none; display: none; width: 190px; margin-bottom: 5px !important;" disabled>
+                                                <b style="opacity: 0.3; text-transform: capitalize;">Cargar plantilla</b>
+                                                <i style="position: absolute; color: white; font-size: 15px; margin-left: -48px; margin-top: 1px;" class="fas fa-spinner fa-spin"></i>
+                                            </button>
+                                        </div>
+                                        <div class="ms-3">
+                                            <p class="mb-0 text-muted small">
+                                                <strong>Paso 2:</strong> Carga el archivo con los datos de tus productos.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 d-flex align-items-center">
+                                        <div style="min-width: 190px;"> 
+
+                                            <button type="button" class="btn btn-primary btn-sm btn-bg-info" id="importarProductos" style="float: inline-end; width: 190px; margin-bottom: 5px !important;">
+                                                <i class="fas fa-upload" style="margin-right: 5px; font-size: 15px;"></i>&nbsp;
+                                                Cargar productos
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm btn-bg-info-loading" id="importarProductosLoading" style="opacity: 1; box-shadow: none; display: none; width: 190px; margin-bottom: 5px !important;" disabled>
+                                                <b style="opacity: 0.3; text-transform: capitalize;">Cargar productos</b>
+                                                <i style="position: absolute; color: white; font-size: 15px; margin-left: -55px; margin-top: 1px;" class="fas fa-spinner fa-spin"></i>
+                                            </button>
+
+                                        </div>
+                                        <div class="ms-3">
+                                            <p class="mb-0 text-muted small">
+                                                <strong>Paso 3:</strong> Inicia el proceso de importación de productos.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                </div>
+
                                 <button id="importarProductosLoading" class="btn btn-primary btn-sm px-3" style="display:none;" disabled>
                                     <i class="fas fa-spinner fa-spin me-1"></i>
                                     <span class="small">Procesando</span>
                                 </button>
+
                             </div>
-                            
-                            <!-- Estado de carga compacto -->
-                            <div class="mt-2" id="uploadStatus" style="display: none;">
-                                <div class="d-flex align-items-center">
-                                    <div class="progress flex-grow-1 me-2" style="height: 4px;">
-                                        <div id="uploadProgress" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
-                                    </div>
-                                    <small id="progressText" class="text-muted x-small">0%</small>
-                                </div>
-                            </div>
+                        
                         </div>
                     </div>
                 

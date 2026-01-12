@@ -37,7 +37,10 @@ class ProductosImport implements
 
     protected $url_notification = null;
     protected $empresa = null;
+    protected $rowsWithErrors = 0;
+    protected $totalValidRows = 0;
     protected $connectionName = 'sam';
+
 
     public function __construct(string $url_notification, $empresa_id)
     {
@@ -50,28 +53,56 @@ class ProductosImport implements
 
     public function collection(Collection $rows)
     {
+        $validRows = 0;
         $batchData = [];
 
         copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $this->empresa->token_db);
         
+        // Contar cuántas filas tienen al menos uno de los dos campos
+        $this->totalValidRows = 0;
+        foreach ($rows as $row) {
+            if (isset($row['cod_producto']) || isset($row['nombre'])) {
+                $this->totalValidRows++;
+            }
+        }
+
+        if (!$this->totalValidRows) {
+            return;
+        }
+        
+        // Enviar evento inicial con el total de filas a procesar (solo las válidas)
+        event(new PrivateMessageEvent("importador-productos-" . $this->url_notification, [
+            'name' => 'progress',
+            'tipo' => 'info',
+            'mensaje' => "Iniciando procesamiento de {$this->totalValidRows} registros...",
+            'titulo' => 'Importación de productos',
+            'progress' => 0,
+            'processed' => 0,
+            'total' => $this->totalValidRows,
+            'stage' => 'preparing',
+            'autoclose' => false
+        ]));
         
         foreach ($rows as $index => $row) {
             $rowNumber = $this->headingRow() + $index + 1; // Fila real en Excel
             $estado = 0;
             $observacionGeneral = '';
 
+            // Validar que las columnas necesarias existan
+            if (!isset($row['cod_producto']) && !isset($row['nombre'])) {
+                continue;
+            }
+            
+            $validRows++;
+            
             try {
-                // Validar que las columnas necesarias existan
-                if (!isset($row['cod_producto']) && !isset($row['nombre'])) {
-                    continue;
-                }
-                
                 // Validar datos
                 $validationResult = $this->validateRow($row, $rowNumber);
                 
                 if ($validationResult['fails']) {
                     $estado = 1;
+                    $this->rowsWithErrors++;
                     $observacionGeneral = $validationResult['errors'];
                 }
 
@@ -107,6 +138,22 @@ class ProductosImport implements
                     'updated_at' => now()
                 ];
 
+                // Enviar evento de progreso cada 100 filas válidas procesadas
+                if ($validRows % 100 === 0) {
+                    $progress = round(($validRows / $this->totalValidRows) * 100);
+                    event(new PrivateMessageEvent("importador-productos-" . $this->url_notification, [
+                        'name' => 'progress',
+                        'tipo' => 'info',
+                        'mensaje' => "Procesados {$validRows} de {$this->totalValidRows} registros. Errores: {$this->rowsWithErrors}",
+                        'titulo' => 'Importación de productos',
+                        'progress' => $progress,
+                        'processed' => $validRows,
+                        'total' => $this->totalValidRows,
+                        'stage' => 'processing',
+                        'autoclose' => false
+                    ]));
+                }
+
                 // Insertar en lotes de 200
                 if (count($batchData) >= 200) {
                     $this->insertBatch($batchData);
@@ -126,6 +173,19 @@ class ProductosImport implements
         if (!empty($batchData)) {
             $this->insertBatch($batchData);
         }
+        
+        // Enviar evento de finalización
+        event(new PrivateMessageEvent("importador-productos-" . $this->url_notification, [
+            'name' => 'progress',
+            'tipo' => 'success',
+            'mensaje' => "Procesamiento completado: {$validRows} registros procesados, {$this->rowsWithErrors} con errores.",
+            'titulo' => 'Importación de productos',
+            'progress' => 100,
+            'processed' => $validRows,
+            'total' => $this->totalValidRows,
+            'stage' => 'completed',
+            'autoclose' => false
+        ]));
     }
     
     private function validateRow($row, $rowNumber): array
@@ -219,11 +279,6 @@ class ProductosImport implements
         }
     }
 
-    // Eliminar el método rules() ya que no lo usamos más
-    // public function rules(): array { ... }
-
-    // También puedes eliminar customValidationAttributes()
-
     public function registerEvents(): array
     {
         return [
@@ -234,6 +289,7 @@ class ProductosImport implements
                 }
                 
                 event(new PrivateMessageEvent("importador-productos-" . $this->url_notification, [
+                    'name' => 'carga',
                     'tipo' => 'exito',
                     'mensaje' => 'Carga de plantilla de productos finalizado totalmente!',
                     'titulo' => 'Plantilla de productos',
