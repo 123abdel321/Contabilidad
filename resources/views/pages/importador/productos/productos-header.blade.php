@@ -23,8 +23,8 @@
                                         <i class="far fa-file-excel text-success me-2"></i>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <label for="file" class="form-label fw-semibold text-dark small mb-1">Seleccionar archivo Excel</label>
-                                        <input class="form-control form-control-sm" id="file" name="file" type="file" accept=".xlsx,.xls" required>
+                                        <label for="importador_productos" class="form-label fw-semibold text-dark small mb-1">Seleccionar archivo Excel</label>
+                                        <input class="form-control form-control-sm" id="importador_productos" name="importador_productos" type="file" accept=".xlsx,.xls" required>
                                         <div class="invalid-feedback small">
                                             Selecciona un archivo Excel válido.
                                         </div>
@@ -54,7 +54,7 @@
 
                                     <div class="col-12 d-flex align-items-center">
                                         <div style="min-width: 190px;">
-                                            <button type="button" class="btn btn-primary btn-sm btn-bg-excel" id="cargarPlantillaProductos" style="margin-bottom: 5px !important; width: 190px;">
+                                            <button type="button" class="btn btn-primary btn-sm btn-bg-excel" id="cargarPlantillaProductos" style="margin-bottom: 5px !important; width: 190px;" disabled>
                                                 <i class="far fa-file-excel" style="margin-right: 5px; font-size: 15px;"></i>&nbsp;
                                                 Cargar plantilla
                                             </button>

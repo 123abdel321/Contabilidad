@@ -25,11 +25,15 @@ class ProcessImportProductos implements ShouldQueue
     public $backoff = [60, 180, 300];
     protected $id_usuario;
     protected $id_empresa;
+    protected $totalRecords = 0;
+    protected $processedRecords = 0;
+    protected $correctRecords = 0;
+    protected $errorRecords = 0;
 
     public function __construct($id_empresa, $id_usuario)
     {
         $this->id_empresa = $id_empresa;
-		$this->id_usuario = $id_usuario;
+        $this->id_usuario = $id_usuario;
     }
 
     public function handle()
@@ -40,6 +44,20 @@ class ProcessImportProductos implements ShouldQueue
         setDBInConnection('sam', $this->empresa->token_db);
 
         try {
+            // Contar total de registros a procesar
+            $this->totalRecords = FacProductosImport::where('estado', 0)->count();
+            
+            // Enviar evento de inicio
+            event(new PrivateMessageEvent("importador-productos-" . $this->empresa->token_db.'_'.$this->id_usuario, [
+                'name' => 'progress',
+                'tipo' => 'info',
+                'mensaje' => 'Iniciando carga de productos al sistema...',
+                'titulo' => 'Carga de productos',
+                'progress' => 0,
+                'processed' => 0,
+                'total' => $this->totalRecords,
+                'stage' => 'preparing'
+            ]));
 
             DB::connection('sam')->beginTransaction();
 
@@ -48,14 +66,47 @@ class ProcessImportProductos implements ShouldQueue
                 ->chunkById(1000, function ($imports) {
                     foreach ($imports as $import) {
                         $this->processProduct($import);
+                        $this->processedRecords++;
+                        
+                        // Enviar evento de progreso cada 100 registros procesados
+                        if ($this->processedRecords % 100 === 0) {
+                            $progress = $this->totalRecords > 0 
+                                ? round(($this->processedRecords / $this->totalRecords) * 100) 
+                                : 0;
+                            
+                            event(new PrivateMessageEvent("importador-productos-" . $this->empresa->token_db.'_'.$this->id_usuario, [
+                                'name' => 'progress',
+                                'tipo' => 'info',
+                                'mensaje' => 'Cargando productos al sistema...',
+                                'titulo' => 'Carga de productos',
+                                'progress' => $progress,
+                                'processed' => $this->processedRecords,
+                                'total' => $this->totalRecords,
+                                'stage' => 'processing'
+                            ]));
+                        }
                     }
                 });
 
+            // Eliminar registros procesados correctamente
             FacProductosImport::where('estado', 0)->delete();
 
             DB::connection('sam')->commit();
 
-            event(new PrivateMessageEvent("importador-productos-" .$this->empresa->token_db.'_'.$this->id_usuario, [
+            // Enviar evento de completado exitoso
+            event(new PrivateMessageEvent("importador-productos-" . $this->empresa->token_db.'_'.$this->id_usuario, [
+                'name' => 'progress',
+                'tipo' => 'success',
+                'mensaje' => '¡Carga de productos completada exitosamente!',
+                'titulo' => 'Carga de productos',
+                'progress' => 100,
+                'processed' => $this->processedRecords,
+                'total' => $this->totalRecords,
+                'stage' => 'completed'
+            ]));
+
+            // Enviar evento final de importación
+            event(new PrivateMessageEvent("importador-productos-" . $this->empresa->token_db.'_'.$this->id_usuario, [
                 'name' => 'import',
                 'tipo' => 'exito',
                 'mensaje' => 'Importador de productos finalizado totalmente!',
@@ -63,9 +114,22 @@ class ProcessImportProductos implements ShouldQueue
                 'autoclose' => false
             ]));
 
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             DB::connection('sam')->rollback();
-			throw $exception;
+            
+            // Enviar evento de error
+            event(new PrivateMessageEvent("importador-productos-" . $this->empresa->token_db.'_'.$this->id_usuario, [
+                'name' => 'progress',
+                'tipo' => 'error',
+                'mensaje' => 'Error durante la carga de productos: ' . $exception->getMessage(),
+                'titulo' => 'Carga de productos',
+                'progress' => 0,
+                'processed' => $this->processedRecords,
+                'total' => $this->totalRecords,
+                'stage' => 'error'
+            ]));
+            
+            throw $exception;
         }        
     }
     
@@ -94,7 +158,12 @@ class ProcessImportProductos implements ShouldQueue
                         ]);
                 }
                 
+                $this->correctRecords++;
+                
             } catch (\Exception $e) {
+                $this->errorRecords++;
+                // Puedes registrar el error si lo necesitas
+                // Log::error("Error procesando producto {$import->codigo}: " . $e->getMessage());
             }
         });
     }

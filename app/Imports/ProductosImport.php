@@ -240,16 +240,16 @@ class ProductosImport implements
             }
         }
         
-        if (empty($row['costo']) || !is_numeric($row['costo']) || $row['costo'] < 0) {
-            $errors[] = 'El costo debe ser un número mayor o igual a 0';
+        if (!is_numeric($row['costo'])) {
+            $errors[] = 'El costo debe ser un número válido';
         }
         
-        if (empty($row['precio']) || !is_numeric($row['precio']) || $row['precio'] < 0) {
-            $errors[] = 'El precio debe ser un número mayor o igual a 0';
+        if (!is_numeric($row['precio'])) {
+            $errors[] = 'El precio debe ser un número válido';
         }
         
-        if (!isset($row['existencias']) || !is_numeric($row['existencias']) || $row['existencias'] < 0) {
-            $errors[] = 'Las existencias deben ser un número entero mayor o igual a 0';
+        if (!is_numeric($row['existencias']) ) {
+            $errors[] = 'Las existencias deben ser un número válido';
         }
         
         return [

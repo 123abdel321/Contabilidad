@@ -41,7 +41,7 @@ class ProductoImportadorController extends Controller
     public function importar(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'file' => 'required|mimes:xlsx,xls,csv|max:10240'
+            'importador_productos' => 'required|mimes:xlsx,xls,csv|max:10240'
         ]);
 
         if ($validator->fails()) {
@@ -59,7 +59,7 @@ class ProductoImportadorController extends Controller
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
             $urlNotificacion = $empresa->token_db.'_'.$request->user()['id'];
 
-            $file = $request->file('file');
+            $file = $request->file('importador_productos');
             $import = new ProductosImport($urlNotificacion, $empresa->id);
             $import->import($file);
             
