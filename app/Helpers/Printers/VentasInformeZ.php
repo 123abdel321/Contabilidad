@@ -118,12 +118,12 @@ class VentasInformeZ extends AbstractPrinterPdf
 
 		$pagosTotalesSaldo = DocumentosGeneral::where('fecha_manual', '<=', $this->request['fecha_desde'])
 			->when($bodega->id_cuenta_cartera ?? false, function ($query) use ($bodega) {
-				$query->whereIn('id_cuenta', $bodega->id_cuenta_cartera);
+				$query->where('id_cuenta', $bodega->id_cuenta_cartera);
 			});
 
 		$pagosTotalesSaldoAnterior = DocumentosGeneral::where('fecha_manual', '<', $this->request['fecha_desde'])
 			->when($bodega->id_cuenta_cartera ?? false, function ($query) use ($bodega) {
-				$query->whereIn('id_cuenta', $bodega->id_cuenta_cartera);
+				$query->where('id_cuenta', $bodega->id_cuenta_cartera);
 			});
 
 		$idsFormasPagoUsadas = [];
