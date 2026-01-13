@@ -92,7 +92,7 @@
                 <tr><th class="font-12 center-item">
                     Fecha desde: {{ $fecha_desde }}
                 </th></tr>
-                tr><th class="font-12 center-item">
+                <tr><th class="font-12 center-item">
                     Fecha hasta: {{ $fecha_hasta }}
                 </th></tr>
                 <tr><th class="font-12 center-item">

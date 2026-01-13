@@ -664,8 +664,8 @@ $(document).on('click', '#generarInformeZ', function () {
     }
 
     var url = base_web + 'ventas-print-informez';
-    $('#fecha_manual_desde_ventas').val() ? url+= '?fecha_desde='+$('#fecha_manual_ventas').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm') : null;
-    $('#fecha_manual_hasta_ventas').val() ? url+= '&fecha_hasta='+$('#fecha_manual_ventas').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm') : null;
+    $('#fecha_manual_ventas').val() ? url+= '?fecha_desde='+$('#fecha_manual_ventas').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm') : null;
+    $('#fecha_manual_ventas').val() ? url+= '&fecha_hasta='+$('#fecha_manual_ventas').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm') : null;
     $('#factura_ventas').val() ? url+= '&factura='+$('#factura_ventas').val() : null;
     $('#factura_ventas').val() ? url+= '&id_resolucion='+$('#factura_ventas').val() : null;
     $('#id_bodega_ventas').val() ? url+= '&id_bodega='+$('#id_bodega_ventas').val() : null;

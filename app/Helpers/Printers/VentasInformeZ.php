@@ -61,6 +61,7 @@ class VentasInformeZ extends AbstractPrinterPdf
 		$bodega = FacBodegas::where('id', $this->request['id_bodega'])->first();
 		$resolucion = FacResoluciones::where('id', $this->request['id_resolucion'])->first();
 		$formasPagoCaja = FacFormasPago::select('id')->where('id_cuenta', $bodega->id_cuenta_cartera)->get();
+		$formasPagoCaja = $formasPagoCaja ? $formasPagoCaja->toArray() : [];
 		
 		$ventas = FacVentas::with('cliente')
 			->where('fecha_manual', '>=', $this->request['fecha_desde'])
@@ -72,7 +73,9 @@ class VentasInformeZ extends AbstractPrinterPdf
 			->get();
 
 		$pagosTotalesIngresos = FacVentaPagos::with('forma_pago', 'venta.cliente')
-			->whereIn('id_forma_pago', $formasPagoCaja->toArray())
+			->when(isset($formasPagoCaja) ? $formasPagoCaja : false, function ($query) use ($formasPagoCaja) {
+				$query->whereIn('id_forma_pago', $formasPagoCaja);
+			})
 			->whereHas('venta', function ($query) {
 				$query->where('fecha_manual', '>=', $this->request['fecha_desde'])
 					->where('fecha_manual', '<=', $this->request['fecha_hasta'])
@@ -82,7 +85,9 @@ class VentasInformeZ extends AbstractPrinterPdf
 			->get();
 
 		$pagosTotalesEgresos = FacVentaPagos::with('forma_pago', 'venta.cliente')
-			->whereIn('id_forma_pago', $formasPagoCaja->toArray())
+			->when(isset($formasPagoCaja) ? $formasPagoCaja : false, function ($query) use ($formasPagoCaja) {
+				$query->whereIn('id_forma_pago', $formasPagoCaja);
+			})
 			->whereHas('venta', function ($query) {
 				$query->where('fecha_manual', '>=', $this->request['fecha_desde'])
 					->where('fecha_manual', '<=', $this->request['fecha_hasta'])
@@ -112,10 +117,14 @@ class VentasInformeZ extends AbstractPrinterPdf
 			->get();
 
 		$pagosTotalesSaldo = DocumentosGeneral::where('fecha_manual', '<=', $this->request['fecha_desde'])
-			->where('id_cuenta', $bodega->id_cuenta_cartera);
+			->when($bodega->id_cuenta_cartera ?? false, function ($query) use ($bodega) {
+				$query->whereIn('id_cuenta', $bodega->id_cuenta_cartera);
+			});
 
 		$pagosTotalesSaldoAnterior = DocumentosGeneral::where('fecha_manual', '<', $this->request['fecha_desde'])
-			->where('id_cuenta', $bodega->id_cuenta_cartera);
+			->when($bodega->id_cuenta_cartera ?? false, function ($query) use ($bodega) {
+				$query->whereIn('id_cuenta', $bodega->id_cuenta_cartera);
+			});
 
 		$idsFormasPagoUsadas = [];
 		foreach ($pagosTotales as $pagosTotal) {
@@ -128,8 +137,7 @@ class VentasInformeZ extends AbstractPrinterPdf
 			->whereNotIn('id', $idsFormasPagoUsadas)
 			->get();
 
-		$devolucionesEfectivo = FacVentaPagos::whereIn('id_forma_pago', $formasPagoCaja->toArray())
-			->whereHas('venta', function ($query) {
+		$devolucionesEfectivo = FacVentaPagos::whereHas('venta', function ($query) {
 				$query->where('fecha_manual', '>=', $this->request['fecha_desde'])
 					->where('fecha_manual', '<=', $this->request['fecha_hasta'])
 					->where('id_bodega', $this->request['id_bodega'])
@@ -137,6 +145,9 @@ class VentasInformeZ extends AbstractPrinterPdf
 					->whereHas('factura',  function ($q) {
 						$q->where('id_resolucion', $this->request['id_resolucion']);
 				});
+			})
+			->when(isset($formasPagoCaja) ? $formasPagoCaja : false, function ($query) use ($formasPagoCaja) {
+				$query->whereIn('id_forma_pago', $formasPagoCaja);
 			})
 			->get();
 
