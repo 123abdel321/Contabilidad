@@ -278,7 +278,7 @@ abstract class AbstractFESender
 
 				switch ($tax) {
 					case 1: //IVA
-						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1])) && intval($dIva[0]["tax_amount"])) $dataTaxTotals['iva'][] = $dIva[0];
+						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1]))) $dataTaxTotals['iva'][] = $dIva[0];
 						break;
 					case 5: // RETE IVA
 						if (!empty($dRete = $this->taxTotalsDetalle($detalle, [5])) && intval($dRete[0]["tax_amount"])) $dataTaxTotals['reteIva'][] = $dRete[0];
@@ -353,11 +353,10 @@ abstract class AbstractFESender
 	{
 		$taxTotalsDetalle = [];
 		$impuestos = $this->impuesto($detalle);
-
 		foreach ($impuestos as $impuesto) {
 			$existencia = $data ? in_array($impuesto['tax_id'], $data) : true;
 			if ($existencia) {
-				if (intval($impuesto['tax_amount'])) {
+				if (intval($impuesto['tax_amount']) || $impuesto['tax_id'] == 1) {
 					$taxTotalsDetalle[] = $this->decoreTax($impuesto);
 				}
 			}
