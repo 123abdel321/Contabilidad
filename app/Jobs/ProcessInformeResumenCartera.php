@@ -253,13 +253,17 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 $query->whereNotNull('N.apartamentos');
             })
             ->when(!$this->request['proveedor'], function ($query) {
-                $query->where('N.proveedor', 0);
+                $query->where(function ($q) {
+                    $q->where('N.proveedor', 0)
+                    ->orWhereNull('N.proveedor');
+                });
             })
             ->when($this->request['fecha_hasta'], function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'].' 23:59:59');
 			})
             ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
-            ->where('anulado', 0);
+            ->where('anulado', 0)
+            ;
     }
 
     private function buscarCuenta($buscarCuenta)
