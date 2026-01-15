@@ -65,6 +65,7 @@ class ProcessInformeExtracto
                 $this->addNitsCuentasDetalleData();
                 $this->addTotalData();
             } else {
+                $this->addCuentasData();
                 $this->addNitsCuentasDetalleData();
             }
 
