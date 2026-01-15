@@ -38,6 +38,7 @@ return new class extends Migration
             $table->decimal('debito', 15)->nullable();
             $table->decimal('credito', 15)->nullable();
             $table->decimal('saldo_final', 15)->nullable();
+            $table->integer('errores')->nullable();
             $table->integer('nivel')->nullable();
             $table->dateTime('fecha_creacion')->nullable();
             $table->dateTime('fecha_edicion')->nullable();

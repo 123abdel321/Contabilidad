@@ -145,6 +145,12 @@ function initTablesExtractos() {
             }},
         ],
         'rowCallback': function(row, data, index){
+            if(data.errores == 1){
+                $('td', row).css('background-color', '#ff0000b9');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
+                return;
+            }
             if(data.nivel == 1){
                 $('td', row).css('background-color', '#000');
                 $('td', row).css('font-weight', 'bold');

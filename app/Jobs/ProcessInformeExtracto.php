@@ -57,12 +57,16 @@ class ProcessInformeExtracto
         try {
 
             $this->ordenarMeses();
-            
-            $this->addMesesData();
-            $this->addCuentasData();
-            // $this->addNitsCuentasData();
-            $this->addNitsCuentasDetalleData();
-            $this->addTotalData();
+
+            if (!$this->request['errores']) {
+                $this->addMesesData();
+                $this->addCuentasData();
+                // $this->addNitsCuentasData(); //APAGADA
+                $this->addNitsCuentasDetalleData();
+                $this->addTotalData();
+            } else {
+                $this->addNitsCuentasDetalleData();
+            }
 
             ksort($this->extractoCollection, SORT_STRING | SORT_FLAG_CASE);
 
@@ -361,7 +365,7 @@ class ProcessInformeExtracto
                             foreach ($detalles as $detalle) {
                                 $cuentaNumero = 1;
                                 $totalDetalles--;
-
+                                
                                 $inicioMes = date('Y-m', strtotime($extractoMes->fecha_desde));
                                 $cuentaNueva = "{$inicioMes}-B{$detalle->cuenta}";
                                 if ($detalle->documento_referencia) {
@@ -379,11 +383,22 @@ class ProcessInformeExtracto
 
                                 $cuentaData = $this->getFormatDetailDocumentoCollection($detalle);
 
+                                if ($detalle->naturaleza_cuenta == PlanCuentas::DEBITO && intval($detalle->credito)) {
+                                    $cuentaData['errores'] = true;
+                                } else if ($detalle->naturaleza_cuenta == PlanCuentas::CREDITO && intval($detalle->debito)) {
+                                    $cuentaData['errores'] = true;
+                                }
+
                                 if (!$totalDetalles) {
                                     $cuentaData['nivel'] = 6;
                                 }
 
-                                $this->extractoCollection[$cuentaNueva] = $cuentaData;
+                                if ($this->request['errores']) {
+                                    if ($cuentaData['errores']) $this->extractoCollection[$cuentaNueva] = $cuentaData;
+                                } else {
+                                    $this->extractoCollection[$cuentaNueva] = $cuentaData;
+                                }
+                                
                             }
                             unset($detalles);//Liberar memoria
                         });
@@ -472,6 +487,7 @@ class ProcessInformeExtracto
             ->where('DG.fecha_manual', '>=', $meses->fecha_desde)
             ->where('DG.fecha_manual', '<=', $meses->fecha_hasta)
             ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
+            // ->whereIn('PCT.id_tipo_cuenta', [4,8])
             ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
 				$query->where('DG.id_nit', $this->request['id_nit']);
 			})
@@ -530,6 +546,7 @@ class ProcessInformeExtracto
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '<', $meses->fecha_desde)
             ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
+            // ->whereIn('PCT.id_tipo_cuenta', [4,8])
             ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
 				$query->where('DG.id_nit', $this->request['id_nit']);
 			})
@@ -626,6 +643,7 @@ class ProcessInformeExtracto
             'debito' => 0,
             'credito' => 0,
             'saldo_final' => 0,
+            'errores' => false,
             'nivel' => 0
         ];
     }
@@ -665,6 +683,7 @@ class ProcessInformeExtracto
             'debito' => $documento->debito,
             'credito' => $documento->credito,
             'saldo_final' => $documento->saldo_final,
+            'errores' => false,
             'nivel' => 2
         ];
     }
@@ -701,6 +720,7 @@ class ProcessInformeExtracto
             'debito' => $documento->debito,
             'credito' => $documento->credito,
             'saldo_final' => $documento->saldo_final,
+            'errores' => false,
             'nivel' => 3
         ];
     }
@@ -737,7 +757,8 @@ class ProcessInformeExtracto
             'debito' => $documento->debito,
             'credito' => $documento->credito,
             'saldo_final' => 0,
-            'nivel' => 4 
+            'errores' => false,
+            'nivel' => 4
         ];
     }
 
@@ -774,6 +795,7 @@ class ProcessInformeExtracto
             'debito' => $totales ? number_format((float)$totales->debito, 2, '.', '') : 0,
             'credito' => $totales ? number_format((float)$totales->credito, 2, '.', '') : 0,
             'saldo_final' => $totales ? number_format((float)$totales->saldo_final, 2, '.', '') : 0,
+            'errores' => false,
             'nivel' => 5
         ];
     }
