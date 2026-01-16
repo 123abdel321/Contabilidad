@@ -15,12 +15,12 @@
         </select>
     </div>
 
-    <div class="form-group col-6 col-sm-2 col-md-2">
+    <div class="form-group col-12 col-sm-4 col-md-4">
         <label for="factura_documentos_extracto" class="form-control-label">No. factura</label>
         <input name="factura_documentos_extracto" id="factura_documentos_extracto" class="form-control form-control-sm" type="text">
     </div>
     
-    <div class="form-group col-6 col-sm-2 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+    <!-- <div class="form-group col-6 col-sm-2 col-md-2 row" style="margin-bottom: 0.1rem !important;">
         <label for="example-text-input" class="form-control-label">Documentos</label>
         <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
             <input class="form-check-input" type="radio" name="tipo_errores_extracto" id="tipo_errores_extracto0" style="font-size: 11px;" checked>
@@ -34,7 +34,7 @@
                 Errores
             </label>
         </div>
-    </div>
+    </div> -->
 
 </div>
 
