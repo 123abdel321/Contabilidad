@@ -384,23 +384,23 @@ class ProcessInformeExtracto
 
                                 $cuentaData = $this->getFormatDetailDocumentoCollection($detalle);
 
-                                if ($detalle->naturaleza_cuenta == PlanCuentas::DEBITO && intval($detalle->credito)) {
-                                    $cuentaData['errores'] = true;
-                                    $cuentaData['saldo_final'] = $detalle->saldo_final;
-                                } else if ($detalle->naturaleza_cuenta == PlanCuentas::CREDITO && intval($detalle->debito)) {
-                                    $cuentaData['errores'] = true;
-                                    $cuentaData['saldo_final'] = $detalle->saldo_final;
-                                }
+                                // if ($detalle->naturaleza_cuenta == PlanCuentas::DEBITO && intval($detalle->credito)) {
+                                //     $cuentaData['errores'] = true;
+                                //     $cuentaData['saldo_final'] = $detalle->saldo_final;
+                                // } else if ($detalle->naturaleza_cuenta == PlanCuentas::CREDITO && intval($detalle->debito)) {
+                                //     $cuentaData['errores'] = true;
+                                //     $cuentaData['saldo_final'] = $detalle->saldo_final;
+                                // }
 
                                 if (!$totalDetalles) {
                                     $cuentaData['nivel'] = 6;
                                 }
 
-                                if ($this->request['errores']) {
-                                    if ($cuentaData['errores']) $this->extractoCollection[$cuentaNueva] = $cuentaData;
-                                } else {
-                                    $this->extractoCollection[$cuentaNueva] = $cuentaData;
-                                }
+                                // if ($this->request['errores']) {
+                                //     if ($cuentaData['errores']) $this->extractoCollection[$cuentaNueva] = $cuentaData;
+                                // } else {
+                                //     }
+                                $this->extractoCollection[$cuentaNueva] = $cuentaData;
                                 
                             }
                             unset($detalles);//Liberar memoria
