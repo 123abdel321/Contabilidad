@@ -386,8 +386,10 @@ class ProcessInformeExtracto
 
                                 if ($detalle->naturaleza_cuenta == PlanCuentas::DEBITO && intval($detalle->credito)) {
                                     $cuentaData['errores'] = true;
+                                    $cuentaData['saldo_final'] = $detalle->saldo_final;
                                 } else if ($detalle->naturaleza_cuenta == PlanCuentas::CREDITO && intval($detalle->debito)) {
                                     $cuentaData['errores'] = true;
+                                    $cuentaData['saldo_final'] = $detalle->saldo_final;
                                 }
 
                                 if (!$totalDetalles) {
