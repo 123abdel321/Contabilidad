@@ -1,5 +1,6 @@
 
 var tokenEco = "";
+var $comboClienteVentas = null;
 var $comboComprobanteNomina = null;
 var $comboComprobanteParafiscales = null;
 var $comboComprobanteSeguridadSocial = null;
@@ -54,6 +55,17 @@ function cargarVariablesDeEntorno() {
                 }
             }
         });
+
+        if (variable.nombre == 'id_cliente_venta_defecto') {
+            if (variable.nit) {
+                const dataCliente = {
+                    id: variable.nit.id,
+                    text: variable.nit.numero_documento + ' - ' + variable.nit.nombre_completo
+                };
+                const newOption = new Option(dataCliente.text, dataCliente.id, false, false);
+                $('#id_cliente_venta_defecto').append(newOption).val(dataCliente.id).trigger('change');
+            }
+        }
 
         if (variable.nombre == 'eco_login') {
             tokenEco = variable.valor
@@ -127,6 +139,35 @@ function cargarVariablesDeEntorno() {
 }
 
 function cargarSelect2VariablesDeEntorno() {
+    $comboClienteVentas = $('#id_cliente_venta_defecto').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        dropdownCssClass: 'custom-id_cliente_venta_defecto',
+        language: {
+            noResults: function() {
+                createNewNit = true;
+                return "No hay resultado";        
+            },
+            searching: function() {
+                createNewNit = false;
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/nit/combo-nit',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
     $comboComprobanteNomina = $('#id_comprobante_nomina').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -421,6 +462,7 @@ $(document).on('click', '#updateEntorno', function () {
         id_comprobante_seguridad_social: $("#id_comprobante_seguridad_social").val(),
         id_comprobante_prestaciones_sociales: $("#id_comprobante_prestaciones_sociales").val(),
         encabezado_ventas_regimen: $('#encabezado_ventas_regimen').val(),
+        id_cliente_venta_defecto: $('#id_cliente_venta_defecto').val(),
     };
 
     $.ajax({

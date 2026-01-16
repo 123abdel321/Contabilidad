@@ -32,7 +32,7 @@ class EntornoController extends Controller
     public function index(Request $request)
     {
         $data = [
-            'variables_entorno' => VariablesEntorno::with('comprobante')->get()
+            'variables_entorno' => VariablesEntorno::with('comprobante', 'nit')->get()
         ];
         
         return view('pages.configuracion.entorno.entorno-view', $data);
@@ -74,6 +74,7 @@ class EntornoController extends Controller
                 'id_comprobante_parafiscales',
                 'id_comprobante_seguridad_social',
                 'id_comprobante_prestaciones_sociales',
+                'id_cliente_venta_defecto',
                 'encabezado_ventas_regimen',
             ];
             

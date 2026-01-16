@@ -7,7 +7,7 @@
 
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="tab-porta-15px nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Variables de entorno</button>
+                        <button class="tab-porta-15px nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Contabilidad</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="tab-porta-15px nav-link" id="facturacion-tab" data-bs-toggle="tab" data-bs-target="#facturacion" type="button" role="tab" aria-controls="facturacion" aria-selected="false">Facturación</button>
@@ -59,54 +59,29 @@
                                 <textarea type="text" class="form-control form-control-sm" name="observacion_venta" id="observacion_venta" rows="3"></textarea>
                             </div> -->
 
-                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
-                                <input class="form-check-input" type="checkbox" name="iva_incluido" id="iva_incluido" style="height: 20px;">
-                                <label class="form-check-label" for="iva_incluido">
-                                    Iva incluido
-                                </label>
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <div class="form-check form-switch col-12">
+                                    <input class="form-check-input" type="checkbox" name="capturar_documento_descuadrado" id="capturar_documento_descuadrado" style="height: 20px;">
+                                    <label class="form-check-label" for="capturar_documento_descuadrado">
+                                        Documentos descuadrados
+                                    </label>
+                                </div>
+    
+                                <div class="form-check form-switch col-12">
+                                    <input class="form-check-input" type="checkbox" name="validar_salto_consecutivos" id="validar_salto_consecutivos" style="height: 20px;">
+                                    <label class="form-check-label" for="validar_salto_consecutivos">
+                                        Validar salto de consecutivos
+                                    </label>
+                                </div>
+    
+                                <div class="form-check form-switch col-12">
+                                    <input class="form-check-input" type="checkbox" name="ubicacion_maximoph" id="ubicacion_maximoph" style="height: 20px;">
+                                    <label class="form-check-label" for="ubicacion_maximoph">
+                                        Ubicacion MaximoPh en informes
+                                    </label>
+                                </div>
                             </div>
 
-                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
-                                <input class="form-check-input" type="checkbox" name="capturar_documento_descuadrado" id="capturar_documento_descuadrado" style="height: 20px;">
-                                <label class="form-check-label" for="capturar_documento_descuadrado">
-                                    Documentos descuadrados
-                                </label>
-                            </div>
-
-                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
-                                <input class="form-check-input" type="checkbox" name="validar_salto_consecutivos" id="validar_salto_consecutivos" style="height: 20px;">
-                                <label class="form-check-label" for="validar_salto_consecutivos">
-                                    Validar salto de consecutivos
-                                </label>
-                            </div>
-
-                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
-                                <input class="form-check-input" type="checkbox" name="vendedores_ventas" id="vendedores_ventas" style="height: 20px;">
-                                <label class="form-check-label" for="vendedores_ventas">
-                                    Vendedores captura ventas
-                                </label>
-                            </div>
-
-                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
-                                <input class="form-check-input" type="checkbox" name="recordar_ultimo_precio_venta" id="recordar_ultimo_precio_venta" style="height: 20px;">
-                                <label class="form-check-label" for="recordar_ultimo_precio_venta">
-                                    Recorder ultimo precio ventas
-                                </label>
-                            </div>
-
-                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
-                                <input class="form-check-input" type="checkbox" name="precio_ponderado" id="precio_ponderado" style="height: 20px;">
-                                <label class="form-check-label" for="precio_ponderado">
-                                    Promediar precio en compras
-                                </label>
-                            </div>
-
-                            <div class="form-check form-switch col-12 col-sm-6 col-md-4">
-                                <input class="form-check-input" type="checkbox" name="ubicacion_maximoph" id="ubicacion_maximoph" style="height: 20px;">
-                                <label class="form-check-label" for="ubicacion_maximoph">
-                                    Ubicacion MaximoPh en informes
-                                </label>
-                            </div>
 
                         </div>
 
@@ -117,16 +92,53 @@
 
                         <div class="row" style="margin-top: 10px; padding-left: 10px;">
 
-                            <div class="form-group col-12">
+                            <div class="form-group col-12 col-sm-6 col-md-6">
                                 <label for="example-text-input" class="form-control-label">Encabezado ventas regimen</label>
                                 <input type="text" class="form-control form-control-sm" name="encabezado_ventas_regimen" id="encabezado_ventas_regimen">
                             </div>
 
-                            <div class="form-group col-12">
+                            <div class="form-group col-12 col-sm-6 col-md-6" >
+                                <label for="id_cliente_venta_defecto" class="form-control-label">Cliente por defecto Ventas </label>
+                                <select name="id_cliente_venta_defecto" id="id_cliente_venta_defecto" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-6">
                                 <label for="editor-container" class="form-control-label">Observación general factura venta</label>
                                 <div id="editor-container" style="height: 150px;"></div>
                                 <textarea name="observacion_venta" id="observacion_venta" hidden></textarea>
                             </div>
+
+                            <div class="col-12 col-sm-6 col-md-6">
+                                <div class="form-check form-switch col-12">
+                                    <input class="form-check-input" type="checkbox" name="iva_incluido" id="iva_incluido" style="height: 20px;">
+                                    <label class="form-check-label" for="iva_incluido">
+                                        Iva incluido
+                                    </label>
+                                </div>
+    
+                                <div class="form-check form-switch col-12">
+                                    <input class="form-check-input" type="checkbox" name="vendedores_ventas" id="vendedores_ventas" style="height: 20px;">
+                                    <label class="form-check-label" for="vendedores_ventas">
+                                        Vendedores captura ventas
+                                    </label>
+                                </div>
+    
+                                <div class="form-check form-switch col-12">
+                                    <input class="form-check-input" type="checkbox" name="recordar_ultimo_precio_venta" id="recordar_ultimo_precio_venta" style="height: 20px;">
+                                    <label class="form-check-label" for="recordar_ultimo_precio_venta">
+                                        Recorder ultimo precio ventas
+                                    </label>
+                                </div>
+    
+                                <div class="form-check form-switch col-12">
+                                    <input class="form-check-input" type="checkbox" name="precio_ponderado" id="precio_ponderado" style="height: 20px;">
+                                    <label class="form-check-label" for="precio_ponderado">
+                                        Promediar precio en compras
+                                    </label>
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>

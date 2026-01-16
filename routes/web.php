@@ -156,6 +156,12 @@ Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('
 Route::get('/recibos-print', [RecibosController::class, 'showPdfPublic'])->name('recibos-pdf');
 // Route::get('/documento-print', [DocumentoController::class, 'showPdfPublic']);
 
+//PDF POS
+Route::prefix('pos')->controller(PosController::class)->group(function () {
+	Route::get('pedido-print/{token}/{id}', 'showPdfPedido');
+	Route::get('venta-print/{token}/{id}', 'showPdfVenta');
+});
+
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
@@ -224,11 +230,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		//PEDIDOS
 		Route::get('/pedido', [PedidoController::class, 'index'])->name('pedido');
 		Route::get('/pedido-print/{id}', [PedidoController::class, 'showPdf'])->name('pedido-pdf');
-		//PEDIDOS POS
-		Route::prefix('pos')->controller(PosController::class)->group(function () {
-			Route::get('pedido-print/{id}', 'showPdfPedido');
-			Route::get('venta-print/{id}', 'showPdfVenta');
-		});
 		//PARQUEADEROS
 		Route::get('/parqueadero', [ParqueaderoController::class, 'index'])->name('parqueadero');
 		Route::get('/parqueadero-print/{id}', [ParqueaderoController::class, 'showPdf'])->name('parqueadero-pdf');

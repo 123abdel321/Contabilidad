@@ -96,6 +96,12 @@ class VentaController extends Controller
         $valorUVT = VariablesEntorno::where('nombre', 'valor_uvt')->first();
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
         $vendedorVentas = VariablesEntorno::where('nombre', 'vendedores_ventas')->first();
+        $idClientePorDefecto = VariablesEntorno::where('nombre', 'id_cliente_venta_defecto')->first();
+        $idClientePorDefecto = $idClientePorDefecto && $idClientePorDefecto->valor ? $idClientePorDefecto->valor : null;
+        
+        $clientePorDefecto = null;
+        if ($idClientePorDefecto) $clientePorDefecto = Nits::with('vendedor.nit')->where('id', $idClientePorDefecto)->first();
+        else $clientePorDefecto = Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222%')->first();
 
         $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
         $resolucionesId = explode(",", $usuarioPermisos->ids_resolucion_responsable);
@@ -104,18 +110,23 @@ class VentaController extends Controller
             ->get();
 
         $data = [
-            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222222%')->first(),
-            'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
+            'cliente' => $clientePorDefecto,
             'resolucion' => $resolucionesData,
+            'valor_uvt' => $valorUVT ? $valorUVT->valor : 0,
+            'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),
             'iva_incluido' => $ivaIncluido ? $ivaIncluido->valor : '',
-            'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : '',
-            'valor_uvt' => $valorUVT ? $valorUVT->valor : 0
+            'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : ''
         ];
 
         return view('pages.capturas.venta.venta-view', $data);
     }
 
     public function indexInforme ()
+    {
+        return view('pages.contabilidad.ventas.ventas-view');
+    }
+
+    public function indexInformeGeneral ()
     {
         return view('pages.contabilidad.ventas.ventas-view');
     }

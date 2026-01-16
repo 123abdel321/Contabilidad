@@ -24,4 +24,9 @@ class VariablesEntorno extends Model
 	{
 		return $this->belongsTo(Comprobantes::class, 'valor');
 	}
+
+    public function nit()
+	{
+		return $this->belongsTo(Nits::class, 'valor');
+	}
 }

@@ -10,6 +10,7 @@ use App\Jobs\ProcessConsultarFE;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Validator;
 //HELPERS
 use App\Helpers\Extracto;
@@ -94,25 +95,34 @@ class PosController extends Controller
     
 	public function posValidate(Request $request)
 	{
+        
         $valorUVT = VariablesEntorno::where('nombre', 'valor_uvt')->first();
+        $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
         $ivaIncluido = $ivaIncluido && $ivaIncluido->valor == '1' ? true : false;
         $vendedorVentas = VariablesEntorno::where('nombre', 'vendedores_ventas')->first();
-        $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
+        $idClientePorDefecto = VariablesEntorno::where('nombre', 'id_cliente_venta_defecto')->first();
+        $idClientePorDefecto = $idClientePorDefecto && $idClientePorDefecto->valor ? $idClientePorDefecto->valor : null;
 
         $usuarioPermisos = UsuarioPermisos::where('id_user', request()->user()->id)
             ->where('id_empresa', request()->user()->id_empresa)
             ->first();
 
         $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
+        $bodegas = FacBodegas::whereIn('id', $bodegas)->first();
+        if (!$bodegas) $bodegas = FacBodegas::first();
+
+        $clientePorDefecto = null;
+        if ($idClientePorDefecto) $clientePorDefecto = Nits::with('vendedor.nit')->where('id', $idClientePorDefecto)->first();
+        else $clientePorDefecto = Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222%')->first();
 
         $data = [
-            'cliente' => Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '2222222%')->first(),
-            'bodega' => FacBodegas::whereIn('id', $bodegas)->first(),
+            'bodega' => $bodegas,
+            'empresa' => $empresa,
             'iva_incluido' => $ivaIncluido,
-            'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : '',
+            'cliente' => $clientePorDefecto,
             'valor_uvt' => $valorUVT ? $valorUVT->valor : 0,
-            'empresa' => $empresa
+            'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : ''
         ];
 
 		return response()->json([
@@ -376,6 +386,14 @@ class PosController extends Controller
             ], 422);
         }
 
+        if (!$this->resolucion->comprobante) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>["Resolución" => ["La resolución {$this->resolucion->nombre_completo} no tiene un comprobante valido"]]
+            ], 422);
+        }
+
         $pedido = FacPedidos::where('id', $request->get('id_pedido'))->first();
         if ($pedido->id_venta) {
             return response()->json([
@@ -384,7 +402,7 @@ class PosController extends Controller
                 "message"=>["Pedido" => ["El pedido ya ha sido facturado"]]
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
+        
         $consecutivo = $this->getNextConsecutive($this->resolucion->comprobante->id, $request->get('fecha_manual'));
         
         $request->request->add([
@@ -850,8 +868,25 @@ class PosController extends Controller
         }
     }
 
-    public function showPdfPedido(Request $request, $id)
+    public function showPdfPedido(Request $request, $token, $id)
     {
+        // 1. Buscar el token en la base de datos
+        $accessToken = PersonalAccessToken::findToken($token);
+
+        // 2. Validar si el token existe y es válido
+        if (!$accessToken) {
+            return response()->json(['message' => 'Token inválido o expirado'], 401);
+        }
+
+        // 3. Obtener el usuario dueño de ese token
+        $user = $accessToken->tokenable;
+
+        // Ahora puedes usar $user para obtener la empresa
+        $empresa = Empresa::where('token_db', $user->has_empresa)->first();
+
+        copyDBConnection('sam', 'sam');
+        setDBInConnection('sam', $empresa->token_db);
+
         $pedido = FacPedidos::whereId($id)->first();
 
         if(!$pedido) {
@@ -862,17 +897,30 @@ class PosController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-
         $data = (new PedidosPdf($empresa, $pedido))->buildPdf()->getData();
         return view('pdf.facturacion.pedidos-pos', $data);
     }
 
-    public function showPdfVenta(Request $request, $id)
+    public function showPdfVenta(Request $request, $token, $id)
     {
-        $factura = FacVentas::whereId($id)
-            ->with('resolucion')
-            ->first();
+        // 1. Buscar el token en la base de datos
+        $accessToken = PersonalAccessToken::findToken($token);
+
+        // 2. Validar si el token existe y es válido
+        if (!$accessToken) {
+            return response()->json(['message' => 'Token inválido o expirado'], 401);
+        }
+
+        // 3. Obtener el usuario dueño de ese token
+        $user = $accessToken->tokenable;
+
+        // Ahora puedes usar $user para obtener la empresa
+        $empresa = Empresa::where('token_db', $user->has_empresa)->first();
+
+        copyDBConnection('sam', 'sam');
+        setDBInConnection('sam', $empresa->token_db);
+
+        $factura = FacVentas::whereId($id)->with('resolucion')->first();
 
         if(!$factura) {
             return response()->json([
@@ -881,8 +929,6 @@ class PosController extends Controller
                 'message'=> 'La factura no existe'
             ], 422);
         }
-
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         
         if ($factura->resolucion->tipo_impresion == 0) {
             $data = (new VentasPdf($empresa, $factura))->buildPdf()->getData();
