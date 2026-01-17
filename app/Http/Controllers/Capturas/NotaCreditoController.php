@@ -321,7 +321,7 @@ class NotaCreditoController extends Controller
                 $totalesProducto,
                 $nit,
                 $clienteId,
-                $request->get('documento_referencia') ?? ($notaCredito ? $notaCredito->documento_referencia : null)
+                $this->facturaVentas->docReferencia
             );
             
             if (is_array($resultMovimientos) && isset($resultMovimientos['error'])) {
@@ -340,7 +340,7 @@ class NotaCreditoController extends Controller
                 $documentoGeneral,
                 $nit,
                 $clienteId,
-                $request->get('documento_referencia') ?? ($notaCredito ? $notaCredito->documento_referencia : null)
+                $this->facturaVentas->docReferencia
             );
             
             if (is_array($resultReteFuente) && isset($resultReteFuente['error'])) {
@@ -499,7 +499,7 @@ class NotaCreditoController extends Controller
                 ];
             }
 
-            $docRefCosto = $notaCredito ? $notaCredito->documento_referencia : null;
+            $docRefCosto = $this->facturaVentas->docReferencia;
             $docCosto = new DocumentosGeneral([
                 "id_cuenta" => $cuentaCosto->id,
                 "id_nit" => $cuentaCosto->exige_nit ? $this->facturaVentas->id_cliente : null,
@@ -782,7 +782,7 @@ class NotaCreditoController extends Controller
             }
 
             $cuentaFormaPago = $formaPago->cuenta;
-            $docReferencia = $notaCredito ? $notaCredito->documento_referencia : $request->get('documento_referencia');
+            $docReferencia = $this->facturaVentas->docReferencia;
             $cuentaOpuestoPago = PlanCuentas::CREDITO == $cuentaFormaPago->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
 
             $doc = new DocumentosGeneral([
