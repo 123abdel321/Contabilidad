@@ -46,52 +46,30 @@ class VentaElectronicaSender extends AbstractFESender
 	}
 
 	protected function legalMonetaryTotals()
-	{
-		$ivaIncluido = false; // Define si tu precio unitario ya incluye IVA o no
-		
-		// 1. LINE EXTENSION AMOUNT (suma de valores de línea sin impuestos)
-		if ($ivaIncluido) {
-			// Si el precio unitario ya incluye IVA
-			$line_extension_amount = $this->calculateSubtotalSinIva();
-		} else {
-			// Si el precio unitario NO incluye IVA (lo más común)
-			$line_extension_amount = $this->factura->subtotal; // Esto debería ser sin IVA
-		}
-		
-		// 2. TAX EXCLUSIVE AMOUNT (base gravable)
-		$tax_exclusive_amount = $line_extension_amount 
-			+ $this->factura->total_cargos  // Si tienes cargos
-			- $this->factura->total_descuentos; // Si tienes descuentos a nivel factura
-		
-		// 3. TAX INCLUSIVE AMOUNT (total con impuestos)
-		$tax_inclusive_amount = $tax_exclusive_amount 
-			+ $this->factura->total_iva 
-			+ $this->factura->total_otros_impuestos; // Si tienes otros impuestos
-		
-		// 4. PAYABLE AMOUNT (valor a pagar)
-		$payable_amount = $tax_inclusive_amount 
-			- $this->factura->total_retenciones; // Si tienes retenciones
-		
-		return [
-			'line_extension_amount' => number_format($line_extension_amount, 2, '.', ''),
-			'tax_exclusive_amount' => number_format($tax_exclusive_amount, 2, '.', ''),
-			'tax_inclusive_amount' => number_format($tax_inclusive_amount, 2, '.', ''),
-			'allowance_total_amount' => number_format($this->factura->total_descuentos ?? 0, 2, '.', ''),
-			'charge_total_amount' => number_format($this->factura->total_cargos ?? 0, 2, '.', ''),
-			'payable_amount' => number_format($payable_amount, 2, '.', ''),
-		];
-}
-
-	protected function getSubtotalTax()
-	{
-		$subtotalTax = 0;
-		foreach ($this->factura->detalles as $key => $detalle) {
-			if ((int)$detalle->iva_porcentaje) {
-				$subtotalTax+= $detalle->subtotal;
-			}
-		}
-
-		return number_format($subtotalTax, 2, '.', '');
-	}
+    {
+        // Usar $this->iva_inluido que ya está disponible desde el constructor
+        
+        if ($this->iva_inluido) {
+            // Cuando el precio INCLUYE IVA
+            // Fórmula: subtotal_sin_iva = total_factura - total_iva
+            $subtotal_sin_iva = $this->factura->total_factura - $this->factura->total_iva;
+        } else {
+            // Cuando el precio NO incluye IVA
+            // Asumir que subtotal ya es sin IVA
+            $subtotal_sin_iva = $this->factura->subtotal;
+        }
+        
+        // Asegurar redondeo correcto
+        $subtotal_sin_iva = round($subtotal_sin_iva, 2);
+        
+        return [
+            'line_extension_amount' => number_format($subtotal_sin_iva, 2, '.', ''),
+            'tax_exclusive_amount' => number_format($subtotal_sin_iva, 2, '.', ''),
+            'tax_inclusive_amount' => number_format($this->factura->total_factura, 2, '.', ''),
+            'allowance_total_amount' => number_format($this->factura->total_descuento ?? 0, 2, '.', ''),
+            'charge_total_amount' => "0.00",
+            'payable_amount' => number_format($this->factura->total_factura, 2, '.', ''),
+        ];
+    }
 
 }

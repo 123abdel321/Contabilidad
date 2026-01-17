@@ -244,17 +244,29 @@ abstract class AbstractFESender
 		$invoiceLines = [];
 		
 		foreach ($this->detalles as $key => $detalle) {
+
+		 	if ($this->iva_inluido) {
+                // Precio INCLUYE IVA
+                $precio_unitario_sin_iva = $detalle->costo / (1 + ($detalle->iva_porcentaje / 100));
+                $line_extension_amount = ($precio_unitario_sin_iva * $detalle->cantidad) - $detalle->descuento_valor;
+                $price_amount = number_format($detalle->costo, 2, '.', ''); // Con IVA
+            } else {
+                // Precio NO incluye IVA
+                $line_extension_amount = ($detalle->costo * $detalle->cantidad) - $detalle->descuento_valor;
+                $price_amount = number_format($detalle->costo * (1 + ($detalle->iva_porcentaje / 100)), 2, '.', ''); // Con IVA calculado
+            }
+
 			$invoiceLines[] = [
 				"unit_measure_id" => 642, // Unidad de medida que se maneja
 				"invoiced_quantity" => $detalle->cantidad, // Cantidad de productos
-				"line_extension_amount" =>  $this->iva_inluido ? $detalle->subtotal : $detalle->subtotal, // Total producto incluyento impuestos
+				"line_extension_amount" => number_format($line_extension_amount, 2, '.', ''), // Total producto incluyento impuestos
 				"free_of_charge_indicator" => false, // Indica si el producto es una muestra gratis
 				// "allowance_charges" => $this->totalDescuento($detalle),
 				"tax_totals" => $this->taxTotalsDetalle($detalle, [1, 5]),
 				"description" => $detalle->producto->nombre, // Descripcion del producto
 				"code" => $detalle->producto->codigo, // (SKU) Codigo del producto
 				"type_item_identification_id" => 1, //
-				"price_amount" => $detalle->total, // Precio total del producto incluyendo impuestos
+				"price_amount" => $price_amount, // Precio total del producto incluyendo impuestos
 				"base_quantity" => $detalle->cantidad // unidad base
 			];
 		}
@@ -356,6 +368,11 @@ abstract class AbstractFESender
 		foreach ($impuestos as $impuesto) {
 			$existencia = $data ? in_array($impuesto['tax_id'], $data) : true;
 			if ($existencia) {
+				if ($this->iva_inluido && $impuesto['tax_id'] == 1) {
+					$base_sin_iva = $detalle->subtotal / (1 + ($detalle->iva_porcentaje / 100));
+					$impuesto['taxable_amount'] = number_format($base_sin_iva, 2, '.', '');
+				}
+				
 				if (intval($impuesto['tax_amount']) || $impuesto['tax_id'] == 1) {
 					$taxTotalsDetalle[] = $this->decoreTax($impuesto);
 				}
@@ -378,25 +395,32 @@ abstract class AbstractFESender
 
 	private function impuesto($detalle)
 	{
+		// Calcular base correcta según si IVA está incluido o no
+		if ($this->iva_inluido) {
+			$base_iva = $detalle->subtotal / (1 + ($detalle->iva_porcentaje / 100));
+		} else {
+			$base_iva = $detalle->subtotal;
+		}
+
 		$impuestos = [
 			[
 				"tax_id" => 1, //IVA
 				"tax_amount" => $detalle->iva_valor,
 				"percent" => $detalle->iva_porcentaje ?? "0.00",
-				"taxable_amount" => number_format($this->iva_inluido ? $detalle->subtotal : $detalle->subtotal, 2, '.', '')
+				"taxable_amount" => number_format($base_iva, 2, '.', '')
 			],
 			[
 				"tax_id" => 5, // RETE IVA
 				"tax_amount" => "0.00",
 				"tax_amount" => $detalle->valor_rete_iva ?? "0.00",
 				"percent" => $detalle->porcentaje_rete_iva ?? "0.00",
-				"taxable_amount" => number_format($detalle->subtotal, 2, '.', '')
+				"taxable_amount" => number_format($base_iva, 2, '.', '')
 			],
 			[
 				"tax_id" => 6, // RETE FUENTE
 				"tax_amount" => $this->factura->total_rete_fuente,
 				"percent" => $detalle->porcentaje_rete_fuente ?? "0.00",
-				"taxable_amount" => number_format($detalle->subtotal, 2, '.', '')
+				"taxable_amount" => number_format($base_iva, 2, '.', '')
 			],
 		];
 		return $impuestos;

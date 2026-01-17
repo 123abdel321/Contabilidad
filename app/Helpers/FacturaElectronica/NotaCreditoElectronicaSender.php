@@ -57,14 +57,29 @@ class NotaCreditoElectronicaSender extends AbstractFESender
 	}
 
 	protected function legalMonetaryTotals()
-	{
-		return [
-			'line_extension_amount' => number_format($this->factura->subtotal, 2, '.', ''), // Total con Impuestos
-			'tax_exclusive_amount' => $this->factura->total_iva ? number_format($this->factura->subtotal, 2, '.', '') : "0.00", // Total sin impuestos pero con descuentos
-			'tax_inclusive_amount' => $this->factura->total_factura + $this->factura->total_rete_fuente, // Total con Impuestos
-			'allowance_total_amount' => $this->factura->total_descuento, // Descuentos nivel de factura
-			'charge_total_amount' => "0.00", // Cargos
-			'payable_amount' => $this->factura->total_factura + $this->factura->total_rete_fuente, // Valor total a pagar
-		];
-	}
+    {
+        // Usar $this->iva_inluido que ya está disponible desde el constructor
+        
+        if ($this->iva_inluido) {
+            // Cuando el precio INCLUYE IVA
+            // Fórmula: subtotal_sin_iva = total_factura - total_iva
+            $subtotal_sin_iva = $this->factura->total_factura - $this->factura->total_iva;
+        } else {
+            // Cuando el precio NO incluye IVA
+            // Asumir que subtotal ya es sin IVA
+            $subtotal_sin_iva = $this->factura->subtotal;
+        }
+        
+        // Asegurar redondeo correcto
+        $subtotal_sin_iva = round($subtotal_sin_iva, 2);
+        
+        return [
+            'line_extension_amount' => number_format($subtotal_sin_iva, 2, '.', ''),
+            'tax_exclusive_amount' => number_format($subtotal_sin_iva, 2, '.', ''),
+            'tax_inclusive_amount' => number_format($this->factura->total_factura, 2, '.', ''),
+            'allowance_total_amount' => number_format($this->factura->total_descuento ?? 0, 2, '.', ''),
+            'charge_total_amount' => "0.00",
+            'payable_amount' => number_format($this->factura->total_factura, 2, '.', ''),
+        ];
+    }
 }
