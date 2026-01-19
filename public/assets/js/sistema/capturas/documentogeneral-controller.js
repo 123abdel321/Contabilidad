@@ -861,33 +861,32 @@ function changeConcecutivo(event) {
     if(event.keyCode == 13){
         searchCaptura();
         console.log('consecutivoEditado: ',consecutivoEditado);
-        if (!consecutivoEditado) {
-            var consecutivoActual = parseInt($("#consecutivo").val());
-            console.log('consecutivoActual: ',consecutivoActual);
-            
-            if (consecutivoUltimo !== undefined && consecutivoUltimo !== null) {
-                
-                // 👈 AQUI DEBE IR LA DEFINICIÓN DE numConsecutivoUltimo
-                var numConsecutivoUltimo = parseInt(consecutivoUltimo); 
-                console.log('numConsecutivoUltimo: ',numConsecutivoUltimo);
-                // Verifica si la conversión fue exitosa (no es NaN)
-                if (!isNaN(numConsecutivoUltimo)) {
-                    
-                    var diferenciaConsecutivos = Math.abs(numConsecutivoUltimo - consecutivoActual);
-                    
-                    if (diferenciaConsecutivos >= 2 && consecutivoActual > 2) {
-                        
-                        var mensajeDetallado = 
-                            'El consecutivo actual (' + consecutivoActual + 
-                            ') está ' + diferenciaConsecutivos + 
-                            ' números alejado del último consecutivo utilizado (' + numConsecutivoUltimo + 
-                            '). Confirme si desea saltar esta numeración.';
+        // if (!consecutivoEditado) {
+        //     var consecutivoActual = parseInt($("#consecutivo").val());
 
-                        agregarToast('warning', 'Salto de Consecutivo', mensajeDetallado);
-                    }
-                }
-            }
-        }
+        //     if (consecutivoUltimo !== undefined && consecutivoUltimo !== null) {
+                
+        //         // 👈 AQUI DEBE IR LA DEFINICIÓN DE numConsecutivoUltimo
+        //         var numConsecutivoUltimo = parseInt(consecutivoUltimo); 
+        //         console.log('numConsecutivoUltimo: ',numConsecutivoUltimo);
+        //         // Verifica si la conversión fue exitosa (no es NaN)
+        //         if (!isNaN(numConsecutivoUltimo)) {
+                    
+        //             var diferenciaConsecutivos = Math.abs(numConsecutivoUltimo - consecutivoActual);
+                    
+        //             if (diferenciaConsecutivos >= 2 && consecutivoActual > 2) {
+                        
+        //                 var mensajeDetallado = 
+        //                     'El consecutivo actual (' + consecutivoActual + 
+        //                     ') está ' + diferenciaConsecutivos + 
+        //                     ' números alejado del último consecutivo utilizado (' + numConsecutivoUltimo + 
+        //                     '). Confirme si desea saltar esta numeración.';
+
+        //                 agregarToast('warning', 'Salto de Consecutivo', mensajeDetallado);
+        //             }
+        //         }
+        //     }
+        // }
         consecutivoEditado = true;
     }
 }
