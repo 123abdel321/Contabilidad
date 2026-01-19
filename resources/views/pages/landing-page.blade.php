@@ -959,16 +959,16 @@
                             <div class="price-period">/mes + IVA</div>
                         </div>
                     </div>
-                    
+
                     <ul class="pricing-features">
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>1 - 30 Facturas mensuales</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>1 - 500 Facturas POS</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>1 Bodega de inventario</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>1 Punto de venta</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i> Módulo POS</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i> <b>Facturación Electrónica Incluida</b> </li>
-                        <li><i class="fas fa-times" style="color: var(--danger);"></i> Nómina 1 - 5 empleados</li>
-                        <li><i class="fas fa-times" style="color: var(--danger);"></i> AIU </li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i><b>Facturación Electrónica incluida</b></li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 30 facturas electrónicas mensuales</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 500 facturas POS mensuales</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Módulo POS integrado</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 1 puntos de venta</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 1 bodegas de inventario</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Nómina para 1 a 5 empleados</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Manejo de AIU</li>
                     </ul>
                     
                     <div class="pricing-footer">
@@ -993,14 +993,14 @@
                     </div>
                     
                     <ul class="pricing-features">
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>100 - 300 Facturas mensuales</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>1000 - 2000 Facturas POS</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>2 Bodega de inventario</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>2 Punto de venta</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i> Módulo POS</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i> <b>Facturación Electrónica Incluida</b> </li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i> Nómina 5 - 15 empleados</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i> AIU </li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i><b>Facturación Electrónica incluida</b></li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 300 facturas electrónicas mensuales</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 2.000 facturas POS mensuales</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Módulo POS integrado</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 2 puntos de venta</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 2 bodegas de inventario</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Nómina para 5 a 15 empleados</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Manejo de AIU</li>
                     </ul>
                     
                     <div class="pricing-footer">
@@ -1022,16 +1022,16 @@
                             <div class="price-period">/mes + IVA</div>
                         </div>
                     </div>
-                    
-                   <ul class="pricing-features">
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Facturas Electrónicas Ilimitadas</li>
+
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check" style="color: var(--success);"></i><b>Facturación Electrónica incluida</b></li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Facturas electrónicas Ilimitadas</li>
                         <li><i class="fas fa-check" style="color: var(--success);"></i>Facturas POS Ilimitadas</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Bodega Ilimitadas</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>3 Punto de venta</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i> Módulo POS</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i> <b>Facturación Electrónica Incluida</b> </li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i> Nómina Ilimitadas</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i> AIU </li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Módulo POS integrado</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 3 puntos de venta</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 3 bodegas de inventario</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Nómina Ilimitadas</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Manejo de AIU</li>
                     </ul>
                     
                     <div class="pricing-footer">
