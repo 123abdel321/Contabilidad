@@ -387,24 +387,13 @@ function compraInit () {
     $comboComprobanteCompras = $('#id_comprobante_compra').select2({
         theme: 'bootstrap-5',
         delay: 250,
-        language: {
-            noResults: function() {
-                return "No hay resultado";        
-            },
-            searching: function() {
-                return "Buscando..";
-            },
-            inputTooShort: function () {
-                return "Por favor introduce 1 o más caracteres";
-            }
-        },
         ajax: {
-            url: 'api/resoluciones/combo-resoluciones',
+            url: 'api/comprobantes/combo-comprobante',
             headers: headers,
             data: function (params) {
                 var query = {
                     q: params.term,
-                    tipo_resoluciones: [0, 1],
+                    tipo_comprobante: 2,
                     _type: 'query'
                 }
                 return query;
