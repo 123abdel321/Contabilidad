@@ -4,688 +4,1175 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Portafolio ERP: Plataforma Integral de ERP, POS y Administración PH | Colombia</title>
+    <title>Portafolio ERP | Software Contable y Facturación Electrónica DIAN para Colombia</title>
     
-    <meta name="description" content="PORTAFOLIOERP es la plataforma integral líder en Colombia. Unifica tu ERP (Contabilidad DIAN, Nómina, Facturación Electrónica), Módulo POS (Ventas) y Gestión de Propiedad Horizontal (Maximoph.co).">
+    <meta name="description" content="Software ERP colombiano con Contabilidad DIAN, Facturación Electrónica, Nómina y POS. Todo en una plataforma 100% web. Cumple con la normativa fiscal.">
     
-    <meta name="keywords" content="ERP Colombia, facturación electrónica DIAN, software contable, nómina Colombia, PORTAFOLIOERP, sistema contable, POS Colombia, software POS, Administración PH, Maximoph, software propiedad horizontal, gestión empresarial">
-    
-    <meta name="author" content="PORTAFOLIOERP">
-    <meta name="robots" content="index, follow">
-    
-    <link rel="canonical" href="https://portafolioerp.com/">
-    
-    <link rel="related" href="https://pos.portafolioerp.com/" title="Módulo POS de Portafolio ERP">
-    <link rel="related" href="https://maximoph.co/" title="Administración PH - Maximoph">
-
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://portafolioerp.com/">
-    <meta property="og:title" content="PORTAFOLIOERP: Un solo sistema para ERP, POS y Propiedad Horizontal">
-    <meta property="og:description" content="Centraliza tu Contabilidad DIAN, Ventas POS y Gestión PH. Tres soluciones, un solo ecosistema robusto.">
-    <meta property="og:image" content="https://PORTAFOLIOERP.com/og-image.jpg">
-    
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://PORTAFOLIOERP.com/">
-    <meta property="twitter:title" content="PORTAFOLIOERP: El ERP + POS + Maximoph para tu empresa.">
-    <meta property="twitter:description" content="Centraliza tu Contabilidad DIAN, Ventas POS y Gestión PH. Tres soluciones, un solo ecosistema.">
-    <meta property="twitter:image" content="https://PORTAFOLIOERP.com/og-image.jpg">
-    
-    <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="mask-icon" href="https://maximoph.co/img/logo_contabilidad.png" color="#000000">
-    <link rel="alternate icon" class="js-site-favicon" type="image/png" href="/img/logo_contabilidad.png">
-    <link rel="icon" class="js-site-favicon" type="image/png" href="/img/logo_contabilidad.png">
-    
+    <!-- Schema Markup para Software -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "url": "https://portafolioerp.com/",
-      "name": "PORTAFOLIOERP | Plataforma de Software Empresarial",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://portafolioerp.com/buscar?q={search_term_string}",
-        "query-input": "required name=search_term_string"
+      "@type": "SoftwareApplication",
+      "name": "Portafolio ERP",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "99000",
+        "priceCurrency": "COP"
       },
-      "hasPart": [
-        {
-          "@type": "WebPage",
-          "name": "Facturación Electrónica DIAN",
-          "url": "https://portafolioerp.com/#facturacion"
-        },
-        {
-          "@type": "WebPage",
-          "name": "Software Contable y Nómina",
-          "url": "https://portafolioerp.com/#contabilidad-nomina"
-        },
-        {
-          "@type": "WebPage",
-          "name": "Módulo POS (Punto de Venta)",
-          "url": "https://pos.portafolioerp.com/"
-        },
-        {
-          "@type": "WebPage",
-          "name": "Maximoph - Administración PH",
-          "url": "https://maximoph.co/"
-        },
-        {
-          "@type": "WebPage",
-          "name": "Ingresar",
-          "url": "https://app.portafolioerp.com/login" 
-        }
-      ]
+      "description": "Software ERP colombiano con Contabilidad DIAN, Facturación Electrónica, Nómina y POS integrados",
+      "featureList": "Contabilidad, Facturación DIAN, Nómina, Punto de Venta, Reportes",
+      "softwareVersion": "2.0"
     }
     </script>
-
-    <link id="pagestyle" href="{{ asset('assets/css/landing-page.css') }}?v={{ config('app.version') }} " rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary: #1e40af;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #ffffff;
+            --gray: #64748b;
+            --gray-light: #f1f5f9;
+            --gray-dark: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --secondary: #93c5fd;
+            --dark: #f8fafc;
+            --darker: #f1f5f9;
+            --light: #0f172a;
+            --gray: #94a3b8;
+            --gray-light: #1e293b;
+            --gray-dark: #cbd5e1;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header & Navigation */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--light);
+            border-bottom: 1px solid var(--gray-light);
+            z-index: 1000;
+            transition: var(--transition);
+            padding: 1rem 0;
+        }
+        
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+        }
+        
+        [data-theme="dark"] .header.scrolled {
+            background: rgba(15, 23, 42, 0.95);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 120px;
+            background: linear-gradient(135deg, var(--gray-light) 0%, var(--light) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        [data-theme="dark"] .hero {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+        
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        
+        .hero-title .highlight {
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .hero-title .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(37, 99, 235, 0.2);
+            z-index: -1;
+        }
+        
+        .hero-description {
+            font-size: 1.125rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        
+        .hero-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+        
+        .feature-item svg {
+            color: var(--success);
+            flex-shrink: 0;
+        }
+        
+        .hero-visual {
+            position: relative;
+        }
+        
+        .dashboard-preview {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-light);
+            transform: perspective(1000px) rotateY(-10deg);
+            transition: var(--transition);
+        }
+        
+        .dashboard-preview:hover {
+            transform: perspective(1000px) rotateY(0deg);
+        }
+        
+        /* Section Styles */
+        .section {
+            padding: 100px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--gray);
+        }
+        
+        /* Problems Section */
+        .problems {
+            background: var(--gray-light);
+            padding: 100px 0;
+        }
+        
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .problem-card {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .problem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .problem-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .problem-icon-1 {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .problem-icon-2 {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        
+        .problem-icon-3 {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+        
+        /* Solutions Section */
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .solution-card {
+            background: var(--light);
+            border: 2px solid var(--gray-light);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            transition: var(--transition);
+        }
+        
+        .solution-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .solution-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Pricing Section */
+        .pricing {
+            background: var(--gray-light);
+            padding: 100px 0;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .pricing-card {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .pricing-card.featured {
+            border: 2px solid var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .pricing-header {
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .pricing-price {
+            margin: 1.5rem 0;
+        }
+        
+        .price-amount {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+        
+        .price-period {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+        
+        .pricing-features {
+            padding: 2rem;
+            list-style: none;
+        }
+        
+        .pricing-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .pricing-features li svg {
+            color: var(--success);
+            flex-shrink: 0;
+        }
+        
+        .pricing-footer {
+            padding: 0 2rem 2rem;
+        }
+        
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-description {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--darker);
+            color: var(--gray);
+            padding: 80px 0 40px;
+        }
+        
+        [data-theme="dark"] .footer {
+            background: #111827;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-brand p {
+            margin-top: 1rem;
+            color: var(--gray);
+        }
+        
+        .footer-column h4 {
+            color: var(--light);
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-column a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-column a:hover {
+            color: var(--primary-light);
+        }
+        
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-dark);
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        .hamburger-line {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--dark);
+            margin: 4px 0;
+            transition: var(--transition);
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--dark);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .theme-toggle:hover {
+            background: var(--gray-light);
+        }
+        
+        .sun-icon, .moon-icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .sun-icon { display: none; }
+        .moon-icon { display: block; }
+        
+        [data-theme="dark"] .sun-icon { display: block; }
+        [data-theme="dark"] .moon-icon { display: none; }
+        
+        /* Scroll to Top */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+            z-index: 999;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .scroll-top-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .scroll-top-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-5px);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-grid,
+            .solutions-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-features,
+            .problems-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .hero-features,
+            .problems-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="page-container">
-        <!-- Header -->
-        <header class="header" id="header">
-            <div class="container header-content">
-                <div class="logo">
-                    <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="PORTAFOLIOERP Logo" class="logo-image">
-                    <span class="logo-text">PORTAFOLIO ERP</span>
-                </div>
-                
-                <!-- Agregando toggle de modo oscuro -->
-                <div class="header-controls">
-                    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
-                        <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                        <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    </button>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="Portafolio ERP">
+                <span class="logo-text">PORTAFOLIO ERP</span>
+            </a>
+            
+            <nav class="nav">
+                <a href="#soluciones" class="nav-link">Soluciones</a>
+                <a href="#modulos" class="nav-link">Módulos</a>
+                <a href="#precios" class="nav-link">Precios</a>
+                <a href="#contacto" class="nav-link">Contacto</a>
+                <a href="https://app.portafolioerp.com/login" class="btn btn-outline">
+                    <i class="fas fa-sign-in-alt"></i> Ingresar
+                </a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+                    <i class="fas fa-sun sun-icon"></i>
+                    <i class="fas fa-moon moon-icon"></i>
+                </button>
+            </nav>
+            
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top-btn" id="scrollTopBtn">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        Certificado DIAN - 100% Colombiano
+                    </div>
                     
-                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menú">
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                    </button>
-                </div>
-                
-                <nav class="nav mobile-menu" id="mobileMenu">
-                    <a href="#modulos" class="nav-link" data-section="modulos">Módulos</a>
-                    <a href="#portafolio-integrado" class="nav-link" data-section="portafolio-integrado">Portafolio Integrado</a>
-                    <a href="#beneficios" class="nav-link" data-section="beneficios">Beneficios</a>
-                    <a href="#clientes" class="nav-link" data-section="clientes">Clientes</a>
-                    <a href="#contacto" class="nav-link" data-section="contacto">Contacto</a>
-                    <a href="/login" class="btn btn-outline">Iniciar Sesión</a>
-                </nav>
-            </div>
-        </header>
-
-        <!-- Agregando botón scroll to top -->
-        <button class="scroll-to-top" id="scrollToTop" aria-label="Volver arriba">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="19" x2="12" y2="5"></line>
-                <polyline points="5,12 12,5 19,12"></polyline>
-            </svg>
-        </button>
-
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="container">
-                <div class="hero-grid">
-                    <div class="hero-content animate-fade-in">
-                        <div class="hero-text">
-                            <div class="badge animate-slide-up">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                </svg>
-                                Integración Oficial DIAN
-                            </div>
-                            <h1 class="hero-title animate-slide-up">
-                                El ERP colombiano que integra 
-                                <span class="text-primary">contabilidad, nómina y facturación DIAN</span> 
-                                en una sola plataforma
-                            </h1>
-                            <p class="hero-description animate-slide-up">
-                                Cumple con la normativa fiscal, optimiza tus procesos empresariales y toma decisiones basadas en datos
-                                reales. Todo desde una interfaz intuitiva diseñada para empresas colombianas.
-                            </p>
-                        </div>
-                        <div class="hero-buttons animate-slide-up">
-                            <a class="btn btn-primary btn-lg" href="/login">
-                                Iniciar Sesión
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    <polyline points="12,5 19,12 12,19"></polyline>
-                                </svg>
-                            </a>
-                        </div>
-                        <div class="hero-features animate-fade-in">
-                            <div class="feature-item">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22,4 12,14.01 9,11.01"></polyline>
-                                </svg>
-                                <span>Sin instalación</span>
-                            </div>
-                            <div class="feature-item">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22,4 12,14.01 9,11.01"></polyline>
-                                </svg>
-                                <span>Soporte 24/7</span>
-                            </div>
-                            <div class="feature-item">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22,4 12,14.01 9,11.01"></polyline>
-                                </svg>
-                                <span>Datos seguros</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hero-dashboard animate-float">
-                        <div class="dashboard-card">
-                            <div class="dashboard-header">
-                                <h3>Dashboard Ejecutivo</h3>
-                                <span class="status-badge animate-pulse">En tiempo real</span>
-                            </div>
-                            <div class="dashboard-metrics">
-                                <div class="metric-card metric-blue animate-scale">
-                                    <div class="metric-value">$2.4M</div>
-                                    <div class="metric-label">Ingresos mes</div>
-                                </div>
-                                <div class="metric-card metric-green animate-scale">
-                                    <div class="metric-value">847</div>
-                                    <div class="metric-label">Facturas DIAN</div>
-                                </div>
-                            </div>
-                            <div class="dashboard-chart">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="18" y1="20" x2="18" y2="10"></line>
-                                    <line x1="12" y1="20" x2="12" y2="4"></line>
-                                    <line x1="6" y1="20" x2="6" y2="14"></line>
-                                </svg>
-                                <div class="chart-label">Gráficos interactivos</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Problems Section -->
-        <section class="problems" id="problemas">
-            <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2>Problemas que resolvemos cada día</h2>
-                    <p>Empresas colombianas enfrentan desafíos únicos. PORTAFOLIOERP está diseñado específicamente para resolverlos.</p>
-                </div>
-                <div class="problems-grid">
-                    <div class="problem-card animate-on-scroll">
-                        <div class="problem-icon problem-red">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            </svg>
-                        </div>
-                        <h3>Sanciones DIAN</h3>
-                        <p>Evita multas por errores en facturación electrónica. Nuestro sistema garantiza cumplimiento normativo automático.</p>
-                    </div>
-                    <div class="problem-card animate-on-scroll">
-                        <div class="problem-icon problem-orange">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14,2 14,8 20,8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10,9 9,9 8,9"></polyline>
-                            </svg>
-                        </div>
-                        <h3>Procesos Manuales</h3>
-                        <p>Centraliza contabilidad y nómina sin hojas de cálculo. Automatiza tareas repetitivas y reduce errores humanos.</p>
-                    </div>
-                    <div class="problem-card animate-on-scroll">
-                        <div class="problem-icon problem-blue">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="18" y1="20" x2="18" y2="10"></line>
-                                <line x1="12" y1="20" x2="12" y2="4"></line>
-                                <line x1="6" y1="20" x2="6" y2="14"></line>
-                            </svg>
-                        </div>
-                        <h3>Falta de Visibilidad</h3>
-                        <p>Toma decisiones con datos reales en tiempo real. Reportes gerenciales que impulsan el crecimiento.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Modules Section -->
-        <section id="modulos" class="modules">
-            <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2>Módulos integrados para tu empresa</h2>
-                    <p>Cada módulo trabaja en perfecta sincronía, compartiendo información en tiempo real.</p>
-                </div>
-                <div class="modules-grid">
-                    <div class="module-card animate-on-scroll">
-                        <div class="module-icon module-blue">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="18" y1="20" x2="18" y2="10"></line>
-                                <line x1="12" y1="20" x2="12" y2="4"></line>
-                                <line x1="6" y1="20" x2="6" y2="14"></line>
-                            </svg>
-                        </div>
-                        <h3>Contabilidad</h3>
-                        <p>Plan de cuentas PUC, estados financieros automáticos, conciliación bancaria.</p>
-                    </div>
-                    <div class="module-card animate-on-scroll">
-                        <div class="module-icon module-green">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14,2 14,8 20,8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10,9 9,9 8,9"></polyline>
-                            </svg>
-                        </div>
-                        <h3>Facturación</h3>
-                        <p>Facturación tradicional y electrónica, cotizaciones, control de inventarios.</p>
-                    </div>
-                    <div class="module-card animate-on-scroll">
-                        <div class="module-icon module-purple">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                        </div>
-                        <h3>Nómina</h3>
-                        <p>Liquidación automática, prestaciones sociales, reportes ministeriales.</p>
-                    </div>
-                    <div class="module-card animate-on-scroll">
-                        <div class="module-icon module-sky">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            </svg>
-                        </div>
-                        <h3>DIAN</h3>
-                        <p>Facturación electrónica, reportes exógenas, medios magnéticos automáticos.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Portafolio integrado Section -->
-        <section id="portafolio-integrado" class="integrated-portfolio">
-            <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <div class="section-badge">Ecosistema Integrado</div>
-                    <h2>Expande tu gestión con el Ecosistema PORTAFOLIOERP</h2>
-                    <p>Una plataforma que crece con tu negocio: Módulo POS integrado y Gestión de Propiedad Horizontal.</p>
-                </div>
-                
-                <div class="integrated-grid">
-                    <div class="integrated-card card-pos animate-on-scroll">
-                        <div class="card-background"></div>
-                        <div class="card-content">
-                            <div class="card-header">
-                                <div class="integrated-icon">
-                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M6 3h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
-                                        <path d="M12 17v-4"></path>
-                                        <path d="M8 21h8"></path>
-                                        <path d="M5 13l-1 8h16l-1-8"></path>
-                                    </svg>
-                                </div>
-                                <div class="card-badge">Solución de Venta</div>
-                            </div>
-                            <h3>Módulo POS: El Poder de tu ERP en el Punto de Venta</h3>
-                            <p>Convierte ventas minoristas rápidas directamente en documentos contables. Nuestro POS sincroniza en tiempo real toda la operación de caja con los datos maestros del ERP, desde el inventario hasta la factura DIAN.</p>
-                            <ul class="features-list">
-                                <li>
-                                    <div class="feature-icon">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="20 6 9 17 4 12"></polyline>
-                                        </svg>
-                                    </div>
-                                    <span>Integración Contable Total: Sincroniza ventas, costos y asientos.</span>
-                                </li>
-                                <li>
-                                    <div class="feature-icon">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="20 6 9 17 4 12"></polyline>
-                                        </svg>
-                                    </div>
-                                    <span>Gestión de Datos Maestros: Utiliza productos, bodegas y resoluciones del ERP.</span>
-                                </li>
-                                <li>
-                                    <div class="feature-icon">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="20 6 9 17 4 12"></polyline>
-                                        </svg>
-                                    </div>
-                                    <span>Manejo de Pedidos y Vendedores: Controla ubicaciones, vendedores y el ciclo de vida del pedido.</span>
-                                </li>
-                            </ul>
-                            <div class="card-footer">
-                                <a href="https://pos.portafolioerp.com/" target="_blank" class="btn btn-primary">
-                                    Ver Módulo POS
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M5 12h14"></path>
-                                        <path d="m12 5 7 7-7 7"></path>
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="integrated-card card-maximoph animate-on-scroll">
-                        <div class="card-background"></div>
-                        <div class="card-content">
-                            <div class="card-header">
-                                <div class="integrated-icon">
-                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                                        <path d="M2 17l10 5 10-5"></path>
-                                        <path d="M2 12l10 5 10-5"></path>
-                                    </svg>
-                                </div>
-                                <div class="card-badge">Administración PH</div>
-                            </div>
-                            <h3>Maximoph: La Gestión Contable Precisa para PH</h3>
-                            <p>Software especializado en la administración financiera y operativa de Propiedad Horizontal. Diseñado para ofrecer total transparencia y cumplimiento normativo a administradores y residentes.</p>
-                            <ul class="features-list">
-                                <li>
-                                    <div class="feature-icon">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="20 6 9 17 4 12"></polyline>
-                                        </svg>
-                                    </div>
-                                    <span>Facturación y Coeficientes: Facturación automática por coeficientes, con gestión de cuotas y valores fijos.</span>
-                                </li>
-                                <li>
-                                    <div class="feature-icon">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="20 6 9 17 4 12"></polyline>
-                                        </svg>
-                                    </div>
-                                    <span>Control de Cartera: Causación de intereses por mora y cruce automático de anticipos en tiempo real.</span>
-                                </li>
-                                <li>
-                                    <div class="feature-icon">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <polyline points="20 6 9 17 4 12"></polyline>
-                                        </svg>
-                                    </div>
-                                    <span>Integración Total: Conexión contable inmediata para reportes financieros y DIAN precisos.</span>
-                                </li>
-                            </ul>
-                            <div class="card-footer">
-                                <a href="https://maximoph.co/" target="_blank" class="btn btn-primary">
-                                    Ver Maximoph
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M5 12h14"></path>
-                                        <path d="m12 5 7 7-7 7"></path>
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Benefits Section -->
-        <section id="beneficios" class="benefits">
-            <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2>¿Por qué elegir PORTAFOLIOERP?</h2>
-                    <p>Más que un software, somos tu socio tecnológico para el crecimiento empresarial.</p>
-                </div>
-                <div class="benefits-grid">
-                    <div class="benefit-item animate-on-scroll">
-                        <div class="benefit-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                            </svg>
-                        </div>
-                        <h3>Implementación Rápida</h3>
-                        <p>Tu empresa operando en menos de 48 horas con migración de datos incluida.</p>
-                    </div>
-                    <div class="benefit-item animate-on-scroll">
-                        <div class="benefit-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            </svg>
-                        </div>
-                        <h3>Seguridad Garantizada</h3>
-                        <p>Certificación ISO 27001, backups automáticos y encriptación de extremo a extremo.</p>
-                    </div>
-                    <div class="benefit-item animate-on-scroll">
-                        <div class="benefit-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                        </div>
-                        <h3>Soporte Especializado</h3>
-                        <p>Equipo de contadores y desarrolladores disponibles 24/7 para tu tranquilidad.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonials Section -->
-        <section id="clientes" class="testimonials">
-            <div class="container">
-                <div class="section-header animate-on-scroll">
-                    <h2>Empresas que confían en nosotros</h2>
-                    <p>Más de 30 empresas colombianas han transformado sus procesos con PORTAFOLIO ERP.</p>
-                </div>
-                <div class="testimonials-grid">
-                    <div class="testimonial-card animate-on-scroll">
-                        <div class="stars">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
-                        <blockquote>
-                            "Desde que usamos PORTAFOLIOERP, cerramos mes en horas, no en días. La integración con la DIAN es
-                            perfecta y nunca más hemos tenido problemas fiscales."
-                        </blockquote>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">MC</div>
-                            <div class="author-info">
-                                <div class="author-name">María Contreras</div>
-                                <div class="author-title">Directora Financiera, Grupo Empresarial</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card animate-on-scroll">
-                        <div class="stars">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
-                        <blockquote>
-                            "La nómina que antes nos tomaba una semana, ahora la procesamos en minutos. El soporte técnico es
-                            excepcional, siempre disponibles cuando los necesitamos."
-                        </blockquote>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">JR</div>
-                            <div class="author-info">
-                                <div class="author-name">Jorge Ramírez</div>
-                                <div class="author-title">Gerente General, Constructora del Valle</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA Section -->
-        <section class="cta">
-            <div class="container">
-                <div class="cta-content animate-on-scroll">
-                    <h2>Transforma tu empresa hoy mismo</h2>
-                    <p>Únete a las empresas que ya optimizaron sus procesos y cumplen sin estrés con la normativa fiscal colombiana.</p>
-                    <div class="cta-buttons">
-                        <a href="https://wa.me/573207141104?text=Hola%2C%20estoy%20interesado%20en%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20el%20sistema%20Portafolio%20ERP.%20%C2%BFPodr%C3%ADan%20brindarme%20detalles%3F" 
-                        target="_blank" 
-                        class="btn btn-outline-white btn-lg">
-                            Hablar con un Experto
+                    <h1 class="hero-title">
+                        Software ERP que <span class="highlight">elimina las sanciones de la DIAN</span> y automatiza tu empresa
+                    </h1>
+                    
+                    <p class="hero-description">
+                        Contabilidad, facturación electrónica, nómina y POS integrados en una sola plataforma 100% web. 
+                        Diseñado específicamente para el mercado colombiano. Sin instalaciones, sin complicaciones.
+                    </p>
+                    
+                    <div class="hero-buttons">
+                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20una%20demo%20de%20Portafolio%20ERP" 
+                           target="_blank" 
+                           class="btn btn-primary btn-lg">
+                            <i class="fab fa-whatsapp"></i> Solicitar Demo Gratis
+                        </a>
+                        
+                        <a href="#precios" class="btn btn-outline btn-lg">
+                            <i class="fas fa-eye"></i> Ver Planes
                         </a>
                     </div>
-                    <div class="cta-features">
-                        <p>✓ Demo personalizada de 30 minutos</p>
-                        <p>✓ Análisis gratuito de tus procesos actuales</p>
-                        <p>✓ Sin compromiso ni costos ocultos</p>
+                    
+                    <div class="hero-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Facturación Electrónica DIAN</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>100% Web - Sin instalación</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Soporte 24/7 Colombia</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-visual">
+                    <div class="dashboard-preview">
+                        <div class="dashboard-header">
+                            <h3><i class="fas fa-chart-line"></i> Dashboard Ejecutivo</h3>
+                            <div style="display: flex; gap: 1rem; margin: 1.5rem 0;">
+                                <div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">$8.4M</div>
+                                    <div style="font-size: 0.875rem; color: var(--gray);">Ingresos mensuales</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">1,247</div>
+                                    <div style="font-size: 0.875rem; color: var(--gray);">Facturas DIAN</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, var(--gray-light) 0%, var(--light) 100%); height: 180px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--gray);">
+                            <i class="fas fa-chart-bar" style="font-size: 2rem; margin-right: 1rem;"></i>
+                            Dashboard interactivo en tiempo real
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Footer -->
-        <section id="contacto">
-            <footer class="footer">
-                <div class="container">
-                    <div class="footer-grid">
-                        <div class="footer-brand">
-                            <div class="logo">
-                                
-                                <div class="logo-icon">
-                                    <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="PORTAFOLIOERP Logo" class="logo-image">
-                                </div>
-                                <span class="logo-text">PORTAFOLIO ERP</span>
-                            </div>
-                            <p>El ERP colombiano diseñado para empresas que buscan crecer con tecnología confiable.</p>
-                        </div>
-                        <div class="footer-column">
-                            <h4>Producto</h4>
-                            <ul>
-                                <li><a href="#">Contabilidad</a></li>
-                                <li><a href="#">Facturación</a></li>
-                                <li><a href="#">Nómina</a></li>
-                                <li><a href="#">DIAN</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-column">
-                            <h4>Empresa</h4>
-                            <ul>
-                                <li><a href="#">Nosotros</a></li>
-                                <li><a href="#">Clientes</a></li>
-                                <li><a href="#">Soporte</a></li>
-                                <li><a href="#">Blog</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-column">
-                            <h4>Contacto</h4>
-                            <ul>
-                                <li>+57 3207141104</li>
-                                <li>portafolioerp@gmail.com</li>
-                                <li>Medellín, Colombia</li>
-                            </ul>
+    <!-- Problems Section -->
+    <section class="problems">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">¿Problemas con tu contabilidad actual?</h2>
+                <p class="section-subtitle">Estos son los principales problemas que resolvemos para empresas colombianas</p>
+            </div>
+            
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <div class="problem-icon problem-icon-1">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Sanciones DIAN por errores</h3>
+                    <p>Facturas electrónicas rechazadas, reportes incorrectos y multas que afectan tu flujo de caja y reputación fiscal.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon problem-icon-2">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Procesos manuales lentos</h3>
+                    <p>Hojas de cálculo interminables, datos duplicados y horas perdidas en tareas repetitivas que podrían automatizarse.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon problem-icon-3">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Falta de visibilidad real</h3>
+                    <p>Decisiones a ciegas porque no tienes reportes actualizados ni dashboard en tiempo real de tu negocio.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solutions Section -->
+    <section id="soluciones" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">La solución completa para tu empresa</h2>
+                <p class="section-subtitle">Todo integrado en una sola plataforma poderosa y simple de usar</p>
+            </div>
+            
+            <div class="solutions-grid">
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <h3>Facturación Electrónica DIAN</h3>
+                    <p>Emisión automática de facturas electrónicas, notas crédito/débito, documentos equivalentes y validación en tiempo real con la DIAN.</p>
+                    <ul style="margin-top: 1rem; list-style: none;">
+                        <li><i class="fas fa-check text-success"></i> Validación automática DIAN</li>
+                        <li><i class="fas fa-check text-success"></i> Resoluciones automáticas</li>
+                        <li><i class="fas fa-check text-success"></i> Envío automático al cliente</li>
+                    </ul>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3>Contabilidad Automatizada</h3>
+                    <p>Sistema contable completo con Plan de Cuentas PUC, estados financieros automáticos, conciliación bancaria y medios magnéticos.</p>
+                    <ul style="margin-top: 1rem; list-style: none;">
+                        <li><i class="fas fa-check text-success"></i> Plan de Cuentas PUC actualizado</li>
+                        <li><i class="fas fa-check text-success"></i> Estados financieros automáticos</li>
+                        <li><i class="fas fa-check text-success"></i> Conciliación bancaria</li>
+                    </ul>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Nómina Electrónica</h3>
+                    <p>Gestión completa de nómina electrónica, prestaciones sociales, reportes PILA y control de talento humano totalmente integrado.</p>
+                    <ul style="margin-top: 1rem; list-style: none;">
+                        <li><i class="fas fa-check text-success"></i> Nómina electrónica DIAN</li>
+                        <li><i class="fas fa-check text-success"></i> Prestaciones automáticas</li>
+                        <li><i class="fas fa-check text-success"></i> Reportes ministeriales</li>
+                    </ul>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-cash-register"></i>
+                    </div>
+                    <h3>Punto de Venta (POS)</h3>
+                    <p>Sistema de ventas integrado con inventario, caja y facturación en tiempo real. Perfecto para retail y servicios.</p>
+                    <ul style="margin-top: 1rem; list-style: none;">
+                        <li><i class="fas fa-check text-success"></i> Control de inventario</li>
+                        <li><i class="fas fa-check text-success"></i> Múltiples formas de pago</li>
+                        <li><i class="fas fa-check text-success"></i> Integración contable</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="precios" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Planes diseñados para cada negocio</h2>
+                <p class="section-subtitle">Elige el plan perfecto. Todos incluyen facturación electrónica DIAN</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <!-- Plan Básico -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Básico</h3>
+                        <p>Para pequeñas empresas</p>
+                        <div class="pricing-price">
+                            <div class="price-amount">$50.000</div>
+                            <div class="price-period">/mes + IVA</div>
                         </div>
                     </div>
-                    <div class="footer-bottom">
-                        <p>&copy; 2025 PORTAFOLIO ERP. Todos los derechos reservados.</p>
+                    
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>1 - 30 Facturas mensuales</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>1 - 500 Facturas POS</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>1 Bodega de inventario</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>1 Punto de venta</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i> Módulo POS</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i> <b>Facturación Electrónica Incluida</b> </li>
+                        <li><i class="fas fa-times" style="color: var(--danger);"></i> Nómina 1 - 5 empleados</li>
+                        <li><i class="fas fa-times" style="color: var(--danger);"></i> AIU </li>
+                    </ul>
+                    
+                    <div class="pricing-footer">
+                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20el%20plan%20Básico" 
+                           target="_blank" 
+                           class="btn btn-outline btn-block">
+                            <i class="fab fa-whatsapp"></i> Solicitar
+                        </a>
                     </div>
                 </div>
-            </footer>
-        </section>
-    </div>
+                
+                <!-- Plan Profesional (Featured) -->
+                <div class="pricing-card featured">
+                    <div class="featured-badge">MÁS POPULAR</div>
+                    <div class="pricing-header">
+                        <h3>Profesional</h3>
+                        <p>Para empresas en crecimiento</p>
+                        <div class="pricing-price">
+                            <div class="price-amount">$100.000</div>
+                            <div class="price-period">/mes + IVA</div>
+                        </div>
+                    </div>
+                    
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>100 - 300 Facturas mensuales</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>1000 - 2000 Facturas POS</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>2 Bodega de inventario</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>2 Punto de venta</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i> Módulo POS</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i> <b>Facturación Electrónica Incluida</b> </li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i> Nómina 5 - 15 empleados</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i> AIU </li>
+                    </ul>
+                    
+                    <div class="pricing-footer">
+                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20el%20plan%20Profesional" 
+                           target="_blank" 
+                           class="btn btn-primary btn-block">
+                            <i class="fab fa-whatsapp"></i> Comenzar Prueba
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Plan Empresarial -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Empresarial</h3>
+                        <p>Para empresas consolidadas</p>
+                        <div class="pricing-price">
+                            <div class="price-amount">$300.000</div>
+                            <div class="price-period">/mes + IVA</div>
+                        </div>
+                    </div>
+                    
+                   <ul class="pricing-features">
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Facturas Electrónicas Ilimitadas</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Facturas POS Ilimitadas</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>Bodega Ilimitadas</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i>3 Punto de venta</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i> Módulo POS</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i> <b>Facturación Electrónica Incluida</b> </li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i> Nómina Ilimitadas</li>
+                        <li><i class="fas fa-check" style="color: var(--success);"></i> AIU </li>
+                    </ul>
+                    
+                    <div class="pricing-footer">
+                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20el%20plan%20Empresarial" 
+                           target="_blank" 
+                           class="btn btn-outline btn-block">
+                            <i class="fas fa-phone"></i> Contactar Ventas
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem; color: var(--gray);">
+                <p><i class="fas fa-info-circle"></i> Todos los planes incluyen certificado digital DIAN y actualizaciones automáticas.</p>
+                <p>¿Necesitas un plan personalizado? <a href="https://wa.me/573207141104" target="_blank" style="color: var(--primary);">Contáctanos</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">¿Listo para transformar tu empresa?</h2>
+                <p class="cta-description">
+                    Únete a las empresas colombianas que ya automatizaron sus procesos 
+                    y cumplen sin estrés con la DIAN
+                </p>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem;">
+                    <a href="https://wa.me/573207141104?text=Hola,%20quiero%20comenzar%20con%20Portafolio%20ERP" 
+                       target="_blank" 
+                       class="btn btn-white btn-lg">
+                        <i class="fab fa-whatsapp"></i> Comenzar Gratis 15 Días
+                    </a>
+                    
+                    <a href="#contacto" class="btn btn-outline-white btn-lg">
+                        <i class="fas fa-calendar-alt"></i> Agendar Demo
+                    </a>
+                </div>
+                
+                <div style="opacity: 0.8; font-size: 0.9rem;">
+                    <p><i class="fas fa-check"></i> Sin tarjeta de crédito • Sin compromisos • Implementación en 48h</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto" class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="Portafolio ERP">
+                        <span class="logo-text">PORTAFOLIO ERP</span>
+                    </a>
+                    <p>El software ERP diseñado específicamente para empresas colombianas. Cumplimiento DIAN garantizado.</p>
+                    
+                    <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                        <a href="https://facebook.com" target="_blank" style="color: var(--gray);">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" style="color: var(--gray);">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://instagram.com" target="_blank" style="color: var(--gray);">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://youtube.com" target="_blank" style="color: var(--gray);">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Producto</h4>
+                    <ul>
+                        <li><a href="#soluciones">Facturación Electrónica</a></li>
+                        <li><a href="#soluciones">Contabilidad</a></li>
+                        <li><a href="#soluciones">Nómina</a></li>
+                        <li><a href="#soluciones">Punto de Venta</a></li>
+                        <li><a href="https://pos.portafolioerp.com" target="_blank">Módulo POS</a></li>
+                        <li><a href="https://maximoph.co" target="_blank">Maximoph PH</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Empresa</h4>
+                    <ul>
+                        <li><a href="#precios">Precios</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                        <li><a href="#">Soporte</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Términos</a></li>
+                        <li><a href="#">Privacidad</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +57 320 714 1104</li>
+                        <li><i class="fas fa-envelope"></i> portafolioerp@gmail.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Medellín, Colombia</li>
+                        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/573207141104" target="_blank">WhatsApp Business</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Portafolio ERP. Todos los derechos reservados.</p>
+                <p style="margin-top: 0.5rem; font-size: 0.875rem;">
+                    Software ERP colombiano - Certificado DIAN - Cumplimiento normativo 100%
+                </p>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // Header scroll effect
-        const header = document.getElementById('header');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const mobileMenu = document.getElementById('mobileMenu');
+        // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
-        const scrollToTop = document.getElementById('scrollToTop');
+        const html = document.documentElement;
         
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeIcon(savedTheme);
+            html.setAttribute('data-theme', savedTheme);
         }
         
         function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            document.documentElement.setAttribute('data-theme', newTheme);
+            html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
         }
         
-        function updateThemeIcon(theme) {
-            const sunIcon = themeToggle.querySelector('.sun-icon');
-            const moonIcon = themeToggle.querySelector('.moon-icon');
-            
-            if (theme === 'dark') {
-                sunIcon.style.display = 'block';
-                moonIcon.style.display = 'none';
-            } else {
-                sunIcon.style.display = 'none';
-                moonIcon.style.display = 'block';
-            }
-        }
+        // Header Scroll Effect
+        const header = document.getElementById('header');
         
-        function handleScrollToTop() {
-            if (window.scrollY > 300) {
-                scrollToTop.classList.add('visible');
-            } else {
-                scrollToTop.classList.remove('visible');
-            }
-        }
-        
-        function scrollToTopAction() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-        
-        function handleScrollAnimations() {
-            const animateElements = document.querySelectorAll('.animate-on-scroll');
-            
-            animateElements.forEach(element => {
-                const elementTop = element.getBoundingClientRect().top;
-                const elementVisible = 150;
-                
-                if (elementTop < window.innerHeight - elementVisible) {
-                    element.classList.add('animate-visible');
-                }
-            });
-        }
-        
-        function toggleMobileMenu() {
-            mobileMenu.classList.toggle('active');
-            mobileMenuToggle.classList.toggle('active');
-            document.body.classList.toggle('menu-open');
-        }
-        
-        function closeMobileMenu() {
-            mobileMenu.classList.remove('active');
-            mobileMenuToggle.classList.remove('active');
-            document.body.classList.remove('menu-open');
-        }
-        
-        function handleHeaderScroll() {
+        function handleScroll() {
             if (window.scrollY > 50) {
                 header.classList.add('scrolled');
             } else {
@@ -693,81 +1180,104 @@
             }
         }
         
-        function handleActiveSection() {
-            const sections = document.querySelectorAll('section[id]');
-            const scrollPos = window.scrollY + 150;
-            
-            navLinks.forEach(link => link.classList.remove('active'));
-            
-            if (window.scrollY < 100) {
-                return;
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const nav = document.querySelector('.nav');
+        
+        function toggleMobileMenu() {
+            nav.classList.toggle('active');
+            mobileMenuToggle.classList.toggle('active');
+        }
+        
+        // Scroll to Top Button
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        
+        function handleScrollTop() {
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
             }
-            
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-                const sectionId = section.getAttribute('id');
-                
-                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-                    const activeLink = document.querySelector(`[data-section="${sectionId}"]`);
-                    if (activeLink) {
-                        activeLink.classList.add('active');
-                    }
-                }
+        }
+        
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
         }
         
-        // Event listeners
-        window.addEventListener('scroll', () => {
-            handleHeaderScroll();
-            handleActiveSection();
-            handleScrollToTop();
-            handleScrollAnimations();
-        });
-        
-        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
-        themeToggle.addEventListener('click', toggleTheme);
-        scrollToTop.addEventListener('click', scrollToTopAction);
-        
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
+        // Smooth Scroll for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const targetSection = document.getElementById(targetId);
                 
-                if (targetSection) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
                     const headerHeight = header.offsetHeight;
-                    const targetPosition = targetSection.offsetTop - headerHeight;
+                    const targetPosition = targetElement.offsetTop - headerHeight;
                     
                     window.scrollTo({
                         top: targetPosition,
                         behavior: 'smooth'
                     });
                     
-                    closeMobileMenu();
+                    // Close mobile menu if open
+                    nav.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
                 }
             });
         });
         
-        document.addEventListener('click', (e) => {
-            if (!header.contains(e.target) && mobileMenu.classList.contains('active')) {
-                closeMobileMenu();
-            }
-        });
+        // Active Navigation on Scroll
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
         
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                closeMobileMenu();
-            }
-        });
-        
-        // Inicializar en carga de página
+        // Initialize Everything
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
-            handleHeaderScroll();
-            handleActiveSection();
-            handleScrollToTop();
-            handleScrollAnimations();
+            handleScroll();
+            handleScrollTop();
+            updateActiveNav();
+            
+            themeToggle.addEventListener('click', toggleTheme);
+            mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+            scrollTopBtn.addEventListener('click', scrollToTop);
+            
+            window.addEventListener('scroll', () => {
+                handleScroll();
+                handleScrollTop();
+                updateActiveNav();
+            });
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!nav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                nav.classList.remove('active');
+                mobileMenuToggle.classList.remove('active');
+            }
         });
     </script>
 </body>
