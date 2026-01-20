@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Informes;
 
 use DB;
 use Carbon\Carbon;
+use App\Helpers\Extracto;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Bus;
 use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
@@ -148,12 +150,9 @@ class DocumentosGeneralesController extends Controller
         try {
             DB::connection('sam')->beginTransaction();
 
-            DB::connection('sam')->table('documentos_generals AS DG')
-                ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
+            // Primero obtenemos los documentos que se van a eliminar
+            $documentos = DB::connection('sam')->table('documentos_generals AS DG')
                 ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-                ->leftJoin('impuestos AS IM', 'PC.id_impuesto', 'IM.id')
-                ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
-                ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
                 ->where('anulado', 0)
                 ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
                 ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
@@ -186,80 +185,174 @@ class DocumentosGeneralesController extends Controller
                     $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
                 })
                 ->when(isset($this->request['id_usuario']) ? $this->request['id_usuario'] : false, function ($query) {
+                    $query->where('DG.created_by', $this->request['id_usuario']);
+                })
+                ->select('DG.*', 'PC.naturaleza_cuenta')
+                ->get();
+
+            // Validamos si los documentos tienen abonos
+            $documentosConAbonos = [];
+            foreach ($documentos as $doc) {
+                
+                if ($doc->documento_referencia) {
+                    $esCausacion = $this->esCausacionDocumento($doc);
+                    
+                    if ($esCausacion) {
+                        $extracto = (new Extracto(
+                            $doc->id_nit,
+                            null,
+                            $doc->documento_referencia,
+                            null,
+                            $doc->id_cuenta
+                        ))->actual()->first();
+
+                        if ($extracto && $extracto->total_abono > 0) {
+                            $documentosConAbonos[] = [
+                                'documento' => $doc->documento_referencia,
+                                'total_abono' => $extracto->total_abono
+                            ];
+                        }
+                    }
+                }
+            }
+
+            // Si hay documentos con abonos, retornamos error
+            if (count($documentosConAbonos) > 0) {
+                $mensaje = 'No se pueden eliminar los documentos porque los siguientes tienen abonos pendientes: ';
+                $detalles = [];
+                
+                foreach ($documentosConAbonos as $item) {
+                    $detalles[] = "Documento {$item['documento']} tiene abonos por {$item['total_abono']}";
+                }
+                
+                $mensaje .= implode(', ', $detalles);
+                
+                return response()->json([
+                    "success" => false,
+                    'data' => [],
+                    "message" => $mensaje
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+            
+            // Si no hay abonos, procedemos con la eliminación
+            DB::connection('sam')->table('documentos_generals AS DG')
+                ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+                ->where('anulado', 0)
+                ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
+                ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
+                ->where(function ($query) {
+                    $query->when(isset($this->request['precio_desde']), function ($query) {
+                        $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) >= ?', [$this->request['precio_desde']]);
+                    })->when(isset($this->request['precio_hasta']), function ($query) {
+                        $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) <= ?', [$this->request['precio_hasta']]);
+                    });
+                })
+                ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
+                    $query->where('DG.id_nit', $this->request['id_nit']);
+                })
+                ->when(isset($this->request['id_comprobante']) ? $this->request['id_comprobante'] : false, function ($query) {
+                    $query->where('DG.id_comprobante', $this->request['id_comprobante']);
+                })
+                ->when(isset($this->request['id_centro_costos']) ? $this->request['id_centro_costos'] : false, function ($query) {
+                    $query->where('DG.id_centro_costos', $this->request['id_centro_costos']);
+                })
+                ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
+                    $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+                })
+                ->when(isset($this->request['documento_referencia']) ? $this->request['documento_referencia'] : false, function ($query) {
+                    $query->where('DG.documento_referencia', $this->request['documento_referencia']);
+                })
+                ->when(isset($this->request['consecutivo']) ? $this->request['consecutivo'] : false, function ($query) {
+                    $query->where('DG.consecutivo', $this->request['consecutivo']);
+                })
+                ->when(isset($this->request['concepto']) ? $this->request['concepto'] : false, function ($query) {
                     $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
                 })
-            ->delete();
+                ->when(isset($this->request['id_usuario']) ? $this->request['id_usuario'] : false, function ($query) {
+                    $query->where('DG.id_usuario', $this->request['id_usuario']);
+                })
+                ->delete();
 
+            // Eliminamos los registros relacionados que ya no tienen documentos
             DB::connection('sam')->table('fac_documentos')
-            ->whereNotExists(function($query) {
-                $query->select(DB::raw(1))
-                    ->from('documentos_generals')
-                    ->where('documentos_generals.relation_type', 2)
-                    ->whereRaw('documentos_generals.relation_id = fac_documentos.id');
-            })
-            ->delete();
+                ->whereNotExists(function($query) {
+                    $query->select(DB::raw(1))
+                        ->from('documentos_generals')
+                        ->where('documentos_generals.relation_type', 2)
+                        ->whereRaw('documentos_generals.relation_id = fac_documentos.id');
+                })
+                ->delete();
 
             DB::connection('sam')->table('fac_compras')
-            ->whereNotExists(function($query) {
-                $query->select(DB::raw(1))
-                    ->from('documentos_generals')
-                    ->where('documentos_generals.relation_type', 3)
-                    ->whereRaw('documentos_generals.relation_id = fac_compras.id');
-            })
-            ->delete();
+                ->whereNotExists(function($query) {
+                    $query->select(DB::raw(1))
+                        ->from('documentos_generals')
+                        ->where('documentos_generals.relation_type', 3)
+                        ->whereRaw('documentos_generals.relation_id = fac_compras.id');
+                })
+                ->delete();
 
             DB::connection('sam')->table('fac_ventas')
-            ->whereNotExists(function($query) {
-                $query->select(DB::raw(1))
-                    ->from('documentos_generals')
-                    ->where('documentos_generals.relation_type', 4)
-                    ->whereRaw('documentos_generals.relation_id = fac_ventas.id');
-            })
-            ->delete();
+                ->whereNotExists(function($query) {
+                    $query->select(DB::raw(1))
+                        ->from('documentos_generals')
+                        ->where('documentos_generals.relation_type', 4)
+                        ->whereRaw('documentos_generals.relation_id = fac_ventas.id');
+                })
+                ->delete();
 
             DB::connection('sam')->table('con_recibos')
-            ->whereNotExists(function($query) {
-                $query->select(DB::raw(1))
-                    ->from('documentos_generals')
-                    ->where('documentos_generals.relation_type', 6)
-                    ->whereRaw('documentos_generals.relation_id = con_recibos.id');
-            })
-            ->delete();
+                ->whereNotExists(function($query) {
+                    $query->select(DB::raw(1))
+                        ->from('documentos_generals')
+                        ->where('documentos_generals.relation_type', 6)
+                        ->whereRaw('documentos_generals.relation_id = con_recibos.id');
+                })
+                ->delete();
 
             DB::connection('sam')->table('con_gastos')
-            ->whereNotExists(function($query) {
-                $query->select(DB::raw(1))
-                    ->from('documentos_generals')
-                    ->where('documentos_generals.relation_type', 7)
-                    ->whereRaw('documentos_generals.relation_id = con_gastos.id');
-            })
-            ->delete();
+                ->whereNotExists(function($query) {
+                    $query->select(DB::raw(1))
+                        ->from('documentos_generals')
+                        ->where('documentos_generals.relation_type', 7)
+                        ->whereRaw('documentos_generals.relation_id = con_gastos.id');
+                })
+                ->delete();
 
             DB::connection('sam')->table('con_pagos')
-            ->whereNotExists(function($query) {
-                $query->select(DB::raw(1))
-                    ->from('documentos_generals')
-                    ->where('documentos_generals.relation_type', 8)
-                    ->whereRaw('documentos_generals.relation_id = con_pagos.id');
-            })
-            ->delete();
+                ->whereNotExists(function($query) {
+                    $query->select(DB::raw(1))
+                        ->from('documentos_generals')
+                        ->where('documentos_generals.relation_type', 8)
+                        ->whereRaw('documentos_generals.relation_id = con_pagos.id');
+                })
+                ->delete();
 
             DB::connection('sam')->commit();
 
             return response()->json([
-				'success'=>	true,
-				'message'=> 'Documentos eliminados con exito!'
-			], 200);
+                'success' => true,
+                'message' => 'Documentos eliminados con éxito!'
+            ], 200);
 
         } catch (Exception $e) {
-
-			DB::connection('sam')->rollback();
+            DB::connection('sam')->rollback();
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$e->getMessage()
+                "message" => $e->getMessage()
             ], 422);
         }
+    }
+
+    // Función auxiliar para determinar si un documento es causación
+    private function esCausacionDocumento($doc)
+    {
+        // Determina la naturaleza basado en el saldo del documento
+        $naturaleza = $doc->naturaleza_cuenta == PlanCuentas::DEBITO ? 'debito' : 'credito';
+        
+        // Un documento es causación si tiene saldo en la naturaleza de su cuenta
+        return $doc->{$naturaleza} > 0;
     }
 
     public function exportExcel(Request $request)

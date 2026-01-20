@@ -443,9 +443,9 @@ $(document).on('click', '#eliminarDocumentos', function () {
                     document.getElementById('generarEliminarDocumentos').click();
                 }
             }).fail((err) => {
-                $("#eliminarDocumentos").hide();
+                $("#eliminarDocumentos").show();
                 $("#generarEliminarDocumentos").show();
-                $("#eliminarDocumentosDisabled").show();
+                $("#eliminarDocumentosDisabled").hide();
                 $("#generarEliminarDocumentosLoading").hide();
                 var mensaje = err.responseJSON.message;
                 var errorsMsg = arreglarMensajeError(mensaje);

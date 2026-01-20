@@ -479,7 +479,13 @@ class DocumentoGeneralController extends Controller
 			}
 			
 			$primerIdNit = null;
-			$documentoGeneral = new Documento($facDocumento->id_comprobante, $facDocumento, $request->get('fecha_manual'), $request->get('consecutivo'));
+			
+			$documentoGeneral = new Documento(
+				$facDocumento->id_comprobante,
+				$facDocumento,
+				$request->get('fecha_manual'),
+				$request->get('consecutivo')
+			);
 
 			foreach ($documento as $doc) {
 
@@ -625,7 +631,7 @@ class DocumentoGeneralController extends Controller
                 "message"=>$validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
+		
 		try {
 			DB::connection('sam')->beginTransaction();
 			
@@ -659,7 +665,7 @@ class DocumentoGeneralController extends Controller
 				return response()->json([
 					"success"=>false,
 					'data' => [],
-					"message"=> 'El documento a eliminar tiene abonos. Elimina primero los abonos.'
+					"message"=> 'Este documento no puede ser eliminado porque tiene '.count($abonos).' abono(s) registrado(s). Elimine los abonos antes de intentar nuevamente.'
 				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
@@ -783,7 +789,7 @@ class DocumentoGeneralController extends Controller
 
 	private function isCausacion($doc)
 	{
-		$naturaleza = $doc->cuenta->naturaleza_cuenta == ConCuenta::DEBITO ? 'debito' : 'credito';
+		$naturaleza = $doc->cuenta->naturaleza_cuenta == PlanCuentas::DEBITO ? 'debito' : 'credito';
 
 		return $doc->{$naturaleza} > 0;
 	}
@@ -792,16 +798,16 @@ class DocumentoGeneralController extends Controller
 	{
 		$abonos = [];
 		$documento->load('cuenta');
-		
+		// dd($documento);
 		foreach ($documento as $doc) {
-			if (!$doc->documento_referencia) {
+			if ($doc->documento_referencia) {
 				$extracto = (new Extracto(
 					$doc->id_nit,
 					null,
-					$doc->id_cuenta,
 					$doc->documento_referencia,
-					null
-				))->completo();
+					null,
+					$doc->id_cuenta
+				))->actual()->get();
 
 				foreach ($extracto as $e) {
 					if ($e->total_abono > 0 && $this->isCausacion($doc)) {
@@ -810,7 +816,7 @@ class DocumentoGeneralController extends Controller
 				}
 			}
 		}
-
+		
 		return $abonos;
 	}
 }
