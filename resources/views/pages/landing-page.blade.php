@@ -59,8 +59,8 @@
             --gray: #94a3b8;
             --gray-light: #1e293b;
             --gray-dark: #cbd5e1;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
         }
         
         * {
@@ -106,8 +106,14 @@
             box-shadow: var(--shadow);
         }
         
-        [data-theme="dark"] .header.scrolled {
+        [data-theme="dark"] .header {
             background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid #1e293b;
+        }
+
+        [data-theme="dark"] .header.scrolled {
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(10px);
         }
         
         .header-content {
@@ -175,6 +181,14 @@
             color: var(--primary);
         }
         
+        [data-theme="dark"] .nav-link {
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .nav-link:hover {
+            color: var(--primary-light);
+        }
+        
         /* Buttons */
         .btn {
             display: inline-flex;
@@ -213,6 +227,16 @@
             color: white;
         }
         
+        [data-theme="dark"] .btn-outline {
+            color: var(--primary-light);
+            border-color: var(--primary-light);
+        }
+
+        [data-theme="dark"] .btn-outline:hover {
+            background: var(--primary-light);
+            color: #0f172a;
+        }
+        
         .btn-lg {
             padding: 1rem 2rem;
             font-size: 1.1rem;
@@ -227,7 +251,7 @@
         }
         
         [data-theme="dark"] .hero {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(135deg, #1a202c 0%, #0f172a 100%);
         }
         
         .hero-grid {
@@ -252,6 +276,11 @@
             font-size: 0.875rem;
             font-weight: 600;
             margin-bottom: 2rem;
+        }
+        
+        [data-theme="dark"] .hero-badge {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary-light);
         }
         
         .hero-title {
@@ -284,6 +313,10 @@
             margin-bottom: 2rem;
         }
         
+        [data-theme="dark"] .hero-description {
+            color: #cbd5e1;
+        }
+        
         .hero-buttons {
             display: flex;
             gap: 1rem;
@@ -302,6 +335,10 @@
             gap: 8px;
             font-size: 0.875rem;
             color: var(--gray);
+        }
+        
+        [data-theme="dark"] .feature-item {
+            color: #cbd5e1;
         }
         
         .feature-item svg {
@@ -327,6 +364,12 @@
             transform: perspective(1000px) rotateY(0deg);
         }
         
+        [data-theme="dark"] .dashboard-preview {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+        }
+        
         /* Section Styles */
         .section {
             padding: 100px 0;
@@ -349,10 +392,18 @@
             color: var(--gray);
         }
         
+        [data-theme="dark"] .section-subtitle {
+            color: #94a3b8;
+        }
+        
         /* Problems Section */
         .problems {
             background: var(--gray-light);
             padding: 100px 0;
+        }
+        
+        [data-theme="dark"] .problems {
+            background: #111827;
         }
         
         .problems-grid {
@@ -372,6 +423,12 @@
         .problem-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-lg);
+        }
+        
+        [data-theme="dark"] .problem-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #e2e8f0;
         }
         
         .problem-icon {
@@ -418,6 +475,12 @@
             box-shadow: var(--shadow-lg);
         }
         
+        [data-theme="dark"] .solution-card {
+            background: #1e293b;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        
         .solution-icon {
             width: 64px;
             height: 64px;
@@ -434,6 +497,10 @@
         .pricing {
             background: var(--gray-light);
             padding: 100px 0;
+        }
+        
+        [data-theme="dark"] .pricing {
+            background: #111827;
         }
         
         .pricing-grid {
@@ -461,6 +528,17 @@
             transform: scale(1.05);
         }
         
+        [data-theme="dark"] .pricing-card {
+            background: #1e293b;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        
+        [data-theme="dark"] .pricing-card.featured {
+            border-color: var(--primary-light);
+            background: linear-gradient(135deg, #1e293b 0%, #2d3748 100%);
+        }
+        
         .featured-badge {
             position: absolute;
             top: 1rem;
@@ -471,6 +549,10 @@
             border-radius: 50px;
             font-size: 0.75rem;
             font-weight: 600;
+        }
+        
+        [data-theme="dark"] .featured-badge {
+            background: var(--primary-light);
         }
         
         .pricing-header {
@@ -488,6 +570,10 @@
             font-weight: 800;
             color: var(--primary);
             line-height: 1;
+        }
+        
+        [data-theme="dark"] .price-amount {
+            color: var(--primary-light);
         }
         
         .price-period {
@@ -524,6 +610,10 @@
             text-align: center;
         }
         
+        [data-theme="dark"] .cta {
+            background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+        }
+        
         .cta-content {
             max-width: 800px;
             margin: 0 auto;
@@ -538,6 +628,28 @@
             font-size: 1.25rem;
             margin-bottom: 2rem;
             opacity: 0.9;
+        }
+        
+        /* Botones CTA */
+        .btn-white {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-white:hover {
+            background: #f1f5f9;
+            color: var(--primary-dark);
+        }
+
+        .btn-outline-white {
+            background: transparent;
+            color: white;
+            border-color: white;
+        }
+
+        .btn-outline-white:hover {
+            background: white;
+            color: var(--primary);
         }
         
         /* Footer */
@@ -613,7 +725,66 @@
             transition: var(--transition);
         }
         
-        /* Theme Toggle */
+        [data-theme="dark"] .hamburger-line {
+            background: var(--light);
+        }
+        
+        /* Mobile Menu Active State - AQUÍ ESTÁ LA SOLUCIÓN */
+        .nav.active {
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            background: var(--light);
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideDown 0.3s ease;
+        }
+        
+        [data-theme="dark"] .nav.active {
+            background: #0f172a;
+            border: 1px solid #334155;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav.active .nav-link {
+            padding: 0.75rem 0;
+            font-size: 1.1rem;
+        }
+
+        .nav.active .btn {
+            margin-top: 1rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Hamburger Animation */
+        .mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+        
+        /* Theme Toggle - CORREGIDO */
         .theme-toggle {
             background: none;
             border: none;
@@ -625,22 +796,82 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            width: 44px;
+            height: 44px;
+            position: relative;
+            background: var(--gray-light);
+            border: 1px solid var(--gray-light);
         }
         
         .theme-toggle:hover {
-            background: var(--gray-light);
+            background: var(--primary);
+            color: white;
+            transform: rotate(15deg);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        
+        [data-theme="dark"] .theme-toggle {
+            background: #334155;
+            color: var(--light);
+            border-color: #475569;
+        }
+        
+        [data-theme="dark"] .theme-toggle:hover {
+            background: var(--primary-light);
+            color: white;
         }
         
         .sun-icon, .moon-icon {
             width: 20px;
             height: 20px;
+            transition: all 0.5s ease;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         
-        .sun-icon { display: none; }
-        .moon-icon { display: block; }
+        .sun-icon { 
+            opacity: 0;
+            color: yellow;
+            transform: translate(-50%, -50%) rotate(90deg);
+        }
         
-        [data-theme="dark"] .sun-icon { display: block; }
-        [data-theme="dark"] .moon-icon { display: none; }
+        .moon-icon { 
+            opacity: 1;
+            color: black;
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+        
+        [data-theme="dark"] .sun-icon { 
+            opacity: 1;
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+        
+        [data-theme="dark"] .moon-icon { 
+            opacity: 0;
+            transform: translate(-50%, -50%) rotate(-90deg);
+        }
+        
+        /* Indicador visual del tema actual */
+        .theme-toggle::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--primary);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        [data-theme="dark"] .theme-toggle::after {
+            background: var(--primary-light);
+            opacity: 1;
+        }
         
         /* Scroll to Top */
         .scroll-top-btn {
@@ -721,6 +952,18 @@
             .footer-grid {
                 grid-template-columns: 1fr;
             }
+            
+            /* Botón del tema en móvil */
+            .nav:not(.active) .theme-toggle {
+                display: none;
+            }
+            
+            .nav.active .theme-toggle {
+                align-self: center;
+                margin-top: 1.5rem;
+                width: 50px;
+                height: 50px;
+            }
         }
     </style>
     
@@ -742,6 +985,7 @@
             </a>
             
             <nav class="nav">
+                <a href="#inicio" class="nav-link">Inicio</a>
                 <a href="#soluciones" class="nav-link">Soluciones</a>
                 <a href="#modulos" class="nav-link">Módulos</a>
                 <a href="#precios" class="nav-link">Precios</a>
@@ -749,7 +993,7 @@
                 <a href="https://app.portafolioerp.com/login" class="btn btn-outline">
                     <i class="fas fa-sign-in-alt"></i> Ingresar
                 </a>
-                <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+                <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
                     <i class="fas fa-sun sun-icon"></i>
                     <i class="fas fa-moon moon-icon"></i>
                 </button>
@@ -769,7 +1013,7 @@
     </button>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section id="inicio" class="hero">
         <div class="container">
             <div class="hero-grid">
                 <div class="hero-content">
@@ -841,7 +1085,7 @@
     </section>
 
     <!-- Problems Section -->
-    <section class="problems">
+    <section id="soluciones" class="section">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">¿Problemas con tu contabilidad actual?</h2>
@@ -877,7 +1121,7 @@
     </section>
 
     <!-- Solutions Section -->
-    <section id="soluciones" class="section">
+    <section id="modulos" class="section">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">La solución completa para tu empresa</h2>
@@ -1052,7 +1296,7 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="cta">
+    <section id="contacto" class="section">
         <div class="container">
             <div class="cta-content">
                 <h2 class="cta-title">¿Listo para transformar tu empresa?</h2>
@@ -1081,7 +1325,7 @@
     </section>
 
     <!-- Footer -->
-    <footer id="contacto" class="footer">
+    <section id="contacto" class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
@@ -1149,7 +1393,7 @@
                 </p>
             </div>
         </div>
-    </footer>
+    </section>
 
     <script>
         // Theme Toggle
@@ -1157,16 +1401,87 @@
         const html = document.documentElement;
         
         function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            html.setAttribute('data-theme', savedTheme);
+            const savedTheme = localStorage.getItem('theme');
+            const systemTheme = detectSystemTheme();
+            
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                applyTheme(systemTheme);
+            }
         }
-        
+
+        function detectSystemTheme() {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                return 'dark';
+            }
+            return 'light';
+        }
+
+        // Aplicar tema con transición suave
+        function applyTheme(theme) {
+            // Deshabilitar transiciones momentáneamente para evitar parpadeo
+            html.style.transition = 'none';
+            html.setAttribute('data-theme', theme);
+            
+            // Forzar reflow
+            html.offsetHeight;
+            
+            // Rehabilitar transiciones
+            html.style.transition = '';
+            
+            // Guardar en localStorage
+            localStorage.setItem('theme', theme);
+            
+            // Actualizar metatag para tema (opcional pero recomendado)
+            updateThemeMeta(theme);
+        }
+                
         function toggleTheme() {
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+            // Agregar clase para animación
+            html.classList.add('theme-changing');
+            
+            // Cambiar tema
+            applyTheme(newTheme);
+            
+            // Efecto visual en el botón
+            themeToggle.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                themeToggle.style.transform = '';
+            }, 150);
+            
+            // Quitar clase después de la animación
+            setTimeout(() => {
+                html.classList.remove('theme-changing');
+            }, 500);
+        }
+
+        function updateThemeMeta(theme) {
+            const themeColor = theme === 'dark' ? '#0f172a' : '#ffffff';
+            const themeMeta = document.querySelector('meta[name="theme-color"]');
+            
+            if (themeMeta) {
+                themeMeta.content = themeColor;
+            } else {
+                const meta = document.createElement('meta');
+                meta.name = 'theme-color';
+                meta.content = themeColor;
+                document.head.appendChild(meta);
+            }
+        }
+
+        if (window.matchMedia) {
+            const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            colorSchemeQuery.addEventListener('change', (e) => {
+                // Solo cambiar si el usuario no ha guardado una preferencia
+                if (!localStorage.getItem('theme')) {
+                    const newTheme = e.matches ? 'dark' : 'light';
+                    applyTheme(newTheme);
+                }
+            });
         }
         
         // Header Scroll Effect
@@ -1180,13 +1495,27 @@
             }
         }
         
-        // Mobile Menu Toggle
+        // Mobile Menu Toggle - CORREGIDO
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
         const nav = document.querySelector('.nav');
         
         function toggleMobileMenu() {
             nav.classList.toggle('active');
             mobileMenuToggle.classList.toggle('active');
+            
+            // Prevenir scroll del body cuando el menú está abierto
+            if (nav.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Cerrar menú al hacer clic en un enlace
+        function closeMobileMenu() {
+            nav.classList.remove('active');
+            mobileMenuToggle.classList.remove('active');
+            document.body.style.overflow = '';
         }
         
         // Scroll to Top Button
@@ -1210,24 +1539,26 @@
         // Smooth Scroll for Anchor Links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                
                 const targetId = this.getAttribute('href');
                 if (targetId === '#') return;
                 
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    const headerHeight = header.offsetHeight;
-                    const targetPosition = targetElement.offsetTop - headerHeight;
+                // Solo prevenir default si es un enlace interno
+                if (targetId.startsWith('#')) {
+                    e.preventDefault();
                     
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Close mobile menu if open
-                    nav.classList.remove('active');
-                    mobileMenuToggle.classList.remove('active');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        const headerHeight = header.offsetHeight;
+                        const targetPosition = targetElement.offsetTop - headerHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Cerrar menú móvil
+                        closeMobileMenu();
+                    }
                 }
             });
         });
@@ -1254,30 +1585,63 @@
             });
         }
         
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            const isClickInsideNav = nav.contains(e.target);
+            const isClickOnToggle = mobileMenuToggle.contains(e.target);
+            
+            if (!isClickInsideNav && !isClickOnToggle && nav.classList.contains('active')) {
+                closeMobileMenu();
+            }
+        });
+        
+        // Cerrar menú al redimensionar ventana (si se hace más grande)
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && nav.classList.contains('active')) {
+                closeMobileMenu();
+            }
+        });
+        
         // Initialize Everything
         document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar tema primero
             initTheme();
+            
+            // Agregar transiciones suaves para elementos específicos
+            const style = document.createElement('style');
+            style.textContent = `
+                .theme-changing * {
+                    transition: background-color 0.5s ease, 
+                                border-color 0.5s ease, 
+                                color 0.5s ease,
+                                transform 0.5s ease !important;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Evento para el botón del tema
+            themeToggle.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevenir que se cierre el menú móvil
+                toggleTheme();
+            });
+            
+            // ¡¡¡FALTA ESTO!!! Evento para el botón hamburguesa
+            mobileMenuToggle.addEventListener('click', (e) => {
+                e.stopPropagation(); // Importante para que no se cierre inmediatamente
+                toggleMobileMenu();
+            });
+            
+            // Resto de tu código de inicialización...
             handleScroll();
             handleScrollTop();
             updateActiveNav();
             
-            themeToggle.addEventListener('click', toggleTheme);
-            mobileMenuToggle.addEventListener('click', toggleMobileMenu);
-            scrollTopBtn.addEventListener('click', scrollToTop);
-            
+            // Escuchar scroll
             window.addEventListener('scroll', () => {
                 handleScroll();
                 handleScrollTop();
                 updateActiveNav();
             });
-        });
-        
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!nav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-                nav.classList.remove('active');
-                mobileMenuToggle.classList.remove('active');
-            }
         });
     </script>
 </body>
