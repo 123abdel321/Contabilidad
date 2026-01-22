@@ -196,8 +196,9 @@ class DocumentosGeneralesController extends Controller
                 
                 if ($doc->documento_referencia) {
                     $esCausacion = $this->esCausacionDocumento($doc);
-                    
-                    if ($esCausacion) {
+                    $esIngreso = $this->esIngresoDocumento($doc);
+
+                    if ($esCausacion && !$esIngreso) {
                         $extracto = (new Extracto(
                             $doc->id_nit,
                             null,
@@ -218,19 +219,42 @@ class DocumentosGeneralesController extends Controller
 
             // Si hay documentos con abonos, retornamos error
             if (count($documentosConAbonos) > 0) {
-                $mensaje = 'No se pueden eliminar los documentos porque los siguientes tienen abonos pendientes: ';
-                $detalles = [];
+                // Crear tabla HTML con los documentos que tienen abonos
+                $html = "<div style='margin-bottom: 10px; font-weight: bold;'>No se pueden eliminar los documentos</div>";
+                $html .= "<div style='color: #FFF; margin-bottom: 15px;'>Los siguientes documentos tienen abonos pendientes:</div>";
                 
+                // Tabla simple, compacta
+                $html .= "<table style='width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px;'>";
+                
+                // Encabezado
+                $html .= "<tr style='background-color: #f8f9fa;'>";
+                $html .= "<th style='border: 1px solid #dee2e6; padding: 8px 10px; text-align: left;'>DOCUMENTO</th>";
+                $html .= "<th style='border: 1px solid #dee2e6; padding: 8px 10px; text-align: right;'>TOTAL ABONOS</th>";
+                $html .= "</tr>";
+                
+                // Cuerpo - Documentos con abonos
                 foreach ($documentosConAbonos as $item) {
-                    $detalles[] = "Documento {$item['documento']} tiene abonos por {$item['total_abono']}";
+                    $html .= "<tr>";
+                    $html .= "<td style='border: 1px solid #dee2e6; color: #FFF; padding: 6px 10px;'><strong>" . $item['documento'] . "</strong></td>";
+                    $html .= "<td style='border: 1px solid #dee2e6; color: #FFF; padding: 6px 10px; text-align: right;'>" . 
+                            number_format($item['total_abono'], 2) . "</td>";
+                    $html .= "</tr>";
                 }
                 
-                $mensaje .= implode(', ', $detalles);
+                // Total general (opcional)
+                $totalAbonos = array_sum(array_column($documentosConAbonos, 'total_abono'));
+                $html .= "<tr style='background-color: #dc3545; color: white;'>";
+                $html .= "<td style='border: 1px solid #dc3545; padding: 8px 10px; font-weight: bold;'>TOTAL</td>";
+                $html .= "<td style='border: 1px solid #dc3545; padding: 8px 10px; text-align: right; font-weight: bold;'>" . 
+                        number_format($totalAbonos, 2) . "</td>";
+                $html .= "</tr>";
+                
+                $html .= "</table>";
                 
                 return response()->json([
                     "success" => false,
                     'data' => [],
-                    "message" => $mensaje
+                    "message" => $html
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
             
@@ -353,6 +377,13 @@ class DocumentosGeneralesController extends Controller
         
         // Un documento es causación si tiene saldo en la naturaleza de su cuenta
         return $doc->{$naturaleza} > 0;
+    }
+
+    private function esIngresoDocumento($doc)
+    {
+        // Aquí asumimos que los ingresos son aquellos documentos asociados a comprobantes de tipo ingreso
+        $comprobante = Comprobantes::find($doc->id_comprobante);
+        return $comprobante && $comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS;
     }
 
     public function exportExcel(Request $request)
