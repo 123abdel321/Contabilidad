@@ -202,6 +202,7 @@ class RecibosController extends Controller
                 ->whereHas('tipos_cuenta', function ($query) {
                     $query->whereIn('id_tipo_cuenta', [8]);
                 })
+                ->orderBy('orden', 'ASC')
                 ->orderBy('cuenta', 'ASC')
                 ->get();
 
