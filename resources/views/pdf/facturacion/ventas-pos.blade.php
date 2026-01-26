@@ -103,7 +103,7 @@
 
                 @if ($mensaje_regimen)
                     <tr><th class="font-12">
-                        {{ $mensaje_regimen }} #{{ $factura->documento_referencia }}
+                        {{ $mensaje_regimen }} - {{ $factura->documento_referencia }}
                     </th></tr>
                 @else
                     <tr><th class="font-12">
