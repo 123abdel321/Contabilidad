@@ -550,6 +550,7 @@ class VentaController extends Controller
         $searchValue = $search_arr['value']; // Search value
 
 		$ventas = FacVentas::orderBy('id', 'DESC')
+            ->whereBetween('fecha_manual', [$request->get('fecha_desde'), $request->get('fecha_hasta')])
             ->with(
                 'resolucion',
                 'bodega',
@@ -570,14 +571,6 @@ class VentaController extends Controller
         
         if ($request->get('id_cliente')) {
             $ventas->where('id_cliente', $request->get('id_cliente'));
-        }
-
-        if ($request->get('fecha_desde')) {
-            $ventas->where('fecha_manual', '>=', $request->get('fecha_desde'));
-        }
-
-        if ($request->get('fecha_hasta')) {
-            $ventas->where('fecha_manual', '<=', $request->get('fecha_hasta'));
         }
 
         if ($request->get('factura')) {
@@ -614,12 +607,30 @@ class VentaController extends Controller
             ->take($rowperpage)
             ->get();
 
+        $facturas = FacVentas::with(['detalles.producto'])
+            ->withSum('detalles as total_cantidad', 'cantidad')
+            ->select('fac_ventas.*')
+            ->selectSub(function($query) {
+                $query->selectRaw('SUM(fvd.cantidad * p.precio_inicial)')
+                    ->from('fac_venta_detalles as fvd')
+                    ->join('fac_productos as p', 'fvd.id_producto', '=', 'p.id')
+                    ->whereColumn('fvd.id_venta', 'fac_ventas.id');
+            }, 'total_costo_cantidad')
+            ->whereBetween('fecha_manual', [$request->get('fecha_desde'), $request->get('fecha_hasta')])
+            ->get();
+
+        $totalDataVentaGeneral[] = [
+            'total_productos_cantidad' => $facturas->sum('total_cantidad') ?? 0,
+            'total_costo' => $facturas->sum('total_costo_cantidad') ?? 0,
+            'total_venta' => $facturas->sum('total_factura') ?? 0,
+        ];        
+
         $totalDataVenta = $this->queryTotalesVentaCosto($request)->select(
             DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
             DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
-            DB::raw("SUM(FVD.total) AS total_venta")
+            DB::raw("SUM(FVD.costo * FVD.cantidad) AS total_venta")
         )->get();
-        
+
         $totalDataNotas = $this->queryTotalesVentaCosto($request, true)->select(
             DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
             DB::raw("SUM(FP.precio_inicial * FVD.cantidad) AS total_costo"),
@@ -632,11 +643,12 @@ class VentaController extends Controller
         } else {
             $this->generarVentaDetalles($dataVentas, false);
         }
+
         
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
-            'totalesVenta' => $totalDataVenta,
+            'totalesVenta' => $totalDataVentaGeneral,
             'totalesNotas' => $totalDataNotas,
             'iTotalRecords' => $informeTotals->count(),
             'iTotalDisplayRecords' => $informeTotals->count(),
@@ -1452,12 +1464,6 @@ class VentaController extends Controller
             })
             ->when($request->get('id_bodega') ? true : false, function ($query) use ($request) {
                 $query->where('FV.id_bodega', $request->get('id_bodega'));
-            })
-            ->when($request->get('id_forma_pago') ? true : false, function ($query) use ($request) {
-                $query->where('FVP.id_forma_pago', $request->get('id_forma_pago'));
-            })
-            ->when($request->get('id_usuario') ? true : false, function ($query) use ($request) {
-                $query->where('FV.created_by', $request->get('id_usuario'));
             });
     }
 
