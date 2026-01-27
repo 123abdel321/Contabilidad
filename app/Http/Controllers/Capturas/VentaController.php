@@ -607,9 +607,15 @@ class VentaController extends Controller
             ->take($rowperpage)
             ->get();
 
-        $facturas = FacVentas::with(['detalles.producto'])
-            ->withSum('detalles as total_cantidad', 'cantidad')
-            ->select('fac_ventas.*')
+        $facturas = FacVentas::query()
+            ->select('*') 
+            // Subquery para cantidad total
+            ->selectSub(function($query) {
+                $query->selectRaw('SUM(cantidad)')
+                    ->from('fac_venta_detalles')
+                    ->whereColumn('id_venta', 'fac_ventas.id');
+            }, 'total_cantidad')
+            // Subquery para costo total
             ->selectSub(function($query) {
                 $query->selectRaw('SUM(fvd.cantidad * p.precio_inicial)')
                     ->from('fac_venta_detalles as fvd')
@@ -620,10 +626,10 @@ class VentaController extends Controller
             ->get();
 
         $totalDataVentaGeneral[] = [
-            'total_productos_cantidad' => $facturas->sum('total_cantidad') ?? 0,
-            'total_costo' => $facturas->sum('total_costo_cantidad') ?? 0,
-            'total_venta' => $facturas->sum('total_factura') ?? 0,
-        ];        
+            'total_productos_cantidad' => (float) $facturas->sum('total_cantidad'),
+            'total_costo'              => (float) $facturas->sum('total_costo_cantidad'),
+            'total_venta'              => (float) $facturas->sum('total_factura'),
+        ];
 
         $totalDataVenta = $this->queryTotalesVentaCosto($request)->select(
             DB::raw("SUM(FVD.cantidad) AS total_productos_cantidad"),
