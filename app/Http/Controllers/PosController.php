@@ -232,6 +232,7 @@ class PosController extends Controller
             DB::connection('sam')->beginTransaction();
 
             $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
+            $this->nit = $this->findCliente($request->get('id_cliente'));
 
             if ($pedidoEditado) {
                 //VALIDAR ESTADO DEL PEDIDO EDITADO
@@ -253,7 +254,7 @@ class PosController extends Controller
 
             foreach ($request->get('productos') as $producto) {
                 $producto = (object)$producto;
-                $nit = $this->findCliente($pedido->id_cliente);
+                
                 $productoDb = $this->findProducto($producto->id_producto);
                 $producto->costo_total = $productoDb->precio_inicial * $producto->cantidad;
 
@@ -277,6 +278,11 @@ class PosController extends Controller
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
 
+                $subtotal = $producto->costo * $producto->cantidad;
+                if ($this->ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
+                    $subtotal-= $producto->iva_valor;
+                }
+
                 //CREAR PEDIDO DETALLE
                 FacPedidoDetalles::create([
                     'id_pedido' => $pedido->id,
@@ -288,7 +294,7 @@ class PosController extends Controller
                     'descripcion' => $productoDb->codigo.' - '.$productoDb->nombre,
                     'cantidad' => $producto->cantidad,
                     'costo' => $producto->costo,
-                    'subtotal' => $producto->costo * $producto->cantidad,
+                    'subtotal' => $subtotal,
                     'descuento_porcentaje' => $producto->descuento_porcentaje,
                     'descuento_valor' => $producto->descuento_valor,
                     'iva_porcentaje' => $producto->iva_porcentaje,
@@ -314,6 +320,7 @@ class PosController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
+                'line' => $e->getLine(),
                 "message"=>$e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -414,8 +421,8 @@ class PosController extends Controller
 
         try {
             DB::connection('sam')->beginTransaction();
-            //CREAR FACTURA VENTA
             
+            //CREAR FACTURA VENTA
             $this->nit = $this->findCliente($request->get('id_cliente'));
             $venta = $this->createFacturaVenta($request);
             $enviarFacturaElectronica = false;
@@ -486,7 +493,7 @@ class PosController extends Controller
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
                     $cuentaRecord = $productoDb->familia->{$cuentaKey};
                     $keyTotalItem = $cuenta["valor"];
-                    
+
                     //VALIDAR PRODUCTO INVENTARIO
                     if ($productoDb->tipo_producto == 1 && $cuentaKey == 'cuenta_inventario') {
                         continue;
@@ -741,8 +748,6 @@ class PosController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
-
-        dd($request->all());
     }
 
     public function login(Request $request)
@@ -1133,15 +1138,19 @@ class PosController extends Controller
         return $doc;
     }
 
-    private function calcularTotales ($productos)
+    private function calcularTotales($productos)
     {
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
         $this->ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
-        $ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
+        $responsabilidades = $this->getResponsabilidades();
+        
+        // INICIALIZAR NUEVOS CAMPOS
+        $this->totalesFactura['subtotal_sin_iva'] = 0;
+        $this->totalesFactura['subtotal_con_iva'] = 0;
         
         foreach ($productos as $producto) {
             $producto = (object)$producto;
-
+            
             $productoDb = FacProductos::where('id', $producto->id_producto)
                 ->with(
                     'familia.cuenta_venta',
@@ -1151,16 +1160,18 @@ class PosController extends Controller
                 )
                 ->first();
             
+            // BUSCAR BASE Y PORCENTAJE RETENCIÓN
             $cuentaRetencion = $productoDb->familia->cuenta_venta_retencion;
             if ($cuentaRetencion && $cuentaRetencion->impuesto) {
                 $impuesto = $cuentaRetencion->impuesto;
-                if (floatval($impuesto->porcentaje) > $this->totalesFactura['porcentaje_rete_fuente']) {
+                $baseActual = floatval($impuesto->base);
+                if (floatval($impuesto->porcentaje) > $this->totalesFactura['porcentaje_rete_fuente'] && $baseActual > floatval($this->totalesFactura['tope_retencion'])) {
                     $this->totalesFactura['porcentaje_rete_fuente'] = floatval($impuesto->porcentaje);
                     $this->totalesFactura['tope_retencion'] = floatval($impuesto->base);
                     $this->totalesFactura['id_cuenta_rete_fuente'] = $cuentaRetencion->id;
                 }
             }
-
+            
             $iva = 0;
             $costo = $producto->costo;
             $totalPorCantidad = $producto->cantidad * $costo;
@@ -1174,34 +1185,76 @@ class PosController extends Controller
                     $this->totalesFactura['id_cuenta_iva'] = $cuentaIva->id;
                 }
 
-                $iva = (($totalPorCantidad - $producto->descuento_valor) * ($this->totalesFactura['porcentaje_iva'] / 100));
-                if ($ivaIncluido) {
-                    $iva = round(($totalPorCantidad - $producto->descuento_valor) - (($totalPorCantidad - $producto->descuento_valor) / (1 + ($this->totalesFactura['porcentaje_iva'] / 100))), 2);
+                // CALCULAR IVA DEPENDIENDO SI ESTÁ INCLUIDO O NO
+                if ($this->ivaIncluido) {
+                    // Cuando el precio INCLUYE IVA
+                    $iva = round(($totalPorCantidad - $producto->descuento_valor) - 
+                        (($totalPorCantidad - $producto->descuento_valor) / 
+                        (1 + ($this->totalesFactura['porcentaje_iva'] / 100))), 2);
+                    
+                    // Calcular valor sin IVA
+                    $valor_linea_sin_iva = round(
+                        ($totalPorCantidad - $producto->descuento_valor) / 
+                        (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 
+                        2
+                    );
+                    
+                    // Valor con IVA
+                    $valor_linea_con_iva = $valor_linea_sin_iva + $iva;
+                    
+                } else {
+                    // Cuando el precio NO incluye IVA
+                    $iva = round(
+                        ($totalPorCantidad - $producto->descuento_valor) * 
+                        ($this->totalesFactura['porcentaje_iva'] / 100), 
+                        2
+                    );
+                    
+                    // Valor sin IVA
+                    $valor_linea_sin_iva = round(
+                        ($producto->cantidad * $costo) - $producto->descuento_valor, 
+                        2
+                    );
+                    
+                    // Valor con IVA
+                    $valor_linea_con_iva = $valor_linea_sin_iva + $iva;
                 }
+                
+            } else {
+                // Si no hay IVA
+                $valor_linea_sin_iva = round(
+                    ($producto->cantidad * $costo) - $producto->descuento_valor, 
+                    2
+                );
+                $valor_linea_con_iva = $valor_linea_sin_iva;
             }
 
-            if ($ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
-                $costo = (float)$producto->costo / (1 + ($this->totalesFactura['porcentaje_iva'] / 100));
-            }
-
-            $subtotal = ($producto->cantidad * $costo) - $producto->descuento_valor;
-            // dd($producto->cantidad, $costo);
-            $this->totalesFactura['subtotal']+= $subtotal;
-            $this->totalesFactura['total_iva']+= $iva;
-            $this->totalesFactura['total_descuento']+= $producto->descuento_valor;
-            $this->totalesFactura['total_factura']+= $subtotal + $iva;
+            // ACTUALIZAR TOTALES
+            $this->totalesFactura['subtotal_sin_iva'] += $valor_linea_sin_iva;
+            $this->totalesFactura['subtotal_con_iva'] += $valor_linea_con_iva;
+            $this->totalesFactura['total_iva'] += $iva;
+            $this->totalesFactura['total_descuento'] += $producto->descuento_valor;
+            
+            // Mantener compatibilidad con código existente
+            $this->totalesFactura['subtotal'] = $this->totalesFactura['subtotal_sin_iva'];
+            $this->totalesFactura['total_factura'] = $this->totalesFactura['subtotal_con_iva'];
         }
 
-        if ($this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] && $this->totalesFactura['porcentaje_rete_fuente'] > 0) {
-            $total_rete_fuente = $ivaIncluido ? $this->totalesFactura['total_factura'] * ($this->totalesFactura['porcentaje_rete_fuente'] / 100) : $this->totalesFactura['subtotal'] * ($this->totalesFactura['porcentaje_rete_fuente'] / 100);
+        // CALCULAR RETENCIÓN EN LA FUENTE
+        if (in_array('7', $responsabilidades) &&
+            $this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] &&
+            $this->totalesFactura['porcentaje_rete_fuente'] > 0
+        ) {
+            // Base para retención: usar subtotal sin IVA (más común)
+            $base_retencion = $this->totalesFactura['subtotal_sin_iva'];
+            $total_rete_fuente = $base_retencion * ($this->totalesFactura['porcentaje_rete_fuente'] / 100);
+            
             $this->totalesFactura['total_rete_fuente'] = round($total_rete_fuente);
-            $this->totalesFactura['total_factura'] = round($this->totalesFactura['total_factura'] - $total_rete_fuente, 1);
+            $this->totalesFactura['total_factura'] = round($this->totalesFactura['total_factura'] - $total_rete_fuente, 2);
         } else {
             $this->totalesFactura['id_cuenta_rete_fuente'] = null;
+            $this->totalesFactura['total_rete_fuente'] = 0;
         }
-
-        $this->totalesFactura['subtotal'] = round($this->totalesFactura['subtotal'], 2);
-        $this->totalesFactura['total_factura'] = round($this->totalesFactura['total_factura'], 2);
     }
 
     private function calcularFormasPago($pagos)
@@ -1219,6 +1272,14 @@ class PosController extends Controller
         }
         
         $this->totalesPagos['total_cambio'] = $totalCambio;
+    }
+
+    private function getResponsabilidades()
+    {
+        if ($this->nit->id_responsabilidades) {
+            return explode(",", $this->nit->id_responsabilidades);
+        }
+        return [];
     }
 
     private function findCliente ($id_cliente)
