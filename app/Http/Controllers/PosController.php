@@ -99,7 +99,7 @@ class PosController extends Controller
         $valorUVT = VariablesEntorno::where('nombre', 'valor_uvt')->first();
         $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
-        $ivaIncluido = $ivaIncluido && $ivaIncluido->valor == '1' ? true : false;
+        $ivaIncluido = $ivaIncluido && intval($ivaIncluido->valor) ? true : false;
         $vendedorVentas = VariablesEntorno::where('nombre', 'vendedores_ventas')->first();
         $idClientePorDefecto = VariablesEntorno::where('nombre', 'id_cliente_venta_defecto')->first();
         $idClientePorDefecto = $idClientePorDefecto && $idClientePorDefecto->valor ? $idClientePorDefecto->valor : null;
@@ -362,7 +362,7 @@ class PosController extends Controller
             'pagos.*.id' => 'required|exists:sam.fac_formas_pagos,id',
             'pagos.*.valor' => 'required|numeric|min:1',
         ];
-
+        
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
 		if ($validator->fails()){
@@ -426,7 +426,7 @@ class PosController extends Controller
             $this->nit = $this->findCliente($request->get('id_cliente'));
             $venta = $this->createFacturaVenta($request);
             $enviarFacturaElectronica = false;
-
+            
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE VENTAS
             $documentoGeneral = new Documento(
                 $this->resolucion->comprobante->id,
@@ -489,7 +489,7 @@ class PosController extends Controller
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
-
+                
                 //AGREGAR MOVIMIENTO CONTABLE
                 foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
                     $cuentaRecord = $productoDb->familia->{$cuentaKey};
@@ -548,7 +548,7 @@ class PosController extends Controller
                         $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_ventas);
                     }
                 }
-
+                
                 //AGREGAR MOVIMIENTO BODEGA
                 $bodegaProducto = FacProductosBodegas::where('id_bodega', $this->bodega->id)
                     ->where('id_producto', $producto->id_producto)
@@ -584,7 +584,7 @@ class PosController extends Controller
                 $movimiento->relation()->associate($venta);
                 $venta->bodegas()->save($movimiento);
             }
-
+            
             //AGREGAR RETE FUENTE
             if ($this->totalesFactura['total_rete_fuente']) {
                 $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
@@ -746,6 +746,7 @@ class PosController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
+                "line"=>$e->getLine(),
                 "message"=>$e->getMessage()
             ], 422);
         }
