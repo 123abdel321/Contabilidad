@@ -47,29 +47,17 @@ class VentaElectronicaSender extends AbstractFESender
 
 	protected function legalMonetaryTotals()
     {
-        // Usar $this->iva_inluido que ya está disponible desde el constructor
-        
-        if ($this->iva_inluido) {
-            // Cuando el precio INCLUYE IVA
-            // Fórmula: subtotal_sin_iva = total_factura - total_iva
-            $subtotal_sin_iva = $this->factura->total_factura - $this->factura->total_iva;
-        } else {
-            // Cuando el precio NO incluye IVA
-            // Asumir que subtotal ya es sin IVA
-            $subtotal_sin_iva = $this->factura->subtotal;
-        }
-        
-        // Asegurar redondeo correcto
-        $subtotal_sin_iva = round($subtotal_sin_iva, 2);
+        $subtotal_sin_iva = $this->factura->subtotal;
+		$line_extension_amount = $this->factura->total_iva + $this->factura->total_rete_fuente;
         
         return [
-            'line_extension_amount' => number_format($subtotal_sin_iva, 2, '.', ''),
-            'tax_exclusive_amount' => number_format($subtotal_sin_iva, 2, '.', ''),
-            'tax_inclusive_amount' => number_format($this->factura->total_factura, 2, '.', ''),
-            'allowance_total_amount' => number_format($this->factura->total_descuento ?? 0, 2, '.', ''),
-            'charge_total_amount' => "0.00",
-            'payable_amount' => number_format($this->factura->total_factura, 2, '.', ''),
-        ];
+			'line_extension_amount' => number_format($line_extension_amount, 2, '.', ''), // Suma de los valores de todas las líneas SIN impuestos (base gravable)
+			'tax_exclusive_amount' => number_format($this->factura->subtotal, 2, '.', ''), // Total sin impuestos (igual al subtotal cuando no hay otros impuestos)
+			'tax_inclusive_amount' => number_format($this->factura->total_factura, 2, '.', ''), // Total CON impuestos incluidos (subtotal + IVA + otros impuestos)
+			'allowance_total_amount' => number_format($this->factura->total_descuento ?? 0, 2, '.', ''), // Total de descuentos aplicados a la factura
+			'charge_total_amount' => "0.00", // Total de cargos adicionales (fletes, recargos, etc.)
+			'payable_amount' => number_format($this->factura->total_factura, 2, '.', ''), // Valor final a pagar por el cliente (normalmente igual a tax_inclusive_amount)
+		];
     }
 
 }

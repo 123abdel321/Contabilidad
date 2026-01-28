@@ -893,7 +893,7 @@ $(document).on('click', '#agregarVentaProducto', function () {
 function calcularProductoVenta (idRow, validarCantidad = false) {
     var costoProducto = stringToNumberFloat($('#venta_costo_'+idRow).val());
     var cantidadProducto = $('#venta_cantidad_'+idRow).val();
-    var ivaProducto = $('#venta_iva_porcentaje_'+idRow).val();
+    var ivaProducto = parseFloat($('#venta_iva_porcentaje_'+idRow).val());
     var descuentoProducto = $('#venta_descuento_porcentaje_'+idRow).val();
     var totalPorCantidad = 0;
     var totalIva = 0;
@@ -919,12 +919,13 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
     if (ivaProducto > 0) {
         totalIva = (totalPorCantidad - totalDescuento) * ivaProducto / 100;
         if (ivaIncluidoVentas) {
-            totalIva = (totalPorCantidad - totalDescuento) - ((totalPorCantidad - totalDescuento) / (1 + (ivaProducto / 100)));
+            const subTotal = (totalPorCantidad - totalDescuento);
+            totalIva = subTotal * (ivaProducto / (ivaProducto + 100));
         }
         
         $('#venta_iva_valor_'+idRow).val(formatCurrencyValue(totalIva));
     }
-
+    console.log('totalIva', totalIva);
     if (!ivaIncluidoVentas) {
         totalProducto+= totalIva;
     }

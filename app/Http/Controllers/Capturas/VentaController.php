@@ -240,9 +240,11 @@ class VentaController extends Controller
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
 
-                $costo = $producto->costo;
+                $subTotal = (float)$producto->costo * $producto->cantidad;
+                
                 if ($this->ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
-                    $costo = round((float)$producto->costo / (1 + ($producto->iva_porcentaje / 100)), 2);
+                    $ivaIncluido = round($subTotal * ($producto->iva_porcentaje / ($producto->iva_porcentaje + 100)), 2);
+                    $subTotal-= $ivaIncluido;
                 }
                 
                 //CREAR VENTA DETALLE
@@ -256,7 +258,7 @@ class VentaController extends Controller
                     'descripcion' => $productoDb->codigo.' - '.$productoDb->nombre,
                     'cantidad' => $producto->cantidad,
                     'costo' => $producto->costo,
-                    'subtotal' => $costo * $producto->cantidad,
+                    'subtotal' => $subTotal,
                     'descuento_porcentaje' => $producto->descuento_porcentaje,
                     'descuento_valor' => $producto->descuento_valor,
                     'iva_porcentaje' => $producto->iva_porcentaje,
@@ -1314,24 +1316,30 @@ class VentaController extends Controller
                     $this->totalesFactura['id_cuenta_iva'] = $cuentaIva->id;
                 }
 
-                // CALCULAR IVA DEPENDIENDO SI ESTÁ INCLUIDO O NO
-                if ($this->ivaIncluido) {
-                    // Cuando el precio INCLUYE IVA
-                    $iva = round(($totalPorCantidad - $producto->descuento_valor) - 
-                        (($totalPorCantidad - $producto->descuento_valor) / 
-                        (1 + ($this->totalesFactura['porcentaje_iva'] / 100))), 2);
-                    
-                    // Calcular valor sin IVA
-                    $valor_linea_sin_iva = round(
-                        ($totalPorCantidad - $producto->descuento_valor) / 
-                        (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 
-                        2
-                    );
-                    
-                    // Valor con IVA
-                    $valor_linea_con_iva = $valor_linea_sin_iva + $iva;
-                    
-                } else {
+                    // CALCULAR IVA DEPENDIENDO SI ESTÁ INCLUIDO O NO
+                    if ($this->ivaIncluido) {
+
+                        $subTotal = $totalPorCantidad - $producto->descuento_valor;
+                        $porcentajeIva = $this->totalesFactura['porcentaje_iva'];
+
+                        // IVA cuando está incluido en el precio
+                        $iva = round(
+                            $subTotal * ($porcentajeIva / (100 + $porcentajeIva)),
+                            2
+                        );
+
+                        // Valor sin IVA
+                        $valor_linea_sin_iva = round(
+                            $subTotal - $iva,
+                            2
+                        );
+
+                        // Valor con IVA (realmente es el subtotal)
+                        $valor_linea_con_iva = round(
+                            $subTotal,
+                            2
+                        );
+                    } else {
                     // Cuando el precio NO incluye IVA
                     $iva = round(
                         ($totalPorCantidad - $producto->descuento_valor) * 

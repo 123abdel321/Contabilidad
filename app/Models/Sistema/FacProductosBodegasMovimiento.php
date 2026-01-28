@@ -28,4 +28,14 @@ class FacProductosBodegasMovimiento extends Model
     {
         return $this->morphTo();
     }
+
+    public function producto()
+    {
+        return $this->belongsTo(FacProductos::class, 'id_producto');
+    }
+
+    public function bodega()
+    {
+        return $this->belongsTo(FacBodegas::class, 'id_bodega');
+    }
 }

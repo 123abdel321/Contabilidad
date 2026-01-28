@@ -461,10 +461,11 @@ class PosController extends Controller
                         "message"=> ['Cantidad bodega' => ['La cantidad del producto '.$productoDb->codigo. ' - ' .$productoDb->nombre. ' supera la cantidad en bodega']]
                     ], 422);
                 }
-
-                $costo = $producto->costo;
+                
+                $subTotal = (float)$producto->costo * $producto->cantidad;
                 if ($this->ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
-                    $costo = round((float)$producto->costo / (1 + ($producto->iva_porcentaje / 100)), 2);
+                    $ivaIncluido = round($subTotal * ($producto->iva_porcentaje / ($producto->iva_porcentaje + 100)), 2);
+                    $subTotal-= $ivaIncluido;
                 }
 
                 //CREAR VENTA DETALLE
@@ -477,8 +478,8 @@ class PosController extends Controller
                     'id_cuenta_venta_descuento' => $productoDb->familia->id_cuenta_venta_descuento,
                     'descripcion' => $productoDb->codigo.' - '.$productoDb->nombre,
                     'cantidad' => $producto->cantidad,
-                    'costo' => $costo,
-                    'subtotal' => $costo * $producto->cantidad,
+                    'costo' => $producto->costo,
+                    'subtotal' => $subTotal,
                     'descuento_porcentaje' => $producto->descuento_porcentaje,
                     'descuento_valor' => $producto->descuento_valor,
                     'iva_porcentaje' => $producto->iva_porcentaje,
