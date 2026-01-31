@@ -665,7 +665,7 @@ class DocumentoGeneralController extends Controller
 				return response()->json([
 					"success"=>false,
 					'data' => [],
-					"message"=> 'Este documento no puede ser eliminado porque tiene '.count($abonos).' abono(s) registrado(s). Elimine los abonos antes de intentar nuevamente.'
+					"message"=> 'Este documento no puede ser anulados porque tiene '.count($abonos).' abono(s) registrado(s). Anule los abonos antes de intentar nuevamente.'
 				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 

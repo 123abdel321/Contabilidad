@@ -39,6 +39,8 @@ class Extracto
             ->mergeBindings($query)
 
             ->select(
+                'id',
+                'total_columnas',
                 'id_nit',
                 "tipo_documento",
                 'numero_documento',
@@ -405,6 +407,8 @@ class Extracto
 
         $queryActual = DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
+                "DG.id",
+                DB::raw("COUNT(DG.id) AS total_columnas"),
                 "N.id AS id_nit",
                 "TD.nombre AS tipo_documento",
                 "N.numero_documento",
@@ -464,26 +468,26 @@ class Extracto
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->leftJoin('tipos_documentos AS TD', 'N.id_tipo_documento', 'TD.id')
             ->where('anulado', 0)
-            ->when($this->id_nit ? $this->id_nit : false, function ($query) {
+            ->when(isset($this->id_nit), function ($query) {
 				$query->where('N.id', $this->id_nit);
 			})
-            ->when($this->id_cuenta ? $this->id_cuenta : false, function ($query) {
+            ->when(isset($this->id_cuenta), function ($query) {
 				$query->where('PC.id', $this->id_cuenta);
 			})
-            ->when($this->id_tipo_cuenta ? $this->id_tipo_cuenta : false, function ($query) {
+            ->when(isset($this->id_tipo_cuenta), function ($query) {
                 if (is_array($this->id_tipo_cuenta)) $query->whereIn('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
                 else $query->where('PCT.id_tipo_cuenta', $this->id_tipo_cuenta);
 			})
-            ->when($this->documento_referencia ? $this->documento_referencia : false, function ($query) {
+            ->when(isset($this->documento_referencia), function ($query) {
 				$query->where('DG.documento_referencia', $this->documento_referencia);
 			})
-            ->when($this->fecha ? $this->fecha : false, function ($query) {
+            ->when(isset($this->fecha), function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->fecha);
 			})
-            ->when($this->documento_referencia ? false : true, function ($query) {
+            ->when(isset($this->documento_referencia), function ($query) {
                 $query->havingRaw("IF(PC.naturaleza_cuenta=0, SUM(DG.debito - DG.credito), SUM(DG.credito - DG.debito)) != 0");
 			})
-            ->when($this->consecutivo ? true : false, function ($query) {
+            ->when(isset($this->consecutivo), function ($query) {
                 $query->where('DG.consecutivo', $this->consecutivo);
 			})
             ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
