@@ -84,7 +84,10 @@ class DocumentosPdf extends AbstractPrinterPdf
 
 		$nombre_usuario = 'PROVEEDOR';
 
-		if ($this->factura->comprobante && $this->factura->comprobante->tipo_comprobante == 0 || $this->factura->comprobante->tipo_comprobante == 3) {
+		if ($this->factura->comprobante && (
+			$this->factura->comprobante->tipo_comprobante == 0 ||
+			$this->factura->comprobante->tipo_comprobante == 3  )
+		) {
 			$nombre_usuario = 'CLIENTE';
 		}
 
@@ -97,26 +100,27 @@ class DocumentosPdf extends AbstractPrinterPdf
 					null,
 					$documento->documento_referencia
 				))->actual()->first();
+
 				if(!$nit) {
 					$cuidad = '';
-					if($extracto->id_ciudad) {
+					if($extracto && $extracto->id_ciudad) {
 						$cuidad = Ciudades::whereId($extracto->id_ciudad)->first();
 						
 						if($cuidad) $cuidad = $cuidad->nombre;
 					}
 
 					$nit = (object)[
-						'nombre_nit' => $extracto->nombre_nit,
-						'telefono' =>  $extracto->telefono_1,
-						'email' => $extracto->email,
-						'direccion' => $extracto->direccion,
-						'tipo_documento' => $extracto->tipo_documento,
-						'numero_documento' => $extracto->numero_documento,
-						"ciudad" => $cuidad,
+						'nombre_nit'       => $extracto?->nombre_nit ?? '',
+						'telefono'         => $extracto?->telefono_1 ?? '',
+						'email'            => $extracto?->email ?? '',
+						'direccion'        => $extracto?->direccion ?? '',
+						'tipo_documento'   => $extracto?->tipo_documento ?? '',
+						'numero_documento' => $extracto?->numero_documento ?? '',
+						'ciudad'           => $cuidad ?? '',
 					];
 				}
 
-				$documento->saldo = $extracto->saldo;
+				$documento->saldo = $extracto?->saldo ?? 0;
 			}
 			//TOMAR PRIMERA OBSERVACIÓN
 			if($documento->concepto && !$observacion) {
