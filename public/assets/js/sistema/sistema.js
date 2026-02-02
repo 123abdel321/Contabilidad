@@ -17,7 +17,7 @@ if (host.includes("app.portafolioerp.com")) {
     base_url_eco = "https://eco.portafolioerp.com/api/";
 }
 
-const pusher = new Pusher('9ea234cc370d308638af', {cluster: 'us2'});
+const pusher = new Pusher('35b0c8377acdc6fd467c', {cluster: 'us2'});
 // Pusher.logToConsole = true;
 const bucketUrl = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/';
 const btnLogout = document.getElementById('sessionLogout');
