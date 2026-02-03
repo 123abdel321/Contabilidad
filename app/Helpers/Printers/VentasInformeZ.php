@@ -194,18 +194,26 @@ class VentasInformeZ extends AbstractPrinterPdf
             ->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::NOTA_CREDITO);
 
         $pagosTotales = FacVentaPagos::select(
-                '*',
-                DB::raw("SUM(valor) AS valor_sum")
-            )
-            ->with('forma_pago')
-            ->whereHas('venta', function ($query) {
-                $query->where('fecha_manual', '>=', $this->request['fecha_desde'])
-                    ->where('fecha_manual', '<=', $this->request['fecha_hasta'])
-                    ->where('id_bodega', $this->request['id_bodega'])
-                    ->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL);
-            })
-            ->groupBy('id_forma_pago')
-            ->get();
+            'id_forma_pago',
+            DB::raw("SUM(CASE 
+                WHEN venta.codigo_tipo_documento_dian = '".CodigoDocumentoDianTypes::VENTA_NACIONAL."' 
+                THEN fac_venta_pagos.valor 
+                ELSE -fac_venta_pagos.valor 
+            END) AS valor_sum")
+        )
+        ->with('forma_pago')
+        ->join('fac_ventas as venta', 'fac_venta_pagos.id_venta', '=', 'venta.id')
+        ->whereHas('venta', function ($query) {
+            $query->where('fecha_manual', '>=', $this->request['fecha_desde'])
+                ->where('fecha_manual', '<=', $this->request['fecha_hasta'])
+                ->where('id_bodega', $this->request['id_bodega'])
+                ->whereIn('codigo_tipo_documento_dian', [
+                    CodigoDocumentoDianTypes::VENTA_NACIONAL,
+                    CodigoDocumentoDianTypes::NOTA_CREDITO
+                ]);
+        })
+        ->groupBy('id_forma_pago')
+        ->get();
 
         $pagosTotalesSaldo = DocumentosGeneral::where('fecha_manual', '<=', $this->request['fecha_desde'])
             ->when($bodega->id_cuenta_cartera ?? false, function ($query) use ($bodega) {
