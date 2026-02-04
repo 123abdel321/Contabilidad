@@ -172,7 +172,9 @@ class RecibosController extends Controller
 
                 foreach ($extractos as $extracto) {
                     if ($extracto->saldo < 0) $hasError = true;
-                    $dataRecibos[] = $this->formatExtracto($extracto);
+                    if (intval($extracto->saldo) > 0) {
+                        $dataRecibos[] = $this->formatExtracto($extracto);
+                    }
                 }
             }
 
