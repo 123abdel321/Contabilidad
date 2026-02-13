@@ -181,54 +181,83 @@ class ApiController extends Controller
 
     public function setEmpresa(Request $request)
     {
-        $empresaSelect = Empresa::where('hash', $request->get("empresa"))->first();
-		$check = $request->user()->checkRelacionEmpresa($request->get("empresa"));
+        try {
 
-        if($request->user()->rol_portafolio && !$check){
-            $usuarioPermisosEmpresa = UsuarioPermisos::updateOrCreate([
-                'id_user' => $request->user()->id,
-                'id_empresa' => $empresaSelect->id
-            ],[
-                'ids_permission' => UsuarioPermisos::where('id_empresa', $empresaSelect->id)->first()->ids_permission,
-                'ids_bodegas_responsable' => '1',
-                'ids_resolucion_responsable' => '1'
-            ]);
+            DB::connection('clientes')->beginTransaction();
 
-            $check = true;
-        }
-        
-		if($check){
+            $empresaSelect = Empresa::where('hash', $request->get("empresa"))->first();
+            $check = $request->user()->checkRelacionEmpresa($request->get("empresa"));
+            if($request->user()->rol_portafolio && !$check){
+                $usuarioPermisosEmpresa = UsuarioPermisos::updateOrCreate([
+                    'id_user' => $request->user()->id,
+                    'id_empresa' => $empresaSelect->id
+                ],[
+                    'ids_permission' => UsuarioPermisos::where('id_empresa', $empresaSelect->id)->first()->ids_permission,
+                    'ids_bodegas_responsable' => null,
+                    'ids_resolucion_responsable' => null
+                ]);
 
-            $request->user()->tokens()->delete();
-            $token = $request->user()->createToken("api_token")->plainTextToken;
-            
-            $user = $request->user();
-            $user->id_empresa = $empresaSelect->id;
-            $user->has_empresa = $empresaSelect->token_db;
-            $user->remember_token = $token;
-            $user->save();
+                $check = true;
+            }
 
-            $notificacionCode = $empresaSelect->token_db.'_'.$user->id;
-
-            $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', request()->user()->id)
+            $usuarioEmpresa = UsuarioEmpresa::where('id_usuario', $request->user()->id)
                 ->where('id_empresa', $empresaSelect->id)
                 ->first();
 
-            $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
+            if (!$usuarioEmpresa && $request->user()->rol_portafolio) {
+                $usuarioEmpresa = UsuarioEmpresa::create([
+                    'id_usuario' => $request->user()->id,
+                    'id_empresa' => $empresaSelect->id,
+                    'id_rol' => $request->user()->rol_portafolio ? $request->user()->rol_portafolio : '2',
+                    'estado' => 1
+                ]);
+            }
+            
+            if($check){
 
-			return response()->json([
-				"success"=>true,
-				"empresa"=>$empresaSelect,
-                "notificacion_code"=>$notificacionCode,
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-			]);
-		}else{
-			return response()->json([
-				"success"=>false,
-				"message"=>"Intenta acceder a una empresa a la que no tiene acceso"
-			],422);
-		}
+                $request->user()->tokens()->delete();
+                $token = $request->user()->createToken("api_token")->plainTextToken;
+                
+                $user = $request->user();
+                $user->id_empresa = $empresaSelect->id;
+                $user->has_empresa = $empresaSelect->token_db;
+                $user->remember_token = $token;
+                $user->save();
+
+                $notificacionCode = $empresaSelect->token_db.'_'.$user->id;
+
+                $usuarioPermisosEmpresa = UsuarioPermisos::where('id_user', request()->user()->id)
+                    ->where('id_empresa', $empresaSelect->id)
+                    ->first();
+
+                $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
+
+                DB::connection('clientes')->commit();
+
+                return response()->json([
+                    "success"=>true,
+                    "empresa"=>$empresaSelect,
+                    "notificacion_code"=>$notificacionCode,
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                ]);
+            }
+
+            DB::connection('clientes')->rollback();
+
+            return response()->json([
+                "success"=>false,
+                "message"=>"Intenta acceder a una empresa a la que no tiene acceso"
+            ],422);
+
+        } catch (Exception $e) {
+            DB::connection('clientes')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
 	}
 
     public function getEmpresas(Request $request){

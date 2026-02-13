@@ -490,19 +490,8 @@ $(document).on('click', '.enviar-fe-venta', function () {
         $("#crearCapturaVenta").show();
         $("#crearCapturaVentaLoading").hide();
         
-        const mensajes = err.responseJSON.message;
-        let errorsMsg = '';
-        let countError = 0;
-
-        if (typeof mensajes === 'string') {
-            agregarToast('error', 'Envio a la dian errado', mensajes);
-            return;
-        }
-
-        mensajes.forEach(mensaje => {
-            countError++;
-            errorsMsg+='<b>'+countError+'-</b> '+mensaje+'<br/>';
-        });
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
 
         agregarToast('error', 'Envio a la dian errado', errorsMsg);
     });

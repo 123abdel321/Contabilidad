@@ -48,7 +48,7 @@ class VentaElectronicaSender extends AbstractFESender
 	protected function legalMonetaryTotals()
     {
         $subtotal_sin_iva = $this->factura->subtotal;
-		$line_extension_amount = $this->factura->total_iva + $this->factura->total_rete_fuente;
+		$line_extension_amount = $this->factura->total_iva + $this->factura->total_rete_fuente + $this->factura->subtotal;
         
         return [
 			'line_extension_amount' => number_format($line_extension_amount, 2, '.', ''), // Suma de los valores de todas las líneas SIN impuestos (base gravable)
