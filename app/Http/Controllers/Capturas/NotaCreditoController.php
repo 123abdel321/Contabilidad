@@ -782,7 +782,7 @@ class NotaCreditoController extends Controller
             }
 
             $cuentaFormaPago = $formaPago->cuenta;
-            $docReferencia = $this->facturaVentas->docReferencia;
+            $docReferencia = $this->facturaVentas->consecutivo;
             $cuentaOpuestoPago = PlanCuentas::CREDITO == $cuentaFormaPago->naturaleza_ventas ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
 
             $doc = new DocumentosGeneral([
