@@ -625,6 +625,7 @@ class VentaController extends Controller
                     ->whereColumn('fvd.id_venta', 'fac_ventas.id');
             }, 'total_costo_cantidad')
             ->whereBetween('fecha_manual', [$request->get('fecha_desde'), $request->get('fecha_hasta')])
+            ->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL)
             ->get();
 
         $totalDataVentaGeneral[] = [
@@ -651,7 +652,6 @@ class VentaController extends Controller
         } else {
             $this->generarVentaDetalles($dataVentas, false);
         }
-
         
         return response()->json([
             'success'=>	true,
@@ -671,7 +671,6 @@ class VentaController extends Controller
         $draw = $request->get('draw');
         $start = $request->get("start");
         $rowperpage = $request->get("length");
-
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
