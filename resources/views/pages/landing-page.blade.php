@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Portafolio ERP | Software Contable y Facturación Electrónica DIAN para Colombia</title>
+
+    <link rel="mask-icon" href="https://maximoph.co/img/logo_contabilidad.png" color="#000000">
+    <link rel="alternate icon" class="js-site-favicon" type="image/png" href="/img/logo_contabilidad.png">
+    <link rel="icon" class="js-site-favicon" type="image/png" href="/img/logo_contabilidad.png">
     
     <meta name="description" content="Software ERP colombiano con Contabilidad DIAN, Facturación Electrónica, Nómina y POS. Todo en una plataforma 100% web. Cumple con la normativa fiscal.">
     
@@ -966,6 +970,7 @@
             }
         }
     </style>
+
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
