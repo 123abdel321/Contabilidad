@@ -80,12 +80,18 @@
                                 <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                     <input class="form-check-input" type="radio" name="proveedores_cartera" id="proveedores_cartera0" style="font-size: 11px;" checked>
                                     <label class="form-check-label" for="proveedores_cartera0" style="font-size: 11px;">
-                                        No
+                                        Todos
                                     </label>
                                 </div>
                                 <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                     <input class="form-check-input" type="radio" name="proveedores_cartera" id="proveedores_cartera1" style="font-size: 11px;">
                                     <label class="form-check-label" for="proveedores_cartera1" style="font-size: 11px;">
+                                        No
+                                    </label>
+                                </div>
+                                <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
+                                    <input class="form-check-input" type="radio" name="proveedores_cartera" id="proveedores_cartera2" style="font-size: 11px;">
+                                    <label class="form-check-label" for="proveedores_cartera2" style="font-size: 11px;">
                                         Si
                                     </label>
                                 </div>

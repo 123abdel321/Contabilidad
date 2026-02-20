@@ -964,8 +964,12 @@ class ProcessInformeCartera implements ShouldQueue
             ->when($this->request['ubicaciones'], function ($query) {
                 $query->whereNotNull('N.apartamentos');
             })
-            ->when(!$this->request['proveedor'], function ($query) {
-                $query->whereIn('N.proveedor', [null, 0]);
+            ->when(intVal($this->request['proveedor']) == 2, function ($query) {
+                $query->where('N.proveedor', 1);
+            })
+            ->when(intVal($this->request['proveedor']) == 1, function ($query) {
+                $query->where('N.proveedor', 0)
+                    ->orWhereNull('N.proveedor');
             })
             ->when($this->request['fecha_hasta'] ? true : false, function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);

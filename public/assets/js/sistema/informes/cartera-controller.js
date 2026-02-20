@@ -947,8 +947,9 @@ function getUbicacionesCartera() {
 }
 
 function getProveedoresResumenCartera() {
-    if($("input[type='radio']#proveedores_cartera0").is(':checked')) return '';
+    if($("input[type='radio']#proveedores_cartera0").is(':checked')) return 0;
     if($("input[type='radio']#proveedores_cartera1").is(':checked')) return 1;
+    if($("input[type='radio']#proveedores_cartera2").is(':checked')) return 2;
 
     return '';
 }
