@@ -75,14 +75,14 @@
                         <div class="form-group col-12 col-sm-4 col-md-3 row" style="margin-bottom: 0.1rem !important;">
                             <label for="example-text-input" class="form-control-label">Detallar ventas</label>
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
-                                <input class="form-check-input" type="radio" name="detallar_venta" id="detallar_venta1" style="font-size: 11px;" checked>
-                                <label class="form-check-label" for="detallar_venta1" style="font-size: 11px;">
+                                <input class="form-check-input" type="radio" name="detallar_venta_acumulada" id="detallar_venta_acumulada1" style="font-size: 11px;" checked>
+                                <label class="form-check-label" for="detallar_venta_acumulada1" style="font-size: 11px;">
                                     Si
                                 </label>
                             </div>
                             <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
-                                <input class="form-check-input" type="radio" name="detallar_venta" id="detallar_venta2" style="font-size: 11px;">
-                                <label class="form-check-label" for="detallar_venta2" style="font-size: 11px;">
+                                <input class="form-check-input" type="radio" name="detallar_venta_acumulada" id="detallar_venta2" style="font-size: 11px;">
+                                <label class="form-check-label" for="detallar_venta_acumulada2" style="font-size: 11px;">
                                     No
                                 </label>
                             </div>

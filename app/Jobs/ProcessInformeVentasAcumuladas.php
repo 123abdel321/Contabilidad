@@ -16,6 +16,7 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
 //MODELS
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\FacFacturaDetalle;
 use App\Models\Informes\InfVentasAcumulada;
 use App\Models\Informes\InfVentasAcumuladaDetalle;
 
@@ -150,6 +151,15 @@ class ProcessInformeVentasAcumuladas
             ->groupByRaw($this->agrupadoPor())
             ->chunk(233, function ($detalles) {
                 foreach ($detalles as $detalle) {
+                    $devoluciones = FacFacturaDetalle::where('id_venta_detalle', $detalle->id);
+                    if ($devoluciones->count()) {
+                        $detalle->total-= $devoluciones->sum('total');
+                        $detalle->subtotal-= $devoluciones->sum('subtotal');
+                        $detalle->descuento_valor-= $devoluciones->sum('descuento_valor');
+                        $detalle->iva_valor-= $devoluciones->sum('iva_valor');
+                        $detalle->cantidad-= $devoluciones->sum('cantidad');
+                        $detalle->costo-= $devoluciones->sum('costo');
+                    }
                     $this->getFormatPadreCollection($detalle);
                 }
                 unset($detalles);//Liberar memoria
@@ -211,6 +221,15 @@ class ProcessInformeVentasAcumuladas
             ->orderBy('id', 'DESC')
             ->chunk(233, function ($detalles) {
                 foreach ($detalles as $detalle) {
+                    $devoluciones = FacFacturaDetalle::where('id_venta_detalle', $detalle->id);
+                    if ($devoluciones->count()) {
+                        $detalle->total-= $devoluciones->sum('total');
+                        $detalle->subtotal-= $devoluciones->sum('subtotal');
+                        $detalle->descuento_valor-= $devoluciones->sum('descuento_valor');
+                        $detalle->iva_valor-= $devoluciones->sum('iva_valor');
+                        $detalle->cantidad-= $devoluciones->sum('cantidad');
+                        $detalle->costo-= $devoluciones->sum('costo');
+                    }
                     $this->getFormatDetalleCollection($detalle);
                 }
                 unset($detalles);//Liberar memoria
@@ -283,7 +302,7 @@ class ProcessInformeVentasAcumuladas
             ->leftJoin('comprobantes AS CO', 'FV.id_comprobante', 'CO.id')
             ->leftJoin('fac_resoluciones AS FR', 'FV.id_resolucion', 'FR.id')
             ->leftJoin('fac_productos AS FP', 'FVD.id_producto', 'FP.id')
-
+            ->where('codigo_tipo_documento_dian', CodigoDocumentoDianTypes::VENTA_NACIONAL)
             ->where('FV.fecha_manual', '>=', Carbon::parse($this->request['fecha_desde'])->format('Y-m-d'))
             ->where('FV.fecha_manual', '<=', Carbon::parse($this->request['fecha_hasta'])->format('Y-m-d'))
             ->when(isset($this->request['id_nit']) ? true : false, function ($query) {

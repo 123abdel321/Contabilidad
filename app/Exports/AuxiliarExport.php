@@ -5,18 +5,18 @@ namespace App\Exports;
 use DB;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Maatwebsite\Excel\Concerns\Exportable;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+//SPREADSHEET
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 //MODELS
 use App\Models\Informes\InfAuxiliar;
 use App\Models\Informes\InfAuxiliarDetalle;
