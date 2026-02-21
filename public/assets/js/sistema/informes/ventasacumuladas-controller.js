@@ -332,8 +332,8 @@ function initCombosVentasAcumuladas() {
 }
 
 function getDetalleVentasAcumuladas() {
-    if($("input[type='radio']#detallar_venta0").is(':checked')) return '';
-    if($("input[type='radio']#detallar_venta1").is(':checked')) return 1;
+    if($("input[type='radio']#detallar_venta_acumulada1").is(':checked')) return '';
+    if($("input[type='radio']#detallar_venta_acumulada2").is(':checked')) return 1;
 
     return '';
 }
