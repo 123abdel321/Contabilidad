@@ -370,7 +370,7 @@ class PosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $this->resolucion = FacResoluciones::whereId($request->get('id_resolucion'))
@@ -382,7 +382,7 @@ class PosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está agotada"]]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if (!$this->resolucion->isActive) {
@@ -390,7 +390,7 @@ class PosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>["Resolución" => ["La resolución {$this->resolucion->nombre_completo} está vencida"]]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if (!$this->resolucion->comprobante) {
@@ -398,7 +398,7 @@ class PosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>["Resolución" => ["La resolución {$this->resolucion->nombre_completo} no tiene un comprobante valido"]]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $pedido = FacPedidos::where('id', $request->get('id_pedido'))->first();
@@ -459,10 +459,11 @@ class PosController extends Controller
                         "success"=>false,
                         'data' => [],
                         "message"=> ['Cantidad bodega' => ['La cantidad del producto '.$productoDb->codigo. ' - ' .$productoDb->nombre. ' supera la cantidad en bodega']]
-                    ], 422);
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
                 
                 $subTotal = (float)$producto->costo * $producto->cantidad;
+
                 if ($this->ivaIncluido && array_key_exists('porcentaje_iva', $this->totalesFactura)) {
                     $ivaIncluido = round($subTotal * ($producto->iva_porcentaje / ($producto->iva_porcentaje + 100)), 2);
                     $subTotal-= $ivaIncluido;
@@ -525,10 +526,10 @@ class PosController extends Controller
                                 "success"=>false,
                                 'data' => [],
                                 "message"=> [$productoDb->codigo.' - '.$productoDb->nombre => ['La cuenta '.str_replace('cuenta_venta_', '', $cuentaKey). ' no se encuentra configurada en la familia: '. $productoDb->familia->codigo. ' - '. $productoDb->familia->nombre]]
-                            ], 422);
+                            ], Response::HTTP_UNPROCESSABLE_ENTITY);
                         }
 
-                        $concepto = "VENTA: {$this->nit->nombre_nit} - {$this->nit->documento} - {$venta->documento_referencia}";
+                        $concepto = "VENTA POS: {$this->nit->nombre_nit} - {$this->nit->documento} - {$venta->documento_referencia}";
                         if ($producto->concepto) {
                             $concepto.= " - {$producto->concepto}";
                         }
@@ -608,7 +609,7 @@ class PosController extends Controller
                         "success"=>false,
                         'data' => [],
                         "message"=> ['Cuenta retención' => ['La cuenta '.$cuentaRetencion->cuenta. ' - ' .$cuentaRetencion->nombre. ' no tiene naturaleza en ventas']]
-                    ], 422);
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
             }
 
@@ -677,7 +678,7 @@ class PosController extends Controller
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
             //ACTUALIZAR CONSECUTIVO
@@ -707,7 +708,7 @@ class PosController extends Controller
                             "success"=>false,
                             'data' => [],
                             "message" => $ventaElectronica["error_message"] 
-                        ], 422);
+                        ], Response::HTTP_UNPROCESSABLE_ENTITY);
                     }
                 }
 
@@ -748,7 +749,7 @@ class PosController extends Controller
                 'data' => [],
                 "line"=>$e->getLine(),
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -766,7 +767,7 @@ class PosController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $data = json_decode($request->getContent());
@@ -823,14 +824,14 @@ class PosController extends Controller
                 'success'=>	false,
                 'data' => [],
                 'message'=> 'Credenciales incorrectas o el usuario no existe!'
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
 
         } catch (Exception $e) {
             return response()->json([
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -934,7 +935,7 @@ class PosController extends Controller
                 'success'=>	false,
                 'data' => [],
                 'message'=> 'La factura no existe'
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         
         if ($factura->resolucion->tipo_impresion == 0) {
@@ -1189,21 +1190,27 @@ class PosController extends Controller
 
                 // CALCULAR IVA DEPENDIENDO SI ESTÁ INCLUIDO O NO
                 if ($this->ivaIncluido) {
-                    // Cuando el precio INCLUYE IVA
-                    $iva = round(($totalPorCantidad - $producto->descuento_valor) - 
-                        (($totalPorCantidad - $producto->descuento_valor) / 
-                        (1 + ($this->totalesFactura['porcentaje_iva'] / 100))), 2);
-                    
-                    // Calcular valor sin IVA
-                    $valor_linea_sin_iva = round(
-                        ($totalPorCantidad - $producto->descuento_valor) / 
-                        (1 + ($this->totalesFactura['porcentaje_iva'] / 100)), 
+
+                    $subTotal = $totalPorCantidad - $producto->descuento_valor;
+                    $porcentajeIva = $this->totalesFactura['porcentaje_iva'];
+
+                    // IVA cuando está incluido en el precio
+                    $iva = round(
+                        $subTotal * ($porcentajeIva / (100 + $porcentajeIva)),
                         2
                     );
-                    
-                    // Valor con IVA
-                    $valor_linea_con_iva = $valor_linea_sin_iva + $iva;
-                    
+
+                    // Valor sin IVA
+                    $valor_linea_sin_iva = round(
+                        $subTotal - $iva,
+                        2
+                    );
+
+                    // Valor con IVA (realmente es el subtotal)
+                    $valor_linea_con_iva = round(
+                        $subTotal,
+                        2
+                    );
                 } else {
                     // Cuando el precio NO incluye IVA
                     $iva = round(

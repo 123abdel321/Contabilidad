@@ -448,9 +448,6 @@ class VentaController extends Controller
                 }
             }
             
-            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
-
-            
             if (!$documentoGeneral->save()) {
 
 				DB::connection('sam')->rollback();
@@ -461,8 +458,7 @@ class VentaController extends Controller
 				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
-            $feSended = false;
-            $hasCufe = false;
+            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 
             //FACTURAR ELECTRONICAMENTE
             if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
@@ -1315,30 +1311,30 @@ class VentaController extends Controller
                     $this->totalesFactura['id_cuenta_iva'] = $cuentaIva->id;
                 }
 
-                    // CALCULAR IVA DEPENDIENDO SI ESTÁ INCLUIDO O NO
-                    if ($this->ivaIncluido) {
+                // CALCULAR IVA DEPENDIENDO SI ESTÁ INCLUIDO O NO
+                if ($this->ivaIncluido) {
 
-                        $subTotal = $totalPorCantidad - $producto->descuento_valor;
-                        $porcentajeIva = $this->totalesFactura['porcentaje_iva'];
+                    $subTotal = $totalPorCantidad - $producto->descuento_valor;
+                    $porcentajeIva = $this->totalesFactura['porcentaje_iva'];
 
-                        // IVA cuando está incluido en el precio
-                        $iva = round(
-                            $subTotal * ($porcentajeIva / (100 + $porcentajeIva)),
-                            2
-                        );
+                    // IVA cuando está incluido en el precio
+                    $iva = round(
+                        $subTotal * ($porcentajeIva / (100 + $porcentajeIva)),
+                        2
+                    );
 
-                        // Valor sin IVA
-                        $valor_linea_sin_iva = round(
-                            $subTotal - $iva,
-                            2
-                        );
+                    // Valor sin IVA
+                    $valor_linea_sin_iva = round(
+                        $subTotal - $iva,
+                        2
+                    );
 
-                        // Valor con IVA (realmente es el subtotal)
-                        $valor_linea_con_iva = round(
-                            $subTotal,
-                            2
-                        );
-                    } else {
+                    // Valor con IVA (realmente es el subtotal)
+                    $valor_linea_con_iva = round(
+                        $subTotal,
+                        2
+                    );
+                } else {
                     // Cuando el precio NO incluye IVA
                     $iva = round(
                         ($totalPorCantidad - $producto->descuento_valor) * 

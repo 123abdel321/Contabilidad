@@ -227,7 +227,7 @@ class NitController extends Controller
                 'observaciones' => $request->get('observaciones'),
                 // 'declarante' => $request->get('declarante'),
                 'sumar_aiu' => $request->get('sumar_aiu'),
-                'proveedor' => $request->get('proveedor'),
+                'proveedor' => $request->get('proveedor') ? 1 : 0,
                 'plazo' => 0,
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
