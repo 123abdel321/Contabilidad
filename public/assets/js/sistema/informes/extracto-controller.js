@@ -80,31 +80,12 @@ function initTablesExtractos() {
                 d.fecha_hasta = $('#fecha_manual_extracto').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
                 d.documento_referencia = $('#factura_documentos_extracto').val();
                 d.id_nit = $('#id_nit_extracto').val();
-                d.errores = getErroresExtracto();
+                d.saldo_anterior = getSaldoAnteriorExtracto();
             }
         },
         columns: [
             { data:'cuenta'},
             { data:'nombre_cuenta'},
-            // { data: function (row, type, set){
-            //     if(!row.numero_documento){
-            //         return '';
-            //     }
-            //     var nombre = row.numero_documento + ' - ' +row.nombre_nit;
-            //     if(row.razon_social){
-            //         nombre = row.numero_documento +' - '+ row.razon_social;
-            //     }
-                
-            //     var html = '<div class="button-user" onclick="showNit('+row.id_nit+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
-            //     return html;
-            // }},
-            // { data: 'apartamento_nit'},
-            // { data: function (row, type, set){
-            //     if(!row.codigo_cecos){
-            //         return '';
-            //     }
-            //     return row.codigo_cecos + ' - ' +row.nombre_cecos;
-            // }},
             { data: 'documento_referencia'},
             { data: function (row, type, set){
                 var saldo_anterior = parseFloat(row.saldo_anterior);
@@ -145,12 +126,15 @@ function initTablesExtractos() {
             }},
         ],
         'rowCallback': function(row, data, index){
-            // if(data.errores == 1){
-            //     $('td', row).css('background-color', '#ff0000b9');
-            //     $('td', row).css('font-weight', 'bold');
-            //     $('td', row).css('color', 'white');
-            //     return;
-            // }
+            if(data.naturaleza_cuenta == 0 && parseInt(data.saldo_final) < 0 && data.nivel == 3) {
+                var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
+                if (cuenta != '11') {
+                    $('td', row).css('background-color', '#ff0000b9');
+                    $('td', row).css('font-weight', 'bold');
+                    $('td', row).css('color', 'white');
+                    return;
+                }
+            }
             if(data.nivel == 1){
                 $('td', row).css('background-color', '#000');
                 $('td', row).css('font-weight', 'bold');
@@ -183,7 +167,7 @@ function initTablesExtractos() {
                 return;
             }
             if(data.nivel == 3){//
-                $('td', row).css('background-color', 'rgb(196 221 255)');
+                $('td', row).css('background-color', 'rgb(241, 241, 241)');
                 $('td', row).css('font-weight', '600');
                 return;
             }
@@ -227,9 +211,9 @@ function initCombosExtractos() {
     });
 }
 
-function getErroresExtracto() {
-    if($("input[type='radio']#tipo_errores_extracto0").is(':checked')) return '';
-    if($("input[type='radio']#tipo_errores_extracto1").is(':checked')) return 1;
+function getSaldoAnteriorExtracto() {
+    if($("input[type='radio']#mostrar_saldo_anterior_extracto0").is(':checked')) return '';
+    if($("input[type='radio']#mostrar_saldo_anterior_extracto1").is(':checked')) return 1;
 
     return '';
 }
@@ -304,7 +288,7 @@ $(document).on('click', '#reloadExtracto', function () {
     url+= '&fecha_desde='+$('#fecha_manual_extracto').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
     url+= '&fecha_hasta='+$('#fecha_manual_extracto').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
     url+= '&documento_referencia='+documento_referencia;
-    url+= '&errores='+getErroresExtracto();
+    url+= '&saldo_anterior='+getSaldoAnteriorExtracto();
 
     extracto_informe_table.ajax.url(url).load();
 });

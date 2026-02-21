@@ -11,6 +11,8 @@ function auxiliarInit() {
     cargarTablasAuxiliar();
     cargarCombosAuxiliar();
     cargarFechasAuxiliar();
+
+    $('.water').hide();
 }
 
 function cargarCombosAuxiliar() {

@@ -67,7 +67,7 @@ class ExtractoController extends Controller
                 ->where('fecha_hasta', $request->get('fecha_hasta'))
                 ->where('fecha_desde', $request->get('fecha_desde'))
                 ->where('id_nit', $request->get('id_nit', null))
-                ->where('errores', $request->get('errores', null))
+                ->where('errores', 0)
                 ->first();
 
             if ($extracto && $extracto->estado == 1) {
@@ -96,7 +96,7 @@ class ExtractoController extends Controller
                 'fecha_desde' => $request->get('fecha_desde'),
                 'fecha_hasta' => $request->get('fecha_hasta'),
                 'id_nit' => $request->get('id_nit', null),
-                'errores' => $request->get('errores', null),
+                'errores' => 0,
                 'estado' => 0
             ]);
             

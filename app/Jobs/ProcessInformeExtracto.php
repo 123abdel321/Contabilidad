@@ -57,17 +57,15 @@ class ProcessInformeExtracto
         try {
 
             $this->ordenarMeses();
+            
 
-            if (!$this->request['errores']) {
-                $this->addMesesData();
-                $this->addCuentasData();
-                // $this->addNitsCuentasData(); //APAGADA
-                $this->addNitsCuentasDetalleData();
-                $this->addTotalData();
-            } else {
-                $this->addCuentasData();
-                $this->addNitsCuentasDetalleData();
+            if ($this->request['saldo_anterior']) {
+                $this->addNitsCuentasData(); 
             }
+            $this->addMesesData();
+            $this->addCuentasData();
+            $this->addNitsCuentasDetalleData();
+            $this->addTotalData();
 
             ksort($this->extractoCollection, SORT_STRING | SORT_FLAG_CASE);
 
