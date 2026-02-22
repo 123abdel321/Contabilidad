@@ -810,7 +810,12 @@ class PosController extends Controller
         
                     $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
 
-                    info('Usuario POS: ', $user->toArray());
+                    info('Usuario POS: ', [
+                        "id" => $user->id,
+                        "username" => $user->username,
+                        "email" => $user->email,
+                        "empresa" => $empresaSelect ? $empresaSelect->empresa->razon_social : ''
+                    ]);
 
                     return response()->json([
                         'success'=>	true,
