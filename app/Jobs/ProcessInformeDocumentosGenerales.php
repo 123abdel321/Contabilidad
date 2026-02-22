@@ -307,7 +307,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 "PC.auxiliar",
                 "PC.nombre AS nombre_cuenta",
                 DB::raw("(CASE
-                    WHEN IM.base > 0 THEN (debito + credito) / (IM.porcentaje / 100)
+                    WHEN IM.base >= 0 THEN (debito + credito) / (IM.porcentaje / 100)
                     ELSE NULL
                 END) AS base_cuenta"),
                 "IM.porcentaje AS porcentaje_cuenta",
