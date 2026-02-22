@@ -1264,6 +1264,8 @@ class PosController extends Controller
             $this->totalesFactura['id_cuenta_rete_fuente'] = null;
             $this->totalesFactura['total_rete_fuente'] = 0;
         }
+        
+        info('Totales POS: ', $this->totalesFactura);
     }
 
     private function calcularFormasPago($pagos)
