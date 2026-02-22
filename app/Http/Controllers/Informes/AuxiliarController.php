@@ -155,8 +155,9 @@ class AuxiliarController extends Controller
                 ->take($rowperpage);
             
             if(!$auxiliar->id_cuenta && !$auxiliar->id_nit) {
+                $total = $total ? $total->saldo_final : 0;
                 $filtros = false;
-                $descuadre = $total->saldo_final > 0 ? true : false;
+                $descuadre = $total > 0 ? true : false;
             }
 
             return response()->json([
