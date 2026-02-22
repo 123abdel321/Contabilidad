@@ -810,6 +810,8 @@ class PosController extends Controller
         
                     $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
 
+                    info('Usuario POS: ', $user->toArray());
+
                     return response()->json([
                         'success'=>	true,
                         'access_token' => $token,
@@ -1188,53 +1190,29 @@ class PosController extends Controller
                     $this->totalesFactura['id_cuenta_iva'] = $cuentaIva->id;
                 }
 
-                // CALCULAR IVA DEPENDIENDO SI ESTÁ INCLUIDO O NO
+                // CALCULAR IVA INCLUIDO
                 if ($this->ivaIncluido) {
-
                     $subTotal = $totalPorCantidad - $producto->descuento_valor;
                     $porcentajeIva = $this->totalesFactura['porcentaje_iva'];
 
                     // IVA cuando está incluido en el precio
-                    $iva = round(
-                        $subTotal * ($porcentajeIva / (100 + $porcentajeIva)),
-                        2
-                    );
-
+                    $iva = round($subTotal * ($porcentajeIva / (100 + $porcentajeIva)), 2);
                     // Valor sin IVA
-                    $valor_linea_sin_iva = round(
-                        $subTotal - $iva,
-                        2
-                    );
-
+                    $valor_linea_sin_iva = round($subTotal - $iva, 2);
                     // Valor con IVA (realmente es el subtotal)
-                    $valor_linea_con_iva = round(
-                        $subTotal,
-                        2
-                    );
+                    $valor_linea_con_iva = round($subTotal, 2);
                 } else {
                     // Cuando el precio NO incluye IVA
-                    $iva = round(
-                        ($totalPorCantidad - $producto->descuento_valor) * 
-                        ($this->totalesFactura['porcentaje_iva'] / 100), 
-                        2
-                    );
-                    
+                    $iva = round(($totalPorCantidad - $producto->descuento_valor) * ($this->totalesFactura['porcentaje_iva'] / 100), 2);
                     // Valor sin IVA
-                    $valor_linea_sin_iva = round(
-                        ($producto->cantidad * $costo) - $producto->descuento_valor, 
-                        2
-                    );
-                    
+                    $valor_linea_sin_iva = round(($producto->cantidad * $costo) - $producto->descuento_valor, 2);
                     // Valor con IVA
                     $valor_linea_con_iva = $valor_linea_sin_iva + $iva;
                 }
                 
             } else {
                 // Si no hay IVA
-                $valor_linea_sin_iva = round(
-                    ($producto->cantidad * $costo) - $producto->descuento_valor, 
-                    2
-                );
+                $valor_linea_sin_iva = round(($producto->cantidad * $costo) - $producto->descuento_valor,2);
                 $valor_linea_con_iva = $valor_linea_sin_iva;
             }
 
@@ -1256,16 +1234,14 @@ class PosController extends Controller
         ) {
             // Base para retención: usar subtotal sin IVA (más común)
             $base_retencion = $this->totalesFactura['subtotal_sin_iva'];
-            $total_rete_fuente = $base_retencion * ($this->totalesFactura['porcentaje_rete_fuente'] / 100);
+            $total_rete_fuente = round($base_retencion * ($this->totalesFactura['porcentaje_rete_fuente'] / 100), 2);
             
-            $this->totalesFactura['total_rete_fuente'] = round($total_rete_fuente);
+            $this->totalesFactura['total_rete_fuente'] = $total_rete_fuente;
             $this->totalesFactura['total_factura'] = round($this->totalesFactura['total_factura'] - $total_rete_fuente, 2);
         } else {
             $this->totalesFactura['id_cuenta_rete_fuente'] = null;
             $this->totalesFactura['total_rete_fuente'] = 0;
         }
-        
-        info('Totales POS: ', $this->totalesFactura);
     }
 
     private function calcularFormasPago($pagos)

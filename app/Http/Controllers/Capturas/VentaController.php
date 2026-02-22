@@ -1363,7 +1363,6 @@ class VentaController extends Controller
             $this->totalesFactura['id_cuenta_rete_fuente'] = null;
             $this->totalesFactura['total_rete_fuente'] = 0;
         }
-        // dd($this->totalesFactura);
     }
 
     private function getResponsabilidades()
