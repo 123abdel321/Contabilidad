@@ -259,13 +259,16 @@ function productosInit() {
             $("#precio_inicial").val(stringToNumberFloat(dataProducto.precio_inicial));
             $("#porcentaje_utilidad").val(stringToNumberFloat(dataProducto.porcentaje_utilidad));
             $("#valor_utilidad").val(stringToNumberFloat(dataProducto.valor_utilidad));
+            const elementTipoProductoParqueadero = document.getElementById("tipo_producto_parqueadero");
 
             document.getElementById("id_bodega_producto").disabled = true;
             document.getElementById("producto_variantes1").disabled = false;
             document.getElementById("producto_variantes2").disabled = false;
             document.getElementById("tipo_producto_producto").disabled = false;
-            document.getElementById("tipo_producto_servicio").disabled = false;
-            document.getElementById("tipo_producto_parqueadero").disabled = false;
+
+            if (elementTipoProductoParqueadero) {
+                elementTipoProductoParqueadero.disabled = false;
+            }
 
             if (dataProducto.id_padre && tipo_producto == 0) {
                 document.getElementById('producto_variantes1').click();
@@ -314,7 +317,9 @@ function productosInit() {
             if (dataProducto.id_padre || dataProducto.hijos.length > 0 || dataProducto.utilizado_captura) {
                 document.getElementById("tipo_producto_producto").disabled = true;
                 document.getElementById("tipo_producto_servicio").disabled = true;
-                document.getElementById("tipo_producto_parqueadero").disabled = true;
+                if (elementTipoProductoParqueadero) {
+                    elementTipoProductoParqueadero.disabled = true;
+                }
             }
 
             if (dataProducto.familia && dataProducto.familia.cuenta_venta_iva && dataProducto.familia.cuenta_venta_iva.impuesto) {
