@@ -33,7 +33,7 @@ function cargarTablasVentas() {
         },
         'rowCallback': function(row, data, index){
             if (data.detalle == '') {
-                $('td', row).css('background-color', 'rgba(33, 35, 41, 0.8)');
+                $('td', row).css('background-color', 'rgb(51, 132, 158)');
                 $('td', row).css('font-weight', 'bold');
                 $('td', row).css('color', 'white');
                 return;
@@ -64,6 +64,7 @@ function cargarTablasVentas() {
             {"data": "descripcion"},
             {"data": "cantidad", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "costo", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": "valor", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "subtotal", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "iva_porcentaje", className: 'dt-body-right'},
             {"data": "total_iva", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
@@ -72,6 +73,27 @@ function cargarTablasVentas() {
             {"data": "total_rete_fuente", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "total_factura", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": "nombre_vendedor"},
+            {"data": function (row, type, set){
+                if (row.detalle) {
+                    return row.valor - row.costo;
+                }
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){
+                if (row.valor) {
+                    if (!parseInt(row.costo)) {
+                        return 100;
+                    }
+                    return ((row.valor - row.costo) / row.costo) * 100;
+                }
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
+            {"data": function (row, type, set){
+                if (row.valor) {
+                    if (!parseInt(row.costo)) {
+                        return 100;
+                    }
+                    return ((row.valor - row.costo) / row.valor) * 100;
+                }
+            }, render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {"data": function (row, type, set){  
                 var html = '<div class="button-user" onclick="showUser('+row.created_by+',`'+row.fecha_creacion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_creacion+'</div>';
                 if(!row.created_by && !row.fecha_creacion) return '';
