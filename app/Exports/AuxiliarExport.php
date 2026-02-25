@@ -18,6 +18,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 //MODELS
+use App\Models\Empresas\Empresa;
 use App\Models\Informes\InfAuxiliar;
 use App\Models\Informes\InfAuxiliarDetalle;
 
@@ -28,14 +29,16 @@ class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColu
     protected $empresa;
     protected $id_auxiliar;
 
-    public function __construct(int $id, $empresa)
+    public function __construct(int $id, $id_empresa)
 	{
 		$this->id_auxiliar = $id;
-		$this->empresa = $empresa;
+		$this->empresa = Empresa::where('id', $id_empresa)->first();
 	}
 
     public function view(): View
 	{
+        $this->initConfig();
+
 		return view('excel.auxiliar.auxiliar', [
 			'auxiliares' => InfAuxiliarDetalle::whereIdAuxiliar($this->id_auxiliar)->get(),
             'auxiliar' => InfAuxiliar::whereId($this->id_auxiliar)->first(),
@@ -44,6 +47,16 @@ class AuxiliarExport implements FromView, WithColumnWidths, WithStyles, WithColu
             'logo_empresa' => $this->empresa->logo ? $this->empresa->logo: 'https://app.portafolioerp.com/img/logo_contabilidad.png',
 		]);
 	}
+
+    private function initConfig()
+    {
+        config([
+            'database.connections.sam.database' => $this->empresa->token_db,
+        ]);
+
+        DB::purge('sam');
+        DB::reconnect('sam');
+    }
 
     public function styles(Worksheet $sheet)
     {

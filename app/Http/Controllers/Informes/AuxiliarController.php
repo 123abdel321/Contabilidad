@@ -258,7 +258,7 @@ class AuxiliarController extends Controller
             Bus::chain([
                 function () use ($id_informe, &$fileName, &$empresa) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
-                    (new AuxiliarExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
+                    (new AuxiliarExport($id_informe, $empresa->id))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
                     ]);
                 },
