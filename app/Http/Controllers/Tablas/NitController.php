@@ -103,6 +103,8 @@ class NitController extends Controller
                         ->orWhere('email', 'like', '%' .$searchValue . '%')
                         ->orWhere('telefono_1', 'like', '%' .$searchValue . '%')
                         ->orWhere('razon_social', 'like', '%' .$searchValue . '%')
+                        ->orWhere('direccion', 'like', '%' .$searchValue . '%')
+                        ->orWhere('observaciones', 'like', '%' .$searchValue . '%')
                         ->orWhereHas('tipo_documento', function ($query) use($searchValue) {
                             $query->where('nombre', 'like', '%' .$searchValue . '%');
                         });
