@@ -95,22 +95,17 @@ class NitController extends Controller
                 }
                 
                 if($searchValue) {
-                    $nits->where('numero_documento', 'LIKE', '%' .$request->get("q") . '%')
-                        ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("q") . '%')
-                        ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("q") . '%')
-                        ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("q") . '%')
-                        ->orWhere('razon_social', 'LIKE', '%' . $request->get("q") . '%')
-                        ->orWhere('email', 'LIKE', $request->get("q") . '%')
-                        ->orWhere(\DB::raw("CONCAT(FORMAT(numero_documento, 0),'-',digito_verificacion,' - ',razon_social)"), "like", $request->get("q") . "%")
-                        ->orWhere(\DB::raw("CONCAT(FORMAT(numero_documento, 0),' - ',razon_social)"), "like", $request->get("q") . "%")
-                        ->orWhere(\DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,primer_apellido,segundo_apellido)"), "like", $request->get("q") . "%")
-                        ->orWhere(\DB::raw("CONCAT_WS(' ',FORMAT(numero_documento, 0),'-',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", $request->get("q") . "%")
-                        ->orWhere(\DB::raw("CONCAT_WS(' ',primer_nombre,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
-                        ->orWhere(\DB::raw("CONCAT_WS(' ',primer_nombre,otros_nombres,primer_apellido,segundo_apellido)"), "like", "%" . $request->get("q") . "%")
-                        ->orWhere('primer_apellido', 'LIKE', '%' . $request->get("q") . '%')
-                        ->orWhere('apartamentos', 'LIKE', $request->get("q") . '%')
-                        ->orWhere('observaciones', 'LIKE', $request->get("q") . '%')
-                        ->orWhere('direccion', 'LIKE', $request->get("q") . '%');
+                    $nits->where('numero_documento', 'like', '%' .$searchValue . '%')
+                        ->orWhere('primer_apellido', 'like', '%' .$searchValue . '%')
+                        ->orWhere('segundo_apellido', 'like', '%' .$searchValue . '%')
+                        ->orWhere('primer_nombre', 'like', '%' .$searchValue . '%')
+                        ->orWhere('otros_nombres', 'like', '%' .$searchValue . '%')
+                        ->orWhere('email', 'like', '%' .$searchValue . '%')
+                        ->orWhere('telefono_1', 'like', '%' .$searchValue . '%')
+                        ->orWhere('razon_social', 'like', '%' .$searchValue . '%')
+                        ->orWhereHas('tipo_documento', function ($query) use($searchValue) {
+                            $query->where('nombre', 'like', '%' .$searchValue . '%');
+                        });
                 }
 
                 $totalNits = $nits->count();
