@@ -224,11 +224,5 @@
         </tbody>
     </table>
 
-    <!-- Pie de página -->
-    <div style="margin-top: 20px; font-size: 10px; color: #7f8c8d; text-align: center; border-top: 1px solid #bdc3c7; padding-top: 10px;">
-        Generado el {{ \Carbon\Carbon::now()->format('Y-m-d H:i:s') }} | 
-        Página 1 de 1
-    </div>
-
 </body>
 </html>
