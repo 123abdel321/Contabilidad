@@ -5,6 +5,7 @@
             <th>Nit</th>
             <th>Ubicación</th>
             <th>Factura</th>
+            <th>Fecha</th>
             <th>Saldo anterior</th>
             <th>Debito</th>
             <th>Credito</th>
@@ -12,7 +13,6 @@
             <th>Comprobante</th>
             <th>Consecutivo</th>
             <th>Centro costos</th>
-            <th>Fecha</th>
             <th>Concepto</th>
             <th>Creación registro</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Ultima actualización</th>
