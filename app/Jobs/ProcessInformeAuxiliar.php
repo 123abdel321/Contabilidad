@@ -64,10 +64,10 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 }
 
                 if (in_array('totales_nits', $niveles)) {
+                    $this->addTotalNits();
                     $this->addTotalNitsData();
                 }
                 
-                $this->addTotalNits();
                 $this->addTotalsData();
                 $this->addTotalsPadresData();
             }
