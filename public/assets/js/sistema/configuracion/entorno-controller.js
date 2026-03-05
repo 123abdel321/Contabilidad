@@ -143,6 +143,8 @@ function cargarSelect2VariablesDeEntorno() {
         theme: 'bootstrap-5',
         delay: 250,
         dropdownCssClass: 'custom-id_cliente_venta_defecto',
+        placeholder: "Seleccione un cliente para venta por defecto",
+        allowClear: true,
         language: {
             noResults: function() {
                 createNewNit = true;
