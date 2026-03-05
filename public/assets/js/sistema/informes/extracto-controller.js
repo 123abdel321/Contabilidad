@@ -294,13 +294,13 @@ $(document).on('click', '#reloadExtracto', function () {
 });
 
 $("#fecha_manual_extracto").on('change', function(){
-    document.getElementById("reloadExtracto").click();
+    
 });
 
 $("#id_nit_extracto").on('change', function(){
-    document.getElementById("reloadExtracto").click();
+    
 });
 
 $("#factura_documentos_extracto").on('change', function(){
-    document.getElementById("reloadExtracto").click();
+    
 });
