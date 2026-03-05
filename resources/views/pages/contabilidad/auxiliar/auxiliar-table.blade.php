@@ -3,7 +3,7 @@
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
             <th>Nit</th>
-            <th>Ubicación</th>
+            <th id="label-nombre-auxiliar">Nombre</th>
             <th>Factura</th>
             <th>Fecha</th>
             <th>Saldo anterior</th>
@@ -12,6 +12,7 @@
             <th>Saldo final</th>
             <th>Comprobante</th>
             <th>Consecutivo</th>
+            <th>Ubicación</th>
             <th>Centro costos</th>
             <th>Concepto</th>
             <th>Creación registro</th>

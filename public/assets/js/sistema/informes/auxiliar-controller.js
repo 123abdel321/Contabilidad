@@ -192,7 +192,27 @@ function cargarTablasAuxiliar() {
                 var html = '<div class="button-user" onclick="showNit('+row.id_nit+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
                 return html;
             }},
-            { data: 'apartamento_nit'},
+            {"data": function (row, type, set){
+                const id_cuenta = parseInt($('#id_cuenta_auxiliar').val());
+                const id_nit = parseInt($('#id_nit_auxiliar').val());
+
+                if (id_cuenta) {
+                    if(!row.numero_documento){
+                        return '';
+                    }
+                    var nombre = row.numero_documento + ' - ' +row.nombre_nit;
+                    if(row.razon_social){
+                        nombre = row.numero_documento +' - '+ row.razon_social;
+                    }
+                    
+                    var html = '<div class="button-user" onclick="showNit('+row.id_nit+')"><i class="far fa-id-card icon-user"></i>&nbsp;'+nombre+'</div>';
+                    return html;
+                } else if (id_nit) {
+                    if (row.cuenta) {
+                        return row.cuenta + ' - ' +row.nombre_cuenta;
+                    }
+                }
+            }},
             { data: 'documento_referencia'},
             {"data": function (row, type, set){
                 if(!row.fecha_manual){
@@ -254,6 +274,7 @@ function cargarTablasAuxiliar() {
                 }
                 return row.consecutivo;
             }},
+            { data: 'apartamento_nit'},
             {"data": function (row, type, set){
                 if(!row.codigo_cecos){
                     return '';
@@ -287,7 +308,7 @@ function cargarTablasAuxiliar() {
         ]
     });
 
-    var columnUbicacionMaximoPH = auxiliar_table.column(2);
+    var columnUbicacionMaximoPH = auxiliar_table.column(11);
 
     if (ubicacion_maximoph) columnUbicacionMaximoPH.visible(true);
     else columnUbicacionMaximoPH.visible(false);
@@ -650,12 +671,54 @@ $("#fecha_hasta_auxiliar").on('change', function(){
 $("#id_cuenta_auxiliar").on('change', function(){
     clearAuxiliar();
     findAuxiliar();
+    checksNivelesAuxiliar();
+    checksFiltersAuxiliar();
 });
 
 $("#id_nit_auxiliar").on('change', function(){
     clearAuxiliar();
     findAuxiliar();
+    checksNivelesAuxiliar();
+    checksFiltersAuxiliar();
 });
+
+function checksNivelesAuxiliar() {
+    const id_cuenta = parseInt($('#id_cuenta_auxiliar').val());
+    const id_nit = parseInt($('#id_nit_auxiliar').val());
+
+    $('#nivel_auxiliar1').prop('checked', true);
+    $('#nivel_auxiliar2').prop('checked', true);
+    $('#nivel_auxiliar3').prop('checked', true);
+
+    if(id_nit || id_cuenta) {
+        $('#nivel_auxiliar1').prop('checked', false);
+        $('#nivel_auxiliar2').prop('checked', false);
+    }
+}
+
+function checksFiltersAuxiliar() {
+    console.log("checksFiltersAuxiliar");
+    const id_cuenta = parseInt($('#id_cuenta_auxiliar').val());
+    const id_nit = parseInt($('#id_nit_auxiliar').val());
+    
+    const columnCuentaAuxiliar = auxiliar_table.column(0);
+    const columnNitAuxiliar = auxiliar_table.column(1);
+    const columnNombreAuxiliar = auxiliar_table.column(2);
+
+    columnCuentaAuxiliar.visible(true);
+    columnNitAuxiliar.visible(true);
+    columnNombreAuxiliar.visible(false);
+
+    if (id_nit) {
+        columnNitAuxiliar.visible(false);
+        columnCuentaAuxiliar.visible(false);
+        columnNombreAuxiliar.visible(true);
+    } else if (id_cuenta) {
+        columnNitAuxiliar.visible(false);
+        columnCuentaAuxiliar.visible(false);
+        columnNombreAuxiliar.visible(true);
+    }
+}
 
 function clearAuxiliar() {
     $("#descargarExcelAuxiliar").hide();
