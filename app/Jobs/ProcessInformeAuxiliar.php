@@ -384,6 +384,9 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 foreach ($documentos as $documento) {
+                    if (!$documento->documento_referencia) {
+                        continue;
+                    }
                     $cuentaNumero = 1;
                     $cuentaNueva = "{$documento->cuenta}-{$documento->numero_documento}B{$documento->documento_referencia}B{$cuentaNumero}A";
 
