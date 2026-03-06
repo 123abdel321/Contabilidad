@@ -5,7 +5,9 @@ namespace App\Helpers\Printers;
 use Illuminate\Support\Carbon;
 use PDF; // Asegúrate de importar el Facade de Snappy
 //MODELS
+use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfAuxiliar;
 use App\Models\Informes\InfAuxiliarDetalle;
 
@@ -103,16 +105,15 @@ class AuxiliarPdf extends AbstractPrinterPdf
 
     public function data()
     {
-        $auxiliar = InfAuxiliar::with('nit', 'cuenta')
-            ->whereId($this->id_auxiliar)
+        $auxiliar = InfAuxiliar::whereId($this->id_auxiliar)
             ->first();
         
         return [
             'empresa' => $this->empresa,
             'auxiliares' => InfAuxiliarDetalle::where('id_auxiliar', $this->id_auxiliar)->get(),
             'auxiliar' => $auxiliar,
-            'nit' => $auxiliar->nit,
-            'cuenta' => $auxiliar->cuenta,
+            'nit' => Nits::whereId($auxiliar->id_nit)->first(),
+            'cuenta' => PlanCuentas::whereId($auxiliar->id_cuenta)->first(),
             'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
             'nombre_informe' => 'AUXILIAR PDF',
             'nombre_empresa' => $this->empresa->razon_social,
