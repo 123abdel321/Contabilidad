@@ -15,8 +15,10 @@ class AuxiliarPdf extends AbstractPrinterPdf
 {
     public $empresa;
     public $id_auxiliar;
+    public $nit;
+    public $cuenta;
 
-    public function __construct(Empresa $empresa, $id_auxiliar)
+    public function __construct(Empresa $empresa, $id_auxiliar, $nit = null, $cuenta = null)
     {
         parent::__construct($empresa);
 
@@ -25,6 +27,8 @@ class AuxiliarPdf extends AbstractPrinterPdf
 
         $this->empresa = $empresa;
         $this->id_auxiliar = $id_auxiliar;
+        $this->nit = $nit;
+        $this->cuenta = $cuenta;
     }
 
     /**
@@ -112,8 +116,8 @@ class AuxiliarPdf extends AbstractPrinterPdf
             'empresa' => $this->empresa,
             'auxiliares' => InfAuxiliarDetalle::where('id_auxiliar', $this->id_auxiliar)->get(),
             'auxiliar' => $auxiliar,
-            'nit' => Nits::whereId($auxiliar->id_nit)->first(),
-            'cuenta' => PlanCuentas::whereId($auxiliar->id_cuenta)->first(),
+            'nit' => $this->nit,
+            'cuenta' => $this->cuenta,
             'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
             'nombre_informe' => 'AUXILIAR PDF',
             'nombre_empresa' => $this->empresa->razon_social,

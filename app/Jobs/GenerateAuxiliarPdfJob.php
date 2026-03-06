@@ -11,7 +11,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 //HELPERS
 use App\Helpers\Printers\AuxiliarPdf;
 //MODELS
+use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfAuxiliar;
 
 class GenerateAuxiliarPdfJob implements ShouldQueue
@@ -38,7 +40,12 @@ class GenerateAuxiliarPdfJob implements ShouldQueue
                 throw new \Exception('Empresa no encontrada');
             }
 
-            $auxiliarPdf = (new AuxiliarPdf($empresa, $this->id_auxiliar))
+            $auxiliarPdf = (new AuxiliarPdf(
+                    $empresa,
+                    $this->id_auxiliar,
+                    Nits::whereId($this->auxiliar->id_nit)->first(),
+                    PlanCuentas::whereId($this->auxiliar->id_cuenta)->first()
+                ))
                 ->buildPdf()
                 ->saveStorage();
 
@@ -67,7 +74,7 @@ class GenerateAuxiliarPdfJob implements ShouldQueue
             
             throw $e;
         } finally {
-            // ✅ RESTAURAR CONFIGURACIÓN
+            // RESTAURAR CONFIGURACIÓN
             ini_restore('memory_limit');
             ini_restore('max_execution_time');
         }
