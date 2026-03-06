@@ -199,10 +199,11 @@
                                     @endif
                                 </td>
                                 
-                                <td class="logo padding3"> @if ($empresa->logo)
+                                <td class="logo padding3">
+                                    @if ($empresa->logo)
                                         <img style="height:70px;" src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}">
                                     @else
-                                        <img style="height:70px;" src="img/logo_contabilidad.png">
+                                        <img style="height:70px;" src="https://app.portafolioerp.com/img/logo_contabilidad.png">
                                     @endif
                                 </td>
                             </tr>

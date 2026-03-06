@@ -40,6 +40,7 @@ class AuxiliarPdf extends AbstractPrinterPdf
         // 3. Configurar manualmente el comando de wkhtmltopdf SIN --lowquality
         $pdf = PDF::loadHTML($html)
             ->setOption('enable-local-file-access', true)
+            ->setOption('enable-external-links', true)
             ->setOption('no-stop-slow-scripts', true)
             ->setOption('load-error-handling', 'ignore')
             ->setOption('load-media-error-handling', 'ignore')
@@ -67,7 +68,6 @@ class AuxiliarPdf extends AbstractPrinterPdf
         // Remover scripts, links y meta tags problemáticos
         $html = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $html);
         $html = preg_replace('/<link\b[^>]*>/is', '', $html);
-        $html = preg_replace('/<meta[^>]*>/is', '', $html);
         
         // Asegurar URLs absolutas para imágenes
         if (isset($this->empresa->logo)) {
@@ -103,10 +103,16 @@ class AuxiliarPdf extends AbstractPrinterPdf
 
     public function data()
     {
+        $auxiliar = InfAuxiliar::with('nit', 'cuenta')
+            ->whereId($this->id_auxiliar)
+            ->first();
+        
         return [
             'empresa' => $this->empresa,
             'auxiliares' => InfAuxiliarDetalle::where('id_auxiliar', $this->id_auxiliar)->get(),
-            'auxiliar' => InfAuxiliar::whereId($this->id_auxiliar)->first(),
+            'auxiliar' => $auxiliar,
+            'nit' => $auxiliar->nit,
+            'cuenta' => $auxiliar->cuenta,
             'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
             'nombre_informe' => 'AUXILIAR PDF',
             'nombre_empresa' => $this->empresa->razon_social,

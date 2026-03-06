@@ -35,10 +35,19 @@
             border-collapse: collapse;
         }
 
+        .font-size-small {
+            font-size: 10px;
+        }
+
+        .font-size-medium {
+            font-size: 14px;
+        }
+
         .tabla-detalle-factura {
-            font-size: 8px; /* Reducido para mejor ajuste */
+            font-size: 8px;
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed;
         }
 
         .header-factura th {
@@ -54,6 +63,15 @@
         }
 
         tr {
+            page-break-inside: avoid !important;
+            page-break-after: auto;
+        }
+
+        tbody {
+            page-break-inside: auto;
+        }
+
+        td {
             page-break-inside: avoid;
         }
 
@@ -113,24 +131,24 @@
         }
 
         /* MEJORAS PARA LA TABLA PRINCIPAL */
-        .tabla-detalle-factura td {
-            padding: 4px 2px; /* Padding reducido y consistente */
-            border: 1px solid #ddd;
-            vertical-align: middle;
-            line-height: 1.2;
+        .tabla-detalle-factura td,
+        .tabla-detalle-factura th {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         /* ESTILOS PARA LAS CELDAS - MANTENIENDO TUS COLORES EXACTOS */
         .bg-white { background-color: #FFFFFF; }
         .bg-alerta { background-color: #FF00004D; color: #000000; }
         .bg-nits-totales { background-color: #9BD8E9; font-weight: 600; }
-        .bg-nits { background-color: #9BD8E9; font-weight: 600; }
+        .bg-nits { background-color: #e2e2e2; font-weight: 600; }
         .bg-totales { background-color: #000000; font-weight: bold; color: #FFFFFF; }
         .bg-nivel-1 { background-color: #212329; font-weight: bold; color: #FFFFFF; }
         .bg-nivel-2 { background-color: #4D4F54; font-weight: bold; color: #FFFFFF; }
         .bg-nivel-4 { background-color: #33849E; font-weight: 600; color: #FFFFFF; }
         .bg-nivel-6 { background-color: #9BD8E9; font-weight: 600; }
-        .bg-nivel-detalle { background-color: #9BD8E9; font-weight: 600; }
+        .bg-nivel-detalle { background-color: #9BD8E9; font-weight: 500; }
 
         /* ALINEACIONES MEJORADAS */
         .text-center { text-align: center; }
@@ -173,7 +191,7 @@
                         <table>
                             <tr>
                                 <td class="consecutivo padding5">
-                                    <h2>INFORME AUXILIAR</h2>
+                                    <h4>AUXILIAR</h4>
                                 </td>
                                 <td class="empresa padding5">
                                     <h1 style="font-size: 16px; margin: 0;">{{ $empresa->razon_social }}</h1>
@@ -193,7 +211,7 @@
                                 </td>
                                 
                                 <td class="logo padding5">
-                                    LOGO
+                                    <img style="height:70px; width:70px;" src="https://app.portafolioerp.com/img/logo_contabilidad.png">
                                 </td>
                             </tr>
                         </table>
@@ -205,20 +223,31 @@
         <!-- INFORMACIÓN DE FILTROS -->
         <table style="margin: 10px 0;">
             <tr>
-                <td class="padding3 text-bold">Fecha: {{ $auxiliar->fecha_desde ?? 'No especificado' }} al {{ $auxiliar->fecha_hasta ?? 'No especificado' }}</td>
+                <td class="padding3 text-bold font-size-medium">Fecha: {{ $auxiliar->fecha_desde ?? 'No especificado' }} al {{ $auxiliar->fecha_hasta ?? 'No especificado' }}</td>
             </tr>
-            <tr>
-                <td class="padding3 text-bold">Generado: {{ $fecha_pdf }} | Usuario: {{ $usuario ?? 'Sistema' }}</td>
-            </tr>
+            @if ($auxiliar->id_nit)
+                <tr>
+                    <td class="padding3 text-bold font-size-medium">Nit: {{ $nit->nombre_completo ?? 'No especificado' }}</td>
+                </tr>
+            @endif
+            @if ($auxiliar->id_cuenta)
+                <tr>
+                    <td class="padding3 text-bold font-size-medium">Cuenta: {{ $cuenta->id ?? 'No especificado' }}</td>
+                </tr>
+            @endif
         </table>
 
         <table class="tabla-detalle-factura">
             <thead>
                 <tr class="header-factura">
-                    <th class="col-cuenta">CUENTA</th>
-                    <th class="col-nombre">NOMBRE</th>
-                    <th class="col-doc-nit">DOC. NIT</th>
-                    <th class="col-nombre-nit">NOMBRE NIT</th>
+                    @if (!$auxiliar->id_cuenta)
+                        <th class="col-cuenta">CUENTA</th>
+                        <th class="col-nombre">NOMBRE</th>
+                    @endif
+                    @if (!$auxiliar->id_nit)
+                        <th class="col-doc-nit">DOC. NIT</th>
+                        <th class="col-nombre-nit">NOMBRE NIT</th>
+                    @endif
                     <th class="col-ccostos">C. COSTOS</th>
                     <th class="col-factura">FACTURA</th>
                     <th class="col-saldo">SAL. ANTERIOR</th>
@@ -232,59 +261,61 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($auxiliares as $auxiliar)
+                @foreach($auxiliares as $auxiliarD)
                     @php
                         $clase = 'bg-white';
                         
                         // Manteniendo exactamente tus condiciones originales
-                        if($auxiliar->detalle_group == 'nits') {
-                            if(($auxiliar->naturaleza_cuenta == 0 && intval($auxiliar->saldo_final) < 0) || 
-                            ($auxiliar->naturaleza_cuenta == 1 && intval($auxiliar->saldo_final) > 0)) {
-                                $cuenta = substr($auxiliar->cuenta, 0, 2);
+                        if($auxiliarD->detalle_group == 'nits') {
+                            if(($auxiliarD->naturaleza_cuenta == 0 && intval($auxiliarD->saldo_final) < 0) || 
+                            ($auxiliarD->naturaleza_cuenta == 1 && intval($auxiliarD->saldo_final) > 0)) {
+                                $cuenta = substr($auxiliarD->cuenta, 0, 2);
                                 if ($cuenta != '11') {
                                     $clase = 'bg-alerta';
                                 }
+                            } else {
+                                $clase = 'bg-nits';
                             }
                         }
                         
-                        elseif($auxiliar->auxiliar) {
+                        elseif($auxiliarD->auxiliar) {
                             $clase = 'bg-white';
                         }
                         
-                        elseif($auxiliar->detalle_group == 'nits-totales') {
+                        elseif($auxiliarD->detalle_group == 'NITS-TOTALES') {
                             $clase = 'bg-nits-totales';
                         }
-                        elseif($auxiliar->detalle_group == 'nits') {
+                        elseif($auxiliarD->detalle_group == 'NITS') {
                             $clase = 'bg-nits';
                         }
-                        elseif($auxiliar->cuenta == "TOTALES") {
+                        elseif($auxiliarD->cuenta == "TOTALES") {
                             $clase = 'bg-totales';
                         }
-                        elseif(strlen($auxiliar->cuenta) == 1) {
+                        elseif(strlen($auxiliarD->cuenta) == 1) {
                             $clase = 'bg-nivel-1';
                         }
-                        elseif(strlen($auxiliar->cuenta) == 2) {
+                        elseif(strlen($auxiliarD->cuenta) == 2) {
                             $clase = 'bg-nivel-2';
                         }
-                        elseif(strlen($auxiliar->cuenta) == 4) {
+                        elseif(strlen($auxiliarD->cuenta) == 4) {
                             $clase = 'bg-nivel-4';
                         }
-                        elseif(strlen($auxiliar->cuenta) == 6) {
+                        elseif(strlen($auxiliarD->cuenta) == 6) {
                             $clase = 'bg-nivel-6';
                         }
-                        elseif($auxiliar->detalle == 0 && $auxiliar->detalle_group == 0) {
+                        elseif($auxiliarD->detalle == 0 && $auxiliarD->detalle_group == 0) {
                             $clase = 'bg-white';
                         }
-                        elseif($auxiliar->detalle_group && !$auxiliar->detalle) {
+                        elseif($auxiliarD->detalle_group && !$auxiliarD->detalle) {
                             $clase = 'bg-nivel-detalle';
                         }
-                        elseif($auxiliar->detalle) {
+                        elseif($auxiliarD->detalle) {
                             $clase = 'bg-nivel-detalle';
                         }
                     @endphp
                     
                     <tr class="{{ $clase }}">
-                        @include('pdf.informes.auxiliar.celdas', ['style' => $clase, 'auxiliar' => $auxiliar])
+                        @include('pdf.informes.auxiliar.celdas', ['style' => $clase, 'auxiliar' => $auxiliarD, 'filter' => $auxiliar])
                     </tr>
                 @endforeach
             </tbody>
@@ -308,7 +339,7 @@
             <td class="padding5 generado">
                 <table>
                     <tr>
-                        <td class="empresa-footer-left padding5">
+                        <td class="empresa-footer-left font-size-small padding5">
                             ESTE INFORME FU&Eacute; GENERADO POR PORTAFOLIOERP <br>
                             www.portafolioerp.com
                         </td>
