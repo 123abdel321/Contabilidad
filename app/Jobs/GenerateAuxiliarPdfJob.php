@@ -40,11 +40,16 @@ class GenerateAuxiliarPdfJob implements ShouldQueue
                 throw new \Exception('Empresa no encontrada');
             }
 
+            $nit = Nits::whereId($this->auxiliar->id_nit)->first();
+            $cuenta = PlanCuentas::whereId($this->auxiliar->id_cuenta)->first();
+
+            Log::info("Informe auxiliar ejecutado en {$nit->nombre_completo} ");
+
             $auxiliarPdf = (new AuxiliarPdf(
                     $empresa,
                     $this->id_auxiliar,
-                    Nits::whereId($this->auxiliar->id_nit)->first(),
-                    PlanCuentas::whereId($this->auxiliar->id_cuenta)->first()
+                    $nit,
+                    $cuenta
                 ))
                 ->buildPdf()
                 ->saveStorage();
