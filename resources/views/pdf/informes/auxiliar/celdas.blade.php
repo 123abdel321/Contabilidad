@@ -1,5 +1,5 @@
 @if ( !$filter->id_cuenta )
-    <td>{{ $style }} - {{ $auxiliar->cuenta }}</td>
+    <td>{{ $auxiliar->cuenta }}</td>
     <td>{{ $auxiliar->nombre_cuenta }}</td>
 @endif
 @if ( !$filter->id_nit )
