@@ -282,8 +282,7 @@ class ProcessInformeExtracto
     private function addNitsCuentasData()
     {
         foreach ($this->extractoMeses as $extractoMes) {
-            $query = $this->extractoDocumentosQuery($extractoMes);
-            $query->unionAll($this->extractoAnteriorQuery($extractoMes));
+            $query = $this->extractoAnteriorQuery($extractoMes);
 
             DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS extractodata"))
@@ -703,7 +702,7 @@ class ProcessInformeExtracto
             'naturaleza_cuenta' => $documento->naturaleza_cuenta,
             'auxiliar' => $documento->auxiliar,
             'nombre_cuenta' => $documento->nombre_cuenta,
-            'documento_referencia' => '',
+            'documento_referencia' => $documento->documento_referencia,
             'id_centro_costos' => $documento->documento_referencia ? $documento->id_centro_costos : '',
             'id_comprobante' => $documento->documento_referencia ? $documento->id_comprobante : '',
             'codigo_comprobante' => '',
@@ -712,7 +711,7 @@ class ProcessInformeExtracto
             'nombre_cecos' => $documento->documento_referencia ? $documento->nombre_cecos : '',
             'consecutivo' => '',
             'concepto' => '',
-            'fecha_manual' => NULL,
+            'fecha_manual' => $documento->fecha_manual,
             'fecha_creacion' => NULL,
             'fecha_edicion' => NULL,
             'created_by' => NULL,

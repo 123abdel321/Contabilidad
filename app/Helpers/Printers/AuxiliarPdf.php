@@ -45,6 +45,8 @@ class AuxiliarPdf extends AbstractPrinterPdf
 
         // 3. Configurar manualmente el comando de wkhtmltopdf SIN --lowquality
         $pdf = PDF::loadHTML($html)
+            ->setOption('print-media-type', true)
+            ->setOption('background', true)
             ->setOption('enable-local-file-access', true)
             ->setOption('enable-external-links', true)
             ->setOption('no-stop-slow-scripts', true)
@@ -119,7 +121,7 @@ class AuxiliarPdf extends AbstractPrinterPdf
             'nit' => $this->nit,
             'cuenta' => $this->cuenta,
             'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
-            'nombre_informe' => 'AUXILIAR PDF',
+            'nombre_informe' => 'AUXILIAR',
             'nombre_empresa' => $this->empresa->razon_social,
             'logo_empresa' => $this->empresa->logo,
             'usuario' => 'Portafolio ERP'

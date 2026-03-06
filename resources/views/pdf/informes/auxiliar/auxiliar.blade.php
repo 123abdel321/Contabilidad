@@ -58,6 +58,14 @@
             text-align: center;
         }
 
+        .th-header {
+            border: 1px solid #ddd;
+            background-color: #58978423 !important;
+            padding: 6px 3px; /* Padding reducido */
+            font-weight: bold;
+            text-align: center;
+        }
+
         thead {
             display: table-header-group;
         }
@@ -124,18 +132,12 @@
 
         .footer {
             position: fixed;
-            bottom: 20px; /* Ajustado */
-            line-height: 12px; /* Reducido */
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
             font-size: 8px;
-            width: 100%;
-        }
-
-        /* MEJORAS PARA LA TABLA PRINCIPAL */
-        .tabla-detalle-factura td,
-        .tabla-detalle-factura th {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+            line-height: 12px;
         }
 
         /* ESTILOS PARA LAS CELDAS - MANTENIENDO TUS COLORES EXACTOS */
@@ -157,19 +159,19 @@
         .text-bold { font-weight: bold; }
 
         /* ANCHOS DE COLUMNA OPTIMIZADOS */
-        .col-cuenta { width: 8%; }
-        .col-nombre { width: 10%; }
-        .col-doc-nit { width: 7%; }
-        .col-nombre-nit { width: 12%; }
-        .col-ccostos { width: 5%; }
-        .col-factura { width: 6%; }
-        .col-saldo { width: 6%; }
-        .col-debito { width: 6%; }
-        .col-credito { width: 6%; }
-        .col-comprobante { width: 6%; }
-        .col-consecutivo { width: 5%; }
-        .col-fecha { width: 6%; }
-        .col-concepto { width: 11%; }
+        .col-cuenta { width: 40px; }
+        .col-nombre { width: 100px; }
+        .col-doc-nit { width: 70px; }
+        .col-nombre-nit { width: 120px; }
+        .col-ccostos { width: 50px; }
+        .col-factura { width: 60px; }
+        .col-saldo { width: 60px; }
+        .col-debito { width: 60px; }
+        .col-credito { width: 60px; }
+        .col-comprobante { width: 60px; }
+        .col-consecutivo { width: 30px; }
+        .col-fecha { width: 60px; }
+        .col-concepto { width: 170px; }
 
         /* MÁRGENES PARA EVITAR SUPERPOSICIÓN */
         .content-wrapper {
@@ -191,7 +193,7 @@
                         <table>
                             <tr>
                                 <td class="consecutivo padding5">
-                                    <h4>AUXILIAR</h4>
+                                    <h4>{{ $nombre_informe }}</h4>
                                 </td>
                                 <td class="empresa padding5">
                                     <h1 style="font-size: 16px; margin: 0;">{{ $empresa->razon_social }}</h1>
@@ -223,16 +225,16 @@
         <!-- INFORMACIÓN DE FILTROS -->
         <table style="margin: 10px 0;">
             <tr>
-                <td class="padding3 text-bold font-size-medium">Fecha: {{ $auxiliar->fecha_desde ?? 'No especificado' }} al {{ $auxiliar->fecha_hasta ?? 'No especificado' }}</td>
+                <td class="padding3 text-bold font-size-small">Fecha: {{ $auxiliar->fecha_desde ?? 'No especificado' }} al {{ $auxiliar->fecha_hasta ?? 'No especificado' }}</td>
             </tr>
             @if ($auxiliar->id_nit)
                 <tr>
-                    <td class="padding3 text-bold font-size-medium">Nit: {{ $nit->nombre_completo ?? 'No especificado' }}</td>
+                    <td class="padding3 text-bold font-size-small">Nit: {{ $nit->nombre_completo ?? 'No especificado' }}</td>
                 </tr>
             @endif
             @if ($auxiliar->id_cuenta)
                 <tr>
-                    <td class="padding3 text-bold font-size-medium">Cuenta: {{ $cuenta->id ?? 'No especificado' }}</td>
+                    <td class="padding3 text-bold font-size-small">Cuenta: {{ $cuenta->id ?? 'No especificado' }}</td>
                 </tr>
             @endif
         </table>
@@ -241,23 +243,23 @@
             <thead>
                 <tr class="header-factura">
                     @if (!$auxiliar->id_cuenta)
-                        <th class="col-cuenta">CUENTA</th>
-                        <th class="col-nombre">NOMBRE</th>
+                        <th class="th-header col-cuenta">CUENTA</th>
+                        <th class="th-header col-nombre">NOMBRE</th>
                     @endif
                     @if (!$auxiliar->id_nit)
-                        <th class="col-doc-nit">DOC. NIT</th>
-                        <th class="col-nombre-nit">NOMBRE NIT</th>
-                    @endif
-                    <th class="col-ccostos">C. COSTOS</th>
-                    <th class="col-factura">FACTURA</th>
-                    <th class="col-saldo">SAL. ANTERIOR</th>
-                    <th class="col-saldo">DEBITO</th>
-                    <th class="col-saldo">CREDITO</th>
-                    <th class="col-saldo">SAL. FINAL</th>
-                    <th class="col-comprobante">COMPROB.</th>
-                    <th class="col-consecutivo">CONSEC</th>
-                    <th class="col-fecha">FECHA</th>
-                    <th class="col-concepto">CONCEP</th>
+                        <th class="th-header col-doc-nit">DOC. NIT</th>
+                        <th class="th-header col-nombre-nit">NOMBRE NIT</th>
+                    @endif                    
+                    <th class="th-header col-fecha">FECHA</th>
+                    <th class="th-header col-factura">FACTURA</th>
+                    <th class="th-header col-saldo">SAL. ANTERIOR</th>
+                    <th class="th-header col-saldo">DEBITO</th>
+                    <th class="th-header col-saldo">CREDITO</th>
+                    <th class="th-header col-saldo">SAL. FINAL</th>
+                    <th class="th-header col-comprobante">COMPROB.</th>
+                    <th class="th-header col-consecutivo">CONSEC</th>
+                    <th class="th-header col-ccostos">C. COSTOS</th>
+                    <th class="th-header col-concepto">CONCEP</th>
                 </tr>
             </thead>
             <tbody>
@@ -328,7 +330,7 @@
             <td class="padding5">
                 <table>
                     <tr>
-                        <td class="empresa-footer padding5">
+                        <td class="empresa-footer font-size-small padding5">
                             Portafolio ERP<br>
                             {{ $fecha_pdf }}
                         </td>
@@ -340,7 +342,7 @@
                 <table>
                     <tr>
                         <td class="empresa-footer-left font-size-small padding5">
-                            ESTE INFORME FU&Eacute; GENERADO POR PORTAFOLIOERP <br>
+                            ESTE INFORME FU&Eacute; GENERADO POR PORTAFOLIO ERP <br>
                             www.portafolioerp.com
                         </td>
                     </tr>

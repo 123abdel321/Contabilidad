@@ -16,11 +16,7 @@
         @endif
     </td>
 @endif
-<td>
-    @if ($auxiliar->codigo_cecos)
-        {{ $auxiliar->codigo_cecos }} - {{ $auxiliar->nombre_cecos }}
-    @endif
-</td>
+<td>{{ $auxiliar->fecha_manual }}</td>
 <td>{{ $auxiliar->documento_referencia }}</td>
 <td class="text-right">{{ number_format($auxiliar->saldo_anterior) }}</td>
 <td class="text-right">{{ number_format($auxiliar->debito) }}</td>
@@ -32,5 +28,9 @@
     @endif
 </td>
 <td>{{ $auxiliar->consecutivo }}</td>
-<td>{{ $auxiliar->fecha_manual }}</td>
+<td>
+    @if ($auxiliar->codigo_cecos)
+        {{ $auxiliar->codigo_cecos }} - {{ $auxiliar->nombre_cecos }}
+    @endif
+</td>
 <td>{{ $auxiliar->concepto }}</td>
