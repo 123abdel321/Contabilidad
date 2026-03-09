@@ -18,6 +18,7 @@ if (host.includes("app.portafolioerp.com")) {
 }
 
 const pusher = new Pusher('95252a904d7ad78656ac', {cluster: 'us2'});
+
 // Pusher.logToConsole = true;
 const bucketUrl = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/';
 const btnLogout = document.getElementById('sessionLogout');
