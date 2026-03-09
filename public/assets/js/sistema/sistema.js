@@ -17,7 +17,7 @@ if (host.includes("app.portafolioerp.com")) {
     base_url_eco = "https://eco.portafolioerp.com/api/";
 }
 
-const pusher = new Pusher('35b0c8377acdc6fd467c', {cluster: 'us2'});
+const pusher = new Pusher('95252a904d7ad78656ac', {cluster: 'us2'});
 // Pusher.logToConsole = true;
 const bucketUrl = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/';
 const btnLogout = document.getElementById('sessionLogout');
@@ -153,6 +153,7 @@ var moduloCreado = {
     'pagos:': false,
     'nominaelectronica': false,
     'notificaciones': false,
+    'movimientoproducto': false,
 };
 
 var moduloRoute = {
@@ -224,6 +225,7 @@ var moduloRoute = {
     'pagos': 'capturas',
     'nominaelectronica': 'capturas',
     'notificaciones': 'configuracion',
+    'movimientoproducto': 'informes',
 }
 
 function iniciarCanalesDeNotificacion () {
@@ -275,9 +277,6 @@ $imagenes = [
     'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_41.jpg',
     'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_42.jpg',
     'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_43.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_46.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_47.jpg',
-    'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_48.jpg',
     'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/fondo_pantalla/fondo_49.jpg'
 ];
 
