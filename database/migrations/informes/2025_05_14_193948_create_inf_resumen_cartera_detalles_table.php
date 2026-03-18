@@ -20,6 +20,8 @@ return new class extends Migration
             $table->decimal('saldo_final', 15)->nullable();
             $table->integer('dias_mora')->nullable();
             $table->string('ubicacion', 50)->nullable();
+            $table->string('fecha_manual', 255)->nullable();
+            $table->decimal('total_aboono', 15)->nullable();
             $table->decimal('cuenta_1', 15)->nullable();
             $table->decimal('cuenta_2', 15)->nullable();
             $table->decimal('cuenta_3', 15)->nullable();

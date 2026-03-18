@@ -7,9 +7,18 @@ function resumencarteraInit() {
     resultadosExistente = false;
 
     $('#fecha_hasta_resumen_cartera').val(fechaDesde);
+    $('#id_nit_resumen_cartera').val('')
 
     const columnas = [
-        { data: 'numero_documento' },
+        {
+            "data": function (row, type, set){
+                const tipoInforme = $("#tipo_informe_resumen_cartera").val();
+                if(tipoInforme == 2){
+                    return row.fecha_manual;
+                }
+                return row.numero_documento;
+            }
+        },
         { data: 'nombre_nit' },
         { data: 'ubicacion' } // si tienes esta columna
     ];
@@ -25,12 +34,14 @@ function resumencarteraInit() {
 
     // Agregar columnas finales
     columnas.push(
+        { data: 'total_abono' },
         { 
             data: 'saldo_final',
             render: $.fn.dataTable.render.number(',', '.', 2, ''),
             className: 'dt-body-right'
         },
-        { data: 'dias_mora' }
+        { data: 'dias_mora' },
+
     );
 
     resultados_table = $('#resumenCarteraInformeTable').DataTable({
@@ -67,6 +78,7 @@ function resumencarteraInit() {
                 d.ubicaciones = getUbicacionesResumenCartera();
                 d.proveedor = getProveedoresResumenCartera();
                 d.dias_mora = $('#mora_resumen_cartera').val();
+                d.id_nit = $('#id_nit_resumen_cartera').val();
             }
         },
         
@@ -92,7 +104,37 @@ function resumencarteraInit() {
     for (let index = 0; index < 30; index++) {
         const newIndex = index + 3;
         resultados_table.column(newIndex).visible(false);
-    }
+    }    
+
+    $('#id_nit_resumen_cartera').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Seleccione un nit",
+        allowClear: true,
+        language: {
+            noResults: function() {
+                createNewNit = true;
+                return "No hay resultado";        
+            },
+            searching: function() {
+                createNewNit = false;
+                return "Buscando..";
+            },
+            inputTooShort: function () {
+                return "Por favor introduce 1 o más caracteres";
+            }
+        },
+        ajax: {
+            url: 'api/nit/combo-nit',
+            headers: headers,
+            dataType: 'json',
+            processResults: function (data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
 }
 
 function mostrarCuentas(cuentas) {
@@ -214,3 +256,31 @@ function getProveedoresResumenCartera() {
 
     return '';
 }
+
+$("#tipo_informe_resumen_cartera").on('change', function(){
+    const tipoInforme = $(this).val();
+
+    const columnaNombreNit = resultados_table.column(1);
+    const columnaUbicacion = resultados_table.column(2);
+    const columnaMora = resultados_table.column(35);
+
+    $('#id_nit_resumen_cartera').val('').trigger('change');
+
+    if(tipoInforme == 1){
+        $('#nitAuxiliarDiv').hide();
+        $("#one_colum_resumen_cartera").text("Documento");
+
+        columnaMora.visible(true);
+        columnaNombreNit.visible(true);
+        if (ubicacion_maximoph_resumen_cartera) {
+            columnaUbicacion.visible(true);
+        }
+    } else if(tipoInforme == 2){
+        $('#nitAuxiliarDiv').show();
+        $("#one_colum_resumen_cartera").text("Mes");
+
+        columnaMora.visible(false);
+        columnaNombreNit.visible(false);
+        columnaUbicacion.visible(false);
+    }
+});

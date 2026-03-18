@@ -21,6 +21,8 @@ class InfResumenCarteraDetalle extends Model
         'saldo_final',
         'dias_mora',
         'ubicacion',
+        'fecha_manual',
+        'total_abono',
         'cuenta_1',
         'cuenta_2',
         'cuenta_3',

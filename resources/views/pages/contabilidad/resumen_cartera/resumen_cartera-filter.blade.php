@@ -14,20 +14,35 @@
                     <div class="row">
                         <input name="id_documento_general_cargado" id="id_documento_general_cargado" class="form-control form-control-sm" type="text" style="display: none;">
 
-                        <div class="form-group col-6 col-sm-3 col-md-4">
-                            <label for="example-text-input" class="form-control-label">Fecha hasta<span style="color: red">*</span></label>
+                        <div class="form-group col-12 col-sm-3 col-md-3">
+                            <label for="tipo_informe_resumen_cartera" style=" width: 100%;">Tipo informe</label>
+                            <select name="tipo_informe_resumen_cartera" id="tipo_informe_resumen_cartera" class="form-control form-control-sm">
+                                <option value="1">General</option>
+                                <option value="2">Individual</option>
+                            </select>
+                        </div>
+
+                        <div id="nitAuxiliarDiv" class="form-group col-6 col-sm-3 col-md-3" style="display: none;">
+                            <label for="id_nit_resumen_cartera" style="width: 100%;">Nit</label>
+                            <select class="form-control form-control-sm" name="id_nit_resumen_cartera" id="id_nit_resumen_cartera">
+                                <option value="">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-6 col-sm-3 col-md-3">
+                            <label for="fecha_hasta_resumen_cartera" class="form-control-label">Fecha hasta<span style="color: red">*</span></label>
                             <input name="fecha_hasta_resumen_cartera" id="fecha_hasta_resumen_cartera" class="form-control form-control-sm" type="date" require>
                         </div>
 
-                        <div class="form-group col-6 col-sm-3 col-md-4">
-                            <label for="example-text-input" class="form-control-label">Días mora<span style="color: red">*</span></label>
+                        <div class="form-group col-6 col-sm-3 col-md-3">
+                            <label for="mora_resumen_cartera" class="form-control-label">Días mora<span style="color: red">*</span></label>
                             <input name="mora_resumen_cartera" id="mora_resumen_cartera" class="form-control form-control-sm" type="number" require>
                         </div>
 
                         @if ($ubicacion_maximoph)
 
-                            <div class="form-group col-2 col-sm-2 col-md-3 row" style="margin-bottom: 0.1rem !important;">
-                                <label for="example-text-input" class="form-control-label">Proveedores</label>
+                            <div class="form-group col-2 col-sm-2 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                                <label for="proveedores_resumen_cartera" class="form-control-label">Proveedor</label>
                                 <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                     <input class="form-check-input" type="radio" name="proveedores_resumen_cartera" id="proveedores_resumen_cartera0" style="font-size: 11px;" checked>
                                     <label class="form-check-label" for="proveedores_resumen_cartera0" style="font-size: 11px;">
@@ -42,8 +57,8 @@
                                 </div>
                             </div>
 
-                            <div class="form-group col-2 col-sm-2 col-md-3 row" style="margin-bottom: 0.1rem !important;">
-                                <label for="example-text-input" class="form-control-label">Ubicaciones</label>
+                            <div class="form-group col-2 col-sm-2 col-md-2 row" style="margin-bottom: 0.1rem !important;">
+                                <label for="ubicaciones_resumen_cartera" class="form-control-label">Ubicacion</label>
                                 <div class="form-check col-12 col-md-12 col-sm-12" style="min-height: 0px; margin-bottom: 0px; margin-top: -2px; margin-left: 5px;">
                                     <input class="form-check-input" type="radio" name="ubicaciones_resumen_cartera" id="ubicaciones_resumen_cartera0" style="font-size: 11px;">
                                     <label class="form-check-label" for="ubicaciones_resumen_cartera0" style="font-size: 11px;">
@@ -70,13 +85,13 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="resumenCarteraGenerales" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
+                    <span id="resumenCarteraGenerales" href="javascript:void(0)" class="btn badge bg-gradient-primary btn-bg-gold" style="min-width: 40px;">
                         <i class="fas fa-search" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">BUSCAR</b>
                     </span>
-                    <span id="resumenCarteraGeneralesLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                    <span id="resumenCarteraGeneralesLoading" class="badge bg-gradient-primary btn-bg-gold-loading" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
-                        <b style="vertical-align: text-top;">BUSCANDO</b>
+                        <b style="vertical-align: text-top;">GENERANDO</b>
                     </span>&nbsp;
                     <!-- BOTON EXCEL -->
                     <span id="descargarExcelResumenCartera" class="btn badge bg-gradient-dark btn-bg-success" style="min-width: 40px; margin-right: 3px; display:none;">

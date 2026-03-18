@@ -1,7 +1,7 @@
 <table id="resumenCarteraInformeTable" class="table nowrap table-bordered display responsive" width="100%">
     <thead>
         <tr>
-            <th style="border-radius: 15px 0px 0px 0px !important;">Documento</th>
+            <th id="one_colum_resumen_cartera" style="border-radius: 15px 0px 0px 0px !important;">Documento</th>
             <th>Nombre</th>
             <th>Ubicacion</th>
             @for ($i = 1; $i <= 30; $i++)
@@ -14,6 +14,7 @@
                     cuenta_{{ $i }}
                 </th>
             @endfor
+            <th>Total Abono</th>
             <th>Saldo Final</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Mora</th>
         </tr>

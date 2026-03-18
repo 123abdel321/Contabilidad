@@ -31,6 +31,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public $cuentas_orden;
     public $id_resultado_cartera;
     public $resultadoCarteraCollection = [];
+    public $meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
     public function __construct($request, $id_usuario, $id_empresa, $id_resultado_cartera)
     {
@@ -54,10 +55,14 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
         DB::connection('informes')->beginTransaction();
 
         try {
-
             $this->addCuentasOrden();
-            $this->addResumenCartera();
-            $this->addTotalResumenCartera();
+            if ($this->request['id_nit']) {
+                $this->addCuentasMeses();
+                $this->addTotalIndividualCartera();
+            } else {
+                $this->addResumenCartera();
+                $this->addTotalResumenCartera();
+            }
             
             ksort($this->resultadoCarteraCollection, SORT_STRING | SORT_FLAG_CASE);
             foreach (array_chunk($this->resultadoCarteraCollection,233) as $resultadoCarteraCollection){
@@ -181,6 +186,54 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
         });
     }
 
+    private function addCuentasMeses()
+    {
+        $query = $this->resumenCarteraQuery();
+
+        $consulta = DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
+            ->mergeBindings($query)
+            ->select(
+                'id_nit',
+                'numero_documento',
+                'documento_referencia',
+                'nombre_nit',
+                'razon_social',
+                'fecha_manual',
+                'apartamentos',
+                'id_cuenta',
+                'cuenta',
+                'anulado',
+                'plazo',
+                DB::raw("DATE_FORMAT(fecha_manual, '%Y') AS year"),
+                DB::raw("DATE_FORMAT(fecha_manual, '%m') AS month"),
+                DB::raw("SUM(debito) AS debito"),
+                DB::raw("SUM(credito) AS credito"),
+                DB::raw('SUM(total_abono) AS total_abono'),
+                DB::raw('SUM(total_facturas) AS total_facturas'),
+                DB::raw("SUM(debito) - SUM(credito) AS saldo_final"),
+                DB::raw('DATEDIFF(NOW(), fecha_manual) - plazo AS dias_mora'),
+                DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos')
+            )
+            ->groupByRaw("id_nit, DATE_FORMAT(fecha_manual, '%Y-%m')")
+            ->orderByRaw('fecha_manual')
+            ->havingRaw('saldo_final != 0')
+            ->chunk(233, function ($documentos) {
+                foreach ($documentos as $documento) {
+                    $columnaCuenta = $this->buscarCuenta($documento->cuenta);
+                    if (!$columnaCuenta) continue;
+
+                    $indice = $documento->year.'_'.$documento->month;
+
+                    $this->newCuentaData($documento);
+                    $this->resultadoCarteraCollection[$indice]["cuenta_$columnaCuenta"] = $documento->saldo_final;
+                    $this->resultadoCarteraCollection[$indice]["saldo_final"]+= $documento->saldo_final;
+                }
+                
+                unset($documentos);
+            });
+    }
+
     private function addTotalResumenCartera()
     {
         $query = $this->resumenCarteraQuery();
@@ -220,6 +273,18 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             });
     }
 
+    private function addTotalIndividualCartera()
+    {
+        $this->newTotalData();
+
+        foreach ($this->resultadoCarteraCollection as $key => $data) {
+            for ($i = 1; $i <= 30; $i++) {
+                $this->resultadoCarteraCollection['9999999']["cuenta_$i"]+= $data["cuenta_$i"];
+            }
+            $this->resultadoCarteraCollection['9999999']["saldo_final"]+= $data["saldo_final"];
+        }
+    }
+
     private function resumenCarteraQuery()
     {
         return DB::connection('sam')->table('documentos_generals AS DG')
@@ -244,7 +309,9 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 "DG.fecha_manual",
                 "DG.anulado",
                 "DG.debito",
-                "DG.credito"
+                "DG.credito",
+                DB::raw("IF(PC.naturaleza_cuenta = 0, credito, debito) AS total_abono"),
+                DB::raw("IF(PC.naturaleza_cuenta = 0, debito, credito) AS total_facturas"),
             )
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
@@ -260,6 +327,9 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             })
             ->when($this->request['fecha_hasta'], function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'].' 23:59:59');
+			})
+            ->when($this->request['id_nit'], function ($query) {
+				$query->where('id_nit', $this->request['id_nit']);
 			})
             ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
             ->where('anulado', 0)
@@ -277,14 +347,24 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private function newCuentaData($documento)
     {
-        $this->resultadoCarteraCollection[$documento->id_nit] = [
+        $fechaManual = null;
+        $indice = $documento->id_nit;
+        
+        if ($this->request['id_nit']) {
+            $fechaManual = $this->meses[intval($documento->month) - 1].' '.$documento->year;
+            $indice = $documento->year.'_'.$documento->month;
+        }
+
+        $this->resultadoCarteraCollection[$indice] = [
             'id_resumen_cartera' => $this->id_resultado_cartera,
             'id_nit' => $documento->id_nit, 
             'nombre_nit' => $documento->nombre_nit, 
             'numero_documento' => $documento->numero_documento, 
             'saldo_final' => 0, 
             'dias_mora' => $documento->dias_mora < 0 ? 0 : $documento->dias_mora, 
-            'ubicacion' => $documento->apartamentos, 
+            'ubicacion' => $documento->apartamentos,
+            'fecha_manual' => $fechaManual,
+            'total_abono' => $documento->total_abono ?? 0,
             'cuenta_1' => 0, 
             'cuenta_2' => 0, 
             'cuenta_3' => 0, 
@@ -320,7 +400,9 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private function newTotalData()
     {
-        $this->resultadoCarteraCollection['Z999999'] = [
+        $indice = $this->request['id_nit'] ? '9999999' : 'Z999999';
+
+        $this->resultadoCarteraCollection[$indice] = [
             'id_resumen_cartera' => $this->id_resultado_cartera,
             'id_nit' => null, 
             'nombre_nit' => 'TOTAL', 
@@ -328,6 +410,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             'saldo_final' => 0, 
             'dias_mora' => 0, 
             'ubicacion' => '', 
+            'fecha_manual' => null,
+            'total_abono' => 0,
             'cuenta_1' => 0, 
             'cuenta_2' => 0, 
             'cuenta_3' => 0, 
