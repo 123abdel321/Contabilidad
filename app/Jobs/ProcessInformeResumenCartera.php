@@ -56,6 +56,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
         try {
             $this->addCuentasOrden();
+            
             if ($this->request['id_nit']) {
                 $this->addCuentasMeses();
                 $this->addTotalIndividualCartera();
@@ -292,11 +293,11 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 "DG.id",
                 "N.id AS id_nit",
                 "N.numero_documento",
-                DB::raw("(CASE
-                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
-                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                DB::raw("CASE
+                    WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
                     ELSE NULL
-                END) AS nombre_nit"),
+                END AS nombre_nit"),
                 "N.razon_social",
                 "N.apartamentos",
                 "N.plazo",

@@ -179,6 +179,11 @@ function loadResumenCarteraById(id_resumen_cartera) {
 
 $(document).on('click', '#descargarExcelResumenCartera', function () {
 
+    for (let index = 0; index < 30; index++) {
+        const newIndex = index + 3;
+        resultados_table.column(newIndex).visible(false);
+    }
+
     $.ajax({
         url: base_url + 'resumen-cartera-excel',
         method: 'POST',
