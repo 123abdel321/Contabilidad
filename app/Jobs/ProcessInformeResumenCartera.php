@@ -117,7 +117,6 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             )
             ->groupByRaw('id_cuenta')
             ->orderByRaw('cuenta')
-            ->havingRaw('saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 foreach ($documentos as $documento) {
                     $this->cuentas_orden[] = (object)[
@@ -221,6 +220,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             ->havingRaw('saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 foreach ($documentos as $documento) {
+                    
                     $columnaCuenta = $this->buscarCuenta($documento->cuenta);
                     if (!$columnaCuenta) continue;
 
@@ -363,11 +363,11 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             'id_resumen_cartera' => $this->id_resultado_cartera,
             'id_nit' => $documento->id_nit, 
             'nombre_nit' => $documento->nombre_nit, 
-            'numero_documento' => $documento->numero_documento, 
+            'numero_documento' => $this->request['id_nit'] ? $fechaManual : $documento->numero_documento, 
             'saldo_final' => 0, 
             'dias_mora' => $documento->dias_mora < 0 ? 0 : $documento->dias_mora, 
             'ubicacion' => $documento->apartamentos,
-            'fecha_manual' => $fechaManual,
+            'fecha_manual' => $documento->fecha_manual ? Carbon::parse($documento->fecha_manual)->format('Y-m-d') : null,
             'total_abono' => $documento->total_abono ?? 0,
             'cuenta_1' => 0, 
             'cuenta_2' => 0, 

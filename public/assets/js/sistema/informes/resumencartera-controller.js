@@ -10,15 +10,7 @@ function resumencarteraInit() {
     $('#id_nit_resumen_cartera').val('')
 
     const columnas = [
-        {
-            "data": function (row, type, set){
-                const tipoInforme = $("#tipo_informe_resumen_cartera").val();
-                if(tipoInforme == 2){
-                    return row.fecha_manual;
-                }
-                return row.numero_documento;
-            }
-        },
+        { data: 'numero_documento' },
         { data: 'nombre_nit' },
         { data: 'ubicacion' } // si tienes esta columna
     ];
@@ -35,6 +27,7 @@ function resumencarteraInit() {
     // Agregar columnas finales
     columnas.push(
         { data: 'total_abono' },
+        { data: 'fecha_manual' },
         { 
             data: 'saldo_final',
             render: $.fn.dataTable.render.number(',', '.', 2, ''),
@@ -269,7 +262,8 @@ $("#tipo_informe_resumen_cartera").on('change', function(){
     const columnaNombreNit = resultados_table.column(1);
     const columnaUbicacion = resultados_table.column(2);
     const columnaTotalAbono = resultados_table.column(33);
-    const columnaMora = resultados_table.column(35);
+    const columnaFechaManual = resultados_table.column(34);
+    const columnaMora = resultados_table.column(36);
 
     $('#id_nit_resumen_cartera').val('').trigger('change');
 
@@ -282,6 +276,7 @@ $("#tipo_informe_resumen_cartera").on('change', function(){
         columnaMora.visible(true);
         columnaNombreNit.visible(true);
         columnaTotalAbono.visible(false);
+        columnaFechaManual.visible(false);
         if (ubicacion_maximoph_resumen_cartera) {
             columnaUbicacion.visible(true);
         }
@@ -295,6 +290,7 @@ $("#tipo_informe_resumen_cartera").on('change', function(){
 
         columnaMora.visible(false);
         columnaTotalAbono.visible(true);
+        columnaFechaManual.visible(true);
         columnaNombreNit.visible(false);
         columnaUbicacion.visible(false);
     }

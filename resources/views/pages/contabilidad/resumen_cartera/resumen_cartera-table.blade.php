@@ -15,6 +15,7 @@
                 </th>
             @endfor
             <th>Total Abono</th>
+            <th>Fecha Manual</th>
             <th>Saldo Final</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Mora</th>
         </tr>
