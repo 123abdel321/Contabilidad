@@ -29,6 +29,11 @@
                             </select>
                         </div>
 
+                        <div id="fechaDesdeDiv" class="form-group col-6 col-sm-3 col-md-3" style="display: none;">
+                            <label for="fecha_desde_resumen_cartera" class="form-control-label">Fecha desde<span style="color: red">*</span></label>
+                            <input name="fecha_desde_resumen_cartera" id="fecha_desde_resumen_cartera" class="form-control form-control-sm" type="date" require>
+                        </div>
+
                         <div class="form-group col-6 col-sm-3 col-md-3">
                             <label for="fecha_hasta_resumen_cartera" class="form-control-label">Fecha hasta<span style="color: red">*</span></label>
                             <input name="fecha_hasta_resumen_cartera" id="fecha_hasta_resumen_cartera" class="form-control form-control-sm" type="date" require>

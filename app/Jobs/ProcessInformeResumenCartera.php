@@ -329,6 +329,9 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             ->when($this->request['fecha_hasta'], function ($query) {
 				$query->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'].' 23:59:59');
 			})
+            ->when($this->request['fecha_desde'], function ($query) {
+				$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde'].' 00:00:00');
+			})
             ->when($this->request['id_nit'], function ($query) {
 				$query->where('id_nit', $this->request['id_nit']);
 			})

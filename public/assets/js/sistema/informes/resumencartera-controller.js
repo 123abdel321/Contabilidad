@@ -74,6 +74,7 @@ function resumencarteraInit() {
             url: base_url + 'resumen-cartera',
             headers: headers,
             data: function ( d ) {
+                d.fecha_desde = $('#fecha_desde_resumen_cartera').val();
                 d.fecha_hasta = $('#fecha_hasta_resumen_cartera').val();
                 d.ubicaciones = getUbicacionesResumenCartera();
                 d.proveedor = getProveedoresResumenCartera();
@@ -274,6 +275,8 @@ $("#tipo_informe_resumen_cartera").on('change', function(){
 
     if(tipoInforme == 1){
         $('#nitAuxiliarDiv').hide();
+        $('#fechaDesdeDiv').hide();        
+        $('#fecha_desde_resumen_cartera').val('');
         $("#one_colum_resumen_cartera").text("Documento");
 
         columnaMora.visible(true);
@@ -283,8 +286,12 @@ $("#tipo_informe_resumen_cartera").on('change', function(){
             columnaUbicacion.visible(true);
         }
     } else if(tipoInforme == 2){
+        var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("01").slice(-2);
+        
         $('#nitAuxiliarDiv').show();
+        $('#fechaDesdeDiv').show();
         $("#one_colum_resumen_cartera").text("Mes");
+        $('#fecha_desde_resumen_cartera').val(fechaDesde);
 
         columnaMora.visible(false);
         columnaTotalAbono.visible(true);
