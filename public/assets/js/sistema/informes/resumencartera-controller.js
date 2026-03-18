@@ -267,6 +267,7 @@ $("#tipo_informe_resumen_cartera").on('change', function(){
 
     const columnaNombreNit = resultados_table.column(1);
     const columnaUbicacion = resultados_table.column(2);
+    const columnaTotalAbono = resultados_table.column(33);
     const columnaMora = resultados_table.column(35);
 
     $('#id_nit_resumen_cartera').val('').trigger('change');
@@ -277,6 +278,7 @@ $("#tipo_informe_resumen_cartera").on('change', function(){
 
         columnaMora.visible(true);
         columnaNombreNit.visible(true);
+        columnaTotalAbono.visible(false);
         if (ubicacion_maximoph_resumen_cartera) {
             columnaUbicacion.visible(true);
         }
@@ -285,6 +287,7 @@ $("#tipo_informe_resumen_cartera").on('change', function(){
         $("#one_colum_resumen_cartera").text("Mes");
 
         columnaMora.visible(false);
+        columnaTotalAbono.visible(true);
         columnaNombreNit.visible(false);
         columnaUbicacion.visible(false);
     }
