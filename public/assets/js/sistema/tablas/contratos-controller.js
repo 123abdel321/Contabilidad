@@ -81,10 +81,12 @@ function cargarTablasContratos() {
                 return estadoTexto;
             }},
             {"data": function (row, type, set){  
-                let terminoTexto = 'Indefinido';
+                let terminoTexto = 'Sin definir';
                 if (row.termino == 1) terminoTexto = 'Fijo';
-                if (row.termino == 2) terminoTexto = 'Obra-Labor';
-                if (row.termino == 3) terminoTexto = 'Transitorio';
+                if (row.termino == 2) terminoTexto = 'Indefinido';
+                if (row.termino == 3) terminoTexto = 'Obra-Labor';
+                if (row.termino == 4) terminoTexto = 'Aprendizaje';
+                if (row.termino == 5) terminoTexto = 'Prácticas o Pasantías';
                 return terminoTexto;
             }},
             {"data": function (row, type, set){  
@@ -363,6 +365,7 @@ function cargarCombosContratos() {
     $comboNitContrato = $('#id_empleado_contrato_nomina').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        dropdownParent: $('#contratosFormModal'),
         language: {
             noResults: function() {
                 createNewNit = true;
@@ -391,6 +394,7 @@ function cargarCombosContratos() {
     $comboPeriodoContrato = $('#id_periodo_contrato_nomina').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        dropdownParent: $('#contratosFormModal'),
         language: {
             noResults: function() {
                 createNewNit = true;
@@ -419,6 +423,7 @@ function cargarCombosContratos() {
     $comboConceptoBasicoContrato = $('#id_concepto_basico_contrato_nomina').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        dropdownParent: $('#contratosFormModal'),
         language: {
             noResults: function() {
                 createNewNit = true;
