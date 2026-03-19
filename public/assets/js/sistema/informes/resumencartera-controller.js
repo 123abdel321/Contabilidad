@@ -227,6 +227,9 @@ $(document).on('click', '#resumenCarteraGenerales', function () {
     var url = base_url + 'resumen-cartera';
     url+= '?fecha_hasta='+$('#fecha_hasta_resumen_cartera').val();
 
+    marcarFilasNoVisibles();
+    actualizarTipoInformeResumenCartera();
+
     resultados_table.ajax.url(url).load(function(res) {
         $('#resumenCarteraGenerales').show();
         $('#resumenCarteraGeneralesLoading').hide();
@@ -264,14 +267,15 @@ function getProveedoresResumenCartera() {
     return '';
 }
 
-$("#tipo_informe_resumen_cartera").on('change', function(){
-    const tipoInforme = $(this).val();
+function marcarFilasNoVisibles() {
+    for (let index = 0; index < 30; index++) {
+        const newIndex = index + 3;
+        resultados_table.column(newIndex).visible(false);
+    }
+}
 
-    const columnaNombreNit = resultados_table.column(1);
-    const columnaUbicacion = resultados_table.column(2);
-    const columnaTotalAbono = resultados_table.column(33);
-    const columnaFechaManual = resultados_table.column(34);
-    const columnaMora = resultados_table.column(36);
+$("#tipo_informe_resumen_cartera").on('change', function(){
+    const tipoInforme = parseInt($("#tipo_informe_resumen_cartera").val());
 
     $('#id_nit_resumen_cartera').val('').trigger('change');
 
@@ -279,6 +283,26 @@ $("#tipo_informe_resumen_cartera").on('change', function(){
         $('#nitAuxiliarDiv').hide();
         $('#fechaDesdeDiv').hide();        
         $('#fecha_desde_resumen_cartera').val('');
+    } else if(tipoInforme == 2){
+        var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("01").slice(-2);
+        
+        $('#fechaDesdeDiv').show();
+        $('#nitAuxiliarDiv').show();
+        $('#fecha_desde_resumen_cartera').val(fechaDesde);
+    }
+});
+
+function actualizarTipoInformeResumenCartera() {
+    const tipoInforme = $("#tipo_informe_resumen_cartera").val();
+
+    const columnaNombreNit = resultados_table.column(1);
+    const columnaUbicacion = resultados_table.column(2);
+    const columnaTotalAbono = resultados_table.column(33);
+    const columnaFechaManual = resultados_table.column(34);
+    const columnaMora = resultados_table.column(36);
+
+    if(tipoInforme == 1){
+
         $("#one_colum_resumen_cartera").text("Documento");
 
         columnaMora.visible(true);
@@ -289,12 +313,8 @@ $("#tipo_informe_resumen_cartera").on('change', function(){
             columnaUbicacion.visible(true);
         }
     } else if(tipoInforme == 2){
-        var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("01").slice(-2);
-        
-        $('#nitAuxiliarDiv').show();
-        $('#fechaDesdeDiv').show();
+
         $("#one_colum_resumen_cartera").text("Mes");
-        $('#fecha_desde_resumen_cartera').val(fechaDesde);
 
         columnaMora.visible(false);
         columnaTotalAbono.visible(true);
@@ -302,4 +322,4 @@ $("#tipo_informe_resumen_cartera").on('change', function(){
         columnaNombreNit.visible(false);
         columnaUbicacion.visible(false);
     }
-});
+}
