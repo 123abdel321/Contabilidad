@@ -59,9 +59,10 @@ class ResumenCarteraController extends Controller
     public function show(Request $request)
     {
         try {
+            // dd($request->get('id'));
             $draw = $request->get('draw');
-            $start = $request->get("start");
-            $rowperpage = $request->get("length");
+            $start = $request->get("start", 0); // Valor por defecto 0
+            $rowperpage = $request->get("length", 100); // Valor por defecto 100
 
             $resumenCartera = InfResumenCartera::where('id', $request->get('id'))->first();
 
@@ -73,30 +74,35 @@ class ResumenCarteraController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            $informe = InfResumenCarteraDetalle::where('id_resumen_cartera', $resumenCartera->id);
+            // Crear la consulta base
+            $query = InfResumenCarteraDetalle::where('id_resumen_cartera', $resumenCartera->id);
+            
+            // Obtener el total de registros
+            $totalRecords = $query->count();
+            
+            // Aplicar paginación correctamente
+            $informePaginate = $query->limit($rowperpage)
+                ->offset($start)
+                ->get();
+
             $cuentas = json_decode($resumenCartera->cuentas);
 
-            $informeTotals = $informe->get();
-
-            $informePaginate = $informe->skip($start)
-                ->take($rowperpage);
-
             return response()->json([
-                'success'=>	true,
+                'success' => true,
                 'draw' => $draw,
-                'iTotalRecords' => $informeTotals->count(),
-                'iTotalDisplayRecords' => $informeTotals->count(),
-                'data' => $informePaginate->get(),
+                'iTotalRecords' => $totalRecords,
+                'iTotalDisplayRecords' => $totalRecords,
+                'data' => $informePaginate,
                 'perPage' => $rowperpage,
                 'cuentas' => $cuentas,
-                'message'=> 'Resumen cartera generado con exito!'
+                'message' => 'Resumen cartera generado con exito!'
             ], Response::HTTP_OK);
 
         } catch (Exception $e) {
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$e->getMessage()
+                "message" => $e->getMessage()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
