@@ -270,9 +270,6 @@
 				<tr class="header-factura padding5">
 					<th class="padding5">CUENTA</th>
 					<th class="padding5">NOMBRE</th>
-					<th class="padding5">SALDO ANTERIOR</th>
-					<th class="padding5">DEBITO</th>
-					<th class="padding5">CREDITO</th>
 					<th class="padding5">VALOR BASE</th>
 					<th class="padding5">PORCENTAJE</th>
 					<th class="padding5">SALDO FINAL</th>
@@ -283,9 +280,6 @@
 					<tr>
 						<td class="padding5">{{ $detalle->cuenta }}</td>
 						<td class="padding5">{{ $detalle->nombre_cuenta }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->saldo_anterior, 2) }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->debito, 2) }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->credito, 2) }}</td>
 						<td class="padding5 valor">{{ number_format($detalle->valor_base, 2) }}</td>
 						<td class="padding5 valor">{{ number_format($detalle->porcentaje_base, 2) }}</td>
 						<td class="padding5 valor">{{ number_format($detalle->saldo, 2) }}</td>
