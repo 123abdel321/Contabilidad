@@ -67,12 +67,16 @@ function resumencarteraInit() {
             url: base_url + 'resumen-cartera',
             headers: headers,
             data: function ( d ) {
-                d.fecha_desde = $('#fecha_desde_resumen_cartera').val();
-                d.fecha_hasta = $('#fecha_hasta_resumen_cartera').val();
-                d.ubicaciones = getUbicacionesResumenCartera();
-                d.proveedor = getProveedoresResumenCartera();
-                d.dias_mora = $('#mora_resumen_cartera').val();
-                d.id_nit = $('#id_nit_resumen_cartera').val();
+                var data = {
+            // Solo estos parámetros, NADA de d.columns
+                    fecha_desde: $('#fecha_desde_resumen_cartera').val(),
+                    fecha_hasta: $('#fecha_hasta_resumen_cartera').val(),
+                    ubicaciones: getUbicacionesResumenCartera(),
+                    proveedor: getProveedoresResumenCartera(),
+                    dias_mora: $('#mora_resumen_cartera').val(),
+                    id_nit: $('#id_nit_resumen_cartera').val()
+                };
+                return data;
             }
         },
         
