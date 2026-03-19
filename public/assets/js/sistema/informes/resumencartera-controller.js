@@ -26,7 +26,11 @@ function resumencarteraInit() {
 
     // Agregar columnas finales
     columnas.push(
-        { data: 'total_abono' },
+        { 
+            data: 'total_abono',
+            render: $.fn.dataTable.render.number(',', '.', 2, ''),
+            className: 'dt-body-right'
+        },
         { data: 'fecha_manual' },
         { 
             data: 'saldo_final',
