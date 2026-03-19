@@ -217,7 +217,6 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             )
             ->groupByRaw("id_nit, DATE_FORMAT(fecha_manual, '%Y-%m')")
             ->orderByRaw('fecha_manual')
-            ->havingRaw('saldo_final != 0')
             ->chunk(233, function ($documentos) {
 
                 foreach ($documentos as $documento) {
