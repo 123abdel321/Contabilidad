@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeImpuestos;
+use App\Helpers\Printers\RetencionPdf;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -119,6 +120,15 @@ class ImpuestosController extends Controller
             'data' => '',
             'message'=> 'Cartera no existente'
         ]);
+    }
+
+    public function showPdfRetencion(Request $request)
+    {
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+        return (new RetencionPdf($empresa, $request->all()))
+            ->buildPdf()
+            ->showPdf();
     }
 
 }

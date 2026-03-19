@@ -24,6 +24,7 @@ use App\Http\Controllers\Informes\ResumenCarteraController;
 use App\Http\Controllers\Informes\VentasGeneralesController;
 use App\Http\Controllers\Informes\VentasAcumuladasController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
+use App\Http\Controllers\Informes\MovimientoProductoController;
 use App\Http\Controllers\Informes\DocumentosGeneralesController;
 use App\Http\Controllers\Informes\ResumenComprobantesController;
 //TABLAS -> FACTURACION / CONTABILIDAD
@@ -185,6 +186,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/cartera', [CarteraController::class, 'index'])->name('cartera');
 		//IMPUESTOS
 		Route::get('/impuestos', [ImpuestosController::class, 'index'])->name('impuestos');	
+		Route::get('/impuestos-retencion-pdf', [ImpuestosController::class, 'showPdfRetencion'])->name('impuestos-retencion-pdf');	
 		//EXTRACTOS
 		Route::get('/extracto', [ExtractoController::class, 'index'])->name('extractos');	
 		//CUENTAS POR COBRAR
@@ -304,6 +306,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/ventasgenerales', [VentasGeneralesController::class, 'index']);
 		//VENTAS ACUMULADAS
 		Route::get('/ventasacumuladas', [VentasAcumuladasController::class, 'index']);
+		//MOVIMIENTO PRODUCTO
+		Route::get('/movimientoproducto', [MovimientoProductoController::class, 'index']);
 		
 		//ESTADO ACTUAL
 		Route::get('/estadoactual', [EstadoActualController::class, 'index']);

@@ -214,7 +214,23 @@ function impuestosInit() {
 
     $("#tipo_informe_impuestos").on('change', function(){
         actualizarColumnas();
+        actualizaPdfRetencion();
     });
+
+    function actualizaPdfRetencion() {
+        const tipoInforme = $("#tipo_informe_impuestos").val();
+        const idNitSelect = $('#id_nit_impuestos').val();
+
+        $("#descargarPdfImpuestosRetencionDisabled").hide();
+        $("#descargarPdfImpuestosRetencionLoading").hide();
+        $("#descargarPdfImpuestosRetencion").hide();
+
+        if (tipoInforme == 'retencion' && idNitSelect) {
+            $("#descargarPdfImpuestosRetencion").show();
+        } else {
+            $("#descargarPdfImpuestosRetencionDisabled").show();
+        }
+    }
 
     $("#nivel_impuestos3").on('change', function(){
         actualizarColumnas();
@@ -241,6 +257,7 @@ function impuestosInit() {
     $("#id_nit_impuestos").on('change', function(){
         clearImpuestos();
         findImpuestos();
+        actualizaPdfRetencion();
     });    
     
     $(".detallar_impuestos").on('change', function(){
@@ -369,6 +386,21 @@ $(document).on('click', '#generarImpuestos', function () {
         }
     });
 
+});
+
+$(document).on('click', '#descargarPdfImpuestosRetencion', function () {
+
+    var url = base_web + 'impuestos-retencion-pdf';
+    url+= '?id_nit='+$('#id_nit_impuestos').val();
+    url+= '&id_cuenta='+$('#id_cuenta_impuestos').val();
+    url+= '&fecha_desde='+$('#fecha_desde_impuestos').val();
+    url+= '&fecha_hasta='+$('#fecha_hasta_impuestos').val();
+    url+= '&agrupar='+$('#agrupar_impuestos').val();
+    url+= '&tipo_informe='+$("#tipo_informe_impuestos").val();
+    url+= '&nivel='+getNivelImpuestos();
+    url+= '&generar='+generarImpuestos;
+
+    window.open(url, "_blank");
 });
 
 function findImpuestos() {
