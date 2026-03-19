@@ -219,6 +219,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             ->orderByRaw('fecha_manual')
             ->havingRaw('saldo_final != 0')
             ->chunk(233, function ($documentos) {
+
                 foreach ($documentos as $documento) {
                     
                     $columnaCuenta = $this->buscarCuenta($documento->cuenta);
@@ -227,7 +228,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                     $indice = $documento->year.'_'.$documento->month;
 
                     $this->newCuentaData($documento);
-                    $this->resultadoCarteraCollection[$indice]["cuenta_$columnaCuenta"] = $documento->saldo_final;
+                    $this->resultadoCarteraCollection[$indice]["cuenta_$columnaCuenta"] = $documento->total_facturas;
                     $this->resultadoCarteraCollection[$indice]["saldo_final"]+= $documento->saldo_final;
                 }
                 
