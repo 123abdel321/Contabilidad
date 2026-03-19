@@ -68,6 +68,10 @@ function resumencarteraInit() {
             headers: headers,
             data: function ( d ) {
                 var data = {
+
+                    draw: d.draw,
+                    start: d.start,
+                    length: d.length,
             // Solo estos parámetros, NADA de d.columns
                     fecha_desde: $('#fecha_desde_resumen_cartera').val(),
                     fecha_hasta: $('#fecha_hasta_resumen_cartera').val(),
