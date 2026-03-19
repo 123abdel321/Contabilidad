@@ -240,16 +240,16 @@
 									<table>
 										<thead>
 											<tr>
-												<th colspan="2" class="header-total padding5">FACTURA</th>
+												<th colspan="2" class="header-total padding5">FECHAS</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td class="padding5">Fecha desde</td>
+												<td class="padding5">Desde</td>
 												<td class="valor padding5">{{ $filtros['fecha_desde'] }}</td>
 											</tr>
 											<tr>
-												<td class="padding5">Fecha hasta</td>
+												<td class="padding5">Hasta</td>
 												<td class="valor padding5">{{ $filtros['fecha_hasta'] }}</td>
 											</tr>
 										</tbody>
