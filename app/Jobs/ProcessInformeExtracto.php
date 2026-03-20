@@ -57,11 +57,11 @@ class ProcessInformeExtracto
         try {
 
             $this->ordenarMeses();
-            
 
             if ($this->request['saldo_anterior']) {
-                $this->addNitsCuentasData(); 
+                $this->addNitsCuentasData();
             }
+
             $this->addMesesData();
             $this->addCuentasData();
             $this->addNitsCuentasDetalleData();
@@ -386,9 +386,9 @@ class ProcessInformeExtracto
                                 //     $cuentaData['saldo_final'] = $detalle->saldo_final;
                                 // } else if ($detalle->naturaleza_cuenta == PlanCuentas::CREDITO && intval($detalle->debito)) {
                                 //     $cuentaData['errores'] = true;
-                                //     $cuentaData['saldo_final'] = $detalle->saldo_final;
-                                // }
-
+                                //     }
+                                    
+                                $cuentaData['saldo_final'] = $detalle->saldo_final;
                                 if (!$totalDetalles) {
                                     $cuentaData['nivel'] = 6;
                                 }
