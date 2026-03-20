@@ -22,7 +22,7 @@
                         </div>
 
                         <div class="form-group col-12 col-sm-4 col-md-4">
-                            <label for="exampleFormControlSelect1" style=" width: 100%;">Tipo informe</label>
+                            <label for="tipo_informe_resultado" style=" width: 100%;">Tipo informe</label>
                             <select name="tipo_informe_resultado" id="tipo_informe_resultado" class="form-control form-control-sm">
                                 <option value="1">Igresos</option>
                                 <option value="2">Gastos</option>

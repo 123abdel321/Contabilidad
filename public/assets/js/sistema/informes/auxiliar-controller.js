@@ -713,10 +713,14 @@ function checksFiltersAuxiliar() {
         columnNitAuxiliar.visible(false);
         columnCuentaAuxiliar.visible(false);
         columnNombreAuxiliar.visible(true);
-    } else if (id_cuenta) {
+    } if (id_cuenta) {
         columnNitAuxiliar.visible(false);
         columnCuentaAuxiliar.visible(false);
         columnNombreAuxiliar.visible(true);
+    }
+
+    if (id_nit && id_cuenta) {
+        columnNombreAuxiliar.visible(false);
     }
 }
 
