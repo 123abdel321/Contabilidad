@@ -178,7 +178,7 @@ class PagosController extends Controller
                 }
             }
             
-            if (isset($dataPagos)) {
+            if (count($dataPagos) == 0) {
                 $this->id_pago++;
                 $dataPagos[] = [
                     'id' => $this->id_pago,
