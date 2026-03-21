@@ -353,7 +353,7 @@ channel_informe_documentos_generales.bind('notificaciones', function(data) {
         $("#descargarPdfDocumentoDisabled").hide();
         return;
     }
-    if(data.id_documento_general){
+    if(data.id_documento_general && data.type == 'documento_general'){
         loadDocumentosGeneralesById(data.id_documento_general);
         return;
     }
@@ -496,6 +496,7 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
     url+= '&consecutivo='+$('#consecutivo_documentos_generales').val();
     url+= '&concepto='+$('#concepto_documentos_generales').val();
     url+= '&id_usuario='+ id_usuario;
+    url+= '&type='+'documento_general';
     url+= '&agrupar='+agruparDocumentosText;
     url+= '&agrupado='+getNivelAgrupado();
     url+= '&anulado='+getDocumentoAnulado();

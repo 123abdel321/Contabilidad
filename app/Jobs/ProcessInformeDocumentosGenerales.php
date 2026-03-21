@@ -46,7 +46,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
         setDBInConnection('sam', $empresa->token_db);
 
         DB::connection('informes')->beginTransaction();
-
+        
         try {
 
             $documentosGenerales = InfDocumentosGenerales::create([
@@ -91,6 +91,7 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 'mensaje' => 'Informe generado con exito!',
                 'titulo' => 'Documentos generales generado',
                 'id_documento_general' => $this->id_documentos_generales,
+                'type' => $this->request['type'],
                 'autoclose' => false
             ]));            
 

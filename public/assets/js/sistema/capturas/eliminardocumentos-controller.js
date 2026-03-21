@@ -310,15 +310,12 @@ function cargarCombosEliminarDocumentos() {
 }
 
 channelEliminarDocumentos.bind('notificaciones', function(data) {
-    console.log('notificaciones', data);
-    if(data.url_file){
-        loadExcel(data);
-        return;
-    }
-    if(data.id_documento_general){
-        $('#id_auxiliar_cargado').val(data.id_documento_general);
-        loadEliminarDocumentosById(data.id_documento_general);
-        return;
+    if (data.type == 'eliminar_documentos') {
+        if(data.id_documento_general){
+            $('#id_auxiliar_cargado').val(data.id_documento_general);
+            loadEliminarDocumentosById(data.id_documento_general);
+            return;
+        }
     }
 });
 
@@ -379,6 +376,7 @@ $(document).on('click', '#generarEliminarDocumentos', function () {
     url+= '&consecutivo='+$('#consecutivo_eliminar_documentos').val();
     url+= '&concepto='+$('#concepto_eliminar_documentos').val();
     url+= '&id_usuario='+ id_usuario;
+    url+= '&type='+'eliminar_documentos';
     url+= '&agrupar='+agruparDocumentosText;
     url+= '&agrupado='+getNivelAgrupado();
     url+= '&anulado='+getDocumentoEliminarAnulado();
