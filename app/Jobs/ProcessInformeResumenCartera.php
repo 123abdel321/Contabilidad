@@ -56,7 +56,6 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
         try {
             $this->addCuentasOrden();
-            
             if ($this->request['id_nit']) {
                 $this->addCuentasMeses();
                 $this->addTotalIndividualCartera();
@@ -215,20 +214,24 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 DB::raw('DATEDIFF(NOW(), fecha_manual) - plazo AS dias_mora'),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos')
             )
-            ->groupByRaw("id_nit, DATE_FORMAT(fecha_manual, '%Y-%m')")
+            ->groupByRaw("id_nit, id_cuenta, DATE_FORMAT(fecha_manual, '%Y-%m')")
             ->orderByRaw('fecha_manual')
             ->chunk(233, function ($documentos) {
-
                 foreach ($documentos as $documento) {
                     
                     $columnaCuenta = $this->buscarCuenta($documento->cuenta);
-                    if (!$columnaCuenta) continue;
+                    if (!$columnaCuenta) {
+                        continue;
+                    }
 
                     $indice = $documento->year.'_'.$documento->month;
 
-                    $this->newCuentaData($documento);
-                    $this->resultadoCarteraCollection[$indice]["cuenta_$columnaCuenta"] = $documento->total_facturas;
-                    $this->resultadoCarteraCollection[$indice]["saldo_final"]+= $documento->saldo_final;
+                    if (!array_key_exists($indice, $this->resultadoCarteraCollection)) {
+                        $this->newCuentaData($documento);
+                    }
+
+                    $this->resultadoCarteraCollection[$indice]["cuenta_$columnaCuenta"]+= $documento->total_facturas;
+                    $this->resultadoCarteraCollection[$indice]["saldo_final"]+= $documento->saldo_final;                    
                 }
                 
                 unset($documentos);
