@@ -730,7 +730,7 @@
         }
         
         [data-theme="dark"] .hamburger-line {
-            background: var(--light);
+            background: var(--dark);
         }
         
         /* Mobile Menu Active State - AQUÍ ESTÁ LA SOLUCIÓN */
@@ -995,7 +995,7 @@
                 <a href="#modulos" class="nav-link">Módulos</a>
                 <a href="#precios" class="nav-link">Precios</a>
                 <a href="#contacto" class="nav-link">Contacto</a>
-                <a href="https://app.portafolioerp.com/login" class="btn btn-outline">
+                <a href="/login" class="btn btn-outline">
                     <i class="fas fa-sign-in-alt"></i> Ingresar
                 </a>
                 <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
