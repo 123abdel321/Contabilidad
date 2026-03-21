@@ -178,7 +178,7 @@ class RecibosController extends Controller
                 }
             }
 
-            if (!isset($dataRecibos)) {
+            if (isset($dataRecibos)) {
                 $this->id_recibo++;
                 $dataRecibos[] = [
                     'id' => $this->id_recibo,

@@ -171,12 +171,14 @@ class PagosController extends Controller
             } else {
                 if (isset($extractos)) {
                     foreach ($extractos as $extracto) {
-                        $dataPagos[] = $this->formatExtracto($extracto);
+                        if ($extracto->saldo > 0) {
+                            $dataPagos[] = $this->formatExtracto($extracto);
+                        }
                     }
                 }
             }
-
-            if (!isset($dataPagos)) {
+            
+            if (isset($dataPagos)) {
                 $this->id_pago++;
                 $dataPagos[] = [
                     'id' => $this->id_pago,
