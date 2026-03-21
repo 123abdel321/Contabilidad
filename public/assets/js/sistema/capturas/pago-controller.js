@@ -103,15 +103,14 @@ function cargarCombosPago() {
 function cargarTablasPago() {
     pago_table = $('#pagoTable').DataTable({
         dom: '',
-        paging: false,
+        pageLength: 200,
         responsive: false,
         processing: true,
-        serverSide: true,
+        serverSide: false,
         deferLoading: 0,
         initialLoad: false,
+        autoWidth: true,
         language: lenguajeDatatable,
-        sScrollX: "100%",
-        scrollX: true,
         ordering: false,
         ajax:  {
             type: "GET",
@@ -213,6 +212,9 @@ function cargarTablasPago() {
                 }
             }
         ],
+        columnDefs: [{
+            'orderable': false
+        }],
         'rowCallback': function(row, data, index){
             if (data.cuenta_pago == 'sin_deuda') {
                 $('td', row).css('background-color', 'rgb(11 177 158)');
@@ -565,14 +567,13 @@ $(document).on('click', '#movimientoContablePago', function () {
 });
 
 $(document).on('change', '#id_nit_pago', function () {
-    let data = $('#id_nit_pago').select2('data')[0];
-    if (data && !noBuscarDatosPago) {
-        noBuscarDatosPago = false;
-        document.getElementById('iniciarCapturaPago').click();
+    var totalRows = pago_table.rows().data().length;
+    for (let index = 0; index < totalRows; index++) {
+        pago_table.row(0).remove().draw();
     }
-    if (!noBuscarDatosPago) {
-        noBuscarDatosPago = false;
-    }
+
+    clearFormasPagoPago();
+    disabledFormasPagoPago();
 });
 
 function savePago() {
@@ -664,7 +665,7 @@ function cancelarPago() {
 
     const dateNow = new Date;
     
-    $comboNitPagos.val(0).trigger('change');
+    $comboNitPagos.val('').trigger('change');
     totalAnticiposPago = 0;
     pago_table.clear().draw();
     totalAnticiposPagoCuenta = [];
@@ -688,6 +689,11 @@ function cancelarPago() {
     $('#input_anticipos_pago').hide();
     $('#pago_anticipo_disp_view').hide();
     $('#crearCapturaPagoDisabled').hide();
+
+    var totalRows = pago_table.rows().data().length;
+    for (let index = 0; index < totalRows; index++) {
+        pago_table.row(0).remove().draw();
+    }
 }
 
 function clearFormasPagoPago() {
@@ -1412,9 +1418,10 @@ function consecutivoSiguientePago() {
         }).done((res) => {
             if(res.success){
                 $("#documento_referencia_pago").val(res.data);
-                setTimeout(function(){
-                    reloadTablePagos();
-                },10);
+                var totalRows = pago_table.rows().data().length;
+                for (let index = 0; index < totalRows; index++) {
+                    pago_table.row(0).remove().draw();
+                }
             }
         }).fail((err) => {
             var mensaje = err.responseJSON.message;

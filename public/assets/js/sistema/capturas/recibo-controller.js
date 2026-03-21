@@ -103,15 +103,14 @@ function cargarCombosRecibo() {
 function cargarTablasRecibo() {
     recibo_table = $('#reciboTable').DataTable({
         dom: '',
-        paging: false,
+        pageLength: 200,
         responsive: false,
         processing: true,
-        serverSide: true,
+        serverSide: false,
         deferLoading: 0,
         initialLoad: false,
+        autoWidth: true,
         language: lenguajeDatatable,
-        sScrollX: "100%",
-        scrollX: true,
         ordering: false,
         ajax:  {
             type: "GET",
@@ -213,6 +212,9 @@ function cargarTablasRecibo() {
                 }
             }
         ],
+        columnDefs: [{
+            'orderable': false
+        }],
         'rowCallback': function(row, data, index){
             if (data.cuenta_recibo == 'sin_deuda') {
                 $('td', row).css('background-color', 'rgb(11 177 158)');
@@ -565,14 +567,13 @@ $(document).on('click', '#movimientoContableRecibo', function () {
 });
 
 $(document).on('change', '#id_nit_recibo', function () {
-    let data = $('#id_nit_recibo').select2('data')[0];
-    if (data && !noBuscarDatosRecibo) {
-        noBuscarDatosRecibo = false;
-        document.getElementById('iniciarCapturaRecibo').click();
+    var totalRows = recibo_table.rows().data().length;
+    for (let index = 0; index < totalRows; index++) {
+        recibo_table.row(0).remove().draw();
     }
-    if (!noBuscarDatosRecibo) {
-        noBuscarDatosRecibo = false;
-    }
+
+    clearFormasPagoRecibo();
+    disabledFormasPagoRecibo();
 });
 
 function saveRecibo() {
@@ -1410,9 +1411,10 @@ function consecutivoSiguienteRecibo() {
         }).done((res) => {
             if(res.success){
                 $("#documento_referencia_recibo").val(res.data);
-                setTimeout(function(){
-                    reloadTableRecibos();
-                },10);
+                var totalRows = recibo_table.rows().data().length;
+                for (let index = 0; index < totalRows; index++) {
+                    recibo_table.row(0).remove().draw();
+                }
             }
         }).fail((err) => {
             var mensaje = err.responseJSON.message;
