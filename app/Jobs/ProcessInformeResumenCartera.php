@@ -339,9 +339,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             ->when($this->request['id_nit'], function ($query) {
 				$query->where('id_nit', $this->request['id_nit']);
 			})
-            ->whereIn('PCT.id_tipo_cuenta', [3,4,7,8])
-            ->where('anulado', 0)
-            ;
+            ->whereIn('PCT.id_tipo_cuenta', [2,3,4,7,8])
+            ->where('anulado', 0);
     }
 
     private function buscarCuenta($buscarCuenta)
