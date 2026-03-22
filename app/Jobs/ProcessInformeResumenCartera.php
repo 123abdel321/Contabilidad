@@ -232,6 +232,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
                     $this->resultadoCarteraCollection[$indice]["cuenta_$columnaCuenta"]+= $documento->total_facturas;
                     $this->resultadoCarteraCollection[$indice]["saldo_final"]+= $documento->saldo_final;                    
+                    $this->resultadoCarteraCollection[$indice]["total_abono"]+= $documento->total_abono;                    
                 }
                 
                 unset($documentos);
@@ -356,10 +357,12 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     {
         $fechaManual = null;
         $indice = $documento->id_nit;
+        $totalAbono = $documento->total_abono ?? 0;
         
         if ($this->request['id_nit']) {
             $fechaManual = $this->meses[intval($documento->month) - 1].' '.$documento->year;
             $indice = $documento->year.'_'.$documento->month;
+            $totalAbono = 0;
         }
 
         $this->resultadoCarteraCollection[$indice] = [
@@ -371,7 +374,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             'dias_mora' => $documento->dias_mora < 0 ? 0 : $documento->dias_mora, 
             'ubicacion' => $documento->apartamentos,
             'fecha_manual' => $documento->fecha_manual ? Carbon::parse($documento->fecha_manual)->format('Y-m-d') : null,
-            'total_abono' => $documento->total_abono ?? 0,
+            'total_abono' => $totalAbono,
             'cuenta_1' => 0, 
             'cuenta_2' => 0, 
             'cuenta_3' => 0, 
