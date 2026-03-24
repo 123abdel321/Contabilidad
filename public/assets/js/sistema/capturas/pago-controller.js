@@ -608,6 +608,7 @@ function savePago() {
         $('#iniciarCapturaPago').show();
         $('#iniciarCapturaPagoLoading').hide();
         agregarToast('exito', 'Creación exitosa', 'Pago creado con exito!', true);
+        mostrarValoresPagos();
 
         guardandoPago = false
         if(res.impresion) {
@@ -619,7 +620,6 @@ function savePago() {
         $('#cancelarCapturaPago').show();
         $('#crearCapturaPago').show();
         $('#iniciarCapturaPagoLoading').hide();
-        mostrarValoresPagos();
 
         var mensaje = err.responseJSON.message;
         var errorsMsg = arreglarMensajeError(mensaje);
