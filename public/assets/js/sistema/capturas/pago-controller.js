@@ -10,6 +10,7 @@ var calculandoRowPagos = false;
 var pago_table_movimiento = null;
 var $comboComprobantePagos = null;
 var totalAnticiposPagoCuenta = null;
+var recargandoPagos = false;
 
 function pagoInit () {
 
@@ -450,6 +451,7 @@ function buscarFacturaPagos(event) {
 }
 
 function agregarPagosPagos(pagos) {
+    
     if (!pagos.length) return;
 
     const sumasPorFormaPago = {};
@@ -505,6 +507,9 @@ $(document).on('click', '#show-anticipos-pagos', function () {
 });
 
 function reloadTablePagos() {
+
+    recargandoPagos = true;
+
     pago_table.ajax.reload(function (res) {
         $('#iniciarCapturaPago').show();
         $('#crearCapturaPagoDisabled').show();
@@ -525,8 +530,7 @@ function reloadTablePagos() {
                 text: factura.nit.numero_documento+' - '+factura.nit.nombre_completo
             };
             var newOption = new Option(dataFormato.text, dataFormato.id, false, false);
-            $comboNitPagos.append(newOption).trigger('change');
-            $comboNitPagos.val(dataFormato.id).trigger('change');
+            $comboNitPagos.append(newOption).val(factura.nit.id).trigger('change');
 
             $('#fecha_manual_pago').val(normalizarFecha(factura.fecha_manual));
             $('#total_abono_pago').val(factura.total_abono);
@@ -552,6 +556,8 @@ function reloadTablePagos() {
                 $('#cancelarCapturaPago').show();
             }
         }
+
+        recargandoPagos = false;
     });
 }
 
@@ -569,6 +575,8 @@ $(document).on('click', '#movimientoContablePago', function () {
 });
 
 $(document).on('change', '#id_nit_pago', function () {
+    if (recargandoPagos) return;
+
     const dataNit = $(this).select2('data')[0];
     var totalRows = pago_table.rows().data().length;
     for (let index = 0; index < totalRows; index++) {
@@ -577,17 +585,6 @@ $(document).on('change', '#id_nit_pago', function () {
 
     clearFormasPagoPago();
     disabledFormasPagoPago();
-
-    if (dataNit) {
-        $("#crearCapturaPago").hide();
-        $('#iniciarCapturaPago').hide();
-        $('#cancelarCapturaPago').hide();
-        $("#movimientoContablePago").hide();
-        $('#crearCapturaPagoDisabled').hide();
-        $('#iniciarCapturaPagoLoading').show();
-        
-        reloadTablePagos();
-    }
 });
 
 function savePago() {
