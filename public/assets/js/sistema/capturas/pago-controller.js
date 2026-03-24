@@ -493,6 +493,8 @@ $(document).on('click', '#iniciarCapturaPago', function () {
     $("#movimientoContablePago").hide();
     $('#crearCapturaPagoDisabled').hide();
     $('#iniciarCapturaPagoLoading').show();
+
+    console.log('aca funciona');
     
     reloadTablePagos();
 });
@@ -577,9 +579,9 @@ $(document).on('change', '#id_nit_pago', function () {
 });
 
 function savePago() {
+    $('#crearCapturaPago').hide();
     $('#iniciarCapturaPago').hide();
     $('#cancelarCapturaPago').hide();
-    $('#crearCapturaPago').hide();
     $('#movimientoContablePago').hide();
     $('#iniciarCapturaPagoLoading').show();
 
@@ -617,6 +619,7 @@ function savePago() {
         $('#cancelarCapturaPago').show();
         $('#crearCapturaPago').show();
         $('#iniciarCapturaPagoLoading').hide();
+        mostrarValoresPagos();
 
         var mensaje = err.responseJSON.message;
         var errorsMsg = arreglarMensajeError(mensaje);
@@ -988,7 +991,7 @@ function totalFormasPagoPagos(idFormaPago = null) {
     return [totalPagos, totalAnticipos];
 }
 
-function calcularPagosPagos(idFormaPago = null) {
+function calcularPagosPagos(idFormaPago = null, mostrarBotonGuardar = true) {
 
     if (
         parseInt($('#pago_forma_pago_'+idFormaPago).val()) == '' ||
@@ -1013,8 +1016,11 @@ function calcularPagosPagos(idFormaPago = null) {
     var countE = new CountUp('total_faltante_pago', 0, totalFaltante, 2, 0.5);
         countE.start();
 
+    console.log('mostrarBotonGuardar', mostrarBotonGuardar);
     if (!totalFaltante) {
-        $('#crearCapturaPago').show();
+        if (mostrarBotonGuardar) {
+            $('#crearCapturaPago').show();
+        }
         $('#crearCapturaPagoDisabled').hide();
     } else {
         $('#crearCapturaPago').hide();
@@ -1025,7 +1031,7 @@ function calcularPagosPagos(idFormaPago = null) {
 function changeFormaPagoPago(idFormaPago, event, anticipo, id_cuenta) {
     if(event.keyCode == 13){
 
-        calcularPagosPagos(idFormaPago);
+        calcularPagosPagos(idFormaPago, false);
 
         var [totalPagos, totalCXP] = totalFormasPagoPagos();
         var [totalSaldo, totalAbonos, totalAnticipos] = totalValoresPagos();
@@ -1040,12 +1046,12 @@ function changeFormaPagoPago(idFormaPago, event, anticipo, id_cuenta) {
                 if (totalCXP > totalSaldoAnticipos) {
                     $('#pago_forma_pago_'+idFormaPago).val(totalSaldoAnticipos);
                     $('#pago_forma_pago_'+idFormaPago).select();
-                    calcularPagosPagos();
+                    calcularPagosPagos(null, false);
                     return;
                 } else if (totalCXP > (totalFaltante + totalCXP)) {
                     $('#pago_forma_pago_'+idFormaPago).val(totalFaltante);
                     $('#pago_forma_pago_'+idFormaPago).select();
-                    calcularPagosPagos();
+                    calcularPagosPagos(null, false);
                     return;
                 }
             }
