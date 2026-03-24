@@ -569,6 +569,7 @@ $(document).on('click', '#movimientoContablePago', function () {
 });
 
 $(document).on('change', '#id_nit_pago', function () {
+    const dataNit = $(this).select2('data')[0];
     var totalRows = pago_table.rows().data().length;
     for (let index = 0; index < totalRows; index++) {
         pago_table.row(0).remove().draw();
@@ -576,6 +577,17 @@ $(document).on('change', '#id_nit_pago', function () {
 
     clearFormasPagoPago();
     disabledFormasPagoPago();
+
+    if (dataNit) {
+        $("#crearCapturaPago").hide();
+        $('#iniciarCapturaPago').hide();
+        $('#cancelarCapturaPago').hide();
+        $("#movimientoContablePago").hide();
+        $('#crearCapturaPagoDisabled').hide();
+        $('#iniciarCapturaPagoLoading').show();
+        
+        reloadTablePagos();
+    }
 });
 
 function savePago() {
