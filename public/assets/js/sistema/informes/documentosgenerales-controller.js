@@ -169,8 +169,9 @@ function documentosgeneralesInit() {
                 if (row.nivel == 0) {
                     return '';
                 }
+                const id_cuenta = $('#id_cuenta_documentos_generales').val();
                 const diferencia = parseFloat(row.diferencia).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-                if(parseInt(row.diferencia) && row.nivel == 1) {
+                if(parseInt(row.diferencia) && row.nivel == 1 && !id_cuenta) {
                     return `<div class="error-container">
                         <i class="fas fa-exclamation-triangle error-triangle" aria-hidden="true"></i>&nbsp;
                         <span class="error-text">${diferencia}</span>
