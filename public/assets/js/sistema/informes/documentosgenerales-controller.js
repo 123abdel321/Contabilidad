@@ -70,7 +70,9 @@ function documentosgeneralesInit() {
         },
         rowCallback: function(row, data, index){
 
-            if(parseInt(data.diferencia) && data.nivel == 1) {
+            const id_cuenta = $('#id_cuenta_documentos_generales').val();
+
+            if(parseInt(data.diferencia) && data.nivel == 1 && !id_cuenta) {
                 $(row).addClass('highlight-error');
                 return;
             }
@@ -504,6 +506,8 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
 
     if (agruparDocumentosText == 'consecutivo') agrupadoPorDocumento = true;
     else agrupadoPorDocumento = false;
+
+    checksFiltersDocumentosGenerales();
     
     documentos_generales_table.ajax.url(url).load(function(res) {
         if(res.success) {
@@ -520,6 +524,41 @@ $(document).on('click', '#generarDocumentosGenerales', function () {
         }
     });
 });
+
+function checksFiltersDocumentosGenerales() {
+
+    const id_cuenta = $('#id_cuenta_documentos_generales').val();
+    const id_nit = $('#id_nit_documentos_generales').val();
+    const id_comprobante = $('#id_comprobante_documentos_generales').val();
+    
+    const columnCuenta1 = documentos_generales_table.column(0);
+    const columnCuenta2 = documentos_generales_table.column(1);
+    const columnNit1 = documentos_generales_table.column(2);
+    const columnNit2 = documentos_generales_table.column(3);
+    const columnComprobante = documentos_generales_table.column(5);
+
+    columnCuenta1.visible(true);
+    columnCuenta2.visible(true);
+    columnNit1.visible(true);
+    columnNit2.visible(true);
+    columnComprobante.visible(true);
+
+    if (id_cuenta) {
+        columnCuenta1.visible(false);
+        columnCuenta2.visible(false);
+    }
+
+    if (id_nit) {
+        columnNit1.visible(false);
+        columnNit2.visible(false);
+    }
+
+    if (id_comprobante) {
+        columnComprobante.visible(false);
+    }
+
+}
+
 
 $(document).on('click', '#descargarExcelDocumento', function () {
 

@@ -713,7 +713,9 @@ function checksFiltersAuxiliar() {
         columnNitAuxiliar.visible(false);
         columnCuentaAuxiliar.visible(false);
         columnNombreAuxiliar.visible(true);
-    } if (id_cuenta) {
+    }
+    
+    if (id_cuenta) {
         columnNitAuxiliar.visible(false);
         columnCuentaAuxiliar.visible(false);
         columnNombreAuxiliar.visible(true);
