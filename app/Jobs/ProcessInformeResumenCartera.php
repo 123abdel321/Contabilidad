@@ -189,7 +189,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private function addCuentasMeses()
     {
-        $query = $this->resumenCarteraQuery([11]);
+        $query = $this->resumenCarteraQuery([3,4,7,8,11]);
 
         $consulta = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
