@@ -188,7 +188,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private function addCuentasMeses()
     {
-        $query = $this->resumenCarteraQuery();
+        $query = $this->resumenCarteraQuery([3,4,7,8,11]);
 
         $consulta = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
@@ -279,6 +279,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                         continue;
                     }
    
+                    $this->resultadoCarteraCollection[$indice]["fecha_manual"]+= $documento->fecha_manual;                    
                     $this->resultadoCarteraCollection[$indice]["total_abono"]+= $documento->total_facturas;                    
                 }
                 
