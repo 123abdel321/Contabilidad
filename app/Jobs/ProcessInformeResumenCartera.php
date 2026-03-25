@@ -279,7 +279,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                         continue;
                     }
    
-                    $this->resultadoCarteraCollection[$indice]["fecha_manual"]+= $documento->fecha_manual;                    
+                    $this->resultadoCarteraCollection[$indice]["fecha_manual"] = $documento->fecha_manual;                    
                     $this->resultadoCarteraCollection[$indice]["total_abono"]+= $documento->total_facturas;                    
                 }
                 
