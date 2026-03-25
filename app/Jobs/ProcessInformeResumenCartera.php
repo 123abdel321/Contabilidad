@@ -104,7 +104,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private function addCuentasOrden()
     {
-        $query = $this->resumenCarteraQuery();
+        $tiposCuentasFilter = $this->request['id_nit'] ? [3,4,7,8,11] : [3,4,7,8];
+        $query = $this->resumenCarteraQuery($tiposCuentasFilter);
 
         DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
@@ -188,7 +189,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private function addCuentasMeses()
     {
-        $query = $this->resumenCarteraQuery([3,4,7,8,11]);
+        $query = $this->resumenCarteraQuery([11]);
 
         $consulta = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
