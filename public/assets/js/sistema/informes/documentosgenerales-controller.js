@@ -156,12 +156,7 @@ function documentosgeneralesInit() {
                 return row.codigo_comprobante + ' - ' +row.nombre_comprobante;
             }},
             { data: 'consecutivo'}, //CONSECUTIVO
-            {"data": function (row, type, set){ //CECOS
-                if(!row.codigo_cecos){
-                    return '';
-                }
-                return row.codigo_cecos + ' - ' +row.nombre_cecos;
-            }},
+            { data: 'fecha_manual'},
             { data: 'documento_referencia'}, //FACTURA
             { data: "debito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: "credito", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
@@ -179,7 +174,12 @@ function documentosgeneralesInit() {
                 }
                 return diferencia;
             }, className: 'dt-body-right'},
-            { data: 'fecha_manual'},
+            {"data": function (row, type, set){ //CECOS
+                if(!row.codigo_cecos){
+                    return '';
+                }
+                return row.codigo_cecos + ' - ' +row.nombre_cecos;
+            }},
             { data: 'concepto'},
             { data: "base_cuenta", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: "porcentaje_cuenta", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},

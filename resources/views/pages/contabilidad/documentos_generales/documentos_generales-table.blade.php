@@ -8,12 +8,12 @@
             <th>Ubicacion</th>
             <th>Comprobante</th>
             <th>Consecutivo</th>
-            <th>Centro costos</th>
+            <th>Fecha</th>
             <th>Factura</th>
             <th>Debito</th>
             <th>Credito</th>
             <th>Diferencia</th>
-            <th>Fecha</th>
+            <th>Centro costos</th>
             <th>Concepto</th>
             <th>Base</th>
             <th>Porcentaje</th>
