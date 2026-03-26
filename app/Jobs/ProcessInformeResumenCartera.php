@@ -335,7 +335,6 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             for ($i = 1; $i <= 30; $i++) {
                 $this->resultadoCarteraCollection['9999999']["cuenta_$i"]+= $data["cuenta_$i"];
             }
-            $this->resultadoCarteraCollection['9999999']["saldo_final"]+= $data["saldo_final"];
             $this->resultadoCarteraCollection['9999999']["total_abono"]+= $data["total_abono"];
         }
     }
