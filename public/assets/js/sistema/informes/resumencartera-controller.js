@@ -193,7 +193,13 @@ $(document).on('click', '#descargarExcelResumenCartera', function () {
     $.ajax({
         url: base_url + 'resumen-cartera-excel',
         method: 'POST',
-        data: JSON.stringify({id: $('#id_documento_general_cargado').val()}),
+        data: JSON.stringify({
+            id: $('#id_documento_general_cargado').val(),
+            tipo_informe: $("#tipo_informe_resumen_cartera").val(),
+            id_nit: $('#id_nit_resumen_cartera').val(),
+            fecha_desde: $('#fecha_desde_resumen_cartera').val(),
+            fecha_hasta: $('#fecha_hasta_resumen_cartera').val()
+        }),
         headers: headers,
         dataType: 'json',
     }).done((res) => {

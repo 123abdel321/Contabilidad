@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Exports\ResumenCarteraExport;
 use App\Jobs\ProcessInformeResumenCartera;
 //MODELS
+use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Informes\InfResumenCartera;
@@ -133,16 +134,30 @@ class ResumenCarteraController extends Controller
 
             $informeResumenCartera->exporte = 1;
             $informeResumenCartera->url_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
-            $informeResumenCartera->save();
+            // $informeResumenCartera->save();
 
             $has_empresa = $request->user()['has_empresa'];
             $user_id = $request->user()->id;
             $id_informe = $request->get('id');
+            $tipoInforme = $request->get('tipo_informe') == '1' ? 'resumen_general' : 'resumen_individual';
+
+            $empresa = Empresa::where('token_db', $has_empresa)->first();
+
+            $empresa = (object)[
+                'nombre_empresa' => $empresa->razon_social,
+                'logo_empresa' => $empresa->logo,
+            ];
+
+            $filtros = (object)[
+                'fecha_desde' => $request->get('fecha_desde'),
+                'fecha_hasta' => $request->get('fecha_hasta'),
+                'id_nit' => $request->get('id_nit') ? Nits::find($request->get('id_nit'))->numero_documento . ' - ' . (Nits::find($request->get('id_nit'))->nombre_completo ?? Nits::find($request->get('id_nit'))->nombre) : null,
+            ];
 
             Bus::chain([
-                function () use ($id_informe, &$fileName) {
+                function () use ($id_informe, &$empresa, &$tipoInforme, &$filtros, &$fileName) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
-                    (new ResumenCarteraExport($id_informe))->store($fileName, 'do_spaces', null, [
+                    (new ResumenCarteraExport($id_informe, $empresa, $filtros, $tipoInforme))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
                     ]);
                 },
@@ -157,8 +172,8 @@ class ResumenCarteraController extends Controller
                     ]));
                     
                     // Actualiza el informe auxiliar
-                    $informeResumenCartera->exporte = 2;
-                    $informeResumenCartera->save();
+                    // $informeResumenCartera->exporte = 2;
+                    // $informeResumenCartera->save();
                 }
             ])->dispatch();
 

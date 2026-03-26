@@ -99,7 +99,7 @@
                         <b style="vertical-align: text-top;">GENERANDO</b>
                     </span>&nbsp;
                     <!-- BOTON EXCEL -->
-                    <span id="descargarExcelResumenCartera" class="btn badge bg-gradient-dark btn-bg-success" style="min-width: 40px; margin-right: 3px; display:none;">
+                    <span id="descargarExcelResumenCartera" class="btn badge bg-gradient-dark btn-bg-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                     </span>
