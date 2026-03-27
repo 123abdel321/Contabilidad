@@ -281,7 +281,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                     }
    
                     $this->resultadoCarteraCollection[$indice]["fecha_manual"] = $documento->fecha_manual;                    
-                    $this->resultadoCarteraCollection[$indice]["total_abono"]+= $documento->total_facturas;                    
+                    $this->resultadoCarteraCollection[$indice]["total_abono"]+= $documento->total_facturas;
+                    $this->resultadoCarteraCollection[$indice]["saldo_final"]-= $documento->total_facturas;
                 }
                 
                 unset($documentos);
