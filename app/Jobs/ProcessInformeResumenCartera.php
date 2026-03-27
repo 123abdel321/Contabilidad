@@ -59,6 +59,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             if ($this->request['id_nit']) {
                 $this->addCuentasMeses();
                 $this->addAbonosMeses();
+                $this->descuentoProntoPagoMeses();
                 $this->addTotalIndividualCartera();
             } else {
                 $this->addResumenCartera();
@@ -282,7 +283,47 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
    
                     $this->resultadoCarteraCollection[$indice]["fecha_manual"] = $documento->fecha_manual;                    
                     $this->resultadoCarteraCollection[$indice]["total_abono"]+= $documento->total_facturas;
-                    $this->resultadoCarteraCollection[$indice]["saldo_final"]-= $documento->total_facturas;
+                }
+                
+                unset($documentos);
+            });
+    }
+
+    private function descuentoProntoPagoMeses()
+    {
+        $query = $this->resumenCarteraQuery([11]);
+
+        $consulta = DB::connection('sam')
+            ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
+            ->mergeBindings($query)
+            ->select(
+                'id_nit',
+                'numero_documento',
+                'documento_referencia',
+                'nombre_nit',
+                'razon_social',
+                'fecha_manual',
+                'apartamentos',
+                'id_cuenta',
+                'cuenta',
+                'anulado',
+                'plazo',
+                DB::raw("DATE_FORMAT(fecha_manual, '%Y') AS year"),
+                DB::raw("DATE_FORMAT(fecha_manual, '%m') AS month"),
+                DB::raw('SUM(total_abono) AS total_abono'),
+            )
+            ->groupByRaw("id_nit, id_cuenta, DATE_FORMAT(fecha_manual, '%Y-%m')")
+            ->orderByRaw('fecha_manual')
+            ->chunk(233, function ($documentos) {
+                foreach ($documentos as $documento) {
+
+                    $indice = $documento->year.'_'.$documento->month;
+                    
+                    if (!array_key_exists($indice, $this->resultadoCarteraCollection)) {
+                        continue;
+                    }
+   
+                    $this->resultadoCarteraCollection[$indice]["saldo_final"]-= $documento->total_abono;
                 }
                 
                 unset($documentos);
