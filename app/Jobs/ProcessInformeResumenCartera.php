@@ -310,7 +310,13 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 'plazo',
                 DB::raw("DATE_FORMAT(fecha_manual, '%Y') AS year"),
                 DB::raw("DATE_FORMAT(fecha_manual, '%m') AS month"),
+                DB::raw("SUM(debito) AS debito"),
+                DB::raw("SUM(credito) AS credito"),
                 DB::raw('SUM(total_abono) AS total_abono'),
+                DB::raw('SUM(total_facturas) AS total_facturas'),
+                DB::raw("SUM(debito) - SUM(credito) AS saldo_final"),
+                DB::raw('DATEDIFF(NOW(), fecha_manual) - plazo AS dias_mora'),
+                DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos')
             )
             ->groupByRaw("id_nit, id_cuenta, DATE_FORMAT(fecha_manual, '%Y-%m')")
             ->orderByRaw('fecha_manual')
@@ -322,8 +328,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                     if (!array_key_exists($indice, $this->resultadoCarteraCollection)) {
                         continue;
                     }
-   
-                    $this->resultadoCarteraCollection[$indice]["saldo_final"]-= $documento->total_abono;
+                                      
+                    $this->resultadoCarteraCollection[$indice]["saldo_final"]-= $documento->total_facturas;
                 }
                 
                 unset($documentos);
