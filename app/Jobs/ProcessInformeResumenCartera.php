@@ -391,7 +391,10 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                         DB::raw('SUM(saldo_anterior) AS saldo_anterior')
                     )->first();
 
-                $this->resultadoCarteraCollection[$key]['saldo_final']-= $saldo_anterior->saldo_anterior ?? 0;
+                // dd($saldo_anterior);
+                $saldo_anterior = $saldo_anterior->saldo_anterior ?? 0;
+                $saldo_anterior = $saldo_anterior < 0 ? $saldo_anterior : $saldo_anterior * -1;
+                $this->resultadoCarteraCollection[$key]['saldo_final']+= $saldo_anterior;
             }
 
             for ($i = 1; $i <= 30; $i++) {
