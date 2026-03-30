@@ -391,10 +391,10 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                         DB::raw('SUM(saldo_anterior) AS saldo_anterior')
                     )->first();
 
-                // dd($saldo_anterior);
                 $saldo_anterior = $saldo_anterior->saldo_anterior ?? 0;
                 $saldo_anterior = $saldo_anterior < 0 ? $saldo_anterior : $saldo_anterior * -1;
                 $this->resultadoCarteraCollection[$key]['saldo_final']+= $saldo_anterior;
+                $this->resultadoCarteraCollection[$key]['saldo_anterior'] = $saldo_anterior;
             }
 
             for ($i = 1; $i <= 30; $i++) {
@@ -532,7 +532,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             'id_nit' => $documento->id_nit, 
             'nombre_nit' => $documento->nombre_nit, 
             'numero_documento' => $this->request['id_nit'] ? $fechaManual : $documento->numero_documento, 
-            'saldo_final' => 0, 
+            'saldo_final' => 0,
+            'saldo_anterior' => 0,
             'dias_mora' => $documento->dias_mora < 0 ? 0 : $documento->dias_mora, 
             'ubicacion' => $documento->apartamentos,
             'fecha_manual' => $documento->fecha_manual ? Carbon::parse($documento->fecha_manual)->format('Y-m-d') : null,
@@ -579,7 +580,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             'id_nit' => null, 
             'nombre_nit' => 'TOTAL', 
             'numero_documento' => '', 
-            'saldo_final' => 0, 
+            'saldo_final' => 0,
+            'saldo_anterior' => 0,
             'dias_mora' => 0, 
             'ubicacion' => '', 
             'fecha_manual' => null,

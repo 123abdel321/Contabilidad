@@ -33,6 +33,11 @@ function resumencarteraInit() {
         },
         { data: 'fecha_manual' },
         { 
+            data: 'saldo_anterior',
+            render: $.fn.dataTable.render.number(',', '.', 2, ''),
+            className: 'dt-body-right'
+        },
+        { 
             data: 'saldo_final',
             render: $.fn.dataTable.render.number(',', '.', 2, ''),
             className: 'dt-body-right'
@@ -141,6 +146,26 @@ function resumencarteraInit() {
             }
         }
     });
+
+    $("#tipo_informe_resumen_cartera").on('change', function(){
+        const tipoInforme = parseInt($("#tipo_informe_resumen_cartera").val());
+
+        $('#id_nit_resumen_cartera').val('').trigger('change');
+
+        if(tipoInforme == 1){
+            $('#nitAuxiliarDiv').hide();
+            $('#fechaDesdeDiv').hide();        
+            $('#fecha_desde_resumen_cartera').val('');
+        } else if(tipoInforme == 2){
+            var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("01").slice(-2);
+            
+            $('#fechaDesdeDiv').show();
+            $('#nitAuxiliarDiv').show();
+            $('#fecha_desde_resumen_cartera').val(fechaDesde);
+        }
+    });
+
+    $('#id_nit_resumen_cartera').val('2').trigger('change');
 }
 
 function mostrarCuentas(cuentas) {
@@ -284,24 +309,6 @@ function marcarFilasNoVisibles() {
     }
 }
 
-$("#tipo_informe_resumen_cartera").on('change', function(){
-    const tipoInforme = parseInt($("#tipo_informe_resumen_cartera").val());
-
-    $('#id_nit_resumen_cartera').val('').trigger('change');
-
-    if(tipoInforme == 1){
-        $('#nitAuxiliarDiv').hide();
-        $('#fechaDesdeDiv').hide();        
-        $('#fecha_desde_resumen_cartera').val('');
-    } else if(tipoInforme == 2){
-        var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("01").slice(-2);
-        
-        $('#fechaDesdeDiv').show();
-        $('#nitAuxiliarDiv').show();
-        $('#fecha_desde_resumen_cartera').val(fechaDesde);
-    }
-});
-
 function actualizarTipoInformeResumenCartera() {
     const tipoInforme = $("#tipo_informe_resumen_cartera").val();
 
@@ -309,7 +316,8 @@ function actualizarTipoInformeResumenCartera() {
     const columnaUbicacion = resultados_table.column(2);
     const columnaTotalAbono = resultados_table.column(33);
     const columnaFechaManual = resultados_table.column(34);
-    const columnaMora = resultados_table.column(36);
+    const columnaSaldoAnterior = resultados_table.column(35);
+    const columnaMora = resultados_table.column(37);
 
     if(tipoInforme == 1){
 
@@ -319,6 +327,7 @@ function actualizarTipoInformeResumenCartera() {
         columnaNombreNit.visible(true);
         columnaTotalAbono.visible(false);
         columnaFechaManual.visible(false);
+        columnaSaldoAnterior.visible(false);
         if (ubicacion_maximoph_resumen_cartera) {
             columnaUbicacion.visible(true);
         }
@@ -329,6 +338,7 @@ function actualizarTipoInformeResumenCartera() {
         columnaMora.visible(false);
         columnaTotalAbono.visible(true);
         columnaFechaManual.visible(true);
+        columnaSaldoAnterior.visible(true);
         columnaNombreNit.visible(false);
         columnaUbicacion.visible(false);
     }

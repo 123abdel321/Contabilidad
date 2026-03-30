@@ -18,6 +18,7 @@ class InfResumenCarteraDetalle extends Model
         'id_nit',
         'nombre_nit',
         'numero_documento',
+        'saldo_anterior',
         'saldo_final',
         'dias_mora',
         'ubicacion',
