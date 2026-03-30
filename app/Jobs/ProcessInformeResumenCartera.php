@@ -129,7 +129,6 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 }
                 unset($documentos);
             });
-            ;
     }
 
     private function addResumenCartera()
@@ -380,6 +379,21 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
         $this->newTotalData();
 
         foreach ($this->resultadoCarteraCollection as $key => $data) {
+            
+            if ($key != '9999999') {
+                $fechaDesde = Carbon::createFromFormat('Y_m', $key)->startOfMonth();
+                $query = $this->resumenCarteraQueryAnterior([3,4,7,8], $fechaDesde);
+    
+                $saldo_anterior = DB::connection('sam')
+                    ->table(DB::raw("({$query->toSql()}) AS extractodata"))
+                    ->mergeBindings($query)
+                    ->select(
+                        DB::raw('SUM(saldo_anterior) AS saldo_anterior')
+                    )->first();
+
+                $this->resultadoCarteraCollection[$key]['saldo_final']-= $saldo_anterior->saldo_anterior ?? 0;
+            }
+
             for ($i = 1; $i <= 30; $i++) {
                 $this->resultadoCarteraCollection['9999999']["cuenta_$i"]+= $data["cuenta_$i"];
             }
@@ -433,6 +447,55 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             ->when($this->request['fecha_desde'], function ($query) {
 				$query->where('DG.fecha_manual', '>=', $this->request['fecha_desde'].' 00:00:00');
 			})
+            ->when($this->request['id_nit'], function ($query) {
+				$query->where('id_nit', $this->request['id_nit']);
+			})
+            ->whereIn('PCT.id_tipo_cuenta', $tiposCuenta)
+            ->where('anulado', 0);
+    }
+
+    private function resumenCarteraQueryAnterior(array $tiposCuenta = [3,4,7,8], $fechaManual)
+    {
+        return DB::connection('sam')->table('documentos_generals AS DG')
+            ->select(
+                "DG.id",
+                "N.id AS id_nit",
+                "N.numero_documento",
+                DB::raw("CASE
+                    WHEN id_nit IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id_nit IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, otros_nombres, primer_apellido, segundo_apellido)
+                    ELSE NULL
+                END AS nombre_nit"),
+                "N.razon_social",
+                "N.apartamentos",
+                "N.plazo",
+                "PC.id AS id_cuenta",
+                "PC.cuenta",
+                "PC.nombre AS nombre_cuenta",
+                "PC.naturaleza_cuenta",
+                "PCT.id_tipo_cuenta",
+                "DG.documento_referencia",
+                "DG.fecha_manual",
+                "DG.anulado",
+                DB::raw("debito - credito AS saldo_anterior"),
+                DB::raw("0 AS debito"),
+                DB::raw("0 AS credito"),
+                DB::raw("0 AS total_abono"),
+                DB::raw("0 AS total_facturas"),
+            )
+            ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
+            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+            ->leftJoin('plan_cuentas_tipos AS PCT', 'DG.id_cuenta', 'PCT.id_cuenta')
+            ->when($this->request['ubicaciones'], function ($query) {
+                $query->whereNotNull('N.apartamentos');
+            })
+            ->when(!$this->request['proveedor'], function ($query) {
+                $query->where(function ($q) {
+                    $q->where('N.proveedor', 0)
+                    ->orWhereNull('N.proveedor');
+                });
+            })
+            ->where('DG.fecha_manual', '<', $fechaManual)
             ->when($this->request['id_nit'], function ($query) {
 				$query->where('id_nit', $this->request['id_nit']);
 			})
