@@ -387,8 +387,7 @@ class ProcessInformeExtracto
                                 // } else if ($detalle->naturaleza_cuenta == PlanCuentas::CREDITO && intval($detalle->debito)) {
                                 //     $cuentaData['errores'] = true;
                                 //     }
-                                    
-                                $cuentaData['saldo_final'] = $detalle->saldo_final;
+                                
                                 if (!$totalDetalles) {
                                     $cuentaData['nivel'] = 6;
                                 }
