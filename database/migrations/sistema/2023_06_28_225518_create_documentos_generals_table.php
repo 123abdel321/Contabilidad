@@ -36,11 +36,11 @@ class CreateDocumentosGeneralsTable extends Migration
             $table->timestamps();
 
             // Índices compuestos para las consultas más críticas
-            $table->index(['fecha_manual', 'anulado']);
-            $table->index(['id_cuenta', 'fecha_manual', 'anulado']);
-            $table->index(['id_nit', 'fecha_manual', 'anulado']);
-            $table->index(['documento_referencia', 'fecha_manual', 'anulado']);
-            $table->index(['id_cuenta', 'id_nit', 'documento_referencia', 'anulado']);
+            $table->index(['fecha_manual', 'anulado'], 'idx_fmanual_an');
+            $table->index(['id_cuenta', 'fecha_manual', 'anulado'], 'idx_cuenta_fmanual_an');
+            $table->index(['id_nit', 'fecha_manual', 'anulado'], 'idx_nit_fmanual_an');
+            $table->index(['documento_referencia', 'fecha_manual', 'anulado'], 'idx_docref_fmanual_an');
+            $table->index(['id_cuenta', 'id_nit', 'documento_referencia', 'anulado'], 'idx_cuenta_nit_docref_an');
         });
     }
 
