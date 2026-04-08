@@ -925,7 +925,7 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
         
         $('#venta_iva_valor_'+idRow).val(formatCurrencyValue(totalIva));
     }
-    console.log('totalIva', totalIva);
+    
     if (!ivaIncluidoVentas) {
         totalProducto+= totalIva;
     }

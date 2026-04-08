@@ -10,6 +10,7 @@ var calculandoRowRecibos = false;
 var recibo_table_movimiento = null;
 var $comboComprobanteRecibos = null;
 var totalAnticiposReciboCuenta = null;
+var recargandoRecibos = false;
 
 function reciboInit () {
 
@@ -512,6 +513,9 @@ function reloadTableRecibos() {
         let factura = res.edit;
 
         if (factura) {
+
+            recargandoRecibos = true;
+            
             $('#cancelarCapturaRecibo').show();
             const anticiposEditados = res.anticipos;
             
@@ -523,13 +527,15 @@ function reloadTableRecibos() {
                 text: factura.nit.numero_documento+' - '+factura.nit.nombre_completo
             };
             var newOption = new Option(dataFormato.text, dataFormato.id, false, false);
-            $comboNitRecibos.append(newOption).trigger('change');
+            $comboNitRecibos.append(newOption);
             $comboNitRecibos.val(dataFormato.id).trigger('change');
             
             $('#fecha_manual_recibo').val(normalizarFecha(res.fecha_manual));
             $('#total_abono_recibo').val(factura.total_abono);
             agregarRecibos(factura.pagos);
             loadAnticiposRecibo(factura.fecha_manual, anticiposEditados);
+
+            recargandoRecibos = false;
         } else {
             loadAnticiposRecibo();
         }
@@ -567,6 +573,11 @@ $(document).on('click', '#movimientoContableRecibo', function () {
 });
 
 $(document).on('change', '#id_nit_recibo', function () {
+
+    if (recargandoRecibos) {
+        return;
+    }
+
     var totalRows = recibo_table.rows().data().length;
     for (let index = 0; index < totalRows; index++) {
         recibo_table.row(0).remove().draw();

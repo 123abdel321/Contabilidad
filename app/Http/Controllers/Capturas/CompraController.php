@@ -214,6 +214,7 @@ class CompraController extends Controller
                     'id_cuenta_compra_retencion' => $productoDb->familia->id_cuenta_compra_retencion,
                     'id_cuenta_compra_iva' => $productoDb->familia->id_cuenta_compra_iva,
                     'id_cuenta_compra_descuento' => $productoDb->familia->id_cuenta_compra_descuento,
+                    'id_producto' => $producto->id_producto,
                     'descripcion' => $productoDb->codigo.' - '.$productoDb->nombre,
                     'cantidad' => $producto->cantidad,
                     'costo' => $producto->costo,
