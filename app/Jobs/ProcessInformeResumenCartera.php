@@ -190,6 +190,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     private function addCuentasMeses()
     {
         $query = $this->resumenCarteraQuery([3,4,7,8,11]);
+        // $query = $this->resumenCarteraQuery([8]);
 
         $consulta = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
@@ -206,6 +207,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 'cuenta',
                 'anulado',
                 'plazo',
+                'id_tipo_cuenta',
                 DB::raw("DATE_FORMAT(fecha_manual, '%Y') AS year"),
                 DB::raw("DATE_FORMAT(fecha_manual, '%m') AS month"),
                 DB::raw("SUM(debito) AS debito"),
@@ -220,8 +222,8 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             ->orderByRaw('fecha_manual')
             ->chunk(233, function ($documentos) {
                 foreach ($documentos as $documento) {
-                    
                     $columnaCuenta = $this->buscarCuenta($documento->cuenta);
+
                     if (!$columnaCuenta) {
                         continue;
                     }
@@ -232,8 +234,13 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                         $this->newCuentaData($documento);
                     }
 
-                    $this->resultadoCarteraCollection[$indice]["cuenta_$columnaCuenta"]+= $documento->total_facturas;
-                    $this->resultadoCarteraCollection[$indice]["saldo_final"]+= $documento->saldo_final;                    
+                    $valorTotal = $documento->total_facturas;
+                    if ($documento->id_tipo_cuenta == 8) {
+                        $valorTotal = $documento->total_abono;
+                    }
+
+                    $this->resultadoCarteraCollection[$indice]["cuenta_$columnaCuenta"]+= $valorTotal;
+                    $this->resultadoCarteraCollection[$indice]["saldo_final"]+= $documento->saldo_final;      
                 }
                 
                 unset($documentos);
