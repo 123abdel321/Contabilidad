@@ -235,9 +235,9 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                     }
 
                     $valorTotal = $documento->total_facturas;
-                    if ($documento->id_tipo_cuenta == 8) {
-                        $valorTotal = $documento->total_abono;
-                    }
+                    // if ($documento->id_tipo_cuenta == 8) {
+                    //     $valorTotal = $documento->total_abono;
+                    // }
 
                     $this->resultadoCarteraCollection[$indice]["cuenta_$columnaCuenta"]+= $valorTotal;
                     $this->resultadoCarteraCollection[$indice]["saldo_final"]+= $documento->saldo_final;      
