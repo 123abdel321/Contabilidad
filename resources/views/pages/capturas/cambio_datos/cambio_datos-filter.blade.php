@@ -18,34 +18,34 @@
                         <!-- Comprobante -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <label for="id_comprobante_cambio_datos" class="form-label">Comprobante <span style="color: red">*</span></label>
-                            <select name="id_comprobante_cambio_datos" id="id_comprobante_cambio_datos" class="form-select form-select-sm" required>
+                            <select name="id_comprobante_cambio_datos" id="id_comprobante_cambio_datos" class="form-select form-select-sm cambio-datos-input" required>
                             </select>
                         </div>
 
                         <!-- Fecha -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <label for="fecha_manual_cambio_datos" class="form-label">Fecha</label>
-                            <input name="fecha_manual_cambio_datos" id="fecha_manual_cambio_datos" class="form-control form-control-sm">
+                            <input name="fecha_manual_cambio_datos" id="fecha_manual_cambio_datos" class="form-control form-control-sm cambio-datos-input">
                         </div>
 
                         <!-- Cedula/Nit -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <label for="id_nit_cambio_datos" class="form-label">Cédula/Nit</label>
-                            <select name="id_nit_cambio_datos" id="id_nit_cambio_datos" class="form-select form-select-sm">
+                            <select name="id_nit_cambio_datos" id="id_nit_cambio_datos" class="form-select form-select-sm cambio-datos-input">
                             </select>
                         </div>
 
                         <!-- Centro costos -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <label for="id_cecos_cambio_datos" class="form-label">Centro de costos</label>
-                            <select name="id_cecos_cambio_datos" id="id_cecos_cambio_datos" class="form-select form-select-sm">
+                            <select name="id_cecos_cambio_datos" id="id_cecos_cambio_datos" class="form-select form-select-sm cambio-datos-input">
                             </select>
                         </div>
 
                         <!-- Cuenta -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <label for="id_cuenta_cambio_datos" class="form-label">Cuenta</label>
-                            <select name="id_cuenta_cambio_datos" id="id_cuenta_cambio_datos" class="form-select form-select-sm">
+                            <select name="id_cuenta_cambio_datos" id="id_cuenta_cambio_datos" class="form-select form-select-sm cambio-datos-input">
                             </select>
                         </div>
 
@@ -53,38 +53,38 @@
                         <div class="col-12 col-sm-6 col-md-3">
                             <label class="form-label">Valor del documento</label>
                             <div class="" style="display: flex;">
-                                <input id="precio_desde_cambio_datos" name="precio_desde_cambio_datos" placeholder="Ej: 50.000" class="form-control form-control-sm" style="height: 28px; border-bottom-left-radius: 5px; border-top-left-radius: 5px; border-bottom-right-radius: 0px; border-top-right-radius: 0px; border-right: solid 1px #cfcfcf;">
+                                <input id="precio_desde_cambio_datos" name="precio_desde_cambio_datos" placeholder="Ej: 50.000" class="form-control form-control-sm cambio-datos-input" style="height: 28px; border-bottom-left-radius: 5px; border-top-left-radius: 5px; border-bottom-right-radius: 0px; border-top-right-radius: 0px; border-right: solid 1px #cfcfcf;">
                                 <span class="input-group-text" style="height: 28px; border-radius: 0px; border-left: solid 0px; border-right: solid 0px;">Hasta</span>
-                                <input id="precio_hasta_cambio_datos" name="precio_hasta_cambio_datos" placeholder="Ej: 100.000" class="form-control form-control-sm" style="height: 28px; border-bottom-right-radius: 5px; border-top-right-radius: 5px; border-bottom-left-radius: 0px; border-top-left-radius: 0px;">
+                                <input id="precio_hasta_cambio_datos" name="precio_hasta_cambio_datos" placeholder="Ej: 100.000" class="form-control form-control-sm cambio-datos-input" style="height: 28px; border-bottom-right-radius: 5px; border-top-right-radius: 5px; border-bottom-left-radius: 0px; border-top-left-radius: 0px;">
                             </div>
                         </div>
 
                         <!-- Factura -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <label for="documento_referencia_cambio_datos" class="form-label">Doc. Referencia</label>
-                            <input name="documento_referencia_cambio_datos" id="documento_referencia_cambio_datos" type="text" class="form-control form-control-sm">
+                            <input name="documento_referencia_cambio_datos" id="documento_referencia_cambio_datos" type="text" class="form-control form-control-sm cambio-datos-input">
                         </div>
 
                         <!-- Consecutivo -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <label class="form-label">Consecutivo</label>
                             <div class="" style="display: flex;">
-                                <input id="consecutivo_desde_cambio_datos" name="consecutivo_desde_cambio_datos" class="form-control form-control-sm" placeholder="Ej: 1" style="height: 28px; border-bottom-left-radius: 5px; border-top-left-radius: 5px; border-bottom-right-radius: 0px; border-top-right-radius: 0px; border-right: solid 1px #cfcfcf;">
+                                <input id="consecutivo_desde_cambio_datos" name="consecutivo_desde_cambio_datos" class="form-control form-control-sm cambio-datos-input" placeholder="Ej: 1" style="height: 28px; border-bottom-left-radius: 5px; border-top-left-radius: 5px; border-bottom-right-radius: 0px; border-top-right-radius: 0px; border-right: solid 1px #cfcfcf;">
                                 <span class="input-group-text" style="height: 28px; border-radius: 0px; border-left: solid 0px; border-right: solid 0px;">Hasta</span>
-                                <input id="consecutivo_hasta_cambio_datos" name="consecutivo_hasta_cambio_datos" class="form-control form-control-sm" placeholder="Ej: 100" style="height: 28px; border-bottom-right-radius: 5px; border-top-right-radius: 5px; border-bottom-left-radius: 0px; border-top-left-radius: 0px;">
+                                <input id="consecutivo_hasta_cambio_datos" name="consecutivo_hasta_cambio_datos" class="form-control form-control-sm cambio-datos-input" placeholder="Ej: 100" style="height: 28px; border-bottom-right-radius: 5px; border-top-right-radius: 5px; border-bottom-left-radius: 0px; border-top-left-radius: 0px;">
                             </div>
                         </div>
 
                         <!-- Concepto -->
                         <div class="col-12 col-sm-6 col-md-3">
-                            <label for="concepto_cambio_datos" class="form-label form-control-sm">Concepto</label>
-                            <input name="concepto_cambio_datos" id="concepto_cambio_datos" type="text" class="form-control form-control-sm">
+                            <label for="concepto_cambio_datos" class="form-label form-control-sm cambio-datos-input">Concepto</label>
+                            <input name="concepto_cambio_datos" id="concepto_cambio_datos" type="text" class="form-control form-control-sm cambio-datos-input">
                         </div>
 
                         <!-- Agrupar por -->
                         <div class="col-12 col-sm-6 col-md-3">
-                            <label for="agrupar_cambio_datos" class="form-label form-control-sm">Agrupar por</label>
-                            <select class="form-select form-select-sm" id="agrupar_cambio_datos" name="agrupar_cambio_datos">
+                            <label for="agrupar_cambio_datos" class="form-label form-control-sm cambio-datos-input">Agrupar por</label>
+                            <select class="form-select form-select-sm cambio-datos-input" id="agrupar_cambio_datos" name="agrupar_cambio_datos">
                                 <option value="id_cuenta">Cuenta</option>
                                 <option value="id_nit">Cédula/Nits</option>
                                 <option value="id_comprobante">Comprobante</option>
@@ -107,15 +107,15 @@
                         <b style="vertical-align: text-top;">&nbsp;BUSCANDO</b>
                     </span>
                     <!-- BOTON PDF -->
-                    <span id="descargarCambioDatos" class="btn badge bg-gradient-dark btn-bg-danger" style="min-width: 40px; margin-right: 3px; display:none;">
+                    <span id="realizarCambioDatos" class="btn badge bg-gradient-dark btn-bg-danger" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fa-solid fa-file-signature" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">&nbsp;CAMBIAR DATOS</b>
                     </span>
-                    <span id="descargarCambioDatosLoading" class="badge bg-gradient-dark btn-bg-danger-loading" style="min-width: 40px; margin-right: 3px; display:none;">
+                    <span id="realizarCambioDatosLoading" class="badge bg-gradient-dark btn-bg-danger-loading" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">&nbsp;CAMBIAR DATOS</b>
                     </span>
-                    <span id="descargarCambioDatosDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                    <span id="realizarCambioDatosDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fa-solid fa-file-signature" style="font-size: 17px; color: #adadad;"></i>
                         <b style="vertical-align: text-top;">&nbsp;CAMBIAR DATOS</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>

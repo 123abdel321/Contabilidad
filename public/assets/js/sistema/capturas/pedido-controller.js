@@ -612,10 +612,9 @@ function totalValoresPedidos() {
 
     if (total >= topeRetencionPedidos) {
         retencion = porcentajeRetencionPedidos ? (valorBruto * porcentajeRetencionPedidos) / 100 : 0;
-        retencion = retencion;
     }
 
-    if (ivaIncluidoPedido) total = total+= iva;
+    if (ivaIncluidoPedido) total = total + iva;
 
     return [iva, retencion, descuento, total, valorBruto, redondeo];
 }

@@ -5,6 +5,7 @@ function cambiodatosInit() {
     initTablasCambioDatos();
     initCombosCambioDatos();
     initFechasCambioDatos();
+    initChangeCambioDatos();
 }
 
 function initTablasCambioDatos () {
@@ -371,15 +372,22 @@ function initFechasCambioDatos () {
     formatoFecha(start, end, "fecha_manual_cambio_datos");
 }
 
+function initChangeCambioDatos () {
+    $(".cambio-datos-input").on('change', function(event) {
+        console.log('cambio-datos-input');
+        showCambiarDatos(false);
+    });
+}
+
 function loadDocumentosGeneralesById(id_documento_general) {
     cambio_datos_table.ajax.url(base_url + 'documentos-generales-show?id='+id_documento_general).load(function(res) {
         if(res.success){
             $("#generarCambioDatos").show();
             $("#generarCambioDatosLoading").hide();
 
-            $("#descargarCambioDatos").show();
-            $("#descargarCambioDatosLoading").hide();
-            $("#descargarCambioDatosDisabled").hide();
+            $("#realizarCambioDatos").show();
+            $("#realizarCambioDatosLoading").hide();
+            $("#realizarCambioDatosDisabled").hide();
 
             agregarToast('exito', 'Documentos generales cargados', 'Informe cargado con exito!', true);
         }
@@ -502,9 +510,9 @@ function generarCambioDatos() {
     $("#generarCambioDatos").hide();
     $("#generarCambioDatosLoading").show();
 
-    $("#descargarCambioDatos").hide();
-    $("#descargarCambioDatosLoading").hide();
-    $("#descargarCambioDatosDisabled").show();
+    $("#realizarCambioDatos").hide();
+    $("#realizarCambioDatosLoading").hide();
+    $("#realizarCambioDatosDisabled").show();
 
     var id_nit = $('#id_nit_cambio_datos').val();
     var id_comprobante= $('#id_comprobante_cambio_datos').val();
@@ -520,6 +528,7 @@ function generarCambioDatos() {
     url+= '&id_comprobante='+ id_comprobante ?? '';
     url+= '&id_centro_costos='+ id_centro_costos ?? '';
     url+= '&id_cuenta='+ id_cuenta ?? '';
+    url+= '&type='+'cambio_datos';
     url+= '&documento_referencia='+$('#documento_referencia_cambio_datos').val();
     url+= '&consecutivo_desde='+$('#consecutivo_desde_cambio_datos').val();
     url+= '&consecutivo_hasta='+$('#consecutivo_hasta_cambio_datos').val();
@@ -537,11 +546,23 @@ function generarCambioDatos() {
     });
 }
 
+function showCambiarDatos(show = true) {
+    if (show) {
+        $('#realizarCambioDatos').show();
+        $('#realizarCambioDatosLoading').show();
+        $('#realizarCambioDatosDisabled').show();
+    } else {
+        $('#realizarCambioDatos').hide();
+        $('#realizarCambioDatosLoading').hide();
+        $('#realizarCambioDatosDisabled').hide();
+    }
+}
+
 $(document).on('click', '#generarCambioDatos', function () {
     generarCambioDatos();
 });
 
-$(document).on('click', '#descargarCambioDatos', function () {
+$(document).on('click', '#realizarCambioDatos', function () {
     clearFormChangeDatos();
     $("#cambioDatosFormModal").modal('show');
 });
@@ -592,8 +613,7 @@ $(document).on('click', '#confirmarCambioDatos', function (e) {
 });
 
 channel_cambios_datos.bind('notificaciones', function(data) {
-    console.log('data: ',data);
-    if (data.id_documento_general) {
+    if (data.id_documento_general && data.type == 'cambio_datos') {
         loadDocumentosGeneralesById(data.id_documento_general);
         return;
     }
