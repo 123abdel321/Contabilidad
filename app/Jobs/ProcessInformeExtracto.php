@@ -532,8 +532,8 @@ class ProcessInformeExtracto
                 "DG.updated_by",
                 "DG.anulado",
                 DB::raw("debito - credito AS saldo_anterior"),
-                DB::raw("0 AS debito"),
-                DB::raw("0 AS credito"),
+                DB::raw("debito AS debito"),
+                DB::raw("credito AS credito"),
                 DB::raw("0 AS saldo_final"),
                 DB::raw("1 AS total_columnas")
             )
