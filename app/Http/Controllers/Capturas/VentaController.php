@@ -1170,12 +1170,13 @@ class VentaController extends Controller
             ];
             if ($detallar) {
                 foreach ($value->detalles as $ventaDetalle) {
+                    
                     $this->ventaData[] = [
                         "id" => "",
-                        "descripcion" => $ventaDetalle->descripcion,
+                        "descripcion" => $ventaDetalle->producto ? "{$ventaDetalle->producto->codigo} - {$ventaDetalle->producto->nombre}" : "SIN PRODUCTO RELACIONADO",
                         "cantidad" => $ventaDetalle->cantidad,
                         "valor" => $ventaDetalle->costo,
-                        "costo" => $ventaDetalle->producto->precio_inicial,
+                        "costo" => $ventaDetalle->producto ? $ventaDetalle->producto->precio_inicial : "0",
                         "subtotal" => $ventaDetalle->subtotal,
                         "nombre_bodega" => "",
                         "nombre_completo" => "",
