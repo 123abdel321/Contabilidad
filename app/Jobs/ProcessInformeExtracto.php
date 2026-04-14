@@ -164,7 +164,7 @@ class ProcessInformeExtracto
                     DB::raw('SUM(total_columnas) AS total_columnas')
                 )
                 ->orderBy('fecha_manual')
-                ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
+                ->havingRaw('saldo_anterior != 0')
                 ->chunk(233, function ($documentos) use ($extractoMes) {
                     foreach ($documentos as $documento) {
                         $inicioMes = date('Y-m', strtotime($extractoMes->fecha_desde));
@@ -173,6 +173,10 @@ class ProcessInformeExtracto
                         // $dataMesHeader = $this->getFormatCollection();
                         // $dataMesHeader["cuenta"] = $this->meses[intval($documento->mes)-1];
                         // $dataMesHeader["nivel"] = "1";
+
+                        if ($documento->saldo_anterior) {
+                            continue;
+                        }
     
                         $dataMesFooter = $this->getFormatCollection();
                         $dataMesFooter["cuenta"] = $this->meses[intval($inicioMesFormat)-1];
@@ -282,7 +286,9 @@ class ProcessInformeExtracto
     private function addNitsCuentasData()
     {
         foreach ($this->extractoMeses as $extractoMes) {
-            $query = $this->extractoAnteriorQuery($extractoMes);
+            
+            $query = $this->extractoDocumentosQuery($extractoMes);
+            $query->unionAll($this->extractoAnteriorQuery($extractoMes));
 
             DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS extractodata"))
@@ -322,7 +328,7 @@ class ProcessInformeExtracto
             )
             ->orderByRaw('id_cuenta')
             ->groupByRaw('id_cuenta, id_nit, documento_referencia')
-            ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
+            ->havingRaw('saldo_anterior != 0 OR saldo_final != 0')
             ->chunk(233, function ($documentos) use($extractoMes) {
                 
                 foreach ($documentos as $documento) {
@@ -532,8 +538,8 @@ class ProcessInformeExtracto
                 "DG.updated_by",
                 "DG.anulado",
                 DB::raw("debito - credito AS saldo_anterior"),
-                DB::raw("debito AS debito"),
-                DB::raw("credito AS credito"),
+                DB::raw("0 AS debito"),
+                DB::raw("0 AS credito"),
                 DB::raw("0 AS saldo_final"),
                 DB::raw("1 AS total_columnas")
             )
