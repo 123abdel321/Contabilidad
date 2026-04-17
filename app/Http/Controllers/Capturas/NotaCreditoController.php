@@ -603,35 +603,35 @@ class NotaCreditoController extends Controller
         $documentoGeneral->addRow($docDevolucion, $cuentaDevolucion->naturaleza_ventas);
 
         // Costo
-        // if ($totalesProducto->subtotal && $productoDb->familia->cuenta_compra_devolucion) {
-        //     $cuentaCosto = $productoDb->familia->cuenta_compra_devolucion;
+        if ($totalesProducto->subtotal && $productoDb->familia->cuenta_compra_devolucion) {
+            $cuentaCosto = $productoDb->familia->cuenta_compra_devolucion;
             
-        //     // Validar que tenga naturaleza configurada
-        //     if (is_null($cuentaCosto->naturaleza_ventas)) {
-        //         return [
-        //             'error' => [
-        //                 "Cuenta compra devolución" => [
-        //                     "La cuenta de compra devolución ({$cuentaCosto->cuenta} - {$cuentaCosto->nombre}) " .
-        //                     "no tiene configurada la naturaleza de ventas. " .
-        //                     "Familia: {$productoDb->familia->codigo} - {$productoDb->familia->nombre}"
-        //                 ]
-        //             ]
-        //         ];
-        //     }
+            // Validar que tenga naturaleza configurada
+            if (is_null($cuentaCosto->naturaleza_ventas)) {
+                return [
+                    'error' => [
+                        "Cuenta compra devolución" => [
+                            "La cuenta de compra devolución ({$cuentaCosto->cuenta} - {$cuentaCosto->nombre}) " .
+                            "no tiene configurada la naturaleza de ventas. " .
+                            "Familia: {$productoDb->familia->codigo} - {$productoDb->familia->nombre}"
+                        ]
+                    ]
+                ];
+            }
             
-        //     $docCosto = new DocumentosGeneral([
-        //         "id_cuenta" => $cuentaCosto->id,
-        //         "id_nit" => $cuentaCosto->exige_nit ? $this->facturaVentas->id_cliente : null,
-        //         "id_centro_costos" => $cuentaCosto->exige_centro_costos ? $this->facturaVentas->id_centro_costos : null,
-        //         "concepto" => $cuentaCosto->exige_concepto ? 'NOTA: CREDITO ' . $nit->nombre_nit . ' - ' . $docReferencia : null,
-        //         "documento_referencia" => $cuentaCosto->exige_documento_referencia ? $docReferencia : null,
-        //         "debito" => $productoDb->precio_inicial * $producto->cantidad,
-        //         "credito" => $productoDb->precio_inicial * $producto->cantidad,
-        //         "created_by" => request()->user()->id,
-        //         "updated_by" => request()->user()->id
-        //     ]);
-        //     $documentoGeneral->addRow($docCosto, $cuentaCosto->cuenta_compra_devolucion);
-        // }
+            $docCosto = new DocumentosGeneral([
+                "id_cuenta" => $cuentaCosto->id,
+                "id_nit" => $cuentaCosto->exige_nit ? $this->facturaVentas->id_cliente : null,
+                "id_centro_costos" => $cuentaCosto->exige_centro_costos ? $this->facturaVentas->id_centro_costos : null,
+                "concepto" => $cuentaCosto->exige_concepto ? 'NOTA: CREDITO ' . $nit->nombre_nit . ' - ' . $docReferencia : null,
+                "documento_referencia" => $cuentaCosto->exige_documento_referencia ? $docReferencia : null,
+                "debito" => $productoDb->precio_inicial * $producto->cantidad,
+                "credito" => $productoDb->precio_inicial * $producto->cantidad,
+                "created_by" => request()->user()->id,
+                "updated_by" => request()->user()->id
+            ]);
+            $documentoGeneral->addRow($docCosto, $cuentaCosto->cuenta_compra_devolucion);
+        }
 
         // Descuento
         if ($totalesProducto->descuento && $productoDb->familia->cuenta_venta_descuento) {
