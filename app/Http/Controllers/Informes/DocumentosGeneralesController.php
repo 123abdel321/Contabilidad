@@ -17,11 +17,14 @@ use App\Jobs\ProcessGenerateRecibosMultiplePdf;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
+use App\Models\Sistema\FacBodegas;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\VariablesEntorno;
+use App\Models\Sistema\FacProductosBodegas;
 use App\Models\Informes\InfDocumentosGenerales;
+use App\Models\Sistema\FacProductosBodegasMovimiento;
 use App\Models\Informes\InfDocumentosGeneralesDetalle;
 
 class DocumentosGeneralesController extends Controller
@@ -179,10 +182,10 @@ class DocumentosGeneralesController extends Controller
             }
             
             // Eliminar documentos principales
-            // $this->eliminarDocumentosPrincipales();
+            $this->eliminarDocumentosPrincipales();
             
             // Eliminar registros huérfanos
-            // $this->eliminarRegistrosHuerfanos();
+            $this->eliminarRegistrosHuerfanos();
             
             // Devolver inventario si es necesario
             $this->devolverInventarioSiNecesario($validacion);
@@ -195,6 +198,7 @@ class DocumentosGeneralesController extends Controller
             ], Response::HTTP_OK);
 
         } catch (\Exception $e) {
+            dd(  $e->getLine() , $e->getMessage());
             DB::connection('sam')->rollback();
             return response()->json([
                 "success" => false,
@@ -466,7 +470,7 @@ class DocumentosGeneralesController extends Controller
         
         foreach ($tablas as $tabla => $relationType) {
             DB::connection('sam')->table($tabla)
-                ->whereNotExists(function($query) use ($relationType) {
+                ->whereNotExists(function($query) use ($relationType, $tabla) {
                     $query->select(DB::raw(1))
                         ->from('documentos_generals')
                         ->where('documentos_generals.relation_type', $relationType)
