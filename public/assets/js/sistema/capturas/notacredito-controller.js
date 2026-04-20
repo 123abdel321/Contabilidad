@@ -566,59 +566,59 @@ function calcularNotasCreditoFocus(idDetalle) {
     input.select();
 }
 
-function calcularNotaCreditoPorCantidad (idDetalle) {
+function calcularNotaCreditoPorCantidad(idDetalle) {
     [dataRow, keyRow] = dataTableFactura(idDetalle);
 
-    var cantidadDevolucion = $('#nota_credito_cantidad_'+idDetalle).val();
+    var cantidadDevolucion = parseFloat($('#nota_credito_cantidad_' + idDetalle).val()) || 0;
     var dataDetalle = dataRow.data;
 
     const cantidadDisponible = dataDetalle.cantidad - dataDetalle.cantidad_devuelta;
 
     if (cantidadDevolucion > cantidadDisponible) {
         cantidadDevolucion = cantidadDisponible;
-        setTimeout(function(){
-            $('#nota_credito_cantidad_'+idDetalle).val(cantidadDisponible);
-            $('#nota_credito_cantidad_'+idDetalle).focus();
-            $('#nota_credito_cantidad_'+idDetalle).select();
-        },10);
+        setTimeout(function () {
+            $('#nota_credito_cantidad_' + idDetalle).val(cantidadDisponible);
+            $('#nota_credito_cantidad_' + idDetalle).focus();
+            $('#nota_credito_cantidad_' + idDetalle).select();
+        }, 10);
     }
-    
-    var totalDisponible = (dataDetalle.total - dataDetalle.total_devuelto);
-    var descuentoProporcion = (dataDetalle.costo * (dataDetalle.descuento_porcentaje / 100));
-    var ivaProporcion = (dataDetalle.costo - descuentoProporcion) * (dataDetalle.iva_porcentaje / 100);
-    var costoCantidad = dataDetalle.costo - descuentoProporcion + ivaProporcion;
-    costoCantidad = costoCantidad * cantidadDevolucion;
+
+    var totalDisponible = parseFloat(dataDetalle.total) - parseFloat(dataDetalle.total_devuelto);
+
+    var subtotalUnitario = parseFloat(dataDetalle.subtotal) / parseFloat(dataDetalle.cantidad);
+    var ivaUnitario = parseFloat(dataDetalle.iva_valor) / parseFloat(dataDetalle.cantidad);
+    var descuentoUnitario = parseFloat(dataDetalle.descuento_valor) / parseFloat(dataDetalle.cantidad);
+
+    var subtotalBase = subtotalUnitario * cantidadDevolucion;
+    var iva = ivaUnitario * cantidadDevolucion;
+    var descuento = descuentoUnitario * cantidadDevolucion;
+
+    var costoCantidad = subtotalBase + iva - descuento;
     costoCantidad = costoCantidad > totalDisponible ? totalDisponible : costoCantidad;
 
     var proporcion = costoCantidad / totalDisponible;
 
-    var descuento = 0;
     if (cantidadDevolucion && parseFloat(dataDetalle.descuento_porcentaje) > 0) {
-        descuento = parseFloat(dataDetalle.descuento_valor) * proporcion;
         dataRow.descuento_valor = descuento;
     }
 
-    var iva = 0;
-    console.log('parseFloat(dataDetalle.iva_porcentaje): ',parseFloat(dataDetalle.iva_porcentaje));
     if (cantidadDevolucion && parseFloat(dataDetalle.iva_porcentaje) > 0) {
-        iva = parseFloat(dataDetalle.iva_valor) * proporcion;
         dataRow.valor_iva = iva;
     }
 
     var subtotal = parseFloat(costoCantidad).toFixed(2);
 
     if (ivaIncluidoNotaCredito) {
-        // subtotal+= iva;
+        // subtotal -= iva;
     }
 
     dataRow.cantidad_devuelta = cantidadDevolucion;
-    dataRow.cantidad = cantidadDisponible - cantidadDevolucion,
+    dataRow.cantidad = cantidadDisponible - cantidadDevolucion;
     dataRow.devolucion_total = subtotal;
     dataRow.total_devolucion = subtotal;
-    dataRow.total_disponible = ((parseFloat(dataDetalle.total) - parseFloat(dataDetalle.total_devuelto)) - (subtotal));
-    
-    nota_credito_table.row(keyRow).data(dataRow).invalidate().draw(false);
+    dataRow.total_disponible = totalDisponible - costoCantidad;
 
+    nota_credito_table.row(keyRow).data(dataRow).invalidate().draw(false);
 
     mostrarValoresNotaCredito();
 }

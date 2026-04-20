@@ -187,7 +187,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('cartera-find', 'App\Http\Controllers\Informes\CarteraController@find');
         Route::post('cartera-pdf', 'App\Http\Controllers\Informes\CarteraController@showPdf');
         Route::post('cartera-excel', 'App\Http\Controllers\Informes\CarteraController@exportExcel');
-        //CARTERA
+        //IMPUESTOS
         Route::controller(ImpuestosController::class)->group(function () {
             Route::get('impuestos', 'generate');
             Route::get('impuestos-show', 'show');

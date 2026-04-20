@@ -19,6 +19,7 @@ class FacCompraDetalles extends Model
         'id_cuenta_compra_retencion',
         'id_cuenta_compra_iva',
         'id_cuenta_compra_descuento',
+        'id_producto',
         'descripcion',
         'cantidad',
         'costo',

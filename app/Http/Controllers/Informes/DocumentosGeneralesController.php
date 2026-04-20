@@ -16,8 +16,10 @@ use App\Jobs\ProcessInformeDocumentosGenerales;
 use App\Jobs\ProcessGenerateRecibosMultiplePdf;
 //MODELS
 use App\Models\Empresas\Empresa;
+use App\Models\Sistema\FacVentas;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\Comprobantes;
+use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Informes\InfDocumentosGenerales;
 use App\Models\Informes\InfDocumentosGeneralesDetalle;
@@ -25,6 +27,22 @@ use App\Models\Informes\InfDocumentosGeneralesDetalle;
 class DocumentosGeneralesController extends Controller
 {
     private $request;
+
+    // Constantes para tipos de relación
+    private const RELATION_TYPES = [
+        'fac_documentos' => 2,
+        'fac_compras' => 3,
+        'fac_ventas' => 4,
+        'con_recibos' => 6,
+        'con_gastos' => 7,
+        'con_pagos' => 8,
+    ];
+    
+    // Tipos de resoluciones
+    private const TIPO_FACTURA_ELECTRONICA = 'FACTURA_ELECTRONICA';
+    private const TIPO_POS = 'POS';
+    private const TIPO_DOCUMENTO_EQUIVALENTE = 'DOCUMENTO_EQUIVALENTE';
+    private const TIPO_NOTA_CREDITO = 'NOTA_CREDITO';
 
     public function index ()
     {
@@ -147,225 +165,461 @@ class DocumentosGeneralesController extends Controller
     public function delete(Request $request)
     {
         $this->request = $request->all();
+        
         try {
             DB::connection('sam')->beginTransaction();
 
-            // Primero obtenemos los documentos que se van a eliminar
-            $documentos = DB::connection('sam')->table('documentos_generals AS DG')
-                ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-                ->where('anulado', 0)
-                ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
-                ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
-                ->where(function ($query) {
-                    $query->when(isset($this->request['precio_desde']), function ($query) {
-                        $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) >= ?', [$this->request['precio_desde']]);
-                    })->when(isset($this->request['precio_hasta']), function ($query) {
-                        $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) <= ?', [$this->request['precio_hasta']]);
-                    });
-                })
-                ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-                    $query->where('DG.id_nit', $this->request['id_nit']);
-                })
-                ->when(isset($this->request['id_comprobante']) ? $this->request['id_comprobante'] : false, function ($query) {
-                    $query->where('DG.id_comprobante', $this->request['id_comprobante']);
-                })
-                ->when(isset($this->request['id_centro_costos']) ? $this->request['id_centro_costos'] : false, function ($query) {
-                    $query->where('DG.id_centro_costos', $this->request['id_centro_costos']);
-                })
-                ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
-                    $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
-                })
-                ->when(isset($this->request['documento_referencia']) ? $this->request['documento_referencia'] : false, function ($query) {
-                    $query->where('DG.documento_referencia', $this->request['documento_referencia']);
-                })
-                ->when(isset($this->request['consecutivo']) ? $this->request['consecutivo'] : false, function ($query) {
-                    $query->where('DG.consecutivo', $this->request['consecutivo']);
-                })
-                ->when(isset($this->request['concepto']) ? $this->request['concepto'] : false, function ($query) {
-                    $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
-                })
-                ->when(isset($this->request['id_usuario']) ? $this->request['id_usuario'] : false, function ($query) {
-                    $query->where('DG.created_by', $this->request['id_usuario']);
-                })
-                ->select('DG.*', 'PC.naturaleza_cuenta')
-                ->get();
-
-            // Validamos si los documentos tienen abonos
-            $documentosConAbonos = [];
-            foreach ($documentos as $doc) {
-                
-                if ($doc->documento_referencia) {
-                    $esCausacion = $this->esCausacionDocumento($doc);
-                    $esIngreso = $this->esIngresoDocumento($doc);
-
-                    if ($esCausacion && !$esIngreso) {
-                        $extracto = (new Extracto(
-                            $doc->id_nit,
-                            null,
-                            $doc->documento_referencia,
-                            null,
-                            $doc->id_cuenta
-                        ))->actual()->first();
-
-                        if ($extracto && $extracto->total_abono > 0) {
-                            $documentosConAbonos[] = [
-                                'documento' => $doc->documento_referencia,
-                                'total_abono' => $extracto->total_abono
-                            ];
-                        }
-                    }
-                }
-            }
-
-            // Si hay documentos con abonos, retornamos error
-            if (count($documentosConAbonos) > 0) {
-                // Crear tabla HTML con los documentos que tienen abonos
-                $html = "<div style='margin-bottom: 10px; font-weight: bold;'>No se pueden eliminar los documentos</div>";
-                $html .= "<div style='color: #FFF; margin-bottom: 15px;'>Los siguientes documentos tienen abonos pendientes:</div>";
-                
-                // Tabla simple, compacta
-                $html .= "<table style='width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px;'>";
-                
-                // Encabezado
-                $html .= "<tr style='background-color: #f8f9fa;'>";
-                $html .= "<th style='border: 1px solid #dee2e6; padding: 8px 10px; text-align: left;'>DOCUMENTO</th>";
-                $html .= "<th style='border: 1px solid #dee2e6; padding: 8px 10px; text-align: right;'>TOTAL ABONOS</th>";
-                $html .= "</tr>";
-                
-                // Cuerpo - Documentos con abonos
-                foreach ($documentosConAbonos as $item) {
-                    $html .= "<tr>";
-                    $html .= "<td style='border: 1px solid #dee2e6; color: #FFF; padding: 6px 10px;'><strong>" . $item['documento'] . "</strong></td>";
-                    $html .= "<td style='border: 1px solid #dee2e6; color: #FFF; padding: 6px 10px; text-align: right;'>" . 
-                            number_format($item['total_abono'], 2) . "</td>";
-                    $html .= "</tr>";
-                }
-                
-                // Total general (opcional)
-                $totalAbonos = array_sum(array_column($documentosConAbonos, 'total_abono'));
-                $html .= "<tr style='background-color: #dc3545; color: white;'>";
-                $html .= "<td style='border: 1px solid #dc3545; padding: 8px 10px; font-weight: bold;'>TOTAL</td>";
-                $html .= "<td style='border: 1px solid #dc3545; padding: 8px 10px; text-align: right; font-weight: bold;'>" . 
-                        number_format($totalAbonos, 2) . "</td>";
-                $html .= "</tr>";
-                
-                $html .= "</table>";
-                
-                return response()->json([
-                    "success" => false,
-                    'data' => [],
-                    "message" => $html
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            // Obtener documentos con filtros
+            $documentos = $this->obtenerDocumentosConFiltros();
+            
+            // Validar documentos y obtener información necesaria
+            $validacion = $this->validarDocumentos($documentos);
+            if (!$validacion['es_valido']) {
+                return $this->respuestaError($validacion['mensaje'], $validacion['datos'] ?? []);
             }
             
-            // Si no hay abonos, procedemos con la eliminación
-            DB::connection('sam')->table('documentos_generals AS DG')
-                ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-                ->where('anulado', 0)
-                ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
-                ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
-                ->where(function ($query) {
-                    $query->when(isset($this->request['precio_desde']), function ($query) {
-                        $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) >= ?', [$this->request['precio_desde']]);
-                    })->when(isset($this->request['precio_hasta']), function ($query) {
-                        $query->whereRaw('IF(debito - credito < 0, (debito - credito) * -1, debito - credito) <= ?', [$this->request['precio_hasta']]);
-                    });
-                })
-                ->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
-                    $query->where('DG.id_nit', $this->request['id_nit']);
-                })
-                ->when(isset($this->request['id_comprobante']) ? $this->request['id_comprobante'] : false, function ($query) {
-                    $query->where('DG.id_comprobante', $this->request['id_comprobante']);
-                })
-                ->when(isset($this->request['id_centro_costos']) ? $this->request['id_centro_costos'] : false, function ($query) {
-                    $query->where('DG.id_centro_costos', $this->request['id_centro_costos']);
-                })
-                ->when(isset($this->request['id_cuenta']) ? $this->request['id_cuenta'] : false, function ($query) {
-                    $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
-                })
-                ->when(isset($this->request['documento_referencia']) ? $this->request['documento_referencia'] : false, function ($query) {
-                    $query->where('DG.documento_referencia', $this->request['documento_referencia']);
-                })
-                ->when(isset($this->request['consecutivo']) ? $this->request['consecutivo'] : false, function ($query) {
-                    $query->where('DG.consecutivo', $this->request['consecutivo']);
-                })
-                ->when(isset($this->request['concepto']) ? $this->request['concepto'] : false, function ($query) {
-                    $query->where('DG.concepto', 'LIKE', '%'.$this->request['concepto'].'%');
-                })
-                ->when(isset($this->request['id_usuario']) ? $this->request['id_usuario'] : false, function ($query) {
-                    $query->where('DG.id_usuario', $this->request['id_usuario']);
-                })
-                ->delete();
-
-            // Eliminamos los registros relacionados que ya no tienen documentos
-            DB::connection('sam')->table('fac_documentos')
-                ->whereNotExists(function($query) {
-                    $query->select(DB::raw(1))
-                        ->from('documentos_generals')
-                        ->where('documentos_generals.relation_type', 2)
-                        ->whereRaw('documentos_generals.relation_id = fac_documentos.id');
-                })
-                ->delete();
-
-            DB::connection('sam')->table('fac_compras')
-                ->whereNotExists(function($query) {
-                    $query->select(DB::raw(1))
-                        ->from('documentos_generals')
-                        ->where('documentos_generals.relation_type', 3)
-                        ->whereRaw('documentos_generals.relation_id = fac_compras.id');
-                })
-                ->delete();
-
-            DB::connection('sam')->table('fac_ventas')
-                ->whereNotExists(function($query) {
-                    $query->select(DB::raw(1))
-                        ->from('documentos_generals')
-                        ->where('documentos_generals.relation_type', 4)
-                        ->whereRaw('documentos_generals.relation_id = fac_ventas.id');
-                })
-                ->delete();
-
-            DB::connection('sam')->table('con_recibos')
-                ->whereNotExists(function($query) {
-                    $query->select(DB::raw(1))
-                        ->from('documentos_generals')
-                        ->where('documentos_generals.relation_type', 6)
-                        ->whereRaw('documentos_generals.relation_id = con_recibos.id');
-                })
-                ->delete();
-
-            DB::connection('sam')->table('con_gastos')
-                ->whereNotExists(function($query) {
-                    $query->select(DB::raw(1))
-                        ->from('documentos_generals')
-                        ->where('documentos_generals.relation_type', 7)
-                        ->whereRaw('documentos_generals.relation_id = con_gastos.id');
-                })
-                ->delete();
-
-            DB::connection('sam')->table('con_pagos')
-                ->whereNotExists(function($query) {
-                    $query->select(DB::raw(1))
-                        ->from('documentos_generals')
-                        ->where('documentos_generals.relation_type', 8)
-                        ->whereRaw('documentos_generals.relation_id = con_pagos.id');
-                })
-                ->delete();
-
+            // Eliminar documentos principales
+            // $this->eliminarDocumentosPrincipales();
+            
+            // Eliminar registros huérfanos
+            // $this->eliminarRegistrosHuerfanos();
+            
+            // Devolver inventario si es necesario
+            $this->devolverInventarioSiNecesario($validacion);
+            
             DB::connection('sam')->commit();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Documentos eliminados con éxito!'
-            ], 200);
+            ], Response::HTTP_OK);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::connection('sam')->rollback();
             return response()->json([
                 "success" => false,
                 'data' => [],
                 "message" => $e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+    
+    /**
+     * Obtiene los documentos aplicando todos los filtros
+     */
+    private function obtenerDocumentosConFiltros()
+    {
+        $query = DB::connection('sam')->table('documentos_generals AS DG')
+            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+            ->where('anulado', 0)
+            ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
+            ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
+            ->select('DG.*', 'PC.naturaleza_cuenta');
+        
+        // Aplicar filtros dinámicos
+        $query = $this->aplicarFiltrosPrecio($query);
+        $query = $this->aplicarFiltrosGenerales($query);
+        
+        return $query->get();
+    }
+    
+    /**
+     * Aplica filtros de rango de precio
+     */
+    private function aplicarFiltrosPrecio($query)
+    {
+        if (isset($this->request['precio_desde'])) {
+            $query->whereRaw('ABS(debito - credito) >= ?', [$this->request['precio_desde']]);
+        }
+        
+        if (isset($this->request['precio_hasta'])) {
+            $query->whereRaw('ABS(debito - credito) <= ?', [$this->request['precio_hasta']]);
+        }
+        
+        return $query;
+    }
+    
+    /**
+     * Aplica filtros generales (nit, comprobante, centro costos, etc)
+     */
+    private function aplicarFiltrosGenerales($query)
+    {
+        $filtros = [
+            'id_nit' => ['campo' => 'DG.id_nit', 'operador' => '='],
+            'id_comprobante' => ['campo' => 'DG.id_comprobante', 'operador' => '='],
+            'id_centro_costos' => ['campo' => 'DG.id_centro_costos', 'operador' => '='],
+            'documento_referencia' => ['campo' => 'DG.documento_referencia', 'operador' => '='],
+            'consecutivo' => ['campo' => 'DG.consecutivo', 'operador' => '='],
+            'id_usuario' => ['campo' => 'DG.created_by', 'operador' => '='],
+        ];
+        
+        foreach ($filtros as $key => $config) {
+            if (isset($this->request[$key])) {
+                $query->where($config['campo'], $config['operador'], $this->request[$key]);
+            }
+        }
+        
+        // Filtro especial para cuenta
+        if (isset($this->request['id_cuenta']) && isset($this->request['cuenta'])) {
+            $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'] . '%');
+        }
+        
+        // Filtro especial para concepto (LIKE)
+        if (isset($this->request['concepto'])) {
+            $query->where('DG.concepto', 'LIKE', '%' . $this->request['concepto'] . '%');
+        }
+        
+        return $query;
+    }
+    
+    /**
+     * Valida todos los documentos antes de eliminar
+     */
+    private function validarDocumentos($documentos)
+    {
+        $notasAdevolver = [];
+        $ventasAdevolver = [];
+        $documentosConAbonos = [];
+        
+        foreach ($documentos as $doc) {
+            $comprobante = Comprobantes::find($doc->id_comprobante);
+            $resolucion = $comprobante ? $comprobante->resolucion : null;
+            
+            // Validar factura electrónica
+            $resultado = $this->validarFacturaElectronica($resolucion);
+            if ($resultado) return $resultado;
+            
+            // Validar POS y documentos equivalentes
+            $resultado = $this->validarPosYEquivalentes($resolucion, $doc, $ventasAdevolver);
+            if ($resultado) return $resultado;
+            
+            // Registrar notas crédito
+            $this->registrarNotasCredito($resolucion, $doc, $notasAdevolver);
+            
+            // Validar abonos
+            $this->validarAbonosDocumento($doc, $comprobante, $documentosConAbonos);
+        }
+        
+        // Si hay documentos con abonos, retornar error
+        if (!empty($documentosConAbonos)) {
+            return [
+                'es_valido' => false,
+                'mensaje' => $this->generarTablaAbonos($documentosConAbonos),
+                'datos' => []
+            ];
+        }
+        
+        return [
+            'es_valido' => true,
+            'notasAdevolver' => $notasAdevolver,
+            'ventasAdevolver' => $ventasAdevolver
+        ];
+    }
+    
+    /**
+     * Valida si el documento es una factura electrónica
+     */
+    private function validarFacturaElectronica($resolucion)
+    {
+        if ($resolucion && $resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
+            return [
+                'es_valido' => false,
+                'mensaje' => 'Las ventas electronicas no pueden ser eliminadas',
+                'datos' => []
+            ];
+        }
+        return null;
+    }
+    
+    /**
+     * Valida documentos POS y equivalentes
+     */
+    private function validarPosYEquivalentes($resolucion, $doc, &$ventasAdevolver)
+    {
+        if ($resolucion && in_array($resolucion->tipo_resolucion, [
+            FacResoluciones::TIPO_POS, 
+            FacResoluciones::TIPO_DOCUEMNTO_EQUIVALENTE
+        ])) {
+            $notaCredito = FacVentas::where('id_factura', $doc->relation_id)->first();
+            
+            if ($notaCredito) {
+                return [
+                    'es_valido' => false,
+                    'mensaje' => 'Las ventas con notas credito asociadas no pueden ser eliminadas',
+                    'datos' => []
+                ];
+            }
+            
+            $ventasAdevolver[$doc->relation_id] = true;
+        }
+        return null;
+    }
+    
+    /**
+     * Registra notas crédito para devolución de inventario
+     */
+    private function registrarNotasCredito($resolucion, $doc, &$notasAdevolver)
+    {
+        if ($resolucion && $resolucion->tipo_resolucion == FacResoluciones::TIPO_NOTA_CREDITO) {
+            $notasAdevolver[$doc->relation_id] = true;
+        }
+    }
+    
+    /**
+     * Valida si un documento tiene abonos pendientes
+     */
+    private function validarAbonosDocumento($doc, $comprobante, &$documentosConAbonos)
+    {
+        if (!$doc->documento_referencia || !$comprobante) {
+            return;
+        }
+        
+        $esCausacion = $this->esCausacionDocumento($doc);
+        $esIngreso = $this->esIngresoDocumento($doc);
+        
+        if ($esCausacion && $comprobante->tipo_comprobante != Comprobantes::TIPO_INGRESOS) {
+            $extracto = (new Extracto(
+                $doc->id_nit,
+                null,
+                $doc->documento_referencia,
+                null,
+                $doc->id_cuenta
+            ))->actual()->first();
+            
+            if ($extracto && $extracto->total_abono > 0) {
+                $documentosConAbonos[] = [
+                    'documento' => $doc->documento_referencia,
+                    'total_abono' => $extracto->total_abono
+                ];
+            }
+        }
+    }
+    
+    /**
+     * Genera tabla HTML con los documentos que tienen abonos
+     */
+    private function generarTablaAbonos($documentosConAbonos)
+    {
+        $totalAbonos = array_sum(array_column($documentosConAbonos, 'total_abono'));
+        
+        $html = "<div style='margin-bottom: 10px; font-weight: bold;'>No se pueden eliminar los documentos</div>";
+        $html .= "<div style='color: #FFF; margin-bottom: 15px;'>Los siguientes documentos tienen abonos pendientes:</div>";
+        $html .= "<table style='width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px;'>";
+        
+        // Encabezado
+        $html .= "<tr style='background-color: #f8f9fa;'>";
+        $html .= "<th style='border: 1px solid #dee2e6; padding: 8px 10px; text-align: left;'>DOCUMENTO</th>";
+        $html .= "<th style='border: 1px solid #dee2e6; padding: 8px 10px; text-align: right;'>TOTAL ABONOS</th>";
+        $html .= "?</tr>";
+        
+        // Cuerpo
+        foreach ($documentosConAbonos as $item) {
+            $html .= "<tr>";
+            $html .= "<td style='border: 1px solid #dee2e6; color: #FFF; padding: 6px 10px;'><strong>{$item['documento']}</strong></td>";
+            $html .= "<td style='border: 1px solid #dee2e6; color: #FFF; padding: 6px 10px; text-align: right;'>" . 
+                    number_format($item['total_abono'], 2) . "</td>";
+            $html .= "?</tr>";
+        }
+        
+        // Total
+        $html .= "<tr style='background-color: #dc3545; color: white;'>";
+        $html .= "<td style='border: 1px solid #dc3545; padding: 8px 10px; font-weight: bold;'>TOTAL</td>";
+        $html .= "<td style='border: 1px solid #dc3545; padding: 8px 10px; text-align: right; font-weight: bold;'>" . 
+                number_format($totalAbonos, 2) . "</td>";
+        $html .= "?</tr>";
+        $html .= "</table>";
+        
+        return $html;
+    }
+    
+    /**
+     * Elimina los documentos principales
+     */
+    private function eliminarDocumentosPrincipales()
+    {
+        $query = DB::connection('sam')->table('documentos_generals AS DG')
+            ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
+            ->where('anulado', 0)
+            ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
+            ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
+        
+        // Aplicar los mismos filtros que en la consulta original
+        $query = $this->aplicarFiltrosPrecio($query);
+        $query = $this->aplicarFiltrosGenerales($query);
+        
+        $query->delete();
+    }
+    
+    /**
+     * Elimina registros huérfanos de todas las tablas relacionadas
+     */
+    private function eliminarRegistrosHuerfanos()
+    {
+        $tablas = [
+            'fac_documentos' => self::RELATION_TYPES['fac_documentos'],
+            'fac_compras' => self::RELATION_TYPES['fac_compras'],
+            'fac_ventas' => self::RELATION_TYPES['fac_ventas'],
+            'con_recibos' => self::RELATION_TYPES['con_recibos'],
+            'con_gastos' => self::RELATION_TYPES['con_gastos'],
+            'con_pagos' => self::RELATION_TYPES['con_pagos'],
+        ];
+        
+        foreach ($tablas as $tabla => $relationType) {
+            DB::connection('sam')->table($tabla)
+                ->whereNotExists(function($query) use ($relationType) {
+                    $query->select(DB::raw(1))
+                        ->from('documentos_generals')
+                        ->where('documentos_generals.relation_type', $relationType)
+                        ->whereRaw("documentos_generals.relation_id = {$tabla}.id");
+                })
+                ->delete();
+        }
+    }
+    
+    /**
+     * Devuelve inventario si hay notas crédito o ventas para devolver
+     */
+    private function devolverInventarioSiNecesario($validacion)
+    {
+        if (!empty($validacion['notasAdevolver'])) {
+            $this->devolverInventarioNotasCredito($validacion['notasAdevolver']);
+        }
+        
+        if (!empty($validacion['ventasAdevolver'])) {
+            $this->devolverInventarioVentas($validacion['ventasAdevolver']);
+        }
+    }
+    
+    /**
+     * Retorna respuesta de error formateada
+     */
+    private function respuestaError($mensaje, $datos = [])
+    {
+        return response()->json([
+            "success" => false,
+            'data' => $datos,
+            "message" => $mensaje
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    private function devolverInventarioNotasCredito($notasAdevolver)
+    {
+        foreach ($notasAdevolver as $idNota => $use) {
+            $notaCredito = FacVentas::where('id', $idNota)
+                ->with(['detalles' => function($query) {
+                    $query->with('producto.familia');
+                }])
+                ->first();
+            
+            if (!$notaCredito) {
+                continue;
+            }
+
+            // Procesar cada detalle de la nota crédito
+            foreach ($notaCredito->detalles as $detalle) {
+                $producto = $detalle->producto;
+                
+                // Verificar si el producto maneja inventario
+                if (!$producto || !$producto->familia || !$producto->familia->inventario) {
+                    continue;
+                }
+
+                // Obtener la bodega de la nota crédito
+                $bodega = FacBodegas::find($notaCredito->id_bodega);
+                if (!$bodega) {
+                    continue;
+                }
+
+                // Buscar el producto en la bodega
+                $bodegaProducto = FacProductosBodegas::where('id_bodega', $bodega->id)
+                    ->where('id_producto', $producto->id)
+                    ->first();
+
+                if ($bodegaProducto) {
+                    // Guardar cantidad anterior para el movimiento
+                    $cantidadAnterior = $bodegaProducto->cantidad;
+                    
+                    // REVERTIR: Restar la cantidad que se había sumado en la nota crédito
+                    $bodegaProducto->cantidad -= $detalle->cantidad;
+                    $bodegaProducto->updated_by = request()->user()->id;
+                    $bodegaProducto->save();
+
+                    // Crear movimiento inverso
+                    $movimientoInverso = new FacProductosBodegasMovimiento([
+                        'id_producto' => $producto->id,
+                        'id_bodega' => $bodega->id,
+                        'cantidad_anterior' => $cantidadAnterior,
+                        'cantidad' => $detalle->cantidad,
+                        'tipo_tranferencia' => 4,
+                        'inventario' => $producto->familia->inventario ? 1 : 0,
+                        'created_by' => request()->user()->id,
+                        'updated_by' => request()->user()->id
+                    ]);
+
+                    $movimientoInverso->relation()->associate($notaCredito);
+                    $notaCredito->bodegas()->save($movimientoInverso);
+                }
+            }
+        }
+    }
+
+    private function devolverInventarioVentas($ventasAdevolver)
+    {
+        foreach ($ventasAdevolver as $idVenta => $use) {
+            $venta = FacVentas::where('id', $idVenta)
+                ->with(['detalles' => function($query) {
+                    $query->with('producto.familia');
+                }])
+                ->first();
+            
+            if (!$venta) {
+                continue;
+            }
+
+            // Procesar cada detalle de la venta
+            foreach ($venta->detalles as $detalle) {
+                $producto = $detalle->producto;
+                
+                // Verificar si el producto maneja inventario
+                if (!$producto || !$producto->familia || !$producto->familia->inventario) {
+                    continue;
+                }
+
+                // Obtener la bodega de la venta
+                $bodega = FacBodegas::find($venta->id_bodega);
+                if (!$bodega) {
+                    continue;
+                }
+
+                // Buscar el producto en la bodega
+                $bodegaProducto = FacProductosBodegas::where('id_bodega', $bodega->id)
+                    ->where('id_producto', $producto->id)
+                    ->first();
+
+                if ($bodegaProducto) {
+                    $cantidadAnterior = $bodegaProducto->cantidad;
+                    
+                    // Para ventas, se había RESTADO inventario, ahora hay que SUMARLO
+                    $bodegaProducto->cantidad += $detalle->cantidad;
+                    $bodegaProducto->updated_by = request()->user()->id;
+                    $bodegaProducto->save();
+
+                    // Crear movimiento de reversión
+                    $movimientoReversion = new FacProductosBodegasMovimiento([
+                        'id_producto' => $producto->id,
+                        'id_bodega' => $bodega->id,
+                        'cantidad_anterior' => $cantidadAnterior,
+                        'cantidad' => $detalle->cantidad,
+                        'tipo_tranferencia' => 3, // 3 = Reversión de venta
+                        'inventario' => $producto->familia->inventario ? 1 : 0,
+                        'created_by' => request()->user()->id,
+                        'updated_by' => request()->user()->id
+                    ]);
+
+                    $movimientoReversion->relation()->associate($venta);
+                    $venta->bodegas()->save($movimientoReversion);
+                }
+            }
         }
     }
 
