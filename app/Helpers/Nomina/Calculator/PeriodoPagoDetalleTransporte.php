@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Nomina\Calculator;
 
+use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\Nomina\NomConceptos;
 use App\Models\Sistema\Nomina\NomPeriodoPagoDetalles;
 
@@ -14,7 +15,7 @@ class PeriodoPagoDetalleTransporte extends AbstractPeriodoPagoDetalle
 		$this->loadRequiredTransporteData();
 		
 		$concepto = $this->getTransporteConcepto();
-		$valor = $this->calculateValorTransporte($concepto);
+		[$valor, $base] = $this->calculateValorTransporte($concepto);
 
 		return new NomPeriodoPagoDetalles([
 			'id_concepto' => $concepto->id,
@@ -22,7 +23,7 @@ class PeriodoPagoDetalleTransporte extends AbstractPeriodoPagoDetalle
 			'unidades' => $this->calcularUnidades($concepto),
 			'observacion' => $concepto->nombre,
 			'valor' => $valor,
-			'base' => $concepto->valor_mensual
+			'base' => $base
 		]);
 	}
 
@@ -54,18 +55,19 @@ class PeriodoPagoDetalleTransporte extends AbstractPeriodoPagoDetalle
         };
     }
 
-	private function calculateValorTransporte(NomConceptos $concepto): float
+	private function calculateValorTransporte(NomConceptos $concepto): array
     {
-        $baseValue = $concepto->valor_mensual;
-        
+        $transporteEntorno = VariablesEntorno::where('nombre', 'subsidio_transporte')->first();
+        $baseValue = $transporteEntorno ? $transporteEntorno->valor : $concepto->valor_mensual;
+
         if ($concepto->unidad === NomPeriodoPagoDetalles::TIPO_UNIDAD_HORAS) {
-            return $this->valorHora($baseValue) * $this->calcularUnidades($concepto);
+            return [$this->valorHora($baseValue) * $this->calcularUnidades($concepto), $baseValue];
         }
         
         if ($concepto->unidad === NomPeriodoPagoDetalles::TIPO_UNIDAD_DIAS) {
-            return $this->valorDia($baseValue) * $this->calcularUnidades($concepto);
+            return [$this->valorDia($baseValue) * $this->calcularUnidades($concepto), $baseValue];
         }
         
-        return $baseValue;
+        return [$baseValue, $baseValue];
     }
 }
