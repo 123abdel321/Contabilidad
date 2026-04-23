@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeImpuestos;
-use App\Helpers\Printers\RetencionPdf;
+use App\Helpers\Printers\ImpuestosPdf;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
@@ -126,7 +126,16 @@ class ImpuestosController extends Controller
     {
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
 
-        return (new RetencionPdf($empresa, $request->all()))
+        return (new ImpuestosPdf($empresa, $request->all()))
+            ->buildPdf()
+            ->showPdf();
+    }
+
+    public function showPdfReteica(Request $request)
+    {
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        
+        return (new ImpuestosPdf($empresa, $request->all()))
             ->buildPdf()
             ->showPdf();
     }

@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Retención</title>
+		<title>{{ $tituloCertificado }}</title>
 
 		<style>
 			body {
@@ -153,7 +153,7 @@
 						<table>
 							<tr>
                                 <td class="consecutivo padding5">
-									<p> CERTIFICADO DE RETENCION EN LA FUENTE
+									<p> CERTIFICADO DE {{ $tituloCertificado }}
 									</p>
 								</td>
 								<td class="empresa padding5">
@@ -187,7 +187,7 @@
 					<td class="spacer padding5"></td>
 				</tr>
                 <tr>
-                    <td class="empresa-footer">Con el fin de dar cumplimiento a las disposiciones legales vigentes sobre Retención en la Fuente, certificamos que entre {{ $filtros['fecha_desde'] }} y {{ $filtros['fecha_hasta'] }} practicamos la retención en la fuente que se detalla en cada uno de los conceptos y valores.
+                    <td class="empresa-footer">{{ $mensajeCertificado }}
                     </td>
                 </tr>
                 <tr>

@@ -94,9 +94,23 @@
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">&nbsp;RETENCIÓN PDF</b>
                     </span>
-                    <span id="descargarPdfImpuestosRetencionDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                    <span id="descargarPdfImpuestosRetencionDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px; display:none;">
                         <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">&nbsp;RETENCIÓN PDF</b>
+                        <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
+                    </span>
+                    <!-- BOTON PDF CERTIFICADO RETEICA -->
+                    <span id="descargarPdfImpuestosReteica" class="btn badge bg-gradient-success btn-bg-danger" style="min-width: 40px; margin-right: 3px; display:none;">
+                        <i class="fas fa-file-pdf" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">&nbsp;RETEICA PDF</b>
+                    </span>
+                    <span id="descargarPdfImpuestosReteicaLoading" class="badge bg-gradient-info btn-bg-danger-loading" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;">&nbsp;RETEICA PDF</b>
+                    </span>
+                    <span id="descargarPdfImpuestosReteicaDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px; display:none;">
+                        <i class="fas fa-file-pdf" style="font-size: 17px; color: #adadad;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">&nbsp;RETEICA PDF</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                     <!-- BOTON EXCEL -->

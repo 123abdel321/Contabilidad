@@ -9,10 +9,21 @@ use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
 
 
-class RetencionPdf extends AbstractPrinterPdf
+class ImpuestosPdf extends AbstractPrinterPdf
 {
 	public $empresa;
 	public $request;
+    public $impuestosCollection = [];
+    public $tituloCertificado = [
+        'iva' => 'IVA',
+        'retencion' => 'RETENCIÓN EN LA FUENTE',
+        'reteica' => 'RETEICA'
+    ];
+    public $mensajeCertificado = [
+        'iva' => 'CON EL FIN DE DAR CUMPLIMIENTO A LAS DISPOSICIONES LEGALES VIGENTES SOBRE EL IMPUESTO AL VALOR AGREGADO (IVA), CERTIFICAMOS QUE ENTRE 2026-04-01 Y 2026-04-23 SE REGISTRARON LOS VALORES CORRESPONDIENTES QUE SE DETALLAN EN CADA UNO DE LOS CONCEPTOS RELACIONADOS.',
+        'retencion' => 'CON EL FIN DE DAR CUMPLIMIENTO A LAS DISPOSICIONES LEGALES VIGENTES SOBRE RETENCIÓN EN LA FUENTE, CERTIFICAMOS QUE ENTRE 2026-04-01 Y 2026-04-23 PRACTICAMOS LA RETENCIÓN EN LA FUENTE QUE SE DETALLA EN CADA UNO DE LOS CONCEPTOS Y VALORES.',
+        'reteica' => 'CON EL FIN DE DAR CUMPLIMIENTO A LAS DISPOSICIONES LEGALES VIGENTES SOBRE RETENCIÓN DEL IMPUESTO DE INDUSTRIA Y COMERCIO (RETEICA), CERTIFICAMOS QUE ENTRE 2026-04-01 Y 2026-04-23 PRACTICAMOS LAS RETENCIONES CORRESPONDIENTES QUE SE DETALLAN EN CADA UNO DE LOS CONCEPTOS Y VALORES.'
+    ];
 
     public function __construct(Empresa $empresa, $request)
 	{
@@ -27,12 +38,12 @@ class RetencionPdf extends AbstractPrinterPdf
 
     public function view()
 	{
-		return 'pdf.informes.retencion.retencion';
+		return 'pdf.informes.impuestos.impuestos';
 	}
 
     public function name()
 	{
-		return 'retencion_'.uniqid();
+		return "impuestos_{$this->request['tipo_informe']}_".uniqid();
 	}
 
     public function paper()
@@ -44,7 +55,6 @@ class RetencionPdf extends AbstractPrinterPdf
 
 	public function formatPaper()
 	{
-		// if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
 		return 'A4';
 	}
 
@@ -147,6 +157,8 @@ class RetencionPdf extends AbstractPrinterPdf
         return [
 			'empresa' => $this->empresa,
             'cliente' => Nits::where('id', $this->request['id_nit'])->first(),
+            'tituloCertificado' => $this->tituloCertificado[$this->request['tipo_informe']],
+            'mensajeCertificado' => $this->mensajeCertificado[$this->request['tipo_informe']],
             'filtros' => $this->request,
             'detalles' => $this->impuestosCollection,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s')

@@ -203,37 +203,43 @@ function impuestosInit() {
     });
 
     $("#nivel_impuestos1").on('change', function(){
-        actualizarColumnas();
+        actualizarImpuestosColumnas();
         document.getElementById("generarImpuestos").click();
     });
     
     $("#nivel_impuestos2").on('change', function(){
-        actualizarColumnas();
+        actualizarImpuestosColumnas();
         document.getElementById("generarImpuestos").click();
     });
 
     $("#tipo_informe_impuestos").on('change', function(){
-        actualizarColumnas();
-        actualizaPdfRetencion();
+        console.log('change');
+        actualizarImpuestosColumnas();
+        actualizarImpuestosPdfRetencion();
     });
 
-    function actualizaPdfRetencion() {
+    function actualizarImpuestosPdfRetencion() {
         const tipoInforme = $("#tipo_informe_impuestos").val();
         const idNitSelect = $('#id_nit_impuestos').val();
 
-        $("#descargarPdfImpuestosRetencionDisabled").hide();
-        $("#descargarPdfImpuestosRetencionLoading").hide();
         $("#descargarPdfImpuestosRetencion").hide();
+        $("#descargarPdfImpuestosRetencionLoading").hide();
+        $("#descargarPdfImpuestosRetencionDisabled").hide();
+        $("#descargarPdfImpuestosReteica").hide();
+        $("#descargarPdfImpuestosReteicaLoading").hide();
+        $("#descargarPdfImpuestosReteicaDisabled").hide();
 
-        if (tipoInforme == 'retencion' && idNitSelect) {
-            $("#descargarPdfImpuestosRetencion").show();
-        } else {
-            $("#descargarPdfImpuestosRetencionDisabled").show();
+        if (tipoInforme == 'retencion') {
+            if (idNitSelect) $("#descargarPdfImpuestosRetencion").show();
+            else $("#descargarPdfImpuestosRetencionDisabled").show();
+        } else if (tipoInforme == 'reteica') {
+            if (idNitSelect) $("#descargarPdfImpuestosReteica").show();
+            else $("#descargarPdfImpuestosReteicaDisabled").show();
         }
     }
 
     $("#nivel_impuestos3").on('change', function(){
-        actualizarColumnas();
+        actualizarImpuestosColumnas();
         document.getElementById("generarImpuestos").click();
     });
 
@@ -245,7 +251,7 @@ function impuestosInit() {
         if (agrupado == 'id_nit') {
             $("#nombre_item_impuestos").text("Documento");
         }
-        actualizarColumnas();
+        actualizarImpuestosColumnas();
         document.getElementById("generarImpuestos").click();
     });
 
@@ -257,7 +263,7 @@ function impuestosInit() {
     $("#id_nit_impuestos").on('change', function(){
         clearImpuestos();
         findImpuestos();
-        actualizaPdfRetencion();
+        actualizarImpuestosPdfRetencion();
     });    
     
     $(".detallar_impuestos").on('change', function(){
@@ -266,7 +272,7 @@ function impuestosInit() {
     });
 
     findImpuestos();
-    actualizarColumnas();
+    actualizarImpuestosColumnas();
 }
 
 function tipoCuentaInforme() {
@@ -276,7 +282,7 @@ function tipoCuentaInforme() {
     if (tipoInforme == 'reteica') return [17];
 }
 
-function actualizarColumnas() {
+function actualizarImpuestosColumnas() {
     var nivel = getNivelImpuestos();
     let tipoInforme = $("#tipo_informe_impuestos").val();
 
@@ -391,6 +397,21 @@ $(document).on('click', '#generarImpuestos', function () {
 $(document).on('click', '#descargarPdfImpuestosRetencion', function () {
 
     var url = base_web + 'impuestos-retencion-pdf';
+    url+= '?id_nit='+$('#id_nit_impuestos').val();
+    url+= '&id_cuenta='+$('#id_cuenta_impuestos').val();
+    url+= '&fecha_desde='+$('#fecha_desde_impuestos').val();
+    url+= '&fecha_hasta='+$('#fecha_hasta_impuestos').val();
+    url+= '&agrupar='+$('#agrupar_impuestos').val();
+    url+= '&tipo_informe='+$("#tipo_informe_impuestos").val();
+    url+= '&nivel='+getNivelImpuestos();
+    url+= '&generar='+generarImpuestos;
+
+    window.open(url, "_blank");
+});
+
+$(document).on('click', '#descargarPdfImpuestosReteica', function () {
+
+    var url = base_web + 'impuestos-reteica-pdf';
     url+= '?id_nit='+$('#id_nit_impuestos').val();
     url+= '&id_cuenta='+$('#id_cuenta_impuestos').val();
     url+= '&fecha_desde='+$('#fecha_desde_impuestos').val();
