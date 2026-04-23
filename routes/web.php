@@ -186,7 +186,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/cartera', [CarteraController::class, 'index'])->name('cartera');
 		//IMPUESTOS
 		Route::get('/impuestos', [ImpuestosController::class, 'index'])->name('impuestos');	
-		Route::get('/impuestos-retencion-pdf', [ImpuestosController::class, 'showPdfRetencion'])->name('impuestos-retencion-pdf');	
+		Route::get('/impuestos-reteica-pdf', [ImpuestosController::class, 'showPdfReteica'])->name('impuestos-reteica-pdf');
+		Route::get('/impuestos-retencion-pdf', [ImpuestosController::class, 'showPdfRetencion'])->name('impuestos-retencion-pdf');
 		//EXTRACTOS
 		Route::get('/extracto', [ExtractoController::class, 'index'])->name('extractos');	
 		//CUENTAS POR COBRAR
