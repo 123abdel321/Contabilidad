@@ -36,6 +36,7 @@ use App\Http\Controllers\Informes\EstadoActualController;
 use App\Http\Controllers\Informes\ResumenCarteraController;
 use App\Http\Controllers\Informes\VentasAcumuladasController;
 use App\Http\Controllers\Informes\EstadoComprobanteController;
+use App\Http\Controllers\Informes\MovimientoProductoController;
 use App\Http\Controllers\Informes\ResumenComprobantesController;
 use App\Http\Controllers\Informes\DocumentosGeneralesController;
 //CAPTURAS
@@ -242,6 +243,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('ventas-acumuladas-show', 'show');
             Route::post('ventas-acumuladas-excel', 'exportExcel');
         });
+        Route::controller(MovimientoProductoController::class)->group(function () {
+            Route::get('movimiento-producto', 'generate');
+        });
+
         //USUARIOS
         Route::controller(UsuariosController::class)->group(function () {
             Route::get('usuarios', 'generate');
@@ -260,7 +265,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('reuniones-participantes', 'createParticipantes');
             Route::delete('reuniones-participantes', 'deleteParticipantes');
         });
-
         //IMPUESTOS
         Route::controller(ImpuestoController::class)->group(function () {
             Route::get('impuesto', 'generate');

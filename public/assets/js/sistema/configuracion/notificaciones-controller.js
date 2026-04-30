@@ -9,7 +9,6 @@ var whatsapp_eco_detalle_table = null;
 
 
 function notificacionesInit() {
-    console.log("notificacionesInit");
     initFechasEco();
     initTablesEco();
     initCombosEco();

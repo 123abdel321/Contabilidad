@@ -373,7 +373,7 @@ function changeProductoMovimientoInventario (idRow) {
     
     }
 
-    $('#movimiento-inventario_costo_'+idRow).val(parseFloat(data.precio));
+    $('#movimiento-inventario_costo_'+idRow).val(parseFloat(data.precio_inicial));
     $('#movimiento-inventario_cantidad_'+idRow).prop('disabled', false);
     $('#movimiento-inventario_costo_'+idRow).prop('disabled', false);
 

@@ -22,6 +22,8 @@ class FacProductosBodegasMovimiento extends Model
         'inventario',
         'created_by',
         'updated_by',
+        'created_at',
+        'updated_at'
     ];
 
     public function relation()

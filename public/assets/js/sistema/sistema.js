@@ -358,7 +358,6 @@ $('#containner-dashboard').load('/dashboard', function() {
 $("#titulo-view").text('Inicio');
 
 $(document).ajaxError(function myErrorHandler(event, xhr, ajaxOptions, thrownError) {
-    console.log('xhr: ',xhr.status);
     if(xhr.status == 401) {
         closeSessionProfile();
     }
@@ -1318,6 +1317,36 @@ $(document).on('shown.bs.popover', function() {
         'font-weight': 'bold'
     });
 });
+
+function cargasFechasGenerales(
+        input,
+        start = moment().startOf("month"),
+        end = moment().endOf("month"),
+        dates = rangoFechas) {
+    
+    $(`#${input}`).daterangepicker({
+        startDate: start,
+        endDate: end,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " - ",
+            applyLabel: "Aplicar",
+            cancelLabel: "Cancelar",
+            fromLabel: "Desde",
+            toLabel: "Hasta",
+            customRangeLabel: "Personalizado",
+            daysOfWeek: moment.weekdaysMin(),
+            monthNames: moment.months(),
+            firstDay: 1
+        },
+        ranges: dates
+    }, formatoFecha);
+
+    formatoFecha(start, end, input);
+}
 
 // En tu archivo principal o en un lugar global
 // $(document).ajaxError(function(event, xhr, settings, error) {
