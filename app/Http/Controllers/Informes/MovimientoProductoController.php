@@ -92,7 +92,6 @@ class MovimientoProductoController extends Controller
                     break;
             }
         }
-
         // ----------------------------
         // Filtro por producto
         // ----------------------------
@@ -130,7 +129,7 @@ class MovimientoProductoController extends Controller
         }
 
         // Ordenamiento por defecto (puedes usar el enviado por DataTable)
-        $query->orderBy('id', 'ASC');
+        $query->orderBy($columnName, $columnSortOrder);
 
         $total = $query->count();
         $productosMovimiento = $query->skip($start)->take($rowperpage)->get();

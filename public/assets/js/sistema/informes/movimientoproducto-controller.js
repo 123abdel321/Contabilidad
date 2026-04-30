@@ -43,12 +43,14 @@ function cargarTablasMovimientoProducto() {
             }
         },
         columns: [
-            {"data": function (row, type, set){
-                if (row.producto) {
-                    return `${row.producto.codigo} - ${row.producto.nombre}`;
+            {"data": "id_producto",
+                render: function (type, set, row){
+                    if (row.producto) {
+                        return `${row.producto.codigo} - ${row.producto.nombre}`;
+                    }
+                    return 'Sin identificar';
                 }
-                return 'Sin identificar';
-            }},
+            },
             {
                 data: "cantidad_anterior",
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
@@ -59,8 +61,9 @@ function cargarTablasMovimientoProducto() {
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
                 className: 'dt-body-right'
             },
-            {  // Cantidad actual (stock resultante)
-                data: function (row) {
+            {
+                data: "cantidad",
+                render: function (type, set, row) {
                     const tipo = obtenerTipoMovimiento(row);
                     const anterior = parseFloat(row.cantidad_anterior);
                     const cantidad = parseFloat(row.cantidad);
@@ -82,8 +85,9 @@ function cargarTablasMovimientoProducto() {
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
                 className: 'dt-body-right'
             },
-            {  // Tipo de movimiento (badge)
-                data: function (row) {
+            {
+                data: "tipo_tranferencia",
+                render: function (type, set, row) {
                     const tipo = obtenerTipoMovimiento(row);
                     let badgeClass = 'bg-secondary';
                     let texto = 'Desconocido';
@@ -125,12 +129,14 @@ function cargarTablasMovimientoProducto() {
                     return `<span class="badge ${badgeClass}" title="${texto}">${texto}</span>`;
                 }
             },
-            {"data": function (row, type, set){
-                var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
-                if(!row.updated_by && !row.fecha_edicion) return '';
-                if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
-                return html;
-            }}
+            {"data": "created_at",
+                render: function (type, set, row){
+                    var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
+                    if(!row.updated_by && !row.fecha_edicion) return '';
+                    if(!row.updated_by) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
+                    return html;
+                }
+            },
     
         ]
     });
