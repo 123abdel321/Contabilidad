@@ -117,8 +117,12 @@ class ImpuestosPdf extends AbstractPrinterPdf
                     $key = $documento->numero_documento.'-A-'.$documento->cuenta;
                     $totalUvt = $documento->total_uvt ? $documento->total_uvt : 0;
                     $totalBase = $documento->base ? $documento->base : 0;
-                    $totalImpuesto = $documento->debito + $documento->credito;
-                    $totalValorBase = $documento->porcentaje ? $totalImpuesto / $documento->porcentaje : 0;
+                    $porcentaje = (float) $documento->porcentaje;
+
+                    $totalValorBase = $porcentaje > 0 
+                        ? $totalImpuesto / $porcentaje 
+                        : 0;
+                    
                     $this->impuestosCollection[$key] = (object)[
                         'id_nit' => $documento->id_nit,
                         'numero_documento' => $documento->numero_documento,
