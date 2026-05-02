@@ -161,6 +161,7 @@ class RecibosController extends Controller
 
                 if (isset($extractos)) {
                     foreach ($extractos as $key => $extracto) {
+                        if ($extracto->saldo > 0) continue; 
                         $indiceDocRef = array_search($extracto->documento_referencia, array_column($detalles, 'documento_referencia'));
                         $indiceCuenta = array_search($extracto->id_cuenta, array_column($detalles, 'id_cuenta'));
                         if (!(is_numeric($indiceDocRef) && is_numeric($indiceCuenta))) {

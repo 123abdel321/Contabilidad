@@ -807,7 +807,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->when($id_cuenta ? $id_cuenta : false, function ($query, $id_cuenta) {
 				$query->where('DG.id_cuenta', $id_cuenta);
 			})
-            ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
+            ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.fecha_manual, DG.documento_referencia');
 
         return $documentosQuery;
     }
@@ -873,7 +873,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->when($id_cuenta ? $id_cuenta : false, function ($query, $id_cuenta) {
 				$query->where('DG.id_cuenta', $id_cuenta);
 			})
-            ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia');
+            ->groupByRaw('DG.id_cuenta, DG.id_nit, DG.fecha_manual, DG.documento_referencia');
             // ->groupBy('DG.id_cuenta', 'DG.id_nit', 'DG.documento_referencia');
 
         return $anterioresQuery;

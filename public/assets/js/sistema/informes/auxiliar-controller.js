@@ -371,6 +371,8 @@ $(document).on('click', '#generarAuxiliar', function () {
     $('input[name="niveles_auxiliar[]"]:checked').each(function(index) {
         url += '&niveles[]=' + this.value;
     });
+
+    checksFiltersAuxiliar();
     
     auxiliar_table.ajax.url(url).load(function(res) {
         $("#generarAuxiliar").show();
@@ -672,14 +674,12 @@ $("#id_cuenta_auxiliar").on('change', function(){
     clearAuxiliar();
     findAuxiliar();
     checksNivelesAuxiliar();
-    checksFiltersAuxiliar();
 });
 
 $("#id_nit_auxiliar").on('change', function(){
     clearAuxiliar();
     findAuxiliar();
     checksNivelesAuxiliar();
-    checksFiltersAuxiliar();
 });
 
 function checksNivelesAuxiliar() {
@@ -697,7 +697,7 @@ function checksNivelesAuxiliar() {
 }
 
 function checksFiltersAuxiliar() {
-    console.log("checksFiltersAuxiliar");
+
     const id_cuenta = parseInt($('#id_cuenta_auxiliar').val());
     const id_nit = parseInt($('#id_nit_auxiliar').val());
     
