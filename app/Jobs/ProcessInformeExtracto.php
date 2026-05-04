@@ -356,8 +356,9 @@ class ProcessInformeExtracto
                     'fecha_manual',
                 )
                 ->orderBy('consecutivo', 'ASC')
-                ->groupByRaw('id_cuenta, id_nit, fecha_manual, documento_referencia')
+                ->groupByRaw('id_cuenta, id_nit, documento_referencia')
                 ->chunk(233, function ($documentos) use($extractoMes) {
+
                     foreach ($documentos as $documento) {
                         $query = $this->extractoDocumentosDetallesQuery($documento, $extractoMes);
                         $query->chunk(377, function ($detalles) use($extractoMes) {
