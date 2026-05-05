@@ -231,8 +231,8 @@ class ImpuestosPdf extends AbstractPrinterPdf
             ->when($this->request['id_nit'] ? true : false, function ($query) {
 				$query->where('DG.id_nit', $this->request['id_nit']);
 			})
-			->when($this->request['id_cuenta'] ? true : false, function ($query) {
-				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+            ->when($this->request['id_cuenta'] ? true : false, function ($query) {
+				$query->where('DG.id_cuenta', $this->request['id_cuenta']);
 			});
 
         return $documentosQuery;
@@ -298,7 +298,7 @@ class ImpuestosPdf extends AbstractPrinterPdf
 				$query->where('DG.id_nit', $this->request['id_nit']);
 			})
 			->when($this->request['id_cuenta'] ? true : false, function ($query) {
-				$query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
+				$query->where('DG.id_cuenta', $this->request['id_cuenta']);
 			});
 
         return $anterioresQuery;
