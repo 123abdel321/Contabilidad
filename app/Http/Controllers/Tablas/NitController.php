@@ -95,7 +95,7 @@ class NitController extends Controller
                 }
                 
                 if($searchValue) {
-                    $nits->where('numero_documento', 'like', '%' .$searchValue . '%')
+                    $nits->where('numero_documento', 'like', $searchValue . '%')
                         ->orWhere('primer_apellido', 'like', '%' .$searchValue . '%')
                         ->orWhere('segundo_apellido', 'like', '%' .$searchValue . '%')
                         ->orWhere('primer_nombre', 'like', '%' .$searchValue . '%')
@@ -395,7 +395,6 @@ class NitController extends Controller
             'porcentaje_reteica',
             'id_responsabilidades',
             \DB::raw('telefono_1 AS telefono')
-            // No incluyas $text aquí.
         );
 
         if ($request->get("id_nits")) {
@@ -404,7 +403,7 @@ class NitController extends Controller
             // La lógica de búsqueda (where/orWhere) se mantiene igual
             // porque se basa en campos de la base de datos como numero_documento, razon_social, etc.
             if ($request->get("q")) {
-                $nits->where('numero_documento', 'LIKE', '%' .$request->get("q") . '%')
+                $nits->where('numero_documento', 'LIKE', $request->get("q") . '%')
                     ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("q") . '%')
                     ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("q") . '%')
                     ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("q") . '%')
@@ -423,7 +422,7 @@ class NitController extends Controller
             }
 
             if ($request->get("search")) {
-                $nits->where('numero_documento', 'LIKE', '%' . $request->get("search") . '%')
+                $nits->where('numero_documento', 'LIKE', $request->get("search") . '%')
                     ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("search") . '%')
@@ -438,6 +437,7 @@ class NitController extends Controller
                     ->orWhere('primer_apellido', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('apartamentos', 'LIKE', '%' . $request->get("search") . '%')
                     ->orWhere('observaciones', 'LIKE', '%' . $request->get("search") . '%')
+                    ->orWhere('direccion', 'LIKE', $request->get("search") . '%')
                     ;
             }
         }
@@ -475,7 +475,7 @@ class NitController extends Controller
             );
 
         if ($request->get("q")) {
-            $nits->where('numero_documento', $request->get("q"))
+            $nits->where('numero_documento', 'LIKE', $request->get("q") . '%')
                 ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("q") . '%')
                 ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("q") . '%')
                 ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("q") . '%')
@@ -494,7 +494,7 @@ class NitController extends Controller
         }
 
         if ($request->get("search")) {
-            $nits->where('numero_documento', 'LIKE', '%' . $request->get("search") . '%')
+            $nits->where('numero_documento', 'LIKE', $request->get("search") . '%')
                 ->orWhere('segundo_apellido', 'LIKE', '%' . $request->get("search") . '%')
                 ->orWhere('primer_nombre', 'LIKE', '%' . $request->get("search") . '%')
                 ->orWhere('otros_nombres', 'LIKE', '%' . $request->get("search") . '%')
