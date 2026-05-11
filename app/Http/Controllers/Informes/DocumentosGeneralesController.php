@@ -301,7 +301,7 @@ class DocumentosGeneralesController extends Controller
             $this->registrarNotasCredito($resolucion, $doc, $notasAdevolver);
             
             // Validar abonos
-            $this->validarAbonosDocumento($doc, $comprobante, $documentosConAbonos);
+            // $this->validarAbonosDocumento($doc, $comprobante, $documentosConAbonos);
         }
         
         // Si hay documentos con abonos, retornar error
