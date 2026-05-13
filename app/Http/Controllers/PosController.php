@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Validator;
+use App\Events\PrivateMessageEvent;
 //HELPERS
 use App\Helpers\Extracto;
 use App\Helpers\Documento;
@@ -304,9 +305,11 @@ class PosController extends Controller
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
-            } 
+            }
 
             DB::connection('sam')->commit();
+
+            $this->emitPedidoEvent($pedidoEditado ? 'pedido_actualizado' : 'pedido_creado', $pedido->id);
 
             return response()->json([
 				'success'=>	true,
@@ -619,16 +622,19 @@ class PosController extends Controller
             foreach ($request->get('pagos') as $pagoItem) {
 
                 $pagoItem = (object)$pagoItem;
-                
-                $pagoValor = $pagoItem->id == 1 ? $pagoItem->valor - $this->totalesPagos['total_cambio'] : $pagoItem->valor;
-                $saldoPendiente-= $pagoValor;
                 $formaPago = $this->findFormaPago($pagoItem->id);
+                
+                $pagoValor = $pagoItem->valor;
+                if ($formaPago->tipoFormaPago && $formaPago->tipoFormaPago->codigo == FacTipoFormasPago::EFECTIVO) {
+                    $pagoValor =  $pagoItem->valor - $this->totalesPagos['total_cambio'];
+                }
+                $saldoPendiente-= $pagoValor;
                 
                 $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $venta->id_nit);
                 //CRUSAR ANTICIPOS
                 if (count($documentoReferenciaAnticipos)) {
 
-                    $pagoAnticipos = $pagoItem->valor;
+                    $pagoAnticipos = $pagoValor;
 
                     foreach ($documentoReferenciaAnticipos as $anticipos) {
 
@@ -734,6 +740,8 @@ class PosController extends Controller
             }
 
             DB::connection('sam')->commit();
+
+            $this->emitPedidoEvent('pedido_completado', $pedido->id);
 
             return response()->json([
 				'success'=>	true,
@@ -867,6 +875,8 @@ class PosController extends Controller
             FacPedidoDetalles::where('id_pedido', $request->get('id'))->delete();
 
             DB::connection('sam')->commit();
+
+            $this->emitPedidoEvent('pedido_eliminado', $request->get('id'));
 
             return response()->json([
                 'success'=>	true,
@@ -1130,6 +1140,22 @@ class PosController extends Controller
                 "message"=>$e->getMessage()
             ], 422);
         }
+    }
+
+    private function emitPedidoEvent($tipo, $pedidoId, $usuarioId = null)
+    {
+        $hasEmpresa = request()->user()->has_empresa;
+        
+        $usuarioId = $usuarioId ?? request()->user()->id;
+        
+        $message = [
+            'tipo' => $tipo,               // 'pedido_creado', 'pedido_actualizado', 'pedido_eliminado', 'pedido_completado'
+            'id_pedido' => $pedidoId,
+            'usuario_id' => $usuarioId,
+            'timestamp' => now()->toIso8601String()
+        ];
+        
+        event(new PrivateMessageEvent("pedidos-{$hasEmpresa}", $message));
     }
 
     private function createFacturaVenta ($request)
