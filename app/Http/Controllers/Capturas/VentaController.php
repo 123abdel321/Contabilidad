@@ -38,6 +38,7 @@ use App\Models\Sistema\VariablesEntorno;
 use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Sistema\FacVentaDetalles;
 use App\Models\Sistema\DocumentosGeneral;
+use App\Models\Sistema\FacTipoFormasPago;
 use App\Models\Sistema\FacProductosBodegas;
 use App\Models\Sistema\FacProductosBodegasMovimiento;
 
