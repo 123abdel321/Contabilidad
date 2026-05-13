@@ -200,12 +200,13 @@ class NitController extends Controller
 
         DB::connection('sam')->beginTransaction();
 
-        $responsabilidades = NULL;
-        if ($request->get('id_responsabilidades')) {
-            $responsabilidades = implode(",", $request->get('id_responsabilidades'));
-        }
-
         try {
+
+            $tipoDocumento = TipoDocumentos::find($request->get('id_tipo_documento'));
+            if ($tipoDocumento && $tipoDocumento->codigo == '31') {
+                $responsabilidades = '5, 7';
+            }
+
             $nit = Nits::create([
                 'id_tipo_documento' => $request->get('id_tipo_documento'),
                 'id_vendedor' => $request->get('id_vendedor'),

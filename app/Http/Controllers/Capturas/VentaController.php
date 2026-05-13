@@ -391,15 +391,20 @@ class VentaController extends Controller
                 }
             }
 
-            $totalPagos = $this->totalesFactura['total_factura'];
+            $saldoPendiente = $this->totalesFactura['total_factura'];
             
             //AGREGAR FORMAS DE PAGO
             foreach ($request->get('pagos') as $pagoItem) {
 
                 $pagoItem = (object)$pagoItem;
-                $pagoValor = $pagoItem->id == 1 ? $pagoItem->valor - $this->totalesPagos['total_cambio'] : $pagoItem->valor;
-                $totalPagos-= $pagoValor;
                 $formaPago = $this->findFormaPago($pagoItem->id);
+
+                $pagoValor = $pagoItem->valor;
+                if ($formaPago->tipoFormaPago && $formaPago->tipoFormaPago->codigo == FacTipoFormasPago::EFECTIVO) {
+                    $pagoValor =  $pagoItem->valor - $this->totalesPagos['total_cambio'];
+                }
+                $saldoPendiente-= $pagoValor;
+
                 $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $venta->id_nit);
                 //CRUSAR ANTICIPOS
                 if (count($documentoReferenciaAnticipos)) {
@@ -430,7 +435,7 @@ class VentaController extends Controller
                             $pagoItem,
                             $venta,
                             $anticipoUsado,
-                            $totalPagos
+                            $saldoPendiente
                         );
                         $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
                     }
@@ -441,8 +446,8 @@ class VentaController extends Controller
                         $this->nit,
                         $pagoItem,
                         $venta,
-                        $pagoItem->valor,
-                        $totalPagos
+                        $pagoValor,
+                        $saldoPendiente
                     );
                     $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
                 }
@@ -1416,7 +1421,8 @@ class VentaController extends Controller
     {
         return FacFormasPago::where('id', $id_forma_pago)
             ->with(
-                'cuenta'
+                'cuenta',
+                'tipoFormaPago'
             )
             ->first();
     }

@@ -110,7 +110,7 @@ class PosController extends Controller
 
         $bodegas = explode(",", $usuarioPermisos->ids_bodegas_responsable);
         $bodegas = FacBodegas::whereIn('id', $bodegas)->first();
-        if (!$bodegas) $bodegas = FacBodegas::first();
+        // if (!$bodegas) $bodegas = FacBodegas::first();
 
         $clientePorDefecto = null;
         if ($idClientePorDefecto) $clientePorDefecto = Nits::with('vendedor.nit')->where('id', $idClientePorDefecto)->first();
@@ -613,15 +613,17 @@ class PosController extends Controller
                 }
             }
 
-            $totalPagos = $this->totalesFactura['total_factura'];
+            $saldoPendiente = $this->totalesFactura['total_factura'];
             
             //AGREGAR FORMAS DE PAGO
             foreach ($request->get('pagos') as $pagoItem) {
 
                 $pagoItem = (object)$pagoItem;
+                
                 $pagoValor = $pagoItem->id == 1 ? $pagoItem->valor - $this->totalesPagos['total_cambio'] : $pagoItem->valor;
-                $totalPagos-= $pagoValor;
+                $saldoPendiente-= $pagoValor;
                 $formaPago = $this->findFormaPago($pagoItem->id);
+                
                 $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $venta->id_nit);
                 //CRUSAR ANTICIPOS
                 if (count($documentoReferenciaAnticipos)) {
@@ -652,7 +654,7 @@ class PosController extends Controller
                             $pagoItem,
                             $venta,
                             $anticipoUsado,
-                            $totalPagos
+                            $saldoPendiente
                         );
                         $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
                     }
@@ -663,8 +665,8 @@ class PosController extends Controller
                         $this->nit,
                         $pagoItem,
                         $venta,
-                        $pagoItem->valor,
-                        $totalPagos
+                        $pagoValor,
+                        $saldoPendiente
                     );
                     $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_ventas);
                 }
@@ -1018,12 +1020,124 @@ class PosController extends Controller
         }
     }
 
+    public function createNit (Request $request)
+    {
+        $rules = [
+			'id_tipo_documento' => 'required|exists:sam.tipos_documentos,id',
+			'id_ciudad' => 'nullable|exists:clientes.ciudades,id',
+			'id_vendedor' => 'nullable|exists:sam.fac_vendedores,id',
+            'observaciones' => 'nullable|string',
+			'id_actividad_econo' => 'nullable|exists:sam.actividades_economicas,id',
+			'numero_documento' => 'required|unique:sam.nits,numero_documento|max:30',
+			'digito_verificacion' => "nullable|between:0,9|numeric",
+			// 'tipo_contribuyente' => 'required|in:1,2',
+			'primer_apellido' => 'nullable|string|max:60',
+			'segundo_apellido' => 'nullable|string|max:60',
+			'primer_nombre' => 'nullable|string|max:60|',
+			'otros_nombres' => 'nullable|string|max:60',
+			// 'razon_social' => 'nullable|string|max:120|required_if:tipo_contribuyente,'.Nits::TIPO_CONTRIBUYENTE_PERSONA_JURIDICA, // Campo requerido si el tipo contribuyente es persona jurídica (id: 1)
+			'razon_social' => 'nullable|string|max:60',
+			'nombre_comercial' => 'nullable|string|max:120',
+			'direccion' => 'nullable|min:3|max:100',
+			'email' => 'nullable|email|max:250',
+			'email_1' => 'nullable|email|max:250',
+			'email_2' => 'nullable|email|max:250',
+			'email_recepcion_factura_electronica' => 'nullable|email|max:60',
+			'telefono_1' => 'nullable|numeric|digits_between:1,30',
+			'telefono_2' => 'nullable|numeric|digits_between:1,30',
+			'tipo_cuenta_banco' => 'nullable|in:0,1',
+			'cuenta_bancaria' => 'nullable|string|max:20',
+			'plazo' => 'nullable|numeric|min:0|digits_between:1,3',
+			'cupo' => 'nullable|numeric|min:0|digits_between:1,13',
+			'descuento' => 'nullable|numeric|min:0|max:100',
+			'no_calcular_iva' => 'nullable|boolean',
+            'porcentaje_aiu' => 'nullable|numeric',
+			'inactivar' => 'nullable',
+            // 'declarante' => 'nullable'
+		];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+		if ($validator->fails()){
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$validator->errors()
+            ], 422);
+        }
+
+        DB::connection('sam')->beginTransaction();
+
+        $responsabilidades = NULL;
+        if ($request->get('id_responsabilidades')) {
+            $responsabilidades = implode(",", $request->get('id_responsabilidades'));
+        }
+
+        try {
+            $nit = Nits::create([
+                'id_tipo_documento' => $request->get('id_tipo_documento'),
+                'id_vendedor' => $request->get('id_vendedor'),
+                'id_responsabilidades' => $responsabilidades,
+                'id_actividad_economica' => $request->get('id_actividad_economica'),
+                'numero_documento' => $request->get('numero_documento'),
+                'tipo_contribuyente' => $request->get('id_tipo_documento') == '6' ? 1 : 2,
+                'primer_apellido' => $request->get('primer_apellido'),
+                'segundo_apellido' => $request->get('segundo_apellido'),
+                'primer_nombre' => $request->get('primer_nombre'),
+                'otros_nombres' => $request->get('otros_nombres'),
+                'razon_social' => $request->get('razon_social'),
+                'direccion' => $request->get('direccion'),
+                'email' => $request->get('email'),
+                'email_1' => $request->get('email_1'),
+                'email_2' => $request->get('email_2'),
+                'telefono_1' => $request->get('telefono_1'),
+                'porcentaje_aiu' => $request->get('porcentaje_aiu'),
+                'porcentaje_reteica' => $request->get('porcentaje_reteica'),
+                'id_ciudad' => $request->get('id_ciudad'),
+                'observaciones' => $request->get('observaciones'),
+                // 'declarante' => $request->get('declarante'),
+                'sumar_aiu' => $request->get('sumar_aiu'),
+                'proveedor' => $request->get('proveedor') ? 1 : 0,
+                'plazo' => 0,
+                'created_by' => request()->user()->id,
+                'updated_by' => request()->user()->id,
+            ]);
+
+            if($request->avatar) {
+                $image = $request->avatar;
+                $ext = explode(";", explode("/",explode(",", $image)[0])[1])[0];
+                $image = str_replace('data:image/'.$ext.';base64,', '', $image);
+                $image = str_replace(' ', '+', $image);
+                $imageName = 'profile_'.$nit->id.'_'.uniqid().'.'. $ext;
+                Storage::disk('do_spaces')->put('imagen/profile/'.$imageName, base64_decode($image), 'public');
+                $nit->logo_nit = 'imagen/profile/'.$imageName;
+                $nit->save();
+            }
+
+			DB::connection('sam')->commit();
+    
+            return response()->json([
+                'success'=>	true,
+                'data' => $nit,
+                'message'=> 'Nit creado con exito!'
+            ]);
+
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
+    }
+
     private function createFacturaVenta ($request)
     {
         $this->calcularTotales($request->get('productos'));
         $this->calcularFormasPago($request->get('pagos'));
         $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
-        
+
         $venta = FacVentas::create([
             'id_cliente' => $request->get('id_cliente'),
             'id_resolucion' => $request->get('id_resolucion'),
@@ -1313,7 +1427,8 @@ class PosController extends Controller
     {
         return FacFormasPago::where('id', $id_forma_pago)
             ->with(
-                'cuenta'
+                'cuenta',
+                'tipoFormaPago'
             )
             ->first();
     }

@@ -13,8 +13,13 @@ class FacTipoFormasPago extends Model
 
     protected $table = "fac_tipo_formas_pagos";
 
+    public const EFECTIVO = 10;
+    public const CHEQUE = 20;
+
     protected $fillable = [ 
         'codigo',
         'nombre'
     ];
 }
+
+

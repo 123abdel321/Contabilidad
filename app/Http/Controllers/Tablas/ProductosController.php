@@ -616,6 +616,7 @@ class ProductosController extends Controller
         $recordarUltimoPrecio = VariablesEntorno::where('nombre', 'recordar_ultimo_precio_venta')->first();
         $recordarUltimoPrecio = $recordarUltimoPrecio ? $recordarUltimoPrecio->valor : null;
         $idCliente = $request->get('id_cliente', null);
+        $idBodega = $request->get('id_bodega', null);
         
         $producto = FacProductos::select(
                 \DB::raw('*'),
@@ -676,6 +677,12 @@ class ProductosController extends Controller
             $producto->where(function ($query) use ($search) {
                 $query->where('codigo', 'LIKE', "%{$search}%")
                     ->orWhere('nombre', 'LIKE', "%{$search}%");
+            });
+        }
+
+        if ($idBodega) {
+            $producto->whereHas('inventarios', function ($query) use ($idBodega) {
+                $query->where('id_bodega', $idBodega);
             });
         }
 

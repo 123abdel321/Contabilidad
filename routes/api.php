@@ -132,6 +132,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
             Route::post('pedido', 'pedido');
             Route::post('venta', 'venta');
+            Route::post('nit', 'createNit');
 
             Route::delete('pedidos', 'deletePedido');
         });
