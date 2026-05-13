@@ -104,26 +104,49 @@
                             </button>
                             </h2>
                             <div id="collapsePermisosUsuarios" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionDatosUsuarios">
-                                <div class="accordion-body row">
-                                    
-                                    @foreach ($componentes as $componente)
-                                        @foreach ($componente->menus as $menu)
-                                            @if (count($menu->permisos) > 0)
-                                            <div class="col-12 col-sm-6 col-md-6 row">
-                                                <div class="col-12" style="margin-top: 5px;">
-                                                    <h6>{{$menu->padre->nombre}} > {{$menu->nombre}}</h6>
-                                                    @foreach ($menu->permisos as $permisos)
-                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" name="permiso_{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" id="permiso_{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}" style="height: 20px;">
-                                                            <label class="form-check-label" for="{{explode(' ', $permisos->name)[0]}}_{{explode(' ', $permisos->name)[1]}}">{{explode(' ', $permisos->name)[1]}}</label>
+                                
+                                <div class="accordion-body">
+                                    <div class="row g-2">
+                                        @foreach ($componentes as $componente)
+                                            @foreach ($componente->menus as $menu)
+                                                @if (count($menu->permisos) > 0)
+                                                    <div class="col-12 col-md-6">
+                                                        <div class="card shadow-sm border-0 mb-2">
+                                                            <div class="card-header bg-white py-1 px-2 d-flex justify-content-between align-items-center border-0">
+                                                                <h6 class="mb-0 text-primary small">{{ $menu->padre->nombre }} > {{ $menu->nombre }}</h6>
+                                                                <div class="form-check form-switch">
+                                                                    <input class="form-check-input select-all-permisos" type="checkbox"
+                                                                        id="selectAll_{{ $menu->id }}" data-menu="{{ $menu->id }}">
+                                                                    <label class="form-check-label small text-muted" for="selectAll_{{ $menu->id }}">
+                                                                        Todo
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-body p-2">
+                                                                @foreach ($menu->permisos as $permiso)
+                                                                    @php
+                                                                        $partes = explode(' ', $permiso->name);
+                                                                        $permisoId = $partes[0] . '_' . $partes[1];
+                                                                    @endphp
+                                                                    <div class="form-check form-switch mb-1">
+                                                                        <input class="form-check-input permiso-item" type="checkbox"
+                                                                            name="permiso_{{ $permisoId }}"
+                                                                            id="permiso_{{ $permisoId }}"
+                                                                            data-menu="{{ $menu->id }}">
+                                                                        <label class="form-check-label small" for="permiso_{{ $permisoId }}">
+                                                                            {{ ucfirst($partes[1]) }}
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
                                                         </div>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                            @endif
+                                                    </div>
+                                                @endif
+                                            @endforeach
                                         @endforeach
-                                    @endforeach
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
 

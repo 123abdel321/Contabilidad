@@ -80,6 +80,8 @@ function usuariosInit() {
             const bodegas = permisos.length > 0 && permisos[0].ids_bodegas_responsable ? permisos[0].ids_bodegas_responsable.split(',') : [];
             const resoluciones = permisos.length > 0 && permisos[0].ids_resolucion_responsable ? permisos[0].ids_resolucion_responsable.split(',') : [];
 
+            console.log(permisos);
+
             $('#password_usuario').val('');
             $('#password_confirm').val('');
             $("#id_usuarios_up").val(data.id);
@@ -99,6 +101,7 @@ function usuariosInit() {
                 $('#permiso_'+nombrePermiso).prop('checked', true);
             });
     
+            $('.permiso-item').trigger('change');
             $("#usuariosFormModal").modal('show');
         });
     }
@@ -360,3 +363,26 @@ function clearPermisos() {
         $('#permiso_'+permiso.name).prop('checked', false);
     });
 }
+
+$('#usuariosFormModal').on('change', '.select-all-permisos', function() {
+    const isChecked = $(this).prop('checked');
+    const menuId = $(this).data('menu');
+    
+    // Buscar todos los permisos hijos que pertenecen a este mismo menú
+    $(this).closest('.card').find('.permiso-item').prop('checked', isChecked);
+});
+
+$('#usuariosFormModal').on('change', '.permiso-item', function() {
+    const card = $(this).closest('.card');
+    const total = card.find('.permiso-item').length;
+    const checked = card.find('.permiso-item:checked').length;
+    const selectAllCheckbox = card.find('.select-all-permisos');
+    
+    if (checked === 0) {
+        selectAllCheckbox.prop('checked', false).prop('indeterminate', false);
+    } else if (checked === total) {
+        selectAllCheckbox.prop('checked', true).prop('indeterminate', false);
+    } else {
+        selectAllCheckbox.prop('indeterminate', true); // estado intermedio visual
+    }
+});

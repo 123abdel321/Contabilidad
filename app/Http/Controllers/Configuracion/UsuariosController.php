@@ -75,10 +75,7 @@ class UsuariosController extends Controller
         
         // Consulta base: usuarios que pertenecen a la empresa actual
         $usuarios = User::orderBy($columnName, $columnSortOrder)
-            ->with(['roles', 'permissions'])
-            ->whereHas('empresasExternas', function ($query) use ($idEmpresa) {
-                $query->where('id_empresa', $idEmpresa);
-            })
+            ->with(['roles', 'permissions', 'permisos'])
             ->withWhereHas('permisos', function ($query) use ($idEmpresa) {
                 $query->where('id_empresa', $idEmpresa);
             })
@@ -382,14 +379,18 @@ class UsuariosController extends Controller
             }
             $usuario->syncRoles($rol);
             $usuario->syncPermissions($permisos);
+            
+            $permisos = implode(',', $permisos) ?: null;
+            $bodegas = implode(',', (array) $request->get('id_bodega')) ?: null;
+            $resoluciones = implode(',', (array) $request->get('id_resolucion')) ?: null;
 
             UsuarioPermisos::updateOrCreate([
                 'id_user' => $usuario->id,
                 'id_empresa' => $request->user()['id_empresa']
             ],[
-                'ids_permission' => implode(',', $permisos),
-                'ids_bodegas_responsable' => implode(",", $request->get('id_bodega')),
-                'ids_resolucion_responsable' => implode(",", $request->get('id_resolucion')),
+                'ids_permission' => $permisos,
+                'ids_bodegas_responsable' => $bodegas,
+                'ids_resolucion_responsable' => $resoluciones,
             ]);
 
             DB::connection('sam')->commit();
