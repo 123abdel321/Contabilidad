@@ -41,6 +41,7 @@ use App\Models\Sistema\PlanCuentasTipo;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\FacVentaDetalles;
+use App\Models\Sistema\FacTipoFormasPago;
 use App\Models\Sistema\FacPedidoDetalles;
 use App\Models\Sistema\DocumentosGeneral;
 use App\Models\Sistema\FacProductosBodegas;
