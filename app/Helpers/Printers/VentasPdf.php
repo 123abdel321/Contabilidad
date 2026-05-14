@@ -107,6 +107,8 @@ class VentasPdf extends AbstractPrinterPdf
 			$mensajeVentasRegimen = $mensajeVentasRegimen ? $mensajeVentasRegimen->valor : NULL;
         }
 
+		$usuario = request()->user() ? request()->user()->username : 'Portafolio ERP';
+
         return [
 			'asunto' => 'Factura de venta '.$this->venta->documento_referencia,
 			'empresa' => $this->empresa,
@@ -119,7 +121,7 @@ class VentasPdf extends AbstractPrinterPdf
 			'observacion' => $this->venta->observacion,
 			'mensaje_regimen' => $mensajeVentasRegimen,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
-			'usuario' => request()->user()->username,
+			'usuario' => $usuario,
 			'observacion_general' => $observacion_general,
 			'total_factura' => number_format($this->venta->total_factura)
 		];

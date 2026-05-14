@@ -202,6 +202,7 @@ class NitController extends Controller
 
         try {
 
+            $responsabilidades = null;
             $tipoDocumento = TipoDocumentos::find($request->get('id_tipo_documento'));
             if ($tipoDocumento && $tipoDocumento->codigo == '31') {
                 $responsabilidades = '5, 7';
