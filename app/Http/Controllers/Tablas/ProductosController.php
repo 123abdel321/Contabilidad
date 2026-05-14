@@ -761,10 +761,15 @@ class ProductosController extends Controller
             $producto->where('id_familia', $request->get("id_familia"));
         }
 
-        if ($request->has("id_bodega")) {
-            $producto->with(['inventarios' => function ($query) use ($request) {
-                $query->where('id_bodega', $request->get("id_bodega"));
-            }]);
+        if ($request->has('id_bodega')) {
+            $producto->with([
+                'inventarios' => function ($query) use ($request) {
+                    $query->where(function ($q) use ($request) {
+                        $q->where('id_bodega', $request->get('id_bodega'))
+                        ->orWhereNull('id_bodega');
+                    });
+                }
+            ]);
         } else {
             $producto->with('inventarios');
         }
