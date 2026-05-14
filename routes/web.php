@@ -84,8 +84,10 @@ use App\Http\Controllers\Importador\NitsImportadorController;
 use App\Http\Controllers\Importador\ProductoImportadorController;
 use App\Http\Controllers\Importador\DocumentosImportadorController;
 
-// use App\Models\Sistema\PlanCuentas;
-// use App\Models\Sistema\ConPlanCuentas;
+use App\Models\Sistema\FacProductos;
+use App\Models\Sistema\FacBodegas;
+use App\Models\Sistema\FacProductosBodegas;
+use Illuminate\Support\Facades\DB;
 
 
 
@@ -171,6 +173,38 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 	
 	//SISTEMA
 	Route::group(['middleware' => ['clientconnectionweb']], function () {
+
+		Route::get('/productos-primera-bodega', function () {
+			DB::connection('sam')->transaction(function () {
+
+				// Primera bodega encontrada
+				$bodega = FacBodegas::query()
+					->orderBy('id')
+					->first();
+
+				if (!$bodega) {
+					throw new \Exception('No hay bodegas registradas');
+				}
+
+				// Productos que NO tienen inventario en ninguna bodega
+				$productos = FacProductos::query()
+					->whereDoesntHave('inventarios')
+					->get();
+
+				foreach ($productos as $producto) {
+
+					FacProductosBodegas::create([
+						'id_producto' => $producto->id,
+						'id_bodega'   => $bodega->id,
+						'inventario'  => 0,
+						'created_by'  => auth()->id(),
+						'updated_by'  => auth()->id(),
+					]);
+				}
+			});
+
+			return 'Productos asignados correctamente';
+		});
 		// >> INFORMES <<
 		Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 		Route::get('/home', [HomeController::class, 'index'])->name('home');
