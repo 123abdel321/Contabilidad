@@ -83,6 +83,8 @@ class PedidosPdf extends AbstractPrinterPdf
 			return $detalle->observacion !== null && trim($detalle->observacion) !== '';
 		});
 
+		$usuario = request()->user() ? request()->user()->username : 'POS Portafolio ERP';
+
         return [
 			'empresa' => $this->empresa,
 			'cliente' => $this->pedido->cliente,
@@ -92,7 +94,7 @@ class PedidosPdf extends AbstractPrinterPdf
 			'impuestosIva' => $impuestosIva,
 			'has_observacion' => $has_observacion,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
-			'usuario' => request()->user()->username,
+			'usuario' => $usuario,
 			// 'observacion_general' => $observacion_general,
 			'total_pedido' => number_format($this->pedido->total_factura)
 		];
