@@ -67,7 +67,7 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
-		// dd($params, json_encode($params));		
+		// dd($params, json_encode($params));
 		$url = $this->getUrl() . $setTestId;
 
 		$response = Http::withHeaders([
@@ -275,9 +275,7 @@ abstract class AbstractFESender
 			"reteFuente" => [],
 		];
 		//AGREGAR DETALLE DE LOS ITEMS
-		
 		foreach ($this->detalles as $detalle) {
-			
 			foreach ($taxs as $tax) {
 
 				switch ($tax) {
@@ -307,11 +305,10 @@ abstract class AbstractFESender
 					$data["tax_amount"] =  number_format($data["tax_amount"] + $impuesto['tax_amount'], 2, '.', '');
 					$data["taxable_amount"] = number_format($data["taxable_amount"] + $impuesto['taxable_amount'], 2, '.', '');
 				} else if (!$data["tax_subtotal"]) { // SI SON DIFERENTES % Y NO SE HA CREADO EL []SUBTOTAL
-					// $data["tax_subtotal"][] = $this->decoreTax($data);
+					$data["tax_subtotal"][] = $this->decoreTax($data);
 					$data["percent"] = 0;
 					$data["tax_subtotal"][] = $this->decoreTax($impuesto);
 				} else { // SI SON DIFERENTES % Y YA SE CREO EL []SUBTOTAL
-
 					$exists = false;
 					foreach ($data["tax_subtotal"] as $k => $tax_subtotal) { //BUSCAR [KEY] CORRESPONDIENTE AL %
 						if ($tax_subtotal["percent"] == $impuesto['percent']) {
@@ -335,7 +332,6 @@ abstract class AbstractFESender
 					$data["tax_amount"] += $v["tax_amount"];
 					$data["taxable_amount"] += $v["taxable_amount"];
 				}
-				$data["taxable_amount"] = number_format($data["taxable_amount"], 2, '.', '');
 			}
 			if ($data) $decoreTax[$key] = $data;
 		}
