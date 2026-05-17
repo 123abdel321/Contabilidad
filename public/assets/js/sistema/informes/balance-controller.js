@@ -30,29 +30,7 @@ function balanceInit() {
             monthNames: moment.months(),
             firstDay: 1
         },
-        ranges: {
-            "Hoy": [moment().startOf('day'), moment().endOf('day')],
-            "Ayer": [
-                moment().subtract(1, "days").startOf("day"),
-                moment().subtract(1, "days").endOf("day")
-            ],
-            "Últimos 7 días": [
-                moment().subtract(6, "days").startOf("day"),
-                moment().endOf("day")
-            ],
-            "Últimos 30 días": [
-                moment().subtract(29, "days").startOf("day"),
-                moment().endOf("day")
-            ],
-            "Este mes": [
-                moment().startOf("month").startOf("day"),
-                moment().endOf("month").endOf("day")
-            ],
-            "Mes anterior": [
-                moment().subtract(1, "month").startOf("month").startOf("day"),
-                moment().subtract(1, "month").endOf("month").endOf("day")
-            ]
-        }
+        ranges: rangoFechas
     }, function(start, end) {
         formatoFecha(start, end, "fecha_manual_balance");
     });
@@ -60,7 +38,6 @@ function balanceInit() {
     formatoFecha(start, end, "fecha_manual_balance");
 
     $("#fecha_manual_balance").on('change blur', function() {
-        console.log('adasdsss');
         parseManualInput($(this).val(), "fecha_manual_balance");
     });
 
@@ -403,9 +380,15 @@ function getNivel() {
 }
 
 function GenerateBalance() {
+
+    const picker = $('#fecha_manual_balance').data('daterangepicker');
+    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
+    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
+
     var url = base_url + 'balances';
-    url+= '?fecha_desde='+$('#fecha_desde_balance').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_balance').val();
+
+    url+= '?fecha_desde='+fecha_desde;
+    url+= '&fecha_hasta='+fecha_hasta;
     url+= '&cuenta_desde='+$('#cuenta_desde_balance').val();
     url+= '&cuenta_hasta='+$('#cuenta_hasta_balance').val();
     url+= '&tipo='+$('#tipo_informe_balance').val();

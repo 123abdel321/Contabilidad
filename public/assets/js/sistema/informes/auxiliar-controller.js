@@ -337,9 +337,15 @@ function cargarFechasAuxiliar() {
             firstDay: 1
         },
         ranges: rangoFechas
-    }, formatoFecha);
+    }, function(start, end) {
+        formatoFecha(start, end, "fecha_manual_auxiliar");
+    });
 
     formatoFecha(start, end, "fecha_manual_auxiliar");
+
+    $("#fecha_manual_auxiliar").on('change blur', function() {
+        parseManualInput($(this).val(), "fecha_manual_auxiliar");
+    });
 }
 
 $(document).on('click', '#generarAuxiliar', function () {
@@ -521,6 +527,7 @@ function GenerateAuxiliar() {
     url+= '&fecha_hasta='+fecha_hasta;
     url+= '&id_cuenta='+$('#id_cuenta_auxiliar').val();
     url+= '&generar='+generarAuxiliar;
+    
     auxiliar_table.ajax.url(url).load(function(res) {
         if(res.success) {
             agregarToast('info', 'Generando cartera', 'En un momento se le notificará cuando el informe esté generado...', true );
