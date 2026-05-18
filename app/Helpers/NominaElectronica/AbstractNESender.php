@@ -14,15 +14,15 @@ abstract class AbstractNESender
 {
     protected $empleado;
 	protected $periodosPagos;
-	protected $nomElectronicaId;
+	protected $consecutivo;
 	protected $nomElectronicaProcesada;
     protected $url = "https://fe.portafolioerp.com/api/ubl2.1";
 
-    public function __construct($empleadoId, $periodosPagoIds, $nomElectronicaId, $nomProcesada = null)
+    public function __construct($empleadoId, $periodosPagoIds, $consecutivo, $nomProcesada = null)
     {
         $this->empleado = $this->loadEmpleado($empleadoId);
         $this->periodosPagos = $this->loadPeriodosPagos($periodosPagoIds);
-        $this->nomElectronicaId = $nomElectronicaId;
+        $this->consecutivo = $consecutivo;
         $this->nomElectronicaProcesada = $nomProcesada;
     }
 
@@ -65,16 +65,17 @@ abstract class AbstractNESender
         [$bearerToken, $setTestId] = $this->getConfigApiNE();
         $params = $this->getParams();
 
-        dd($params);
+        dd(json_encode($params));
     }
 
     public function getParams(): array
 	{
 		return array_merge($this->getExtraParams(), array(
+            'prefix' => 'BGNI',
+			'consecutive' => $this->consecutivo,
 			'period' => $this->period(),
 			'worker_code' => $this->empleado->numero_documento,
-			'consecutive' => $this->nomElectronicaId,
-			'payroll_period_id' => '4',
+			'payroll_period_id' => '4', // Quincenal
 			'worker' => $this->worker(),
             'payment' => $this->payment(),
 			'payment_dates' => $this->paymentDates(),
@@ -144,8 +145,8 @@ abstract class AbstractNESender
 			'middle_name' => $this->empleado->otros_nombres ?? '',
 			'address' =>  $this->empleado->direccion ?? '',
 			'integral_salarary' => $this->empleado->contrato_actual->tipo_salario == NomContratos::TIPO_SALARIO_INTEGRAL ?? false,
-			'salary' => floatval(number_format($this->empleado->contrato_actual->salario ?? 0, 2, '.', ''))
-            
+			'salary' => floatval(number_format($this->empleado->contrato_actual->salario ?? 0, 2, '.', '')),
+            'email' => $this->empleado->email ?? ''
 		];
 	}
 
@@ -154,7 +155,7 @@ abstract class AbstractNESender
         return [
             'payment_method_id' => '10',
             'bank_name' => $this->empleado->banco ? $this->empleado->banco->nombre : '',
-            'account_type' => $this->empleado->tipo_cuenta_banco ? 'Ahorro' : 'Corriente',
+            'account_type' => $this->empleado->tipo_cuenta_banco ? 'AHORROS' : 'CORRIENTE',
             'account_number' => $this->empleado->cuenta_bancaria
         ];
     }

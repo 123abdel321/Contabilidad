@@ -292,9 +292,9 @@ class CausarNominaController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        DB::connection('sam')->beginTransaction();
-
         try {
+
+            DB::connection('sam')->beginTransaction();
 
             $periodosPago = NomPeriodoPagos::with([
                     'detalles.concepto',

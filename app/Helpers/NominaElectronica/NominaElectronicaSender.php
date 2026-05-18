@@ -15,8 +15,7 @@ class NominaElectronicaSender extends AbstractNESender
 	{
 		return [
 			'type_document_id' => 9,
-			'prefix' => 'BGNI',
-			'notes' => 'ENVIO DE NOMINA ELECTRONICA INDIVIDUAL',
+			'notes' => 'NOMINA ELECTRONICA INDIVIDUAL',
 		];
 	}
 

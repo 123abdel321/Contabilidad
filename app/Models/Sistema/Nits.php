@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 //MODELS
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\Nomina\NomContratos;
+use App\Models\Sistema\Nomina\NomElectronica;
+use App\Models\Empresas\Paises;
+use App\Models\Empresas\Ciudades;
+use App\Models\Empresas\Departamentos;
+use App\Models\Empresas\ActividadesEconomicas;
 
 class Nits extends Model
 {
@@ -82,32 +87,42 @@ class Nits extends Model
     }
 
 	public function ciudad() {
-		return $this->belongsTo('App\Models\Empresas\Ciudades', 'id_ciudad', 'id');
+		return $this->belongsTo(Ciudades::class, 'id_ciudad', 'id');
 	}
 
 	public function departamento() {
-		return $this->belongsTo('App\Models\Empresas\Departamentos', 'id_departamento', 'id');
+		return $this->belongsTo(Departamentos::class, 'id_departamento', 'id');
 	}
 	
 	public function pais() {
-		return $this->belongsTo('App\Models\Empresas\Paises', 'id_pais', 'id');
+		return $this->belongsTo(Paises::class, 'id_pais', 'id');
 	}
 
 	public function actividad_economica() {
-		return $this->belongsTo('App\Models\Empresas\ActividadesEconomicas', 'id_actividad_economica', 'id');
+		return $this->belongsTo(ActividadesEconomicas::class, 'id_actividad_economica', 'id');
 	}
 
 	public function getNombreCompletoAttribute()
 	{
 		if($this->razon_social) return $this->razon_social;
 
-		return "$this->primer_nombre $this->otros_nombres $this->primer_apellido $this->segundo_apellido";
+		return trim(implode(' ', array_filter([$this->primer_nombre, $this->otros_nombres, $this->primer_apellido, $this->segundo_apellido])));
 	}
 
 	public function contrato()
     {
         return $this->belongsTo(NomContratos::class, "id", "id_empleado");
     }
+
+	public function contrato_actual()
+	{
+		return $this->belongsTo(NomContratos::class, "id", "id_empleado")->where("estado", 1);
+	}
+
+	public function electronica()
+	{
+		return $this->belongsTo(NomElectronica::class, "id", "id_empleado")->orderBy('id', 'DESC');
+	}
 
 	protected function getTextAttribute()
     {

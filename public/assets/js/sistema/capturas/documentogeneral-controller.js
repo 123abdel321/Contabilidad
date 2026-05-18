@@ -1233,7 +1233,7 @@ function buscarExtractoDg(idRow) {
                 editando: editandoCaptura,
                 id_tipo_cuenta: id_tipo_cuenta,
                 id_nit: $('#combo_nits_'+idRow).val(),
-                fecha_manual: fechaHoraManual,
+                fecha_manual: '',
             },
             headers: headers,
             dataType: 'json',

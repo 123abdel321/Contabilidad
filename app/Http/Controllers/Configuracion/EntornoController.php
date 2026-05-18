@@ -58,6 +58,7 @@ class EntornoController extends Controller
                 'precio_ponderado',
                 'porcentaje_iva_aiu',
                 'redondeo_gastos',
+                'redondeo_nomina',
                 'ubicacion_maximoph',
                 'cuenta_utilidad',
                 'cuenta_perdida',

@@ -714,8 +714,10 @@ function changeConceptoGasto(idGasto) {
             }
         }
     } else {
+        console.log('data: ',data);
         if (data.cuenta_retencion && data.cuenta_retencion.impuesto) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion.impuesto.id);
+            console.log('existe: ',existe);
             if (!existe || existe < 0) {
                 retencionesGasto.push({
                     cuenta: data.cuenta_retencion.cuenta,

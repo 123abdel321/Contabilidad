@@ -38,10 +38,11 @@ class NomContratos extends Model
 	const TIPO_EMPLEADO_VENTAS = 2;
 	const TIPO_EMPLEADO_OTROS = 3;
 
-    const TIPO_TERMINO_INDEFINIDO = 0;
     const TIPO_TERMINO_FIJO = 1;
-    const TIPO_TERMINO_OBRA_LABOR = 2;
-    const TIPO_TERMINO_TRANSITORIO = 3;
+    const TIPO_TERMINO_INDEFINIDO = 2;
+    const TIPO_TERMINO_OBRA_LABOR = 3;
+    const TIPO_TERMINO_APRENDIZAJE = 4;
+    const TIPO_TERMINO_OCASIONAL = 5;
 
     protected $fillable = [
         'id_empleado',

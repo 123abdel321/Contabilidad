@@ -91,6 +91,11 @@ function cargarVariablesDeEntorno() {
             continue;
         }
 
+        if (variable.nombre == 'redondeo_nomina') {
+            $('#redondeo_nomina').val(variable.valor);
+            continue;
+        }
+
         if (variable.nombre == 'cuenta_utilidad') {
             $('#cuenta_utilidad').val(variable.valor);
             continue;
@@ -441,6 +446,7 @@ $(document).on('click', '#updateEntorno', function () {
         valor_uvt: $('#valor_uvt').val(),
         porcentaje_iva_aiu: $('#porcentaje_iva_aiu').val(),
         redondeo_gastos: $('#redondeo_gastos').val(),
+        redondeo_nomina: $('#redondeo_nomina').val(),
         cuenta_utilidad: $('#cuenta_utilidad').val(),
         cuenta_perdida: $('#cuenta_perdida').val(),
         fecha_ultimo_cierre: $('#fecha_ultimo_cierre').val(),

@@ -20,6 +20,7 @@
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent" style="background-color: white;">
+
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
                         <div class="row" style="margin-top: 10px; padding-left: 10px;">
@@ -88,6 +89,7 @@
                         <br/>
 
                     </div>
+
                     <div class="tab-pane fade" id="facturacion" role="tabpanel" aria-labelledby="facturacion-tab">
 
                         <div class="row" style="margin-top: 10px; padding-left: 10px;">
@@ -142,6 +144,7 @@
                         </div>
 
                     </div>
+
                     <div class="tab-pane fade" id="nomina" role="tabpanel" aria-labelledby="nomina-tab">
                         <div class="row" style="margin-top: 10px; padding-left: 10px;">
 
@@ -194,6 +197,11 @@
                                     <option value="ahorros">Ahorros</option>
                                     <option value="corrientes">Corrientes</option>
                                 </select>
+                            </div>
+
+                            <div class="form-group col-12 col-sm-6 col-md-4" >
+                                <label for="redondeo_nomina" class="form-control-label">Redondeo Nomina</label>
+                                <input type="number" class="form-control form-control-sm" name="redondeo_nomina" id="redondeo_nomina">
                             </div>
 
                             <div class="form-group col-12 col-sm-6 col-md-4" >
@@ -284,8 +292,7 @@
                             </div>
                         </div>
                         <br/>
-                    </div>  
-
+                    </div>
                     
                 </div>
                 <div style="background-color: white;">
