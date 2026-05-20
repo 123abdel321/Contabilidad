@@ -245,7 +245,10 @@ abstract class AbstractFESender
 		
 		foreach ($this->detalles as $key => $detalle) {
 
-		 	$line_extension_amount = ($detalle->costo * $detalle->cantidad) - $detalle->descuento_valor;
+		 	$line_extension_amount = $this->iva_inluido ? 
+				($detalle->costo * $detalle->cantidad) - $detalle->descuento_valor :
+				$detalle->subtotal;
+
 			$price_amount = number_format($detalle->costo * (1 + ($detalle->iva_porcentaje / 100)), 2, '.', ''); // Con IVA calculado
 
 			$invoiceLines[] = [
@@ -258,8 +261,8 @@ abstract class AbstractFESender
 				"description" => $detalle->producto->nombre, // Descripcion del producto
 				"code" => $detalle->producto->codigo, // (SKU) Codigo del producto
 				"type_item_identification_id" => 1, //
-				"price_amount" => $detalle->costo, // Precio total del producto incluyendo impuestos
-				"base_quantity" => 1 // unidad base
+				"price_amount" => $detalle->total, // Precio total del producto incluyendo impuestos
+				"base_quantity" => $detalle->cantidad // unidad base
 			];
 		}
 		return $invoiceLines;
