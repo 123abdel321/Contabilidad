@@ -485,7 +485,8 @@ class VentaController extends Controller
                         return response()->json([
                             "success"=>false,
                             'data' => [],
-                            "message" => $ventaElectronica["error_message"] 
+                            "message" => $ventaElectronica["error_message"],
+                            "json" => $ventaElectronica["json_response"]
                         ], Response::HTTP_UNPROCESSABLE_ENTITY);
                     }
                 }
