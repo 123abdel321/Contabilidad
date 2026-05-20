@@ -67,7 +67,7 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
-		
+		// dd($params, json_encode($params));
 		$url = $this->getUrl() . $setTestId;
 
 		$response = Http::withHeaders([
@@ -139,6 +139,7 @@ abstract class AbstractFESender
 					"status" => 500,
 					"message_object" => 'Error al generar la factura',
 					"error_message" => $erroresOrganizados,
+					'json_response' => json_encode($params),
 					"zip_key" => null
 				];
 			}
@@ -161,6 +162,7 @@ abstract class AbstractFESender
 				"status" => $data->status,
 				"message_object" => $statusDescription,
 				"error_message" => $errorMessage,
+				'json_response' => json_encode($params),
 				"zip_key" => $zipKey
 			];
 		}
@@ -182,6 +184,7 @@ abstract class AbstractFESender
 					"status" => $data->status,
 					"message_object" => $data->message,
 					"error_message" => $data->errors,
+					'json_response' => json_encode($params),
 					"zip_key" => null
 				];
 			}
@@ -190,6 +193,7 @@ abstract class AbstractFESender
 					"status" => 500,
 					"message_object" => $data->message,
 					"error_message" => $data->errors,
+					'json_response' => json_encode($params),
 					"zip_key" => null
 				];
 			}
@@ -245,10 +249,15 @@ abstract class AbstractFESender
 		
 		foreach ($this->detalles as $key => $detalle) {
 
-		 	$line_extension_amount = $this->iva_inluido ? $detalle->subtotal :
+		 	$line_extension_amount = $this->iva_inluido ?
+				$detalle->subtotal :
 				($detalle->costo * $detalle->cantidad) - $detalle->descuento_valor;
 
-			$price_amount = number_format($detalle->costo * (1 + ($detalle->iva_porcentaje / 100)), 2, '.', ''); // Con IVA calculado
+			$price_amount = $this->iva_inluido ? 
+				number_format($detalle->subtotal / $detalle->cantidad, 2, '.', '') :
+				(intval($detalle->iva_porcentaje)
+					? number_format($detalle->costo * (1 + ($detalle->iva_porcentaje / 100)), 2, '.', '')
+					: $detalle->costo);// Con IVA calculado
 
 			$invoiceLines[] = [
 				"unit_measure_id" => 642, // Unidad de medida que se maneja
@@ -260,7 +269,7 @@ abstract class AbstractFESender
 				"description" => $detalle->producto->nombre, // Descripcion del producto
 				"code" => $detalle->producto->codigo, // (SKU) Codigo del producto
 				"type_item_identification_id" => 1, //
-				"price_amount" => $detalle->costo, // Precio total del producto incluyendo impuestos
+				"price_amount" => $price_amount, // Precio total del producto incluyendo impuestos
 				"base_quantity" => 1 // unidad base
 			];
 		}
