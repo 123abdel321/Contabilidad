@@ -259,7 +259,7 @@ abstract class AbstractFESender
 				"code" => $detalle->producto->codigo, // (SKU) Codigo del producto
 				"type_item_identification_id" => 1, //
 				"price_amount" => $detalle->costo, // Precio total del producto incluyendo impuestos
-				"base_quantity" => $detalle->cantidad // unidad base
+				"base_quantity" => 1 // unidad base
 			];
 		}
 		return $invoiceLines;
