@@ -67,7 +67,7 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
-		// dd($params, json_encode($params));
+		
 		$url = $this->getUrl() . $setTestId;
 
 		$response = Http::withHeaders([
@@ -245,9 +245,8 @@ abstract class AbstractFESender
 		
 		foreach ($this->detalles as $key => $detalle) {
 
-		 	$line_extension_amount = $this->iva_inluido ? 
-				($detalle->costo * $detalle->cantidad) - $detalle->descuento_valor :
-				$detalle->subtotal;
+		 	$line_extension_amount = $this->iva_inluido ? $detalle->subtotal :
+				($detalle->costo * $detalle->cantidad) - $detalle->descuento_valor;
 
 			$price_amount = number_format($detalle->costo * (1 + ($detalle->iva_porcentaje / 100)), 2, '.', ''); // Con IVA calculado
 
@@ -261,8 +260,8 @@ abstract class AbstractFESender
 				"description" => $detalle->producto->nombre, // Descripcion del producto
 				"code" => $detalle->producto->codigo, // (SKU) Codigo del producto
 				"type_item_identification_id" => 1, //
-				"price_amount" => $detalle->total, // Precio total del producto incluyendo impuestos
-				"base_quantity" => $detalle->cantidad // unidad base
+				"price_amount" => $detalle->costo, // Precio total del producto incluyendo impuestos
+				"base_quantity" => 1 // unidad base
 			];
 		}
 		return $invoiceLines;
