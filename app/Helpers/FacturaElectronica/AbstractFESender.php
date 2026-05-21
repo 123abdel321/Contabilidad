@@ -455,7 +455,7 @@ abstract class AbstractFESender
 				'taxable_amount' => round($grupo['taxable_amount'], 2)
 			];
 		}
-		
+
 		// Si solo hay un porcentaje con impuesto (>0%), no necesita tax_subtotal
 		if (count($porcentajesConImpuesto) === 1) {
 			$grupo = reset($porcentajesConImpuesto);
@@ -483,8 +483,6 @@ abstract class AbstractFESender
 				'taxable_amount' => number_format(round($grupo['taxable_amount'], 2), 2, '.', '')
 			];
 		}
-
-		dd($taxSubtotal);
 		
 		return [
 			'tax_id' => $taxId,
