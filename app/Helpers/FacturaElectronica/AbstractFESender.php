@@ -440,56 +440,54 @@ abstract class AbstractFESender
 	 */
 	private function buildTaxTotal($taxId, $agrupados)
 	{
-		// Filtrar porcentajes que realmente generan impuesto (> 0%)
-		$porcentajesConImpuesto = array_filter($agrupados, function($grupo) {
-			return floatval($grupo['percent']) > 0;
-		});
-		
-		// Si no hay porcentajes con impuesto (>0%), es todo exento o gravado a 0%
-		if (empty($porcentajesConImpuesto)) {
-			$grupo = reset($agrupados);
-			return [
-				'tax_id' => $taxId,
-				'tax_amount' => round($grupo['tax_amount'], 2),
-				'percent' => floatval($grupo['percent']),
-				'taxable_amount' => round($grupo['taxable_amount'], 2)
-			];
-		}
-
-		// Si solo hay un porcentaje con impuesto (>0%), no necesita tax_subtotal
-		if (count($porcentajesConImpuesto) === 1) {
-			$grupo = reset($porcentajesConImpuesto);
-			return [
-				'tax_id' => $taxId,
-				'tax_amount' => round($grupo['tax_amount'], 2),
-				'percent' => floatval($grupo['percent']),
-				'taxable_amount' => round($grupo['taxable_amount'], 2)
-			];
+		// Determinar si existe al menos un porcentaje > 0
+		$existePorcentajePositivo = false;
+		foreach ($agrupados as $percent => $grupo) {
+			if (floatval($percent) > 0) {
+				$existePorcentajePositivo = true;
+				break;
+			}
 		}
 		
-		// Si hay múltiples porcentajes con impuesto (>0%), necesita tax_subtotal
+		// Seleccionar qué grupos van al subtotal
+		$gruposSubtotal = [];
 		$totalTaxAmount = 0;
 		$totalTaxableAmount = 0;
-		$taxSubtotal = [];
 		
-		foreach ($porcentajesConImpuesto as $percent => $grupo) {
-			$totalTaxAmount += $grupo['tax_amount'];
+		foreach ($agrupados as $percent => $grupo) {
+			// Acumular siempre el taxable_amount total (sin filtrar)
 			$totalTaxableAmount += $grupo['taxable_amount'];
 			
-			$taxSubtotal[] = [
-				'tax_id' => $taxId,
-				'tax_amount' => number_format(round($grupo['tax_amount'], 2), 2, '.', ''),
-				'percent' => number_format(floatval($percent), 2, '.', ''),
-				'taxable_amount' => number_format(round($grupo['taxable_amount'], 2), 2, '.', '')
-			];
+			// Decidir si este grupo va al subtotal
+			$incluirEnSubtotal = false;
+			if ($existePorcentajePositivo) {
+				// Si hay algún porcentaje >0, solo se incluyen los >0
+				if (floatval($percent) > 0) {
+					$incluirEnSubtotal = true;
+				}
+			} else {
+				// Si todos son 0%, se incluyen todos (en este caso solo habrá 0%)
+				$incluirEnSubtotal = true;
+			}
+			
+			if ($incluirEnSubtotal) {
+				$totalTaxAmount += $grupo['tax_amount'];
+				$gruposSubtotal[] = [
+					'tax_id' => $taxId,
+					'tax_amount' => number_format(round($grupo['tax_amount'], 2), 2, '.', ''),
+					'percent' => number_format(floatval($percent), 2, '.', ''),
+					'taxable_amount' => number_format(round($grupo['taxable_amount'], 2), 2, '.', '')
+				];
+			}
 		}
 		
+		// Construir respuesta siempre con tax_subtotal
 		return [
 			'tax_id' => $taxId,
-			'percent' => 0,
 			'tax_amount' => round($totalTaxAmount, 2),
+			'percent' => 0,   // Siempre 0 cuando hay tax_subtotal
 			'taxable_amount' => round($totalTaxableAmount, 2),
-			'tax_subtotal' => $taxSubtotal
+			'tax_subtotal' => $gruposSubtotal
 		];
 	}
 }
