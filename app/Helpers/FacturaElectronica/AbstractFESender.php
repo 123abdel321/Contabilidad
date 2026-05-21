@@ -67,7 +67,7 @@ abstract class AbstractFESender
 	{
 		[$bearerToken, $setTestId] = $this->getConfigApiFe();
 		$params = $this->getParams();
-		dd($params, json_encode($params));
+		// dd($params, json_encode($params));
 		$url = $this->getUrl() . $setTestId;
 
 		$response = Http::withHeaders([
