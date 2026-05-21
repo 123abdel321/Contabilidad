@@ -440,50 +440,25 @@ abstract class AbstractFESender
 	 */
 	private function buildTaxTotal($taxId, $agrupados)
 	{
-		// Separar porcentajes con impuesto (>0) y exentos (0)
-		$conImpuesto = [];
-		$exentos = [];
-		foreach ($agrupados as $percent => $grupo) {
-			if (floatval($percent) > 0) {
-				$conImpuesto[$percent] = $grupo;
-			} else {
-				$exentos[$percent] = $grupo;
-			}
-		}
-		
-		// Caso 1: No hay ningún porcentaje > 0 (todo exento)
-		if (empty($conImpuesto)) {
-			$grupo = reset($agrupados); // solo habrá un grupo con percent 0
+		// Si solo hay un porcentaje (único grupo), usar estructura simple
+		if (count($agrupados) === 1) {
+			$grupo = reset($agrupados);
 			return [
 				'tax_id' => $taxId,
 				'tax_amount' => round($grupo['tax_amount'], 2),
-				'percent' => 0.00,
+				'percent' => floatval($grupo['percent']),
 				'taxable_amount' => round($grupo['taxable_amount'], 2)
 			];
 		}
 		
-		// Sumar bases y montos solo de los porcentajes > 0
+		// Múltiples porcentajes (incluyendo 0% y positivos) → usar tax_subtotal
 		$totalTaxAmount = 0;
 		$totalTaxableAmount = 0;
-		foreach ($conImpuesto as $grupo) {
+		$taxSubtotal = [];
+		
+		foreach ($agrupados as $percent => $grupo) {
 			$totalTaxAmount += $grupo['tax_amount'];
 			$totalTaxableAmount += $grupo['taxable_amount'];
-		}
-		
-		// Caso 2: Un solo porcentaje > 0 (aunque haya exentos) → estructura simple sin tax_subtotal
-		if (count($conImpuesto) === 1) {
-			$unicoPorcentaje = array_keys($conImpuesto)[0];
-			return [
-				'tax_id' => $taxId,
-				'tax_amount' => round($totalTaxAmount, 2),
-				'percent' => (float) $unicoPorcentaje,
-				'taxable_amount' => round($totalTaxableAmount, 2)
-			];
-		}
-		
-		// Caso 3: Múltiples porcentajes > 0 → estructura con tax_subtotal (percent se pone a 0)
-		$taxSubtotal = [];
-		foreach ($conImpuesto as $percent => $grupo) {
 			$taxSubtotal[] = [
 				'tax_id' => $taxId,
 				'tax_amount' => number_format(round($grupo['tax_amount'], 2), 2, '.', ''),
