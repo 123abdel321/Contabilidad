@@ -366,7 +366,18 @@ abstract class AbstractFESender
 
 		//ACTUALIZAR FORMATOS
 		foreach ($decoreTax as $key => $value) {
+			// dd($value);
 			if (count($value)) {
+				if (count($value['tax_subtotal']) > 0) {
+					$tax_subtotal = [];
+					foreach ($value['tax_subtotal'] as $subtotal) {
+						if ((float)$subtotal['percent']) {
+							$tax_subtotal = $subtotal;
+						}
+					}
+
+					$value['tax_subtotal'] =  $tax_subtotal;
+				}
 				$taxTotals[] =  $value;
 			}
 		}
