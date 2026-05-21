@@ -278,7 +278,6 @@ abstract class AbstractFESender
 
 	public function taxTotals($taxs = [1, 5, 6])
 	{
-		$taxTotals = [];
 		//ESTRUCTURA A ENTREGAR
 		$dataTaxTotals = $decoreTax = [
 			"iva" => [],
@@ -304,84 +303,27 @@ abstract class AbstractFESender
 				}
 			}
 		}
-		//AGREGAR TOTALES
-		foreach ($dataTaxTotals as $key => $impuestos) {
-			$data = null;
 
-			foreach ($impuestos as $ke => $impuesto) {
-				if (!$data) { // ENTRA POR PRIMERA VEZ
-					$data = $this->decoreTax($impuesto);
-					$data["tax_subtotal"] = [];
-				} else if ($data["percent"] == $impuesto['percent']) { // ENCUENTRA EL MISMO %
-					$data["tax_amount"] =  number_format($data["tax_amount"] + $impuesto['tax_amount'], 2, '.', '');
-					$data["taxable_amount"] = number_format($data["taxable_amount"] + $impuesto['taxable_amount'], 2, '.', '');
-				} else if (!$data["tax_subtotal"]) { // SI SON DIFERENTES % Y NO SE HA CREADO EL []SUBTOTAL
-					$data["tax_subtotal"][] = $this->decoreTax($data);
-					// $data["percent"] = 0;
-					$data["tax_subtotal"][] = $this->decoreTax($impuesto);
-				} else { // SI SON DIFERENTES % Y YA SE CREO EL []SUBTOTAL
-					$exists = false;
-					foreach ($data["tax_subtotal"] as $k => $tax_subtotal) { //BUSCAR [KEY] CORRESPONDIENTE AL %
-						if ($tax_subtotal["percent"] == $impuesto['percent']) {
-							$exists = $k;
-						}
-					}
-					if ($exists == 0 || $exists) { //SUMAR EL %
-						$sumTax = $data["tax_subtotal"][$exists]["taxable_amount"] + $impuesto['taxable_amount'];
-						$data["tax_subtotal"][$exists]["tax_amount"] =
-						number_format($data["tax_subtotal"][$exists]["tax_amount"] + $impuesto['tax_amount'], 2, '.', '');
-						$data["tax_subtotal"][$exists]["taxable_amount"] = number_format($sumTax, 2, '.', '');
-					} else {
-						$data["tax_subtotal"][] = $this->decoreTax($impuesto);
-					}
-				}
-			}
-			
-			if ($data && $data['tax_subtotal'] && count($data['tax_subtotal']) > 0) { // SI TIENE SUBTOTAL VOLVER A CALCULAR
-				$porcentaje = 0;
-				$diferentesPorcentajes = false;
-
-				$data["tax_amount"] = 0;
-				$data["taxable_amount"] = 0;
-				foreach ($data['tax_subtotal'] as $k => $v) {
-
-					if ($porcentaje == 0 && (float)$v["tax_amount"]) {
-						$porcentaje = (float)$v["tax_amount"];
-					} else if ($porcentaje && (float)$v["tax_amount"]) {
-						$diferentesPorcentajes = true;
-					}
-
-					if ((float)$v["tax_amount"]) {
-						$data["tax_amount"] += $v["tax_amount"];
-						$data["taxable_amount"] += $v["taxable_amount"];
-					}
-				}
-
-				if ($diferentesPorcentajes) {
-					$data["percent"] = 0;
-				}
-			}
-			if ($data) $decoreTax[$key] = $data;
+		$taxTotals = [];
+    
+		// Procesar IVA (tax_id = 1)
+		if (!empty($dataTaxTotals['iva'])) {
+			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['iva']);
+			$taxTotals[] = $this->buildTaxTotal(1, $agrupados);
 		}
-
-		//ACTUALIZAR FORMATOS
-		foreach ($decoreTax as $key => $value) {
-			// dd($value);
-			if (count($value)) {
-				if (count($value['tax_subtotal']) > 0) {
-					$tax_subtotal = [];
-					foreach ($value['tax_subtotal'] as $subtotal) {
-						if ((float)$subtotal['percent']) {
-							$tax_subtotal = $subtotal;
-						}
-					}
-
-					$value['tax_subtotal'] =  $tax_subtotal;
-				}
-				$taxTotals[] =  $value;
-			}
+		
+		// Procesar RETE IVA (tax_id = 5)
+		if (!empty($dataTaxTotals['reteIva'])) {
+			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['reteIva']);
+			$taxTotals[] = $this->buildTaxTotal(5, $agrupados);
 		}
-
+		
+		// Procesar RETE FUENTE (tax_id = 6)
+		if (!empty($dataTaxTotals['reteFuente'])) {
+			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['reteFuente']);
+			$taxTotals[] = $this->buildTaxTotal(6, $agrupados);
+		}
+		
 		return $taxTotals;
 	}
 	/**
@@ -455,6 +397,83 @@ abstract class AbstractFESender
 			"tax_amount" => $data['tax_amount'],
 			"percent" => floatval($data['tax_amount']) > 0 ? $data['percent'] : '0.00',
 			"taxable_amount" => number_format($data['taxable_amount'], 2, '.', '')
+		];
+	}
+
+	/**
+	 * Agrupa los impuestos por porcentaje y suma las bases y montos
+	 * 
+	 * @param array $items
+	 * @return array
+	 */
+	private function agruparPorPorcentaje($items)
+	{
+		$agrupados = [];
+		
+		foreach ($items as $item) {
+			$percent = $item['percent'];
+			
+			if (!isset($agrupados[$percent])) {
+				$agrupados[$percent] = [
+					'tax_id' => $item['tax_id'],
+					'tax_amount' => 0,
+					'percent' => $percent,
+					'taxable_amount' => 0,
+					'items' => []
+				];
+			}
+			
+			$agrupados[$percent]['tax_amount'] += floatval($item['tax_amount']);
+			$agrupados[$percent]['taxable_amount'] += floatval($item['taxable_amount']);
+			$agrupados[$percent]['items'][] = $item;
+		}
+		
+		return $agrupados;
+	}
+
+	/**
+	 * Construye el objeto tax_total para la DIAN
+	 * 
+	 * @param int $taxId
+	 * @param array $agrupados
+	 * @return array
+	 */
+	private function buildTaxTotal($taxId, $agrupados)
+	{
+		// Si solo hay un porcentaje, no necesita tax_subtotal
+		if (count($agrupados) === 1) {
+			$grupo = reset($agrupados);
+			return [
+				'tax_id' => $taxId,
+				'tax_amount' => round($grupo['tax_amount'], 2),
+				'percent' => floatval($grupo['percent']),
+				'taxable_amount' => round($grupo['taxable_amount'], 2)
+			];
+		}
+		
+		// Si hay múltiples porcentajes, necesita tax_subtotal
+		$totalTaxAmount = 0;
+		$totalTaxableAmount = 0;
+		$taxSubtotal = [];
+		
+		foreach ($agrupados as $percent => $grupo) {
+			$totalTaxAmount += $grupo['tax_amount'];
+			$totalTaxableAmount += $grupo['taxable_amount'];
+			
+			$taxSubtotal[] = [
+				'tax_id' => $taxId,
+				'tax_amount' => number_format(round($grupo['tax_amount'], 2), 2, '.', ''),
+				'percent' => number_format(floatval($percent), 2, '.', ''),
+				'taxable_amount' => number_format(round($grupo['taxable_amount'], 2), 2, '.', '')
+			];
+		}
+		
+		return [
+			'tax_id' => $taxId,
+			'tax_amount' => round($totalTaxAmount, 2),
+			'percent' => null, // Múltiples porcentajes, no se usa
+			'taxable_amount' => round($totalTaxableAmount, 2),
+			'tax_subtotal' => $taxSubtotal
 		];
 	}
 }

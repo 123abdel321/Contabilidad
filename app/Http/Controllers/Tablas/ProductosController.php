@@ -49,22 +49,35 @@ class ProductosController extends Controller
         return view('pages.tablas.productos.productos-view', $data);
     }
 
-    public function generate (Request $request)
+    public function generate(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
+        $draw = $request->draw;
+        $start = $request->start;
         $rowperpage = 20;
+        $searchValue = $request->search;
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $searchValue = $request->get('search');
+        $baseQuery = FacProductos::query();
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        if ($searchValue) {
+            $baseQuery->where(function ($query) use ($searchValue) {
+                $query->where('nombre', 'like', "%{$searchValue}%")
+                    ->orWhere('codigo', 'like', "%{$searchValue}%")
+                    ->orWhereHas('inventarios.bodega', function ($q) use ($searchValue) {
+                        $q->where('nombre', 'like', "%{$searchValue}%")
+                        ->orWhere('codigo', 'like', "%{$searchValue}%");
+                    });
+            });
+        }
 
-        $productos = FacProductos::with(
+        $totalProductos = (clone $baseQuery)->count();
+
+        $productosIds = (clone $baseQuery)
+            ->orderByDesc('id')
+            ->skip($start)
+            ->take($rowperpage)
+            ->pluck('id');
+
+        $productos = FacProductos::with([
                 'variantes.variante',
                 'variantes.opcion',
                 'inventarios.bodega',
@@ -73,45 +86,26 @@ class ProductosController extends Controller
                 'hijos.variantes.variante',
                 'hijos.variantes.opcion',
                 'hijos.inventarios.bodega'
-            )
-            ->select(
-                '*',
-                DB::raw("DATE_FORMAT(fac_productos.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
-                DB::raw("DATE_FORMAT(fac_productos.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
-                'fac_productos.created_by',
-                'fac_productos.updated_by'
-            )
-            ->orderBy('id', 'desc');
+            ])
+            ->whereIn('id', $productosIds)
+            ->get();
 
-        if($searchValue) {
-            $productos->where('nombre', 'like', '%' .$searchValue . '%')
-                ->orWhere('codigo', 'like', '%' .$searchValue . '%')
-                ->orWhereHas('inventarios', function ($query) use($searchValue) {
-                    $query->whereHas('bodega', function ($q) use($searchValue) {
-                        $q->where('nombre', 'like', '%' .$searchValue . '%')
-                            ->orWhere('codigo', 'like', '%' .$searchValue . '%');
-                    });
-                });
-        }
-
-        $totalesProductos = [
-            'cantidad_productos' => count($this->queryTotalesProducto($searchValue)->groupBy('FP.id')->get()),
-            'total_costo' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FP.precio_inicial * FPB.cantidad) AS precio_inicial"))->first()->precio_inicial,
-            'total_precio' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FP.precio * FPB.cantidad) AS precio"))->first()->precio,
-            'total_productos' => $this->queryTotalesProducto($searchValue)->select(DB::raw("SUM(FPB.cantidad) AS total_productos"))->first()->total_productos,
-        ];
-
-        $totalProductos = $productos->count();
-        $productosPaginate = $productos->skip($start)
-            ->take($rowperpage);
+        $totales = $this->queryTotalesProducto($searchValue)
+            ->selectRaw("
+                COUNT(DISTINCT FP.id) AS cantidad_productos,
+                SUM(FP.precio_inicial * FPB.cantidad) AS total_costo,
+                SUM(FP.precio * FPB.cantidad) AS total_precio,
+                SUM(FPB.cantidad) AS total_productos
+            ")
+            ->first();
 
         return response()->json([
-            'success'=>	true,
+            'success' => true,
             'draw' => $draw,
-            'totalesProductos' => $totalesProductos,
+            'totalesProductos' => $totales,
             'iTotalRecords' => $totalProductos,
             'iTotalDisplayRecords' => $totalProductos,
-            'data' => $productosPaginate->get(),
+            'data' => $productos,
             'perPage' => $rowperpage,
             'message'=> 'Productos cargados con exito!'
         ]);
