@@ -440,8 +440,13 @@ abstract class AbstractFESender
 	 */
 	private function buildTaxTotal($taxId, $agrupados)
 	{
-		// Si solo hay un porcentaje, no necesita tax_subtotal
-		if (count($agrupados) === 1) {
+		// Filtrar porcentajes que realmente generan impuesto (> 0%)
+		$porcentajesConImpuesto = array_filter($agrupados, function($grupo) {
+			return floatval($grupo['percent']) > 0;
+		});
+		
+		// Si no hay porcentajes con impuesto (>0%), es todo exento o gravado a 0%
+		if (empty($porcentajesConImpuesto)) {
 			$grupo = reset($agrupados);
 			return [
 				'tax_id' => $taxId,
@@ -451,12 +456,23 @@ abstract class AbstractFESender
 			];
 		}
 		
-		// Si hay múltiples porcentajes, necesita tax_subtotal
+		// Si solo hay un porcentaje con impuesto (>0%), no necesita tax_subtotal
+		if (count($porcentajesConImpuesto) === 1) {
+			$grupo = reset($porcentajesConImpuesto);
+			return [
+				'tax_id' => $taxId,
+				'tax_amount' => round($grupo['tax_amount'], 2),
+				'percent' => floatval($grupo['percent']),
+				'taxable_amount' => round($grupo['taxable_amount'], 2)
+			];
+		}
+		
+		// Si hay múltiples porcentajes con impuesto (>0%), necesita tax_subtotal
 		$totalTaxAmount = 0;
 		$totalTaxableAmount = 0;
 		$taxSubtotal = [];
 		
-		foreach ($agrupados as $percent => $grupo) {
+		foreach ($porcentajesConImpuesto as $percent => $grupo) {
 			$totalTaxAmount += $grupo['tax_amount'];
 			$totalTaxableAmount += $grupo['taxable_amount'];
 			
@@ -467,11 +483,13 @@ abstract class AbstractFESender
 				'taxable_amount' => number_format(round($grupo['taxable_amount'], 2), 2, '.', '')
 			];
 		}
+
+		dd($taxSubtotal);
 		
 		return [
 			'tax_id' => $taxId,
+			'percent' => 0,
 			'tax_amount' => round($totalTaxAmount, 2),
-			'percent' => 0, // Múltiples porcentajes, no se usa
 			'taxable_amount' => round($totalTaxableAmount, 2),
 			'tax_subtotal' => $taxSubtotal
 		];
