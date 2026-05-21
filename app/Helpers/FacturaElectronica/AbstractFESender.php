@@ -304,10 +304,10 @@ abstract class AbstractFESender
 				}
 			}
 		}
-
 		//AGREGAR TOTALES
 		foreach ($dataTaxTotals as $key => $impuestos) {
 			$data = null;
+
 			foreach ($impuestos as $ke => $impuesto) {
 				if (!$data) { // ENTRA POR PRIMERA VEZ
 					$data = $this->decoreTax($impuesto);
@@ -317,7 +317,7 @@ abstract class AbstractFESender
 					$data["taxable_amount"] = number_format($data["taxable_amount"] + $impuesto['taxable_amount'], 2, '.', '');
 				} else if (!$data["tax_subtotal"]) { // SI SON DIFERENTES % Y NO SE HA CREADO EL []SUBTOTAL
 					$data["tax_subtotal"][] = $this->decoreTax($data);
-					$data["percent"] = 0;
+					// $data["percent"] = 0;
 					$data["tax_subtotal"][] = $this->decoreTax($impuesto);
 				} else { // SI SON DIFERENTES % Y YA SE CREO EL []SUBTOTAL
 					$exists = false;
@@ -328,30 +328,49 @@ abstract class AbstractFESender
 					}
 					if ($exists == 0 || $exists) { //SUMAR EL %
 						$sumTax = $data["tax_subtotal"][$exists]["taxable_amount"] + $impuesto['taxable_amount'];
-						$data["tax_subtotal"][$exists]["tax_amount"] = number_format($data["tax_subtotal"][$exists]["tax_amount"] + $impuesto['tax_amount'], 2, '.', '');
+						$data["tax_subtotal"][$exists]["tax_amount"] =
+						number_format($data["tax_subtotal"][$exists]["tax_amount"] + $impuesto['tax_amount'], 2, '.', '');
 						$data["tax_subtotal"][$exists]["taxable_amount"] = number_format($sumTax, 2, '.', '');
 					} else {
 						$data["tax_subtotal"][] = $this->decoreTax($impuesto);
 					}
 				}
 			}
+			
 			if ($data && $data['tax_subtotal'] && count($data['tax_subtotal']) > 0) { // SI TIENE SUBTOTAL VOLVER A CALCULAR
-				$data["percent"] = 0;
+				$porcentaje = 0;
+				$diferentesPorcentajes = false;
+
 				$data["tax_amount"] = 0;
 				$data["taxable_amount"] = 0;
 				foreach ($data['tax_subtotal'] as $k => $v) {
-					$data["tax_amount"] += $v["tax_amount"];
-					$data["taxable_amount"] += $v["taxable_amount"];
+
+					if ($porcentaje == 0 && (float)$v["tax_amount"]) {
+						$porcentaje = (float)$v["tax_amount"];
+					} else if ($porcentaje && (float)$v["tax_amount"]) {
+						$diferentesPorcentajes = true;
+					}
+
+					if ((float)$v["tax_amount"]) {
+						$data["tax_amount"] += $v["tax_amount"];
+						$data["taxable_amount"] += $v["taxable_amount"];
+					}
+				}
+
+				if ($diferentesPorcentajes) {
+					$data["percent"] = 0;
 				}
 			}
 			if ($data) $decoreTax[$key] = $data;
 		}
+
 		//ACTUALIZAR FORMATOS
 		foreach ($decoreTax as $key => $value) {
 			if (count($value)) {
 				$taxTotals[] =  $value;
 			}
 		}
+
 		return $taxTotals;
 	}
 	/**
