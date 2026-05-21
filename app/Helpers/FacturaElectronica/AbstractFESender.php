@@ -222,24 +222,55 @@ abstract class AbstractFESender
 				'provider_id' => $this->softwareProviderId
 			],
 			'allowance_charges' => [],
-			'tax_totals' => $this->taxTotals([1, 5]),
-			"holding_tax_totals" => $this->taxTotals([6]),
+			'tax_totals' => $this->taxTotals([1]),
+			"withholding_tax_totals" => $this->taxTotals([5, 6]),
 		);
 		
-		if (empty($params["holding_tax_totals"])) unset($params["holding_tax_totals"]);
+		if (empty($params["withholding_tax_totals"])) unset($params["withholding_tax_totals"]);
 		return array_merge($params, $this->getExtraParams());
 	}
 
 	protected function paymentForm()
 	{
 		$paymentForm = [];
-		foreach ($this->pagos as $key => $pago) {
-			$paymentForm[] = [
-				'payment_form_id' => $pago->id_venta,
-				'payment_method_id' => $pago->id_forma_pago,
-				'payment_due_date' => date_format(date_create($pago->created_at), 'Y-m-d')
+
+		foreach ($this->pagos as $pago) {
+
+			// 1. DETERMINAR payment_form_id (1=Contado, 2=Crédito)
+			$esCredito = false;
+			
+			// Si la venta tiene fecha de vencimiento (campo que debes agregar o calcular)
+			if (property_exists($this->factura, 'fecha_vencimiento') && $this->factura->fecha_vencimiento) {
+				$esCredito = $this->factura->fecha_vencimiento > $this->factura->fecha_manual;
+			}
+			
+			// O también podrías revisar si el tipo de forma de pago es "Crédito" (código 1 en fac_tipo_formas_pagos)
+			$tipoCodigo = $pago->forma_pago->tipoFormaPago->codigo ?? '';
+			if ($tipoCodigo == '1') {
+				$esCredito = true; // "Instrumento no definido" suele usarse para crédito
+			}
+			
+			$payment_form_id = $esCredito ? 2 : 1;
+
+			// 2. OBTENER payment_method_id desde fac_tipo_formas_pagos.codigo
+			$payment_method_id = $tipoCodigo ?: 'ZZZ'; // 'ZZZ' = Acuerdo mutuo (fallback)
+
+			$item = [
+				'payment_form_id' => $payment_form_id,
+				'payment_method_id' => $payment_method_id,
 			];
+
+			// Solo enviar payment_due_date si es crédito
+			if ($payment_form_id == 2) {
+				// Usar la fecha de vencimiento de la venta, o la del pago, o calcular +30 días
+				$dueDate = $this->factura->fecha_vencimiento ?? 
+						date('Y-m-d', strtotime($this->factura->fecha_manual . ' + 30 days'));
+				$item['payment_due_date'] = $dueDate;
+			}
+
+			$paymentForm[] = $item;
 		}
+
 		return $paymentForm;
 	}
 
@@ -365,6 +396,8 @@ abstract class AbstractFESender
 	{
 		// Calcular base correcta según si IVA está incluido o no
 		$base_iva = $detalle->subtotal;
+		$base_retefuente = $detalle->subtotal;
+		$base_reteiva = $detalle->iva_valor;
 
 		$impuestos = [
 			[
@@ -378,13 +411,13 @@ abstract class AbstractFESender
 				"tax_amount" => "0.00",
 				"tax_amount" => $detalle->valor_rete_iva ?? "0.00",
 				"percent" => $detalle->porcentaje_rete_iva ?? "0.00",
-				"taxable_amount" => number_format($base_iva, 2, '.', '')
+				"taxable_amount" => number_format($base_reteiva, 2, '.', '')
 			],
 			[
 				"tax_id" => 6, // RETE FUENTE
 				"tax_amount" => $this->factura->total_rete_fuente,
 				"percent" => $detalle->porcentaje_rete_fuente ?? "0.00",
-				"taxable_amount" => number_format($base_iva, 2, '.', '')
+				"taxable_amount" => number_format($base_retefuente, 2, '.', '')
 			],
 		];
 		return $impuestos;
@@ -440,7 +473,7 @@ abstract class AbstractFESender
 	 */
 	private function buildTaxTotal($taxId, $agrupados)
 	{
-		// Si solo hay un porcentaje (único grupo), usar estructura simple
+		// Caso 1: un solo porcentaje → estructura plana (sin tax_subtotal)
 		if (count($agrupados) === 1) {
 			$grupo = reset($agrupados);
 			return [
@@ -451,14 +484,11 @@ abstract class AbstractFESender
 			];
 		}
 		
-		// Múltiples porcentajes (incluyendo 0% y positivos) → usar tax_subtotal
+		// Caso 2: múltiples porcentajes → usar tax_subtotal (sin percent/taxable_amount raíz)
 		$totalTaxAmount = 0;
-		$totalTaxableAmount = 0;
 		$taxSubtotal = [];
-		
 		foreach ($agrupados as $percent => $grupo) {
 			$totalTaxAmount += $grupo['tax_amount'];
-			$totalTaxableAmount += $grupo['taxable_amount'];
 			$taxSubtotal[] = [
 				'tax_id' => $taxId,
 				'tax_amount' => number_format(round($grupo['tax_amount'], 2), 2, '.', ''),
@@ -466,12 +496,9 @@ abstract class AbstractFESender
 				'taxable_amount' => number_format(round($grupo['taxable_amount'], 2), 2, '.', '')
 			];
 		}
-		
 		return [
 			'tax_id' => $taxId,
 			'tax_amount' => round($totalTaxAmount, 2),
-			'percent' => 0,   // Siempre 0 cuando hay múltiples porcentajes
-			'taxable_amount' => round($totalTaxableAmount, 2),
 			'tax_subtotal' => $taxSubtotal
 		];
 	}
