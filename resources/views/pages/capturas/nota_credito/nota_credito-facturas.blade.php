@@ -7,6 +7,13 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="card mb-4" style="content-visibility: auto; overflow: auto;">
+
+            <div class="container row" style="">
+                <div class="" style="margin-bottom: 0px;">
+                    <input type="text" id="searchConsecutiveNC" class="form-control form-control-sm search-table" placeholder="Consecutivo" style=" margin-bottom: 5px !important; margin-top: 10px;">
+                </div>
+            </div>
+            
             <table id="facturaDevolucionTable" class="table nowrap table-bordered display responsive" width="100%">
                 <thead>
                     <tr>

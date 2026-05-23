@@ -161,7 +161,7 @@ function cargarTablasNotasCredito() {
                 d.id_cliente = $('#id_cliente_nota_credito').val();
                 d.id_bodega = $('#id_bodega_nota_credito').val();
                 // d.id_resolucion = $('#id_resolucion_nota_credito').val();
-                // d.consecutivo = $("#consecutivo_nota_credito").val();
+                d.consecutivo = $("#searchConsecutiveNC").val();
             }
         },
         columns: [
@@ -1052,4 +1052,8 @@ $(document).on('click', '#movimientoContableNotaCredito', function () {
 
 $("#id_resolucion_nota_credito").on('change', function(event) {
     consecutivoSiguienteNotaCredito();
+});
+
+$("#searchConsecutiveNC").on('keyup', function(event) {
+    nota_credito_table_facturas.ajax.reload();
 });
