@@ -752,6 +752,7 @@ function changeConceptoGasto(idGasto) {
     },20);
 
     setDisabledGastosRow(data, idGasto);
+    actualizarInfoRetencionGastos();
 }
 
 function mostrarValoresGastos () {
@@ -1272,7 +1273,7 @@ function obtenerDatosRetencionGastos(valorSubtotal) {
 
     retencionesGasto.forEach(retencion => {
         if (retencion.base <= valorSubtotal) {
-            if (retencion.base > base ) {
+            if ((retencion.base > base) || base == 0 ) {
                 if (retencion.porcentaje > porcentaje) {
                     porcentaje = retencion.porcentaje;
                     base = retencion.base;
@@ -1294,7 +1295,7 @@ function actualizarInfoRetencionGastos() {
     let total_uvt = 0;
 
     retencionesGasto.forEach(retencion => {
-        if (retencion.base > base ) {
+        if ((retencion.base > base) || base == 0) {
             if (retencion.porcentaje > porcentaje) {
                 porcentaje = retencion.porcentaje;
                 base = retencion.base;
