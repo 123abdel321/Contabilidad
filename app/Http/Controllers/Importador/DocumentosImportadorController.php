@@ -132,7 +132,7 @@ class DocumentosImportadorController extends Controller
     {
         return response()->json([
             'success'=>	true,
-            'url' => 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/import/importador_documentos.xlsx',
+            'url' => 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/import/Importador%20de%20Documentos.xlsx',
             'message'=> 'Url generada con exito'
         ]);
         
