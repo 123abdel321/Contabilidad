@@ -25,7 +25,7 @@ class VentaElectronicaSender extends AbstractFESender
 	{
 		return [
 			'cliente',
-			'pagos',
+			'pagos.forma_pago',
 			'resolucion',
 			'detalles.cuenta_iva',
 			'detalles.cuenta_retencion',

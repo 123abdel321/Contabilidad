@@ -98,22 +98,22 @@ function importproductosInit() {
             $('#importarProductos').prop('disabled', true);
         }
     });
-}
 
-inputImportadorProductos.addEventListener('change', function () {
-    if ($("#importador_productos").val()) {
-        $('#cargarPlantillaProductos').prop('disabled', false);
-    } else {
-        $('#cargarPlantillaProductos').prop('disabled', true);
-    }
-});
+    $("#importador_productos").on('change', function(event) {
+        if ($("#importador_productos").val()) {
+            $('#cargarPlantillaProductos').prop('disabled', false);
+        } else {
+            $('#cargarPlantillaProductos').prop('disabled', true);
+        }
+    });
+}
 
 $(document).on('click', '#cargarPlantillaProductos', function () {
     $('#cargarPlantillaProductos').hide();
     $('#cargarPlantillaProductosLoading').show();
     
     // Mostrar la barra de progreso
-    $('#uploadStatus').show();
+    $('#uploadStatusProductos').show();
     
     // Resto del código que ya tienes...
     var ajxForm = document.getElementById("form-importador-productos");
@@ -130,7 +130,7 @@ $(document).on('click', '#cargarPlantillaProductos', function () {
         } else {
             $('#cargarPlantillaProductos').show();
             $('#cargarPlantillaProductosLoading').hide();
-            $('#uploadStatus').hide();
+            $('#uploadStatusProductos').hide();
             var mensaje = responseData.message;
             var errorsMsg = arreglarMensajeError(mensaje);
             agregarToast('error', 'Carga errada', errorsMsg);
@@ -140,7 +140,7 @@ $(document).on('click', '#cargarPlantillaProductos', function () {
     xhr.onerror = function (res) {
         $('#cargarPlantillaProductos').show();
         $('#cargarPlantillaProductosLoading').hide();
-        $('#uploadStatus').hide();
+        $('#uploadStatusProductos').hide();
         var responseData = JSON.parse(res.currentTarget.response);
         var mensaje = responseData.message;
         var errorsMsg = arreglarMensajeError(mensaje);
@@ -167,12 +167,12 @@ $(document).on('click', '#importarProductos', function () {
     $('#importarProductosLoading').show();
 
     // Mostrar la barra de progreso
-    $('#uploadStatus').show();
+    $('#uploadStatusProductos').show();
     // Resetear la barra a 0% y cambiar el mensaje
-    $('#uploadProgress').css('width', '0%').removeClass('bg-success').addClass('progress-bar-striped progress-bar-animated bg-primary');
-    $('#progressText').text('0%');
-    $('#statusMessage').text('Iniciando carga de productos al sistema...');
-    $('#processedRows').text('0');
+    $('#uploadProgressProductos').css('width', '0%').removeClass('bg-success').addClass('progress-bar-striped progress-bar-animated bg-primary');
+    $('#progressTextProductos').text('0%');
+    $('#statusMessageProductos').text('Iniciando carga de productos al sistema...');
+    $('#processedRowsProductos').text('0');
     // No tenemos el total aún, pero podemos poner un placeholder
     // En el evento de progreso, el backend nos enviará el total.
 
@@ -188,7 +188,7 @@ $(document).on('click', '#importarProductos', function () {
         $('#importarProductos').show();
         $('#importarPlantillaProductosLoading').hide();
         // Ocultar la barra de progreso en caso de error
-        $('#uploadStatus').hide();
+        $('#uploadStatusProductos').hide();
 
         var mensaje = err.responseJSON.message;
         var errorsMsg = arreglarMensajeError(mensaje);
@@ -201,19 +201,19 @@ channelImportProductos.bind('notificaciones', function(data) {
     // Si es un evento de progreso
     if (data.name === 'progress') {
         // Actualizar la barra de progreso y el mensaje
-        $('#uploadProgress').css('width', data.progress + '%');
-        $('#progressText').text(data.progress + '%');
-        $('#statusMessage').text(data.mensaje);
-        $('#processedRows').text(data.processed);
-        $('#totalRows').text(data.total);
+        $('#uploadProgressProductos').css('width', data.progress + '%');
+        $('#progressTextProductos').text(data.progress + '%');
+        $('#statusMessageProductos').text(data.mensaje);
+        $('#processedRowsProductos').text(data.processed);
+        $('#totalRowsProductos').text(data.total);
         
         // Cambiar el color de la barra según el stage
         if (data.stage === 'completed') {
-            $('#uploadProgress').removeClass('progress-bar-striped progress-bar-animated').addClass('bg-success');
+            $('#uploadProgressProductos').removeClass('progress-bar-striped progress-bar-animated').addClass('bg-success');
             
             // Ocultar la barra después de 5 segundos
             setTimeout(() => {
-                $('#uploadStatus').slideUp();
+                $('#uploadStatusProductos').slideUp();
             }, 5000);
 
             $("#cargarPlantillaProductos").show();

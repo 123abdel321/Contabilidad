@@ -35,12 +35,14 @@ class ProductosImport implements
 {
     use Importable;
 
-    protected $url_notification = null;
     protected $empresa = null;
     protected $rowsWithErrors = 0;
     protected $totalValidRows = 0;
     protected $connectionName = 'sam';
+    protected $url_notification = null;
 
+    private $errors = [];
+    private $processedRows = 0;
 
     public function __construct(string $url_notification, $empresa_id)
     {
@@ -48,9 +50,6 @@ class ProductosImport implements
         $this->empresa = Empresa::find($empresa_id);
     }
     
-    private $processedRows = 0;
-    private $errors = [];
-
     public function collection(Collection $rows)
     {
         $validRows = 0;

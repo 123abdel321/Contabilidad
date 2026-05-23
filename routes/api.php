@@ -153,7 +153,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //IMPORTADORES DOCUMENTOS
         Route::controller(DocumentosImportadorController::class)->group(function () {
             Route::get('documentos-cache-import', 'generate');
-            Route::post('documentos-actualizar-import', 'actualizar');
+            Route::post('documentos-cache-actualizar', 'actualizar');
             Route::post('documentos-validar-import', 'validar');
         });
         //EMPRESA

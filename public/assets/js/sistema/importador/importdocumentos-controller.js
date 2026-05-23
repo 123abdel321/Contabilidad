@@ -1,5 +1,6 @@
 var import_documentos_table = null;
-var btnImportDocumento = document.getElementById('actualizarPlantillaDocumentos');
+var inputImportadorDocumentos = document.getElementById('importador_documentos');
+var channelImportDocumentos = pusher.subscribe('importador-documentos-'+localStorage.getItem("notificacion_code"));
 
 function importdocumentosInit() {
     import_documentos_table = $('#importDocumentos').DataTable({
@@ -20,13 +21,24 @@ function importdocumentosInit() {
             url: base_url + 'documentos-cache-import',
         },
         'rowCallback': function(row, data, index){
-            if (parseInt(data.total_errores)) {
-                $('td', row).css('background-color', '#ff00005e');
-                return;
-            }
+            // if (parseInt(data.total_errores)) {
+            //     $('td', row).css('background-color', '#ff00005e');
+            //     return;
+            // }
         },
         columns: [
-            {"data":'id'},
+            {"data": function (row, type, set){
+                console.log('row: ',row);
+                if (row.errores) {
+                    return `<span class="badge bg-danger" style="font-size: 11px; padding: 4px 8px;">
+                                <i class="fas fa-exclamation-circle"></i> Fila ${row.total_errores}: Errores
+                            </span>`;
+                }
+                
+                return `<span class="badge bg-success" style="font-size: 11px; padding: 4px 8px;">
+                            <i class="fas fa-check"></i> Fila ${row.total_errores}: Listo
+                        </span>`;
+            }},
             {"data":'nombre_nit'},
             {"data":'nombre_cuenta'},
             {"data":'nombre_cecos'},
@@ -44,70 +56,61 @@ function importdocumentosInit() {
 
     import_documentos_table.ajax.reload(function(res) {
         if (res.success && res.data.length) {
-            $('#actualizarPlantillaDocumentos').show();
+            $('#importarDocumentos').prop('disabled', false);
+        } else {
+            $('#importarDocumentos').prop('disabled', true);
+        }
+    });
+
+    $("#importador_documentos").on('change', function(event) {
+        if ($("#importador_documentos").val()) {
+            $('#cargarPlantillaDocumentos').prop('disabled', false);
+        } else {
+            $('#cargarPlantillaDocumentos').prop('disabled', true);
         }
     });
 }
 
-$("#form-importador-documentos").submit(function(event) {
-    event.preventDefault();
-
+$(document).on('click', '#cargarPlantillaDocumentos', function () {
     $('#cargarPlantillaDocumentos').hide();
-    $('#actualizarPlantillaDocumentos').hide();
-    $('#cargarPlantillaDocumentosLoagind').show();
-
-    import_documentos_table.rows().remove().draw();
-
+    $('#cargarPlantillaDocumentosLoading').show();
+    
+    // Mostrar la barra de progreso
+    $('#uploadStatusDocumentos').show();
+    
+    // Resto del código que ya tienes...
     var ajxForm = document.getElementById("form-importador-documentos");
     var data = new FormData(ajxForm);
     var xhr = new XMLHttpRequest();
+    
     xhr.open("POST", "importdocumentos-importar");
     xhr.send(data);
+    
     xhr.onload = function(res) {
         var responseData = JSON.parse(res.currentTarget.response);
-        var errorsMsg = '';
-        $('#cargarPlantillaDocumentos').show();
-        $('#cargarPlantillaDocumentosLoagind').hide();
-
         if (responseData.success) {
-            import_documentos_table.ajax.reload(function(res) {
-                if (res.success && res.data.length) {
-                    $('#actualizarPlantillaDocumentos').show();
-                }
-            });
-            agregarToast('exito', 'Datos cargados', 'Precio de productos cargados con exito!', true);
+            // La barra ya se mostrará con los eventos de progreso
         } else {
-            agregarToast('error', 'Carga errada', 'errorsMsg');
+            $('#cargarPlantillaDocumentos').show();
+            $('#cargarPlantillaDocumentosLoading').hide();
+            $('#uploadStatusDocumentos').hide();
+            var mensaje = responseData.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Carga errada', errorsMsg);
         }
     };
-    xhr.onerror = function (res) {
-        $('#cargarPlantillaDocumentos').hide();
-        $('#cargarPlantillaDocumentosLoagind').show();
-    };
-    return false;
-});
-
-$(document).on('click', '#reloadImportadorDocumentos', function () {
-    $("#reloadImportadorDocumentosIconNormal").hide();
-    $("#reloadImportadorDocumentosIconLoading").show();
-    $.ajax({
-        url: base_url + 'documentos-validar-import',
-        method: 'POST',
-        headers: headers,
-        dataType: 'json',
-    }).done((res) => {
-        $("#reloadImportadorDocumentosIconNormal").show();
-        $("#reloadImportadorDocumentosIconLoading").hide();
-        import_documentos_table.ajax.reload(function(res) {
-            if (res.success && res.data.length) {
-                $('#actualizarPlantillaDocumentos').show();
-            }
-        });
-    }).fail((err) => {
-        $("#reloadImportadorDocumentosIconNormal").show();
-        $("#reloadImportadorDocumentosIconLoading").hide();
-    });
     
+    xhr.onerror = function (res) {
+        $('#cargarPlantillaDocumentos').show();
+        $('#cargarPlantillaDocumentosLoading').hide();
+        $('#uploadStatusDocumentos').hide();
+        var responseData = JSON.parse(res.currentTarget.response);
+        var mensaje = responseData.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Carga errada', errorsMsg);
+    };
+    
+    return false;
 });
 
 $(document).on('click', '#descargarPlantillaDocumentos', function () {
@@ -122,60 +125,99 @@ $(document).on('click', '#descargarPlantillaDocumentos', function () {
     });
 });
 
-btnImportDocumento.addEventListener('click', event => {
-    event.preventDefault();
+$(document).on('click', '#importarDocumentos', function () {
+    $('#importarDocumentos').hide();
+    $('#importarDocumentosLoading').show();
 
-    $('#cargarPlantillaDocumentos').hide();
-    $('#actualizarPlantillaDocumentos').hide();
-    $('#cargarPlantillaDocumentosLoagind').show();
+    // Mostrar la barra de progreso
+    $('#uploadStatusDocumentos').show();
+    // Resetear la barra a 0% y cambiar el mensaje
+    $('#uploadProgressDocumentos').css('width', '0%').removeClass('bg-success').addClass('progress-bar-striped progress-bar-animated bg-primary');
+    $('#progressTextDocumentos').text('0%');
+    $('#statusMessageDocumentos').text('Iniciando carga de productos al sistema...');
+    $('#processedRowsDocumentos').text('0');
+    // No tenemos el total aún, pero podemos poner un placeholder
+    // En el evento de progreso, el backend nos enviará el total.
 
     $.ajax({
         method: 'POST',
-        url: base_url + 'documentos-actualizar-import',
+        url: base_url + 'documentos-cache-actualizar',
         headers: headers,
         dataType: 'json',
     }).done((res) => {
-        console.log('res: ',res);
-        if (res.success) {
-            $('#cargarPlantillaDocumentos').show();
-            $('#actualizarPlantillaDocumentos').hide();
-            $('#cargarPlantillaDocumentosLoagind').hide();
-            import_documentos_table.ajax.reload(function(res) {
-                if (res.success && res.data.length) {
-                    $('#actualizarPlantillaDocumentos').show();
-                }
-            });
-            agregarToast('exito', 'Documentos importadas', 'Documentos importadas con exito!', true);
-        } else {
-            let mensajeError = '';
-            $('#cargarPlantillaDocumentos').show();
-            $('#actualizarPlantillaDocumentos').show();
-            $('#cargarPlantillaDocumentosLoagind').hide();
-            import_documentos_table.ajax.reload(function(res) {
-                if (res.success && res.data.length) {
-                    $('#actualizarPlantillaDocumentos').show();
-                }
-            });
-            Object.keys(res.message).forEach(key => {
-                // Accede al objeto interno
-                const subObject = res.message[key];
-                Object.keys(subObject).forEach(subKey => {
-                    mensajeError+= `<b>${key}:</b> ${subObject[subKey]} <br/>`;
-                });
-            });
-
-            agregarToast('error', 'Documentos con error', mensajeError, false);
-        }
+        // No mostramos toast, porque la barra de progreso ya está mostrando el estado
+        // El evento de progreso se encargará de actualizar la barra
     }).fail((err) => {
-        var mensaje = err.responseJSON
-        $('#cargarPlantillaDocumentos').show();
-        $('#actualizarPlantillaDocumentos').show();
-        $('#cargarPlantillaDocumentosLoagind').hide();
-        import_documentos_table.ajax.reload(function(res) {
-            if (res.success && res.data.length) {
-                $('#actualizarPlantillaDocumentos').show();
-            }
-        });
-        agregarToast('error', 'Importación de documentos errado', mensaje.data);
+        $('#importarDocumentos').show();
+        $('#uploadStatusDocumentos').hide();
+        $('#importarDocumentosLoading').hide();        
+
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Creación errada', errorsMsg);
     });
+});
+
+channelImportDocumentos.bind('notificaciones', function(data) {
+    // Si es un evento de progreso
+    if (data.name === 'progress') {
+        // Actualizar la barra de progreso y el mensaje
+        $('#uploadProgressDocumentos').css('width', data.progress + '%');
+        $('#progressTextDocumentos').text(data.progress + '%');
+        $('#statusMessageDocumentos').text(data.mensaje);
+        $('#processedRowsDocumentos').text(data.processed);
+        $('#totalRowsDocumentos').text(data.total);
+        
+        // Cambiar el color de la barra según el stage
+        if (data.stage === 'completed') {
+            $('#uploadProgressDocumentos').removeClass('progress-bar-striped progress-bar-animated').addClass('bg-success');
+            
+            // Ocultar la barra después de 5 segundos
+            setTimeout(() => {
+                $('#uploadStatusDocumentos').slideUp();
+            }, 5000);
+
+            $("#cargarPlantillaDocumentos").show();
+            $("#cargarPlantillaDocumentosLoading").hide();
+            $("#importarDocumentos").show();
+            $("#importarDocumentosLoading").hide();
+            
+            // Recargar la tabla de productos importados
+            if (import_documentos_table) {
+                import_documentos_table.ajax.reload(function(res) {
+                    if (res.success && res.data.length) {
+                        $('#importarDocumentos').prop('disabled', false);
+                    } else {
+                        $('#importarDocumentos').prop('disabled', true);
+                    }
+                });
+            }
+        }
+    } 
+    // Si es el evento final de importación (el antiguo 'carga' o el nuevo 'import')
+    else if (data.name === 'carga' || data.name === 'import') {
+        // Recargar la tabla
+        if (import_documentos_table) {
+            import_documentos_table.ajax.reload(function(res) {
+                if (res.success && res.data.length) {
+                    $('#importarDocumentos').prop('disabled', false);
+                } else {
+                    $('#importarDocumentos').prop('disabled', true);
+                }
+            });
+        }
+        
+        // Mostrar notificación (toast) solo si es el evento 'carga' (para mantener compatibilidad)
+        if (data.name === 'carga') {
+            agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
+        }
+        
+        // Si es el evento 'import', no mostramos toast porque ya se mostró en el progreso
+        // Pero si quieres mostrar un toast final, descomenta la siguiente línea:
+        // agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
+        
+        // Ocultar el loading del botón de importar
+        $('#importarDocumentosLoading').hide();
+        $('#importarDocumentos').show();
+    }
 });

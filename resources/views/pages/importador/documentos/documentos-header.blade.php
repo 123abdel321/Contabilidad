@@ -1,57 +1,111 @@
 <div class="accordion" id="accordionRental">
     <div class="accordion-item">
         <h5 class="accordion-header" id="filtrosDocumentosImport">
-            <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                Para importar documentos sigue estos pasos:
-                <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
-                <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
+            <button class="accordion-button border-bottom font-weight-bold text-dark bg-light collapsed py-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                <div class="d-flex align-items-center w-100">
+                    <i class="fas fa-file-import me-2 text-primary fs-6"></i>
+                    <span class="fw-bold fs-6">Importador de Documentos</span>
+                </div>
             </button>
         </h5>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="filtrosDocumentosImport" data-bs-parent="#accordionRental" >
-            <div class="accordion-body text-sm" style="padding: 0 !important;">
-                <br>
-                <div>
-                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" >
-                        <b>1.</b> Descarga la plantilla para cargar documentos&nbsp;
-                        <span id="descargarPlantillaDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; margin-right: 3px; margin-bottom: 0px !important;">
-                            <i class="fas fa-download" style="font-size: 17px;"></i>
-                            <b style="vertical-align: text-top;">Descargar plantilla</b>
-                        </span>
-                    </p>
-                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" ><b>2.</b> Realiza los cambios en cada archivo y guárdalo en formato Excel (.xlsx)</p>
-                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" ><b>3.</b> Adjunta el archivo y haz click en "Cargar plantilla"</p>
-                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" ><b>4.</b> Valida los registros que seran cargados y haz click en "Cargar documentos"</p>
-                </div>
-                <br>
-                <div class="row">
-                    <form id="form-importador-documentos" enctype="multipart/form-data">
-                        {{ csrf_field() }}
-                        <div class="col-6">
-                            <input class="form-control form-control-sm" id="file_import_documentos" name="file_import_documentos" type="file" style="box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 2px 2px 2px rgb(0 0 0 / 57%); font-size: 15px; color: black; font-weight: bold;">
+
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="filtrosBalance" data-bs-parent="#accordionRental">
+            <div class="accordion-body p-3 bg-white">
+                
+                <!-- Sección de carga compacta -->
+                <form id="form-importador-documentos" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {{ csrf_field() }}
+                    
+                    <div class="row g-2 align-items-center">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                            <div class="border-dashed border-2 rounded p-2 bg-light">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="far fa-file-excel text-success me-2"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <label for="importador_documentos" class="form-label fw-semibold text-dark small mb-1">Seleccionar archivo Excel</label>
+                                        <input class="form-control form-control-sm" id="importador_documentos" name="importador_documentos" type="file" accept=".xlsx,.xls" required>
+                                        <div class="invalid-feedback small">
+                                            Selecciona un archivo Excel válido.
+                                        </div>
+                                        <p class="text-muted x-small mb-0 mt-1">Formatos: .xlsx, .xls (Máx. 10MB)</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <br/>
-                        <div class="col-12">
-                            <button id="cargarPlantillaDocumentos" href="javascript:void(0)" class="btn btn-sm badge bg-gradient-success">
-                                <i class="far fa-file-excel" style="font-size: 17px;"></i>&nbsp;
-                                <b style="vertical-align: text-top;">Cargar plantilla</b>
-                            </button>
-                            <button type="button" class="btn btn-sm badge btn-light" id="reloadImportadorDocumentos">
-                                <i id="reloadImportadorDocumentosIconLoading" class="fa fa-refresh fa-spin" style="font-size: 17px; color: #2d3257; display: none;"></i>
-                                <i id="reloadImportadorDocumentosIconNormal" class="fas fa-sync-alt" style="font-size: 17px;"></i>&nbsp;
-                                <b style="vertical-align: text-top;">Validar datos</b>
-                            </button>
-                            <button id="actualizarPlantillaDocumentos" href="javascript:void(0)" class="btn btn-sm badge bg-gradient-primary" style="float: right; display: none;">
-                                <i class="fas fa-upload" style="font-size: 17px;"></i>&nbsp;
-                                <b style="vertical-align: text-top;">Cargar documentos</b>
-                            </button>&nbsp;
-                            <button id="cargarPlantillaDocumentosLoagind" class="btn btn-sm badge bg-gradient-primary" style="display:none; float: left;" disabled>
-                                <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>&nbsp;
-                                <b style="vertical-align: text-top;">Cargando</b>
-                            </button>
+                        
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                            <div class="d-flex flex-wrap gap-2">
+
+                                <div class="row">
+                                    <div class="col-12 d-flex align-items-center">
+                                        <div style="min-width: 200px;">
+                                            <button type="button" class="btn btn-primary btn-sm btn-bg-danger" id="descargarPlantillaDocumentos" style="margin-bottom: 5px !important; width: 200px;">
+                                                <i class="fas fa-download" style="margin-right: 5px; font-size: 15px;"></i>&nbsp;
+                                                Descargar Excel
+                                            </button>
+                                        </div>
+                                        <div class="ms-3">
+                                            <p class="mb-0 text-muted small">
+                                                <strong>Paso 1:</strong> Obtén el formato oficial para importar tus documentos.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 d-flex align-items-center">
+                                        <div style="min-width: 200px;">
+                                            <button type="button" class="btn btn-primary btn-sm btn-bg-excel" id="cargarPlantillaDocumentos" style="margin-bottom: 5px !important; width: 200px;" disabled>
+                                                <i class="far fa-file-excel" style="margin-right: 5px; font-size: 15px;"></i>&nbsp;
+                                                Cargar plantilla
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm btn-bg-excel-loading" id="cargarPlantillaDocumentosLoading" style="opacity: 1; box-shadow: none; display: none; width: 200px; margin-bottom: 5px !important;" disabled>
+                                                <b style="opacity: 0.3; text-transform: capitalize;">Cargar plantilla</b>
+                                                <i style="position: absolute; color: white; font-size: 15px; margin-left: -48px; margin-top: 1px;" class="fas fa-spinner fa-spin"></i>
+                                            </button>
+                                        </div>
+                                        <div class="ms-3">
+                                            <p class="mb-0 text-muted small">
+                                                <strong>Paso 2:</strong> Carga el archivo con los datos de tus documentos.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 d-flex align-items-center">
+                                        <div style="min-width: 200px;"> 
+
+                                            <button type="button" class="btn btn-primary btn-sm btn-bg-info" id="importarDocumentos" style="float: inline-end; width: 200px; margin-bottom: 5px !important;">
+                                                <i class="fas fa-upload" style="margin-right: 5px; font-size: 15px;"></i>&nbsp;
+                                                Cargar documentos
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm btn-bg-info-loading" id="importarDocumentosLoading" style="opacity: 1; box-shadow: none; display: none; width: 200px; margin-bottom: 5px !important;" disabled>
+                                                <b style="opacity: 0.3; text-transform: capitalize;">Cargar documentos</b>
+                                                <i style="position: absolute; color: white; font-size: 15px; margin-left: -55px; margin-top: 1px;" class="fas fa-spinner fa-spin"></i>
+                                            </button>
+
+                                        </div>
+                                        <div class="ms-3">
+                                            <p class="mb-0 text-muted small">
+                                                <strong>Paso 3:</strong> Inicia el proceso de importación de documentos.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <button id="importarDocumentosLoading" class="btn btn-primary btn-sm px-3" style="display:none;" disabled>
+                                    <i class="fas fa-spinner fa-spin me-1"></i>
+                                    <span class="small">Procesando</span>
+                                </button>
+
+                            </div>
+                        
                         </div>
-                    </form>
-                </div>
+                    </div>
+                
+                </form>
             </div>
         </div>
+
     </div>
 </div>

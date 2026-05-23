@@ -3,14 +3,19 @@
 namespace App\Http\Controllers\Importador;
 
 use DB;
-use App\Helpers\Documento;
 use Illuminate\Http\Request;
 use App\Imports\ImportDocumentos;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+//TRAITS
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
+//HELPER
+use App\Helpers\Documento;
+//JOBS
+use App\Jobs\ProcessImportDocumentos;
 //MODELS
 use App\Models\Sistema\Nits;
+use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\CentroCostos;
 use App\Models\Sistema\Comprobantes;
@@ -40,7 +45,7 @@ class DocumentosImportadorController extends Controller
     public function importar (Request $request)
     {
         $rules = [
-            'file_import_documentos' => 'required|mimes:xlsx'
+            'importador_documentos' => 'required|mimes:xlsx'
         ];
         
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -54,14 +59,14 @@ class DocumentosImportadorController extends Controller
         }
 
         try {
-            $file = $request->file('file_import_documentos');
-
             DocumentosImport::truncate();
-
-            $import = new ImportDocumentos();
+            
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+            $urlNotificacion = $empresa->token_db.'_'.$request->user()['id'];
+            
+            $file = $request->file('importador_documentos');
+            $import = new ImportDocumentos($urlNotificacion, $empresa->id);
             $import->import($file);
-
-            $this->agregarValidaciones();
 
             return response()->json([
                 'success'=>	true,
@@ -95,7 +100,7 @@ class DocumentosImportadorController extends Controller
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
 
-        $documentosImportados = DocumentosImport::orderBy($columnName,$columnSortOrder)
+        $documentosImportados = DocumentosImport::orderBy('errores', 'ASC')
             ->where('documento_nit', 'like', '%' .$searchValue . '%')
             ->orWhere('cuenta_contable', 'like', '%' .$searchValue . '%')
             ->orWhere('codigo_cecos', 'like', '%' .$searchValue . '%')
@@ -135,9 +140,33 @@ class DocumentosImportadorController extends Controller
 
     public function actualizar (Request $request)
     {
-        $documentosImportados = DocumentosImport::get();
-        $documentosImportadosErrores = DocumentosImport::where('total_errores', '>', 0);
-        
+        try {
+
+            $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+
+            ProcessImportDocumentos::dispatch(
+                $empresa->id,
+                $request->user()->id,
+            );
+
+            return response()->json([
+                'success'=>	true,
+                'data' => [],
+                'message'=> 'Importando documentos!'
+            ]);
+
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+
+            return response()->json([
+                'success'=>	false,
+                'data' => $e->failures(),
+                'message'=> 'Error al actualizar precio de productos'
+            ]);
+        }
+    }
+
+    public function actualizar2 (Request $request)
+    {        
         try {
             DB::connection('sam')->beginTransaction();
 
