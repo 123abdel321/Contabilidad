@@ -214,33 +214,25 @@ abstract class AbstractFESender
 
 	public function getParams(): array
 	{
-		// Validar si fecha_manual es hoy
-		$fechaManual = $this->factura->fecha_manual;
-		$fechaActual = new \DateTime();
-		$fechaManualObj = date_create($fechaManual);
+		$fechaManual = $this->factura->fecha_manual ? Carbon::parse($this->factura->fecha_manual) : null;
+		$esHoy = $fechaManual && $fechaManual->isToday();
 		
-		// Comparar si la fecha_manual es hoy (mismo día, mes y año)
-		$esHoy = $fechaManualObj && $fechaManualObj->format('Y-m-d') === $fechaActual->format('Y-m-d');
-		
-		// Si es hoy, usar fecha_manual; si no, usar fecha actual
-		$fecha = $esHoy ? $fechaManualObj : $fechaActual;
-		$hora = $esHoy ? date_create($this->factura->created_at) : $fechaActual;
-		
-		$params = array(
+		$params = [
 			'number' => $this->factura->consecutivo,
 			'prefix' => $this->factura->resolucion->prefijo,
-			'type_document_id' => CodigoDocumentoDianTypes::getIdTipoDocumentoDian(($this->factura->codigo_tipo_documento_dian)),
-			'date' => $fecha->format('Y-m-d'),
-			'time' => $hora->format('H:i:s'),
-			'software-provider' => [
-				'provider_id' => $this->softwareProviderId
-			],
+			'type_document_id' => CodigoDocumentoDianTypes::getIdTipoDocumentoDian($this->factura->codigo_tipo_documento_dian),
+			'date' => $esHoy ? $fechaManual->toDateString() : Carbon::now()->toDateString(),
+			'time' => $esHoy ? Carbon::parse($this->factura->created_at)->toTimeString() : Carbon::now()->toTimeString(),
+			'software-provider' => ['provider_id' => $this->softwareProviderId],
 			'allowance_charges' => [],
 			'tax_totals' => $this->taxTotals([1]),
 			"withholding_tax_totals" => $this->taxTotals([5, 6]),
-		);
+		];
 		
-		if (empty($params["withholding_tax_totals"])) unset($params["withholding_tax_totals"]);
+		if (empty($params["withholding_tax_totals"])) {
+			unset($params["withholding_tax_totals"]);
+		}
+		
 		return array_merge($params, $this->getExtraParams());
 	}
 
