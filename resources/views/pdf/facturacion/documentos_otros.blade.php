@@ -194,6 +194,10 @@
 											</tr>
 										</thead>
 										<tbody>
+											<tr>
+												<td class="padding5" style="font-weight: bold;">Fecha</td>
+												<td class="valor padding5">{{ $factura->fecha_manual }}</td>
+											</tr>
 											@if($debitoTotal || $creditoTotal)
 												<tr>
 													<td class="padding5" style="font-weight: bold;">Debito</td>

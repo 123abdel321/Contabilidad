@@ -60,7 +60,6 @@ class ImportDocumentos implements
         copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $this->empresa->token_db);
 
-        // Contar cuántas filas tienen al menos uno de los dos campos
         $this->totalValidRows = 0;
 
         foreach ($rows as $row) {
@@ -131,7 +130,7 @@ class ImportDocumentos implements
                 ];
 
                 // Enviar evento de progreso cada 100 filas válidas procesadas
-                if ($validRows % 100 === 0) {
+                if ($validRows % 34 === 0) {
                     $progress = round(($validRows / $this->totalValidRows) * 100);
                     event(new PrivateMessageEvent("importador-documentos-" . $this->url_notification, [
                         'name' => 'progress',
@@ -354,26 +353,25 @@ class ImportDocumentos implements
         }
     }
 
-    // public function registerEvents(): array
-    // {
-    //     dd('end');
-    //     return [
-    //         AfterImport::class => function(AfterImport $event) {
-    //             // Enviar errores si existen
-    //             if (!empty($this->errors)) {
-    //                 Log::error('Errores en importación:', $this->errors);
-    //             }
+    public function registerEvents(): array
+    {
+        return [
+            AfterImport::class => function(AfterImport $event) {
+                // Enviar errores si existen
+                if (!empty($this->errors)) {
+                    Log::error('Errores en importación:', $this->errors);
+                }
                 
-    //             event(new PrivateMessageEvent("importador-documentos-" . $this->url_notification, [
-    //                 'name' => 'carga',
-    //                 'tipo' => 'exito',
-    //                 'mensaje' => 'Carga de plantilla de documentos finalizado totalmente!',
-    //                 'titulo' => 'Plantilla de documentos',
-    //                 'autoclose' => false
-    //             ]));
-    //         },
-    //     ];
-    // }
+                event(new PrivateMessageEvent("importador-documentos-" . $this->url_notification, [
+                    'name' => 'carga',
+                    'tipo' => 'exito',
+                    'mensaje' => 'Carga de plantilla de documentos finalizado totalmente!',
+                    'titulo' => 'Plantilla de documentos',
+                    'autoclose' => false
+                ]));
+            },
+        ];
+    }
 
     public function chunkSize(): int
     {

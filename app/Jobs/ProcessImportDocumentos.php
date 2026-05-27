@@ -198,7 +198,7 @@ class ProcessImportDocumentos implements ShouldQueue
                     $this->processedRecords++;
                         
                     // Enviar evento de progreso cada 100 registros procesados
-                    if ($this->processedRecords % 100 === 0) {
+                    if ($this->processedRecords % 34 === 0) {
                         $progress = $this->totalRecords > 0 
                             ? round(($this->processedRecords / $this->totalRecords) * 100) 
                             : 0;
