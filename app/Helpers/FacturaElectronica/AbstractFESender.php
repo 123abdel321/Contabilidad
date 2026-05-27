@@ -13,19 +13,21 @@ abstract class AbstractFESender
 	protected $cliente;
 	protected $detalles;
 	protected $softwareProviderId;
-	protected $url = 'https://fe.portafolioerp.com/api/ubl2.1';
+	protected $url;
 
 	public function __construct($factura)
 	{
 		$iva_inlucido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
+		$url_fe = VariablesEntorno::where('nombre', 'end_point_fe')->first();
 		$iva_inlucido = $iva_inlucido ? $iva_inlucido->valor : false;
 		$factura->loadMissing($this->getRelationShips());
-		
+
+		$this->url = $url_fe->valor;
 		$this->factura = $factura;
 		$this->pagos = $factura->pagos;
 		$this->cliente = $factura->cliente;
-		$this->detalles = $factura->detalles;
 		$this->iva_inluido = $iva_inlucido;
+		$this->detalles = $factura->detalles;
 	}
 
 	public abstract function getExtraParams(): array;
@@ -309,50 +311,75 @@ abstract class AbstractFESender
 
 	public function taxTotals($taxs = [1, 5, 6])
 	{
-		//ESTRUCTURA A ENTREGAR
-		$dataTaxTotals = $decoreTax = [
+		$dataTaxTotals = [
 			"iva" => [],
 			"reteIva" => [],
 			"reteFuente" => [],
 		];
-		//AGREGAR DETALLE DE LOS ITEMS
+		
+		// AGREGAR DETALLE DE LOS ITEMS
 		foreach ($this->detalles as $detalle) {
 			foreach ($taxs as $tax) {
-
 				switch ($tax) {
 					case 1: //IVA
-						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1]))) $dataTaxTotals['iva'][] = $dIva[0];
+						if (!empty($dIva = $this->taxTotalsDetalle($detalle, [1]))) {
+							$dataTaxTotals['iva'][] = $dIva[0];
+						}
 						break;
 					case 5: // RETE IVA
-						if (!empty($dRete = $this->taxTotalsDetalle($detalle, [5])) && intval($dRete[0]["tax_amount"])) $dataTaxTotals['reteIva'][] = $dRete[0];
+						if (!empty($dRete = $this->taxTotalsDetalle($detalle, [5])) && floatval($dRete[0]["tax_amount"]) != 0) {
+							$dataTaxTotals['reteIva'][] = $dRete[0];
+						}
 						break;
 					case 6: // RETE FUENTE
-						if (!empty($dFuente = $this->taxTotalsDetalle($detalle, [6])) && intval($dFuente[0]["tax_amount"])) $dataTaxTotals['reteFuente'][] = $dFuente[0];
-						break;
-					default:
+						if (!empty($dFuente = $this->taxTotalsDetalle($detalle, [6])) && floatval($dFuente[0]["tax_amount"]) != 0) {
+							$dataTaxTotals['reteFuente'][] = $dFuente[0];
+						}
 						break;
 				}
 			}
 		}
 
 		$taxTotals = [];
-    
-		// Procesar IVA (tax_id = 1)
+		
+		// Procesar IVA (tax_id = 1) - Separar por porcentaje en objetos individuales
 		if (!empty($dataTaxTotals['iva'])) {
 			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['iva']);
-			$taxTotals[] = $this->buildTaxTotal(1, $agrupados);
+			// Para múltiples porcentajes, crear un objeto por cada porcentaje
+			foreach ($agrupados as $percent => $grupo) {
+				$taxTotals[] = [
+					'tax_id' => 1,
+					'tax_amount' => round($grupo['tax_amount'], 2),
+					'percent' => floatval($percent),
+					'taxable_amount' => round($grupo['taxable_amount'], 2)
+				];
+			}
 		}
 		
-		// Procesar RETE IVA (tax_id = 5)
+		// Procesar RETE IVA (tax_id = 5) - Misma lógica
 		if (!empty($dataTaxTotals['reteIva'])) {
 			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['reteIva']);
-			$taxTotals[] = $this->buildTaxTotal(5, $agrupados);
+			foreach ($agrupados as $percent => $grupo) {
+				$taxTotals[] = [
+					'tax_id' => 5,
+					'tax_amount' => round($grupo['tax_amount'], 2),
+					'percent' => floatval($percent),
+					'taxable_amount' => round($grupo['taxable_amount'], 2)
+				];
+			}
 		}
 		
-		// Procesar RETE FUENTE (tax_id = 6)
+		// Procesar RETE FUENTE (tax_id = 6) - Misma lógica
 		if (!empty($dataTaxTotals['reteFuente'])) {
 			$agrupados = $this->agruparPorPorcentaje($dataTaxTotals['reteFuente']);
-			$taxTotals[] = $this->buildTaxTotal(6, $agrupados);
+			foreach ($agrupados as $percent => $grupo) {
+				$taxTotals[] = [
+					'tax_id' => 6,
+					'tax_amount' => round($grupo['tax_amount'], 2),
+					'percent' => floatval($percent),
+					'taxable_amount' => round($grupo['taxable_amount'], 2)
+				];
+			}
 		}
 		
 		return $taxTotals;
@@ -473,33 +500,38 @@ abstract class AbstractFESender
 	 */
 	private function buildTaxTotal($taxId, $agrupados)
 	{
-		// Caso 1: un solo porcentaje → estructura plana (sin tax_subtotal)
-		if (count($agrupados) === 1) {
-			$grupo = reset($agrupados);
-			return [
-				'tax_id' => $taxId,
+		$totalTaxAmount = 0;
+		$totalTaxableAmount = 0;
+		
+		foreach ($agrupados as $percent => $grupo) {
+			$totalTaxAmount += $grupo['tax_amount'];
+			$totalTaxableAmount += $grupo['taxable_amount'];
+		}
+		
+		return [
+			'tax_id' => $taxId,
+			'tax_amount' => round($totalTaxAmount, 2),
+			'percent' => null,  // Cuando hay múltiples porcentajes, percent va null
+			'taxable_amount' => round($totalTaxableAmount, 2),
+			'tax_subtotal' => $this->buildTaxSubtotal($agrupados)  // Los detalles van aquí
+		];
+	}
+
+	private function buildTaxSubtotal($agrupados)
+	{
+		$taxSubtotal = [];
+		
+		foreach ($agrupados as $percent => $grupo) {
+			$taxSubtotal[] = [
+				'tax_id' => $grupo['tax_id'],
 				'tax_amount' => round($grupo['tax_amount'], 2),
-				'percent' => floatval($grupo['percent']),
+				'percent' => floatval($percent),
 				'taxable_amount' => round($grupo['taxable_amount'], 2)
 			];
 		}
 		
-		// Caso 2: múltiples porcentajes → usar tax_subtotal (sin percent/taxable_amount raíz)
-		$totalTaxAmount = 0;
-		$taxSubtotal = [];
-		foreach ($agrupados as $percent => $grupo) {
-			$totalTaxAmount += $grupo['tax_amount'];
-			$taxSubtotal[] = [
-				'tax_id' => $taxId,
-				'tax_amount' => number_format(round($grupo['tax_amount'], 2), 2, '.', ''),
-				'percent' => number_format(floatval($percent), 2, '.', ''),
-				'taxable_amount' => number_format(round($grupo['taxable_amount'], 2), 2, '.', '')
-			];
-		}
-		return [
-			'tax_id' => $taxId,
-			'tax_amount' => round($totalTaxAmount, 2),
-			'tax_subtotal' => $taxSubtotal
-		];
+		return $taxSubtotal;
 	}
+
+
 }

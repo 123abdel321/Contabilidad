@@ -20,15 +20,8 @@ function importdocumentosInit() {
             headers: headers,
             url: base_url + 'documentos-cache-import',
         },
-        'rowCallback': function(row, data, index){
-            // if (parseInt(data.total_errores)) {
-            //     $('td', row).css('background-color', '#ff00005e');
-            //     return;
-            // }
-        },
         columns: [
             {"data": function (row, type, set){
-                console.log('row: ',row);
                 if (row.errores) {
                     return `<span class="badge bg-danger" style="font-size: 11px; padding: 4px 8px;">
                                 <i class="fas fa-exclamation-circle"></i> Fila ${row.total_errores}: Errores
@@ -78,7 +71,6 @@ $(document).on('click', '#cargarPlantillaDocumentos', function () {
     // Mostrar la barra de progreso
     $('#uploadStatusDocumentos').show();
     
-    // Resto del código que ya tienes...
     var ajxForm = document.getElementById("form-importador-documentos");
     var data = new FormData(ajxForm);
     var xhr = new XMLHttpRequest();
@@ -136,8 +128,6 @@ $(document).on('click', '#importarDocumentos', function () {
     $('#progressTextDocumentos').text('0%');
     $('#statusMessageDocumentos').text('Iniciando carga de productos al sistema...');
     $('#processedRowsDocumentos').text('0');
-    // No tenemos el total aún, pero podemos poner un placeholder
-    // En el evento de progreso, el backend nos enviará el total.
 
     $.ajax({
         method: 'POST',
@@ -145,8 +135,6 @@ $(document).on('click', '#importarDocumentos', function () {
         headers: headers,
         dataType: 'json',
     }).done((res) => {
-        // No mostramos toast, porque la barra de progreso ya está mostrando el estado
-        // El evento de progreso se encargará de actualizar la barra
     }).fail((err) => {
         $('#importarDocumentos').show();
         $('#uploadStatusDocumentos').hide();
