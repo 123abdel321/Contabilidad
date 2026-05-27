@@ -214,12 +214,24 @@ abstract class AbstractFESender
 
 	public function getParams(): array
 	{
+		// Validar si fecha_manual es hoy
+		$fechaManual = $this->factura->fecha_manual;
+		$fechaActual = new \DateTime();
+		$fechaManualObj = date_create($fechaManual);
+		
+		// Comparar si la fecha_manual es hoy (mismo día, mes y año)
+		$esHoy = $fechaManualObj && $fechaManualObj->format('Y-m-d') === $fechaActual->format('Y-m-d');
+		
+		// Si es hoy, usar fecha_manual; si no, usar fecha actual
+		$fecha = $esHoy ? $fechaManualObj : $fechaActual;
+		$hora = $esHoy ? date_create($this->factura->created_at) : $fechaActual;
+		
 		$params = array(
 			'number' => $this->factura->consecutivo,
 			'prefix' => $this->factura->resolucion->prefijo,
 			'type_document_id' => CodigoDocumentoDianTypes::getIdTipoDocumentoDian(($this->factura->codigo_tipo_documento_dian)),
-			'date' => date_format(date_create($this->factura->fecha_manual), 'Y-m-d'),
-			'time' => date_format(date_create($this->factura->created_at), 'H:i:s'),
+			'date' => $fecha->format('Y-m-d'),
+			'time' => $hora->format('H:i:s'),
 			'software-provider' => [
 				'provider_id' => $this->softwareProviderId
 			],
