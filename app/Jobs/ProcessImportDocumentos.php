@@ -107,8 +107,8 @@ class ProcessImportDocumentos implements ShouldQueue
                         'debito' => 0,
                         'credito' => 0,
                         'saldo_final' => 0,
-                        'created_by' => request()->user()->id,
-                        'updated_by' => request()->user()->id,
+                        'created_by' => $this->id_usuario,
+                        'updated_by' => $this->id_usuario,
                     ]);
 
                     $primerIdNit = null;
@@ -168,8 +168,8 @@ class ProcessImportDocumentos implements ShouldQueue
                             if(!$primerIdNit) $primerIdNit = $doc['id_nit'];
                         }
 
-                        $doc['created_by'] = request()->user()->id;
-				        $doc['updated_by'] = request()->user()->id;
+                        $doc['created_by'] = $this->id_usuario;
+				        $doc['updated_by'] = $this->id_usuario;
                         $doc['consecutivo'] = $data->consecutivo;
 
                         $doc = new DocumentosGeneral($doc);
@@ -190,7 +190,7 @@ class ProcessImportDocumentos implements ShouldQueue
                     $facDocumento->credito = $credito;
                     $facDocumento->id_nit = $primerIdNit;
                     $facDocumento->saldo_final = $debito - $credito;
-                    $facDocumento->updated_by = request()->user()->id;
+                    $facDocumento->updated_by = $this->id_usuario;
                     $facDocumento->save();
 
                     $this->updateConsecutivo($comprobante->id, $documentoImportado[0]->consecutivo);
