@@ -399,7 +399,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                     )->first();
 
                 $saldo_anterior = $saldo_anterior->saldo_anterior ?? 0;
-                $saldo_anterior = $saldo_anterior < 0 ? $saldo_anterior : $saldo_anterior * -1;
+                $saldo_anterior = $saldo_anterior < 0 ? $saldo_anterior  * -1 : $saldo_anterior;
                 $this->resultadoCarteraCollection[$key]['saldo_final']+= $saldo_anterior;
                 $this->resultadoCarteraCollection[$key]['saldo_anterior'] = $saldo_anterior;
             }
@@ -436,6 +436,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 "DG.anulado",
                 "DG.debito",
                 "DG.credito",
+                DB::raw("debito - credito AS saldo_anterior"),
                 DB::raw("IF(PC.naturaleza_cuenta = 0, credito, debito) AS total_abono"),
                 DB::raw("IF(PC.naturaleza_cuenta = 0, debito, credito) AS total_facturas"),
             )
