@@ -210,7 +210,7 @@ class GastosController extends Controller
             $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
 
             $redondeo_gastos = VariablesEntorno::where('nombre', 'redondeo_gastos')->first();
-            $redondeo_gastos = $redondeo_gastos ? floatval($redondeo_gastos->valor) : null;
+            $redondeo_gastos = $redondeo_gastos && $redondeo_gastos->valor ? floatval($redondeo_gastos->valor) : null;
             
             //AGREGAR MOVIMIENTO DE CUENTAS POR GASTO
             foreach ($request->get('gastos') as $movimiento) {
