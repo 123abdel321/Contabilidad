@@ -388,10 +388,12 @@ class PlanCuentaController extends Controller
 
             $cuentaDeleta = PlanCuentas::where('id', $request->get('id'))->first();
             $cuentaPadre = PlanCuentas::where('id', $cuentaDeleta->id_padre)->first();
-            $cuentaPadreHijos = PlanCuentas::where('id_padre', $cuentaPadre->id_padre);
+            if ($cuentaPadre) {
+                $cuentaPadreHijos = PlanCuentas::where('id_padre', $cuentaPadre->id_padre);
 
-            if (!$cuentaPadreHijos->count() == 0) {
-                $cuentaPadre->auxiliar = 1;
+                if (!$cuentaPadreHijos->count() == 0) {
+                    $cuentaPadre->auxiliar = 1;
+                }
             }
 
             $cuentaDeleta->delete();

@@ -658,9 +658,32 @@ $("#id_padre").on('change', function(e) {
     var data = $(this).select2('data');
     if(data.length){
         $("#text_cuenta_padre").val(data[0].cuenta);
+        validarInicioCuenta();
     }
 });
 
 function selectItem (idItem) {
     $('#'+idItem).select();
+}
+
+$('#cuenta').keyup(function() {
+    console.log('key up');
+    validarInicioCuenta();
+});
+
+
+function validarInicioCuenta() {
+    const cuentaPadre = $("#text_cuenta_padre").val()+'';
+    const cuentaHijo = $("#cuenta").val()+'';
+
+    const cuenta = cuentaPadre+cuentaHijo.charAt(0);
+
+    if (['5', '6', '7'].includes(cuenta)) {//TIPO GASTOS Y COSTOS
+        $("#id_tipo_cuenta").val([1]).change();
+    } 
+
+    if (['4', '5', '6', '7'].includes(cuenta)) {//TIPO GASTOS Y COSTOS
+        $("#exige_centro_costos").prop( "checked", true );
+    }
+
 }
