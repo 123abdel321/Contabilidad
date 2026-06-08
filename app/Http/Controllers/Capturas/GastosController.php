@@ -240,7 +240,7 @@ class GastosController extends Controller
                 }
 
                 $subtotalGasto = $this->redondearGasto($movimiento->valor_gasto - $movimiento->descuento_gasto, $redondeo_gastos);
-                Log::info('subtotalGasto', $subtotalGasto);
+                Log::info('dataGastos', ['subtotalGasto' => $subtotalGasto]);
                 $baseAIU = 0;
 
                 if (floatval($this->proveedor->porcentaje_aiu)) {
