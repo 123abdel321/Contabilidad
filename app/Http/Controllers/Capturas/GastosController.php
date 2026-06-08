@@ -240,6 +240,7 @@ class GastosController extends Controller
                 }
 
                 $subtotalGasto = $this->redondearGasto($movimiento->valor_gasto - $movimiento->descuento_gasto, $redondeo_gastos);
+                Log::info('subtotalGasto', $subtotalGasto);
                 $baseAIU = 0;
 
                 if (floatval($this->proveedor->porcentaje_aiu)) {
@@ -797,7 +798,6 @@ class GastosController extends Controller
     {
         
         $this->calcularTotales($request->get('gastos'), $request->get('id_proveedor'));
-        Log::info('totalesFactura', ['totalesFactura' => $this->totalesFactura]);
         $this->calcularFormasPago($request->get('pagos'));
         
         $gasto = ConGastos::create([
