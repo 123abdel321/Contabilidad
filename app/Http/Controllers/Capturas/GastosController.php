@@ -8,6 +8,7 @@ use App\Helpers\Extracto;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\Printers\GastosPdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -796,6 +797,7 @@ class GastosController extends Controller
     {
         
         $this->calcularTotales($request->get('gastos'), $request->get('id_proveedor'));
+        Log::info('totalesFactura', ['totalesFactura' => $this->totalesFactura]);
         $this->calcularFormasPago($request->get('pagos'));
         
         $gasto = ConGastos::create([
