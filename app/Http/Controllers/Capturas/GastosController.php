@@ -211,8 +211,8 @@ class GastosController extends Controller
             $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
 
             $redondeo_gastos = VariablesEntorno::where('nombre', 'redondeo_gastos')->first();
-            $redondeo_gastos = $redondeo_gastos && $redondeo_gastos->valor ? floatval($redondeo_gastos->valor) : null;
-            
+            $redondeo_gastos = $redondeo_gastos && isset($redondeo_gastos->valor) ? floatval($redondeo_gastos->valor) : null;
+
             //AGREGAR MOVIMIENTO DE CUENTAS POR GASTO
             foreach ($request->get('gastos') as $movimiento) {
                 $movimiento = (object)$movimiento;
@@ -240,7 +240,7 @@ class GastosController extends Controller
                 }
 
                 $subtotalGasto = $this->redondearGasto($movimiento->valor_gasto - $movimiento->descuento_gasto, $redondeo_gastos);
-                Log::info('dataGastos', ['subtotalGasto' => $subtotalGasto]);
+
                 $baseAIU = 0;
 
                 if (floatval($this->proveedor->porcentaje_aiu)) {
@@ -253,7 +253,8 @@ class GastosController extends Controller
                     } else if ($porcentaje_iva_aiu) {
                         $ivaGasto = $baseAIU * ($porcentaje_iva_aiu / 100);
                     }
-                    $ivaGasto = $this->redondearGasto($ivaGasto, $redondeo_gastos);
+                    
+                    $ivaGasto = $this->redondearGasto($ivaGasto, 0);
                     $retencionGasto = $this->redondearGasto($porcentajeRetencion ? ($baseAIU - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos);
                     $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
                     $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
@@ -560,7 +561,7 @@ class GastosController extends Controller
 
             $redondeo_gastos = VariablesEntorno::where('nombre', 'redondeo_gastos')->first();
             $redondeo_gastos = $redondeo_gastos ? floatval($redondeo_gastos->valor) : null;
-            // dd('ca mismo');
+
             $this->calcularTotales($movimientos, $request->get('id_nit'));
             $this->calcularFormasPago($pagos);
 
