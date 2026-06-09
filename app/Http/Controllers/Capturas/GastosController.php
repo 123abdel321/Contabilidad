@@ -240,7 +240,7 @@ class GastosController extends Controller
                 }
 
                 $subtotalGasto = $this->redondearGasto($movimiento->valor_gasto - $movimiento->descuento_gasto, $redondeo_gastos);
-
+                
                 $baseAIU = 0;
 
                 if (floatval($this->proveedor->porcentaje_aiu)) {
@@ -254,7 +254,7 @@ class GastosController extends Controller
                         $ivaGasto = $baseAIU * ($porcentaje_iva_aiu / 100);
                     }
                     
-                    $ivaGasto = $this->redondearGasto($ivaGasto, 0);
+                    $ivaGasto = $this->redondearGasto($ivaGasto, $redondeo_gastos);
                     $retencionGasto = $this->redondearGasto($porcentajeRetencion ? ($baseAIU - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos);
                     $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
                     $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
