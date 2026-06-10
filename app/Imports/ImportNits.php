@@ -55,7 +55,7 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
                     $nuevoMail.='@'.$razon_social[0].'.com';
                 }
 
-                if ($this->actualizar_valores) {
+                if (!empty($this->actualizar_valores)) {
                     $nit = Nits::where('numero_documento', $row['numero_documento'])->first();
                     if (!$nit) {
                         $estado = 1;

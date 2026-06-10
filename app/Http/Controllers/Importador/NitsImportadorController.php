@@ -116,6 +116,11 @@ class NitsImportadorController extends Controller
 
         if (count($dataNistValidar)) {
             foreach ($dataNistValidar as $dataNit) {
+                $errores = $this->getErrores($dataNit);
+                $dataNit->observacion = $errores;
+                $dataNit->estado = $errores ? 0 : 1;
+                $dataNit->save();
+
                 $this->rowErrors = 0;
                 $dataNit->id = $dataNit->id + 1;
                 $dataNit->erroes = $this->getErrores($dataNit);
@@ -147,15 +152,15 @@ class NitsImportadorController extends Controller
 
     public function actualizar (Request $request)
     {
-        $nitsImportados = NitsImport::get();
-        
+        $nitsImportados = NitsImport::where('estado', 1)->get();
+
         try {
             DB::connection('sam')->beginTransaction();
 
             if (count($nitsImportados)) {
                 
                 foreach ($nitsImportados as $nit) {
-                    if ($nit->estado) {
+                    if ($nit->estado && false) {
                         $nitExistente = Nits::where('numero_documento', $nit->numero_documento)->first();
                         if ($nit->primer_nombre || $nit->otros_nombres || $nit->primer_apellido || $nit->segundo_apellido || $nit->razon_social) {
                             $nitExistente->primer_nombre = $nit->primer_nombre;
@@ -208,7 +213,7 @@ class NitsImportadorController extends Controller
                     }
                 }
 
-                NitsImport::whereNotNull('id')->delete();
+                NitsImport::where('estado', 1)->delete();
     
                 DB::connection('sam')->commit();
             }
@@ -232,7 +237,7 @@ class NitsImportadorController extends Controller
     private function getErrores($dataNit)
     {
         $errores = '';
-        if ($dataNit->estado) {//ACTUALIZAR NITS
+        if ($dataNit->estado && false) {//ACTUALIZAR NITS
             if ($dataNit->numero_documento) {
                 $nit = Nits::where('numero_documento', $dataNit->numero_documento)->first();
                 if (!$nit) {
