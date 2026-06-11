@@ -202,6 +202,7 @@ class PresupuestoController extends Controller
             DB::connection('sam')->beginTransaction();
             $presupuestoD = PresupuestoDetalle::where('id', $request->get('id'))->first();
             $presupuesto = Presupuesto::where('id', $presupuestoD->id_presupuesto)->first();
+            
             PresupuestoDetalle::where('id', $request->get('id'))
                 ->update([
                     'presupuesto' => $request->get('presupuesto'),

@@ -112,6 +112,10 @@ class ProcessInformeResultados implements ShouldQueue
 
     private function documentosResultado()
     {
+        // PRIMERO: Cargar todas las cuentas con presupuesto
+        $this->cargarCuentasConPresupuesto();
+        
+        // SEGUNDO: Procesar movimientos contables y sumarlos a las cuentas existentes
         $query = $this->resultadoDocumentosQuery();
         $query->unionAll($this->resultadoAnteriorQuery());
         
@@ -149,6 +153,53 @@ class ProcessInformeResultados implements ShouldQueue
                     }
                 });
             });
+    }
+
+    private function cargarCuentasConPresupuesto()
+    {
+        $fecha = explode("-", $this->request['fecha_desde']);
+        $anio = $fecha[0];
+        
+        // Obtener todas las cuentas que tienen presupuesto en el periodo
+        $cuentasConPresupuesto = DB::connection('sam')
+            ->table('presupuesto_detalles AS PD')
+            ->join('presupuestos AS PR', 'PD.id_presupuesto', '=', 'PR.id')
+            ->where('PR.periodo', $anio)
+            ->where('PD.cuenta', 'LIKE', $this->tipo . '%')
+            ->where('PD.auxiliar', 1) // Solo cuentas auxiliares (detalle)
+            ->select('PD.cuenta', 'PD.nombre', 'PD.id_padre')
+            ->distinct()
+            ->get();
+        
+        foreach ($cuentasConPresupuesto as $cuenta) {
+            $cuentaData = PlanCuentas::whereCuenta($cuenta->cuenta)->first();
+            if (!$cuentaData) continue;
+            
+            // Solo agregar si no existe ya en la colección
+            if (!$this->hasCuentaData($cuenta->cuenta)) {
+                $this->resultadoCollection[$cuenta->cuenta] = [
+                    'id_resultado' => $this->id_resultado,
+                    'id_cuenta' => $cuentaData->id,
+                    'id_nit' => null,
+                    'numero_documento' => null,
+                    'nombre_nit' => null,
+                    'cuenta' => $cuentaData->cuenta,
+                    'nombre_cuenta' => $cuentaData->nombre,
+                    'auxiliar' => $cuentaData->auxiliar,
+                    'saldo_anterior' => 0.00,
+                    'debito' => 0.00,
+                    'credito' => 0.00,
+                    'saldo_final' => 0.00,
+                    'ppto_anterior' => 0,
+                    'ppto_movimiento' => 0,
+                    'ppto_acumulado' => 0,
+                    'ppto_diferencia' => 0,
+                    'ppto_porcentaje' => 0,
+                    'ppto_porcentaje_acumulado' => 0,
+                    'documentos_totales' => 0,
+                ];
+            }
+        }
     }
 
     private function totalesDocumentosResultado()
@@ -465,22 +516,27 @@ class ProcessInformeResultados implements ShouldQueue
         foreach ($this->resultadoCollection as $cuenta => $data) {
             $presupuesto = $this->getPresupuesto($cuenta);
             
+            // Calcular movimiento real (débito - crédito) según naturaleza de la cuenta
+            $cuentaData = PlanCuentas::whereCuenta($cuenta)->first();
+            $saldoFinal = $data['saldo_final'];
+            
+            // Para cuentas de gastos (tipo 5), el saldo final normalmente es débito
+            // Usar el valor absoluto para comparar con presupuesto
+            $saldoFinalAbs = abs($saldoFinal);
+            
             $pptoPorcentaje = $data['debito'] != 0 ? 
                 ($presupuesto['ppto_movimiento'] / $data['debito']) * 100 : 0;
             
-            $pptoPorcentajeAcumulado = $data['saldo_final'] != 0 ? 
-                ($presupuesto['ppto_acumulado'] / abs($data['saldo_final'])) * 100 : 0;
+            $pptoPorcentajeAcumulado = $saldoFinalAbs != 0 ? 
+                ($presupuesto['ppto_acumulado'] / $saldoFinalAbs) * 100 : 0;
 
             $this->resultadoCollection[$cuenta]['ppto_anterior'] = $presupuesto['ppto_anterior'];
             $this->resultadoCollection[$cuenta]['ppto_movimiento'] = $presupuesto['ppto_movimiento'];
-            $this->resultadoCollection[$cuenta]['ppto_acumulado'] =  $presupuesto['ppto_anterior'] + $presupuesto['ppto_movimiento'];
+            $this->resultadoCollection[$cuenta]['ppto_acumulado'] = $presupuesto['ppto_anterior'] + $presupuesto['ppto_movimiento'];
             $this->resultadoCollection[$cuenta]['ppto_diferencia'] = 
-                $presupuesto['ppto_acumulado'] - abs($data['saldo_final']);
+                $presupuesto['ppto_acumulado'] - $saldoFinalAbs;
             $this->resultadoCollection[$cuenta]['ppto_porcentaje'] = $pptoPorcentaje;
             $this->resultadoCollection[$cuenta]['ppto_porcentaje_acumulado'] = $pptoPorcentajeAcumulado;
-            
-            // Formatear solo al final
-            // $this->formatearValoresNumericos($cuenta);
         }
     }
 

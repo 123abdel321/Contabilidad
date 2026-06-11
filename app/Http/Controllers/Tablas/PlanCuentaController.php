@@ -6,6 +6,7 @@ use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use App\Services\PresupuestoService;
 //MODELS
 use App\Models\Sistema\TipoCuenta;
 use App\Models\Sistema\PlanCuentas;
@@ -17,9 +18,11 @@ use App\Models\Sistema\DocumentosGeneral;
 class PlanCuentaController extends Controller
 {
     protected $messages = null;
+    protected $presupuestoService;
 
-    public function __construct()
+    public function __construct(PresupuestoService $presupuestoService)
 	{
+        $this->presupuestoService = $presupuestoService;
 		$this->messages = [
             'id.exists' => 'El id debe existir en la tabla de centro de costos.',
 			'required' => 'El campo :attribute es requerido.',
@@ -233,6 +236,8 @@ class PlanCuentaController extends Controller
                 }
             }
 
+            $this->presupuestoService->syncAccountWithBudgets($cuenta->id, request()->user()->id);
+
             DB::connection('sam')->commit();
 
             return response()->json([
@@ -296,6 +301,9 @@ class PlanCuentaController extends Controller
         try {
             
             $cuentaPadre = '';
+
+            $cuentaVieja = PlanCuentas::find($request->get('id'));
+            $oldCuenta = $cuentaVieja->cuenta;
         
             if($request->get('id_padre')){
                 $padre = PlanCuentas::find($request->get('id_padre'));
@@ -340,6 +348,13 @@ class PlanCuentaController extends Controller
                     ]);
                 }
             }
+
+            $cuenta = PlanCuentas::find($request->get('id'));
+            $this->presupuestoService->syncAccountWithBudgets(
+                $cuenta->id, 
+                request()->user()->id,
+                $oldCuenta  // <-- Número de cuenta anterior
+            );
 
             DB::connection('sam')->commit();
 
