@@ -42,7 +42,6 @@ class ResultadosController extends Controller
             $fecha_desde = Carbon::parse($request->get('fecha_desde', null))->format('Y-m-d');
 
             $resultado = InfResultado::where('id_empresa', $empresa->id)
-                ->where('tipo', $request->get('tipo'))
                 ->where('fecha_hasta', $fecha_hasta)
                 ->where('fecha_desde', $fecha_desde)
                 ->where('id_cecos', $request->get('id_cecos', null))
@@ -79,7 +78,6 @@ class ResultadosController extends Controller
 
             $resultado = InfResultado::create([
 				'id_empresa' => $empresa->id,
-                'tipo' => $request->get('tipo'),
 				'fecha_desde' => $request->get('fecha_desde'),
 				'fecha_hasta' => $request->get('fecha_hasta'),
 				'id_cecos' => $request->get('id_cecos', null),

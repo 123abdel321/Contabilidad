@@ -48,7 +48,6 @@ function cargarTablasResultados() {
                 d.fecha_desde = $('#fecha_manual_resultados').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
                 d.fecha_hasta = $('#fecha_manual_resultados').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
                 d.id_cuenta = $('#id_cuenta_resultado').val();
-                d.tipo = $('#tipo_informe_resultado').val();
                 d.id_cecos = $('#id_cecos_resultado').val();
                 d.id_nit = $('#id_nit_resultado').val();
                 d.generar = generarResultados;
@@ -288,7 +287,6 @@ $(document).on('click', '#generarResultado', function () {
     url+= '?fecha_desde='+$('#fecha_manual_resultados').data('daterangepicker').startDate.format('YYYY-MM-DD HH:mm');
     url+= '&fecha_hasta='+$('#fecha_manual_resultados').data('daterangepicker').endDate.format('YYYY-MM-DD HH:mm');
     url+= '&id_cuenta='+$('#id_cuenta_resultado').val();
-    url+= '&tipo='+$('#tipo_informe_resultado').val();
     url+= '&id_cecos='+$('#id_cecos_resultado').val();
     url+= '&id_nit='+$('#id_nit_resultado').val();
 

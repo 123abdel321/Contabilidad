@@ -23,7 +23,6 @@ class ProcessInformeResultados implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tipo;
     public $empresa;
     public $request;
     public $id_usuario;
@@ -53,7 +52,6 @@ class ProcessInformeResultados implements ShouldQueue
 		$this->id_usuario = $id_usuario;
 		$this->id_empresa = $id_empresa;
 		$this->id_resultado = $id_resultado;
-        $this->tipo = $this->request['tipo'] == 1 ? '4' : '5';
     }
 
     public function handle()
@@ -165,8 +163,11 @@ class ProcessInformeResultados implements ShouldQueue
             ->table('presupuesto_detalles AS PD')
             ->join('presupuestos AS PR', 'PD.id_presupuesto', '=', 'PR.id')
             ->where('PR.periodo', $anio)
-            ->where('PD.cuenta', 'LIKE', $this->tipo . '%')
-            ->where('PD.auxiliar', 1) // Solo cuentas auxiliares (detalle)
+            ->where(function($query) {
+                $query->where('PD.cuenta', 'LIKE', '5%')
+                    ->orWhere('PD.cuenta', 'LIKE', '4%');
+            })
+            ->where('PD.auxiliar', 1)
             ->select('PD.cuenta', 'PD.nombre', 'PD.id_padre')
             ->distinct()
             ->get();
@@ -329,7 +330,10 @@ class ProcessInformeResultados implements ShouldQueue
             )
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
-            ->where('PC.cuenta', 'LIKE', $this->tipo.'%')
+            ->where(function($query) {
+                $query->where('PC.cuenta', 'LIKE', '5%')
+                    ->orWhere('PC.cuenta', 'LIKE', '4%');
+            })
             ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
@@ -369,7 +373,10 @@ class ProcessInformeResultados implements ShouldQueue
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
             ->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
             ->where('anulado', 0)
-            ->where('PC.cuenta', 'LIKE', $this->tipo.'%')
+            ->where(function($query) {
+                $query->where('PC.cuenta', 'LIKE', '5%')
+                    ->orWhere('PC.cuenta', 'LIKE', '4%');
+            })
             ->where('DG.fecha_manual', '<', $this->request['fecha_desde'])
             ->when($this->request['cuenta'], function ($query) {
                 $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');

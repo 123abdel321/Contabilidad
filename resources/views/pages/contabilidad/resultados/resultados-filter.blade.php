@@ -21,14 +21,6 @@
                             <input name="fecha_manual_resultados" id="fecha_manual_resultados" class="form-control form-control-sm" require>
                         </div>
 
-                        <div class="form-group col-12 col-sm-4 col-md-4">
-                            <label for="tipo_informe_resultado" style=" width: 100%;">Tipo informe</label>
-                            <select name="tipo_informe_resultado" id="tipo_informe_resultado" class="form-control form-control-sm">
-                                <option value="1">Igresos</option>
-                                <option value="2">Gastos</option>
-                            </select>
-                        </div>
-
                         <div class="form-group col-6 col-sm-4 col-md-4">
                             <label>Cuenta</label>
                             <select name="id_cuenta_resultado" id="id_cuenta_resultado" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
