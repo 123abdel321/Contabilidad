@@ -135,6 +135,13 @@ function initTablesExtractos() {
                     return;
                 }
             }
+            if(parseInt(data.saldo_final) != 0 && data.nivel == 2) {
+                var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
+                $('td', row).css('background-color', '#ff5100b9');
+                $('td', row).css('font-weight', 'bold');
+                $('td', row).css('color', 'white');
+                return;
+            }
             if(data.nivel == 1){
                 $('td', row).css('background-color', '#000');
                 $('td', row).css('font-weight', 'bold');
