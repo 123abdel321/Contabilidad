@@ -1,6 +1,9 @@
 
 <html>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    @include('excel.base_header', ['encabezado' => $encabezado])
+
 	<table>
 		<thead>
 		<tr>            
