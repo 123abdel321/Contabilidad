@@ -167,7 +167,7 @@ class ProcessInformeImpuestos implements ShouldQueue
                     $totalImpuesto = (float) $documento->debito + (float) $documento->credito;
                     $porcentaje = (float) $documento->porcentaje;
                     $totalValorBase = ($porcentaje > 0 && $totalImpuesto != 0)
-                        ? $totalImpuesto / $porcentaje
+                        ? ($totalImpuesto / $porcentaje)  * 100
                         : 0;
 
                     $this->impuestosCollection[$key] = [
@@ -277,7 +277,7 @@ class ProcessInformeImpuestos implements ShouldQueue
                     $totalImpuesto = (float) $documento->debito + (float) $documento->credito;
                     $porcentaje = (float) $documento->porcentaje;
                     $totalValorBase = ($porcentaje > 0 && $totalImpuesto != 0)
-                        ? $totalImpuesto / $porcentaje
+                        ? ($totalImpuesto / $porcentaje)  * 100
                         : 0;
                         
                     $this->impuestosCollection[$key] = [
@@ -385,7 +385,11 @@ class ProcessInformeImpuestos implements ShouldQueue
                     $totalUvt = $documento->total_uvt ? $documento->total_uvt : 0;
                     $totalBase = $documento->base ? $documento->base : 0;
                     $totalImpuesto = $documento->debito + $documento->credito;
-                    $totalValorBase = $documento->porcentaje ? $totalImpuesto / $documento->porcentaje : 0;
+                    $porcentaje = (float) $documento->porcentaje;
+                    $totalValorBase = ($porcentaje > 0 && $totalImpuesto != 0)
+                        ? ($totalImpuesto / $porcentaje)  * 100
+                        : 0;
+
                     $this->impuestosCollection[$key] = [
                         'id_impuestos' => $this->id_impuestos,
                         'id_nit' => $documento->id_nit,
