@@ -118,6 +118,7 @@ class ImpuestosPdf extends AbstractPrinterPdf
                     $totalUvt = $documento->total_uvt ? $documento->total_uvt : 0;
                     $totalBase = $documento->base ? $documento->base : 0;
                     $porcentaje = (float) $documento->porcentaje;
+                    $totalImpuesto = $documento->debito + $documento->credito;
 
                     $totalValorBase = $porcentaje > 0 
                         ? $totalImpuesto / $porcentaje 
