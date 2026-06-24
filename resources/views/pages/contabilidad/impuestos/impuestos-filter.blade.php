@@ -16,8 +16,8 @@
                         <div class="form-group form-group col-12 col-sm-4 col-md-3">
                             <label for="tipo_informe_impuestos">Tipo informe</label>
                             <select class="form-control form-control-sm tipo_impuestos" id="tipo_informe_impuestos" name="tipo_informe_impuestos">
-                                <option value="iva">Iva</option>
                                 <option value="retencion">Retención</option>
+                                <option value="iva">Iva</option>
                                 <option value="reteica">Reteica</option>
                             </select>
                         </div>
@@ -37,19 +37,14 @@
                         <div class="form-group form-group col-12 col-sm-4 col-md-3">
                             <label for="agrupar_impuestos">Agrupar por:</label>
                             <select class="form-control form-control-sm agrupar_impuestos" id="agrupar_impuestos" name="agrupar_impuestos">
-                                <option value="id_nit">Cedula/Nits</option>
                                 <option value="id_cuenta">Cuenta</option>
+                                <option value="id_nit">Cedula/Nits</option>
                             </select>
                         </div>
 
                         <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="fecha_desde_impuestos" class="form-control-label">Fecha desde</label>
-                            <input name="fecha_desde_impuestos" id="fecha_desde_impuestos" class="form-control form-control-sm" type="date">
-                        </div>
-
-                        <div class="form-group col-12 col-sm-4 col-md-3">
-                            <label for="fecha_hasta_impuestos" class="form-control-label">Fecha hasta</label>
-                            <input name="fecha_hasta_impuestos" id="fecha_hasta_impuestos" class="form-control form-control-sm" type="date">
+                            <label for="fecha_manual_impuesto" class="form-control-label">Fecha</label>
+                            <input name="fecha_manual_impuesto" id="fecha_manual_impuesto" class="form-control form-control-sm" required>
                         </div>
 
                         <div class="form-group col-12 col-sm-3 col-md-2 row" style="margin-bottom: 0.1rem !important;">
@@ -114,15 +109,19 @@
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
                     <!-- BOTON EXCEL -->
-                    <!-- <span id="descargarExcelImpuestos" class="btn badge bg-gradient-success btn-bg-success" style="min-width: 40px; display:none;">
+                    <span id="descargarExcelImpuestos" class="btn badge bg-gradient-success btn-bg-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                     </span>
-                    <span id="descargarExcelImpuestosDisabled" class="badge bg-gradient-dark" style="min-width: 40px; color: #adadad; margin-right: 3px;">
+                    <span id="descargarExcelImpuestosLoading" class="badge bg-gradient-info btn-bg-excel-loading" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
+                        <b style="vertical-align: text-top;s">&nbsp;EXCEL</b>
+                    </span>
+                    <span id="descargarExcelImpuestosDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>&nbsp;
                         <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
-                    </span> -->
+                    </span>
                     <!-- BOTON ULTIMO INFORME -->
                     <span id="generarImpuestosUltimo" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; margin-right: 3px; float: right; display:none;">
                         <i class="fas fa-history" style="font-size: 17px;"></i>&nbsp;

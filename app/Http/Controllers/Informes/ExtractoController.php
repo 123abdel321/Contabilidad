@@ -284,19 +284,13 @@ class ExtractoController extends Controller
 
             $informeExtracto->exporte = 1;
             $informeExtracto->url_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
-            // $informeExtracto->save();
+            $informeExtracto->save();
 
             $has_empresa = $request->user()['has_empresa'];
             $user_id = $request->user()->id;
             $id_informe = $request->get('id');
 
             $empresa = Empresa::where('token_db', $has_empresa)->first();
-
-            $filtros = (object)[
-                'fecha_desde' => $request->get('fecha_desde'),
-                'fecha_hasta' => $request->get('fecha_hasta'),
-                'id_nit' => $request->get('id_nit') ? Nits::find($request->get('id_nit'))->numero_documento . ' - ' . (Nits::find($request->get('id_nit'))->nombre_completo ?? Nits::find($request->get('id_nit'))->nombre) : null,
-            ];
 
             Bus::chain([
                 function () use ($id_informe, &$fileName, &$empresa) {
@@ -309,7 +303,7 @@ class ExtractoController extends Controller
                     // Lanza el evento cuando el proceso termine
                     event(new PrivateMessageEvent('informe-extracto-'.$has_empresa.'_'.$user_id, [
                         'tipo' => 'exito',
-                        'mensaje' => 'Excel de Resumen cartera generado con exito!',
+                        'mensaje' => 'Excel de extracto generado con exito!',
                         'titulo' => 'Excel generado',
                         'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
                         'autoclose' => false
@@ -317,7 +311,7 @@ class ExtractoController extends Controller
                     
                     // Actualiza el informe auxiliar
                     $informeExtracto->exporte = 2;
-                    // $informeExtracto->save();
+                    $informeExtracto->save();
                 }
             ])->dispatch();
 

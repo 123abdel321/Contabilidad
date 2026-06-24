@@ -57,14 +57,16 @@ class ProcessInformeImpuestos implements ShouldQueue
         try {
             $impuestos = InfImpuestos::create([
 				'id_empresa' => $this->id_empresa,
+				'nivel' => $this->request['nivel'],
 				'id_nit' => $this->request['id_nit'],
 				'id_cuenta' => $this->request['id_cuenta'],
 				'fecha_desde' => $this->request['fecha_desde'],
 				'fecha_hasta' => $this->request['fecha_hasta'],
+				'tipo_informe' => $this->request['tipo_informe'],
 				'agrupar_impuestos' => $this->request['agrupar_impuestos'],
-				'nivel' => $this->request['nivel'],
-			]);
-
+				'agrupar_impuestos' => $this->request['agrupar_impuestos'],
+                ]);
+                
             $this->id_impuestos = $impuestos->id;
 
             $this->nivelUnoImpuestos();
@@ -153,6 +155,7 @@ class ProcessInformeImpuestos implements ShouldQueue
             )
             ->groupByRaw($this->request['agrupar_impuestos'])
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
+            ->havingRaw('debito != 0 OR credito != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $key = '';
@@ -260,7 +263,8 @@ class ProcessInformeImpuestos implements ShouldQueue
             )
             ->groupByRaw($this->groupString(2))
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
-            ->havingRaw('saldo_anterior != 0 OR saldo_final != 0')
+            ->havingRaw('debito != 0 OR credito != 0')
+
             ->chunk(233, function ($documentos) {
                 
                 $documentos->each(function ($documento) {
@@ -370,7 +374,7 @@ class ProcessInformeImpuestos implements ShouldQueue
             )
             ->groupByRaw($this->groupString(3))
             ->orderByRaw('cuenta, id_nit, documento_referencia, created_at')
-            ->havingRaw('saldo_anterior != 0 OR saldo_final != 0')
+            ->havingRaw('debito != 0 OR credito != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     $this->contador++;
@@ -469,6 +473,7 @@ class ProcessInformeImpuestos implements ShouldQueue
                 DB::raw('SUM(total_columnas) AS total_columnas')
             )
             ->orderByRaw('created_at')
+            ->havingRaw('debito != 0 OR credito != 0')
             ->first();
 
         $this->impuestosCollection['99999999999'] = [

@@ -41,6 +41,7 @@ class InfImpuestosDetalle extends Model
         "fecha_edicion",
         "detalle",
         "detalle_group",
+        "tipo_informe",
         "created_by",
         "updated_by",
     ];

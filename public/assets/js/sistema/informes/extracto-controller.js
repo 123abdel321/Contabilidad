@@ -312,10 +312,6 @@ $(document).on('click', '#descargarExcelExtracto', function () {
     $("#descargarExcelExtractoLoading").show();
     $("#descargarExcelExtractoDisabled").hide();
 
-
-    descargarExcelExtracto
-    descargarExcelExtractoDisabled
-
     $.ajax({
         url: base_url + 'extractos-excel',
         method: 'POST',

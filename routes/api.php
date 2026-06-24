@@ -199,6 +199,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('impuestos', 'generate');
             Route::get('impuestos-show', 'show');
             Route::get('impuestos-find', 'find');
+            Route::post('impuestos-excel', 'exportExcel');
         });
         //DOCUMENTOS GENERALES
         Route::controller(DocumentosGeneralesController::class)->group(function () {

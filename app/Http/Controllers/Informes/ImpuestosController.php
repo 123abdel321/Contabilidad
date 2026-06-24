@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Informes;
 
 use Illuminate\Http\Request;
-// use App\Exports\BalanceExport;
+use App\Exports\ImpuestoExport;
+use Illuminate\Support\Facades\Bus;
 use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeImpuestos;
@@ -138,6 +139,77 @@ class ImpuestosController extends Controller
         return (new ImpuestosPdf($empresa, $request->all()))
             ->buildPdf()
             ->showPdf();
+    }
+
+    public function exportExcel(Request $request)
+    {
+        try {
+            $informeImpuesto = InfImpuestos::find($request->get('id'));
+            
+            if($informeImpuesto && $informeImpuesto->exporte == 1) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => '',
+                    'message'=> 'Actualmente se esta generando el excel de auxiliar'
+                ]);
+            }
+
+            if($informeImpuesto && $informeImpuesto->exporte == 2) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => $informeImpuesto->url_excel,
+                    'message'=> ''
+                ]);
+            }
+
+            $fileName = 'export/impuesto_'.uniqid().'.xlsx';
+            $url = $fileName;
+
+            $informeImpuesto->exporte = 1;
+            $informeImpuesto->url_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
+            $informeImpuesto->save();
+
+            $has_empresa = $request->user()['has_empresa'];
+            $user_id = $request->user()->id;
+            $id_informe = $request->get('id');
+
+            $empresa = Empresa::where('token_db', $has_empresa)->first();
+
+            Bus::chain([
+                function () use ($id_informe, &$fileName, &$empresa) {
+                    // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
+                    (new ImpuestoExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
+                        'visibility' => 'public'
+                    ]);
+                },
+                function () use ($user_id, $has_empresa, $url, $informeImpuesto) {
+                    // Lanza el evento cuando el proceso termine
+                    event(new PrivateMessageEvent('informe-impuestos-'.$has_empresa.'_'.$user_id, [
+                        'tipo' => 'exito',
+                        'mensaje' => 'Excel de impuestos generado con exito!',
+                        'titulo' => 'Excel generado',
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
+                        'autoclose' => false
+                    ]));
+                    
+                    // Actualiza el informe auxiliar
+                    $informeImpuesto->exporte = 2;
+                    $informeImpuesto->save();
+                }
+            ])->dispatch();
+
+            return response()->json([
+                'success'=>	true,
+                'url_file' => '',
+                'message'=> 'Se le notificará cuando el informe haya finalizado'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
 }

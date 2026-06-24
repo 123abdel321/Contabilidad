@@ -2,15 +2,23 @@ var fechaDesde = null;
 var impuestos_table = null;
 var generarImpuestos = false;
 var impuestosExistente = false;
+var channelImpuestos = pusher.subscribe('informe-impuestos-'+localStorage.getItem("notificacion_code"));
 
 function impuestosInit() {
-    fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("0" + (dateNow.getDate())).slice(-2);
+
     generarImpuestos = false;
     impuestosExistente = false;
 
-    $('#fecha_desde_impuestos').val(dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-01');
-    $('#fecha_hasta_impuestos').val(fechaDesde);
+    cargarTablasImpuestos();
+    cargarCombosImpuestos();
+    cargarChangeImpuestos();
+    cargarFechasImpuestos();
 
+    findImpuestos();
+    actualizarImpuestosColumnas();
+}
+
+function cargarTablasImpuestos(){
     impuestos_table = $('#ImpuestosInformeTable').DataTable({
         pageLength: 100,
         dom: 'Brtip',
@@ -159,7 +167,9 @@ function impuestosInit() {
             }}
         ]
     });
+}
 
+function cargarCombosImpuestos(){
     $('#id_cuenta_impuestos').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -201,7 +211,9 @@ function impuestosInit() {
             }
         }
     });
+}
 
+function cargarChangeImpuestos(){
     $("#nivel_impuestos1").on('change', function(){
         actualizarImpuestosColumnas();
         document.getElementById("generarImpuestos").click();
@@ -217,26 +229,6 @@ function impuestosInit() {
         actualizarImpuestosColumnas();
         actualizarImpuestosPdfRetencion();
     });
-
-    function actualizarImpuestosPdfRetencion() {
-        const tipoInforme = $("#tipo_informe_impuestos").val();
-        const idNitSelect = $('#id_nit_impuestos').val();
-
-        $("#descargarPdfImpuestosRetencion").hide();
-        $("#descargarPdfImpuestosRetencionLoading").hide();
-        $("#descargarPdfImpuestosRetencionDisabled").hide();
-        $("#descargarPdfImpuestosReteica").hide();
-        $("#descargarPdfImpuestosReteicaLoading").hide();
-        $("#descargarPdfImpuestosReteicaDisabled").hide();
-
-        if (tipoInforme == 'retencion') {
-            if (idNitSelect) $("#descargarPdfImpuestosRetencion").show();
-            else $("#descargarPdfImpuestosRetencionDisabled").show();
-        } else if (tipoInforme == 'reteica') {
-            if (idNitSelect) $("#descargarPdfImpuestosReteica").show();
-            else $("#descargarPdfImpuestosReteicaDisabled").show();
-        }
-    }
 
     $("#nivel_impuestos3").on('change', function(){
         actualizarImpuestosColumnas();
@@ -270,9 +262,76 @@ function impuestosInit() {
         clearImpuestos();
         findImpuestos();
     });
+}
 
-    findImpuestos();
-    actualizarImpuestosColumnas();
+function cargarFechasImpuestos(){
+    const start = moment().subtract(1, "month").startOf("month");
+    const end = moment().subtract(1, "month").endOf("month");
+
+    const dateNow = new Date();
+
+    $("#fecha_manual_impuesto").daterangepicker({
+        startDate: start,
+        endDate: end,
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        locale: {
+            format: "YYYY-MM-DD",
+            separator: " - ",
+            applyLabel: "Aplicar",
+            cancelLabel: "Cancelar",
+            fromLabel: "Desde",
+            toLabel: "Hasta",
+            customRangeLabel: "Personalizado",
+            daysOfWeek: moment.weekdaysMin(),
+            monthNames: moment.months(),
+            firstDay: 1
+        },
+        ranges: {
+            "Mes anterior": [
+                startOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth() - 1, 1)),
+                endOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth(), 0))
+            ],
+            "Este mes": [
+                startOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth(), 1)),
+                endOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth() + 1, 0))
+            ],
+            "Este año": [
+                startOfDay(new Date(dateNow.getFullYear(), 0, 1)),
+                endOfDay(new Date(dateNow.getFullYear(), 11, 31))
+            ]
+        }
+    }, function(start, end) {
+        formatoFecha(start, end, "fecha_manual_impuesto");
+    });
+
+    // Esto actualizará el input con el mes anterior
+    formatoFecha(start, end, "fecha_manual_impuesto");
+
+    $("#fecha_manual_impuesto").on('change blur', function() {
+        parseManualInput($(this).val(), "fecha_manual_impuesto");
+    });
+}
+
+function actualizarImpuestosPdfRetencion() {
+    const tipoInforme = $("#tipo_informe_impuestos").val();
+    const idNitSelect = $('#id_nit_impuestos').val();
+
+    $("#descargarPdfImpuestosRetencion").hide();
+    $("#descargarPdfImpuestosRetencionLoading").hide();
+    $("#descargarPdfImpuestosRetencionDisabled").hide();
+    $("#descargarPdfImpuestosReteica").hide();
+    $("#descargarPdfImpuestosReteicaLoading").hide();
+    $("#descargarPdfImpuestosReteicaDisabled").hide();
+
+    if (tipoInforme == 'retencion') {
+        if (idNitSelect) $("#descargarPdfImpuestosRetencion").show();
+        else $("#descargarPdfImpuestosRetencionDisabled").show();
+    } else if (tipoInforme == 'reteica') {
+        if (idNitSelect) $("#descargarPdfImpuestosReteica").show();
+        else $("#descargarPdfImpuestosReteicaDisabled").show();
+    }
 }
 
 function tipoCuentaInforme() {
@@ -287,10 +346,15 @@ function actualizarImpuestosColumnas() {
     let tipoInforme = $("#tipo_informe_impuestos").val();
 
     var columnActividadEconomica = impuestos_table.column(2);
+    var columnSaldoAnterior = impuestos_table.column(3);
+    var columnSaldoFinal = impuestos_table.column(8);
     var columnComprobante = impuestos_table.column(9);
     var columnFechaManul = impuestos_table.column(10);
     var columnConcecutivo = impuestos_table.column(11);
     var columnConcepto = impuestos_table.column(12);
+
+    columnSaldoAnterior.visible(false);
+    columnSaldoFinal.visible(false);
     
     if (tipoInforme == 'reteica') columnActividadEconomica.visible(true);
     else columnActividadEconomica.visible(false);
@@ -311,7 +375,7 @@ function actualizarImpuestosColumnas() {
 
 function loadImpuestosById(id_impuesto) {
     var url = base_url + 'impuestos-show?id='+id_impuesto;
-
+    $('#id_impuesto_cargado').val(id_impuesto);
     impuestos_table.ajax.url(url).load(function(res) {
         
         if(res.success){
@@ -354,11 +418,15 @@ $(document).on('click', '#generarImpuestos', function () {
     $("#impuestos_abonos").text('$0');
     $("#impuestos_diferencia").text('$0');
 
+    const picker = $('#fecha_manual_impuesto').data('daterangepicker');
+    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
+    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
+
     var url = base_url + 'impuestos';
     url+= '?id_nit='+$('#id_nit_impuestos').val();
     url+= '&id_cuenta='+$('#id_cuenta_impuestos').val();
-    url+= '&fecha_desde='+$('#fecha_desde_impuestos').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_impuestos').val();
+    url+= '&fecha_desde='+fecha_desde;
+    url+= '&fecha_hasta='+fecha_hasta;
     url+= '&agrupar_impuestos='+$('#agrupar_impuestos').val();
     url+= '&tipo_informe='+$("#tipo_informe_impuestos").val();
     url+= '&nivel='+getNivelImpuestos();
@@ -379,7 +447,7 @@ $(document).on('click', '#generarImpuestos', function () {
                     reverseButtons: true,
                 }).then((result) => {
                     if (result.value){
-                        $('#id_impuesto_cargado').val(res.data);
+                        // $('#id_impuesto_cargado').val(res.data);
                         loadImpuestosById(res.data);
                     } else {
                         generarImpuestos = true;
@@ -396,11 +464,15 @@ $(document).on('click', '#generarImpuestos', function () {
 
 $(document).on('click', '#descargarPdfImpuestosRetencion', function () {
 
+    const picker = $('#fecha_manual_impuesto').data('daterangepicker');
+    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
+    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
+
     var url = base_web + 'impuestos-retencion-pdf';
     url+= '?id_nit='+$('#id_nit_impuestos').val();
     url+= '&id_cuenta='+$('#id_cuenta_impuestos').val();
-    url+= '&fecha_desde='+$('#fecha_desde_impuestos').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_impuestos').val();
+    url+= '&fecha_desde='+fecha_desde;
+    url+= '&fecha_hasta='+fecha_hasta;
     url+= '&agrupar='+$('#agrupar_impuestos').val();
     url+= '&tipo_informe='+$("#tipo_informe_impuestos").val();
     url+= '&nivel='+getNivelImpuestos();
@@ -411,11 +483,16 @@ $(document).on('click', '#descargarPdfImpuestosRetencion', function () {
 
 $(document).on('click', '#descargarPdfImpuestosReteica', function () {
 
+    const picker = $('#fecha_manual_impuesto').data('daterangepicker');
+    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
+    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
+
+
     var url = base_web + 'impuestos-reteica-pdf';
     url+= '?id_nit='+$('#id_nit_impuestos').val();
     url+= '&id_cuenta='+$('#id_cuenta_impuestos').val();
-    url+= '&fecha_desde='+$('#fecha_desde_impuestos').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_impuestos').val();
+    url+= '&fecha_desde='+fecha_desde;
+    url+= '&fecha_hasta='+fecha_hasta;
     url+= '&agrupar='+$('#agrupar_impuestos').val();
     url+= '&tipo_informe='+$("#tipo_informe_impuestos").val();
     url+= '&nivel='+getNivelImpuestos();
@@ -429,10 +506,15 @@ function findImpuestos() {
     $('#generarImpuestosUltimo').hide();
     $('#generarImpuestosUltimoLoading').show();
 
+    const picker = $('#fecha_manual_impuesto').data('daterangepicker');
+    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
+    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
+
     var url = base_url + 'impuestos-find';
     url+= '?id_nit='+$('#id_nit_impuestos').val();
     url+= '&id_cuenta='+$('#id_cuenta_impuestos').val();
-    url+= '&fecha_desde_impuestos='+$('#fecha_desde_impuestos').val();
+    url+= '&fecha_desde='+fecha_desde;
+    url+= '&fecha_hasta='+fecha_hasta;
     url+= '&agrupar_impuestos='+$('#agrupar_impuestos').val();
     url+= '&tipo_informe='+$("#tipo_informe_impuestos").val();
     url+= '&nivel='+getNivelImpuestos();
@@ -468,10 +550,15 @@ function findImpuestos() {
 
 function GenerateImpuestos() {
     var url = base_url + 'impuestos-find';
+
+    const picker = $('#fecha_manual_auxiliar').data('daterangepicker');
+    const fecha_desde = picker.startDate.format('YYYY-MM-DD HH:mm');
+    const fecha_hasta = picker.endDate.format('YYYY-MM-DD HH:mm');
+
     url+= '?id_nit='+$('#id_nit_impuestos').val();
     url+= '&id_cuenta='+$('#id_cuenta_impuestos').val();
-    url+= '&fecha_desde='+$('#fecha_desde_impuestos').val();
-    url+= '&fecha_hasta='+$('#fecha_hasta_impuestos').val();
+    url+= '&fecha_desde='+fecha_desde;
+    url+= '&fecha_hasta='+fecha_hasta;
     url+= '&agrupar='+$('#agrupar_impuestos').val();
     url+= '&tipo_informe='+$("#tipo_informe_impuestos").val();
     url+= '&nivel='+getNivelImpuestos();
@@ -490,10 +577,50 @@ $(document).on('click', '#generarImpuestosUltimo', function () {
     loadImpuestosById(impuestosExistente);
 });
 
-var channelImpuestos = pusher.subscribe('informe-impuestos-'+localStorage.getItem("notificacion_code"));
+$(document).on('click', '#descargarExcelImpuestos', function () {
+
+    $("#descargarExcelImpuestos").hide();
+    $("#descargarExcelImpuestosLoading").show();
+    $("#descargarExcelImpuestosDisabled").hide();
+
+    $.ajax({
+        url: base_url + 'impuestos-excel',
+        method: 'POST',
+        data: JSON.stringify({id: $('#id_impuesto_cargado').val()}),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            if(res.url_file){
+
+                $("#descargarExcelImpuestos").show();
+                $("#descargarExcelImpuestosLoading").hide();
+                $("#descargarExcelImpuestosDisabled").hide();
+
+                window.open('https://'+res.url_file, "_blank");
+                agregarToast('info', 'Generando excel', res.message, true);
+
+            } else {
+                agregarToast('info', 'Generando excel', res.message, true);
+            }
+        }
+    }).fail((err) => {
+
+        $("#descargarExcelImpuestos").show();
+        $("#descargarExcelImpuestosLoading").hide();
+        $("#descargarExcelImpuestosDisabled").hide();
+
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Error al generar excel', errorsMsg);
+    });
+});
 
 channelImpuestos.bind('notificaciones', function(data) {
     if(data.url_file){
+        $("#descargarExcelImpuestos").show();
+        $("#descargarExcelImpuestosLoading").hide();
+        $("#descargarExcelImpuestosDisabled").hide();
         loadExcel(data);
         return;
     }
