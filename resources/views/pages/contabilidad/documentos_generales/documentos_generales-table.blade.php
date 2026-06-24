@@ -3,7 +3,7 @@
         <tr>
             <th style="border-radius: 15px 0px 0px 0px !important;">Cuenta</th>
             <th>Nombre Cuenta</th>
-            <th>Documento</th>
+            <th>Cédula / Nit</th>
             <th>Nombre</th>
             <th>Ubicacion</th>
             <th>Comprobante</th>

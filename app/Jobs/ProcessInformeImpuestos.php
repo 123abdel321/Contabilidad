@@ -117,6 +117,7 @@ class ProcessInformeImpuestos implements ShouldQueue
                 'nombre_nit',
                 'razon_social',
                 'apartamentos',
+                'codigo_documento',
                 'id_cuenta',
                 'cuenta',
                 'naturaleza_cuenta',
@@ -176,7 +177,7 @@ class ProcessInformeImpuestos implements ShouldQueue
                     $this->impuestosCollection[$key] = [
                         'id_impuestos' => $this->id_impuestos,
                         'id_nit' => $documento->id_nit,
-                        'numero_documento' => $documento->numero_documento,
+                        'numero_documento' => $documento->codigo_documento.' - '.$documento->numero_documento,
                         'nombre_nit' => $documento->nombre_nit,
                         'razon_social' => $documento->razon_social,
                         'id_cuenta' => $documento->id_cuenta,
@@ -224,6 +225,7 @@ class ProcessInformeImpuestos implements ShouldQueue
                 'nombre_nit',
                 'razon_social',
                 'apartamentos',
+                'codigo_documento',
                 'id_cuenta',
                 'cuenta',
                 'naturaleza_cuenta',
@@ -287,7 +289,7 @@ class ProcessInformeImpuestos implements ShouldQueue
                     $this->impuestosCollection[$key] = [
                         'id_impuestos' => $this->id_impuestos,
                         'id_nit' => $documento->id_nit,
-                        'numero_documento' => $documento->numero_documento,
+                        'numero_documento' => $documento->codigo_documento.' - '.$documento->numero_documento,
                         'nombre_nit' => $documento->nombre_nit,
                         'razon_social' => $documento->razon_social,
                         'id_cuenta' => $documento->id_cuenta,
@@ -335,6 +337,7 @@ class ProcessInformeImpuestos implements ShouldQueue
                 'nombre_nit',
                 'razon_social',
                 'apartamentos',
+                'codigo_documento',
                 'id_cuenta',
                 'cuenta',
                 'naturaleza_cuenta',
@@ -525,6 +528,7 @@ class ProcessInformeImpuestos implements ShouldQueue
                 "N.razon_social",
                 "N.plazo",
                 "N.apartamentos",
+                "TD.codigo AS codigo_documento",
                 "PC.id AS id_cuenta",
                 "PC.cuenta",
                 "PC.naturaleza_cuenta",
@@ -562,6 +566,7 @@ class ProcessInformeImpuestos implements ShouldQueue
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->leftJoin('impuestos AS IM', 'PC.id_impuesto', 'IM.id')
+            ->leftJoin('tipos_documentos AS TD', 'N.id_tipo_documento', 'TD.id')
             ->where('anulado', 0)
             ->whereIn('PCT.id_tipo_cuenta', $this->tipoCuentas())
             ->when($this->request['fecha_desde'] ? true : false, function ($query) {
@@ -594,6 +599,7 @@ class ProcessInformeImpuestos implements ShouldQueue
                 "N.razon_social",
                 "N.plazo",
                 "N.apartamentos",
+                "TD.codigo AS codigo_documento",
                 "PC.id AS id_cuenta",
                 "PC.cuenta",
                 "PC.naturaleza_cuenta",
@@ -631,6 +637,7 @@ class ProcessInformeImpuestos implements ShouldQueue
             ->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
             ->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
             ->leftJoin('impuestos AS IM', 'PC.id_impuesto', 'IM.id')
+            ->leftJoin('tipos_documentos AS TD', 'N.id_tipo_documento', 'TD.id')
             ->where('anulado', 0)
             ->whereIn('PCT.id_tipo_cuenta', $this->tipoCuentas())
             ->when($this->request['fecha_desde'] ? true : false, function ($query) {
