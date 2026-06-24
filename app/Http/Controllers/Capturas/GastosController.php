@@ -216,7 +216,7 @@ class GastosController extends Controller
             //AGREGAR MOVIMIENTO DE CUENTAS POR GASTO
             foreach ($request->get('gastos') as $movimiento) {
                 $movimiento = (object)$movimiento;
-                
+
                 $conceptoGasto = ConConceptoGastos::with(
                     'cuenta_gasto.tipos_cuenta',
                     'cuenta_reteica.tipos_cuenta',
@@ -239,7 +239,7 @@ class GastosController extends Controller
                     $porcentajeIva = $porcentaje_iva_aiu;
                 }
 
-                $subtotalGasto = $this->redondearGasto($movimiento->valor_gasto - $movimiento->descuento_gasto, $redondeo_gastos);
+                $subtotalGasto = $this->redondearGasto(($movimiento->valor_gasto + $movimiento->no_valor_iva)- $movimiento->descuento_gasto, $redondeo_gastos);
                 
                 $baseAIU = 0;
 
@@ -262,8 +262,8 @@ class GastosController extends Controller
                     $subtotalGasto+= $ivaGasto;
                 } else {
                     $ivaGasto = $this->redondearGasto($porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0, $redondeo_gastos);
-                    $retencionGasto = $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos);
-                    $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
+                    $retencionGasto = $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos);
+                    $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? ($subtotalGasto) * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
                     $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
                 }
 
@@ -896,8 +896,8 @@ class GastosController extends Controller
             $porcentajeIva = $conceptoGasto->cuenta_iva ? floatval($conceptoGasto->cuenta_iva->impuesto->porcentaje) : 0;
             $porcentajeRetencion = $this->totalesFactura['porcentaje_rete_fuente'];
 
-            $subtotalGasto = $this->redondearGasto($gasto->valor_gasto - $gasto->descuento_gasto, $redondeo_gastos);
-            
+            $subtotalGasto = $this->redondearGasto(($gasto->valor_gasto + $gasto->no_valor_iva) - $gasto->descuento_gasto, $redondeo_gastos);
+
             if (floatval($this->proveedor->porcentaje_aiu)) {
                 $baseAIU = $subtotalGasto * (floatval($this->proveedor->porcentaje_aiu / 100));
                 $baseAIU = $this->redondearGasto($baseAIU, $redondeo_gastos);

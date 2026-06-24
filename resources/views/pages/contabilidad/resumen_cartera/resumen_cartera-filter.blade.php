@@ -17,8 +17,8 @@
                         <div class="form-group col-12 col-sm-3 col-md-3">
                             <label for="tipo_informe_resumen_cartera" style=" width: 100%;">Tipo informe</label>
                             <select name="tipo_informe_resumen_cartera" id="tipo_informe_resumen_cartera" class="form-control form-control-sm">
-                                <option value="1">General</option>
                                 <option value="2">Individual</option>
+                                <option value="1">General</option>
                             </select>
                         </div>
 

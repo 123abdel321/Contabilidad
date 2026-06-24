@@ -148,24 +148,29 @@ function resumencarteraInit() {
     });
 
     $("#tipo_informe_resumen_cartera").on('change', function(){
-        const tipoInforme = parseInt($("#tipo_informe_resumen_cartera").val());
-
-        $('#id_nit_resumen_cartera').val('').trigger('change');
-
-        if(tipoInforme == 1){
-            $('#nitAuxiliarDiv').hide();
-            $('#fechaDesdeDiv').hide();        
-            $('#fecha_desde_resumen_cartera').val('');
-        } else if(tipoInforme == 2){
-            var fechaDesde = dateNow.getFullYear()+'-'+("0" + (dateNow.getMonth() + 1)).slice(-2)+'-'+("01").slice(-2);
-            
-            $('#fechaDesdeDiv').show();
-            $('#nitAuxiliarDiv').show();
-            $('#fecha_desde_resumen_cartera').val(fechaDesde);
-        }
+        changeTipoInformeCartera();
     });
 
     $('#id_nit_resumen_cartera').val('2').trigger('change');
+    changeTipoInformeCartera();
+}
+
+function changeTipoInformeCartera(){
+    const tipoInforme = parseInt($("#tipo_informe_resumen_cartera").val());
+
+    $('#id_nit_resumen_cartera').val('').trigger('change');
+
+    if(tipoInforme == 1){
+        $('#nitAuxiliarDiv').hide();
+        $('#fechaDesdeDiv').hide();        
+        $('#fecha_desde_resumen_cartera').val('');
+    } else if(tipoInforme == 2){
+        var fechaDesde = dateNow.getFullYear()+'-'+("01").slice(-2)+'-'+("01").slice(-2);
+        
+        $('#fechaDesdeDiv').show();
+        $('#nitAuxiliarDiv').show();
+        $('#fecha_desde_resumen_cartera').val(fechaDesde);
+    }
 }
 
 function mostrarCuentas(cuentas) {

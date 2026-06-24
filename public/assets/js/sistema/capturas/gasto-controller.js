@@ -914,14 +914,14 @@ function changeValorNoIvaGasto (idGasto, event = null) {
         var valorReteIca = 0;
         var valorIva = 0;
 
-        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU, idGasto);
+        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal, baseAIU, idGasto);
         valorRetencion = redondear(valorRetencion, redondeoGastos);
 
         if (baseAIU) {
             valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? baseAIU * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
             valorIva = dataGasto[indexGasto].porcentaje_iva ? baseAIU * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
         } else {
-            valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal - valorNoiva) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
+            valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? (valorSubtotal) * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
             valorIva = dataGasto[indexGasto].porcentaje_iva ? valorSubtotal * (dataGasto[indexGasto].porcentaje_iva / 100) : 0;
         }
 
@@ -1228,7 +1228,7 @@ function totalValoresGastos () {
         gasto_reteica+= parseFloat(gastoRow.valor_reteica);
         gasto_retencion+= parseFloat(gastoRow.valor_retencion);
         gasto_descuento+= parseFloat(gastoRow.descuento_gasto);
-        gasto_total+= parseFloat(gastoRow.total_valor_gasto);
+        gasto_total+= parseFloat(gastoRow.total_valor_gasto) + parseFloat(valorIva ? valorIva : 0);
         gasto_sub_total+= parseFloat(gastoRow.valor_gasto) - parseFloat(gastoRow.descuento_gasto)
         gasto_aiu+= parseFloat(gastoRow.base_aiu);
     });
