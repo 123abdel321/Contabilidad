@@ -109,7 +109,7 @@
                 
                 @foreach ($encabezado->filtros as $nombre => $valor)
                     @if (!empty($valor))
-                        <strong>{{ $nombre }}:</strong> {{ $valor }}<br>
+                        <strong>{{ $nombre }}:&nbsp;</strong> {{ $valor }}<br>
                     @endif
                 @endforeach                      
             </div>

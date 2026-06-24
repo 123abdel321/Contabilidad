@@ -26,13 +26,11 @@
 <div class="container-fluid py-2">
     <div class="row">
 
-        <div class="row" style="z-index: 9; margin-top: 7px;">
-            <div class="col-12 col-md-8 col-sm-8">
+        <div class="card mb-4">
+            <div class="card-body" style="padding: 0 !important;">
 
-                <button type="button" class="btn btn-sm badge btn-light" style="vertical-align: middle; height: 30px;" id="reloadExtracto">
-                    <i id="reloadExtractosIconLoading" class="fa fa-refresh fa-spin" style="font-size: 16px; color: #2d3257; display: none;"></i>
-                    <i id="reloadExtractosIconNormal" class="fas fa-sync-alt" style="font-size: 17px;"></i>&nbsp;
-                </button>
+                @include('pages.contabilidad.extracto.extracto-filter')
+
             </div>
         </div>
 

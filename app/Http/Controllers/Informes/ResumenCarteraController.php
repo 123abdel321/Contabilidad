@@ -134,7 +134,7 @@ class ResumenCarteraController extends Controller
 
             $informeResumenCartera->exporte = 1;
             $informeResumenCartera->url_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
-            // $informeResumenCartera->save();
+            $informeResumenCartera->save();
 
             $has_empresa = $request->user()['has_empresa'];
             $user_id = $request->user()->id;
@@ -172,8 +172,8 @@ class ResumenCarteraController extends Controller
                     ]));
                     
                     // Actualiza el informe auxiliar
-                    // $informeResumenCartera->exporte = 2;
-                    // $informeResumenCartera->save();
+                    $informeResumenCartera->exporte = 2;
+                    $informeResumenCartera->save();
                 }
             ])->dispatch();
 

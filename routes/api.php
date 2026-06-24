@@ -30,6 +30,8 @@ use App\Http\Controllers\Tablas\Nomina\ConfiguracionProvisiones;
 use App\Http\Controllers\Tablas\Nomina\AdministradorasController;
 use App\Http\Controllers\Tablas\Nomina\ConceptosNominaController;
 //INFORMES
+
+use App\Http\Controllers\Informes\ExtractoController;
 use App\Http\Controllers\Informes\ImpuestosController;
 use App\Http\Controllers\Informes\ResultadosController;
 use App\Http\Controllers\Informes\EstadoActualController;
@@ -162,11 +164,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         });
 
         //INFORMES
-        Route::get('extracto', 'App\Http\Controllers\Informes\ExtractoController@extracto');
-        Route::get('extracto-anticipos', 'App\Http\Controllers\Informes\ExtractoController@extractoAnticipos');
-        Route::get('existe-factura', 'App\Http\Controllers\Informes\ExtractoController@existeFactura');
-        Route::get('extractos-informe', 'App\Http\Controllers\Informes\ExtractoController@generateInforme');
-        Route::get('extractos-show', 'App\Http\Controllers\Informes\ExtractoController@show');
+        Route::controller(ExtractoController::class)->group(function () {
+            Route::get('extracto', 'extracto');
+            Route::get('extracto-anticipos', 'extractoAnticipos');
+            Route::get('existe-factura', 'existeFactura');
+            Route::get('extractos-informe', 'generateInforme');
+            Route::get('extractos-show', 'show');
+            Route::post('extractos-excel', 'exportExcel');
+        });
 
         //DOCUMENTOS CAPTURADOS
         Route::get('documento', 'App\Http\Controllers\Informes\DocumentoController@generate');

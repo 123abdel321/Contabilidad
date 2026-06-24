@@ -135,13 +135,13 @@ function initTablesExtractos() {
                     return;
                 }
             }
-            if(parseInt(data.saldo_final) != 0 && data.nivel == 2) {
-                var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
-                $('td', row).css('background-color', '#ff5100b9');
-                $('td', row).css('font-weight', 'bold');
-                $('td', row).css('color', 'white');
-                return;
-            }
+            // if(parseInt(data.saldo_final) != 0 && data.nivel == 2) {
+            //     var cuenta = data.cuenta.charAt(0)+data.cuenta.charAt(1);
+            //     $('td', row).css('background-color', '#ff5100b9');
+            //     $('td', row).css('font-weight', 'bold');
+            //     $('td', row).css('color', 'white');
+            //     return;
+            // }
             if(data.nivel == 1){
                 $('td', row).css('background-color', '#000');
                 $('td', row).css('font-weight', 'bold');
@@ -185,7 +185,6 @@ function initTablesExtractos() {
                 return;
             }
             if(data.nivel == 6){//
-                console.log('nivel 6');
                 $('td', row).css('borderBottom', '1px solid #bababa');
                 return;
             }
@@ -228,9 +227,13 @@ function getSaldoAnteriorExtracto() {
 function loadExtractoById(id_extracto) {
     $('#id_extracto_cargado').val(id_extracto);
     extracto_informe_table.ajax.url(base_url + 'extractos-show?id='+id_extracto).load(function(res) {
-        console.log('res: ',res);
-        $("#reloadExtractosIconNormal").show();
-        $("#reloadExtractosIconLoading").hide();
+
+        $("#extractoGenerar").show();
+        $("#extractoGenerarLoading").hide();
+
+        $("#descargarExcelExtracto").show();
+        $("#descargarExcelExtractoDisabled").hide();
+
         if(res.success){
             mostrarTotalesExtracto(res.totales);
             agregarToast('exito', 'Extracto cargado', 'Informe cargado con exito!', true);
@@ -258,13 +261,16 @@ function mostrarTotalesExtracto(data) {
 
 extractoInformeChanel.bind('notificaciones', function(data) {
     if(data.tipo == "error"){
-        $("#reloadExtractosIconNormal").show();
-        $("#reloadExtractosIconLoading").hide();
+        $("#extractoGenerar").show();
+        $("#extractoGenerarLoading").hide();
         agregarToast('error', 'Error al cargar informe', data.mensaje, false);
         return;
     }
 
     if(data.url_file){
+        $("#descargarExcelExtracto").show();
+        $("#descargarExcelExtractoLoading").hide();
+        $("#descargarExcelExtractoDisabled").hide();
         loadExcel(data);
         return;
     }
@@ -276,14 +282,14 @@ extractoInformeChanel.bind('notificaciones', function(data) {
     }
 });
 
-$(document).on('click', '#reloadExtracto', function () {
+$(document).on('click', '#extractoGenerar', function () {
 
     if (initExtracto) {
         return;
     }
 
-    $("#reloadExtractosIconNormal").hide();
-    $("#reloadExtractosIconLoading").show();
+    $("#extractoGenerar").hide();
+    $("#extractoGenerarLoading").show();
 
     let documento_referencia = "";
     if ($('#factura_documentos_extracto').val()) {
@@ -298,6 +304,49 @@ $(document).on('click', '#reloadExtracto', function () {
     url+= '&saldo_anterior='+getSaldoAnteriorExtracto();
 
     extracto_informe_table.ajax.url(url).load();
+});
+
+$(document).on('click', '#descargarExcelExtracto', function () {
+
+    $("#descargarExcelExtracto").hide();
+    $("#descargarExcelExtractoLoading").show();
+    $("#descargarExcelExtractoDisabled").hide();
+
+
+    descargarExcelExtracto
+    descargarExcelExtractoDisabled
+
+    $.ajax({
+        url: base_url + 'extractos-excel',
+        method: 'POST',
+        data: JSON.stringify({id: $('#id_extracto_cargado').val()}),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            if(res.url_file){
+
+                $("#descargarExcelExtracto").show();
+                $("#descargarExcelExtractoLoading").hide();
+                $("#descargarExcelExtractoDisabled").hide();
+
+                window.open('https://'+res.url_file, "_blank");
+                agregarToast('info', 'Generando excel', res.message, true);
+
+            } else {
+                agregarToast('info', 'Generando excel', res.message, true);
+            }
+        }
+    }).fail((err) => {
+
+        $("#descargarExcelExtracto").show();
+        $("#descargarExcelExtractoLoading").hide();
+        $("#descargarExcelExtractoDisabled").hide();
+
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Error al generar excel', errorsMsg);
+    });
 });
 
 $("#fecha_manual_extracto").on('change', function(){

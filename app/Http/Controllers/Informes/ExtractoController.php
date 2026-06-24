@@ -7,6 +7,9 @@ use Carbon\Carbon;
 use App\Helpers\Extracto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Exports\ExtractoExport;
+use Illuminate\Support\Facades\Bus;
+use App\Events\PrivateMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessInformeExtracto;
 use Illuminate\Support\Facades\Validator;
@@ -253,6 +256,83 @@ class ExtractoController extends Controller
             'data' => [],
             'message'=> 'Extracto consultados con exito!'
         ]);
+    }
+
+    public function exportExcel(Request $request)
+    {
+        try {
+            $informeExtracto = InfExtracto::find($request->get('id'));
+
+            if($informeExtracto && $informeExtracto->exporte == 1) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => '',
+                    'message'=> 'Actualmente se esta generando el excel de auxiliar'
+                ]);
+            }
+
+            if($informeExtracto && $informeExtracto->exporte == 2) {
+                return response()->json([
+                    'success'=>	true,
+                    'url_file' => $informeExtracto->url_excel,
+                    'message'=> ''
+                ]);
+            }
+
+            $fileName = 'export/extracto_'.uniqid().'.xlsx';
+            $url = $fileName;
+
+            $informeExtracto->exporte = 1;
+            $informeExtracto->url_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
+            // $informeExtracto->save();
+
+            $has_empresa = $request->user()['has_empresa'];
+            $user_id = $request->user()->id;
+            $id_informe = $request->get('id');
+
+            $empresa = Empresa::where('token_db', $has_empresa)->first();
+
+            $filtros = (object)[
+                'fecha_desde' => $request->get('fecha_desde'),
+                'fecha_hasta' => $request->get('fecha_hasta'),
+                'id_nit' => $request->get('id_nit') ? Nits::find($request->get('id_nit'))->numero_documento . ' - ' . (Nits::find($request->get('id_nit'))->nombre_completo ?? Nits::find($request->get('id_nit'))->nombre) : null,
+            ];
+
+            Bus::chain([
+                function () use ($id_informe, &$fileName, &$empresa) {
+                    // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
+                    (new ExtractoExport($id_informe, $empresa))->store($fileName, 'do_spaces', null, [
+                        'visibility' => 'public'
+                    ]);
+                },
+                function () use ($user_id, $has_empresa, $url, $informeExtracto) {
+                    // Lanza el evento cuando el proceso termine
+                    event(new PrivateMessageEvent('informe-extracto-'.$has_empresa.'_'.$user_id, [
+                        'tipo' => 'exito',
+                        'mensaje' => 'Excel de Resumen cartera generado con exito!',
+                        'titulo' => 'Excel generado',
+                        'url_file' => 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url,
+                        'autoclose' => false
+                    ]));
+                    
+                    // Actualiza el informe auxiliar
+                    $informeExtracto->exporte = 2;
+                    // $informeExtracto->save();
+                }
+            ])->dispatch();
+
+            return response()->json([
+                'success'=>	true,
+                'url_file' => '',
+                'message'=> 'Se le notificará cuando el informe haya finalizado'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     public function extractoAnticipos(Request $request)
