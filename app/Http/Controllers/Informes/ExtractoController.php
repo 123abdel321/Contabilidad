@@ -263,7 +263,7 @@ class ExtractoController extends Controller
         try {
             $informeExtracto = InfExtracto::find($request->get('id'));
 
-            if($informeExtracto && $informeExtracto->exporte == 1) {
+            if($informeExtracto && $informeExtracto->exporta_excel == 1) {
                 return response()->json([
                     'success'=>	true,
                     'url_file' => '',
@@ -271,10 +271,10 @@ class ExtractoController extends Controller
                 ]);
             }
 
-            if($informeExtracto && $informeExtracto->exporte == 2) {
+            if($informeExtracto && $informeExtracto->exporta_excel == 2) {
                 return response()->json([
                     'success'=>	true,
-                    'url_file' => $informeExtracto->url_excel,
+                    'url_file' => $informeExtracto->archivo_excel,
                     'message'=> ''
                 ]);
             }
@@ -282,8 +282,8 @@ class ExtractoController extends Controller
             $fileName = 'export/extracto_'.uniqid().'.xlsx';
             $url = $fileName;
 
-            $informeExtracto->exporte = 1;
-            $informeExtracto->url_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
+            $informeExtracto->exporta_excel = 1;
+            $informeExtracto->archivo_excel = 'porfaolioerpbucket.nyc3.digitaloceanspaces.com/'.$url;
             $informeExtracto->save();
 
             $has_empresa = $request->user()['has_empresa'];
@@ -310,7 +310,7 @@ class ExtractoController extends Controller
                     ]));
                     
                     // Actualiza el informe auxiliar
-                    $informeExtracto->exporte = 2;
+                    $informeExtracto->exporta_excel = 2;
                     $informeExtracto->save();
                 }
             ])->dispatch();
