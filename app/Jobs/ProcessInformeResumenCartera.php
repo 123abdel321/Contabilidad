@@ -61,12 +61,12 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 $this->addAbonosMeses();
                 $this->descuentoProntoPagoMeses();
                 $this->addTotalIndividualCartera();
+                ksort($this->resultadoCarteraCollection, SORT_STRING | SORT_FLAG_CASE);
             } else {
                 $this->addResumenCartera();
                 $this->addTotalResumenCartera();
             }
             
-            ksort($this->resultadoCarteraCollection, SORT_STRING | SORT_FLAG_CASE);
             foreach (array_chunk($this->resultadoCarteraCollection,233) as $resultadoCarteraCollection){
                 
                 DB::connection('informes')
@@ -119,6 +119,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
             )
             ->groupByRaw('id_cuenta')
             ->orderByRaw('cuenta')
+            ->havingRaw('saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 foreach ($documentos as $documento) {
                     $this->cuentas_orden[] = (object)[
