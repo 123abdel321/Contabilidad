@@ -92,42 +92,92 @@ function cargarTablasResultados() {
             {
                 data: 'saldo_anterior',
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                className: "column-number", className: 'dt-body-right'
+                className: "column-number dt-body-right"
             },
             {
-                data: 'debito',
+                data: 'enero',
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                className: "column-number", className: 'dt-body-right'
+                className: "column-number dt-body-right"
             },
             {
-                data: 'credito',
+                data: 'febrero',
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                className: "column-number", className: 'dt-body-right'
+                className: "column-number dt-body-right"
+            },
+            {
+                data: 'marzo',
+                render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                className: "column-number dt-body-right"
+            },
+            {
+                data: 'abril',
+                render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                className: "column-number dt-body-right"
+            },
+            {
+                data: 'mayo',
+                render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                className: "column-number dt-body-right"
+            },
+            {
+                data: 'junio',
+                render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                className: "column-number dt-body-right"
+            },
+            {
+                data: 'julio',
+                render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                className: "column-number dt-body-right"
+            },
+            {
+                data: 'agosto',
+                render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                className: "column-number dt-body-right"
+            },
+            {
+                data: 'septiembre',
+                render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                className: "column-number dt-body-right"
+            },
+            {
+                data: 'octubre',
+                render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                className: "column-number dt-body-right"
+            },
+            {
+                data: 'noviembre',
+                render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                className: "column-number dt-body-right"
+            },
+            {
+                data: 'diciembre',
+                render: $.fn.dataTable.render.number(',', '.', 2, ''),
+                className: "column-number dt-body-right"
             },
             {
                 data: 'saldo_final',
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                className: "column-number", className: 'dt-body-right'
+                className: "column-number dt-body-right"
             },
             {
                 data: 'ppto_anterior',
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                className: "column-number", className: 'dt-body-right'
+                className: "column-number dt-body-right"
             },
             {
                 data: 'ppto_movimiento',
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                className: "column-number", className: 'dt-body-right'
+                className: "column-number dt-body-right"
             },
             {
                 data: 'ppto_acumulado',
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                className: "column-number", className: 'dt-body-right'
+                className: "column-number dt-body-right"
             },
             {
                 data: 'ppto_diferencia',
                 render: $.fn.dataTable.render.number(',', '.', 2, ''),
-                className: "column-number", className: 'dt-body-right'
+                className: "column-number dt-body-right"
             },
             {data: 'ppto_porcentaje', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             {data: 'ppto_porcentaje_acumulado', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
@@ -261,7 +311,40 @@ function cargarFechasResultados() {
     formatoFecha(start, end, "fecha_manual_resultados");
 }
 
+function showColumnasDateResultados() {
+    // Verificar que la DataTable esté inicializada
+    if (typeof resultados_table === 'undefined' || resultados_table === null) {
+        return;
+    }
+
+    // Obtener fechas del filtro
+    var start = $('#fecha_manual_resultados').data('daterangepicker').startDate;
+    var end = $('#fecha_manual_resultados').data('daterangepicker').endDate;
+    var mesInicio = start.month() + 1; // 1 = enero, 12 = diciembre
+    var mesFin = end.month() + 1;
+
+    // Lista de meses en el mismo orden que las columnas de la tabla
+    var meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+    // Recorrer todas las columnas de la DataTable
+    resultados_table.columns().every(function (index) {
+        var col = this;
+        var dataSrc = col.dataSrc(); // Obtiene el nombre del campo 'data' de la columna
+
+        // Verificar si esta columna corresponde a un mes
+        if (meses.includes(dataSrc)) {
+            var mesNum = meses.indexOf(dataSrc) + 1; // Número de mes (1-12)
+            // Mostrar si el mes está dentro del rango, ocultar en caso contrario
+            var visible = (mesNum >= mesInicio && mesNum <= mesFin);
+            col.visible(visible);
+        }
+        // Las demás columnas (cuenta, nombre, saldos, presupuestos) no se tocan
+    });
+}
+
 function loadResultadoById(id_resultado) {
+
+    showColumnasDateResultados();
 
     $('#id_resultado_cargado').val(id_resultado);
     resultados_table.ajax.url(base_url + 'resultados-show?id='+id_resultado).load(function(res) {
@@ -272,6 +355,7 @@ function loadResultadoById(id_resultado) {
             $("#descargarExcelResultado").show();
             $("#descargarExcelResultadoLoading").hide();
             $("#descargarExcelResultadoDisabled").hide();
+
 
             agregarToast('exito', 'Resultado cargado', 'Informe cargado con exito!', true);
         }
