@@ -980,6 +980,16 @@ div.dataTables_processing {
     -webkit-box-orient: vertical;
 }
 
+.width-300{
+    width: 300px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+
 .width-200{
     width: 200px;
     overflow: hidden;

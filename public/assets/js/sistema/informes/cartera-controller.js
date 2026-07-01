@@ -199,17 +199,17 @@ function cargarTablasCartera() {
                     if (row.nivel == 1) {
                         return '';
                     } else {
-                        return row.apartamento_nit;
+                        return `<div  class="text-wrap width-300">${row.apartamento_nit}</div >`;
                     }
                 }
                 if (agrupado == 'id_nit') {
                     if (row.nivel == 9) {
-                        return row.apartamento_nit;
+                        return `<div  class="text-wrap width-300">${row.apartamento_nit}</div >`;
                     } else {
                         return '';
                     }
                 }
-                return row.apartamento_nit;
+                return `<div  class="text-wrap width-300">${row.apartamento_nit}</div >`;
             }},
             {data: 'documento_referencia'},
             {data: 'fecha_manual'},
@@ -395,7 +395,7 @@ function cargarTablasCartera() {
                 if (row.nivel == 2) {
                     return '';
                 }
-                return row.apartamento_nit;
+                return `<div  class="text-wrap width-300">${row.apartamento_nit}</div >`;
             }},
             { data: function (row, type, set) {
                 if (row.nivel == 2) {

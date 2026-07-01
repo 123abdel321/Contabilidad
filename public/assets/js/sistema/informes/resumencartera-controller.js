@@ -12,7 +12,9 @@ function resumencarteraInit() {
     const columnas = [
         { data: 'numero_documento' },
         { data: 'nombre_nit' },
-        { data: 'ubicacion' } // si tienes esta columna
+        { data: function (row, type, set){
+            return `<div  class="text-wrap width-300">${row.ubicacion}</div >`;
+        }},
     ];
 
     // Generar dinámicamente las columnas cuenta_1 a cuenta_30
