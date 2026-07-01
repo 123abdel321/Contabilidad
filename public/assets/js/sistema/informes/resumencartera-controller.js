@@ -347,4 +347,7 @@ function actualizarTipoInformeResumenCartera() {
         columnaNombreNit.visible(false);
         columnaUbicacion.visible(false);
     }
+
+    columnaMora.visible(false);
+
 }
