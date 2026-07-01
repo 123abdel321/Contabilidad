@@ -139,7 +139,6 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
         $query = $this->resumenCarteraQuery();
 
-
         $consulta = DB::connection('sam')
             ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
             ->mergeBindings($query)
@@ -158,12 +157,11 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                 DB::raw("SUM(debito) AS debito"),
                 DB::raw("SUM(credito) AS credito"),
                 DB::raw("SUM(debito) - SUM(credito) AS saldo_final"),
-                DB::raw("SUM(debito) - SUM(credito) AS saldo_final"),
                 DB::raw('DATEDIFF(NOW(), fecha_manual) - plazo AS dias_mora'),
                 DB::raw('DATEDIFF(now(), fecha_manual) AS dias_cumplidos')
             )
             ->groupByRaw('id_nit, id_cuenta')
-            ->orderByRaw('apartamentos')
+            ->orderByRaw('apartamentos, numero_documento')
         ->havingRaw('saldo_final != 0');
 
         if ($diasMora) {

@@ -715,8 +715,8 @@ class ProcessInformeCartera implements ShouldQueue
                 'id_cuenta',
                 'documento_referencia'
             ])
-            ->orderByRaw('id_nit')
-            ->havingRaw('saldo_anterior != 0 OR total_abono != 0 OR total_facturas != 0 OR saldo_final != 0')
+            ->orderByRaw('apartamentos, numero_documento')
+            ->havingRaw('saldo_final != 0')
             ->chunk(233, function ($documentos) {
                 $documentos->each(function ($documento) {
                     
