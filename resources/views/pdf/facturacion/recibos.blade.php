@@ -248,6 +248,12 @@
 												<td class="padding5">Saldo pendiente</td>
 												<td class="valor padding5">{{ number_format($saldo, 2) }}</td>
 											</tr>
+											@if($anticipo)
+											<tr >
+												<td class="padding5">Anticipo disponible</td>
+												<td class="valor padding5">{{ number_format($anticipo, 2) }}</td>
+											</tr>
+											@endif
 										</tbody>
 									</table>
 								</td>

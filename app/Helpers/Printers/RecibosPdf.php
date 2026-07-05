@@ -108,6 +108,11 @@ class RecibosPdf extends AbstractPrinterPdf
 			}
 		}
 
+		$anticipos = (new Extracto(
+			$getNit->id,
+			[4,8]
+		))->actual()->first();
+
         return [
 			'empresa' => $this->empresa,
 			'nit' => $nit,
@@ -115,6 +120,7 @@ class RecibosPdf extends AbstractPrinterPdf
 			'detalles' => $this->recibo->detalles,
 			'pagos' => $this->recibo->pagos,
 			'saldo' => $saldo,
+			'anticipo' => $anticipos ? $anticipos->saldo : 0,
 			'saldoAnterior' => $saldoAnterior,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user() ? request()->user()->username : 'MaximoPH'
