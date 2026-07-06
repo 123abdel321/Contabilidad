@@ -241,13 +241,17 @@
 												<td class="valor padding5">{{ number_format($saldoAnterior, 2) }}</td>
 											</tr>
 											<tr >
-												<td class="padding5">Total abono</td>
-												<td class="valor padding5">{{ number_format($recibo->total_abono, 2) }}</td>
+												<td class="padding5">Total recibido</td>
+												<td class="valor padding5">
+													{{ number_format($pagos->sum('valor'), 2) }}
+												</td>
 											</tr>
-											<tr >
-												<td class="padding5">Saldo pendiente</td>
-												<td class="valor padding5">{{ number_format($saldo, 2) }}</td>
-											</tr>
+											@if($saldo)
+												<tr >
+													<td class="padding5">Saldo pendiente</td>
+													<td class="valor padding5">{{ number_format($saldo, 2) }}</td>
+												</tr>
+											@endif
 											@if($anticipo)
 											<tr >
 												<td class="padding5">Anticipo disponible</td>
@@ -288,7 +292,7 @@
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->cuenta->nombre }}</td>
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->documento_referencia }}</td>
 						<td class="padding5 valor">{{ number_format($detalle->total_saldo, 2) }}</td>
-						<td class="padding5 valor">{{ number_format($detalle->total_abono, 2) }}</td>
+						<td class="padding5 valor">{{ $detalle->total_anticipo ? number_format($detalle->total_anticipo, 2) : number_format($detalle->total_abono, 2) }}</td>
 						<td class="padding5 valor">{{ number_format($detalle->nuevo_saldo, 2) }}</td>
 						<td class="padding5 detalle-factura-descripcion">{{ $detalle->concepto }}</td>
 					</tr>
