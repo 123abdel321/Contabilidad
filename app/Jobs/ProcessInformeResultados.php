@@ -73,6 +73,32 @@ class ProcessInformeResultados implements ShouldQueue
             
             ksort($this->resultadoCollection, SORT_STRING | SORT_FLAG_CASE);
 
+            $this->resultadoCollection = array_filter(
+                $this->resultadoCollection,
+                function ($item, $cuenta) {
+                    // Siempre conservar la fila de totales
+                    if ($cuenta === '9999') {
+                        return true;
+                    }
+
+                    // Verificar si hay algún movimiento en los meses
+                    $sumaMeses = 0;
+                    foreach ($this->meses as $mes) {
+                        $sumaMeses += (float)($item[$mes] ?? 0);
+                    }
+
+                    // Verificar saldo anterior y presupuesto
+                    $tieneSaldoAnterior = (float)($item['saldo_anterior'] ?? 0) != 0;
+                    $tienePresupuesto = (float)($item['ppto_anterior'] ?? 0) != 0
+                                    || (float)($item['ppto_movimiento'] ?? 0) != 0
+                                    || (float)($item['ppto_acumulado'] ?? 0) != 0;
+
+                    // Conservar si tiene movimientos, saldo anterior o presupuesto
+                    return $sumaMeses != 0 || $tieneSaldoAnterior || $tienePresupuesto;
+                },
+                ARRAY_FILTER_USE_BOTH
+            );
+
             foreach (array_chunk($this->resultadoCollection, 233) as $resultadoCollection) {
                 DB::connection('informes')
                     ->table('inf_resultado_detalles')
