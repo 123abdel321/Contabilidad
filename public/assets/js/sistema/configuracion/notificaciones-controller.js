@@ -29,7 +29,6 @@ function initFechasEco() {
 
 function initTablesEco() {
     email_eco_table = $('#emailEcoTable').DataTable({
-        pageLength: 20,
         dom: 'Brtip',
         paging: true,
         responsive: false,
@@ -38,27 +37,33 @@ function initTablesEco() {
         fixedHeader: true,
         deferLoading: 0,
         initialLoad: false,
-        ordering: false,
         language: lenguajeDatatable,
+        ordering: false,
         sScrollX: "100%",
+        scrollX: true,
+        scroller: {
+            displayBuffer: 20,
+            rowHeight: 50,
+            loadingIndicator: true
+        },
+        deferRender: true,
         fixedColumns : {
             left: 0,
             right : 1,
         },
         ajax:  {
             type: "GET",
+            url: base_url_eco + 'email/list',
             headers: {
                 "Authorization": tokenEcoNotificaciones,
                 "Content-Type": "application/json",
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            // url: base_url_erp + 'email/list',
-            url: 'https://eco.portafolioerp.com/api/email/list',
             data: function ( d ) {
-                d.estado = $('#estado_email_filter').val();
-                d.id_nit = $('#id_nit_email_filter').val();
-                d.fecha_desde = $('#fecha_desde_email').val();
-                d.fecha_hasta = $('#fecha_hasta_email').val();
+                d.estado = $('#estado_eco_email').val();
+                d.id_nit = $('#id_nit_eco_email').val();
+                d.fecha_desde = $('#fecha_desde_eco_email').val();
+                d.fecha_hasta = $('#fecha_hasta_eco_email').val();
             }
         },
         columns: [
@@ -162,8 +167,7 @@ function initTablesEco() {
                 "Content-Type": "application/json",
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            // url: base_url_erp + 'email/list',
-            url: 'https://eco.portafolioerp.com/api/whatsapp/list',
+            url: base_url_eco + 'whatsapp/list',
             data: function ( d ) {
                 d.estado = $('#estado_eco_whatsapp').val();
                 d.id_nit = $('#id_nit_eco_whatsapp').val();
@@ -262,7 +266,7 @@ function initTablesEco() {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             // url: base_url_erp + 'email/detail',
-            url: 'https://eco.portafolioerp.com/api/email/detail',
+            url: base_url_eco + 'email/detail',
             data: function ( d ) {
                 d.id = $("#id_email_eco").val();;
             }
@@ -339,7 +343,7 @@ function initTablesEco() {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             // url: base_url_erp + 'email/detail',
-            url: 'https://eco.portafolioerp.com/api/whatsapp/detail',
+            url: base_url_eco + 'whatsapp/detail',
             data: function ( d ) {
                 d.id = $("#id_whatsapp_eco").val();
             }
@@ -489,19 +493,11 @@ function initCombosEco() {
 }
 
 $("#email-tab").on('click', function(){
-    console.log("click aca");
-    email_eco_table.ajax.reload();
     email_eco_table.columns.adjust().draw();
-    setTimeout(function(){
-    },10);
 });
 
 $("#whatsapp-tab").on('click', function(){
-    console.log("click aca");
-    whatsapp_eco_table.ajax.reload();
     whatsapp_eco_table.columns.adjust().draw();
-    setTimeout(function(){
-    },10);
 });
 
 $("#estado_eco_email").on('change', function(){
