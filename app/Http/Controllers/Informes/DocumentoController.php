@@ -149,6 +149,8 @@ class DocumentoController extends Controller
         if ($comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
             $recibo = ConRecibos::where('id', $documento->relation_id)->first();
             if ($recibo) {
+                // $data = (new RecibosPdf($empresa, $recibo))->buildPdf()->getData();
+                // return view('pdf.facturacion.recibos', $data);
                 return (new RecibosPdf($empresa, $recibo))
                     ->buildPdf()
                     ->showPdf();

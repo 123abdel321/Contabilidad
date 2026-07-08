@@ -86,32 +86,46 @@ class RecibosPdf extends AbstractPrinterPdf
 			$this->recibo->documentos[0]->fecha_manual
 		))->actual()->get();
 
-		$fechaAnterior = Carbon::parse($this->recibo->documentos[0]->fecha_manual)->subMinute(); 
-		
-		$extractoAnterior = (new Extracto(
-			$getNit->id,
-			[3],
-			null,
-			$fechaAnterior
-		))->actual()->get();
-
 		if (isset($extractos)) {
 			foreach ($extractos as $extracto) {
 				$saldo+= floatval($extracto->saldo);
 			}
 		}
 
+		$fechaAnterior = Carbon::parse($this->recibo->documentos[0]->fecha_manual)->subMinute()->format('Y-m-d H:i:s'); 
+		
+		$extractoAnterior = (new Extracto(
+			$getNit->id,
+			[3,8],
+			null,
+			$fechaAnterior
+		))->actual()->get();
+
+		$saldosPorCuenta = $extractoAnterior
+			->filter(fn($item) => $item->id_tipo_cuenta == 8)
+			->sortBy('fecha_manual')
+			->keyBy('id_cuenta')
+			->map(fn($item) => floatval($item->saldo));
+
 		$saldoAnterior = 0;
 		if (isset($extractoAnterior)) {
 			foreach ($extractoAnterior as $anterior) {
-				$saldoAnterior+= floatval($anterior->saldo);
+				if ($anterior->id_tipo_cuenta == 8 || $anterior->id_tipo_cuenta == 4) {
+					$saldoAnterior-= floatval($anterior->saldo);
+				} else {
+					$saldoAnterior+= floatval($anterior->saldo);
+				}
 			}
+		}
+
+		foreach ($this->recibo->detalles as $detalle) {
+			$detalle->nuevo_saldo = $saldosPorCuenta->get($detalle->id_cuenta, 0) + $detalle->total_anticipo;
 		}
 
 		$anticipos = (new Extracto(
 			$getNit->id,
 			[4,8]
-		))->actual()->first();
+		))->actual()->get();
 
         return [
 			'empresa' => $this->empresa,
@@ -120,7 +134,7 @@ class RecibosPdf extends AbstractPrinterPdf
 			'detalles' => $this->recibo->detalles,
 			'pagos' => $this->recibo->pagos,
 			'saldo' => $saldo,
-			'anticipo' => $anticipos ? $anticipos->saldo : 0,
+			'anticipo' => $anticipos->sum('saldo'),
 			'saldoAnterior' => $saldoAnterior,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
 			'usuario' => request()->user() ? request()->user()->username : 'MaximoPH'

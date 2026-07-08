@@ -10,8 +10,8 @@
 			body {
 				margin: 0;
 				font-family: "Lato", sans-serif;
-				line-height: 16px;
-				font-size: 15px;
+				line-height: 15px;
+				font-size: 10px;
 				width: 100%;
 				text-transform: uppercase;
 			}
@@ -29,7 +29,7 @@
 
 
 			.spacer {
-				height: 30px;
+				height: 10px;
 			}
 
 			.valor {
@@ -42,7 +42,7 @@
 			}
 
 			.table-detail {
-				font-size: 15px;
+				font-size: 10px;
 				width: 100%;
 				border-collapse: collapse;
 				height: 100%;
@@ -61,13 +61,13 @@
 				page-break-inside: avoid
 			}
 
-			.padding5 {
+			/* .padding5 {
 				padding: 5px;
 			}
 
 			.padding3 {
 				padding: 2px;
-			}
+			} */
 
 			.logo {
 				width: 25%;
@@ -105,21 +105,15 @@
 				color: #8d00ff;
 				font-size: 2.8em;
 			}
-
-			.ubicacion-factura {
-				color: black;
-				font-size: 1.3em;
-			}
 			
 			.generado {
 				width: 40%;
 			}
 
 			.footer {
-				position: fixed;
+				position: absolute;
 				bottom: 35px;
 				line-height: 15px;
-				/* font-family: helvetica,arial,verdana,sans-serif; */
 				font-size: 8px;
 			}
 
@@ -136,6 +130,14 @@
 				vertical-align: top;
 			}
 
+			.break-word {
+				word-break: break-all;
+			}
+
+			.no-transform {
+				text-transform: none;
+			}
+
 		</style>
 
 	</head>
@@ -145,9 +147,6 @@
 		<table >
 			<thead>
 				<tr>
-					<td class="spacer padding5"></td>
-				</tr>
-				<tr>
 					<td colspan="7 padding5">
 						<table>
 							<tr>
@@ -155,13 +154,13 @@
 									<p> {{ $recibo->comprobante->nombre }} <br>
 										<span span class="numero-consecutivo">N° {{ $recibo->consecutivo }}</span>
 										@if ($nit && $nit->apartamentos)
-										<br/>
-										<span span class="ubicacion-factura">{{ $nit->apartamentos }}</span>
+											<br/>
+											<span span class="ubicacion-factura">{{ $nit->apartamentos }}</span>
 										@endif
 									</p>
 								</td>
 								<td class="empresa padding5">
-									<h1 style="font-size: 24px; line-height: 1.2; word-break: break-word; margin: 0; text-align: center; padding: 5px;">{{ $empresa->razon_social }}</h1>
+									<h1>{{ $empresa->razon_social }}</h1>
 									<span>NIT: {{ $empresa->nit }}-{{ $empresa->dv }}</span><br>
 									@if ($empresa->direccion)
 										<span>DIRECCION:{{ $empresa->direccion }}</span><br>
@@ -232,7 +231,7 @@
 									<table>
 										<thead>
 											<tr>
-												<th colspan="2" class="header-total padding5">RECIBO</th>
+												<th colspan="2" class="header-total padding5">PAGO</th>
 											</tr>
 										</thead>
 										<tbody>
