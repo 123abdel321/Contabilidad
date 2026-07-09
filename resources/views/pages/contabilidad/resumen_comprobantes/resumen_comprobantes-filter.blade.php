@@ -68,20 +68,20 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="generarResumenComprobantes" href="javascript:void(0)" class="btn badge bg-gradient-primary" style="min-width: 40px; margin-right: 3px;">
+                    <span id="generarResumenComprobantes" href="javascript:void(0)" class="btn badge bg-gradient-primary btn-bg-gold" style="min-width: 40px; margin-right: 3px;">
                         <i class="fas fa-search" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">BUSCAR</b>
                     </span>
-                    <span id="generarResumenComprobantesLoading" class="badge bg-gradient-primary" style="display:none; min-width: 40px; margin-right: 3px; margin-bottom: 13px;">
+                    <span id="generarResumenComprobantesLoading" class="badge bg-gradient-primary btn-bg-gold-loading" style="display:none; min-width: 40px; margin-right: 3px; margin-bottom: 13px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">GENERANDO</b>
                     </span>
                     <!-- BOTON EXCEL -->
-                    <span id="descargarExcelResumenComprobantes" class="btn badge bg-gradient-success btn-bg-success" style="min-width: 40px; margin-right: 3px; display:none;">
+                    <span id="descargarExcelResumenComprobantes" class="btn badge bg-gradient-success btn-bg-success btn-bg-excel" style="min-width: 40px; margin-right: 3px; display:none;">
                         <i class="fas fa-file-excel" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                     </span>
-                    <span id="descargarExcelResumenComprobantesDisabled" class="badge bg-gradient-dark" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
+                    <span id="descargarExcelResumenComprobantesDisabled" class="badge bg-gradient-info btn-bg-excel-loading" style="min-width: 40px; margin-right: 3px; color: #adadad; margin-top: 5px;">
                         <i class="fas fa-file-excel" style="font-size: 17px; color: #adadad;"></i>
                         <b style="vertical-align: text-top;">&nbsp;EXCEL</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>

@@ -87,11 +87,19 @@ function resumencomprobanteInit() {
             { data: 'credito', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: 'diferencia', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
             { data: 'concepto'},
-            { data: 'registros'}
+            {"data": function (row, type, set){
+                if (row.nivel == 32) {
+                    return '<b>Anulados<b/>';
+                }
+                return row.registros;
+            }}
         ],
         'rowCallback': function(row, data, index){
             const agrupado = $('#agrupar_comprobantes').val();
-            
+            if(data.nivel == 32){
+                $('td', row).css('background-color', 'rgb(209 168 64 / 40%)');
+                return;
+            }
             if(data.nivel == 17){
                 $('td', row).css('background-color', 'rgb(64 209 155 / 40%)');
                 $('td', row).css('font-weight', 'bold');

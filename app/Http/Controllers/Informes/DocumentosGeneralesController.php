@@ -198,7 +198,7 @@ class DocumentosGeneralesController extends Controller
             ], Response::HTTP_OK);
 
         } catch (\Exception $e) {
-            dd(  $e->getLine() , $e->getMessage());
+            
             DB::connection('sam')->rollback();
             return response()->json([
                 "success" => false,
@@ -215,7 +215,6 @@ class DocumentosGeneralesController extends Controller
     {
         $query = DB::connection('sam')->table('documentos_generals AS DG')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-            ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
             ->select('DG.*', 'PC.naturaleza_cuenta');
@@ -255,6 +254,7 @@ class DocumentosGeneralesController extends Controller
             'documento_referencia' => ['campo' => 'DG.documento_referencia', 'operador' => '='],
             'consecutivo' => ['campo' => 'DG.consecutivo', 'operador' => '='],
             'id_usuario' => ['campo' => 'DG.created_by', 'operador' => '='],
+            'anulado' => ['campo' => 'DG.anulado', 'operador' => '='],
         ];
         
         foreach ($filtros as $key => $config) {
@@ -443,7 +443,6 @@ class DocumentosGeneralesController extends Controller
     {
         $query = DB::connection('sam')->table('documentos_generals AS DG')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-            ->where('anulado', 0)
             ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
             ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta']);
         

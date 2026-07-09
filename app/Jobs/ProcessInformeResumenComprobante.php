@@ -234,7 +234,7 @@ class ProcessInformeResumenComprobante implements ShouldQueue
 						'credito' => $documento->credito,
 						'diferencia' => $documento->diferencia < 0 ? $documento->diferencia * -1 : $documento->diferencia,
 						'registros' => $documento->registros,
-						'nivel' => $this->nivel(2),
+						'nivel' => $documento->anulado == 1 ? 32 : $this->nivel(2),
 					];
 				}
 				unset($documentos);
@@ -418,22 +418,22 @@ class ProcessInformeResumenComprobante implements ShouldQueue
                 "CO.nombre AS nombre_comprobante",
                 "DG.consecutivo",
                 "DG.concepto",
+                "DG.anulado",
                 "DG.fecha_manual",
                 "DG.created_at",
                 DB::raw("DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
                 DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
                 "DG.created_by",
                 "DG.updated_by",
-				DB::raw('SUM(debito) AS debito'),
-				DB::raw('SUM(credito) AS credito'),
-				DB::raw('SUM(debito) - SUM(credito) AS diferencia'),
+				DB::raw('SUM(CASE WHEN DG.anulado = 0 THEN DG.debito ELSE 0 END) AS debito'),
+				DB::raw('SUM(CASE WHEN DG.anulado = 0 THEN DG.credito ELSE 0 END) AS credito'),
+				DB::raw('SUM(CASE WHEN DG.anulado = 0 THEN DG.debito ELSE 0 END) - SUM(CASE WHEN DG.anulado = 0 THEN DG.credito ELSE 0 END) AS diferencia'),
 				DB::raw("COUNT(DG.id) registros")
 			)
 			->leftJoin('nits AS N', 'DG.id_nit', 'N.id')
 			->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
 			->leftJoin('centro_costos AS CC', 'DG.id_centro_costos', 'CC.id')
 			->leftJoin('comprobantes AS CO', 'DG.id_comprobante', 'CO.id')
-			->where('anulado', 0)
 			->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
 			->where('DG.fecha_manual', '<=', $this->fechaHasta)
 			->when(isset($this->request['id_nit']) ? $this->request['id_nit'] : false, function ($query) {
