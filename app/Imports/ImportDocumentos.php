@@ -63,8 +63,15 @@ class ImportDocumentos implements
         $this->totalValidRows = 0;
 
         foreach ($rows as $row) {
-            if (trim($row['debito'] ?? '') !== '' || trim($row['credito'] ?? '') !== '' || empty(trim($row['cod_comprobante'] ?? ''))){
-                $this->totalValidRows++;
+            $debito = trim((string)($row['debito'] ?? ''));
+            $credito = trim((string)($row['credito'] ?? ''));
+            $comprobante = trim((string)($row['cod_comprobante'] ?? ''));
+
+            $sinDebito = $debito === '';
+            $sinCredito = $credito === '';
+            $sinComprobante = $comprobante === '';
+            if ($sinDebito && $sinCredito && $sinComprobante) {
+                continue;
             }
         }
 
@@ -90,8 +97,14 @@ class ImportDocumentos implements
             $estado = 0;
             $observacionGeneral = '';
 
-            // Validar que las columnas necesarias existan
-            if (trim($row['debito'] ?? '') !== '' || trim($row['credito'] ?? '') !== '' || empty(trim($row['cod_comprobante'] ?? ''))){
+            $debito = trim((string)($row['debito'] ?? ''));
+            $credito = trim((string)($row['credito'] ?? ''));
+            $comprobante = trim((string)($row['cod_comprobante'] ?? ''));
+
+            $sinDebito = $debito === '';
+            $sinCredito = $credito === '';
+            $sinComprobante = $comprobante === '';
+            if ($sinDebito && $sinCredito && $sinComprobante) {
                 continue;
             }
 
