@@ -63,7 +63,7 @@ class ImportDocumentos implements
         $this->totalValidRows = 0;
 
         foreach ($rows as $row) {
-            if (isset($row['debito']) || isset($row['credito'])) {
+            if (intval($row['debito']) > 0 || intval($row['credito']) > 0) {
                 $this->totalValidRows++;
             }
         }
@@ -91,7 +91,7 @@ class ImportDocumentos implements
             $observacionGeneral = '';
 
             // Validar que las columnas necesarias existan
-            if (!isset($row['debito']) && !isset($row['credito'])) {
+            if (intval($row['debito']) <= 0 && intval($row['credito']) <= 0) {
                 continue;
             }
 
