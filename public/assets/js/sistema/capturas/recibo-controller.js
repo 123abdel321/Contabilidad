@@ -537,7 +537,8 @@ function reloadTableRecibos() {
 
             recargandoRecibos = false;
         } else {
-            loadAnticiposRecibo();
+            const fecha_manual = $('#fecha_manual_recibo').val();
+            loadAnticiposRecibo(fecha_manual);
         }
 
         mostrarValoresRecibos();
