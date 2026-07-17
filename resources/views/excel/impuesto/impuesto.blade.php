@@ -35,13 +35,15 @@
                             @include('excel.impuesto.celdas', [
                                 'style' => 'background-color: #001c41; font-weight: bold; color: white;',
                                 'documento' => $documento,
-                                'nivel' => $nivel
+                                'nivel' => $nivel,
+                                'agrupado' => $agrupado 
                             ])
                         @elseif($documento->errores)
                             @include('excel.impuesto.celdas', [
                                 'style' => 'background-color: #ff0000; font-weight: bold; color: white;',
                                 'documento' => $documento,
-                                'nivel' => $nivel
+                                'nivel' => $nivel,
+                                'agrupado' => $agrupado 
                             ])
                         @endif
                     @elseif($nivel == 2)
@@ -49,27 +51,31 @@
                             @include('excel.impuesto.celdas', [
                                 'style' => 'background-color: #1c4587; font-weight: bold; color: white;',
                                 'documento' => $documento,
-                                'nivel' => $nivel
+                                'nivel' => $nivel,
+                                'agrupado' => $agrupado 
                             ])
                         @elseif($documento->nivel == 1)
                             @if($documento->errores)
                                 @include('excel.impuesto.celdas', [
                                     'style' => 'background-color: #ff4141; font-weight: bold; color: white;',
                                     'documento' => $documento,
-                                    'nivel' => $nivel
+                                    'nivel' => $nivel,
+                                    'agrupado' => $agrupado 
                                 ])
                             @else
                                 @include('excel.impuesto.celdas', [
                                     'style' => 'background-color: #b3dbed; font-weight: bold;',
                                     'documento' => $documento,
-                                    'nivel' => $nivel
+                                    'nivel' => $nivel,
+                                    'agrupado' => $agrupado 
                                 ])
                             @endif
                         @else
                             @include('excel.impuesto.celdas', [
                                 'style' => '',
                                 'documento' => $documento,
-                                'nivel' => $nivel
+                                'nivel' => $nivel,
+                                'agrupado' => $agrupado 
                             ])
                         @endif
                     @elseif($nivel == 3)
@@ -77,26 +83,30 @@
                             @include('excel.impuesto.celdas', [
                                 'style' => 'background-color: #1c4587; font-weight: bold; color: white;',
                                 'documento' => $documento,
-                                'nivel' => $nivel
+                                'nivel' => $nivel,
+                                'agrupado' => $agrupado 
                             ])
                         @elseif($documento->nivel == 1)
                             @include('excel.impuesto.celdas', [
                                 'style' => 'background-color: #79bfdf; font-weight: bold;',
                                 'documento' => $documento,
-                                'nivel' => $nivel
+                                'nivel' => $nivel,
+                                'agrupado' => $agrupado 
                             ])
                         @elseif($documento->nivel == 2)
                             @include('excel.impuesto.celdas', [
                                 'style' => 'background-color: #d9edf6; font-weight: bold;',
                                 'documento' => $documento,
-                                'nivel' => $nivel
+                                'nivel' => $nivel,
+                                'agrupado' => $agrupado 
                             ])
                         @endif
                     @else
                         @include('excel.impuesto.celdas', [
                             'style' => '',
                             'documento' => $documento,
-                            'nivel' => $nivel
+                            'nivel' => $nivel,
+                            'agrupado' => $agrupado 
                         ])
                     @endif
 

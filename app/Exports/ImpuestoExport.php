@@ -44,14 +44,23 @@ class ImpuestoExport implements FromView, WithColumnWidths, WithStyles, WithColu
         $nit = $cabeza->id_nit ? Nits::find($cabeza->id_nit) : null;
         $this->nivel = $cabeza->nivel;
 
+        $informes = [
+            'iva' => 'Impuestos IVA',
+            'retencion' => 'Impuestos retención',
+            'reteica' => 'Impuestos reteica',
+        ];
+
+        $nombreInforme = $informes[$cabeza->tipo_informe] ?? 'Impuestos IVA';
+        
 		return view('excel.impuesto.impuesto', [
             'nivel' => $cabeza->nivel,
+            'agrupado' => $cabeza->agrupar_impuestos,
             'tipo_informe' => $cabeza->tipo_informe,
 			'documentos' => $documentos,
             'encabezado' => (object)[
-                'nombre_informe' => 'Impuesto',
-                'nombre_empresa' => $this->empresa->nombre_empresa,
-                'logo_empresa' => $this->empresa->logo_empresa ?? 'https://app.portafolioerp.com/img/logo_contabilidad.png',
+                'nombre_informe' => $nombreInforme,
+                'nombre_empresa' => $this->empresa->razon_social,
+                'logo_empresa' => $this->empresa->logo ?? 'https://app.portafolioerp.com/img/logo_contabilidad.png',
                 'filtros' => [
                     'Fecha' => $cabeza->fecha_desde || $cabeza->fecha_hasta
                         ? ($cabeza->fecha_desde ?? 'No especificado') . ' al ' . ($cabeza->fecha_hasta ?? 'No especificado')
@@ -174,8 +183,6 @@ class ImpuestoExport implements FromView, WithColumnWidths, WithStyles, WithColu
     public function columnFormats(): array
     {
         return [
-			'E' => NumberFormat::FORMAT_CURRENCY_USD,
-			'F' => NumberFormat::FORMAT_CURRENCY_USD,
         ];
 	}
 

@@ -64,9 +64,8 @@ class ProcessInformeImpuestos implements ShouldQueue
 				'fecha_hasta' => $this->request['fecha_hasta'],
 				'tipo_informe' => $this->request['tipo_informe'],
 				'agrupar_impuestos' => $this->request['agrupar_impuestos'],
-				'agrupar_impuestos' => $this->request['agrupar_impuestos'],
-                ]);
-                
+            ]);
+            
             $this->id_impuestos = $impuestos->id;
 
             $this->nivelUnoImpuestos();
