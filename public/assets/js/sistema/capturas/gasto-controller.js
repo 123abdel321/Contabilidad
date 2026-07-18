@@ -1875,13 +1875,16 @@ function addRowGastosData(detalle, nit) {
     const editar_iva = detalle.id_cuenta_iva ? false : true;
     const valorIva = editar_iva ? 0 : parseFloat(detalle.iva_valor);
     const valorNoiva = editar_iva ? parseFloat(detalle.iva_valor) : 0;
+    const porcentajeReteFuente = detalle.rete_fuente_porcentaje;
+    const valorGasto = (parseFloat(detalle.subtotal) - valorNoiva) - (parseFloat(detalle.aiu_valor) + valorIva );
+    const valorRetencion = valorGasto * (porcentajeReteFuente / 100);
     idGastoTable++;
 
     let data = {
         "id": idGastoTable,
         "id_concepto": detalle.id_concepto_gastos,
         "editar_iva": editar_iva,
-        "valor_gasto": parseFloat(detalle.subtotal) - (parseFloat(detalle.aiu_valor) + valorIva),
+        "valor_gasto": valorGasto,
         'porcentaje_aiu': porcentajeAIUGastos,
         'base_aiu': 0,
         "descuento_gasto": detalle.descuento_valor,
@@ -1890,10 +1893,10 @@ function addRowGastosData(detalle, nit) {
         "valor_reteica": detalle.rete_ica_valor,
         "no_valor_iva": valorNoiva,
         "porcentaje_iva": detalle.iva_porcentaje,
-        "valor_retencion": detalle.rete_fuente_valor,
-        "porcentaje_retencion": detalle.rete_fuente_porcentaje,
+        "valor_retencion": valorRetencion,
+        "porcentaje_retencion": porcentajeReteFuente,
         "porcentaje_reteica": detalle.rete_ica_porcentaje,
-        "total_valor_gasto": detalle.total,
+        "total_valor_gasto": (valorGasto - valorRetencion),
         'observacion': detalle.observacion,
     };
 

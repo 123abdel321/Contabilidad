@@ -239,9 +239,8 @@ class GastosController extends Controller
                     $porcentajeIva = $porcentaje_iva_aiu;
                 }
 
-                $subtotalGasto = $this->redondearGasto(($movimiento->valor_gasto + $movimiento->no_valor_iva)- $movimiento->descuento_gasto, $redondeo_gastos);
-                
                 $baseAIU = 0;
+                $subtotalGasto = $this->redondearGasto($movimiento->valor_gasto - $movimiento->descuento_gasto, $redondeo_gastos);
 
                 if (floatval($this->proveedor->porcentaje_aiu)) {
 
@@ -264,7 +263,7 @@ class GastosController extends Controller
                     $ivaGasto = $this->redondearGasto($porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0, $redondeo_gastos);
                     $retencionGasto = $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos);
                     $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
-                    $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
+                    $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto + $movimiento->no_valor_iva) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
                 }
 
                 if ($this->proveedor->sumar_aiu) {
@@ -281,7 +280,7 @@ class GastosController extends Controller
                     'id_cuenta_reteica' => $conceptoGasto->id_cuenta_reteica,
                     'id_cuenta_retencion_declarante' => $conceptoGasto->id_cuenta_retencion_declarante,
                     'observacion' => $movimiento->observacion,
-                    'subtotal' => $subtotalGasto,
+                    'subtotal' => $subtotalGasto + $movimiento->no_valor_iva,
                     'aiu_porcentaje' => $this->proveedor->porcentaje_aiu,
                     'aiu_valor' => $baseAIU,
                     'descuento_porcentaje' => $movimiento->porcentaje_descuento_gasto,
@@ -330,6 +329,7 @@ class GastosController extends Controller
                     $documentoGeneral->addRow($doc, $naturalezaCuenta);
                 }
             }
+            
             //AGREGAR RETE FUENTE
             if ($this->totalesFactura['total_rete_fuente']) {
                 $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
@@ -641,7 +641,7 @@ class GastosController extends Controller
 
                     $detalleGasto = (object)[
                         'observacion' => $movimiento->observacion,
-                        'subtotal' => $subtotalGasto,
+                        'subtotal' => $subtotalGasto + $movimiento->no_valor_iva,
                         'aiu_porcentaje' => $this->proveedor->porcentaje_aiu,
                         'aiu_valor' => $baseAIU,
                         'descuento_porcentaje' => $movimiento->porcentaje_descuento_gasto,
