@@ -75,6 +75,7 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
             } else {
                 $estado = 1;
                 $observacionMala.= 'El numero de documento: '.$row['numero_documento'].', es obligatorio!<br>';
+                continue;
             }
 
             NitsImport::create([
