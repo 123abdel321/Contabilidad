@@ -274,8 +274,8 @@ class NitsImportadorController extends Controller
             if ($dataNit->numero_documento) {
                 $existe = Nits::where('numero_documento', $dataNit->numero_documento);
                 if ($existe->count()) {
-                    $this->rowErrors+= 1;
-                    $errores.='El numero de documento: '.$dataNit->numero_documento.' debe ser unico <br/>';
+                    // $this->rowErrors+= 1;
+                    // $errores.='El numero de documento: '.$dataNit->numero_documento.' debe ser unico <br/>';
                 }
             } else {
                 $this->rowErrors+= 1;
@@ -289,13 +289,13 @@ class NitsImportadorController extends Controller
                     $errores.='El email: '.$dataNit->email.' debe ser unico <br/>';
                 }
             } else {
-                $this->rowErrors+= 1;
-                $errores.='El email es requerido <br/>';
+                // $this->rowErrors+= 1;
+                // $errores.='El email es requerido <br/>';
             }
             //VALIDAR NOMBRES
             if (!$dataNit->razon_social && !$dataNit->primer_nombre) {
-                $this->rowErrors+= 1;
-                $errores.='La razon social o el primero nombre son requerido <br/>';
+                // $this->rowErrors+= 1;
+                // $errores.='La razon social o el primero nombre son requerido <br/>';
             }
         }
 
