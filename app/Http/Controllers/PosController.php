@@ -626,7 +626,8 @@ class PosController extends Controller
                 $formaPago = $this->findFormaPago($pagoItem->id);
                 
                 $pagoValor = $pagoItem->valor;
-                if ($formaPago->tipoFormaPago && $formaPago->tipoFormaPago->codigo == FacTipoFormasPago::EFECTIVO) {
+                if ($formaPago->tipoFormaPago) {
+                // if ($formaPago->tipoFormaPago && $formaPago->tipoFormaPago->codigo == FacTipoFormasPago::EFECTIVO) {
                     $pagoValor =  $pagoItem->valor - $this->totalesPagos['total_cambio'];
                 }
                 $saldoPendiente-= $pagoValor;
