@@ -65,10 +65,10 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
                             ->where('email', $row['email'])
                             ->first();
 
-                        if ($row['email'] && $nitsConMismoCorreo) {
-                            $estado = 1;
-                            $observacionMala.= 'El email: '.$nitsConMismoCorreo->email.', ya esta en uso por el documento: '.$nitsConMismoCorreo->numero_documento.'!<br>';
-                        }
+                        // if ($row['email'] && $nitsConMismoCorreo) {
+                        //     $estado = 1;
+                        //     $observacionMala.= 'El email: '.$nitsConMismoCorreo->email.', ya esta en uso por el documento: '.$nitsConMismoCorreo->numero_documento.'!<br>';
+                        // }
                         
                     }
                 }
