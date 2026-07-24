@@ -145,8 +145,8 @@ class GastosController extends Controller
 			return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
-            ], 200);
+                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en una fecha cerrada']]
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
 
         // Verificar si el consecutivo está en uso (con o sin recibo)
@@ -486,7 +486,14 @@ class GastosController extends Controller
 
         $comprobante = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
-        $gasto = ConGastos::with('nit', 'detalles.concepto', 'pagos', 'detalles.cuenta_retencion.impuesto', 'detalles.cuenta_retencion_declarante.impuesto')
+        $gasto = ConGastos::with(
+                'nit',
+                'pagos',
+                'documentos',
+                'detalles.concepto',
+                'detalles.cuenta_retencion.impuesto',
+                'detalles.cuenta_retencion_declarante.impuesto'
+            )
             ->where('id_comprobante', $request->get('id_comprobante'))
             ->where('consecutivo', $request->get('consecutivo'));
 

@@ -1069,6 +1069,8 @@ function changeValorGasto (idGasto, event = null) {
         if (!valorGasto) return;
         if (!calculandoDatos) return;
         calculandoDatos = false;
+
+        console.log('idGasto: ',idGasto);
         
         var baseAIU = 0;
 
@@ -1127,8 +1129,7 @@ function changeValorGasto (idGasto, event = null) {
             calculandoDatos = true;
             actualizarInfoRetencionGastos();
             setTimeout(function(){
-                $('#gastoTable tr').find(focusNext+idGasto).focus();
-                $('#gastoTable tr').find(focusNext+idGasto).select();
+                $('#gastoTable tr').find(focusNext + idGasto).focus().select();
             },10);
         },50);
     }
@@ -1183,6 +1184,41 @@ function focusFormaPagoGasto (idFormaPago, anticipo = false, id_cuenta = null) {
         $('#gasto_forma_pago_'+idFormaPago).val(new Intl.NumberFormat("ja-JP").format(totalFaltante < 0 ? 0 : totalFaltante));
     }
     $('#gasto_forma_pago_'+idFormaPago).select();
+}
+
+function focusOutFechaGastos() {
+    const fechaManual = $('#fecha_manual_gasto').val();
+    console.log('fechaManual: ',fechaManual);
+    if (!fechaManual) {
+        return;
+    }
+
+    const fechaSeleccionada = new Date(fechaManual);
+    const fechaActual = new Date();
+
+    if (fechaSeleccionada > fechaActual) {
+        Swal.fire({
+            title: "La fecha del documento es superior a la fecha actual",
+            text: "¿Desea continuar con esta fecha?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, continuar",
+            cancelButtonText: "No, usar fecha actual"
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                const dateNow = new Date();
+
+                const fechaHoraGasto =
+                    dateNow.getFullYear() + '-' +
+                    ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' +
+                    ("0" + dateNow.getDate()).slice(-2) + 'T' +
+                    ("0" + dateNow.getHours()).slice(-2) + ':' +
+                    ("0" + dateNow.getMinutes()).slice(-2);
+
+                $('#fecha_manual_gasto').val(fechaHoraGasto);
+            }
+        });
+    }
 }
 
 function encontrarCuentaGasto(idCuenta) {
@@ -1715,9 +1751,10 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
                 const gastos = res.data;
                 const pagos = gastos.pagos;
                 const detalles = gastos.detalles;
+                const documentos = gastos.documentos;
 
                 $("#id_gasto_up").val(gastos.id);
-                $("#fecha_manual_gasto").val(gastos.fecha_manual);
+                $("#fecha_manual_gasto").val(documentos[0].fecha_manual);
                 $("#documento_referencia_gasto").val(gastos.documento_referencia);
                 
                 if (gastos.nit) {
@@ -1992,7 +2029,7 @@ function validarDatosIva(idGasto) {
         validandoDatosIva = true;
         var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
         if (dataGasto[indexGasto].no_valor_iva == 0) {
-            $('#gasto_no_iva_valor_1').val('')
+            $('#gasto_no_iva_valor_'+idGasto).val('')
         }
         setTimeout(function(){
             validandoDatosIva = false;

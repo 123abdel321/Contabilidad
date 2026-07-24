@@ -163,18 +163,17 @@ class CompraController extends Controller
             ], 422);
         }
 
-        $empresa = Empresa::where('id', request()->user()->id_empresa)->first();
-
         $hoy = new DateTimeImmutable('today');
-		$fechaCierre = DateTimeImmutable::createFromFormat('Y-m-d', $empresa->fecha_ultimo_cierre);
         $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $request->get('fecha_manual'));
 
-        if ($fechaManual < $fechaCierre) {
+        // Verificar si se encuentra en una fecha cerrada
+        $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
+        if ($isFechaCierreLimit) {
 			return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
-            ], 422);
+                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en una fecha cerrada']]
+            ], 200);
 		}
 
         if ($fechaManual > $hoy) {

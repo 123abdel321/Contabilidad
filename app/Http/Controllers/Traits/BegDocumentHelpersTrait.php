@@ -156,7 +156,7 @@ trait BegDocumentHelpersTrait
 
 	private function isFechaCierreLimit($fecha_manual)
 	{
-		$fechaCierre = VariablesEntorno::where('nombre', 'token_key_fe')->first();
+		$fechaCierre = VariablesEntorno::where('nombre', 'fecha_ultimo_cierre')->first();
 		$fechaCierre = $fechaCierre ? $fechaCierre->valor : NULL;
 
 		if (!$fechaCierre) {
