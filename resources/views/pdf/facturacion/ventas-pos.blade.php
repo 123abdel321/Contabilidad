@@ -149,10 +149,14 @@
             <tbody>
                 @foreach ($productos as $producto)
                     <tr>
-                        <td class="font-13" style="width:55%;">{{ $producto->descripcion }}</td>
+                        <td class="font-13" style="width:55%;">
+                            {{ $producto->descripcion }}
+                            @if($producto->observacion)
+                            <b class="font-13"> / Coment:</b> {{ $producto->observacion }}
+                            @endif
+                        </td>
                         <td class="font-13" style="width:5%;text-align:center;">
                             @php
-                                // Formatear a máximo 5 decimales y eliminar ceros
                                 $formatted = number_format($producto->cantidad, 5, '.', '');
                                 $formatted = rtrim($formatted, '0');
                                 $formatted = rtrim($formatted, '.');
