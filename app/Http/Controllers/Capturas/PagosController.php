@@ -367,9 +367,9 @@ class PagosController extends Controller
         $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
         if ($isFechaCierreLimit) {
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+                "message" => ['fecha_manual' => ['mensaje' => 'No permite digitar documentos con fecha inferior al '. $request->get('fecha_manual')]]
             ], 200);
         }
         

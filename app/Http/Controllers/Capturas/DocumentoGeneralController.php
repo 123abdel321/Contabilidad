@@ -351,7 +351,7 @@ class DocumentoGeneralController extends Controller
 			return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+                "message"=> ['fecha_manual' => ['mensaje' => 'No permite digitar documentos con fecha inferior al '. $request->get('fecha_manual')]]
             ], Response::HTTP_OK);
 		}
 
@@ -380,7 +380,7 @@ class DocumentoGeneralController extends Controller
             return response()->json([
                 "success"=>false,
                 'data' => [],
-                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en un año cerrado']]
+                "message"=>['fecha_manual' => ['mensaje' => 'No permite digitar documentos con fecha inferior al '. $request->get('fecha_manual')]]
             ], 200);
         }
 		

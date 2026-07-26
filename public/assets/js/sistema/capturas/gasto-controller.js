@@ -714,10 +714,10 @@ function changeConceptoGasto(idGasto) {
             }
         }
     } else {
-        console.log('data: ',data);
+
         if (data.cuenta_retencion && data.cuenta_retencion.impuesto) {
             var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion.impuesto.id);
-            console.log('existe: ',existe);
+
             if (!existe || existe < 0) {
                 retencionesGasto.push({
                     cuenta: data.cuenta_retencion.cuenta,
@@ -1069,8 +1069,6 @@ function changeValorGasto (idGasto, event = null) {
         if (!valorGasto) return;
         if (!calculandoDatos) return;
         calculandoDatos = false;
-
-        console.log('idGasto: ',idGasto);
         
         var baseAIU = 0;
 
@@ -1188,7 +1186,7 @@ function focusFormaPagoGasto (idFormaPago, anticipo = false, id_cuenta = null) {
 
 function focusOutFechaGastos() {
     const fechaManual = $('#fecha_manual_gasto').val();
-    console.log('fechaManual: ',fechaManual);
+
     if (!fechaManual) {
         return;
     }

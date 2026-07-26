@@ -112,9 +112,9 @@ class GastosController extends Controller
 
 		if ($validator->fails()){
             return response()->json([
-                "success"=>false,
+                "success"=> false,
                 'data' => [],
-                "message"=>$validator->errors()
+                "message" => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -124,7 +124,7 @@ class GastosController extends Controller
         $comprobanteGasto = Comprobantes::find($request->get('id_comprobante'));
         if(!$comprobanteGasto) {
             return response()->json([
-                "success"=>false,
+                "success"=> false,
                 'data' => [],
                 "message"=> ['Comprobante recibo' => ['El Comprobante del recibo es incorrecto!']]
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -133,9 +133,9 @@ class GastosController extends Controller
         // Verificar fecha manual
         if (!$request->get('fecha_manual')) {
             return response()->json([
-                "success"=>false,
+                "success"=> false,
                 'data' => [],
-                "message"=>['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
+                "message" => ['fecha_manual' => ['mensaje' => 'La fecha es incorrecta']]
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -143,9 +143,9 @@ class GastosController extends Controller
         $isFechaCierreLimit = $this->isFechaCierreLimit($request->get('fecha_manual'));
         if ($isFechaCierreLimit) {
 			return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>['fecha_manual' => ['mensaje' => 'Se esta grabando en una fecha cerrada']]
+                "message" => ['fecha_manual' => ['mensaje' => 'No permite digitar documentos con fecha inferior al '. $request->get('fecha_manual')]]
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
 
