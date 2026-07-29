@@ -163,9 +163,9 @@ trait BegDocumentHelpersTrait
 			return false;
 		}
 
-		$fechaCierre = DateTimeImmutable::createFromFormat('Y-m-d', $fechaCierre);
-        $fechaManual = DateTimeImmutable::createFromFormat('Y-m-d', $fecha_manual);
-
+		$fechaCierre = Carbon::parse($fechaCierre);
+        $fechaManual = Carbon::parse($fecha_manual);
+		
 		if ($fechaManual < $fechaCierre) {
 			return true;
 		}
