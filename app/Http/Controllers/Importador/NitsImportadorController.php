@@ -173,6 +173,7 @@ class NitsImportadorController extends Controller
                         if ($nit->email_1) $nitExistente->email_1 = $nit->email_1;
                         if ($nit->email_2) $nitExistente->email_2 = $nit->email_2;
                         if ($nit->telefono_1) $nitExistente->telefono_1 = $nit->telefono_1;
+                        if ($nit->observaciones) $nitExistente->observaciones = $nit->observaciones;
                         
                         $nitExistente->save();
                     } else {
