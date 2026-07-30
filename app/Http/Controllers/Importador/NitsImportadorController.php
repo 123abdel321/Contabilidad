@@ -160,7 +160,7 @@ class NitsImportadorController extends Controller
             if (count($nitsImportados)) {
                 
                 foreach ($nitsImportados as $nit) {
-                    if ($nit->estado && false) {
+                    if ($nit->estado) {
                         $nitExistente = Nits::where('numero_documento', $nit->numero_documento)->first();
                         if ($nit->primer_nombre || $nit->otros_nombres || $nit->primer_apellido || $nit->segundo_apellido || $nit->razon_social) {
                             $nitExistente->primer_nombre = $nit->primer_nombre;
