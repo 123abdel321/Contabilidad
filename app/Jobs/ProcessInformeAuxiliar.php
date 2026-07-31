@@ -257,11 +257,12 @@ class ProcessInformeAuxiliar implements ShouldQueue
             ->table(DB::raw("({$query->toSql()}) AS auxiliardata"))
             ->mergeBindings($query)
             ->select(
-                'id_cuenta',
                 'id_nit',
+                'id_cuenta',
+                'fecha_manual',
                 'documento_referencia'
             )
-            ->orderBy('id_cuenta')
+            ->orderByRaw('documento_referencia, fecha_manual')
             ->groupByRaw('id_cuenta, id_nit, documento_referencia')
             ->chunk(233, function ($documentos) {
                 foreach ($documentos as $documento) {
