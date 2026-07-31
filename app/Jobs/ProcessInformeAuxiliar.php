@@ -262,7 +262,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 'fecha_manual',
                 'documento_referencia'
             )
-            ->orderByRaw('documento_referencia, fecha_manual')
+            ->orderByRaw('documento_referencia')
             ->groupByRaw('id_cuenta, id_nit, documento_referencia')
             ->chunk(233, function ($documentos) {
                 foreach ($documentos as $documento) {
@@ -270,10 +270,10 @@ class ProcessInformeAuxiliar implements ShouldQueue
                     $query->chunk(377, function ($detalles) {
                         foreach ($detalles as $detalle) {
                             $cuentaNumero = 1;
-                            $cuentaNueva = "{$detalle->cuenta}-{$detalle->numero_documento}B{$detalle->documento_referencia}B{$cuentaNumero}B";
+                            $cuentaNueva = "{$detalle->cuenta}-{$detalle->documento_referencia}B{$detalle->fecha_manual_number}B{$cuentaNumero}B";
                             while ($this->hasCuentaData($cuentaNueva)) {
                                 $cuentaNumero++;
-                                $cuentaNueva = "{$detalle->cuenta}-{$detalle->numero_documento}B{$detalle->documento_referencia}B{$cuentaNumero}B";
+                                $cuentaNueva = "{$detalle->cuenta}-{$detalle->documento_referencia}B{$detalle->fecha_manual_number}B{$cuentaNumero}B";
                             }
                             $this->newCuentaDetilsData($cuentaNueva, $detalle);
                         }
@@ -316,6 +316,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 'DG.created_at',
                 DB::raw("DATE_FORMAT(DG.created_at, '%Y-%m-%d %T') AS fecha_creacion"),
                 DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
+                DB::raw("DATE_FORMAT(DG.fecha_manual, '%Y%m%d') AS fecha_manual_number"),
                 'DG.created_by',
                 'DG.updated_by',
                 'DG.anulado',
@@ -374,6 +375,7 @@ class ProcessInformeAuxiliar implements ShouldQueue
                 'created_by',
                 'updated_by',
                 'anulado',
+                DB::raw("DATE_FORMAT(fecha_manual, '%Y%m%d') AS fecha_manual_number"),
                 DB::raw('SUM(saldo_anterior) AS saldo_anterior'),
                 DB::raw('SUM(debito) AS debito'),
                 DB::raw('SUM(credito) AS credito'),
@@ -389,11 +391,11 @@ class ProcessInformeAuxiliar implements ShouldQueue
                         continue;
                     }
                     $cuentaNumero = 1;
-                    $cuentaNueva = "{$documento->cuenta}-{$documento->numero_documento}B{$documento->documento_referencia}B{$cuentaNumero}A";
+                    $cuentaNueva = "{$documento->cuenta}-{$documento->documento_referencia}B{$documento->fecha_manual_number}B{$cuentaNumero}A";
 
                     while ($this->hasCuentaData($cuentaNueva)) {
                         $cuentaNumero++;
-                        $cuentaNueva = "{$documento->cuenta}-{$documento->numero_documento}B{$documento->documento_referencia}B{$cuentaNumero}A";
+                        $cuentaNueva = "{$documento->cuenta}-{$documento->documento_referencia}B{$documento->fecha_manual_number}B{$cuentaNumero}A";
                     }
 
                     $this->newCuentaTotalNitsData($cuentaNueva, $documento);
