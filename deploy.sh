@@ -1,20 +1,22 @@
 #!/bin/bash
 
+set -e
+
 echo "🚀 Iniciando despliegue..."
 
-# Obtener últimos cambios del repositorio
 echo "📥 Ejecutando git pull..."
 git pull
 
-# Limpiar configuraciones y cachés
-echo "🧹 Limpiando cachés de Laravel..."
+echo "🔒 Asignando permisos..."
+sudo chown -R www-data:www-data storage bootstrap/cache
+sudo chmod -R 775 storage bootstrap/cache
+
+echo "🧹 Limpiando cachés..."
 php artisan optimize:clear
 
-# Reconstruir la caché de configuración
-echo "📦 Generando config:cache..."
+echo "📦 Reconstruyendo cachés..."
 php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 
 echo "✅ Despliegue completado."
-
-
-echo "📦 Generando config:cache..."
