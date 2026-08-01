@@ -523,11 +523,12 @@ class GastosController extends Controller
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
+        $claveUrl = $this->generarClavePDF($empresa->id, $gasto->id_comprobante, $gasto->consecutivo, $gasto->fecha_manual);
 
+        // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
         // return view('pdf.facturacion.gastos', $data);
  
-        return (new GastosPdf($empresa, $gasto))
+        return (new GastosPdf($empresa, $gasto, $claveUrl))
             ->buildPdf()
             ->showPdf();
     }

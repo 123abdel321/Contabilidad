@@ -21,7 +21,7 @@ class SendSingleEmail implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 3;
+    public $tries = 1;
     public $timeout = 300;
     public $maxExceptions = 1;
 
