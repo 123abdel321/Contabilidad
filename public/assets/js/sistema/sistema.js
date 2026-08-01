@@ -41,14 +41,6 @@ const rangoFechas = {
         startOfDay(new Date(dateNow.getTime() - 86400000)), // Resta 1 día en milisegundos
         endOfDay(new Date(dateNow.getTime() - 86400000))
     ],
-    "Últimos 7 días": [
-        startOfDay(new Date(dateNow.getTime() - 6 * 86400000)), // Resta 6 días
-        endOfDay(new Date(dateNow))
-    ],
-    "Últimos 30 días": [
-        startOfDay(new Date(dateNow.getTime() - 29 * 86400000)), // Resta 29 días
-        endOfDay(new Date(dateNow))
-    ],
     "Este mes": [
         startOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth(), 1)),
         endOfDay(new Date(dateNow.getFullYear(), dateNow.getMonth() + 1, 0))
@@ -926,16 +918,18 @@ function removejscssfile(filename, filetype){
 
 function loadExcel(data) {
     setTimeout(function(){
+        console.log(data.url_file);
         window.open('https://'+data.url_file, "_blank");
         agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
-    },10000);
+    },1000);
 }
 
 function loadPdf(data) {
     setTimeout(function(){
+        console.log(data.url_file_pdf);
         window.open('https://'+data.url_file_pdf, "_blank");
         agregarToast(data.tipo, data.titulo, data.mensaje, data.autoclose);
-    },5000);
+    },1000);
 }
 
 $(document).on('click', '#descargarPlantilla', function () {

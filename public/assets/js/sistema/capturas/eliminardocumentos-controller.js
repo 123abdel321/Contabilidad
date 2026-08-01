@@ -28,29 +28,7 @@ function eliminardocumentosInit() {
             monthNames: moment.months(),
             firstDay: 1
         },
-        ranges: {
-            "Hoy": [moment().startOf('day'), moment().endOf('day')],
-            "Ayer": [
-                moment().subtract(1, "days").startOf("day"),
-                moment().subtract(1, "days").endOf("day")
-            ],
-            "Últimos 7 días": [
-                moment().subtract(6, "days").startOf("day"),
-                moment().endOf("day")
-            ],
-            "Últimos 30 días": [
-                moment().subtract(29, "days").startOf("day"),
-                moment().endOf("day")
-            ],
-            "Este mes": [
-                moment().startOf("month").startOf("day"),
-                moment().endOf("month").endOf("day")
-            ],
-            "Mes anterior": [
-                moment().subtract(1, "month").startOf("month").startOf("day"),
-                moment().subtract(1, "month").endOf("month").endOf("day")
-            ]
-        }
+        ranges: rangoFechas
     }, formatoFecha);
 
     formatoFecha(start, end, "fecha_manual_eliminar_documentos");
