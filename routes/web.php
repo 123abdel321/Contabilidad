@@ -164,6 +164,10 @@ Route::prefix('pos')->controller(PosController::class)->group(function () {
 	Route::get('pedido-print/{token}/{id}', 'showPdfPedido');
 	Route::get('venta-print/{token}/{id}', 'showPdfVenta');
 });
+//PDF GENERAL QR
+Route::controller(DocumentoController::class)->group(function () {
+	Route::get('documentos-generales-pdf', 'showGeneralPdfQr');
+});
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

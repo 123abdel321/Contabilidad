@@ -1,6 +1,6 @@
 <?php
 
-// use App\Models\Empresas\CliEmpresa;
+use App\Helpers\PdfIcons;
 
 if (!function_exists('random_id')) {
 	function random_id(?int $digits = 3)
@@ -67,5 +67,14 @@ if (!function_exists('dbExists')) {
 	{
 		return DB::select("select schema_name from information_schema.schemata where schema_name = '$database'");
 	}
+}
+
+if (!function_exists('icon')) {
+
+    function icon(string $name, string $color = '#003165')
+    {
+        return PdfIcons::get($name, $color);
+    }
+
 }
 

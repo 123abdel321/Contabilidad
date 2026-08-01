@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Informes;
 use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Crypt;
 //MODELS
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\ConPagos;
@@ -117,9 +118,130 @@ class DocumentoController extends Controller
             ->showPdf();
     }
 
+    public function showGeneralPdfQr (Request $request)
+    {
+        try {
+            $key = $request->get('code');
+            $decoded = base64_decode(strtr($key, '-_', '+/'));
+            $data = json_decode(gzuncompress($decoded), true);
+
+            $empresa = Empresa::where('id', $data['has_empresa'])->first();
+            $id_comprobante = $data['id_comprobante'];
+            $consecutivo = $data['consecutivo'];
+            $fecha_manual = $data['fecha_manual'];
+
+            copyDBConnection('sam', 'sam');
+            setDBInConnection('sam', $empresa->token_db);
+
+            $comprobante = Comprobantes::where('id', $id_comprobante)->first();
+        
+            if (!$comprobante) {
+                logger()->critical("Error showGeneralPdf: el comprobante id: {$id_comprobante} no existe; consecutivo: {$consecutivo}");
+                abort(404, 'El enlace no es válido o ha expirado.');
+            }
+
+            $documento = DocumentosGeneral::with('comprobante')
+                ->where('id_comprobante', $id_comprobante)
+                ->where('fecha_manual', $fecha_manual)
+                ->where('consecutivo', $consecutivo)
+                ->first();
+
+            if (!$documento) {
+                logger()->critical("Error showGeneralPdf: el documento id: {$documento->id} no tiene cabezas para imprimir;");
+                abort(404, 'El enlace no es válido o ha expirado.');
+            }
+
+            $claveUrl = $this->generarClavePDF($empresa->id, $id_comprobante, $consecutivo, $fecha_manual);
+
+            if ($comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
+                $recibo = ConRecibos::where('id', $documento->relation_id)->first();
+                if ($recibo) {
+                    // $data = (new RecibosPdf($empresa, $recibo))->buildPdf()->getData();
+                    // return view('pdf.facturacion.recibos', $data);
+                    return (new RecibosPdf($empresa, $recibo))
+                        ->buildPdf()
+                        ->showPdf();
+                }
+            }
+            if ($comprobante->tipo_comprobante == Comprobantes::TIPO_VENTAS) {
+                $venta = FacVentas::where('id', $documento->relation_id)->first();;
+                if ($venta) {
+                    $data = (new VentasPdf($empresa, $venta))->buildPdf()->getData();
+                    return view('pdf.facturacion.ventas', $data);
+                    return (new VentasPdf($empresa, $venta))
+                        ->buildPdf()
+                        ->showPdf();
+                }
+            }
+            if ($comprobante->tipo_comprobante == Comprobantes::TIPO_COMPRAS) {
+                $compra = FacCompras::with('comprobante')
+                    ->where('id_comprobante', $id_comprobante)
+                    ->where('consecutivo', $consecutivo)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+
+                if ($compra) {
+                    // $data = (new ComprasPdf($empresa, $compra))->buildPdf()->getData();
+                    return (new ComprasPdf($empresa, $compra))
+                        ->buildPdf()
+                        ->showPdf();
+                }
+            }
+            
+            if ($comprobante->tipo_comprobante == Comprobantes::TIPO_GASTOS) {
+                $gasto = ConGastos::where('id', $documento->relation_id)->first();
+                if ($gasto) {
+                    $data = (new GastosPdf($empresa, $gasto, $claveUrl))->buildPdf()->getData();
+                    // return view('pdf.facturacion.gastos', $data);
+                    return (new GastosPdf($empresa, $gasto, $claveUrl))
+                        ->buildPdf()
+                        ->showPdf();
+                }
+            }
+
+            if ($comprobante->tipo_comprobante == Comprobantes::TIPO_EGRESOS) {
+                $pagos = ConPagos::where('id', $documento->relation_id)->first();
+                if ($pagos) {
+                    // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
+                    return (new PagosPdf($empresa, $pagos))
+                        ->buildPdf()
+                        ->showPdf();
+                }
+            }
+            
+            $facDocumento = FacDocumentos::where('id', $documento->relation_id)->first();
+
+            if (!$facDocumento) {
+                return response()->json([
+                    'success'=>	false,
+                    'data' => [],
+                    'message'=> 'La factura no existe'
+                ]);
+            }
+
+            if ($comprobante->tipo_comprobante == Comprobantes::TIPO_OTROS && count($facDocumento->documentos)) {
+                return (new DocumentosPdf($empresa, $facDocumento, 'pdf.facturacion.documentos_otros'))
+                    ->buildPdf()
+                    ->showPdf();
+            }
+
+            if (count($facDocumento->documentos)) {
+                return (new DocumentosPdf($empresa, $facDocumento))
+                    ->buildPdf()
+                    ->showPdf();
+            }
+
+            abort(404, 'El enlace no es válido o ha expirado.');
+
+        } catch (Exception $e) {
+            abort(404, 'El enlace no es válido o ha expirado.');
+        }
+    }
+
     public function showGeneralPdf(Request $request, $id_comprobante, $consecutivo, $fecha_manual)
     {
         $comprobante = Comprobantes::where('id', $id_comprobante)->first();
+        
         if (!$comprobante) {
             logger()->critical("Error showGeneralPdf: el comprobante id: {$id_comprobante} no existe; consecutivo: {$consecutivo}");
             return response()->json([
@@ -145,6 +267,7 @@ class DocumentoController extends Controller
         }
         
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        $claveUrl = $this->generarClavePDF($empresa->id, $id_comprobante, $consecutivo, $fecha_manual);
 
         if ($comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
             $recibo = ConRecibos::where('id', $documento->relation_id)->first();
@@ -160,6 +283,7 @@ class DocumentoController extends Controller
             $venta = FacVentas::where('id', $documento->relation_id)->first();;
             if ($venta) {
                 // $data = (new VentasPdf($empresa, $venta))->buildPdf()->getData();
+                // return view('pdf.facturacion.ventas', $data);
                 return (new VentasPdf($empresa, $venta))
                     ->buildPdf()
                     ->showPdf();
@@ -183,8 +307,9 @@ class DocumentoController extends Controller
         if ($comprobante->tipo_comprobante == Comprobantes::TIPO_GASTOS) {
             $gasto = ConGastos::where('id', $documento->relation_id)->first();
             if ($gasto) {
-                // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
-                return (new GastosPdf($empresa, $gasto))
+                $data = (new GastosPdf($empresa, $gasto, $claveUrl))->buildPdf()->getData();
+                // return view('pdf.facturacion.gastos', $data);
+                return (new GastosPdf($empresa, $gasto, $claveUrl))
                     ->buildPdf()
                     ->showPdf();
             }
@@ -199,7 +324,7 @@ class DocumentoController extends Controller
                     ->showPdf();
             }
         }
-
+        
         $facDocumento = FacDocumentos::where('id', $documento->relation_id)->first();
 
         if (!$facDocumento) {
@@ -249,6 +374,21 @@ class DocumentoController extends Controller
         return (new DocumentosPdf($empresa, $factura))
             ->buildPdf()
             ->showPdf();
+    }
+
+    public function generarClavePDF($has_empresa, $id_comprobante, $consecutivo, $fecha_manual)
+    {
+        $data = [
+            'has_empresa' => $has_empresa,
+            'id_comprobante' => $id_comprobante,
+            'consecutivo' => $consecutivo,
+            'fecha_manual' => $fecha_manual,
+        ];
+
+        $json = json_encode($data);
+        $compressed = gzcompress($json, 9);
+
+        return rtrim(strtr(base64_encode($compressed), '+/', '-_'), '=');
     }
 
 }

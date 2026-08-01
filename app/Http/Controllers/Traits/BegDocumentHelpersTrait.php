@@ -180,4 +180,93 @@ trait BegDocumentHelpersTrait
 
 		$captura->whereBetween('fecha_manual', [$startOfMonth, $endOfMonth]);
 	}
+
+	function numeroALetras($numero, $moneda = 'pesos', $centimos = 'centavos') {
+    $numero = number_format($numero, 2, '.', '');
+    $partes = explode('.', $numero);
+    $entero = (int)$partes[0];
+    $decimal = (int)$partes[1];
+
+    $letras = $this->convertirNumeroGrande($entero);
+
+    if ($entero == 1) {
+        $letras .= ' ' . rtrim($moneda, 's');
+    } else {
+        $letras .= ' ' . $moneda;
+    }
+
+    if ($decimal > 0) {
+        $letras .= ' CON ' . $this->convertirNumeroGrande($decimal);
+        $letras .= ($decimal == 1) ? ' ' . rtrim($centimos, 's') : ' ' . $centimos;
+    }
+
+    return ucfirst(strtolower($letras));
+}
+
+function convertirNumeroGrande($n) {
+    if ($n == 0) return 'CERO';
+
+    $partes = [];
+    $millones = floor($n / 1000000);
+    if ($millones > 0) {
+        $partes[] = ($millones == 1) ? 'UN MILLON' : $this->convertirNumero($millones) . ' MILLONES';
+        $n -= $millones * 1000000;
+    }
+
+    $miles = floor($n / 1000);
+    if ($miles > 0) {
+        $partes[] = ($miles == 1) ? 'MIL' : $this->convertirNumero($miles) . ' MIL';
+        $n -= $miles * 1000;
+    }
+
+    if ($n > 0) {
+        $partes[] = $this->convertirNumero($n);
+    }
+
+    return implode(' ', $partes);
+}
+
+function convertirNumero($n) {
+    $unidades = ['', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
+    $decenas  = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+    $centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
+    $especiales = [
+        10 => 'DIEZ', 11 => 'ONCE', 12 => 'DOCE', 13 => 'TRECE', 14 => 'CATORCE',
+        15 => 'QUINCE', 16 => 'DIECISÉIS', 17 => 'DIECISIETE', 18 => 'DIECIOCHO', 19 => 'DIECINUEVE',
+        20 => 'VEINTE', 21 => 'VEINTIUN', 22 => 'VEINTIDÓS', 23 => 'VEINTITRÉS', 24 => 'VEINTICUATRO',
+        25 => 'VEINTICINCO', 26 => 'VEINTISÉIS', 27 => 'VEINTISIETE', 28 => 'VEINTIOCHO', 29 => 'VEINTINUEVE'
+    ];
+
+    if ($n == 0) return 'CERO';
+    if ($n == 100) return 'CIEN';
+    if ($n < 30 && isset($especiales[$n])) return $especiales[$n];
+
+    $c = (int)($n / 100);
+    $resto = $n % 100;
+    $d = (int)($resto / 10);
+    $u = $resto % 10;
+
+    $texto = '';
+    if ($c > 0) {
+        $texto .= $centenas[$c] . ' ';
+    }
+
+    if ($d > 0) {
+        if ($d == 1 && $u > 0) {
+            $texto .= $especiales[10 + $u] . ' ';
+        } elseif ($d == 2 && $u > 0) {
+            $texto .= $especiales[20 + $u] ?? '' . ' ';
+        } else {
+            $texto .= $decenas[$d];
+            if ($u > 0) {
+                $texto .= ' Y ' . $unidades[$u];
+            }
+            $texto .= ' ';
+        }
+    } elseif ($u > 0) {
+        $texto .= $unidades[$u] . ' ';
+    }
+
+    return trim($texto);
+}
 }

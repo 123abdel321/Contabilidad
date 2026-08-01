@@ -3,6 +3,8 @@
 namespace App\Helpers\Printers;
 
 use Illuminate\Support\Carbon;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
@@ -13,9 +15,12 @@ class GastosPdf extends AbstractPrinterPdf
 {
     public $gasto;
 	public $empresa;
+    public $claveUrl;
 	public $tipoEmpresion;
 
-    public function __construct(Empresa $empresa, ConGastos $gasto)
+	use BegDocumentHelpersTrait;
+
+    public function __construct(Empresa $empresa, ConGastos $gasto, string $claveUrl)
 	{
 		parent::__construct($empresa);
 
@@ -24,6 +29,7 @@ class GastosPdf extends AbstractPrinterPdf
 
 		$this->gasto = $gasto;
 		$this->empresa = $empresa;
+		$this->claveUrl = $claveUrl;
 		$this->tipoEmpresion = $this->gasto->comprobante->tipo_impresion;
 	}
 
@@ -74,14 +80,22 @@ class GastosPdf extends AbstractPrinterPdf
 				"ciudad" => $getProveedor->ciudad ? $getProveedor->ciudad->nombre_completo : '',
 			];
 		}
+
+		$baseUrl = config('app.url');
+		$urlValidarArchivo = "{$baseUrl}/documentos-generales-pdf?code={$this->claveUrl}";
 		
+		$svg = QrCode::format('svg')->size(300)->generate($urlValidarArchivo);
+        $qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($svg);
+
         return [
 			'empresa' => $this->empresa,
 			'proveedor' => $proveedor,
 			'gasto' => $this->gasto,
 			'detalles' => $this->gasto->detalles,
 			'pagos' => $this->gasto->pagos,
+			'qrCode' => $qrCodeBase64,
 			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
+			'monto_letras' => $this->numeroALetras($this->gasto->total_gasto),
 			'usuario' => request()->user() ? request()->user()->username : 'Portafolio ERP'
 		];
     }
