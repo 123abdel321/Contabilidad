@@ -62,6 +62,7 @@ class GastosPdf extends AbstractPrinterPdf
         $this->gasto->load([
 			'cecos',
             'proveedor',
+			'comprobante',
             'detalles.concepto',
 			'pagos.forma_pago'
         ]);
@@ -87,8 +88,73 @@ class GastosPdf extends AbstractPrinterPdf
 		$svg = QrCode::format('svg')->size(300)->generate($urlValidarArchivo);
         $qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($svg);
 
+		$cliente = (object)[
+			'titulo' => "PROVEEDOR",
+			'nombre_cliente' => $proveedor->nombre_nit,
+			'datos_adicionales' => [
+				(object)[
+					'icono' => 'building',
+					'titulo' => $proveedor->tipo_documento == 'Cédula de ciudadanía' ? 'Cédula' : $proveedor->tipo_documento,
+					'valor' => $proveedor->numero_documento
+				],
+				(object)[
+					'icono' => 'location',
+					'titulo' => 'Dirección',
+					'valor' => $proveedor->direccion
+				],
+				// (object)[
+				// 	'icono' => 'city',
+				// 	'titulo' => 'Ciudad',
+				// 	'valor' => $proveedor->ciudad
+				// ],
+				(object)[
+					'icono' => 'phone',
+					'titulo' => 'Teléfono',
+					'valor' => $proveedor->telefono
+				],
+				(object)[
+					'icono' => 'mail',
+					'titulo' => 'Email',
+					'valor' => $proveedor->email
+				],
+			]
+		];
+
+		$informacionPdf = (object)[
+			'titulo' => "INFORMACIÓN DEL GASTO",
+			'datos_adicionales' => [
+				(object)[
+					'icono' => 'box',
+					'titulo' => 'Centro de costos',
+					'valor' => "{$this->gasto->cecos->codigo} - {$this->gasto->cecos->nombre}"
+				],
+				(object)[
+					'icono' => 'file',
+					'titulo' => 'Documento referencia',
+					'valor' => $this->gasto->documento_referencia
+				],
+				(object)[
+					'icono' => 'ticket',
+					'titulo' => 'Comprobante',
+					'valor' => "{$this->gasto->comprobante->codigo} - {$this->gasto->comprobante->nombre}"
+				],
+				(object)[
+					'icono' => 'user',
+					'titulo' => 'Usuario',
+					'valor' => request()->user() ? request()->user()->username : 'Portafolio ERP'
+				],
+				(object)[
+					'icono' => 'tag',
+					'titulo' => 'Tipo de gasto',
+					'valor' => 'Gasto operacional'
+				],
+			]
+		];
+
         return [
 			'empresa' => $this->empresa,
+			'cliente' => $cliente,
+			'informacion_pdf' => $informacionPdf,
 			'proveedor' => $proveedor,
 			'gasto' => $this->gasto,
 			'detalles' => $this->gasto->detalles,

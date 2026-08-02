@@ -37,6 +37,8 @@ class ConGastoDetalles extends Model
         'updated_by',
     ];
 
+    protected $appends = ['subtotal_neto'];
+
     public function concepto()
 	{
 		return $this->belongsTo(ConConceptoGastos::class, 'id_concepto_gastos');
@@ -50,6 +52,14 @@ class ConGastoDetalles extends Model
     public function cuenta_retencion_declarante()
     {
         return $this->belongsTo(PlanCuentas::class, 'id_cuenta_retencion_declarante');
+    }
+
+    public function getSubtotalNetoAttribute()
+    {
+        if (is_null($this->id_cuenta_iva) && $this->iva_valor > 0) {
+            return $this->subtotal - $this->iva_valor;
+        }
+        return $this->subtotal;
     }
     
 }

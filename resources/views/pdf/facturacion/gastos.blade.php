@@ -429,7 +429,7 @@
                             <td class="text-align-center aling-middle" style="width: 25%;">
                                 <div class="header-gastos-titulo">GASTOS</div>
                                 <div class="spacer-sm"></div>
-                                <div class="header-gastos-consecutivo">DS-{{ $gasto->consecutivo }}</div>
+                                <div class="header-gastos-consecutivo">{{ $gasto->consecutivo }}</div>
                                 <div class="spacer-sm"></div>
                                 <table style="border: none; width: auto; margin: 0 auto;">
                                     <tr>
@@ -451,108 +451,74 @@
     </table>
 
     <!-- ========================================================= -->
-    <!-- PROVEEDOR / INFORMACION DEL GASTO                         -->
+    <!-- CLIENTE / INFORMACION DEL GASTO                           -->
     <!-- ========================================================= -->
-    @if($proveedor)
     <table>
         <tr><td class="spacer"></td></tr>
         <tr>
             <td>
                 <table>
                     <tr>
-                        <!-- PROVEEDOR -->
+                        <!-- INFORMACION DEL CLIENTE -->
+                        @if($cliente)
                         <td class="aling-top padding5" style="width: 50%;">
                             <div class="box">
                                 <table class="box-table">
                                     <tr class="box-title-row">
                                         <td class="icon-cell"><img src="{!! icon('user', '#FFFFFF') !!}" width="12"></td>
-                                        <td colspan="2" class="text-align-left">PROVEEDOR</td>
+                                        <td colspan="2" class="text-align-left">{{ $cliente->titulo }}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="3" class="box-body-title">{{ $proveedor->nombre_nit }}</td>
+                                        <td colspan="3" class="box-body-title">{{ $cliente->nombre_cliente }}</td>
                                     </tr>
-                                    <tr class="box-body">
-                                        <td class="icon"><img src="{!! icon('building', '#003165') !!}" width="10"></td>
-                                        <td class="lbl">{{ $proveedor->tipo_documento }}</td>
-                                        <td class="val">{{ $proveedor->numero_documento }}</td>
-                                    </tr>
-                                    <!-- @if ($proveedor->direccion)
-                                    <tr class="box-body">
-                                        <td class="icon"><img src="{!! icon('location', '#003165') !!}" width="10"></td>
-                                        <td class="lbl">Dirección</td>
-                                        <td class="val">{{ $proveedor->direccion }}</td>
-                                    </tr>
-                                    @endif -->
-                                    <!-- @if ($proveedor->ciudad)
-                                    <tr class="box-body">
-                                        <td class="icon"><img src="{!! icon('city', '#003165') !!}" width="12"></td>
-                                        <td class="lbl">Ciudad</td>
-                                        <td class="val">{{ $proveedor->ciudad }}</td>
-                                    </tr>
-                                    @endif -->
-                                    @if ($proveedor->telefono)
-                                    <tr class="box-body">
-                                        <td class="icon"><img src="{!! icon('phone', '#003165') !!}" width="12"></td>
-                                        <td class="lbl">Teléfono</td>
-                                        <td class="val">{{ $proveedor->telefono }}</td>
-                                    </tr>
-                                    @endif
-                                    @if ($proveedor->email)
-                                    <tr class="box-body">
-                                        <td class="icon"><img src="{!! icon('mail', '#003165') !!}" width="12"></td>
-                                        <td class="lbl">Email</td>
-                                        <td class="val">{{ $proveedor->email }}</td>
-                                    </tr>
-                                    @endif
+
+                                    @foreach ( $cliente->datos_adicionales AS $dato_adicional )
+                                        @if ($dato_adicional->valor)
+                                            <tr class="box-body">
+                                                <td class="icon"><img src="{!! icon($dato_adicional->icono, '#003165') !!}" width="10"></td>
+                                                <td class="lbl">{{ $dato_adicional->titulo }}</td>
+                                                <td class="val">{{ $dato_adicional->valor }}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
                                     <tr><td colspan="2" class="spacer-sm"></td></tr>
                                 </table>
                             </div>
                         </td>
-
+                        @endif
+                        @if($informacion_pdf)
                         <!-- INFORMACION DEL GASTO -->
                         <td class="aling-top padding5" style="width: 50%;">
                             <div class="box">
                                 <table class="box-table">
-                                    <tr class="box-title-row">
+                                    <tr class="box-title-row" style="padding-bottom: 5px;">
                                         <td class="icon-cell"><img src="{!! icon('file', '#FFFFFF') !!}" width="12"></td>
-                                        <td colspan="2" class="text-align-left">INFORMACIÓN DEL GASTO</td>
+                                        <td colspan="2" class="text-align-left">{{ $informacion_pdf->titulo }}</td>
                                     </tr>
-                                    <tr>
-                                    <tr class="box-body">
-                                        <td class="icon"><img src="{!! icon('box', '#003165') !!}" width="10"></td>
-                                        <td class="lbl">Centro de costos</td>
-                                        <td class="val">{{ $gasto->cecos->codigo }} - {{ $gasto->cecos->nombre }}</td>
-                                    </tr>
-                                    <tr class="box-body">
-                                        <td class="icon"><img src="{!! icon('file', '#003165') !!}" width="10"></td>
-                                        <td class="lbl">Documento referencia</td>
-                                        <td class="val">{{ $gasto->documento_referencia }}</td>
-                                    </tr>
-                                    @if($usuario)
-                                    <tr class="box-body">
-                                        <td class="icon"><img src="{!! icon('user', '#003165') !!}" width="10"></td>
-                                        <td class="lbl">Usuario</td>
-                                        <td class="val">{{ $usuario }}</td>
-                                    </tr>
-                                    @endif
-                                    <tr class="box-body">
-                                        <td class="icon"><img src="{!! icon('tag', '#003165') !!}" width="10"></td>
-                                        <td class="lbl">Tipo de gasto</td>
-                                        <td class="val">Gasto operacional</td>
-                                    </tr>
+                                    <tr><td colspan="2" class="spacer-sm"></td></tr>
+                                    @foreach ( $informacion_pdf->datos_adicionales AS $dato_adicional )
+                                        @if ($dato_adicional->valor)
+                                            <tr class="box-body">
+                                                <td class="icon"><img src="{!! icon($dato_adicional->icono, '#003165') !!}" width="10"></td>
+                                                <td class="lbl">{{ $dato_adicional->titulo }}</td>
+                                                <td class="val">{{ $dato_adicional->valor }}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+
                                     <tr><td colspan="2" class="spacer-sm"></td></tr>
                                 </table>
                             </div>
                         </td>
+                        @endif
                     </tr>
                 </table>
             </td>
         </tr>
     </table>
-    @endif
 
     <!-- ========================================================= -->
-    <!-- DETALLE DE CONCEPTOS                                       -->
+    <!-- DETALLE DE CONCEPTOS                                      -->
     <!-- ========================================================= -->
     <table>
         <tr><td class="spacer"></td></tr>
@@ -562,10 +528,11 @@
                     <table class="box-table">
                         <tbody class="detalle-factura">
                             <tr class="box-title-header" style="background-color: #003165;">
-                                <td colspan="6" class="text-align-left">DETALLE DE CONCEPTOS</td>
+                                <td colspan="7" class="text-align-left">DETALLE DE CONCEPTOS</td>
                             </tr>
                             <tr class="box-title-row">
                                 <td style="widtd: 30%; text-align:left; padding-left:10px;">CONCEPTO</td>
+                                <td style="widtd: 30%; text-align:left; padding-left:10px;">CUENTA</td>
                                 <td class="valor">BASE GRAVABLE</td>
                                 <td class="valor">IVA</td>
                                 <td class="valor">RETENCIÓN</td>
@@ -575,7 +542,8 @@
                             @foreach ($detalles as $detalle)
                                 <tr class="border-solid">
                                     <td style="padding-left:10px;">{{ $detalle->concepto->codigo }} - {{ $detalle->concepto->nombre }}</td>
-                                    <td class="valor">{{ number_format($detalle->subtotal) }}</td>
+                                    <td style="padding-left:10px;">{{ $detalle->concepto->cuenta_gasto->cuenta }} - {{ $detalle->concepto->cuenta_gasto->nombre }}</td>
+                                    <td class="valor">{{ number_format($detalle->subtotal_neto) }}</td>
                                     <td class="valor">{{ number_format($detalle->iva_valor) }}</td>
                                     <td class="valor">{{ number_format($detalle->rete_fuente_valor) }}</td>
                                     <td class="valor">{{ number_format($detalle->rete_ica_valor) }}</td>
@@ -598,6 +566,8 @@
                                             @if(isset($monto_letras))
                                                 <div class="son-texto"><b>SON:</b> {{$monto_letras}}</div>
                                             @endif
+                                                <div class="son-texto"><b>OBSERVACIÓN:</b> {{$detalles[0]->observacion}}</div>
+
                                         </td>
                                         <td class="aling-top" style="width: 50%;">
                                             <div class="box">
