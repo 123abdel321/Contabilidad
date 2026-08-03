@@ -541,8 +541,8 @@
                             </tr>
                             @foreach ($detalles as $detalle)
                                 <tr class="border-solid">
-                                    <td style="padding-left:10px;">{{ $detalle->concepto->codigo }} - {{ $detalle->concepto->nombre }}</td>
-                                    <td style="padding-left:10px;">{{ $detalle->concepto->cuenta_gasto->cuenta }} - {{ $detalle->concepto->cuenta_gasto->nombre }}</td>
+                                    <td style="padding-left:10px;">{{ $detalle->concepto?->codigo }} - {{ $detalle->concepto?->nombre }}</td>
+                                    <td style="padding-left:10px;">{{ $detalle->concepto?->cuenta_gasto?->cuenta }} - {{ $detalle->concepto?->cuenta_gasto?->nombre }}</td>
                                     <td class="valor">{{ number_format($detalle->subtotal_neto) }}</td>
                                     <td class="valor">{{ number_format($detalle->iva_valor) }}</td>
                                     <td class="valor">{{ number_format($detalle->rete_fuente_valor) }}</td>
