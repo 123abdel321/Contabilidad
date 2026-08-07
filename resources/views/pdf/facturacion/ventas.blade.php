@@ -10,7 +10,7 @@
 			body {
 				margin: 0;
 				font-family: "Lato", sans-serif;
-				line-height: 15px;
+				line-height: 16px;
 				font-size: 10px;
 				width: 100%;
 				text-transform: uppercase;
@@ -29,7 +29,7 @@
 
 
 			.spacer {
-				height: 10px;
+				height: 30px;
 			}
 
 			.valor {
@@ -42,7 +42,7 @@
 			}
 
 			.table-detail {
-				font-size: 10px;
+				font-size: 12px;
 				width: 100%;
 				border-collapse: collapse;
 				height: 100%;
@@ -61,13 +61,13 @@
 				page-break-inside: avoid
 			}
 
-			/* .padding5 {
+			.padding5 {
 				padding: 5px;
 			}
 
 			.padding3 {
 				padding: 2px;
-			} */
+			}
 
 			.logo {
 				width: 25%;
@@ -111,9 +111,10 @@
 			}
 
 			.footer {
-				position: absolute;
+				position: fixed;
 				bottom: 35px;
 				line-height: 15px;
+				/* font-family: helvetica,arial,verdana,sans-serif; */
 				font-size: 8px;
 			}
 
@@ -128,14 +129,6 @@
 
 			.aling-top {
 				vertical-align: top;
-			}
-
-			.break-word {
-				word-break: break-all;
-			}
-
-			.no-transform {
-				text-transform: none;
 			}
 
 		</style>
@@ -157,7 +150,7 @@
 								</td>
 								<td class="empresa padding5">
 									<h1>{{ $empresa->razon_social }}</h1>
-									<span>NIT: {{ $empresa->nit }}-{{ $empresa->dv }}</span><br>
+									<span>NIT: {{ $empresa->nit }} {{ $empresa->dv ? ' - '.$empresa->dv : '' }}</span><br>
 									@if ($empresa->direccion)
 										<span>{{ $empresa->direccion }}</span><br>
 									@endif

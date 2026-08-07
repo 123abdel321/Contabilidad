@@ -11,7 +11,7 @@
 				margin: 0;
 				font-family: "Lato", sans-serif;
 				line-height: 16px;
-				font-size: 15px;
+				font-size: 10px;
 				width: 100%;
 				text-transform: uppercase;
 			}
@@ -153,9 +153,13 @@
 								</td>
 								<td class="empresa padding5">
 									<h1>{{ $empresa->razon_social }}</h1>
-									<span>NIT: {{ $empresa->nit }}-{{ $empresa->dv }}</span><br>
-									<span>{{ $empresa->direccion }}</span><br>
-									<span>TEL: {{ $empresa->telefono }}</span><br>
+									<span>NIT: {{ $empresa->nit }} {{ $empresa->dv ? ' - '.$empresa->dv : '' }}</span><br>
+									@if ($empresa->direccion)
+										<span>{{ $empresa->direccion }}</span><br>
+									@endif
+									@if ($empresa->telefono)
+										<span>TEL: {{ $empresa->telefono }}</span><br>
+									@endif
 								</td>
 								
 								<td class="logo padding5">

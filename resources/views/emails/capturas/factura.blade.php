@@ -414,7 +414,7 @@
                         
                         <div class="detail-row">
                           <span class="detail-label">Fecha vencimiento:</span>
-                          <span class="detail-value">{{ $factura->fecha_vencimiento }}</span>
+                          <span class="detail-value">{{ \Carbon\Carbon::parse($factura->fecha_vencimiento) }}</span>
                         </div>
                         
                         <div class="detail-row">

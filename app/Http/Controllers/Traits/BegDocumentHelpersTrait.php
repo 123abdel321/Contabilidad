@@ -35,19 +35,27 @@ trait BegDocumentHelpersTrait
 
 		$zip = null;
 		$file = null;
-
-        if($this->isFe($factura)) {
-			$xml = $xml ?: $this->getXml($factura);
-			$zip = $this->generateZip($factura->documento_referencia_fe, $pdf, $xml);
-		}
+		$pdfContent = null;
 
 		if ($pdf) {
-			$path = stripslashes($pdf);
-			$baseUrl = "https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/";
-			
-			if (!str_contains($path, $baseUrl)) {
-				$pdf = $baseUrl . $path;
+			// Si es una URL, la obtenemos con HTTP
+			if (filter_var($pdf, FILTER_VALIDATE_URL)) {
+				$response = Http::get($pdf);
+				if ($response->successful()) {
+					$pdfContent = $response->body();
+				} else {
+					// Manejar error: el PDF no se pudo descargar
+					\Log::error("No se pudo descargar el PDF desde: $pdf");
+				}
+			} else {
+				// Si es una ruta local, la leemos con Storage
+				$pdfContent = Storage::disk('do_spaces')->get($pdf);
 			}
+		}
+
+		if($this->isFe($factura)) {
+			$xml = $xml ?: $this->getXml($factura);
+			$zip = $this->generateZip($factura->documento_referencia_fe, $pdfContent, $xml);
 		}
 
 		if ($zip) $file = $zip;
@@ -118,26 +126,27 @@ trait BegDocumentHelpersTrait
 		return $factura->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA;
 	}
 
-    public function generateZip($filename, $pdf, $xml)
+    public function generateZip($filename, $pdfContent, $xmlContent)
 	{
 		$zip = new ZipArchive();
 		$tempPath = storage_path('app/temp');
 
-		if(!File::exists($tempPath)) {
-			File::makeDirectory($tempPath);
+		if (!File::exists($tempPath)) {
+			File::makeDirectory($tempPath, 0755, true);
 		}
 
 		$zipFilename = "$tempPath/$filename.zip";
 
 		try {
-			if($zip->open($zipFilename, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
-				$zip->addFromString($filename.'.pdf', $pdf);
-				$zip->addFromString($filename.'.xml', $xml);
+			if ($zip->open($zipFilename, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+				// Agregamos el contenido binario del PDF
+				$zip->addFromString($filename . '.pdf', $pdfContent);
+				$zip->addFromString($filename . '.xml', $xmlContent);
 				$zip->close();
-
 				return $zipFilename;
 			}
-		} catch (\Exception $exception) {
+		} catch (\Exception $e) {
+			\Log::error("Error al crear ZIP: " . $e->getMessage());
 		}
 
 		return '';
