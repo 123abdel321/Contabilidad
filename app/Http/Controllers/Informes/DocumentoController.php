@@ -152,7 +152,7 @@ class DocumentoController extends Controller
             }
 
             $claveUrl = $this->generarClavePDF($empresa->id, $id_comprobante, $consecutivo, $fecha_manual);
-            
+
             if ($comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
                 $recibo = ConRecibos::where('id', $documento->relation_id)->first();
                 if ($recibo) {
@@ -187,7 +187,8 @@ class DocumentoController extends Controller
             if ($comprobante->tipo_comprobante == Comprobantes::TIPO_GASTOS) {
                 $gasto = ConGastos::where('id', $documento->relation_id)->first();
                 if ($gasto) {
-                    $data = (new GastosPdf($empresa, $gasto, $claveUrl))->buildPdf()->getData();
+                    // dd('aca');
+                    // $data = (new GastosPdf($empresa, $gasto, $claveUrl))->buildPdf()->getData();
                     // return view('pdf.facturacion.gastos', $data);
                     return (new GastosPdf($empresa, $gasto, $claveUrl))
                         ->buildPdf()
@@ -198,7 +199,6 @@ class DocumentoController extends Controller
             if ($comprobante->tipo_comprobante == Comprobantes::TIPO_EGRESOS) {
                 $pagos = ConPagos::where('id', $documento->relation_id)->first();
                 if ($pagos) {
-                    // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
                     return (new PagosPdf($empresa, $pagos))
                         ->buildPdf()
                         ->showPdf();
@@ -264,7 +264,7 @@ class DocumentoController extends Controller
         
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         $claveUrl = $this->generarClavePDF($empresa->id, $id_comprobante, $consecutivo, $fecha_manual);
-        
+
         if ($comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
             $recibo = ConRecibos::where('id', $documento->relation_id)->first();
             if ($recibo) {
@@ -300,8 +300,6 @@ class DocumentoController extends Controller
         if ($comprobante->tipo_comprobante == Comprobantes::TIPO_GASTOS) {
             $gasto = ConGastos::where('id', $documento->relation_id)->first();
             if ($gasto) {
-                // $data = (new GastosPdf($empresa, $gasto, $claveUrl))->buildPdf()->getData();
-                // return view('pdf.facturacion.gastos', $data);
                 return (new GastosPdf($empresa, $gasto, $claveUrl))
                     ->buildPdf()
                     ->showPdf();

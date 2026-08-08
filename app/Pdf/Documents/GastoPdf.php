@@ -51,7 +51,7 @@ class GastoPdf
                 'observacion' => $data['observacion'],
             ]))
             ->addBlock(new PaymentsBlock(['pagos' => $data['pagos']]))
-            ->addBlock(new QrBlock(['qr_code' => $data['qr_code']]))
+            ->addBlock(new QrBlock(['qr_erp' => $data['qr_code']]))
             ->addBlock(new FooterBlock(['fecha_pdf' => $data['fecha_pdf']]));
 
         return $document;

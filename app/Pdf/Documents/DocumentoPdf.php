@@ -55,7 +55,7 @@ class DocumentoPdf
                 'monto_letras' => null,
                 'observacion' => $data['observacion'],
             ]))
-            ->addBlock(new QrBlock(['qr_code' => $data['qr_code']]))
+            ->addBlock(new QrBlock(['qr_erp' => $data['qr_code']]))
             ->addBlock(new FooterBlock(['fecha_pdf' => $data['fecha_pdf']]));
 
         return $document;
