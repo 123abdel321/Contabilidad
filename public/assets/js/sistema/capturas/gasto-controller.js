@@ -1279,6 +1279,7 @@ function calcularRetencion (valorSubtotal = null, valorGastoRow, baseAIU = 0, id
 
     if (!valorSubtotal) {
         calcularRow = true;
+        
         valorSubtotal = valorGastoRow;
         dataGasto.forEach(gastoRow => {
             if (gastoRow.id != idGasto) {
@@ -1291,7 +1292,11 @@ function calcularRetencion (valorSubtotal = null, valorGastoRow, baseAIU = 0, id
 
     if (responsabilidadesGasto.includes('7')) {
         if (baseAIU) {
-            totalRetencion = valorSubtotal * (porcentaje / 100);
+            if (sumarAIU) {
+                totalRetencion = (valorSubtotal + sumarAIU) * (porcentaje / 100);
+            } else {
+                totalRetencion = valorSubtotal * (porcentaje / 100);
+            }
         } else {
             if (!calcularRow && porcentaje) totalRetencion = valorSubtotal * (porcentaje / 100);
             if (calcularRow && porcentaje) totalRetencion = valorGastoRow * (porcentaje / 100);

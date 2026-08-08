@@ -918,11 +918,18 @@ class GastosController extends Controller
             if ($baseAIU) {
                 $porcentajeIva = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
                 $porcentajeIva = $porcentajeIva ? floatval($porcentajeIva->valor) : 0;
-                
-                if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
-                    $valorRetencion = ($baseAIU - $gasto->no_valor_iva) * ($porcentajeRetencion / 100);
+
+                if ($nit->sumar_aiu) {
+                    if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
+                        $valorRetencion = ($baseAIU + $subtotalGasto - $gasto->no_valor_iva) * ($porcentajeRetencion / 100);
+                    }
+                } else {
+                    if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
+                        $valorRetencion = ($subtotalGasto - $gasto->no_valor_iva) * ($porcentajeRetencion / 100);
+                    }
                 }
-                $valorReteIca = $porcentajeReteIca ? $subtotalGasto * ($porcentajeReteIca / 1000) : 0;
+                
+                $valorReteIca = $porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0;
                 $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
             } else {
                 if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
