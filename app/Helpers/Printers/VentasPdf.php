@@ -2,136 +2,69 @@
 
 namespace App\Helpers\Printers;
 
-use Illuminate\Support\Carbon;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-//MODELS
+use App\Pdf\Documents\VentaPdf as VentasDocumentBuilder;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
-use App\Models\Sistema\PlanCuentas;
-use App\Models\Sistema\VariablesEntorno;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 
-class VentasPdf extends AbstractPrinterPdf
+class VentasPdf extends AbstractMakePdf
 {
     public $venta;
-	public $empresa;
-	public $tipoEmpresion;
+    public $claveUrl;
+    public $tipoEmpresion;
 
-    public function __construct(Empresa $empresa, FacVentas $venta)
-	{
-		parent::__construct($empresa);
+    use BegDocumentHelpersTrait;
 
-		copyDBConnection('sam', 'sam');
+    public function __construct(Empresa $empresa, FacVentas $venta, string $claveUrl)
+    {
+        parent::__construct($empresa);
+
+        copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $empresa->token_db);
 
-		$this->venta = $venta;
-		$this->empresa = $empresa;
-		$this->tipoEmpresion = $this->venta->resolucion->tipo_impresion;
-	}
+        $this->venta = $venta;
+        $this->empresa = $empresa;
+        $this->claveUrl = $claveUrl;
+        $this->tipoEmpresion = $this->venta->resolucion->tipo_impresion;
+    }
 
     public function view()
-	{
-		if ($this->tipoEmpresion == 0) {
-			return 'pdf.facturacion.ventas-pos';
-		}
-		return 'pdf.facturacion.ventas';
-	}
+    {
+        return 'pdf.plantilla';
+    }
 
     public function name()
-	{
-		return 'venta_'.uniqid();
-	}
+    {
+        return 'venta_' . uniqid();
+    }
 
     public function paper()
-	{
-		if ($this->tipoEmpresion == 1) return 'landscape';
-		if ($this->tipoEmpresion == 2) return 'portrait';
+    {
+        if ($this->tipoEmpresion == 1) return 'landscape';
+        if ($this->tipoEmpresion == 2) return 'portrait';
+        return '';
+    }
 
-		return '';
-
-	}
-
-	public function formatPaper()
-	{
-		// if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
-		return 'A4';
-	}
+    public function formatPaper()
+    {
+        return 'A4';
+    }
 
     public function data()
     {
-        $this->venta->load([
-			'resolucion',
-            'cliente',
-            'comprobante',
-            'detalles',
-			'pagos.forma_pago'
-        ]);
-
-		$impuestosIva = [];
-		$groupImpuestosIva = $this->venta->detalles->groupBy('id_cuenta_venta_iva');
-
-		if (count($groupImpuestosIva) > 0) {
-			foreach ($groupImpuestosIva as $key => $gImpuestos) {
-				if ($key) {
-					$cuentaImpuesto = PlanCuentas::where('id', $key)
-						->with('impuesto')
-						->first();
-					
-					if ($cuentaImpuesto->impuesto) {
-						$impuestosIva[] = (object)[
-							'nombre' => $cuentaImpuesto->impuesto->nombre,
-							'porcentaje' => $cuentaImpuesto->impuesto->porcentaje,
-							'base' => $gImpuestos->sum('subtotal'),
-							'total'	=> $gImpuestos->sum('iva_valor')
-						];
-					}
-				}
-			}
-		}
-
-		$qrCodeBase64 = null;
-
-		if ($this->venta->fe_codigo_qr) {
-			$svg = QrCode::format('svg')->size(300)->generate($this->venta->fe_codigo_qr);
-			$qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($svg);
-		}
-
-		$observacion_general = VariablesEntorno::where('nombre', 'observacion_venta')->first();
-		$observacion_general = $observacion_general ? $observacion_general->valor : NULL;
-		
-		$mensajeVentasRegimen = null;
-		$responsabilidades = $this->getResponsabilidades($this->venta->cliente);
-
-		//VENTAS REGIMEN
-        if (in_array('12', $responsabilidades) || in_array('11', $responsabilidades)) {
-			$mensajeVentasRegimen = VariablesEntorno::where('nombre', 'encabezado_ventas_regimen')->first();
-			$mensajeVentasRegimen = $mensajeVentasRegimen ? $mensajeVentasRegimen->valor : NULL;
-        }
-
-		$usuario = request()->user() ? request()->user()->username : 'Portafolio ERP';
-
-        return [
-			'asunto' => 'Factura de venta '.$this->venta->documento_referencia,
-			'empresa' => $this->empresa,
-			'cliente' => $this->venta->cliente,
-			'factura' => $this->venta,
-			'qrCode' => $qrCodeBase64,
-			'productos' => $this->venta->detalles,
-			'pagos' => $this->venta->pagos,
-			'impuestosIva' => $impuestosIva,
-			'observacion' => $this->venta->observacion,
-			'mensaje_regimen' => $mensajeVentasRegimen,
-			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
-			'usuario' => $usuario,
-			'observacion_general' => $observacion_general,
-			'total_factura' => number_format($this->venta->total_factura)
-		];
+        return VentasDocumentBuilder::build($this->venta, $this->empresa, $this->claveUrl);
     }
 
-	private function getResponsabilidades($cliente)
+    public function buildPdf()
     {
-        if ($cliente->id_responsabilidades) {
-            return explode(",", $cliente->id_responsabilidades);
-        }
-        return [];
+        $this->view = $this->view();
+        $this->name = $this->name();
+        $this->data = $this->data();
+        $this->paper = $this->paper();
+        $this->formato = $this->formatPaper();
+
+        $this->generatePdf();
+
+        return $this;
     }
 }

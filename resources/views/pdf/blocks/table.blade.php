@@ -1,36 +1,62 @@
-<table class="box-table" style="width: 100%;">
-    <tbody class="detalle-factura">
-        <tr class="box-title-header" style="background-color: #003165;">
-            <td colspan="{{ count($tabla['columns']) }}" class="text-align-left">
-                {{ $tabla['title'] ?? 'DETALLE' }}
-            </td>
-        </tr>
-        <tr class="box-title-row">
-            @foreach ($tabla['columns'] as $columna)
-                <td style="text-align: {{ $columna['align'] ?? 'left' }}; 
-                        width: {{ $columna['width'] ?? 'auto' }}; 
-                        padding-left:10px; 
-                        padding-right:10px;">
-                    {{ $columna['label'] }}
+<div class="box">
+
+    <table class="box-table tabla-paginada">
+
+        <thead>
+
+            <tr class="box-title-header">
+                <td colspan="{{ count($tabla['columns']) }}" class="text-align-left" style="padding: 8px 10px;">
+                    {{ $tabla['title'] }}
                 </td>
-            @endforeach
-        </tr>
-        @foreach ($tabla['rows'] as $fila)
-            <tr class="border-solid">
-                @foreach ($tabla['columns'] as $columna)
-                    @php
-                        $valor = $fila[$columna['key']] ?? '';
-                        if (isset($columna['formatter']) && $columna['formatter'] == 'number') {
-                            $valor = number_format($valor);
-                        }
-                    @endphp
-                    <td style="text-align: {{ $columna['align'] ?? 'left' }}; 
-                            padding-left:10px; 
-                            padding-right:10px;">
-                        {{ $valor }}
+            </tr>
+
+            <tr class="box-title-row">
+                @foreach($tabla['columns'] as $col)
+                    <td style="
+                        text-align: {{ $col['align'] }};
+                        width: {{ $col['width'] ?? 'auto' }};
+                        padding-left: 10px;
+                        padding-right: 10px;
+                    ">
+                        {{ $col['label'] }}
                     </td>
                 @endforeach
             </tr>
-        @endforeach
-    </tbody>
-</table>
+
+        </thead>
+
+        <tbody class="detalle-factura">
+
+            @foreach($tabla['rows'] as $fila)
+
+                <tr class="border-solid">
+
+                    @foreach($tabla['columns'] as $col)
+
+                        @php
+                            $valor = $fila[$col['key']] ?? '';
+
+                            if ($col['formatter'] === 'number') {
+                                $valor = number_format($valor);
+                            }
+                        @endphp
+
+                        <td style="
+                            text-align: {{ $col['align'] }};
+                            padding-left: 10px;
+                            padding-right: 10px;
+                        ">
+                            {{ $valor }}
+                        </td>
+
+                    @endforeach
+
+                </tr>
+
+            @endforeach
+
+        </tbody>
+
+    </table>
+
+</div>

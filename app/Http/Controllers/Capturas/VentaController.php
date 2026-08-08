@@ -736,7 +736,7 @@ class VentaController extends Controller
     public function showPdf(Request $request, $id)
     {
         $factura = FacVentas::whereId($id)
-            ->with('resolucion')
+            ->with('resolucion', 'comprobante')
             ->first();
 
         if(!$factura) {
@@ -753,8 +753,15 @@ class VentaController extends Controller
             $data = (new VentasPdf($empresa, $factura))->buildPdf()->getData();
             return view('pdf.facturacion.ventas-pos', $data);
         }
+
+        $claveUrl = $this->generarClavePDF(
+            $empresa->id,
+            $factura->comprobante->id,
+            $factura->consecutivo,
+            $factura->fecha_manual
+        );
  
-        return (new VentasPdf($empresa, $factura))
+        return (new VentasPdf($empresa, $factura, $claveUrl))
             ->buildPdf()
             ->showPdf();
     }

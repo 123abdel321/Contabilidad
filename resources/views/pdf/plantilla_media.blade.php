@@ -18,14 +18,15 @@
                                     <table class="header-tabla-interna border-right">
                                         <tr>
                                             <td class="header-logo-celda">
-                                                @if ($document->getConfig()['empresa']->logo ?? false)
-                                                    <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/{{ $document->getConfig()['empresa']->logo }}" class="header-logo-img">
+                                                @php $empresa = $document->getConfig()['empresa'] ?? null; @endphp
+                                                @if ($empresa && $empresa->logo)
+                                                    <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/{{ $empresa->logo }}" class="header-logo-img">
                                                 @else
                                                     <img class="header-logo-img" src="img/logo_contabilidad.png">
                                                 @endif
                                             </td>
                                             <td class="header-empresa-nombre">
-                                                {{ $document->getConfig()['empresa']->razon_social ?? '' }}
+                                                {{ $empresa->razon_social ?? '' }}
                                             </td>
                                         </tr>
                                     </table>
@@ -37,24 +38,24 @@
                                         <tbody>
                                             <tr>
                                                 <td style="width: 16px;"><img src="{!! icon('building') !!}" width="10"></td>
-                                                <td>NIT: {{ $document->getConfig()['empresa']->nit ?? '' }}{{ $document->getConfig()['empresa']->dv ?? '' ? ' - '.$document->getConfig()['empresa']->dv : '' }}</td>
+                                                <td>NIT: {{ $empresa->nit ?? '' }}{{ isset($empresa->dv) && $empresa->dv ? ' - '.$empresa->dv : '' }}</td>
                                             </tr>
-                                            @if($document->getConfig()['empresa']->telefono ?? false)
+                                            @if($empresa && $empresa->telefono)
                                                 <tr>
                                                     <td><img src="{!! icon('phone') !!}" width="11"></td>
-                                                    <td>{{ $document->getConfig()['empresa']->telefono }}</td>
+                                                    <td>{{ $empresa->telefono }}</td>
                                                 </tr>
                                             @endif
-                                            @if($document->getConfig()['empresa']->email ?? false)
+                                            @if($empresa && $empresa->email)
                                                 <tr>
                                                     <td><img src="{!! icon('mail') !!}" width="11"></td>
-                                                    <td>{{ $document->getConfig()['empresa']->email }}</td>
+                                                    <td>{{ $empresa->email }}</td>
                                                 </tr>
                                             @endif
-                                            @if($document->getConfig()['empresa']->direccion ?? false)
+                                            @if($empresa && $empresa->direccion)
                                                 <tr>
                                                     <td><img src="{!! icon('location') !!}" width="11"></td>
-                                                    <td>{{ $document->getConfig()['empresa']->direccion }}</td>
+                                                    <td>{{ $empresa->direccion }}</td>
                                                 </tr>
                                             @endif
                                         </tbody>
@@ -86,21 +87,24 @@
                     <table>
                         <tr>
                             <!-- INFORMACION DEL CLIENTE -->
+                            @php
+                                $clientBlock = null;
+                                $infoBlock = null;
+                                foreach($document->getBlocks() as $block) {
+                                    if(get_class($block) === 'App\Pdf\Blocks\ClientBlock') $clientBlock = $block;
+                                    if(get_class($block) === 'App\Pdf\Blocks\InfoBlock') $infoBlock = $block;
+                                }
+                            @endphp
+                            @if($clientBlock)
                             <td class="aling-top padding5" style="width: 50%;">
-                                @foreach($document->getBlocks() as $block)
-                                    @if(get_class($block) === 'App\Pdf\Blocks\ClientBlock')
-                                        {!! $block->render() !!}
-                                    @endif
-                                @endforeach
+                                {!! $clientBlock->render() !!}
                             </td>
-                            <!-- INFORMACION DEL GASTO -->
+                            @endif
+                            @if($infoBlock)
                             <td class="aling-top padding5" style="width: 50%;">
-                                @foreach($document->getBlocks() as $block)
-                                    @if(get_class($block) === 'App\Pdf\Blocks\InfoBlock')
-                                        {!! $block->render() !!}
-                                    @endif
-                                @endforeach
+                                {!! $infoBlock->render() !!}
                             </td>
+                            @endif
                         </tr>
                     </table>
                 </td>
@@ -110,77 +114,64 @@
         <!-- ========================================================= -->
         <!-- DETALLE DE CONCEPTOS                                      -->
         <!-- ========================================================= -->
-
-        <div class="detalle-seccion">
-
-            @foreach($document->getBlocks() as $block)
-                @if(get_class($block) === 'App\Pdf\Blocks\TableBlock')
-                    {!! $block->render() !!}
-                @endif
-            @endforeach
-
-        </div>
-
         <table>
+            <tr><td class="spacer"></td></tr>
             <tr>
                 <td class="padding5">
-                    <table>
-                        <tr>
-                            <td class="aling-top" style="width: 55%;">
-                                @foreach($document->getBlocks() as $block)
-                                    @if(get_class($block) === 'App\Pdf\Blocks\NotesBlock')
-                                        {!! $block->render() !!}
-                                    @endif
-                                @endforeach
-                            </td>
+                    <div class="box">
+                        @foreach($document->getBlocks() as $block)
+                            @if(get_class($block) === 'App\Pdf\Blocks\TableBlock')
+                                {!! $block->render() !!}
+                            @endif
+                        @endforeach
 
-                            <td class="aling-top" style="width: 45%;">
-                                @foreach($document->getBlocks() as $block)
-                                    @if(get_class($block) === 'App\Pdf\Blocks\SummaryBlock')
-                                        {!! $block->render() !!}
-                                    @endif
-                                @endforeach
-                            </td>
-                        </tr>
-                    </table>
+                        <!-- ========================================================= -->
+                        <!-- SON / RESUMEN FINANCIERO -->
+                        <!-- ========================================================= -->
+                        <table>
+                            <tr><td class="spacer"></td></tr>
+                            <tr>
+                                <td class="padding5">
+                                    <table>
+                                        <tr>
+                                            @php
+                                                $qrBlock = null;
+                                                $notesBlock = null;
+                                                $summaryBlock = null;
+                                                $paymentsBlock = null;
+                                                foreach($document->getBlocks() as $block) {
+                                                    if(get_class($block) === 'App\Pdf\Blocks\QrBlock') $qrBlock = $block;
+                                                    if(get_class($block) === 'App\Pdf\Blocks\NotesBlock') $notesBlock = $block;
+                                                    if(get_class($block) === 'App\Pdf\Blocks\SummaryBlock') $summaryBlock = $block;
+                                                    if(get_class($block) === 'App\Pdf\Blocks\PaymentsBlock') $paymentsBlock = $block;
+                                                }
+                                            @endphp
+                                            <td class="aling-top" style="width: 40%;">
+                                                @if($paymentsBlock)
+                                                    {!! $paymentsBlock->render() !!}
+                                                @endif
+                                            </td>
+                                            
+                                            <td class="aling-top" style="width: 40%;">
+                                                @if($summaryBlock)
+                                                    {!! $summaryBlock->render() !!}
+                                                @endif
+                                            </td>
+
+                                            <td class="aling-top" style="width: 20%;">
+                                                @if($qrBlock)
+                                                    {!! $qrBlock->render() !!}
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </td>
             </tr>
         </table>
-
-        <!-- ========================================================= -->
-        <!-- PAGOS Y QR                                                -->
-        <!-- ========================================================= -->
-        <table>
-            <tr>
-                <td class="padding5">
-                    <table>
-                        <tr>
-                            <td class="aling-top" style="width: 60%;">
-                                @foreach($document->getBlocks() as $block)
-                                    @if(get_class($block) === 'App\Pdf\Blocks\PaymentsBlock')
-                                        {!! $block->render() !!}
-                                    @endif
-                                @endforeach
-                            </td>
-                            <td class="aling-top" style="width: 40%;">
-                                @foreach($document->getBlocks() as $block)
-                                    @if(get_class($block) === 'App\Pdf\Blocks\QrBlock')
-                                        {!! $block->render() !!}
-                                    @endif
-                                @endforeach
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-
-        <!-- QR de DIAN (nuevo bloque, ocupa todo el ancho) -->
-        @foreach($document->getBlocks() as $block)
-            @if(get_class($block) === 'App\Pdf\Blocks\DianQrBlock')
-                {!! $block->render() !!}
-            @endif
-        @endforeach
 
         <!-- ========================================================= -->
         <!-- FOOTER                                                    -->

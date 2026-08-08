@@ -84,9 +84,7 @@ abstract class AbstractPrinterPdf
         }
 
         $pdfBuilder = $this->pdf_binary_content;
-        $nameFile = "export/{$this->name}.pdf"; // Cambiado a 'export/' para que coincida con tu Job
-
-        // Asumimos que 'do_spaces' es tu disco configurado (DigitalOcean Spaces).
+        $nameFile = "export/{$this->name}.pdf";
         Storage::disk('do_spaces')->put($nameFile, $pdfBuilder, 'public');
 
         return $nameFile;

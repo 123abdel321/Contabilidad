@@ -152,13 +152,11 @@ class DocumentoController extends Controller
             }
 
             $claveUrl = $this->generarClavePDF($empresa->id, $id_comprobante, $consecutivo, $fecha_manual);
-
+            
             if ($comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
                 $recibo = ConRecibos::where('id', $documento->relation_id)->first();
                 if ($recibo) {
-                    // $data = (new RecibosPdf($empresa, $recibo))->buildPdf()->getData();
-                    // return view('pdf.facturacion.recibos', $data);
-                    return (new RecibosPdf($empresa, $recibo))
+                    return (new RecibosPdf($empresa, $recibo, $claveUrl))
                         ->buildPdf()
                         ->showPdf();
                 }
@@ -268,13 +266,11 @@ class DocumentoController extends Controller
         
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         $claveUrl = $this->generarClavePDF($empresa->id, $id_comprobante, $consecutivo, $fecha_manual);
-
+        
         if ($comprobante->tipo_comprobante == Comprobantes::TIPO_INGRESOS) {
             $recibo = ConRecibos::where('id', $documento->relation_id)->first();
             if ($recibo) {
-                // $data = (new RecibosPdf($empresa, $recibo))->buildPdf()->getData();
-                // return view('pdf.facturacion.recibos', $data);
-                return (new RecibosPdf($empresa, $recibo))
+                return (new RecibosPdf($empresa, $recibo, $claveUrl))
                     ->buildPdf()
                     ->showPdf();
             }
@@ -284,7 +280,7 @@ class DocumentoController extends Controller
             if ($venta) {
                 // $data = (new VentasPdf($empresa, $venta))->buildPdf()->getData();
                 // return view('pdf.facturacion.ventas', $data);
-                return (new VentasPdf($empresa, $venta))
+                return (new VentasPdf($empresa, $venta, $claveUrl))
                     ->buildPdf()
                     ->showPdf();
             }
@@ -297,7 +293,6 @@ class DocumentoController extends Controller
                 ->first();
 
             if ($compra) {
-                // $data = (new ComprasPdf($empresa, $compra))->buildPdf()->getData();
                 return (new ComprasPdf($empresa, $compra))
                     ->buildPdf()
                     ->showPdf();
@@ -318,7 +313,6 @@ class DocumentoController extends Controller
         if ($comprobante->tipo_comprobante == Comprobantes::TIPO_EGRESOS) {
             $pagos = ConPagos::where('id', $documento->relation_id)->first();
             if ($pagos) {
-                // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
                 return (new PagosPdf($empresa, $pagos))
                     ->buildPdf()
                     ->showPdf();

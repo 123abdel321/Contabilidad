@@ -2,153 +2,75 @@
 
 namespace App\Helpers\Printers;
 
-use App\Helpers\Extracto;
-use Illuminate\Support\Carbon;
-//MODELS
+use App\Pdf\Documents\DocumentoPdf as DocumentoDocumentBuilder;
 use App\Models\Empresas\Empresa;
-use App\Models\Empresas\Ciudades;
-use App\Models\Sistema\Nits;
 use App\Models\Sistema\FacDocumentos;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 
-class DocumentoPdf extends AbstractPrinterPdf
+class DocumentosPdf extends AbstractMakePdf
 {
-	public $factura;
-	public $empresa;
+    public $factura;
+    public $claveUrl;
+    public $tipoEmpresion;
+    public $viewOriginal;
 
-	public function __construct(Empresa $empresa)
-	{
-		parent::__construct($empresa);
+    use BegDocumentHelpersTrait;
 
-		copyDBConnection('sam', 'sam');
+    public function __construct(Empresa $empresa, FacDocumentos $factura, string $claveUrl, $view = 'pdf.facturacion.documentos')
+    {
+        parent::__construct($empresa);
+
+        copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $empresa->token_db);
-		
-		$this->empresa = $empresa;
-	}
+
+        $this->factura = $factura;
+        $this->empresa = $empresa;
+        $this->claveUrl = $claveUrl;
+        $this->tipoEmpresion = $this->factura->comprobante->tipo_impresion;
+        $this->viewOriginal = $view;
+    }
 
     public function view()
-	{
-		return 'pdf.facturacion.documentos';
-	}
+    {
+        return 'pdf.plantilla';
+    }
 
     public function name()
-	{
-		return 'documento_'.uniqid();
-	}
+    {
+        return 'documento_' . uniqid();
+    }
 
     public function paper()
-	{
-		return '';
-	}
+    {
+        if ($this->viewOriginal == 'pdf.facturacion.documentos') {
+            if ($this->tipoEmpresion == 1) return 'landscape';
+            if ($this->tipoEmpresion == 2) return 'portrait';
+        } else {
+            return 'landscape';
+        }
+        return '';
+    }
 
-	public function formatPaper()
-	{
-		// if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
-		return 'A4';
-	}
+    public function formatPaper()
+    {
+        return 'A4';
+    }
 
     public function data()
-	{
-		$this->factura->load([
-			'comprobante',
-			'documentos',
-			'documentos.nit',
-			'documentos.cuenta',
-			'documentos.comprobante',
-			'documentos.centro_costos',
-		]);
+    {
+        return DocumentoDocumentBuilder::build($this->factura, $this->empresa, $this->claveUrl);
+    }
 
-		$nit = NULL;
-		$documentos = [];
-		$observacion = NULL;
-		$totalFactura = 0;
-		$calcularTotal = false;
+    public function buildPdf()
+    {
+        $this->view = $this->view();
+        $this->name = $this->name();
+        $this->data = $this->data();
+        $this->paper = $this->paper();
+        $this->formato = $this->formatPaper();
 
-		if($this->factura->comprobante && $this->factura->comprobante->tipo_comprobante != 4) {
-			$calcularTotal = true;
-		}
+        $this->generatePdf();
 
-		$nombre_usuario = 'PROVEEDOR';
-
-		if ($this->factura->comprobante && $this->factura->comprobante->tipo_comprobante == 0 || $this->factura->comprobante->tipo_comprobante == 3) {
-			$nombre_usuario = 'CLIENTE';
-		}
-
-		foreach ($this->factura->documentos as $documento) {
-			//AGREGAR SALDO A CUENTAS CON DOCUMENTO DE REFENCIA
-			if($documento->documento_referencia) {
-				
-				$extracto = (new Extracto(
-					$documento->id_nit,
-					null,
-					$documento->documento_referencia
-				))->actual()->first();
-				if(!$nit) {
-					$cuidad = '';
-					if($extracto->id_ciudad) {
-						$cuidad = Ciudades::whereId($extracto->id_ciudad)->first();
-						
-						if($cuidad) $cuidad = $cuidad->nombre;
-					}
-
-					$nit = (object)[
-						'nombre_nit' => $extracto->nombre_nit,
-						'telefono' =>  $extracto->telefono_1,
-						'email' => $extracto->email,
-						'direccion' => $extracto->direccion,
-						'tipo_documento' => $extracto->tipo_documento,
-						'numero_documento' => $extracto->numero_documento,
-						"ciudad" => $cuidad,
-					];
-				}
-
-				$documento->saldo = $extracto->saldo;
-			}
-			//TOMAR PRIMERA OBSERVACIÓN
-			if($documento->concepto && !$observacion) {
-				$observacion = $documento->concepto;
-			}
-			//TOMAR PRIMER NIT
-			if($documento->id_nit && !$nit) {
-				$getNit = Nits::whereId($documento->id_nit)->with('ciudad')->first();
-				// dd($getNit->ciudad->nombre);
-				if($getNit){ 
-					$nit = (object)[
-						'nombre_nit' => $getNit->nombre_completo,
-						'telefono' =>  $getNit->telefono_1,
-						'email' => $getNit->email,
-						'direccion' => $getNit->direccion,
-						'tipo_documento' => $getNit->tipo_documento->nombre,
-						'numero_documento' => $getNit->numero_documento,
-						"ciudad" => $getNit->ciudad ? $getNit->ciudad->nombre_completo : '',
-					];
-				}
-			}
-			//CALCULAR TOTAL INGRESO/EGRESO
-			if($calcularTotal && mb_substr($documento->cuenta->cuenta, 0, 2) == '11'){
-				$totalFactura+= $documento->cuenta->naturaleza_cuenta == 1 ? $documento->debito : $documento->credito;
-			}
-			//CALCULAR TOTAL VENTAS
-			if($calcularTotal && mb_substr($documento->cuenta->cuenta, 0, 2) == '13'){
-				$totalFactura+= $documento->cuenta->naturaleza_cuenta == 1 ? $documento->debito : $documento->credito;
-			}
-			//CALCULAR TOTAL COMPRAS
-			if($calcularTotal && mb_substr($documento->cuenta->cuenta, 0, 2) == '22'){
-				$totalFactura+= $documento->cuenta->naturaleza_cuenta == 1 ? $documento->debito : $documento->credito;
-			}
-
-			$documentos[] = $documento;
-		}
-
-		return [
-			'empresa' => $this->empresa,
-			'nit' => $nit,
-			'factura' => $this->factura,
-			'documentos' => $documentos,
-			'observacion' => $observacion,
-			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
-			'total_factura' => number_format($totalFactura),
-			'nombre_usuario' => $nombre_usuario,
-		];
-	}
-
+        return $this;
+    }
 }
