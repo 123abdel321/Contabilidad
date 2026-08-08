@@ -164,9 +164,7 @@ class DocumentoController extends Controller
             if ($comprobante->tipo_comprobante == Comprobantes::TIPO_VENTAS) {
                 $venta = FacVentas::where('id', $documento->relation_id)->first();;
                 if ($venta) {
-                    $data = (new VentasPdf($empresa, $venta))->buildPdf()->getData();
-                    return view('pdf.facturacion.ventas', $data);
-                    return (new VentasPdf($empresa, $venta))
+                    return (new VentasPdf($empresa, $venta, $claveUrl))
                         ->buildPdf()
                         ->showPdf();
                 }
