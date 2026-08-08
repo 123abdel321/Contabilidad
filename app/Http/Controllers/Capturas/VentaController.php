@@ -16,6 +16,7 @@ use App\Jobs\ProcessConsultarFE;
 use App\Helpers\Extracto;
 use App\Helpers\Documento;
 use App\Helpers\Printers\VentasPdf;
+use App\Helpers\Printers\VentasPos;
 use App\Helpers\Printers\VentasInformeZ;
 use App\Helpers\FacturaElectronica\VentaElectronicaSender;
 use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
@@ -750,7 +751,7 @@ class VentaController extends Controller
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         
         if ($factura->resolucion?->tipo_impresion == 0) {
-            $data = (new VentasPdf($empresa, $factura))->buildPdf()->getData();
+            $data = (new VentasPos($empresa, $factura, null))->buildPdf()->getData();
             return view('pdf.facturacion.ventas-pos', $data);
         }
 

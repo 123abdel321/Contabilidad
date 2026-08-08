@@ -3,6 +3,7 @@
 namespace App\Helpers\Printers;
 
 use App\Pdf\Documents\VentaPdf as VentasDocumentBuilder;
+
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacVentas;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
