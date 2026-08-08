@@ -254,7 +254,7 @@ class GastosController extends Controller
                     }
                     
                     $ivaGasto = $this->redondearGasto($ivaGasto, $redondeo_gastos);
-                    $retencionGasto = $this->redondearGasto($porcentajeRetencion ? ($baseAIU - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos);
+                    $retencionGasto = $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos);
                     $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
                     $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
                     
@@ -922,7 +922,7 @@ class GastosController extends Controller
                 if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
                     $valorRetencion = ($baseAIU - $gasto->no_valor_iva) * ($porcentajeRetencion / 100);
                 }
-                $valorReteIca = $porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0;
+                $valorReteIca = $porcentajeReteIca ? $subtotalGasto * ($porcentajeReteIca / 1000) : 0;
                 $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
             } else {
                 if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
