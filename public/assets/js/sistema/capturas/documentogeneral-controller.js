@@ -860,7 +860,7 @@ function changeConceptoRow(idRow, event) {
 function changeConcecutivo(event) {
     if(event.keyCode == 13){
         searchCaptura();
-        console.log('consecutivoEditado: ',consecutivoEditado);
+        
         // if (!consecutivoEditado) {
         //     var consecutivoActual = parseInt($("#consecutivo").val());
 
@@ -1458,7 +1458,11 @@ function searchCaptura() {
                     $('#fecha_manual_documento').val(normalizarFecha(fechaManual));
 
                     $("#editing_documento").val("1");
-                    agregarToast('exito', 'Documentos encontrados', 'Documentos cargados con exito!', true );
+                    if (res.warning) {
+                        agregarToast('warning', 'Documentos encontrados', res.warning, false );
+                    } else {
+                        agregarToast('exito', 'Documentos encontrados', 'Documentos cargados con exito!', true );
+                    }
                     mostrarValores();
                     addRow();
                     
@@ -1787,10 +1791,6 @@ function totalValores() {
     
     return [debito.toFixed(2), credito.toFixed(2)];
 }
-
-// $(document).on('click', '#crearCapturaDocumentos', function () {
-    
-// });
 
 function capturarDcoumentosGenerales() {
     

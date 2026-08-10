@@ -332,7 +332,7 @@ class DocumentoController extends Controller
         }
 
         if (count($facDocumento->documentos)) {
-            return (new DocumentosPdf($empresa, $facDocumento))
+            return (new DocumentosPdf($empresa, $facDocumento, $claveUrl))
                 ->buildPdf()
                 ->showPdf();
         }

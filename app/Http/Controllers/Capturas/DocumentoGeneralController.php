@@ -17,8 +17,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 //MODELS
-use App\Models\Empresas\Empresa;
 use App\Models\Sistema\Nits;
+use App\Models\Empresas\Empresa;
+use App\Models\Sistema\ConGastos;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\CentroCostos;
 use App\Models\Sistema\Comprobantes;
@@ -458,6 +459,22 @@ class DocumentoGeneralController extends Controller
 				$documentosEliminar->delete();
 				$facDocumento->documentos()->delete();
 
+				if (!($facDocumento instanceof FacDocumentos)) {
+					$facDocumento->delete();
+					$facDocumento = FacDocumentos::create([
+						'id_comprobante' => $request->get('id_comprobante'),
+						'id_nit' => $request->get('id_nit'),
+						'fecha_manual' => $fechaManual,
+						'consecutivo' => $request->get('consecutivo'),
+						'token_factura' => $tokenFactura,
+						'debito' => $debito,
+						'credito' => $credito,
+						'saldo_final' => $debito - $credito,
+						'created_by' => request()->user()->id,
+						'updated_by' => request()->user()->id,
+					]);
+				}
+
 			} else {
 				DocumentosGeneral::where('id_comprobante', $request->get('id_comprobante'))
 					->where('consecutivo', $request->get('consecutivo'))
@@ -593,6 +610,8 @@ class DocumentoGeneralController extends Controller
             ], Response::HTTP_OK);
 		}
 		
+		$fechaManual = $request->get('fecha_manual');
+		$consecutivo = $request->get('consecutivo');
 		$comprobante = Comprobantes::where('id', $request->get('id_comprobante'))->first();
 
 		$documento = DocumentosGeneral::with(['centro_costos', 'cuenta.tipos_cuenta', 'nit'])
@@ -600,15 +619,47 @@ class DocumentoGeneralController extends Controller
 			->where('consecutivo', $request->get('consecutivo'));
 
 		if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
-            $fecha = $request->get('fecha_manual');
-        
-            $documento->whereMonth('fecha_manual', Carbon::parse($fecha)->month)
-                ->whereYear('fecha_manual', Carbon::parse($fecha)->year);
+			$this->filterCapturaMensual($documento, $fechaManual);
         }
+
+		if ($comprobante->tipo_comprobante == Comprobantes::TIPO_GASTOS) {
+
+			$gasto = ConGastos::with([
+					'documentos',
+					'documentos.nit',
+					'documentos.centro_costos',
+					'documentos.cuenta.tipos_cuenta',
+				])
+				->where('id_comprobante', $comprobante->id)
+				->where('consecutivo', $consecutivo);
+
+			if ($comprobante->tipo_consecutivo == Comprobantes::CONSECUTIVO_MENSUAL) {
+				$this->filterCapturaMensual($gasto, $fechaManual);
+			}
+
+			$gasto = $gasto->first();
+
+			if ($gasto) {
+				return response()->json([
+					'success'=>	true,
+					'data' => $gasto->documentos,
+					'warning' => 'Al guardar, el gasto original se eliminará y se creará uno nuevo con los datos modificados.',
+					'message'=> 'Documentos cargados con exito!'
+				]);
+			} else {
+				return response()->json([
+					'success'=>	true,
+					'data' => [],
+					'warning' => false,
+					'message'=> 'Documentos cargados con exito!'
+				]);
+			}			
+		}
 
 		return response()->json([
 			'success'=>	true,
 			'data' => $documento->get(),
+			'warning' => false,
 			'message'=> 'Documentos cargados con exito!'
 		]);
     }

@@ -28,6 +28,7 @@ class Documento
     private $errors = [];
     private ?Model $captura = null;
     private Carbon $created_at; 
+    private bool $agruparCuentas = false;
     private $shouldUpdateConsecutivo = true;
     private $saveUnbalancedDocuments = true;
     private $conceptoDefault = "SIN OBSERVACIÓN";
@@ -39,7 +40,8 @@ class Documento
         ?Model $captura = null, 
         string $fecha = null, 
         ?int $consecutivo = null, 
-        bool $save_unbalanced = true
+        bool $save_unbalanced = true,
+        bool $agrupar_cuentas = false,
     )
     {
         $this->rows = new Collection();
@@ -49,6 +51,7 @@ class Documento
         $this->shouldUpdateConsecutivo = !$consecutivo && !$captura; 
         
         $this->captura = $captura;
+        $this->agruparCuentas = $agrupar_cuentas;
         $this->saveUnbalancedDocuments = $save_unbalanced;
         
         $this->head = [
@@ -111,7 +114,12 @@ class Documento
 
         if ($row->credito || $row->debito) {
             $this->validateRow($row);
-            if (!$this->findAndUpdate($row)) {
+            
+            if ($this->agruparCuentas) {
+                if (!$this->findAndUpdate($row)) {
+                    $this->rows->push($row);
+                }
+            } else {
                 $this->rows->push($row);
             }
         }

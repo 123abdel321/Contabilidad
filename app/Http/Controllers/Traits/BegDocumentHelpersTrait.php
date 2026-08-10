@@ -152,15 +152,17 @@ trait BegDocumentHelpersTrait
 		return '';
 	}
 
-	private function isComprobanteInUse($idComprobante, $relationType = 2) : bool
+	private function isComprobanteInUse(int $idComprobante, array $excludedTypes = [2, 7]) : bool
 	{
-		$documentos = DocumentosGeneral::where('id_comprobante', $idComprobante)
+		$query = DocumentosGeneral::where('id_comprobante', $idComprobante)
 			->whereNotNull('relation_id')
-			->whereNotNull('relation_type')
-			->where('relation_type', '!=', $relationType)
-			->count();
+			->whereNotNull('relation_type');
 
-		return $documentos > 0 ? true : false;
+		if (!empty($excludedTypes)) {
+			$query->whereNotIn('relation_type', $excludedTypes);
+		}
+
+		return $query->exists();
 	}
 
 	private function isFechaCierreLimit($fecha_manual)

@@ -213,7 +213,8 @@ class VentaController extends Controller
                 $venta,
                 $request->get('fecha_manual'),
                 $request->get('consecutivo'),
-                false
+                false,
+                true
             );
 
             //AGREGAR DETALLE DE PRODUCTOS
