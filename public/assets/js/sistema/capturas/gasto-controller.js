@@ -1293,7 +1293,7 @@ function calcularRetencion (valorSubtotal = null, valorGastoRow, baseAIU = 0, id
     if (responsabilidadesGasto.includes('7')) {
         if (baseAIU) {
             if (sumarAIU) {
-                totalRetencion = (valorSubtotal + sumarAIU) * (porcentaje / 100);
+                totalRetencion = (valorSubtotal + baseAIU) * (porcentaje / 100);
             } else {
                 totalRetencion = valorSubtotal * (porcentaje / 100);
             }

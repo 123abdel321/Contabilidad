@@ -921,7 +921,7 @@ class GastosController extends Controller
 
                 if ($nit->sumar_aiu) {
                     if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
-                        $valorRetencion = ($baseAIU + $subtotalGasto - $gasto->no_valor_iva) * ($porcentajeRetencion / 100);
+                        $valorRetencion = (($baseAIU + $subtotalGasto) - $gasto->no_valor_iva) * ($porcentajeRetencion / 100);
                     }
                 } else {
                     if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
