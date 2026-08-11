@@ -1194,9 +1194,15 @@ class RecibosController extends Controller
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        $data = (new RecibosPdf($empresa, $recibo))->buildPdf()->getData();
+
+        $claveUrl = $this->generarClavePDF(
+            $empresa->id,
+            $recibo->comprobante->id,
+            $recibo->consecutivo,
+            $recibo->fecha_manual
+        );
  
-        return (new RecibosPdf($empresa, $recibo))
+        return (new RecibosPdf($empresa, $recibo, $claveUrl))
             ->buildPdf()
             ->showPdf();
     }
@@ -1220,9 +1226,14 @@ class RecibosController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $data = (new RecibosPdf($empresa, $recibo))->buildPdf()->getData();
+        $claveUrl = $this->generarClavePDF(
+            $empresa->id,
+            $recibo->comprobante->id,
+            $recibo->consecutivo,
+            $recibo->fecha_manual
+        );
  
-        return (new RecibosPdf($empresa, $recibo))
+        return (new RecibosPdf($empresa, $recibo, $claveUrl))
             ->buildPdf()
             ->showPdf();
     }
