@@ -116,7 +116,7 @@ class ImportDocumentos implements
                     'codigo_comprobante' => $row['cod_comprobante'],
                     'consecutivo' => $row['consecutivo'],
                     'documento_referencia' => $row['doc_referencia'],
-                    'fecha_manual' => $row['fecha_manual'],
+                    'fecha_manual' => $this->parseFecha($row['fecha_manual']),
                     'debito' => $row['debito'],
                     'credito' => $row['credito'],
                     'concepto' => $row['concepto'],
@@ -237,6 +237,7 @@ class ImportDocumentos implements
         $concepto = $row['concepto'];
         $fechaManual = $this->parseFecha($row['fecha_manual']);
 
+        $row['fecha_manual'] = $fechaManual;
         $row['nombre_cuenta'] = null;
         $row['nombre_nit'] = null;
         $row['nombre_comprobante'] = null;
