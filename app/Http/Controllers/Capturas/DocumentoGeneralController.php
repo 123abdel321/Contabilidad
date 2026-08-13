@@ -649,7 +649,7 @@ class DocumentoGeneralController extends Controller
 			} else {
 				return response()->json([
 					'success'=>	true,
-					'data' => [],
+					'data' => $documento->get(),
 					'warning' => false,
 					'message'=> 'Documentos cargados con exito!'
 				]);
