@@ -157,6 +157,7 @@ class ProcessInformeResultados implements ShouldQueue
             ->groupBy('cuenta', 'mes')
             ->orderBy('cuenta')
             ->chunk(233, function ($documentos) {
+
                 $documentos->each(function ($documento) {
                     // Obtener todas las cuentas padre (incluyendo la propia)
                     $cuentasAsociadas = $this->getCuentas($documento->cuenta);
@@ -197,6 +198,9 @@ class ProcessInformeResultados implements ShouldQueue
      */
     private function resultadoDocumentosMensualQuery()
     {
+        $fechaDesde = Carbon::parse($this->request['fecha_desde'])->startOfDay()->format('Y-m-d H:i:s');
+        $fechaHasta = Carbon::parse($this->request['fecha_hasta'])->endOfDay()->format('Y-m-d H:i:s');
+
         return DB::connection('sam')->table('documentos_generals AS DG')
             ->select(
                 'PC.cuenta',
@@ -209,8 +213,8 @@ class ProcessInformeResultados implements ShouldQueue
                     ->orWhere('PC.cuenta', 'LIKE', '4%');
             })
             ->where('DG.anulado', 0)
-            ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
-            ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
+            ->where('DG.fecha_manual', '>=', $fechaDesde)
+            ->where('DG.fecha_manual', '<=', $fechaHasta)
             ->when($this->request['cuenta'], function ($query) {
                 $query->where('PC.cuenta', 'LIKE', $this->request['cuenta'].'%');
             })
@@ -247,7 +251,7 @@ class ProcessInformeResultados implements ShouldQueue
      */
     private function cargarCuentasConPresupuesto()
     {
-        $fecha = explode("-", $this->request['fecha_desde']);
+        $fecha = explode("-", $this->request['fecha_hasta']);
         $anio = $fecha[0];
         
         $cuentasConPresupuesto = DB::connection('sam')
@@ -257,6 +261,9 @@ class ProcessInformeResultados implements ShouldQueue
             ->where(function($query) {
                 $query->where('PD.cuenta', 'LIKE', '5%')
                     ->orWhere('PD.cuenta', 'LIKE', '4%');
+            })
+            ->when($this->request['cuenta'] ?? null, function ($query) {
+                $query->where('PD.cuenta', 'LIKE', $this->request['cuenta'].'%');
             })
             ->where('PD.auxiliar', 1)
             ->select('PD.cuenta', 'PD.nombre', 'PD.id_padre')
