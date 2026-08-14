@@ -79,8 +79,8 @@ class DocumentosGeneralesController extends Controller
 
         $fechaHasta = $request->get('fecha_hasta');
         $fechaDesde = $request->get('fecha_desde');
-        $fechaHastaFormateada = $fechaHasta ? Carbon::parse($fechaHasta)->format('Y-m-d') : null;
-        $fechaDesdeFormateada = $fechaDesde ? Carbon::parse($fechaDesde)->format('Y-m-d') : null;
+        $fechaHastaFormateada = $fechaHasta ? Carbon::parse($fechaHasta)->endOfDay()->format('Y-m-d H:i:s') : null;
+        $fechaDesdeFormateada = $fechaDesde ? Carbon::parse($fechaDesde)->startOfDay()->format('Y-m-d H:i:s') : null;
 
         $documentosGenerales = InfDocumentosGenerales::where('id_empresa', $empresa->id)
             ->where('id_empresa', $empresa->id)
