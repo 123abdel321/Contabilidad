@@ -213,10 +213,14 @@ class DocumentosGeneralesController extends Controller
      */
     private function obtenerDocumentosConFiltros()
     {
+
+        $fechaDesde = Carbon::parse($this->request['fecha_desde'])->startOfDay()->format('Y-m-d H:i:s');
+        $fechaHasta = Carbon::parse($this->request['fecha_hasta'])->endOfDay()->format('Y-m-d H:i:s');
+
         $query = DB::connection('sam')->table('documentos_generals AS DG')
             ->leftJoin('plan_cuentas AS PC', 'DG.id_cuenta', 'PC.id')
-            ->where('DG.fecha_manual', '>=', $this->request['fecha_desde'])
-            ->where('DG.fecha_manual', '<=', $this->request['fecha_hasta'])
+            ->where('DG.fecha_manual', '>=', $fechaDesde)
+            ->where('DG.fecha_manual', '<=', $fechaHasta)
             ->select('DG.*', 'PC.naturaleza_cuenta');
         
         // Aplicar filtros dinámicos
