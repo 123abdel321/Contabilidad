@@ -17,6 +17,7 @@ use App\Events\PrivateMessageEvent;
 use App\Helpers\Extracto;
 use App\Helpers\Documento;
 use App\Helpers\Printers\VentasPdf;
+use App\Helpers\Printers\VentasPos;
 use App\Helpers\Printers\PedidosPdf;
 use App\Helpers\Printers\VentasInformeZ;
 use App\Helpers\FacturaElectronica\VentaElectronicaSender;
@@ -960,7 +961,7 @@ class PosController extends Controller
         }
         
         if ($factura->resolucion->tipo_impresion == 0) {
-            $data = (new VentasPdf($empresa, $factura))->buildPdf()->getData();
+            $data = (new VentasPos($empresa, $factura))->buildPdf()->getData();
             return view('pdf.facturacion.ventas-pos', $data);
         }
  
