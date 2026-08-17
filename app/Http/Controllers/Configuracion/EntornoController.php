@@ -77,6 +77,8 @@ class EntornoController extends Controller
                 'id_comprobante_prestaciones_sociales',
                 'id_cliente_venta_defecto',
                 'encabezado_ventas_regimen',
+                'porcentaje_propina',
+                'cuenta_propina'
             ];
             
             foreach ($variablesEntorno as $variable) {

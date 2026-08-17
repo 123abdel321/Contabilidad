@@ -131,6 +131,7 @@ class VentaPdfMapper
             'filas' => [
                 ['label' => 'SUBTOTAL', 'value' => $venta->subtotal, 'formatter' => 'number'],
                 ['label' => 'IVA', 'value' => $venta->total_iva, 'formatter' => 'number'],
+                ['label' => 'PROPINA', 'value' => $venta->propina, 'formatter' => 'number'],
                 ['label' => 'RETE FUENTE ' . ($venta->porcentaje_rete_fuente ?? 0) . '%', 'value' => $venta->total_rete_fuente ?? 0, 'formatter' => 'number'],
                 ['label' => 'TOTAL', 'value' => $venta->total_factura, 'formatter' => 'number', 'class' => 'resumen-total'],
             ]

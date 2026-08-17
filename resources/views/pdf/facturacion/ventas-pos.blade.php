@@ -221,10 +221,18 @@
                     @endforeach
                 @endif
 
+                @if ($factura->propina > 0)
+                    <tr>
+                        <td class="font-13" style="width:56%;">PROPINA</td>
+                        <td class="font-13" style="width:22%;"></td>
+                        <td class="font-13" style="width:22%;text-align:right;">{{ number_format($factura->propina, 2) }}</td>
+                    </tr>
+                @endif
+
                 <tr>
                     <td class="font-13" style="width:56%;">TOTAL: </td>
                     <td class="font-13" style="width:22%;"></td>
-                    <td class="font-13" style="width:22%;text-align:right;">{{ number_format($factura->total_factura) }}</td>
+                    <td class="font-13" style="width:22%;text-align:right;">{{ number_format($factura->total_factura), 2 }}</td>
                 </tr>
                 <tr>
                     <td class="spacer-10 padding5"></td>

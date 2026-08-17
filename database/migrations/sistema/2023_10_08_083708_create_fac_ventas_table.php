@@ -30,6 +30,7 @@ return new class extends Migration
             $table->decimal('total_cambio', 15)->default(0);
             $table->decimal('porcentaje_rete_fuente', 15);
             $table->decimal('total_factura', 15);
+            $table->decimal('propina', 15);
             $table->mediumText('observacion')->nullable();
             $table->string('codigo_tipo_documento_dian', 3)->comment('
                 Factura de Venta Nacional: 01,

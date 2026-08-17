@@ -140,6 +140,16 @@ function cargarVariablesDeEntorno() {
             $('#tipo_cuenta_banco').val(variable.valor).trigger('change');
             continue;
         }
+
+        if (variable.nombre == 'porcentaje_propina') {
+            $('#porcentaje_propina').val(variable.valor);
+            continue;
+        }
+
+        if (variable.nombre == 'cuenta_propina') {
+            $('#cuenta_propina').val(variable.valor);
+            continue;
+        }
     }
 }
 
@@ -470,7 +480,8 @@ $(document).on('click', '#updateEntorno', function () {
         id_comprobante_seguridad_social: $("#id_comprobante_seguridad_social").val(),
         id_comprobante_prestaciones_sociales: $("#id_comprobante_prestaciones_sociales").val(),
         encabezado_ventas_regimen: $('#encabezado_ventas_regimen').val(),
-        id_cliente_venta_defecto: $('#id_cliente_venta_defecto').val(),
+        cuenta_propina: $('#cuenta_propina').val(),
+        porcentaje_propina: $('#porcentaje_propina').val(),
     };
 
     $.ajax({

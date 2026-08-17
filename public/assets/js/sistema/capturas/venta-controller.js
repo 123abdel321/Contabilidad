@@ -24,10 +24,17 @@ var validarExistenciasProducto = null;
 
 function ventaInit () {
 
-    cargarFechasVentas()
-    if (ventaFecha) $("#fecha_manual_venta").prop('disabled', false);
-    else $("#fecha_manual_venta").prop('disabled', true);
+    cargarFechasVentas();
+    cargarTablasVenta();
+    cargarCombosVenta();
+    cargarPopoverVenta();
+    loadFormasPagoVenta();
+    actualizarInfoPropinaVentas();
 
+    $('.water').hide();
+}
+
+function cargarTablasVenta() {
     venta_table = $('#ventaTable').DataTable({
         dom: '',
         pageLength: 200,
@@ -326,6 +333,37 @@ function ventaInit () {
         }
     });
 
+    var column2 = venta_table.column(2);
+    var column5 = venta_table.column(5);
+    var column6 = venta_table.column(6);
+
+    if (ventaDescuento){
+        column5.visible(true);
+        column6.visible(true);
+    } else {
+        column5.visible(false);
+        column6.visible(false);
+    }
+
+    if (ventaExistencias) column2.visible(true);
+    else column2.visible(false);
+}
+
+function cargarFechasVentas() {
+    var dateNow = new Date();
+
+    var fechaHoraVenta = dateNow.getFullYear() + '-' + 
+        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
+        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
+        ("0" + dateNow.getHours()).slice(-2) + ':' + 
+        ("0" + dateNow.getMinutes()).slice(-2);
+    $('#fecha_manual_venta').val(fechaHoraVenta);
+
+    if (ventaFecha) $("#fecha_manual_venta").prop('disabled', false);
+    else $("#fecha_manual_venta").prop('disabled', true);
+}
+
+function cargarCombosVenta() {
     $comboCliente = $('#id_cliente_venta').select2({
         theme: 'bootstrap-5',
         delay: 250,
@@ -498,21 +536,6 @@ function ventaInit () {
         $comboBodegaVenta.val(dataBodega.id).trigger('change');
     }
 
-    var column2 = venta_table.column(2);
-    var column5 = venta_table.column(5);
-    var column6 = venta_table.column(6);
-
-    if (ventaDescuento){
-        column5.visible(true);
-        column6.visible(true);
-    } else {
-        column5.visible(false);
-        column6.visible(false);
-    }
-
-    if (ventaExistencias) column2.visible(true);
-    else column2.visible(false);
-
     $('#id_cliente_venta').on('select2:close', function(event) {
         var data = $(this).select2('data');
         if(data.length){
@@ -531,49 +554,9 @@ function ventaInit () {
             document.getElementById('iniciarCapturaVenta').click();
         }
     });
+}
 
-    consecutivoSiguienteVenta();
-    loadFormasPagoVenta();
-
-    if (!primeraBodegaVenta || !primeraBodegaVenta.length) {
-        agregarToast('warning', 'Sin bodegas asignadas', '', true);
-    }
-
-    if (!primeraResolucionVenta || !primeraResolucionVenta.length) {
-        agregarToast('warning', 'Sin Resoluciones asigandas', '', true);
-    }
-
-    if (primeraNit && ventaRapida) {
-        var dataCliente = {
-            id: primeraNit.id,
-            text: primeraNit.numero_documento + ' - ' + primeraNit.nombre_completo
-        };
-        var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
-        $comboCliente.append(newOption).trigger('change');
-        $comboCliente.val(dataCliente.id).trigger('change');
-        responsabilidadesVenta = getResponsabilidades(primeraNit.id_responsabilidades);
-        actualizarInfoRetencionVentas();
-
-        if (primeraNit.vendedor) {
-            var dataVendedor = {
-                id: primeraNit.vendedor.nit.id,
-                text: primeraNit.vendedor.nit.numero_documento + ' - ' + primeraNit.vendedor.nit.nombre_completo
-            };
-            var newOption = new Option(dataVendedor.text, dataVendedor.id, false, false);
-            $comboVendedor.append(newOption).trigger('change');
-            $comboVendedor.val(dataVendedor.id).trigger('change');
-        }
-
-        loadAnticiposCliente();
-        
-        document.getElementById('iniciarCapturaVenta').click();
-
-    } else {
-        setTimeout(function(){
-            $comboCliente.select2("open");
-        },10);
-    }
-
+function cargarPopoverVenta() {
     $('[data-toggle="popover"]').popover({
         trigger: 'hover',
         html: true,
@@ -581,17 +564,6 @@ function ventaInit () {
         container: 'body',
         customClass: 'popover-formas-pagos'
     });
-}
-
-function cargarFechasVentas() {
-    var dateNow = new Date();
-
-    var fechaHoraVenta = dateNow.getFullYear() + '-' + 
-        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
-        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
-        ("0" + dateNow.getHours()).slice(-2) + ':' + 
-        ("0" + dateNow.getMinutes()).slice(-2);
-    $('#fecha_manual_venta').val(fechaHoraVenta);
 }
 
 function focusCantidadVenta (idRow) {
@@ -1063,12 +1035,12 @@ function consultarExistencias(idRow) {
 }
 
 function mostrarValoresVentas () {
-
+    
     if (guardandoVenta) {
         return;
     }
 
-    var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
+    var [iva, retencion, descuento, total, valorBruto, redondeo, propina] = totalValoresVentas();
 
     if (descuento) $('#totales_descuento').show();
     else $('#totales_descuento').hide();
@@ -1076,28 +1048,18 @@ function mostrarValoresVentas () {
     if (total) disabledFormasPagoVenta(false);
     else disabledFormasPagoVenta();
 
-    var countA = new CountUp('venta_total_iva', 0, iva, 2, 0.5);
-        countA.start();
-
-    var countB = new CountUp('venta_total_descuento', 0, descuento, 2, 0.5);
-        countB.start();
-
-    var countC = new CountUp('venta_total_retencion', 0, retencion, 2, 0.5);
-        countC.start();
-
-    var countD = new CountUp('venta_total_valor', 0, total, 2, 0.5);
-        countD.start();
-        
-    var countE = new CountUp('venta_sub_total', 0, valorBruto, 2, 0.5);
-        countE.start();
-
-    var countF = new CountUp('total_faltante_venta', 0, total, 2, 0.5);
-        countF.start();
+    new CountUp('venta_total_iva', 0, iva, 2, 0.5).start();
+    new CountUp('venta_total_descuento', 0, descuento, 2, 0.5).start();
+    new CountUp('venta_total_retencion', 0, retencion, 2, 0.5).start();
+    new CountUp('venta_total_valor', 0, total , 2, 0.5).start();
+    new CountUp('venta_sub_total', 0, valorBruto, 2, 0.5).start();
+    new CountUp('total_faltante_venta', 0, (total + propina), 2, 0.5).start();
 }
 
 function totalValoresVentas() {
     var iva = retencion = descuento = total = redondeo = 0;
     var valorBruto = 0;
+    let propina = 0;
     var dataVenta = venta_table.rows().data();
 
     if(dataVenta.length > 0) {
@@ -1157,7 +1119,22 @@ function totalValoresVentas() {
 
     if (ivaIncluidoVentas) total = total+= iva;
 
-    return [iva, retencion, descuento, total, valorBruto, redondeo];
+    if (cuentaPropina && porcentajePropina) {
+        $('#total_con_propina').show();
+        const propinaSugerida = total * (porcentajePropina / 100);
+        document.getElementById('input_venta_propina').placeholder = `${propinaSugerida}`;
+        const inputPropina = stringToNumberFloat($("#input_venta_propina").val());
+        if (inputPropina) {
+            propina = inputPropina;
+            new CountUp('venta_total_propina', 0, total + propina, 2, 0.5).start();
+        } else {
+            new CountUp('venta_total_propina', 0, total + propinaSugerida, 2, 0.5).start();
+        }
+    } else {
+        $('#total_con_propina').hide();
+    }
+
+    return [iva, retencion, descuento, total, valorBruto, redondeo, propina];
 }
 
 function calcularRetencionVentas(valorBruto, total) {
@@ -1242,6 +1219,57 @@ function actualizarInfoRetencionVentas() {
         container: 'body',
         customClass: 'popover-formas-pagos'
     });
+}
+
+function actualizarInfoPropinaVentas() {
+
+    if (!cuentaPropina || !porcentajePropina) {
+        $("#totales_propina").hide();
+        $("#total_con_propina").hide();
+        return;
+    }
+
+    $("#totales_propina").show();
+    $("#total_con_propina").show();    
+
+    const iconInfo = document.getElementById('icon_info_propina_venta');
+    $("#nombre_info_propina_venta").html(`PROPINA %${porcentajePropina}:`);
+
+    var numeroCuenta = cuentaPropina.cuenta;
+    var nombreCuenta = cuentaPropina.nombre;
+
+    const nuevoTitulo = `
+    <b class='titulo-popover'>Porcentaje:</b> ${porcentajePropina}% <br/>
+        <b class='titulo-popover'>Cuenta:</b> ${numeroCuenta} - ${nombreCuenta}<br/>
+    `;
+
+    iconInfo.setAttribute('title', nuevoTitulo);
+    $(iconInfo).popover('dispose'); // Destruye el actual
+    $(iconInfo).popover({
+        trigger: 'hover',
+        html: true,
+        placement: 'top',
+        container: 'body',
+        customClass: 'popover-formas-pagos'
+    });
+}
+
+function calcularPropinaVenta () {
+    const inputPropina = stringToNumberFloat($("#input_venta_propina").val());
+    if (inputPropina) {
+        return
+    } else {
+        var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
+        const propina = total * (porcentajePropina / 100);
+        $("#input_venta_propina").val(stringToNumberFloat(propina));
+        $('#input_venta_propina').select();
+    }
+}
+
+function keyPresPropinaVenta (event) {
+    if (event.keyCode == 13) {
+        mostrarValoresVentas();
+    }
 }
 
 function changeProductoVenta (idRow) {
@@ -1458,9 +1486,9 @@ function focusFormaPagoVenta(idFormaPago, anticipo = false, id_cuenta = null) {
         return;
     }
 
-    var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
+    var [iva, retencion, descuento, total, subtotal, redondeo, propina] = totalValoresVentas();
     var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas(idFormaPago);
-    var totalFactura = total - (totalEfectivo + totalOtrosPagos + totalAnticipos);
+    var totalFactura = (total + propina)- (totalEfectivo + totalOtrosPagos + totalAnticipos);
     totalFactura = totalFactura < 0 ? 0 : totalFactura;
     var saldoFormaPago = stringToNumberFloat($('#venta_forma_pago_'+idFormaPago).val());
 
@@ -1485,7 +1513,6 @@ function focusFormaPagoVenta(idFormaPago, anticipo = false, id_cuenta = null) {
 }
 
 function calcularVentaPagos(idFormaPago) {
-
     if (guardandoVenta) {
         return;
     }
@@ -1499,9 +1526,9 @@ function calcularVentaPagos(idFormaPago) {
 
     $('#total_faltante_venta').removeClass("is-invalid");
 
-    var [iva, retencion, descuento, total, subtotal] = totalValoresVentas();
+    var [iva, retencion, descuento, total, subtotal, redondeo, propina] = totalValoresVentas();
 
-    total = parseFloat(total.toFixed(2));
+    total = parseFloat(total.toFixed(2)) + propina;
 
     var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
     var totalFaltante = total - (totalEfectivo + totalOtrosPagos + totalAnticipos);
@@ -1520,11 +1547,8 @@ function calcularVentaPagos(idFormaPago) {
     var totalPagado = totalFaltante < 0 ? total : totalEfectivo + totalOtrosPagos + totalAnticipos;
     var totalFaltante = totalFaltante < 0 ? 0 : totalFaltante;
 
-    var countA = new CountUp('total_pagado_venta', 0, totalPagado, 2, 0.5);
-        countA.start();
-
-    var countB = new CountUp('total_faltante_venta', 0, totalFaltante, 2, 0.5);
-        countB.start();
+    new CountUp('total_pagado_venta', 0, totalPagado, 2, 0.5).start();
+    new CountUp('total_faltante_venta', 0, (totalFaltante), 2, 0.5).start();
 }
 
 function totalFormasPagoVentas(idFormaPago = null) {
@@ -1558,8 +1582,9 @@ function validateSaveVenta() {
 
         var [totalEfectivo, totalOtrosPagos, totalAnticipos] = totalFormasPagoVentas();
         var [iva, retencion, descuento, total, valorBruto] = totalValoresVentas();
+        const propinaActual = stringToNumberFloat($("#input_venta_propina").val());
 
-        total = parseFloat(total.toFixed(2));
+        total = parseFloat(total.toFixed(2)) + propinaActual;
 
         if ((totalEfectivo + totalOtrosPagos + totalAnticipos) >= total) {
             
@@ -1581,6 +1606,7 @@ function saveVenta() {
     let data = {
         pagos: getVentasPagos(),
         productos: getProductosVenta(),
+        propina: stringToNumberFloat($("#input_venta_propina").val()),
         id_bodega: $("#id_bodega_venta").val(),
         id_cliente: $("#id_cliente_venta").val(),
         fecha_manual: $("#fecha_manual_venta").val(),

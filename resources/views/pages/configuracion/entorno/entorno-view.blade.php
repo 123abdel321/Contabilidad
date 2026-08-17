@@ -94,15 +94,25 @@
 
                         <div class="row" style="margin-top: 10px; padding-left: 10px;">
 
-                            <div class="form-group col-12 col-sm-6 col-md-6">
+                            <div class="form-group col-12">
                                 <label for="example-text-input" class="form-control-label">Encabezado ventas regimen</label>
                                 <input type="text" class="form-control form-control-sm" name="encabezado_ventas_regimen" id="encabezado_ventas_regimen">
                             </div>
 
-                            <div class="form-group col-12 col-sm-6 col-md-6" >
+                            <div class="form-group col-12 col-sm-3 col-md-4" >
                                 <label for="id_cliente_venta_defecto" class="form-control-label">Cliente por defecto Ventas </label>
                                 <select name="id_cliente_venta_defecto" id="id_cliente_venta_defecto" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                                 </select>
+                            </div>
+
+                            <div class="form-group col-12 col-sm-3 col-md-4" >
+                                <label for="cuenta_propina" class="form-control-label">Cuenta contable propina </label>
+                                <input type="text" class="form-control form-control-sm" name="cuenta_propina" id="cuenta_propina">
+                            </div>
+
+                            <div class="form-group col-12 col-sm-3 col-md-4" >
+                                <label for="porcentaje_propina" class="form-control-label">Porcentaje propina </label>
+                                <input type="text" class="form-control form-control-sm" name="porcentaje_propina" id="porcentaje_propina" style="text-align: right;">
                             </div>
 
                             <div class="form-group col-12 col-sm-6 col-md-6">
