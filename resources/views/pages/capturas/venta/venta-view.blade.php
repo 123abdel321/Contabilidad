@@ -172,9 +172,30 @@
                                 </td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="venta_total_retencion">0.00</h6></td>
                             </tr>
+                            <tr id="totales_propina">
+                                <td>
+                                    <h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">
+                                        <i
+                                            id="icon_info_propina_venta"
+                                            class="fas fa-info icon-info"
+                                            title="<b class='titulo-popover'>Base:</b> 0<br/> <b class='titulo-popover'>Cuenta:</b> 0 <br/> <b class='titulo-popover'>Porcentaje:</b> 0"
+                                            data-toggle="popover"
+                                            data-html="true"
+                                        ></i>
+                                        <b id="nombre_info_propina_venta" style="font-weight: 500;">PROPINA:</b>
+                                    </h6>
+                                </td>
+                                <td>
+                                    <input type="text" data-type="currency" class="form-control form-control-sm" id="input_venta_propina" onfocus="calcularPropinaVenta()" onkeyPress="keyPresPropinaVenta(event)" placeholder="0" value="" style="text-align: right; font-weight: 600; font-size: 0.9rem;">
+                                </td>
+                            </tr>
                             <tr>
                                 <td><h6 style="margin-bottom: 0px; font-weight: bold;">TOTAL: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-weight: bold;" id="venta_total_valor">0.00</h6></td>
+                            </tr>
+                            <tr id="total_con_propina">
+                                <td><h6 style="margin-bottom: 0px; font-weight: bold;">CON PROPINA: </h6></td>
+                                <td><h6 style="margin-bottom: 0px; float: right; font-weight: bold;" id="venta_total_propina">0.00</h6></td>
                             </tr>
                         </tbody>
                     </table>
@@ -237,6 +258,8 @@
         var vendedoresVentas = @json($vendedores_ventas);
         var primeraNit = @json($cliente);
         var valor_uvt = @json($valor_uvt);
+        var cuentaPropina = @json($cuentaPropina);
+        var porcentajePropina = @json($porcentajePropina);
 
     </script>
     
