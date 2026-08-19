@@ -106,6 +106,9 @@ class PosController extends Controller
         $vendedorVentas = VariablesEntorno::where('nombre', 'vendedores_ventas')->first();
         $idClientePorDefecto = VariablesEntorno::where('nombre', 'id_cliente_venta_defecto')->first();
         $idClientePorDefecto = $idClientePorDefecto && $idClientePorDefecto->valor ? $idClientePorDefecto->valor : null;
+        $porcentajePropina = VariablesEntorno::where('nombre', 'porcentaje_propina')->first();
+        $cuentaPropina = VariablesEntorno::where('nombre', 'cuenta_propina')->first();
+        $porcentajePropina = $cuentaPropina && $porcentajePropina ? $porcentajePropina->valor : 0;
 
         $usuarioPermisos = UsuarioPermisos::where('id_user', request()->user()->id)
             ->where('id_empresa', request()->user()->id_empresa)
@@ -125,6 +128,7 @@ class PosController extends Controller
             'iva_incluido' => $ivaIncluido,
             'cliente' => $clientePorDefecto,
             'valor_uvt' => $valorUVT ? $valorUVT->valor : 0,
+            'porcentaje_propina' => $porcentajePropina,
             'vendedores_ventas' => $vendedorVentas ? $vendedorVentas->valor : ''
         ];
 
@@ -438,7 +442,8 @@ class PosController extends Controller
                 $venta,
                 $request->get('fecha_manual'),
                 $request->get('consecutivo'),
-                false
+                false,
+                true
             );
 
             //AGREGAR DETALLE DE PRODUCTOS
@@ -614,6 +619,38 @@ class PosController extends Controller
                         "success"=>false,
                         'data' => [],
                         "message"=> ['Cuenta retención' => ['La cuenta '.$cuentaRetencion->cuenta. ' - ' .$cuentaRetencion->nombre. ' no tiene naturaleza en ventas']]
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                }
+            }
+
+            //AGREGAR PROPINA
+            if ($this->totalesFactura['propina']) {
+                $porcentajePropina = VariablesEntorno::where('nombre', 'porcentaje_propina')->first();
+                $porcentajePropina = $porcentajePropina && $porcentajePropina->valor ? $porcentajePropina->valor : null;
+                $cuentaPropina = VariablesEntorno::where('nombre', 'cuenta_propina')->first();
+                $cuentaPropina = $cuentaPropina && $cuentaPropina->valor ? $cuentaPropina->valor : null;
+
+                $cuentaPropina = PlanCuentas::whereCuenta($cuentaPropina)->first();
+
+                if ($cuentaPropina->naturaleza_ventas == PlanCuentas::DEBITO || $cuentaPropina->naturaleza_ventas == PlanCuentas::CREDITO) {
+                    $doc = new DocumentosGeneral([
+                        "id_cuenta" => $cuentaPropina->id,
+                        "id_nit" => $cuentaPropina->exige_nit ? $venta->id_cliente : null,
+                        "id_centro_costos" => $cuentaPropina->exige_centro_costos ? $venta->id_centro_costos : null,
+                        "concepto" => 'TOTAL: '.$cuentaPropina->exige_concepto ? $this->nit->nombre_nit.' - '.$venta->documento_referencia : null,
+                        "documento_referencia" => $cuentaPropina->exige_documento_referencia ? $venta->documento_referencia : null,
+                        "debito" => $this->totalesFactura['propina'],
+                        "credito" => $this->totalesFactura['propina'],
+                        "created_by" => request()->user()->id,
+                        "updated_by" => request()->user()->id
+                    ]);
+                    $documentoGeneral->addRow($doc, $cuentaPropina->naturaleza_ventas);
+                } else {
+                    DB::connection('sam')->rollback();
+                    return response()->json([
+                        "success"=>false,
+                        'data' => [],
+                        "message"=> ['Cuenta retención' => ['La cuenta '.$cuentaPropina->cuenta. ' - ' .$cuentaPropina->nombre. ' no tiene naturaleza en ventas']]
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
             }
@@ -964,8 +1001,15 @@ class PosController extends Controller
             $data = (new VentasPos($empresa, $factura))->buildPdf()->getData();
             return view('pdf.facturacion.ventas-pos', $data);
         }
+
+        $claveUrl = $this->generarClavePDF(
+            $empresa->id,
+            $factura->comprobante->id,
+            $factura->consecutivo,
+            $factura->fecha_manual
+        );
  
-        return (new VentasPdf($empresa, $factura))
+        return (new VentasPdf($empresa, $factura, $claveUrl))
             ->buildPdf()
             ->showPdf();
     }
@@ -1164,6 +1208,11 @@ class PosController extends Controller
     private function createFacturaVenta ($request)
     {
         $this->calcularTotales($request->get('productos'));
+        $propina = $request->get('propina');
+        if ($propina) {
+            $this->totalesFactura['propina'] = $propina;
+            $this->totalesFactura['total_factura']+= $propina;
+        }
         $this->calcularFormasPago($request->get('pagos'));
         $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
 
@@ -1182,6 +1231,7 @@ class PosController extends Controller
             'total_descuento' => $this->totalesFactura['total_descuento'],
             'total_rete_fuente' => $this->totalesFactura['total_rete_fuente'],
             'total_cambio' => $this->totalesPagos['total_cambio'],
+            'propina' => $this->totalesFactura['propina'],
             'porcentaje_rete_fuente' => $this->totalesFactura['porcentaje_rete_fuente'],
             'codigo_tipo_documento_dian' => CodigoDocumentoDianTypes::VENTA_NACIONAL,
             'total_factura' => $this->totalesFactura['total_factura'],
