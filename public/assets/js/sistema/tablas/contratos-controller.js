@@ -39,6 +39,9 @@ function cargarTablasContratos() {
             type: "GET",
             headers: headers,
             url: base_url + 'contratos',
+            data: function (d) {
+                delete d.columns;
+            }
         },
         columns: [
             {"data": function (row, type, set){  
@@ -198,7 +201,7 @@ function cargarTablasContratos() {
                     return html;
                 }
             },
-        ]
+        ],
     });
 
     if (contrato_table) {

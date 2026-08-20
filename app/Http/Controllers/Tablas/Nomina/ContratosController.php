@@ -39,15 +39,9 @@ class ContratosController extends Controller
         $start = $request->get("start");
         $rowperpage = 20;
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
         $searchValue = $request->get('search');
         $searchValue = isset($searchValue) ? $searchValue["value"] : null;
-
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
 
         $nomContratos = NomContratos::with(
                 'nit',
