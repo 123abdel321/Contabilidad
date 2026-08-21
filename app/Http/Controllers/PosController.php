@@ -705,49 +705,49 @@ class PosController extends Controller
             $pedido->estado = 2;
             $pedido->save();
 
-            //FACTURAR ELECTRONICAMENTE
-            if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
-                $ventaElectronica = (new VentaElectronicaSender($venta))->send();
-                if ($ventaElectronica["status"] >= 400) {
-                    if ($ventaElectronica["zip_key"]) {
-                        $venta->fe_zip_key = $ventaElectronica["zip_key"];
-                        $venta->save();
-    
-                        if ($ventaElectronica["message_object"] == 'Batch en proceso de validación.') {
-                            //JOB CONSULTAR FACTURA EN 1MN
-                            info('Batch en proceso de validación.');
-                            ProcessConsultarFE::dispatch($venta->id, $ventaElectronica["zip_key"], $request->user()->id, $empresa->id)->delay(now()->addSeconds(10));
-                        }
-                    }
-                    if (!$ventaElectronica["zip_key"] && $ventaElectronica["status"] == 500) {
-                        return response()->json([
-                            "success"=>false,
-                            'data' => [],
-                            "message" => $ventaElectronica["error_message"] 
-                        ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                    }
-                }
-
-                if ($ventaElectronica['status'] == 200) {
-                    $feSended = $ventaElectronica['status'] == 200;
-                    $hasCufe = (isset($ventaElectronica['cufe']) && $ventaElectronica['cufe']);
-    
-                    if($feSended || $hasCufe){
-                        $ventaElectronica['status'] = 200;
-                        $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
-                        $venta->fe_zip_key = $ventaElectronica['zip_key'];
-                        $venta->fe_xml_file = $ventaElectronica['xml_url'];
-                        $venta->save();
-
-                        if ($venta->cliente->email) {
-                            $enviarFacturaElectronica = true;
-                        }
-
-                    }
-                }
-            }
-
             DB::connection('sam')->commit();
+
+            //FACTURAR ELECTRONICAMENTE
+            // if ($this->resolucion->tipo_resolucion == FacResoluciones::TIPO_FACTURA_ELECTRONICA) {
+            //     $ventaElectronica = (new VentaElectronicaSender($venta))->send();
+            //     if ($ventaElectronica["status"] >= 400) {
+            //         if ($ventaElectronica["zip_key"]) {
+            //             $venta->fe_zip_key = $ventaElectronica["zip_key"];
+            //             $venta->save();
+    
+            //             if ($ventaElectronica["message_object"] == 'Batch en proceso de validación.') {
+            //                 //JOB CONSULTAR FACTURA EN 1MN
+            //                 info('Batch en proceso de validación.');
+            //                 ProcessConsultarFE::dispatch($venta->id, $ventaElectronica["zip_key"], $request->user()->id, $empresa->id)->delay(now()->addSeconds(10));
+            //             }
+            //         }
+            //         if (!$ventaElectronica["zip_key"] && $ventaElectronica["status"] == 500) {
+            //             return response()->json([
+            //                 "success"=>false,
+            //                 'data' => [],
+            //                 "message" => $ventaElectronica["error_message"] 
+            //             ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            //         }
+            //     }
+
+            //     if ($ventaElectronica['status'] == 200) {
+            //         $feSended = $ventaElectronica['status'] == 200;
+            //         $hasCufe = (isset($ventaElectronica['cufe']) && $ventaElectronica['cufe']);
+    
+            //         if($feSended || $hasCufe){
+            //             $ventaElectronica['status'] = 200;
+            //             $venta = $this->SetFeFields($venta, $ventaElectronica['cufe'], $empresa->nit);
+            //             $venta->fe_zip_key = $ventaElectronica['zip_key'];
+            //             $venta->fe_xml_file = $ventaElectronica['xml_url'];
+            //             $venta->save();
+
+            //             if ($venta->cliente->email) {
+            //                 $enviarFacturaElectronica = true;
+            //             }
+
+            //         }
+            //     }
+            // }
 
             $this->emitPedidoEvent('pedido_completado', $pedido->id);
 
