@@ -26,12 +26,14 @@
 
                         <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_servicio" onChange="changeProducType()" autocomplete="off">
                         <label class="btn btn-sm btn-outline-primary" for="tipo_producto_servicio">Servicio</label>
+
+                        <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_combo" onChange="changeProducType()" autocomplete="off">
+                        <label class="btn btn-sm btn-outline-primary" for="tipo_producto_combo">Combo</label>
+
                         @can('parqueadero productos')
                             <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_parqueadero" onChange="changeProducType()" autocomplete="off">
                             <label class="btn btn-sm btn-outline-primary" for="tipo_producto_parqueadero">Parqueadero</label>
                         @endcan
-                        <!-- <input type="radio" class="btn-check" name="options-outlined" id="tipo_producto_combo" onChange="changeProducType()" autocomplete="off" disabled>
-                        <label class="btn btn-sm btn-outline-primary" for="tipo_producto_combo">Combo</label> -->
                         
                     </div>
 
@@ -329,5 +331,68 @@
 
         <div class="variantes-productos-contenedor" id="variantes-productos-contenedor">
         </div>
+    </div>
+</div>
+
+<!-- SECCIÓN PARA COMBO -->
+<div class="card card-producto" id="seccion-combo" style="display: none;">
+    
+    <div class="card-header" style="border-bottom: solid 1px #e4e4e4; padding: 0rem; background-color: #1c4587;">
+        <h5 class="card-title" style="margin-top: 5px; color: #FFF; margin-left: 15px;">Productos del combo</h5>
+    </div>
+
+    <div class="card-body">
+        <div style="text-align: -webkit-center;">
+            <label style="color: #667793; font-size: 14px;">
+                Selecciona los productos que componen este combo y define la cantidad y precio unitario.
+            </label>
+        </div>
+
+        <div id="spacing-producto-type" style="padding: 5px;"></div>
+
+        <div class="row">
+            <div class="col-6 col-sm-3 col-md-3">
+                <label for="id_producto_combo">Buscar producto</label>
+                <select name="id_producto_combo" id="id_producto_combo" class="form-control form-control-sm">
+                </select>
+            </div>
+            <div class="col-6 col-sm-3 col-md-3">
+                <label for="cantidad_item_combo">Cantidad</label>
+                <input type="number" class="form-control form-control-sm" id="cantidad_item_combo" value="1" min="1">
+            </div>
+            <div class="col-6 col-sm-3 col-md-3">
+                <label for="precio_item_combo">Costo</label>
+                <input type="number" class="form-control form-control-sm" id="precio_item_combo" value="0" step="0.01">
+            </div>
+            <div class="col-6 col-sm-3 col-md-3" style="display: flex; align-items: flex-end;">
+                <button type="button" class="btn btn-sm btn-success" id="btn-agregar-item-combo" style="width: 100%;">
+                    <i class="fas fa-plus-circle"></i> Agregar
+                </button>
+            </div>
+        </div>
+
+        <div style="overflow-y: auto;">
+            <div style="padding: 0.2rem;">
+                <table id="itemsComboTable" class="table table-bordered display responsive" width="100%">
+                    <thead style="background-color: #7ea1ff2b;">
+                        <tr>
+                            <th style="border-radius: 15px 0px 0px 0px !important;">Producto</th>
+                            <th>Código</th>
+                            <th>Cantidad</th>
+                            <th>Costo</th>
+                            <th>Subtotal</th>
+                            <th style="border-radius: 0px 15px 0px 0px !important;">Acciones</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-12 text-end">
+                <h5>Total combo: <span id="total_combo">$ 0.00</span></h5>
+            </div>
+        </div>
+
     </div>
 </div>

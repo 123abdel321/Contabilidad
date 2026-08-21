@@ -14,6 +14,7 @@ use App\Models\Sistema\FacFamilias;
 use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacParqueadero;
 use App\Models\Sistema\VariablesEntorno;
+use App\Models\Sistema\FacProductosCombos;
 use App\Models\Sistema\FacProductosBodegas;
 use App\Models\Sistema\FacVariantesOpciones;
 use App\Models\Sistema\FacProductosVariantes;
@@ -145,6 +146,10 @@ class ProductosController extends Controller
             'productos_variantes.*.inventarios' => 'array|nullable',
             'productos_variantes.*.inventarios.*.id' => 'nullable|exists:sam.fac_bodegas,id',
             'productos_variantes.*.inventarios.*.cantidad' => 'nullable|numeric',
+            'items_combo' => 'array|sometimes',
+            'items_combo.*.id' => 'sometimes|exists:sam.fac_productos,id',
+            'items_combo.*.cantidad' => 'sometimes',
+            'items_combo.*.precio_unitario' => 'sometimes',
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -170,6 +175,7 @@ class ProductosController extends Controller
                 $porcentajeUtilidad = ((floatval($request->get('precio')) - floatval($request->get('precio_inicial'))) / floatval($request->get('precio_inicial'))) * 100;
                 $valorUtilidad = floatval($request->get('precio_inicial')) * ($porcentajeUtilidad / 100);
             }
+            
             //CREAR PRODUCTO PRINCIPAL
             $productoPadre = FacProductos::create([
                 'id_familia' => $request->get('id_familia'),
@@ -217,7 +223,7 @@ class ProductosController extends Controller
                     }
                 }
             }
-
+            
             //ASOCIAR VARIANTES GENERALES AL PRODUCTO
             if ($request->get('variante')) {
 
@@ -272,6 +278,23 @@ class ProductosController extends Controller
                         foreach ($producto['inventarios'] as $bodega) {
                             $this->agregarBodega($productoVariante, $bodega);
                         }
+                    }
+                }
+            }
+
+            //ASOCIAR COMBOS AL PRODUCTO
+            if ($request->get('tipo_producto') == 2) {
+
+                $productosCombos = $request->get('items_combo');
+
+                if (count($productosCombos) > 0) {
+                    foreach ($productosCombos as $producto) {
+                        FacProductosCombos::create([
+                            'id_combo' => $productoPadre->id,
+                            'id_producto' => $producto['id_producto'],
+                            'costo' => $producto['precio_unitario'],
+                            'cantidad' => $producto['cantidad']
+                        ]);
                     }
                 }
             }

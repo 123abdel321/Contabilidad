@@ -26,6 +26,8 @@ use App\Helpers\FacturaElectronica\CodigoDocumentoDianTypes;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 use App\Http\Controllers\Traits\BegFacturacionElectronica;
+//SERVICES
+use App\Http\Services\VentaServices;
 //MODELS
 use App\Models\User;
 use App\Models\Sistema\Nits;
@@ -57,9 +59,18 @@ class PosController extends Controller
     use BegDocumentHelpersTrait;
     use BegFacturacionElectronica;
 
+    protected VentaServices $ventaServices;
+
     protected $bodega = null;
     protected $resolucion = null;
-	protected $messages = null;
+	protected $messages = [
+        'required' => 'El campo :attribute es requerido.',
+        'exists' => 'El :attribute es inválido.',
+        'numeric' => 'El campo :attribute debe ser un valor numérico.',
+        'string' => 'El campo :attribute debe ser texto',
+        'array' => 'El campo :attribute debe ser un arreglo.',
+        'date' => 'El campo :attribute debe ser una fecha válida.',
+    ];
     protected $ventaData = [];
     protected $ivaIncluido = null;
     protected $totalesPagos = [
@@ -84,16 +95,11 @@ class PosController extends Controller
         "cuenta_costos" => ["valor" => "costo_total"],
     ];
 
-    public function __construct(Request $request)
-	{
-		$this->messages = [
-            'required' => 'El campo :attribute es requerido.',
-            'exists' => 'El :attribute es inválido.',
-            'numeric' => 'El campo :attribute debe ser un valor numérico.',
-            'string' => 'El campo :attribute debe ser texto',
-            'array' => 'El campo :attribute debe ser un arreglo.',
-            'date' => 'El campo :attribute debe ser una fecha válida.',
-        ];
+    public function __construct(
+        Request $request,
+        VentaServices $ventaServices,
+    ) {
+        $this->ventaServices = $ventaServices;
 	}
     
 	public function posValidate(Request $request)
@@ -448,8 +454,22 @@ class PosController extends Controller
 
             //AGREGAR DETALLE DE PRODUCTOS
             foreach ($request->get('productos') as $producto) {
+
                 $producto = (object)$producto;
                 $productoDb = $this->findProducto($producto->id_producto);
+
+                // Procesar COMBOS
+                if ($productoDb->tipo_producto == 2) {
+                    $this->ventaServices->procesarCombo(
+                        $producto,
+                        $venta,
+                        $documentoGeneral,
+                        request()->user()->id
+                    );
+                    continue;
+                }
+
+                // --- Lógica para productos normales
                 $producto->costo_total = $productoDb->precio_inicial * $producto->cantidad;
 
                 //AGREGAR MOVIMIENTO BODEGA
@@ -502,98 +522,45 @@ class PosController extends Controller
                 ]);
                 
                 //AGREGAR MOVIMIENTO CONTABLE
-                foreach ($this->cuentasContables as $cuentaKey => $cuenta) {
-                    $cuentaRecord = $productoDb->familia->{$cuentaKey};
-                    $keyTotalItem = $cuenta["valor"];
-
-                    //VALIDAR PRODUCTO INVENTARIO
-                    if ($productoDb->tipo_producto == 1 && $cuentaKey == 'cuenta_inventario') {
-                        continue;
-                    }
-
-                    if ($productoDb->tipo_producto == 1 && $cuentaKey == 'cuenta_costos') {
-                        continue;
-                    }
-
-                    //VALIDAR COSTO PRODUCTO
-                    if ($productoDb->precio_inicial <= 0 && $cuentaKey == 'cuenta_costos') {
-                        continue;
-                    }
-
-                    if (!$productoDb->familia->id_cuenta_inventario && $cuentaKey == 'cuenta_inventario') {
-                        continue;
-                    }
-
-                    if (!$productoDb->familia->id_cuenta_inventario && $cuentaKey == 'cuenta_costos') {
-                        continue;
-                    }
-
-                    if ($producto->{$keyTotalItem} > 0) {
-                        
-                        if(!$cuentaRecord) {
-                            DB::connection('sam')->rollback();
-                            return response()->json([
-                                "success"=>false,
-                                'data' => [],
-                                "message"=> [$productoDb->codigo.' - '.$productoDb->nombre => ['La cuenta '.str_replace('cuenta_venta_', '', $cuentaKey). ' no se encuentra configurada en la familia: '. $productoDb->familia->codigo. ' - '. $productoDb->familia->nombre]]
-                            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                        }
-
-                        $concepto = "VENTA POS: {$this->nit->nombre_nit} - {$this->nit->documento} - {$venta->documento_referencia}";
-                        if ($producto->concepto) {
-                            $concepto.= " - {$producto->concepto}";
-                        }
-        
-                        $doc = new DocumentosGeneral([
-                            "id_cuenta" => $cuentaRecord->id,
-                            "id_nit" => $cuentaRecord->exige_nit ? $venta->id_cliente : null,
-                            "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $venta->id_centro_costos : null,
-                            "concepto" => $cuentaRecord->exige_concepto ? $concepto : null,
-                            "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $venta->documento_referencia : null,
-                            "debito" => $cuentaRecord->naturaleza_ventas == PlanCuentas::DEBITO ? $producto->{$keyTotalItem} : 0,
-                            "credito" => $cuentaRecord->naturaleza_ventas == PlanCuentas::CREDITO ? $producto->{$keyTotalItem} : 0,
-                            "created_by" => request()->user()->id,
-                            "updated_by" => request()->user()->id
-                        ]);
-
-                        $documentoGeneral->addRow($doc, $cuentaRecord->naturaleza_ventas);
-                    }
-                }
+                $this->ventaServices->movimientoContable(
+                    $venta,
+                    $productoDb,
+                    $documentoGeneral,
+                    (array)$producto
+                );
                 
                 //AGREGAR MOVIMIENTO BODEGA
-                $bodegaProducto = FacProductosBodegas::where('id_bodega', $this->bodega->id)
-                    ->where('id_producto', $producto->id_producto)
-                    ->first();
-
-                if (!$bodegaProducto) {
-                    $bodegaProducto = FacProductosBodegas::create([
+                if ($productoDb->tipo_producto != 2) {
+                    if (!$bodegaProducto) {
+                        $bodegaProducto = FacProductosBodegas::create([
+                            'id_producto' => $producto->id_producto,
+                            'id_bodega' => $venta->id_bodega,
+                            'cantidad' => 0,
+                            'created_by' => request()->user()->id,
+                            'updated_by' => request()->user()->id
+                        ]);
+                    }
+    
+                    $movimiento = new FacProductosBodegasMovimiento([
                         'id_producto' => $producto->id_producto,
                         'id_bodega' => $venta->id_bodega,
-                        'cantidad' => 0,
+                        'cantidad_anterior' => $bodegaProducto->cantidad,
+                        'cantidad' => $producto->cantidad,
+                        'tipo_tranferencia' => 2,
+                        'inventario' => $productoDb->familia->inventario ? 1 : 0,
                         'created_by' => request()->user()->id,
                         'updated_by' => request()->user()->id
                     ]);
+    
+                    if ($bodegaProducto && $productoDb->familia->inventario) {
+                        $bodegaProducto->updated_by = request()->user()->id;
+                        $bodegaProducto->cantidad-= $producto->cantidad;
+                        $bodegaProducto->save();
+                    }
+    
+                    $movimiento->relation()->associate($venta);
+                    $venta->bodegas()->save($movimiento);
                 }
-
-                $movimiento = new FacProductosBodegasMovimiento([
-                    'id_producto' => $producto->id_producto,
-                    'id_bodega' => $venta->id_bodega,
-                    'cantidad_anterior' => $bodegaProducto->cantidad,
-                    'cantidad' => $producto->cantidad,
-                    'tipo_tranferencia' => 2,
-                    'inventario' => $productoDb->familia->inventario ? 1 : 0,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
-
-                if ($bodegaProducto && $productoDb->familia->inventario) {
-                    $bodegaProducto->updated_by = request()->user()->id;
-                    $bodegaProducto->cantidad-= $producto->cantidad;
-                    $bodegaProducto->save();
-                }
-
-                $movimiento->relation()->associate($venta);
-                $venta->bodegas()->save($movimiento);
             }
             
             //AGREGAR RETE FUENTE
