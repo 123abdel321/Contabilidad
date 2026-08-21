@@ -96,7 +96,7 @@ class VentaPdfMapper
         $columns = [
             Column::make('nombre', 'NOMBRE')->align('left'),
             Column::make('cantidad', 'CANTIDAD')->align('center'),
-            Column::make('costo', 'COSTO')->align('right')->format('number'),
+            Column::make('costo', 'VALOR')->align('right')->format('number'),
             Column::make('subtotal', 'SUBTOTAL')->align('right')->format('number'),
             Column::make('descuento', 'DESCUENTO')->align('right')->format('number'),
             Column::make('iva', 'IVA')->align('right')->format('number'),
@@ -130,12 +130,19 @@ class VentaPdfMapper
             'titulo' => 'TOTALES',
             'filas' => [
                 ['label' => 'SUBTOTAL', 'value' => $venta->subtotal, 'formatter' => 'number'],
-                ['label' => 'IVA', 'value' => $venta->total_iva, 'formatter' => 'number'],
-                ['label' => 'PROPINA', 'value' => $venta->propina, 'formatter' => 'number'],
-                ['label' => 'RETE FUENTE ' . ($venta->porcentaje_rete_fuente ?? 0) . '%', 'value' => $venta->total_rete_fuente ?? 0, 'formatter' => 'number'],
-                ['label' => 'TOTAL', 'value' => $venta->total_factura, 'formatter' => 'number', 'class' => 'resumen-total'],
+                ['label' => 'IVA', 'value' => $venta->total_iva, 'formatter' => 'number']
             ]
         ];
+
+        if ($venta->propina > 0) {
+            $resumen['filas'][] = ['label' => 'PROPINA', 'value' => $venta->propina, 'formatter' => 'number'];
+        }
+
+        if ($venta->porcentaje_rete_fuente > 0) {
+            $resumen['filas'][] = ['label' => 'RETE FUENTE ' . ($venta->porcentaje_rete_fuente ?? 0) . '%', 'value' => $venta->total_rete_fuente ?? 0, 'formatter' => 'number'];
+        }
+
+        $resumen['filas'][] = ['label' => 'TOTAL', 'value' => $venta->total_factura, 'formatter' => 'number', 'class' => 'resumen-total'];
 
         // ============================================================
         // 5. OBSERVACIONES

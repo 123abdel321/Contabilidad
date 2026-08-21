@@ -26,7 +26,6 @@ class VentaPdf
 
         $document = new Document();
         $document->setConfig([
-            'orientation' => $venta->resolucion->tipo_impresion == 1 ? 'landscape' : 'portrait',
             'paper' => 'A4',
             'filename' => 'venta_' . uniqid() . '.pdf',
             'empresa' => $empresa,
