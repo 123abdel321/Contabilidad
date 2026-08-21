@@ -86,6 +86,7 @@ class PosController extends Controller
         'total_rete_fuente' => 0,
         'total_descuento' => 0,
         'total_factura' => 0,
+        'propina' => 0
     ];
     protected $cuentasContables = [
         "cuenta_venta" => ["valor" => "subtotal"],
@@ -433,7 +434,7 @@ class PosController extends Controller
         ]);
 
         $empresa = Empresa::where('id', $request->user()->id_empresa)->first();
-
+        
         try {
             DB::connection('sam')->beginTransaction();
             
@@ -1176,10 +1177,12 @@ class PosController extends Controller
     {
         $this->calcularTotales($request->get('productos'));
         $propina = $request->get('propina');
+        
         if ($propina) {
             $this->totalesFactura['propina'] = $propina;
             $this->totalesFactura['total_factura']+= $propina;
         }
+
         $this->calcularFormasPago($request->get('pagos'));
         $this->bodega = FacBodegas::whereId($request->get('id_bodega'))->first();
 
