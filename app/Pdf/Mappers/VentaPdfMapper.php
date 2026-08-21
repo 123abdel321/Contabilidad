@@ -137,11 +137,8 @@ class VentaPdfMapper
         if ($venta->propina > 0) {
             $resumen['filas'][] = ['label' => 'PROPINA', 'value' => $venta->propina, 'formatter' => 'number'];
         }
-
-        if ($venta->porcentaje_rete_fuente > 0) {
-            $resumen['filas'][] = ['label' => 'RETE FUENTE ' . ($venta->porcentaje_rete_fuente ?? 0) . '%', 'value' => $venta->total_rete_fuente ?? 0, 'formatter' => 'number'];
-        }
-
+            
+        $resumen['filas'][] = ['label' => 'RETE FUENTE ' . ($venta->porcentaje_rete_fuente ?? 0) . '%', 'value' => $venta->total_rete_fuente ?? 0, 'formatter' => 'number'];
         $resumen['filas'][] = ['label' => 'TOTAL', 'value' => $venta->total_factura, 'formatter' => 'number', 'class' => 'resumen-total'];
 
         // ============================================================
