@@ -6,6 +6,7 @@ use DB;
 use Exception;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use App\Helpers\Extracto;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -19,6 +20,7 @@ use App\Models\User;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Informes\InfExtracto;
+use App\Models\Sistema\PlanCuentasTipo;
 
 class ProcessInformeExtracto
 {
@@ -207,6 +209,7 @@ class ProcessInformeExtracto
                     'razon_social',
                     'apartamentos',
                     'id_cuenta',
+                    'id_tipo_cuenta',
                     'cuenta',
                     'naturaleza_cuenta',
                     'auxiliar',
@@ -234,22 +237,21 @@ class ProcessInformeExtracto
                     DB::raw('COUNT(consecutivo) AS total_columnas')
                 )
                 ->orderBy('id_cuenta')
-                ->groupBy(
-                    'id_cuenta'
-                )
+                ->groupBy('id_cuenta')
                 ->havingRaw('saldo_anterior != 0 OR debito != 0 OR credito != 0 OR saldo_final != 0')
                 ->chunk(233, function ($documentos) use($extractoMes) {
                     foreach ($documentos as $documento) {
-                        
                         $inicioMes = date('Y-m', strtotime($extractoMes->fecha_desde));
                         $cuentasAsociadas = $this->getCuentas($documento->cuenta);
                         $addFirstData = true;
-                        
+                        $cuentaAnticios = $documento->id_tipo_cuenta == 8 || $documento->id_tipo_cuenta == 4 ? true : false;
+
                         foreach ($cuentasAsociadas as $cuentaData) {
                             $cuenta = "{$inicioMes}-B{$cuentaData}";
                             if ($this->hasCuentaData($cuenta)) {
                                 $this->sumCuentaData($cuenta, $documento);
                             } else {
+
                                 $dataCuenta = $this->getFormatPadreCollection($cuentaData, $documento);
                                 $dataCuenta['cuenta'] = $cuentaData;
 
@@ -269,6 +271,28 @@ class ProcessInformeExtracto
                                     // $dataCuenta['created_by'] = $documento->created_by;
                                     // $dataCuenta['updated_by'] = $documento->updated_by;
                                 }
+                                $saldoFavorEncontra = false;
+                                //VALIDAR SI TIENE ANTICIPOS + SALDOS PENDIENTES
+                                if ($cuentaAnticios && $documento->saldo_final) {
+                                    $extractos = (new Extracto(
+                                        $documento->id_nit,
+                                        [
+                                            PlanCuentasTipo::TIPO_CUENTA_CXC,//3
+                                            PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC//7
+                                        ]
+                                    ))->actual()->get();
+
+                                    if (count($extractos)) {
+                                        foreach ($extractos as $key => $extracto) {
+                                            if ($extracto->saldo) {
+                                                $saldoFavorEncontra = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if ($saldoFavorEncontra) $dataCuenta['nivel'] = 10; //ERROR AMARILLO
+
                                 $this->extractoCollection[$cuenta] = $dataCuenta;
                                 $addFirstData = false;
                             }
@@ -345,6 +369,7 @@ class ProcessInformeExtracto
         foreach ($this->extractoMeses as $extractoMes) {
             $query = $this->extractoDocumentosQuery($extractoMes);
             $query->unionAll($this->extractoAnteriorQuery($extractoMes));
+
 
             DB::connection('sam')
                 ->table(DB::raw("({$query->toSql()}) AS extractodata"))
@@ -456,6 +481,7 @@ class ProcessInformeExtracto
                 "PC.naturaleza_cuenta",
                 "PC.auxiliar",
                 "PC.nombre AS nombre_cuenta",
+                "PCT.id_tipo_cuenta",
                 "DG.documento_referencia",
                 "DG.id_centro_costos",
                 "CC.codigo AS codigo_cecos",
@@ -516,6 +542,7 @@ class ProcessInformeExtracto
                 "PC.naturaleza_cuenta",
                 "PC.auxiliar",
                 "PC.nombre AS nombre_cuenta",
+                "PCT.id_tipo_cuenta",
                 "DG.documento_referencia",
                 "DG.id_centro_costos",
                 "CC.codigo AS codigo_cecos",
