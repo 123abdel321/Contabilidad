@@ -291,7 +291,10 @@ class ProcessInformeExtracto
                                         }
                                     }
                                 }
-                                if ($saldoFavorEncontra) $dataCuenta['nivel'] = 10; //ERROR AMARILLO
+                                if ($saldoFavorEncontra) {
+                                    $inicioMes = date('Y-m', strtotime($extractoMes->fecha_desde));
+                                    $this->extractoCollection["$inicioMes-A"]['nivel'] = 10;
+                                }
 
                                 $this->extractoCollection[$cuenta] = $dataCuenta;
                                 $addFirstData = false;
@@ -369,7 +372,6 @@ class ProcessInformeExtracto
         foreach ($this->extractoMeses as $extractoMes) {
             $query = $this->extractoDocumentosQuery($extractoMes);
             $query->unionAll($this->extractoAnteriorQuery($extractoMes));
-
 
             DB::connection('sam')
                 ->table(DB::raw("({$query->toSql()}) AS extractodata"))

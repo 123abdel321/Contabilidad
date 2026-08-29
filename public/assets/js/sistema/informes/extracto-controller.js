@@ -105,9 +105,9 @@ function initTablesExtractos() {
         ],
         'rowCallback': function(row, data, index){
             if (data.nivel == 10) {
-                $('td', row).css('background-color', 'rgb(219 93 57 / 20%)');
+                $('td', row).css('background-color', 'red');
                 $('td', row).css('font-weight', 'bold');
-                $('td', row).css('color', 'black');
+                $('td', row).css('color', 'white');
                 return;
             }
             if(data.naturaleza_cuenta == 0 && parseInt(data.saldo_final) < 0 && data.nivel == 3) {
