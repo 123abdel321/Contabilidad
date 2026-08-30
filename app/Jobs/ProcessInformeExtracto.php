@@ -281,10 +281,10 @@ class ProcessInformeExtracto
                                             PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC//7
                                         ]
                                     ))->actual()->get();
-
+                                    
                                     if (count($extractos)) {
                                         foreach ($extractos as $key => $extracto) {
-                                            if ($extracto->saldo) {
+                                            if (intval($extracto->saldo)) {
                                                 $saldoFavorEncontra = true;
                                                 break;
                                             }
