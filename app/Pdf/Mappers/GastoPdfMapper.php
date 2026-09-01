@@ -28,7 +28,7 @@ class GastoPdfMapper
         $observacion = $gasto->detalles->first()?->observacion ?? '';
 
         return [
-            'titulo' => 'GASTOS',
+            'titulo' => $gasto->comprobante->nombre,
             'empresa' => $empresa,
             'cliente' => $cliente,
             'info_data' => $infoData,
