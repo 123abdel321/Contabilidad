@@ -273,7 +273,7 @@ class ProcessInformeExtracto
                                 }
                                 $saldoFavorEncontra = false;
                                 //VALIDAR SI TIENE ANTICIPOS + SALDOS PENDIENTES
-                                if ($cuentaAnticios && $documento->saldo_final) {
+                                if ($cuentaAnticios && intval($documento->saldo_final)) {
                                     $extractos = (new Extracto(
                                         $documento->id_nit,
                                         [
