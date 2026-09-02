@@ -382,14 +382,14 @@ class ProcessInformeExtracto
                     'documento_referencia',
                     'fecha_manual',
                 )
-                ->orderBy('consecutivo', 'ASC')
+                ->orderByRaw('fecha_manual, consecutivo ASC')
                 ->groupByRaw('id_cuenta, id_nit, documento_referencia')
                 ->chunk(233, function ($documentos) use($extractoMes) {
-
                     foreach ($documentos as $documento) {
                         $query = $this->extractoDocumentosDetallesQuery($documento, $extractoMes);
                         $query->chunk(377, function ($detalles) use($extractoMes) {
                             $totalDetalles = count($detalles);
+
                             foreach ($detalles as $detalle) {
                                 $cuentaNumero = 1;
                                 $totalDetalles--;
@@ -637,7 +637,7 @@ class ProcessInformeExtracto
             ->where('DG.documento_referencia', $extracto->documento_referencia)
             ->where('DG.id_cuenta', $extracto->id_cuenta)
             ->where('DG.id_nit', $extracto->id_nit)
-            ->orderByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia, created_at');
+            ->orderByRaw('DG.id_cuenta, DG.id_nit, DG.documento_referencia, fecha_manual');
 
         return $documentosDetalleQuery;
     }
