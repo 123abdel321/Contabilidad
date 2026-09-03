@@ -80,7 +80,7 @@ abstract class AbstractFESender
 
 		$data = (object) $response->json();
 		
-		info(json_encode($data));
+		info(json_encode($data), json_encode($params));
 		
 		if (property_exists($data, 'status') && $data->status == 200) {
 			return [
