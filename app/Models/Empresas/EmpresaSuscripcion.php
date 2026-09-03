@@ -29,7 +29,7 @@ class EmpresaSuscripcion extends Model
     ];
 
     public function empresa(){
-		return $this->belongsTo("App\Models\Empresas\CliEmpresa","id_empresa");
+		return $this->belongsTo("App\Models\Empresas\Empresa","id_empresa");
 	}
 
 	public function componentes(){

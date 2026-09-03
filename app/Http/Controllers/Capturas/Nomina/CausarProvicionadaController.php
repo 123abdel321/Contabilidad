@@ -477,12 +477,13 @@ class CausarProvicionadaController extends Controller
             $tipoCuenta = $this->getTipoCuentaEmpleado($contrato->tipo_empleado);
             $periodos = $this->getPeriodosPagoEmpleado($empleado->id_empleado, $fecha);
             $bases = $this->calcularBasesPrestacionesSociales($periodos);
-            
+            $datosInteresesCesantias = 0;
+
             $provisionesEmpleado = [
                 $this->crearProvision('PRIMA', $empleado, $contrato, $configuraciones['prima'], $tipoCuenta, $bases['base_prima']),
                 $this->crearProvision('VACACIONES', $empleado, $contrato, $configuraciones['vacaciones'], $tipoCuenta, $bases['base_vacacion']),
-                $this->crearProvision('CESANTIAS', $empleado, $contrato, $configuraciones['cesantias'], $tipoCuenta, $bases['base_cesantia'], $contrato->fondo_cesantias->descripcion ?? ''),
-                $this->crearProvision('INTERESES SOBRE CESANTIAS', $empleado, $contrato, $configuraciones['intereses_cesantias'], $tipoCuenta, $bases['base_interes_cesantia']),
+                $datosInteresesCesantias = $this->crearProvision('CESANTIAS', $empleado, $contrato, $configuraciones['cesantias'], $tipoCuenta, $bases['base_cesantia'], $contrato->fondo_cesantias->descripcion ?? ''),
+                $this->crearProvision('INTERESES SOBRE CESANTIAS', $empleado, $contrato, $configuraciones['intereses_cesantias'], $tipoCuenta, $bases['base_interes_cesantia'], null, $datosInteresesCesantias),
             ];
 
             $provisiones = array_merge($provisiones, $provisionesEmpleado);
@@ -504,6 +505,7 @@ class CausarProvicionadaController extends Controller
 
             $tipoCuenta = $this->getTipoCuentaEmpleado($contrato->tipo_empleado);
             $periodos = $this->getPeriodosPagoEmpleado($empleado->id_empleado, $fecha);
+
             $bases = $this->calcularBasesSeguridadSocial(
                 $periodos,
                 $contrato,
@@ -672,10 +674,18 @@ class CausarProvicionadaController extends Controller
         return $bases;
     }
 
-    protected function crearProvision($concepto, $empleado, $contrato, $config, $tipoCuenta, $base, $fondo = '')
+    protected function crearProvision($concepto, $empleado, $contrato, $config, $tipoCuenta, $base, $fondo = '', $datosInteresesCesantias = null)
     {
         $salarioIntegral = $contrato->tipo_salario == NomContratos::TIPO_SALARIO_INTEGRAL;
         $porcentaje = $config->porcentaje;
+        if ($concepto == 'ARL') {
+            $porcentaje = $contrato->porcentaje_arl;
+        }
+
+        if ($concepto == 'INTERESES SOBRE CESANTIAS') {
+            $base = $datosInteresesCesantias['provision'];
+        }
+
         $provision = $salarioIntegral ? 0 : $base * ($porcentaje / 100);
 
         return [
