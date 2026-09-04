@@ -154,11 +154,15 @@ class ProcessImportProductos implements ShouldQueue
                 ]);
 
                 if ($import->existencias) {
-                    FacProductosBodegas::where('id_producto', $producto->id)
-                        ->where('id_bodega', $import->id_bodega)
-                        ->update([
+                    FacProductosBodegas::updateOrCreate(
+                        [
+                            'id_producto' => $producto->id,
+                            'id_bodega' => $import->id_bodega,
+                        ],
+                        [
                             'cantidad' => $import->existencias
-                        ]);
+                        ]
+                    );
                 }
                 
                 $this->correctRecords++;
