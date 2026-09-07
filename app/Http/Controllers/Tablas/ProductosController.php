@@ -56,6 +56,7 @@ class ProductosController extends Controller
         $start = $request->start;
         $rowperpage = 20;
         $searchValue = $request->search;
+        $idFamilia = $request->id_familia;
 
         $baseQuery = FacProductos::query();
 
@@ -68,6 +69,10 @@ class ProductosController extends Controller
                         ->orWhere('codigo', 'like', "%{$searchValue}%");
                     });
             });
+        }
+
+        if ($idFamilia) {
+            $baseQuery->where('id_familia', $idFamilia);
         }
 
         $totalProductos = (clone $baseQuery)->count();
@@ -89,9 +94,12 @@ class ProductosController extends Controller
                 'hijos.inventarios.bodega'
             ])
             ->whereIn('id', $productosIds)
+            ->when(isset($idFamilia), function ($query) use($idFamilia) {
+				$query->where('id_familia', $idFamilia);
+			})
             ->get();
 
-        $totales = $this->queryTotalesProducto($searchValue)
+        $totales = $this->queryTotalesProducto($searchValue, $idFamilia)
             ->selectRaw("
                 COUNT(DISTINCT FP.id) AS cantidad_productos,
                 SUM(FP.precio_inicial * FPB.cantidad) AS total_costo,
@@ -112,7 +120,7 @@ class ProductosController extends Controller
         ]);
     }
 
-    private function queryTotalesProducto($searchValue)
+    private function queryTotalesProducto($searchValue = null, $idFamilia = null)
     {
         return DB::connection('sam')->table('fac_productos AS FP')
             ->leftJoin('fac_productos_bodegas AS FPB', 'FP.id', 'FPB.id_producto')
@@ -122,6 +130,9 @@ class ProductosController extends Controller
 				    ->orWhere('FB.codigo', 'like', '%' .$searchValue. '%')
                     ->orWhere('FP.nombre', 'like', '%' .$searchValue. '%')
 				    ->orWhere('FP.codigo', 'like', '%' .$searchValue. '%');
+			})
+            ->when($idFamilia ? true : false, function ($query) use ($idFamilia){
+				$query->where('FP.id_familia', $idFamilia);
 			});
     }
 

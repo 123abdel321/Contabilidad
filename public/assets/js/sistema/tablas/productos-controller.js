@@ -12,6 +12,7 @@ var trProductoBodegaSelected = false;
 var $comboFamilia = null;
 var $comboBodega = null;
 var $comboBodegaVariante = null;
+var $comboFilterFamilia = null;
 var cacheProducto = null;
 
 var ivaIncluidoProductos = true;
@@ -63,7 +64,8 @@ function productosInit() {
             headers: headers,
             url: base_url + 'producto',
             data: function(d) {
-                d.search = $("#searchInputProductos").val()
+                d.search = $("#searchInputProductos").val(),
+                d.id_familia = $("#id_producto_filter_familia").val()
             }
         },
         columns: [
@@ -663,6 +665,37 @@ function productosInit() {
             }
         }
     });
+
+    $comboFilterFamilia  = $('#id_producto_filter_familia').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Filtrar por familias",
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            }
+        },
+        ajax: {
+            url: 'api/familia/combo-familia',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term
+                }
+                return query;
+            },
+            processResults: function(data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    }); 
 
     $comboBodega = $('#id_bodega_producto').select2({
         theme: 'bootstrap-5',
@@ -2142,6 +2175,12 @@ function actualizarTotalesCombo() {
     $('#precio_inicial').val(total.toFixed(2));
     addPrecioInicialProducto();
 }
+
+$("#id_producto_filter_familia").on('change', function(event) {
+    productos_table.ajax.reload(function(res) {
+        showTotalsProductos(res);
+    })
+});
 
 $(document).on('click', '#btn-agregar-item-combo', function() {
     var data = $('#id_producto_combo').select2('data');

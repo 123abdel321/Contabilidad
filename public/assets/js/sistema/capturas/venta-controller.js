@@ -522,8 +522,7 @@ function cargarCombosVenta() {
             text: primeraResolucionVenta[0].prefijo + ' - ' + primeraResolucionVenta[0].nombre
         };
         var newOption = new Option(dataResolucion.text, dataResolucion.id, false, false);
-        $comboResolucionVentas.append(newOption).trigger('change');
-        $comboResolucionVentas.val(dataResolucion.id).trigger('change');
+        $comboResolucionVentas.append(newOption).val(dataResolucion.id).trigger('change');
     }
 
     if(primeraBodegaVenta && primeraBodegaVenta.length > 0){
@@ -532,8 +531,16 @@ function cargarCombosVenta() {
             text: primeraBodegaVenta[0].codigo + ' - ' + primeraBodegaVenta[0].nombre
         };
         var newOption = new Option(dataBodega.text, dataBodega.id, false, false);
-        $comboBodegaVenta.append(newOption).trigger('change');
-        $comboBodegaVenta.val(dataBodega.id).trigger('change');
+        $comboBodegaVenta.append(newOption).val(dataBodega.id).trigger('change');
+    }
+
+    if (primeraNit) {
+        var dataCliente = {
+            id: primeraNit.id,
+            text: primeraNit.numero_documento + ' - ' + primeraNit.nombre_completo
+        };
+        var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
+        $comboCliente.append(newOption).val(dataCliente.id).trigger('change');
     }
 
     $('#id_cliente_venta').on('select2:close', function(event) {
@@ -681,8 +688,7 @@ function loadVendedorCliente() {
                     text: vendedor.numero_documento + ' - ' + vendedor.nombre_completo
                 };
                 var newOption = new Option(dataVendedor.text, dataVendedor.id, false, false);
-                $comboVendedor.append(newOption).trigger('change');
-                $comboVendedor.val(dataVendedor.id).trigger('change');
+                $comboVendedor.append(newOption).val(dataVendedor.id).trigger('change');
             }
         }
     }).fail((err) => {
@@ -1887,8 +1893,7 @@ $(document).on('click', '#saveNitVenta', function () {
                     text: res.data.numero_documento + ' - ' + res.data.nombre_completo
                 };
                 var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
-                $comboCliente.append(newOption).trigger('change');
-                $comboCliente.val(dataCliente.id).trigger('change');
+                $comboCliente.append(newOption).val(dataCliente.id).trigger('change');
 
                 agregarToast('exito', 'Creación exitosa', 'Cedula nit creada con exito!', true);
 

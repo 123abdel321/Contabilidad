@@ -117,6 +117,7 @@ class VentaController extends Controller
         }
         
         $clientePorDefecto = null;
+        
         if ($idClientePorDefecto) $clientePorDefecto = Nits::with('vendedor.nit')->where('id', $idClientePorDefecto)->first();
         else $clientePorDefecto = Nits::with('vendedor.nit')->where('numero_documento', 'LIKE', '22222%')->first();
 

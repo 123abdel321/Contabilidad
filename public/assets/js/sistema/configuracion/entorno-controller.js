@@ -476,6 +476,7 @@ $(document).on('click', '#updateEntorno', function () {
         cuenta_bancaria_nomina: $("#cuenta_bancaria_nomina").val(),
         tipo_cuenta_banco: $("#tipo_cuenta_banco").val(),
         id_comprobante_nomina: $("#id_comprobante_nomina").val(),
+        id_cliente_venta_defecto: $("#id_cliente_venta_defecto").val(),
         id_comprobante_parafiscales: $("#id_comprobante_parafiscales").val(),
         id_comprobante_seguridad_social: $("#id_comprobante_seguridad_social").val(),
         id_comprobante_prestaciones_sociales: $("#id_comprobante_prestaciones_sociales").val(),

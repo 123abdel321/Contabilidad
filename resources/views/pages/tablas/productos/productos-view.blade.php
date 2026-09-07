@@ -86,7 +86,7 @@
 <div class="container-fluid py-2">
     <div class="row">
         <div class="row" style="z-index: 9;">
-            <div class="col-12 col-md-9 col-sm-9">
+            <div class="col-12 col-md-6 col-sm-6">
                 @can('productos create')
                     <button type="button" class="btn btn-primary btn-sm" id="createProducto">Agregar producto</button>
                     <button type="button" class="btn btn-info btn-sm" id="saveNewProducto"  style="display: none; margin-right: 10px;">Guardar producto</button>
@@ -101,8 +101,14 @@
                     <i class="fas fa-sync-alt"></i>
                 </button>
             </div>
-            <div class="col-12 col-md-3 col-sm-3">
-                <input type="text" id="searchInputProductos" class="form-control form-control-sm search-table" placeholder="Buscar">
+            <div class="col-12 col-md-6 col-sm-6 row">
+                <div class="col-12 col-md-6 col-sm-6">
+                    <select name="id_producto_filter_familia" id="id_producto_filter_familia" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" placeholder="Familia">
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 col-sm-6">
+                    <input type="text" id="searchInputProductos" class="form-control form-control-sm search-table" placeholder="Buscar">
+                </div>
             </div>
         </div>
         
