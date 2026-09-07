@@ -88,7 +88,11 @@ class LoginController extends Controller
                 ->where('id_empresa', $empresaSelect->id)
                 ->first();
 
-            $user->syncPermissions(explode(',', $usuarioPermisosEmpresa->ids_permission));
+            if ($usuarioPermisosEmpresa && !empty($usuarioPermisosEmpresa->ids_permission)) {
+                $permisosIds = explode(',', $usuarioPermisosEmpresa->ids_permission);
+                $permisosIds = array_unique(array_map('intval', $permisosIds));
+                $user->syncPermissions($permisosIds);
+            }
 
             return response()->json([
                 'success'=>	true,
