@@ -25,6 +25,7 @@ class FacProductos extends Model
         'codigo',
         'nombre',
         'precio',
+        'precio_2',
         'precio_inicial',
         'precio_minimo',
         'porcentaje_utilidad',

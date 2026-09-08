@@ -27,6 +27,7 @@ function cargarVariablesDeEntorno() {
             'no_exonerado_parafiscales',
             'recordar_ultimo_precio_venta',
             'precio_ponderado',
+            'precios_multiples_venta',
         ];
 
         const select2Comprobantes = [
@@ -467,6 +468,7 @@ $(document).on('click', '#updateEntorno', function () {
         vendedores_ventas: $("input[type='checkbox']#vendedores_ventas").is(':checked') ? '1' : '',
         recordar_ultimo_precio_venta: $("input[type='checkbox']#recordar_ultimo_precio_venta").is(':checked') ? '1' : '',
         precio_ponderado: $("input[type='checkbox']#precio_ponderado").is(':checked') ? '1' : '',
+        precios_multiples_venta: $("input[type='checkbox']#precios_multiples_venta").is(':checked') ? '1' : '',
         ubicacion_maximoph: $("input[type='checkbox']#ubicacion_maximoph").is(':checked') ? '1' : '',
         salario_minimo: stringToNumberFloat($("#salario_minimo").val()),
         subsidio_transporte: stringToNumberFloat($("#subsidio_transporte").val()),

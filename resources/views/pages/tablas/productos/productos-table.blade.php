@@ -10,6 +10,7 @@
             <th>Existencia</th>
             <th>Costo</th>
             <th>Precio</th>
+            <th>Precio 2</th>
             <th>% Utilidad</th>
             <th>Valor Utilidad</th>
             <th>Bodegas</th>

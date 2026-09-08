@@ -115,6 +115,8 @@
 
 <div class="ventas-capturas-view container-fluid py-2">
 
+    @include('pages.capturas.venta.venta-nits-form')
+
     <div class="row">
         <div class="card mb-4">
             <div class="card-body" style="padding: 0 !important;">

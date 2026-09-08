@@ -83,6 +83,22 @@ function cargarTablasVenta() {
             },
             {//COSTO
                 "data": function (row, type, set, col){
+                    if (true) {
+                        return `
+                            <div class="input-group" style="width: 180px; height: 30px;">
+                                <input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right; height: 30px;" id="venta_costo_${idVentaProducto}" value="0" onkeydown="CostoVentakeyDown(${idVentaProducto}, event)" style="min-width: 100px;" onfocusout="calcularProductoVenta(${idVentaProducto})" onfocus="focusCostoVenta(${idVentaProducto})" disabled>
+                                <div id="texto_extracto_${idVentaProducto}" class="valid-feedback info-factura">Nueva factura</div>
+                                    <div class="input-group-append button-group">
+                                        <span href="javascript:void(0)" id="button_preciosventas_${idVentaProducto}" class="btn badge bg-gradient-light btn-group btn-precios-ventas" style="min-width: 30px; margin-right: 3px; border-radius: 0px 7px 7px 0px; height: 30px;">
+                                            <i class="fa-solid fa-money-bill" style="font-size: 17px; margin-top: 1px;"></i>
+                                            <b style="vertical-align: text-top;"></b>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
                     return `<input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right;" id="venta_costo_${idVentaProducto}" value="0" onkeydown="CostoVentakeyDown(${idVentaProducto}, event)" style="min-width: 100px;" onfocusout="calcularProductoVenta(${idVentaProducto})" onfocus="focusCostoVenta(${idVentaProducto})" disabled>`;
                 }
             },
@@ -1391,6 +1407,89 @@ function IvaVentakeyDown (idRow, event) {
 $(document).on('click', '#cancelarCapturaVenta', function () {
     cancelarVenta();
 });
+
+$(document).on('click', '.btn-precios-ventas', function () {
+    var idRow = this.id.split('_')[2];
+    mostrarPreciosVentas(idRow);
+});
+
+function mostrarPreciosVentas(idRow) {
+    if (!venta_table) cargarTablasVenta();
+
+    var dataProducto = $('#venta_producto_' + idRow).val();
+
+    if (dataProducto && dataProducto.length) {
+        dataProducto = $('#venta_producto_' + idRow).select2('data')[0];
+
+        console.log('dataProducto:', dataProducto);
+
+        var precio1 = parseFloat(dataProducto.precio || 0);
+        var precio2 = parseFloat(dataProducto.precio_2 || 0);
+
+        var opciones = '';
+
+        if (precio1 > 0) {
+            opciones += `
+                <button type="button" 
+                    class="btn btn-outline-primary btn-lg btn-precio"
+                    data-precio="${precio1}"
+                    style="margin: 5px; min-width: 180px;">
+                    <strong>Precio 1</strong><br>
+                    $${formatCurrencyValue(precio1)}
+                </button>
+            `;
+        }
+
+        if (precio2 > 0) {
+            opciones += `
+                <button type="button" 
+                    class="btn btn-outline-primary btn-lg btn-precio"
+                    data-precio="${precio2}"
+                    style="margin: 5px; min-width: 180px;">
+                    <strong>Precio 2</strong><br>
+                    $${formatCurrencyValue(precio2)}
+                </button>
+            `;
+        }
+
+        if (!opciones) {
+            Swal.fire({
+                title: 'Precios de venta',
+                text: 'El producto no tiene precios de venta configurados.',
+                icon: 'warning',
+                confirmButtonText: 'Aceptar'
+            });
+
+            return;
+        }
+
+        Swal.fire({
+            title: 'Seleccione el precio de venta',
+            html: `
+                <div style="display: flex; justify-content: center; flex-wrap: wrap;">
+                    ${opciones}
+                </div>
+            `,
+            showConfirmButton: false,
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            didOpen: () => {
+
+                $('.btn-precio').on('click', function () {
+
+                    var precioSeleccionado = parseFloat($(this).data('precio'));
+
+                    $('#venta_costo_' + idRow).val(formatCurrencyValue(precioSeleccionado));
+
+                    Swal.close();
+
+                    calcularProductoVenta(idRow);
+                });
+            }
+        });
+    }
+}
 
 function cancelarVenta() {
     idVentaProducto = 0;

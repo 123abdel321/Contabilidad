@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('codigo', 60)->unique();
             $table->string('nombre', 200);
             $table->decimal('precio', 15)->default(0);
+            $table->decimal('precio_2', 15)->default(0);
             $table->decimal('precio_inicial', 15)->default(0);
             $table->decimal('precio_minimo', 15)->default(0);
             $table->char('porcentaje_utilidad',30)->default(0);

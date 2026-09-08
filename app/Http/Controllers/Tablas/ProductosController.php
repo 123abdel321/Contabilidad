@@ -142,6 +142,7 @@ class ProductosController extends Controller
             'codigo' => 'required|min:1|max:200|string|unique:sam.fac_productos,codigo',
             'nombre' => 'required|min:1|max:200|string|unique:sam.fac_productos,nombre',
             'precio' => 'required|numeric',
+            'precio_2' => 'required|numeric',
             'id_familia' => 'required|exists:sam.fac_familias,id',
             'tipo_producto' => 'required|numeric|min:0',
             'precio_inicial' => 'required|numeric|min:0',
@@ -199,6 +200,7 @@ class ProductosController extends Controller
                 'codigo' => trim($request->get('codigo')),
                 'nombre' => trim($request->get('nombre')),
                 'precio' => $request->get('precio'),
+                'precio_2' => $request->get('precio_2'),
                 'precio_minimo' => $request->get('precio_minimo'),
                 'precio_inicial' => $request->get('precio_inicial'),
                 'porcentaje_utilidad' => $porcentajeUtilidad,
@@ -399,6 +401,7 @@ class ProductosController extends Controller
             $producto->codigo = trim($request->get('codigo'));
             $producto->nombre = trim($request->get('nombre'));
             $producto->precio = $request->get('precio');
+            $producto->precio_2 = $request->get('precio_2');
             $producto->precio_inicial = $request->get('precio_inicial');
             $producto->precio_minimo = $request->get('precio_minimo');
             $producto->porcentaje_utilidad = $request->get('porcentaje_utilidad');

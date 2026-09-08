@@ -51,7 +51,7 @@
 
                 <div class="row col-12 col-sm-6 col-md-8" style="text-align: -webkit-center;">
                     <div class="form-group col-6 col-sm-6 col-md-6" >
-                        <label for="example-text-input" class="form-control-label">Código</label>
+                        <label for="codigo_producto" class="form-control-label">Código</label>
                         <input type="text" class="form-control form-control-sm" name="codigo_producto" id="codigo_producto" onfocusout="addCodigoProducto()" onkeypress="keyPressCodigoProducto(event)" onfocus="focusCodigoProducto()" required>
                         <div class="invalid-feedback">
                             El campo Código es requerido
@@ -59,7 +59,7 @@
                     </div>
     
                     <div class="form-group col-6 col-sm-6 col-md-6" >
-                        <label for="example-text-input" class="form-control-label">Nombre</label>
+                        <label for="nombre_producto" class="form-control-label">Nombre</label>
                         <input type="text" class="form-control form-control-sm" name="nombre_producto" id="nombre_producto" onfocusout="addNombreProducto()" onkeypress="keyPressNombreProducto(event)" onfocus="focusNombreProducto()" required>
                         <div class="invalid-feedback">
                             El campo Nombre es requerido
@@ -94,7 +94,7 @@
                     </div>
 
                     <div id="div-precio_inicial" class="form-group col-6 col-sm-6 col-md-6" >
-                        <label for="example-text-input" class="form-control-label">Costo compra</label>
+                        <label for="precio_inicial" class="form-control-label">Costo compra</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="precio_inicial" id="precio_inicial" onfocus="this.select();" onfocusout="addPrecioInicialProducto()" onkeypress="changeCostoCompra(event)" value="0" required>
                         <div class="invalid-feedback">
                             El campo Precio inicial es requerido
@@ -102,7 +102,7 @@
                     </div>
 
                     <div id="div-porcentaje_utilidad" class="form-group col-6 col-sm-6 col-md-6">
-                        <label for="example-text-input" class="form-control-label">Porcentaje utilidad</label>
+                        <label for="porcentaje_utilidad" class="form-control-label">Porcentaje utilidad</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="porcentaje_utilidad" id="porcentaje_utilidad" onfocusout="addPorcentajeUtilidadProducto()" onkeypress="changePorcentajeUtilidad(event)" value="0" required>
                         <div class="invalid-feedback">
                             El campo Porcentaje utilidad es requerido
@@ -110,7 +110,7 @@
                     </div>
 
                     <div id="div-valor_utilidad" class="form-group col-6 col-sm-6 col-md-6">
-                        <label for="example-text-input" class="form-control-label">Valor utilidad</label>
+                        <label for="valor_utilidad" class="form-control-label">Valor utilidad</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="valor_utilidad" id="valor_utilidad" onfocusout="addValorUtilidadProducto()" onkeypress="changeValorUtilidad(event)" value="0">
                         <div class="invalid-feedback">
                             El campo Valor utilidad es requerido
@@ -118,8 +118,16 @@
                     </div>
 
                     <div class="form-group col-6 col-sm-6 col-md-6" >
-                        <label for="example-text-input" class="form-control-label">Valor venta</label>
+                        <label for="precio_producto" class="form-control-label">Valor venta</label>
                         <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="precio_producto" id="precio_producto" onfocusout="addPrecioProducto()" onkeypress="changeValorVenta(event)" value="0">
+                        <div class="invalid-feedback">
+                            El campo Precio es requerido
+                        </div>
+                    </div>
+
+                    <div class="form-group col-6 col-sm-6 col-md-6" >
+                        <label for="precio_producto_2" class="form-control-label">Valor venta 2</label>
+                        <input type="text" data-type="currency" class="form-control form-control-sm text-align-right" name="precio_producto_2" id="precio_producto_2" value="0">
                         <div class="invalid-feedback">
                             El campo Precio es requerido
                         </div>

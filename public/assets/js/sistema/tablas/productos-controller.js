@@ -23,6 +23,7 @@ var nuevoProducto = {
     codigo: '',
     id_familia: null,
     precio: 0,
+    precio_2: 0,
     tipo_producto: 0,
     precio_minimo: 0,
     precio_inicial: 0,
@@ -134,6 +135,7 @@ function productosInit() {
             },
             { "data": "precio_inicial", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
             { "data": "precio", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
+            { "data": "precio_2", render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
             {
                 "data": function(row, type, set) {
                     return parseFloat(row.porcentaje_utilidad).toFixed(2) + '%';
@@ -292,6 +294,7 @@ function productosInit() {
             $("#nombre_producto").val(dataProducto.nombre);
             $("#codigo_producto").val(dataProducto.codigo);
             $("#precio_producto").val(stringToNumberFloat(dataProducto.precio));
+            $("#precio_producto_2").val(stringToNumberFloat(dataProducto.precio_2));
             $("#precio_minimo").val(stringToNumberFloat(dataProducto.precio_minimo));
             $("#precio_inicial").val(stringToNumberFloat(dataProducto.precio_inicial));
             $("#porcentaje_utilidad").val(stringToNumberFloat(dataProducto.porcentaje_utilidad));
@@ -981,6 +984,7 @@ $(document).on('click', '#saveNewProducto', function() {
     $('#saveNewProductoLoading').show();
 
     nuevoProducto.variantes = getVariantesActivas();
+    nuevoProducto.precio_2 = stringToNumberFloat($('#precio_producto_2').val());
     nuevoProducto.tipo_tiempo = $("#tipo_tiempo_producto").val();
     nuevoProducto.tipo_vehiculo = $("#tipo_vehiculo_producto").val();
     nuevoProducto.fraccion_hora = $("input[type='checkbox']#fraccion_hora").is(':checked') ? '1' : '';
@@ -1040,6 +1044,7 @@ $(document).on('click', '#saveEditProducto', function() {
     nuevoProducto.tipo_tiempo = $("#tipo_tiempo_producto").val();
     nuevoProducto.tipo_vehiculo = $("#tipo_vehiculo_producto").val();
     nuevoProducto.id_familia = parseInt($('#id_familia_producto').val());
+    nuevoProducto.precio_2 = stringToNumberFloat($('#precio_producto_2').val());
     nuevoProducto.fraccion_hora = $("input[type='checkbox']#fraccion_hora").is(':checked') ? '1' : '';
     nuevoProducto.estado = $("input[type='checkbox']#producto_estado").is(':checked') ? '1' : '';
 
@@ -1121,6 +1126,7 @@ function clearFormProductos() {
     $('#nombre_producto').val('');
     $('#codigo_producto').val('');
     $('#precio_producto').val(0);
+    $('#precio_producto_2').val(0);
     $('#valor_utilidad').val(0);
     $('#porcentaje_iva').val(0);
     $('#precio_inicial').val(0);
@@ -1463,6 +1469,7 @@ function generarVariantesProductos() {
 
                 cacheNuevosProductos = cacheNuevosProductos.concat({
                     precio: nuevoProducto.precio,
+                    precio_2: nuevoProducto.precio_2,
                     codigo: nuevoProducto.codigo,
                     precio_minimo: nuevoProducto.precio_minimo,
                     precio_inicial: nuevoProducto.precio_inicial,
@@ -1475,6 +1482,7 @@ function generarVariantesProductos() {
 
                 nuevoProducto.productos_variantes = nuevoProducto.productos_variantes.concat({
                     precio: nuevoProducto.precio,
+                    precio_2: nuevoProducto.precio_2,
                     codigo: nuevoProducto.codigo,
                     precio_minimo: nuevoProducto.precio_minimo,
                     precio_inicial: nuevoProducto.precio_inicial,
@@ -1497,6 +1505,7 @@ function generarVariantesProductos() {
                     var varianteCache = productoCache.variantesc;
                     var newData = {
                         precio: nuevoProducto.precio,
+                        precio_2: nuevoProducto.precio_2,
                         codigo: nuevoProducto.codigo,
                         precio_minimo: nuevoProducto.precio_minimo,
                         precio_inicial: nuevoProducto.precio_inicial,
@@ -2636,6 +2645,7 @@ function addValorUtilidadProducto() {
 
 function actualizarDatosProducto() {
     nuevoProducto.precio = stringToNumberFloat($('#precio_producto').val());
+    nuevoProducto.precio_2 = stringToNumberFloat($('#precio_producto_2').val());
     nuevoProducto.precio_minimo = stringToNumberFloat($('#precio_minimo').val());
     nuevoProducto.precio_inicial = stringToNumberFloat($('#precio_inicial').val());
     nuevoProducto.porcentaje_utilidad = stringToNumberFloat($('#porcentaje_utilidad').val());
