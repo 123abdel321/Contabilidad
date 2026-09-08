@@ -24,6 +24,7 @@ var validarExistenciasProducto = null;
 
 function ventaInit () {
 
+    cargarchangesVenta();
     cargarFechasVentas();
     cargarTablasVenta();
     cargarCombosVenta();
@@ -731,15 +732,23 @@ $(document).on('keydown', '.custom-id_cliente_venta .select2-search__field', fun
     }
 });
 
-$("#id_vendedor_venta").on('change', function(event) {
-    if ($("#id_vendedor_venta").val()) {
-        $("#crearCapturaVenta").show();
-        $("#crearCapturaVentaDisabled").hide();
-    } else {
-        $("#crearCapturaVenta").hide();
-        $("#crearCapturaVentaDisabled").show();
-    }
-});
+
+
+function cargarchangesVenta() {
+    $("#id_vendedor_venta").on('change', function(event) {
+        if ($("#id_vendedor_venta").val()) {
+            $("#crearCapturaVenta").show();
+            $("#crearCapturaVentaDisabled").hide();
+        } else {
+            $("#crearCapturaVenta").hide();
+            $("#crearCapturaVentaDisabled").show();
+        }
+    });
+
+    $("#id_resolucion_venta").on('change', function(event) {
+        consecutivoSiguienteVenta();
+    });
+}
 
 function consecutivoSiguienteVenta() {
     var id_resolucion = $('#id_resolucion_venta').val();
@@ -768,10 +777,6 @@ function consecutivoSiguienteVenta() {
         });
     }
 }
-
-$("#id_resolucion_venta").on('change', function(event) {
-    consecutivoSiguienteVenta();
-});
 
 $("#fecha_manual_venta").on('keydown', function(event) {
     if(event.keyCode == 13){
@@ -875,7 +880,7 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
     var descuentoProducto = $('#venta_descuento_porcentaje_'+idRow).val();
     var totalPorCantidad = 0;
     var totalIva = 0;
-    var totalDescuento = 0;
+    var totalDescuento = stringToNumberFloat($('#venta_descuento_valor_' + idRow).val());;
     var totalProducto = 0;
 
     if (validarCantidad && !validarExistencias(idRow)) return;
@@ -884,12 +889,13 @@ function calcularProductoVenta (idRow, validarCantidad = false) {
         totalPorCantidad = cantidadProducto * costoProducto;
     }
 
-    if (descuentoProducto > 0) {
-        totalDescuento = totalPorCantidad * (descuentoProducto / 100);
-        $('#venta_descuento_valor_'+idRow).val(formatCurrencyValue(totalDescuento));
+    if (totalDescuento > 0 && totalPorCantidad > 0) {
+        descuentoProducto = (totalDescuento / totalPorCantidad) * 100;
+        $('#venta_descuento_porcentaje_' + idRow).val(descuentoProducto.toFixed(2));
     } else {
-        $('#venta_descuento_porcentaje_'+idRow).val(formatCurrencyValue(0));
-        $('#venta_descuento_valor_'+idRow).val(formatCurrencyValue(0));
+        descuentoProducto = 0;
+        $('#venta_descuento_porcentaje_' + idRow).val(formatCurrencyValue(0));
+        $('#venta_descuento_valor_' + idRow).val(formatCurrencyValue(0));
     }
 
     totalProducto = totalPorCantidad - totalDescuento;
@@ -1634,6 +1640,7 @@ function saveVenta() {
         guardandoVenta = false;
         if(res.success){
 
+            consecutivoSiguienteVenta();
             agregarToast('exito', 'Creación exitosa', 'Venta creada con exito!', true);
 
             $("#crearCapturaVenta").show();
@@ -1662,7 +1669,6 @@ function saveVenta() {
                 },10);
             }
 
-            consecutivoSiguienteVenta();
             loadAnticiposCliente();
             disabledFormasPagoVenta();
             cargarFechasVentas();
