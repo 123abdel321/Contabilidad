@@ -262,6 +262,7 @@
         var valor_uvt = @json($valor_uvt);
         var cuentaPropina = @json($cuentaPropina);
         var porcentajePropina = @json($porcentajePropina);
+        var multiplesPrecios = @json($multiplesPrecios);
 
     </script>
     

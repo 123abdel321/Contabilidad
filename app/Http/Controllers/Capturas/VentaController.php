@@ -111,6 +111,8 @@ class VentaController extends Controller
         $cuentaPropina = $cuentaPropina && $cuentaPropina->valor ? $cuentaPropina->valor : null;
         $porcentajePropina = VariablesEntorno::where('nombre', 'porcentaje_propina')->first();
         $porcentajePropina = $porcentajePropina && $porcentajePropina->valor ? $porcentajePropina->valor : null;
+        $multiplesPrecios = VariablesEntorno::where('nombre', 'precios_multiples_venta')->first();
+        $multiplesPrecios = $multiplesPrecios && $multiplesPrecios->valor ? $multiplesPrecios->valor : null;
 
         if ($cuentaPropina) {
             $cuentaPropina = PlanCuentas::where('cuenta', $cuentaPropina)->first();
@@ -131,6 +133,7 @@ class VentaController extends Controller
             'cliente' => $clientePorDefecto,
             'resolucion' => $resolucionesData,
             'cuentaPropina' => $cuentaPropina,
+            'multiplesPrecios' => $multiplesPrecios,
             'porcentajePropina' => $porcentajePropina,
             'valor_uvt' => $valorUVT ? $valorUVT->valor : 0,
             'bodegas' => FacBodegas::whereIn('id', $bodegas)->get(),

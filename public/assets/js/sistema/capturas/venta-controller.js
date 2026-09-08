@@ -83,7 +83,7 @@ function cargarTablasVenta() {
             },
             {//COSTO
                 "data": function (row, type, set, col){
-                    if (true) {
+                    if (multiplesPrecios) {
                         return `
                             <div class="input-group" style="width: 180px; height: 30px;">
                                 <input type="text" data-type="currency" class="form-control form-control-sm" style="min-width: 100px; text-align: right; height: 30px;" id="venta_costo_${idVentaProducto}" value="0" onkeydown="CostoVentakeyDown(${idVentaProducto}, event)" style="min-width: 100px;" onfocusout="calcularProductoVenta(${idVentaProducto})" onfocus="focusCostoVenta(${idVentaProducto})" disabled>
