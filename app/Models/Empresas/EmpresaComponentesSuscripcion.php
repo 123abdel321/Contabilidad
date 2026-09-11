@@ -24,11 +24,13 @@ class EmpresaComponentesSuscripcion extends Model
         'updated_by'
     ];
 
-    public function componente (){
+    public function componente ()
+    {
         return $this->belongsTo("App\Models\Empresas\ComponentesSuscripcion", "id_componente", "id");
     }
 
-    public function menus (){
+    public function menus ()
+    {
         return $this->hasMany("App\Models\Empresas\ComponentesMenu", "id_componente", "id_componente");
     }
 }

@@ -36,7 +36,9 @@ class EmpresaController extends Controller
 
     public function index(Request $request)
     {
-        // $user = $request->user();
+        $user = $request->user();
+        $esDios = $user->rol_portafolio;
+
         // $user->permisos = [];
 		// $empresasExternas = $user->empresasExternas->pluck("id_empresa");
 		// $empresasExternas = $empresasExternas->toArray();
@@ -59,14 +61,15 @@ class EmpresaController extends Controller
         //     $q->orWhere("id_usuario_owner",$user->id);
         // });
 
-        // $data = [
-        //     'empresa' => $empresa,
-        //     'empresas' => $query->get(),
-        //     'responsabilidades' => $responsabilidades,
-        //     'capturarDocumentosDescuadrados' => $capturarDocumentosDescuadrados,
-        // ];
+        $data = [
+            // 'empresa' => $empresa,
+            // 'empresas' => $query->get(),
+            // 'responsabilidades' => $responsabilidades,
+            // 'capturarDocumentosDescuadrados' => $capturarDocumentosDescuadrados,
+            'esDios' => $esDios
+        ];
         
-        return view('pages.configuracion.empresa.empresa-view');
+        return view('pages.configuracion.empresa.empresa-view', $data);
     }
 
     public function generate (Request $request)
@@ -317,6 +320,21 @@ class EmpresaController extends Controller
         }
 
         return $actividadEconomica->paginate(40);
+    }
+
+    public function comboEmpresas(Request $request)
+    {
+        $empresas = Empresa::select(
+            \DB::raw('*'),
+            \DB::raw("CONCAT(nit, ' - ', razon_social) as text")
+        );
+
+        if ($request->get("q")) {
+            $empresas->where('razon_social', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nit', 'LIKE', '%' . $request->get("q") . '%');
+        }
+
+        return $empresas->paginate(40);
     }
 
     private function getNitCompleto($dataPage)

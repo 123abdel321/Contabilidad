@@ -76,6 +76,7 @@ use App\Http\Controllers\Sistema\UbicacionController;
 use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
 use App\Http\Controllers\Configuracion\ReunionesController;
+use App\Http\Controllers\Configuracion\SuscripcionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,11 +114,16 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get("usuario-accion","App\Http\Controllers\ApiController@getUsuario");
     Route::post("empresa","App\Http\Controllers\InstaladorController@createEmpresa");
     Route::post("seleccionar-empresa","App\Http\Controllers\ApiController@setEmpresa");
-    Route::get('responsabilidades-combo', 'App\Http\Controllers\Configuracion\EmpresaController@comboResponsabilidades');
-    Route::get('actividad-economica-combo', 'App\Http\Controllers\Configuracion\EmpresaController@comboActividadEconomica');
-    //CONFIGURACION
-    Route::put('empresa', 'App\Http\Controllers\Configuracion\EmpresaController@updateEmpresa');
-    Route::put('entorno', 'App\Http\Controllers\Configuracion\EntornoController@updateEntorno');
+    
+    Route::controller(EmpresaController::class)->group(function () {
+        //CONFIGURACION
+        Route::put('empresa', 'updateEmpresa');
+        Route::put('entorno', 'updateEmpresa');
+        //COMBOS
+        Route::get('empresas-combo', 'comboEmpresas');
+        Route::get('responsabilidades-combo', 'comboResponsabilidades');
+        Route::get('actividad-economica-combo', 'comboActividadEconomica');
+    });
 
     //ANIO CERRADO
     Route::get("anio-cerrado","App\Http\Controllers\Capturas\DocumentoGeneralController@getAnioCerrado");
@@ -260,6 +266,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('usuarios', 'create');
             Route::put('usuarios', 'update');
             Route::get('usuarios/combo', 'comboUsuario');
+            Route::get('generate-empresa', 'generateEmpresas');
+            Route::post('usuario-empresa', 'createEmpresas');
+            Route::delete('usuario-empresa', 'deleteEmpresas');
         });
         //REUNIONES
         Route::controller(ReunionesController::class)->group(function () {
@@ -272,6 +281,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('reuniones-participantes', 'createParticipantes');
             Route::delete('reuniones-participantes', 'deleteParticipantes');
         });
+        Route::controller(SuscripcionController::class)->group(function () {
+            Route::get('suscripcion-componentes', 'componentesGet');
+            Route::post('suscripcion-componentes', 'componentesPost');
+            Route::get('suscripcion-combos', 'combosGet');
+        });
+        
         //IMPUESTOS
         Route::controller(ImpuestoController::class)->group(function () {
             Route::get('impuesto', 'generate');

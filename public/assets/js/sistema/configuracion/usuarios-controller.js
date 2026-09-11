@@ -1,10 +1,23 @@
+var id_usuario_filter = null;
 var usuarios_table = null;
+var usuarios_empresa_table = null;
 var permisosUsuarios = [];
+var searchTimeoutUsuarios;
 var $comboBodegaUsuario = null;
 var $comboResolucionUsuario = null;
+var $comboUsuarioFilterEmpresa = null;
 
 function usuariosInit() {
 
+    cargarCombosUsuarios();
+    cargarTablasUsuarios();
+    cargarChangesUsuarios();
+    cargarPermisosUsuarios();
+
+    $('.water').hide();
+}
+
+function cargarTablasUsuarios() {
     usuarios_table =  $('#usuariosTable').DataTable({
         pageLength: 15,
         dom: 'Brtip',
@@ -25,6 +38,10 @@ function usuariosInit() {
             type: "GET",
             headers: headers,
             url: base_url + 'usuarios',
+            data: function(d) {
+                d.search = $("#searchInputUsuarios").val(),
+                d.id_empresa_filter = $("#id_empresa_filter_usuario").val()
+            }
         },
         columns: [
             {"data":'username'},
@@ -54,7 +71,47 @@ function usuariosInit() {
                 "data": function (row, type, set){
                     var html = '';
                     html+= '<span id="editusuarios_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-usuarios" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    if (esDios) html+= `<span id="asociarempresa_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-primary asociar-empresa-usuarios" style="margin-bottom: 0rem !important; min-width: 50px;">Empresas</span>`;
                     // if (eliminarUsuarios) html+= '<span id="deleteusuarios_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-usuarios" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
+                    return html;
+                }
+            },
+        ]
+    });
+
+    usuarios_empresa_table = $('#usuariosEmpresaTable').DataTable({
+        pageLength: 15,
+        dom: 'Brtip',
+        paging: true,
+        responsive: false,
+        processing: true,
+        serverSide: true,
+        fixedHeader: true,
+        deferLoading: 0,
+        initialLoad: false,
+        language: lenguajeDatatable,
+        sScrollX: "100%",
+        fixedColumns : {
+            left: 0,
+            right : 1,
+        },
+        ajax:  {
+            type: "GET",
+            headers: headers,
+            url: base_url + 'generate-empresa',
+            data: function(d) {
+                d.id_usuario = id_usuario_filter
+            }
+        },
+        columns: [
+            {"data":'empresa.nit'},
+            {"data":'empresa.razon_social'},
+            {"data":'rol.name'},
+            {
+                "data": function (row, type, set){
+                    var html = '';
+                    // html+= '<span id="editusuarioempresa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-success edit-usuario-empresa" style="margin-bottom: 0rem !important; min-width: 50px;">Editar</span>&nbsp;';
+                    html+= '<span id="deleteusuarioempresa_'+row.id+'" href="javascript:void(0)" class="btn badge bg-gradient-danger drop-usuario-empresa" style="margin-bottom: 0rem !important; min-width: 50px;">Eliminar</span>';
                     return html;
                 }
             },
@@ -104,8 +161,99 @@ function usuariosInit() {
             $('.permiso-item').trigger('change');
             $("#usuariosFormModal").modal('show');
         });
+
+        usuarios_table.on('click', '.asociar-empresa-usuarios', function() {
+            var trInmueble = $(this).closest('tr');
+            var id = this.id.split('_')[1];
+            var data = getDataById(id, usuarios_table);
+
+            id_usuario_filter = data.id;
+
+            $('#volverUsuarios').show();
+            $('#asociarEmpresaUsuarios').show();
+            $('#nombre_usuario_empresa').show();
+            $('#tablas_usuarios_empresas_view').show();
+
+            $('#reloadUsuarios').hide();
+            $('#createUsuarios').hide();
+            $('#tablas_usuarios_view').hide();
+            $('#searchInputUsuarios').hide();
+
+            $('#div-searchInputUsuarios').hide();
+            $('#div-id_empresa_filter_usuario').hide();
+
+            $("#nombre_usuario_empresa").html(data.nombre_completo);
+
+            usuarios_empresa_table.ajax.reload();
+        });
     }
 
+    if (usuarios_empresa_table) {
+        usuarios_empresa_table.on('click', '.drop-usuario-empresa', function() {
+            var id = this.id.split('_')[1];
+            var data = getDataById(id, usuarios_empresa_table);
+
+            Swal.fire({
+                title: `Desasociar empresa ${data.empresa.razon_social}?`,
+                text: "No se podrá revertir!",
+                type: 'warning',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Desasociar!',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.value){
+                    $.ajax({
+                        url: base_url + 'usuario-empresa',
+                        method: 'DELETE',
+                        data: JSON.stringify({
+                            id_usuario: data.id_usuario,
+                            id_empresa: data.id_empresa,
+                        }),
+                        headers: headers,
+                        dataType: 'json',
+                    }).done((res) => {
+                        if(res.success){
+                            usuarios_empresa_table.ajax.reload();
+                            agregarToast('exito', 'Desasociación exitosa', 'Empresa desasociar con exito!', true );
+                        } else {
+                            agregarToast('error', 'Desasociación errada', res.message);
+                        }
+                    }).fail((res) => {
+                        agregarToast('error', 'Desasociación errada', res.message);
+                    });
+                }
+            })
+        });
+    }
+
+    usuarios_table.ajax.reload();
+}
+
+$(document).on('click', '#volverUsuarios', function() {
+    $('#volverUsuarios').hide();
+    $('#asociarEmpresaUsuarios').hide();
+    $('#nombre_usuario_empresa').hide();
+    $('#tablas_usuarios_empresas_view').hide();
+
+    $('#reloadUsuarios').show();
+    $('#createUsuarios').show();
+    $('#tablas_usuarios_view').show();
+    $('#searchInputUsuarios').show();
+    $('#div-searchInputUsuarios').show();
+    $('#div-id_empresa_filter_usuario').show();
+});
+
+$(document).on('click', '#asociarEmpresaUsuarios', function() {
+    clearFormUsuariosEmpresa();
+
+    $("#saveUsuarios").show();
+    $("#usuariosEmpresaFormModal").modal('show');
+});
+
+function cargarCombosUsuarios() {
     $comboResolucionUsuario = $('#id_resolucion_usuario').select2({
         theme: 'bootstrap-5',
         dropdownParent: $('#usuariosFormModal'),
@@ -116,6 +264,82 @@ function usuariosInit() {
         dropdownParent: $('#usuariosFormModal'),
     });
 
+    $comboFilterEmpresaUsuario  = $('#id_empresa_filter_usuario').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        placeholder: "Filtrar por empresas",
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No hay resultado";        
+            },
+            searching: function() {
+                return "Buscando..";
+            }
+        },
+        ajax: {
+            url: 'api/empresas-combo',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term
+                }
+                return query;
+            },
+            processResults: function(data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+
+    $('#id_empresa_usuario_create').select2({
+        theme: 'bootstrap-5',
+        delay: 250,
+        ajax: {
+            url: 'api/empresas-combo',
+            headers: headers,
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term
+                }
+                return query;
+            },
+            processResults: function(data) {
+                return {
+                    results: data.data
+                };
+            }
+        }
+    });
+    
+    if (esDios && dataEmpresa) {
+        const dataComboEmpresa = {
+            id: dataEmpresa.id,
+            text: dataEmpresa.nit + ' - ' + dataEmpresa.razon_social
+        };
+        var newOption = new Option(dataComboEmpresa.text, dataComboEmpresa.id, false, false);
+        $comboFilterEmpresaUsuario.append(newOption).val(dataComboEmpresa.id).trigger('change');
+    }
+}
+
+function cargarChangesUsuarios() {
+    $("#id_empresa_filter_usuario").on('change', function(event) {
+        usuarios_table.ajax.reload();
+    });
+
+    $("#searchInputUsuarios").on("input", function() {
+        clearTimeout(searchTimeoutUsuarios);
+        searchTimeoutUsuarios = setTimeout(function() {
+            usuarios_table.ajax.reload();
+        }, 300);
+    });
+}
+
+function cargarPermisosUsuarios() {
     if (componentesMenu && componentesMenu.length > 0) {
         for (let i = 0; i < componentesMenu.length; i++) {
             const componente = componentesMenu[i];
@@ -135,14 +359,23 @@ function usuariosInit() {
             }
         }
     }
-
-    $('.water').hide();
-    usuarios_table.ajax.reload();
 }
 
 $("#searchInputUsuarios").on("input", function (e) {
     usuarios_table.context[0].jqXHR.abort();
     $('#usuariosTable').DataTable().search($("#searchInputUsuarios").val()).draw();
+});
+
+$(document).on('click', '#reloadUsuarios', function() {
+    $("#reloadUsuariosIconNormal").hide();
+    $("#reloadUsuariosIconLoading").show();
+
+    setTimeout(function(){
+        $("#reloadUsuariosIconNormal").show();
+        $("#reloadUsuariosIconLoading").hide();
+    },1000);
+
+    usuarios_table.ajax.reload();
 });
 
 $(document).on('click', '#createUsuarios', function () {
@@ -168,6 +401,11 @@ function clearFormUsuarios(){
     $("#id_resolucion_usuario").val('').change();
     $("#password_confirm").val('');
     $("#telefono_usuario").val('');
+}
+
+function clearFormUsuariosEmpresa() {
+    $("#id_empresa_usuario_create").val('').change();
+    $("#id_empresa_rol_create").val('').change();
 }
 
 function usuarioNombre(event){
@@ -230,19 +468,54 @@ $(document).on('click', '#saveUsuarios', function () {
     }).fail((err) => {
         $('#saveUsuarios').show();
         $('#saveUsuariosLoading').hide();
-        var errorsMsg = "";
+        
         var mensaje = err.responseJSON.message;
-        if(typeof mensaje  === 'object' || Array.isArray(mensaje)){
-            for (field in mensaje) {
-                var errores = mensaje[field];
-                for (campo in errores) {
-                    errorsMsg += "- "+errores[campo]+" <br>";
-                }
-            };
-        } else {
-            errorsMsg = mensaje
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Asosiación errada', errorsMsg);
+    });
+
+});
+
+$(document).on('click', '#usuariosEmpresaCreate', function () {
+    var form = document.querySelector('#usuariosEmpresaForm');
+
+    if(!form.checkValidity()){
+        form.classList.add('was-validated');
+        return;
+    }
+
+    $("#usuariosEmpresaCreateLoading").show();
+    $("#usuariosEmpresaCreate").hide();
+
+    let data = {
+        id_usuario: id_usuario_filter,
+        id_empresa: $("#id_empresa_usuario_create").val(),
+        id_rol: $("#id_empresa_rol_create").val()
+    }
+
+    $.ajax({
+        url: base_url + 'usuario-empresa',
+        method: 'POST',
+        data: JSON.stringify(data),
+        headers: headers,
+        dataType: 'json',
+    }).done((res) => {
+        if(res.success){
+            clearFormUsuarios();
+            $("#usuariosEmpresaCreate").show();
+            $("#usuariosEmpresaCreateLoading").hide();
+
+            $("#usuariosEmpresaFormModal").modal('hide');
+            usuarios_empresa_table.row.add(res.data).draw();
+            agregarToast('exito', 'Asosiación exitosa', 'Empresa asociada con exito!', true);
         }
-        agregarToast('error', 'Creación errada', errorsMsg);
+    }).fail((err) => {
+        $('#usuariosEmpresaCreate').show();
+        $('#usuariosEmpresaCreateLoading').hide();
+        
+        var mensaje = err.responseJSON.message;
+        var errorsMsg = arreglarMensajeError(mensaje);
+        agregarToast('error', 'Asosiación errada', errorsMsg);
     });
 
 });

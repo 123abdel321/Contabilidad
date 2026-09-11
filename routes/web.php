@@ -79,6 +79,7 @@ use App\Http\Controllers\Configuracion\EntornoController;
 use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
 use App\Http\Controllers\Configuracion\ReunionesController;
+use App\Http\Controllers\Configuracion\SuscripcionController;
 //IMPORTADORES
 use App\Http\Controllers\Importador\NitsImportadorController;
 use App\Http\Controllers\Importador\ProductoImportadorController;
@@ -367,6 +368,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		//REUNIONES
 		Route::get('/reuniones', [ReunionesController::class, 'index'])->name('reuniones');
 		Route::get('/reuniones-event', [ReunionesController::class, 'read'])->name('reuniones.event');
+
+		Route::get('/suscripcion', [SuscripcionController::class, 'index'])->name('suscripcion');
 
 		//IMPORTADORES PRODUCTOS
 		Route::get('/productoprecios', [ProductoImportadorController::class, 'indexPrecios']);

@@ -16,8 +16,8 @@ use App\Models\Sistema\FacBodegas;
 use App\Models\Empresas\UsuarioEmpresa;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Empresas\UsuarioPermisos;
-
-
+use App\Models\Empresas\ComponentesMenu;
+use App\Models\Empresas\EmpresaSuscripcion;
 
 class UsuariosController extends Controller
 {
@@ -37,7 +37,10 @@ class UsuariosController extends Controller
 
     public function index (Request $request)
     {
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])
+        $user = $request->user();
+        $esDios = $user['rol_portafolio'];
+
+        $empresa = Empresa::where('token_db', $user['has_empresa'])
             ->with(
                 'suscripcionActiva.componentes.menus.permisos',
                 'suscripcionActiva.componentes.menus.padre',
@@ -45,11 +48,19 @@ class UsuariosController extends Controller
             )
             ->first();
 
+        $dataEmpresa = [
+            'id' => $empresa->id,
+            'razon_social' => $empresa->razon_social,
+            'nit' => $empresa->nit,
+        ];
+
         $data = [
             'roles' => Role::where('id', '!=', 1)->get(),
             'bodegas' => FacBodegas::all(),
             'resoluciones' => FacResoluciones::all(),
-            'componentes' => $empresa->suscripcionActiva->componentes
+            'componentes' => $empresa->suscripcionActiva->componentes ?? [],
+            'esDios' => $esDios,
+            'dataEmpresa' => $dataEmpresa
         ];
         
         return view('pages.configuracion.usuarios.usuarios-view', $data);
@@ -64,28 +75,38 @@ class UsuariosController extends Controller
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+        $columnIndex = $columnIndex_arr[0]['column'];
+        $columnName = $columnName_arr[$columnIndex]['data'];
+        $columnSortOrder = $order_arr[0]['dir'];
+        $searchValue = $request->get('search');
 
+        $esDios = $request->user()['rol_portafolio'];
         $idEmpresa = $request->user()['id_empresa'];
+        $idEmpresaFilter = $request->get('id_empresa_filter');
         
         // Consulta base: usuarios que pertenecen a la empresa actual
         $usuarios = User::orderBy($columnName, $columnSortOrder)
             ->with(['roles', 'permissions', 'permisos'])
-            ->withWhereHas('permisos', function ($query) use ($idEmpresa) {
-                $query->where('id_empresa', $idEmpresa);
-            })
             ->select(
                 '*',
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %T') AS fecha_creacion"),
                 DB::raw("DATE_FORMAT(updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
                 'created_by',
                 'updated_by'
-            );
+            );            
+
+        if ($esDios) {
+            if ($idEmpresaFilter) {
+                $usuarios->withWhereHas('permisos', function ($query) use ($idEmpresaFilter) {
+                    $query->where('id_empresa', $idEmpresaFilter);
+                });
+            }
+        } else {
+            $usuarios->withWhereHas('permisos', function ($query) use ($idEmpresa) {
+                $query->where('id_empresa', $idEmpresa);
+            });
+        }
 
         // Aplicar búsqueda si existe
         if ($searchValue) {
@@ -102,6 +123,51 @@ class UsuariosController extends Controller
 
         // Obtener datos paginados
         $usuariosPaginate = $usuarios->skip($start)
+            ->take($rowperpage)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'draw' => $draw,
+            'iTotalRecords' => $usuariosTotals->count(),
+            'iTotalDisplayRecords' => $usuariosTotals->count(),
+            'data' => $usuariosPaginate,
+            'perPage' => $rowperpage,
+            'message' => 'Usuarios cargados con éxito!'
+        ]);
+    }
+
+    public function generateEmpresas(Request $request)
+    {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length");
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+
+        $columnIndex = $columnIndex_arr[0]['column'];
+        $columnName = $columnName_arr[$columnIndex]['data'];
+        $columnSortOrder = $order_arr[0]['dir'];
+        $idUsuario = $request->get('id_usuario');
+
+        $esDios = $request->user()['rol_portafolio'];
+        // Consulta base: usuarios que pertenecen a la empresa actual
+        $empresas = UsuarioEmpresa::with('empresa', 'rol')
+            ->select(
+                '*'
+            );            
+
+        if ($idUsuario) {
+            $empresas->where('id_usuario', $idUsuario);
+        }
+
+        // Obtener el total de registros
+        $usuariosTotals = $empresas->get();
+
+        // Obtener datos paginados
+        $usuariosPaginate = $empresas->skip($start)
             ->take($rowperpage)
             ->get();
 
@@ -304,6 +370,86 @@ class UsuariosController extends Controller
         }
     }
 
+    public function createEmpresas(Request $request)
+    {
+        $rules = [
+            'id_usuario' => 'required|exists:App\Models\User,id',
+            'id_rol' => 'required|exists:App\Models\Empresas\Rol,id',
+            'id_empresa' => 'required|exists:App\Models\Empresas\Empresa,id',
+        ];
+        
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+        if ($validator->fails()){
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => $validator->errors()
+            ], 422);
+        }
+        
+        try {
+            DB::connection('clientes')->beginTransaction();
+
+            UsuarioEmpresa::updateOrCreate(
+                [
+                    'id_usuario' => $request->get('id_usuario'),
+                    'id_empresa' => $request->get('id_empresa')
+                ],
+                [
+                    'id_rol' => $request->get('id_rol'), 
+                    'estado' => 1,
+                ]
+            );
+
+            if ($request->get('id_rol') == 2 || $request->get('id_rol') == 1) {
+                $empresaSuscripcion = EmpresaSuscripcion::where('id_empresa', $request->get('id_empresa'))
+                    ->where('estado', 1)
+                    ->with('componentes')
+                    ->first();
+
+                if ($empresaSuscripcion) {
+                    $permisos = [];
+                    $componentes = $empresaSuscripcion->componentes;
+                    foreach ($componentes as $componente) {
+                        $componentesHijos = ComponentesMenu::where('id_componente', $componente->id_componente)
+                            ->with('permisos')
+                            ->get();
+
+                        if (count($componentesHijos)) {
+                            foreach ($componentesHijos as $hijo) {
+                                foreach ($hijo->permisos as $permiso) {
+                                    $permisos[] = $permiso->id;
+                                }
+                            }
+                        }
+                    }
+
+                    UsuarioPermisos::create([
+                        'id_user' => $request->get('id_usuario'),
+                        'id_empresa' => $request->get('id_empresa'),
+                        'ids_permission' => implode(',', $permisos)
+                    ]);
+                }
+            }
+
+            DB::connection('clientes')->commit();
+
+            return response()->json([
+                'success'=>	true,   
+                'data' => '',
+                'message'=> 'Usuario actualizado con exito!'
+            ]);
+        } catch (Exception $e) {
+            DB::connection('clientes')->rollback();
+            return response()->json([
+                "success" => false,
+                'data' => [],
+                "message" => $e->getMessage()
+            ], 422);
+        }
+    }
+
     public function update (Request $request)
     {
         $rules = [
@@ -434,6 +580,38 @@ class UsuariosController extends Controller
         }
 
         return $usuario->paginate(40);
+    }
+
+    public function deleteEmpresas (Request $request)
+    {
+        try {
+
+            DB::connection('clientes')->beginTransaction();
+
+            UsuarioEmpresa::where('id_usuario', $request->get('id_usuario'))
+                ->where('id_empresa', $request->get('id_empresa'))
+                ->delete();
+
+            UsuarioPermisos::where('id_user', $request->get('id_usuario'))
+                ->where('id_empresa', $request->get('id_empresa'))
+                ->delete();
+
+            DB::connection('clientes')->commit();
+
+            return response()->json([
+                'success'=>	true,
+                'data' => '',
+                'message'=> 'Empresa eliminada con exito!'
+            ]);
+            
+        } catch (Exception $e) {
+            DB::connection('sam')->rollback();
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], 422);
+        }
     }
 
 }

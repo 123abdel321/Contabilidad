@@ -24,9 +24,9 @@ class UsuarioEmpresa extends Model
 		return $this->belongsTo("App\Models\Empresas\Empresa","id_empresa");
 	}
 
-	// public function rol(){
-	// 	return $this->belongsTo("App\Models\Empresas\CliRol","id_rol");
-	// }
+	public function rol(){
+		return $this->belongsTo("App\Models\Empresas\Rol","id_rol");
+	}
 
 	public function usuario(){
 		return $this->belongsTo("App\User","id_usuario");
