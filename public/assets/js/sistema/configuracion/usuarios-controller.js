@@ -298,6 +298,7 @@ function cargarCombosUsuarios() {
     $('#id_empresa_usuario_create').select2({
         theme: 'bootstrap-5',
         delay: 250,
+        dropdownParent: $('#usuariosEmpresaFormModal'),
         ajax: {
             url: 'api/empresas-combo',
             headers: headers,
