@@ -329,8 +329,15 @@ class EmpresaController extends Controller
             \DB::raw("CONCAT(nit, ' - ', razon_social) as text")
         );
 
+        if ($request->get("search")) {
+            $empresas->where('razon_social', 'LIKE', '%' . $request->get("search") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("search") . '%')
+                ->orWhere('nit', 'LIKE', '%' . $request->get("search") . '%');
+        }
+
         if ($request->get("q")) {
             $empresas->where('razon_social', 'LIKE', '%' . $request->get("q") . '%')
+                ->orWhere('nombre', 'LIKE', '%' . $request->get("q") . '%')
                 ->orWhere('nit', 'LIKE', '%' . $request->get("q") . '%');
         }
 
