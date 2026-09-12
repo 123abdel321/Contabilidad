@@ -152,7 +152,7 @@ class NitsImportadorController extends Controller
 
     public function actualizar (Request $request)
     {
-        $nitsImportados = NitsImport::where('estado', 1)->get();
+        $nitsImportados = NitsImport::get();
 
         try {
             DB::connection('sam')->beginTransaction();
