@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 //SISTEMA
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\InstaladorController;
+// IA
+use App\Http\Controllers\AIChatController;
 //TABLAS
 use App\Http\Controllers\Tablas\NitController;
 use App\Http\Controllers\Tablas\ExogenaController;
@@ -73,6 +75,7 @@ use App\Http\Controllers\Importador\DocumentosImportadorController;
 use App\Http\Controllers\Sistema\EcoController;
 use App\Http\Controllers\Sistema\UbicacionController;
 //CONFIGURACION
+use App\Http\Controllers\Configuracion\EntornoController;
 use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
 use App\Http\Controllers\Configuracion\ReunionesController;
@@ -118,11 +121,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::controller(EmpresaController::class)->group(function () {
         //CONFIGURACION
         Route::put('empresa', 'updateEmpresa');
-        Route::put('entorno', 'updateEmpresa');
         //COMBOS
         Route::get('empresas-combo', 'comboEmpresas');
         Route::get('responsabilidades-combo', 'comboResponsabilidades');
         Route::get('actividad-economica-combo', 'comboActividadEconomica');
+    });
+
+    Route::controller(EntornoController::class)->group(function () {
+        Route::put('entorno', 'updateEntorno');
     });
 
     //ANIO CERRADO
@@ -130,6 +136,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     
     //EMPRESA SELECCIONADA
     Route::group(['middleware' => ['clientconnection']], function() {
+
+        Route::post('ia/chat', [AIChatController::class, 'chat']);
+        Route::post('ia/reset', [AIChatController::class, 'reset']);
 
         //SISTEMA POS
         Route::prefix('pos')->controller(PosController::class)->group(function () {
