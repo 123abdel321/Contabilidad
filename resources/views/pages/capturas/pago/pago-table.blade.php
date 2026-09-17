@@ -8,7 +8,7 @@
             <th>Mora</th>
             <th>Factura</th>
             <th>Saldo</th>
-            <th>Valor recibido</th>
+            <th>Valor pagado</th>
             <th>Nuevo saldo</th>
             <th style="border-radius: 0px 15px 0px 0px !important;">Concepto</th>
         </tr>
