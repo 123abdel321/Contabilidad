@@ -132,7 +132,6 @@ class CausarProvicionadaController extends Controller
             $fecha = Carbon::parse($request->get('meses'), 'UTC')->addDay();
             $empleados = $this->getEmpleadosParaProvision($fecha);
             $configuraciones = $this->getConfiguracionesParafiscales();
-
             $provisiones = $this->calcularParafiscalesParaEmpleados(
                 $empleados,
                 $fecha,
@@ -469,6 +468,7 @@ class CausarProvicionadaController extends Controller
     protected function calcularPrestasionesSocialesParaEmpleados($empleados, Carbon $fecha, array $configuraciones)
     {
         $provisiones = [];
+        $redondeo = VariablesEntorno::whereNombre("redondeo_nomina")->first()?->valor;
 
         foreach ($empleados as $empleado) {
             $contrato = $this->getContratoValido($empleado->id_empleado);
@@ -480,10 +480,10 @@ class CausarProvicionadaController extends Controller
             $datosInteresesCesantias = 0;
 
             $provisionesEmpleado = [
-                $this->crearProvision('PRIMA', $empleado, $contrato, $configuraciones['prima'], $tipoCuenta, $bases['base_prima']),
-                $this->crearProvision('VACACIONES', $empleado, $contrato, $configuraciones['vacaciones'], $tipoCuenta, $bases['base_vacacion']),
-                $datosInteresesCesantias = $this->crearProvision('CESANTIAS', $empleado, $contrato, $configuraciones['cesantias'], $tipoCuenta, $bases['base_cesantia'], $contrato->fondo_cesantias->descripcion ?? ''),
-                $this->crearProvision('INTERESES SOBRE CESANTIAS', $empleado, $contrato, $configuraciones['intereses_cesantias'], $tipoCuenta, $bases['base_interes_cesantia'], null, $datosInteresesCesantias),
+                $this->crearProvision('PRIMA', $empleado, $contrato, $configuraciones['prima'], $tipoCuenta, $bases['base_prima'], null, null, $redondeo),
+                $this->crearProvision('VACACIONES', $empleado, $contrato, $configuraciones['vacaciones'], $tipoCuenta, $bases['base_vacacion'], null, null, $redondeo),
+                $datosInteresesCesantias = $this->crearProvision('CESANTIAS', $empleado, $contrato, $configuraciones['cesantias'], $tipoCuenta, $bases['base_cesantia'], $contrato->fondo_cesantias->descripcion ?? '', null, $redondeo),
+                $this->crearProvision('INTERESES SOBRE CESANTIAS', $empleado, $contrato, $configuraciones['intereses_cesantias'], $tipoCuenta, $bases['base_interes_cesantia'], null, $datosInteresesCesantias, $redondeo),
             ];
 
             $provisiones = array_merge($provisiones, $provisionesEmpleado);
@@ -545,7 +545,7 @@ class CausarProvicionadaController extends Controller
                 $salarioMinimo,
                 $noExoneradoDeParafiscales
             );
-            
+
             $provisionesEmpleado = [
                 $this->crearProvision('ICBF', $empleado, $contrato, $configuraciones['icbf'], $tipoCuenta, $bases['base_icbf'], ''),
                 $this->crearProvision('SENA', $empleado, $contrato, $configuraciones['sena'], $tipoCuenta, $bases['base_sena'], ''),
@@ -674,10 +674,19 @@ class CausarProvicionadaController extends Controller
         return $bases;
     }
 
-    protected function crearProvision($concepto, $empleado, $contrato, $config, $tipoCuenta, $base, $fondo = '', $datosInteresesCesantias = null)
-    {
+    protected function crearProvision(
+        $concepto,
+        $empleado,
+        $contrato,
+        $config,
+        $tipoCuenta,
+        $base,
+        $fondo = '',
+        $datosInteresesCesantias = null,
+        $redondeo = null
+    ) {
         $salarioIntegral = $contrato->tipo_salario == NomContratos::TIPO_SALARIO_INTEGRAL;
-        $porcentaje = $config->porcentaje;
+        $porcentaje = $config?->porcentaje;
         if ($concepto == 'ARL') {
             $porcentaje = $contrato->porcentaje_arl;
         }
@@ -696,12 +705,22 @@ class CausarProvicionadaController extends Controller
             'concepto' => $concepto,
             'base' => $base,
             'porcentaje' => $porcentaje,
-            'provision' => $provision,
+            'provision' => $this->redondearValores($provision, $redondeo),
             'fondo' => $fondo,
             'cuenta_debito' => $config->{$tipoCuenta} ? $config->{$tipoCuenta}->cuenta.' - '.$config->{$tipoCuenta}->nombre : '',
             'cuenta_credito' => $config->cuenta_pagar ? $config->cuenta_pagar->cuenta.' - '.$config->cuenta_pagar->nombre : '',
             'editado' => false
         ];
+    }
+
+    private function redondearValores($valor, $redondeo_valor = null)
+    {
+        if ($redondeo_valor === null && $redondeo_valor !== 0) return $valor;
+        $redondeo_valor = floatval($redondeo_valor);
+        if (!$valor) return $valor; // Sin valor a redondear
+        if ($redondeo_valor === null) return $valor; // No redondear
+        if ($redondeo_valor == 0) return floor($valor); // Quitar decimales (redondear hacia abajo)
+        return round($valor / $redondeo_valor) * $redondeo_valor; // Redondear al múltiplo más cercano
     }
 
     protected function createAccountingDocument(
