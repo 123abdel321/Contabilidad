@@ -197,7 +197,6 @@ class GastosController extends Controller
             
             //CREAR FACTURA GASTO
             $gasto = $this->createFacturaGasto($request);
-
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE GASTOS
             $documentoGeneral = new Documento(
                 $request->get('id_comprobante'),
@@ -860,8 +859,8 @@ class GastosController extends Controller
 
             if ($conceptoGasto->{$this->tipoRetencion}) {
                 $id_retencion = $conceptoGasto->{$this->tipoRetencion}->id;
-
-                if ($conceptoGasto->{$this->tipoRetencion}->impuesto && $conceptoGasto->{$this->tipoRetencion}->impuesto->base > 0) {
+                
+                if ($conceptoGasto->{$this->tipoRetencion}->impuesto && $conceptoGasto->{$this->tipoRetencion}->impuesto->base >= 0) {
                     $base_retencion = $conceptoGasto->{$this->tipoRetencion}->impuesto->base;
                     $porcentaje_retencion = $conceptoGasto->{$this->tipoRetencion}->impuesto->porcentaje;
                 }
