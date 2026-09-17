@@ -398,7 +398,7 @@ use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
                     )->first();
 
                 $saldo_anterior = $saldo_anterior->saldo_anterior ?? 0;
-                $saldo_anterior = $saldo_anterior < 0 ? $saldo_anterior  * -1 : $saldo_anterior;
+                $saldo_anterior = $saldo_anterior;
                 $this->resultadoCarteraCollection[$key]['saldo_final']+= $saldo_anterior;
                 $this->resultadoCarteraCollection[$key]['saldo_anterior'] = $saldo_anterior;
             }

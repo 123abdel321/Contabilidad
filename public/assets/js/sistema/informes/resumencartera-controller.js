@@ -75,21 +75,21 @@ function resumencarteraInit() {
         },
         ajax:  {
             type: "GET",
-            url: base_url + 'resumen-cartera',
+            url: base_url + 'resumen-cartera-show',
             headers: headers,
             data: function ( d ) {
                 var data = {
 
                     draw: d.draw,
                     start: d.start,
-                    length: d.length,
+                    length: d.length
             // Solo estos parámetros, NADA de d.columns
-                    fecha_desde: $('#fecha_desde_resumen_cartera').val(),
-                    fecha_hasta: $('#fecha_hasta_resumen_cartera').val(),
-                    ubicaciones: getUbicacionesResumenCartera(),
-                    proveedor: getProveedoresResumenCartera(),
-                    dias_mora: $('#mora_resumen_cartera').val(),
-                    id_nit: $('#id_nit_resumen_cartera').val()
+                    // fecha_desde: $('#fecha_desde_resumen_cartera').val(),
+                    // fecha_hasta: $('#fecha_hasta_resumen_cartera').val(),
+                    // ubicaciones: getUbicacionesResumenCartera(),
+                    // proveedor: getProveedoresResumenCartera(),
+                    // dias_mora: $('#mora_resumen_cartera').val(),
+                    // id_nit: $('#id_nit_resumen_cartera').val()
                 };
                 return data;
             }
@@ -267,7 +267,12 @@ $(document).on('click', '#resumenCarteraGenerales', function () {
     $("#descargarExcelResumenCarteraDisabled").show();
 
     var url = base_url + 'resumen-cartera';
-    url+= '?fecha_hasta='+$('#fecha_hasta_resumen_cartera').val();
+    url+= '?fecha_desde='+$('#fecha_desde_resumen_cartera').val();
+    url+= '&fecha_hasta='+$('#fecha_hasta_resumen_cartera').val();
+    url+= '&ubicaciones='+getUbicacionesResumenCartera();
+    url+= '&proveedor='+getProveedoresResumenCartera();
+    url+= '&dias_mora='+$('#mora_resumen_cartera').val();
+    url+= '&id_nit='+$('#id_nit_resumen_cartera').val();
 
     marcarFilasNoVisibles();
     actualizarTipoInformeResumenCartera();
