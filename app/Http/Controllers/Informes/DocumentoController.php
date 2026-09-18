@@ -254,7 +254,7 @@ class DocumentoController extends Controller
             ->first();
 
         if (!$documento) {
-            logger()->critical("Error showGeneralPdf: el documento id: {$documento->id} no tiene cabezas para imprimir;");
+            logger()->critical("Error showGeneralPdf: el documento no tiene cabezas para imprimir;");
             return response()->json([
                 'success'=>	false,
                 'data' => [],
