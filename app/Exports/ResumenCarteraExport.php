@@ -71,18 +71,23 @@ class ResumenCarteraExport implements FromView, WithColumnWidths, WithStyles, Wi
         }
 
         $this->columnWidths[$this->columnasExcel[$lastColumn + 1]] = 20;
-        $this->columnWidths[$this->columnasExcel[$lastColumn + 2]] = 15;
 	}
 
     public function view(): View
 	{
+        $logo = $this->empresa->logo_empresa;
+
+        if ($logo && filter_var($logo, FILTER_VALIDATE_URL) === false) {
+            $logo = 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/' . ltrim($logo, '/');
+        }
+
 		return view('excel.resumen_cartera.resumen_cartera', [
             'resumen' => InfResumenCartera::whereId($this->id_resumen_cartera)->first(),
             'cuentas' => $this->cuentas,
             'tipo_informe' => $this->tipo_informe,
             'nombre_informe' => $this->tipo_informe == 'resumen_general' ? 'RESUMEN CARTERA GENERAL' : 'RESUMEN CARTERA INDIVIDUAL',
             'nombre_empresa' => $this->empresa->nombre_empresa,
-            'logo_empresa' => $this->empresa->logo_empresa,
+            'logo_empresa' => $logo,
             'filtros' => $this->filtros,
             'detalles' => InfResumenCarteraDetalle::whereIdResumenCartera($this->id_resumen_cartera)->get()
 		]);

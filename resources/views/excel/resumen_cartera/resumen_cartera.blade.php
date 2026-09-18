@@ -81,6 +81,9 @@
             .texto-centro {
                 text-align: center;
             }
+
+            .header-table-color { background-color: #001c41; color: white; font-weight: 600; }
+            .footer-table-color { background-color: #1c4587; color: white; font-weight: 600; }
         </style>
     </head>
 
@@ -126,38 +129,44 @@
             <thead>
             <tr>
                 @for ($i = 0; $i < count($cuentas); $i++)
-                    <th>{{ $cuentas[$i] }}</th>
+                    <th style="background-color: #001c41; color: white; font-weight: 600;">{{ $cuentas[$i] }}</th>
                 @endfor
             </tr>
             </thead>
             <tbody>
                 @foreach ($detalles as $detalle)
+                    @php
+                        $esTotal = trim($detalle->nombre_nit) === 'TOTAL';
+                        $estiloTd = $esTotal ? 'background-color: #1c4587; color: white; font-weight: 600;' : '';
+                        $tieneHora = !\Illuminate\Support\Str::contains($detalle->fecha_manual, '00:00:00');
+                        $fechaFormateada = \Carbon\Carbon::parse($detalle->fecha_manual)->format('d/m/Y');
+                    @endphp
                     <tr>
                         {{-- Campos fijos --}}
-                        <td>{{ $detalle->numero_documento }}</td>
+                        <td style="{{ $estiloTd }}">{{ $detalle->numero_documento }}</td>
+
                         @if ($tipo_informe == 'resumen_general')
-                            <td>{{ $detalle->nombre_nit }}</td>
-                            <td>{{ $detalle->ubicacion }}</td>
-                            @for ($i = 1; $i <= (count($cuentas) - 5); $i++) {{-- -3 fijos, -2 finales --}}
-                                <td style="text-align: right;">{{ number_format($detalle->{'cuenta_' . $i}) ?? 0 }}</td>
+                            <td style="{{ $estiloTd }}">{{ $detalle->nombre_nit }}</td>
+                            <td style="{{ $estiloTd }}">{{ $detalle->ubicacion }}</td>
+                            @for ($i = 1; $i <= (count($cuentas) - 5); $i++)
+                                <td style="text-align: right; {{ $estiloTd }}">{{ number_format($detalle->{'cuenta_' . $i}) ?? 0 }}</td>
                             @endfor
                         @else
-                            @for ($i = 1; $i <= (count($cuentas) - 4); $i++) {{-- -3 fijos, -2 finales --}}
-                                <td style="text-align: right;">{{ number_format($detalle->{'cuenta_' . $i}) ?? 0 }}</td>
+                            @for ($i = 1; $i <= (count($cuentas) - 4); $i++)
+                                <td style="text-align: right; {{ $estiloTd }}">{{ number_format($detalle->{'cuenta_' . $i}) ?? 0 }}</td>
                             @endfor
                         @endif
-    
-    
-                        {{-- Campos finales --}}
 
+                        {{-- Campos finales --}}
                         @if ($tipo_informe != 'resumen_general')
-                            <td>{{ $detalle->total_abono }}</td>
-                            <td>{{ $detalle->fecha_manual }}</td>
+                            <td style="{{ $estiloTd }}">{{ $detalle->total_abono }}</td>
+                            <td style="{{ $estiloTd }}">{{ $fechaFormateada }}</td>
                         @endif
-                        
-                        <td style="text-align: right;">{{ number_format($detalle->saldo_final) }}</td>
+
+                        <td style="text-align: right; {{ $estiloTd }}">{{ number_format($detalle->saldo_final) }}</td>
+
                         @if ($tipo_informe == 'resumen_general')
-                            <td>{{ $detalle->dias_mora }}</td>
+                            <td style="{{ $estiloTd }}">{{ $detalle->dias_mora }}</td>
                         @endif
                     </tr>
                 @endforeach
