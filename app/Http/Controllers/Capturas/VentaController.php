@@ -526,7 +526,14 @@ class VentaController extends Controller
             DB::connection('sam')->commit();
 
             if ($enviarFacturaElectronica) {
-                $pdf = (new VentasPdf($empresa, $venta))->buildPdf()->saveStorage();
+                $claveUrl = $this->generarClavePDF(
+                    $empresa->id,
+                    $this->resolucion->comprobante->id,
+                    $venta->consecutivo,
+                    $venta->fecha_manual
+                );
+
+                $pdf = (new VentasPdf($empresa, $venta, $claveUrl))->buildPdf()->saveStorage();
 
                 $this->sendEmailFactura(
                     $request->user()['has_empresa'],
