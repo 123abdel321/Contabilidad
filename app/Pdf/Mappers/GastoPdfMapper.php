@@ -124,13 +124,14 @@ class GastoPdfMapper
         ];
 
         $rows = [];
+        $calcularRetencion = intval($gasto->total_rete_fuente) ? true : false;
         foreach ($gasto->detalles as $detalle) {
             $rows[] = [
                 'concepto' => ($detalle->concepto?->codigo ?? '') . ' - ' . ($detalle->concepto?->nombre ?? ''),
                 'cuenta' => ($detalle->concepto?->cuenta_gasto?->cuenta ?? '') . ' - ' . ($detalle->concepto?->cuenta_gasto?->nombre ?? ''),
                 'base' => $detalle->subtotal_neto ?? 0,
                 'iva' => $detalle->iva_valor ?? 0,
-                'rete_fuente' => $detalle->rete_fuente_valor ?? 0,
+                'rete_fuente' => $calcularRetencion ? $detalle->rete_fuente_valor ?? 0 : 0,
                 'rete_ica' => $detalle->rete_ica_valor ?? 0,
                 'total' => $detalle->total ?? 0,
             ];
@@ -153,12 +154,13 @@ class GastoPdfMapper
             'total' => $gasto->detalles->sum('total'),
         ];
 
+        $calcularRetencion = intval($gasto->total_rete_fuente) ? true : false;
         return [
             'titulo' => 'RESUMEN FINANCIERO',
             'filas' => [
                 ['label' => 'SUBTOTAL', 'value' => $totales['subtotal'] - $totales['iva'], 'formatter' => 'number'],
                 ['label' => 'IVA', 'value' => $totales['iva'], 'formatter' => 'number'],
-                ['label' => 'RETENCIÓN EN LA FUENTE', 'value' => $totales['rete_fuente'], 'formatter' => 'number'],
+                ['label' => 'RETENCIÓN EN LA FUENTE', 'value' => $calcularRetencion ? $totales['rete_fuente'] : 0, 'formatter' => 'number'],
                 ['label' => 'RETEICA', 'value' => $totales['rete_ica'], 'formatter' => 'number'],
                 ['label' => 'TOTAL A PAGAR', 'value' => $totales['total'], 'formatter' => 'number', 'class' => 'resumen-total'],
             ]

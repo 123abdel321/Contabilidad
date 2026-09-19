@@ -197,6 +197,7 @@ class GastosController extends Controller
             
             //CREAR FACTURA GASTO
             $gasto = $this->createFacturaGasto($request);
+            
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE GASTOS
             $documentoGeneral = new Documento(
                 $request->get('id_comprobante'),
@@ -239,6 +240,7 @@ class GastosController extends Controller
                 }
 
                 $baseAIU = 0;
+                $calcularRetencion = intval($this->totalesFactura['total_rete_fuente']) ? true : false;
                 $subtotalGasto = $this->redondearGasto($movimiento->valor_gasto - $movimiento->descuento_gasto, $redondeo_gastos);
 
                 if (floatval($this->proveedor->porcentaje_aiu)) {
@@ -253,14 +255,14 @@ class GastosController extends Controller
                     }
                     
                     $ivaGasto = $this->redondearGasto($ivaGasto, $redondeo_gastos);
-                    $retencionGasto = $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos);
+                    $retencionGasto =  $calcularRetencion ? $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos) : 0;
                     $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
                     $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
                     
                     $subtotalGasto+= $ivaGasto;
                 } else {
                     $ivaGasto = $this->redondearGasto($porcentajeIva ? $subtotalGasto * ($porcentajeIva / 100) : 0, $redondeo_gastos);
-                    $retencionGasto = $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos);
+                    $retencionGasto = $calcularRetencion ? $this->redondearGasto($porcentajeRetencion ? ($subtotalGasto) * ($porcentajeRetencion / 100) : 0, $redondeo_gastos) : 0;
                     $reteIcaGasto = $this->redondearGasto($porcentajeReteIca ? ($subtotalGasto - $movimiento->no_valor_iva) * ($porcentajeReteIca / 1000) : 0, $redondeo_gastos);
                     $totalGasto = $this->redondearGasto(($subtotalGasto + $ivaGasto + $movimiento->no_valor_iva) - ($retencionGasto + $reteIcaGasto), $redondeo_gastos);
                 }
@@ -269,7 +271,7 @@ class GastosController extends Controller
                     $totalGasto+= $baseAIU;
                     $subtotalGasto+= $baseAIU;
                 }
-                
+
                 $detalleGasto = ConGastoDetalles::create([
                     'id_gasto' => $gasto->id,
                     'id_concepto_gastos' => $movimiento->id_concepto,
@@ -524,7 +526,7 @@ class GastosController extends Controller
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
         $claveUrl = $this->generarClavePDF($empresa->id, $gasto->id_comprobante, $gasto->consecutivo, $gasto->fecha_manual);
 
-        // $data = (new GastosPdf($empresa, $gasto))->buildPdf()->getData();
+        // $data = (new GastosPdf($empresa, $gasto, $claveUrl))->buildPdf()->getData();
         // return view('pdf.facturacion.gastos', $data);
  
         return (new GastosPdf($empresa, $gasto, $claveUrl))

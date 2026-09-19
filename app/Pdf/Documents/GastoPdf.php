@@ -38,7 +38,7 @@ class GastoPdf
                 'fecha' => $data['fecha_manual']
             ]))
             ->addBlock(new CompanyBlock(['empresa' => $data['empresa']]))
-            ->addBlock(new ClientBlock(['cliente' => $data['cliente']])) // ← clave 'cliente'
+            ->addBlock(new ClientBlock(['cliente' => $data['cliente']]))
             ->addBlock(new InfoBlock(['info' => $data['info_data']]))
             ->addBlock(new TableBlock(['tabla' => $data['tabla']]))
             ->addBlock(new SummaryBlock([
