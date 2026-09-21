@@ -105,6 +105,7 @@ class ReciboPdfMapper
 
     private static function buildNit(ConRecibos $recibo): ?object
     {
+        
         $getNit = Nits::whereId($recibo->id_nit)->with('ciudad')->first();
         if (!$getNit) return null;
 
@@ -117,7 +118,7 @@ class ReciboPdfMapper
             'tipo_documento' => $getNit->tipo_documento->nombre,
             'numero_documento' => $getNit->numero_documento,
             'ciudad' => $getNit->ciudad ? $getNit->ciudad->nombre_completo : '',
-            'apartamentos' => $getNit->apartamentos ?? '',
+            'apartamentos' => $getNit->apartamentos,
         ];
     }
 
@@ -171,7 +172,7 @@ class ReciboPdfMapper
                 (object)[
                     'icono' => 'user',
                     'titulo' => 'Usuario',
-                    'valor' => request()->user() ? request()->user()->username : 'Portafolio ERP'
+                    'valor' => $nit->apartamentos
                 ]
             ]
         ];
