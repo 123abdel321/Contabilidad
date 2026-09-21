@@ -55,21 +55,33 @@ class SuscripcionController extends Controller
         $empresaSuscripcion = EmpresaComponentesSuscripcion::with(
                 'componente',
             )
-        ->where('id_empresa', $user->id_empresa)
-        ->has('componente')
-        ->orderBy('id', 'desc');
+            ->where('id_empresa', $user->id_empresa)
+            ->has('componente')
+            ->orderBy('id', 'desc');
 
         $totalEmpresaSuscripcion = $empresaSuscripcion->count();
-        $empresaSuscripcion = $empresaSuscripcion->skip($start)
-            ->take($rowperpage);
+
+        $totalItems = $empresaSuscripcion->get();
+        $sumaDeComponentes = $empresaSuscripcion->sum('precio');
+
+        $totalItems[] = (object)[
+            'id' => 'TOTAL',
+            'id_empresa' => $user->id_empresa,
+            'id_empresa_suscripcion' => null,
+            'id_componente' => null,
+            'cantidad' => $totalEmpresaSuscripcion,
+            'precio' => $sumaDeComponentes,
+            'fecha_siguiente_cobro' => null,
+        ];
 
         return response()->json([
             'success'=>	true,
             'draw' => $draw,
             'iTotalRecords' => $totalEmpresaSuscripcion,
             'iTotalDisplayRecords' => $totalEmpresaSuscripcion,
-            'data' => $empresaSuscripcion->get(),
+            'data' => $totalItems,
             'perPage' => $rowperpage,
+            'total_componentes' => $sumaDeComponentes,
             'message'=> 'Suscripciones de empresa cargados con exito!'
         ]);
     }
@@ -106,7 +118,7 @@ class SuscripcionController extends Controller
                 "message" => $validator->errors()
             ], 422);
         }
-
+        
         try {
             DB::connection('clientes')->beginTransaction();
 
@@ -139,7 +151,8 @@ class SuscripcionController extends Controller
                 'id_componente' => $componente->id,
                 'cantidad' => 1,
                 'precio' => $precioComponente,
-                'fecha_siguiente_cobro' => null,
+                'fecha_inicio_suscripcion' => $fechaInicioSuscripcion,
+                'fecha_siguiente_cobro' => Carbon::now()->endOfMonth()->format('Y-m-d'),
             ]);
 
             $totalComponentes = $suscripcion->componentes()->sum('precio');

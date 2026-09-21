@@ -5,7 +5,7 @@ var permisosUsuarios = [];
 var searchTimeoutUsuarios;
 var $comboBodegaUsuario = null;
 var $comboResolucionUsuario = null;
-var $comboUsuarioFilterEmpresa = null;
+var $comboFilterEmpresaUsuario = null;
 
 function usuariosInit() {
 
@@ -136,8 +136,6 @@ function cargarTablasUsuarios() {
             const permisos = data.permisos ? data.permisos : [];
             const bodegas = permisos.length > 0 && permisos[0].ids_bodegas_responsable ? permisos[0].ids_bodegas_responsable.split(',') : [];
             const resoluciones = permisos.length > 0 && permisos[0].ids_resolucion_responsable ? permisos[0].ids_resolucion_responsable.split(',') : [];
-
-            console.log(permisos);
 
             $('#password_usuario').val('');
             $('#password_confirm').val('');

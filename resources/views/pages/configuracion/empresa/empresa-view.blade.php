@@ -23,4 +23,8 @@
     @include('pages.configuracion.empresa.empresa-form')
     @include('pages.configuracion.empresa.empresa-form-edit')
 
+    <script>
+        var esDios = JSON.parse('<?php echo $esDios; ?>');
+    </script>
+
 </div>

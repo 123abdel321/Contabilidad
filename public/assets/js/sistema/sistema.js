@@ -147,6 +147,7 @@ var moduloCreado = {
     'nominaelectronica': false,
     'notificaciones': false,
     'movimientoproducto': false,
+    'suscripcion': false,
 };
 
 var moduloRoute = {
@@ -219,6 +220,7 @@ var moduloRoute = {
     'nominaelectronica': 'capturas',
     'notificaciones': 'configuracion',
     'movimientoproducto': 'informes',
+    'suscripcion': 'configuracion',
 }
 
 function iniciarCanalesDeNotificacion () {

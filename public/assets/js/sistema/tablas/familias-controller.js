@@ -186,8 +186,7 @@ function familiasInit() {
                     text: data.cuenta_venta.cuenta + ' - ' + data.cuenta_venta.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaVenta.append(newOption).trigger('change');
-                $comboCuentaVenta.val(dataCuenta.id).trigger('change');
+                $comboCuentaVenta.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_venta_retencion){
@@ -196,8 +195,7 @@ function familiasInit() {
                     text: data.cuenta_venta_retencion.cuenta + ' - ' + data.cuenta_venta_retencion.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaVentaRetencion.append(newOption).trigger('change');
-                $comboCuentaVentaRetencion.val(dataCuenta.id).trigger('change');
+                $comboCuentaVentaRetencion.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_venta_devolucion){
@@ -206,8 +204,7 @@ function familiasInit() {
                     text: data.cuenta_venta_devolucion.cuenta + ' - ' + data.cuenta_venta_devolucion.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaVentaDevolucion.append(newOption).trigger('change');
-                $comboCuentaVentaDevolucion.val(dataCuenta.id).trigger('change');
+                $comboCuentaVentaDevolucion.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_venta_iva){
@@ -216,8 +213,7 @@ function familiasInit() {
                     text: data.cuenta_venta_iva.cuenta + ' - ' + data.cuenta_venta_iva.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaVentaIva.append(newOption).trigger('change');
-                $comboCuentaVentaIva.val(dataCuenta.id).trigger('change');
+                $comboCuentaVentaIva.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_venta_impuestos){
@@ -226,8 +222,7 @@ function familiasInit() {
                     text: data.cuenta_venta_impuestos.cuenta + ' - ' + data.cuenta_venta_impuestos.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaVentaImpuestos.append(newOption).trigger('change');
-                $comboCuentaVentaImpuestos.val(dataCuenta.id).trigger('change');
+                $comboCuentaVentaImpuestos.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_venta_descuento){
@@ -236,8 +231,7 @@ function familiasInit() {
                     text: data.cuenta_venta_descuento.cuenta + ' - ' + data.cuenta_venta_descuento.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaVentaDescuento.append(newOption).trigger('change');
-                $comboCuentaVentaDescuento.val(dataCuenta.id).trigger('change');
+                $comboCuentaVentaDescuento.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_venta_devolucion_iva){
@@ -246,8 +240,7 @@ function familiasInit() {
                     text: data.cuenta_venta_devolucion_iva.cuenta + ' - ' + data.cuenta_venta_devolucion_iva.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaVentaDevolucionIva.append(newOption).trigger('change');
-                $comboCuentaVentaDevolucionIva.val(dataCuenta.id).trigger('change');
+                $comboCuentaVentaDevolucionIva.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_compra){
@@ -256,8 +249,7 @@ function familiasInit() {
                     text: data.cuenta_compra.cuenta + ' - ' + data.cuenta_compra.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaCompra.append(newOption).trigger('change');
-                $comboCuentaCompra.val(dataCuenta.id).trigger('change');
+                $comboCuentaCompra.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_compra_retencion){
@@ -266,8 +258,7 @@ function familiasInit() {
                     text: data.cuenta_compra_retencion.cuenta + ' - ' + data.cuenta_compra_retencion.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaCompraRetencion.append(newOption).trigger('change');
-                $comboCuentaCompraRetencion.val(dataCuenta.id).trigger('change');
+                $comboCuentaCompraRetencion.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_compra_devolucion){
@@ -276,8 +267,7 @@ function familiasInit() {
                     text: data.cuenta_compra_devolucion.cuenta + ' - ' + data.cuenta_compra_devolucion.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaCompraDevolucion.append(newOption).trigger('change');
-                $comboCuentaCompraDevolucion.val(dataCuenta.id).trigger('change');
+                $comboCuentaCompraDevolucion.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_compra_iva){
@@ -286,8 +276,7 @@ function familiasInit() {
                     text: data.cuenta_compra_iva.cuenta + ' - ' + data.cuenta_compra_iva.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaCompraIva.append(newOption).trigger('change');
-                $comboCuentaCompraIva.val(dataCuenta.id).trigger('change');
+                $comboCuentaCompraIva.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_compra_impuestos){
@@ -296,8 +285,7 @@ function familiasInit() {
                     text: data.cuenta_compra_impuestos.cuenta + ' - ' + data.cuenta_compra_impuestos.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaCompraImpuestos.append(newOption).trigger('change');
-                $comboCuentaCompraImpuestos.val(dataCuenta.id).trigger('change');
+                $comboCuentaCompraImpuestos.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_compra_descuento){
@@ -306,8 +294,7 @@ function familiasInit() {
                     text: data.cuenta_compra_descuento.cuenta + ' - ' + data.cuenta_compra_descuento.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaCompraDescuento.append(newOption).trigger('change');
-                $comboCuentaCompraDescuento.val(dataCuenta.id).trigger('change');
+                $comboCuentaCompraDescuento.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_compra_devolucion_iva){
@@ -316,8 +303,7 @@ function familiasInit() {
                     text: data.cuenta_compra_devolucion_iva.cuenta + ' - ' + data.cuenta_compra_devolucion_iva.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaCompraDevolucionIva.append(newOption).trigger('change');
-                $comboCuentaCompraDevolucionIva.val(dataCuenta.id).trigger('change');
+                $comboCuentaCompraDevolucionIva.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_inventario){
@@ -326,8 +312,7 @@ function familiasInit() {
                     text: data.cuenta_inventario.cuenta + ' - ' + data.cuenta_inventario.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaInventario.append(newOption).trigger('change');
-                $comboCuentaInventario.val(dataCuenta.id).trigger('change');
+                $comboCuentaInventario.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if(data.cuenta_costos){
@@ -336,8 +321,7 @@ function familiasInit() {
                     text: data.cuenta_costos.cuenta + ' - ' + data.cuenta_costos.nombre
                 };
                 var newOption = new Option(dataCuenta.text, dataCuenta.id, false, false);
-                $comboCuentaCostos.append(newOption).trigger('change');
-                $comboCuentaCostos.val(dataCuenta.id).trigger('change');
+                $comboCuentaCostos.append(newOption).val(dataCuenta.id).trigger('change');
             }
 
             if (data.inventario) {

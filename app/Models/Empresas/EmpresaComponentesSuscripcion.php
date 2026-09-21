@@ -19,6 +19,7 @@ class EmpresaComponentesSuscripcion extends Model
         'id_componente',
         'cantidad',
         'precio',
+        'fecha_inicio_suscripcion',
         'fecha_siguiente_cobro',
         'created_by',
         'updated_by'
