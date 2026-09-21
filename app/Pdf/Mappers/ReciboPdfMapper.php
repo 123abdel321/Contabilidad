@@ -80,7 +80,7 @@ class ReciboPdfMapper
 
         // Construir datos para bloques
         $cliente = self::buildCliente($nit);
-        $infoData = self::buildInfoData($recibo);
+        $infoData = self::buildInfoData($recibo, $nit);
         $tabla = self::buildTable($recibo);
         $resumen = self::buildSummary($recibo, $saldoAnterior, $saldo, $totalAnticipo ?? 0);
         $pagos = $recibo->pagos;
@@ -148,9 +148,9 @@ class ReciboPdfMapper
         ];
     }
 
-    private static function buildInfoData(ConRecibos $recibo): object
+    private static function buildInfoData(ConRecibos $recibo, ?object $nit): object
     {
-        return (object)[
+        $infoData = (object)[
             'titulo' => 'INFORMACIÓN DEL RECIBO',
             'datos_adicionales' => [
                 (object)[
@@ -172,9 +172,17 @@ class ReciboPdfMapper
                     'icono' => 'user',
                     'titulo' => 'Usuario',
                     'valor' => request()->user() ? request()->user()->username : 'Portafolio ERP'
-                ],
+                ]
             ]
         ];
+        if ($nit->apartamentos) {
+            $infoData[] = (object)[
+                'icono' => 'location',
+                'titulo' => 'Ubicación',
+                'valor' => $nit->apartamentos
+            ];
+        }
+        return $infoData;
     }
 
     private static function buildTable(ConRecibos $recibo): array
