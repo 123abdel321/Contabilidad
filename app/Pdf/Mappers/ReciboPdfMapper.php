@@ -150,7 +150,7 @@ class ReciboPdfMapper
 
     private static function buildInfoData(ConRecibos $recibo, ?object $nit): object
     {
-        $infoData = (object)[
+        $infoData = [
             'titulo' => 'INFORMACIÓN DEL RECIBO',
             'datos_adicionales' => [
                 (object)[
@@ -182,7 +182,7 @@ class ReciboPdfMapper
                 'valor' => $nit->apartamentos
             ];
         }
-        return $infoData;
+        return (object)$infoData;
     }
 
     private static function buildTable(ConRecibos $recibo): array
