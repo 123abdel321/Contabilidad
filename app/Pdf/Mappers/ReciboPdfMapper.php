@@ -172,12 +172,12 @@ class ReciboPdfMapper
                 (object)[
                     'icono' => 'user',
                     'titulo' => 'Usuario',
-                    'valor' => $nit->apartamentos
+                    'valor' => request()->user() ? request()->user()->username : 'Portafolio ERP'
                 ]
             ]
         ];
         if ($nit->apartamentos) {
-            $infoData[] = (object)[
+            $infoData['datos_adicionales'][] = (object)[
                 'icono' => 'location',
                 'titulo' => 'Ubicación',
                 'valor' => $nit->apartamentos
