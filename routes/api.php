@@ -290,6 +290,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::post('reuniones-participantes', 'createParticipantes');
             Route::delete('reuniones-participantes', 'deleteParticipantes');
         });
+        
         Route::controller(SuscripcionController::class)->group(function () {
             Route::get('suscripcion-componentes', 'componentesGet');
             Route::post('suscripcion-componentes', 'componentesPost');
