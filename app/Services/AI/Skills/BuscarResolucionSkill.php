@@ -4,6 +4,7 @@ namespace App\Services\AI\Skills;
 
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Empresas\UsuarioPermisos;
+use App\Services\AI\Estado;
 
 class BuscarResolucionSkill extends Skill
 {
@@ -14,7 +15,7 @@ class BuscarResolucionSkill extends Skill
 
     public function description(): string
     {
-        return 'Busca resoluciones (POS, facturación electrónica, notas, etc.) asignadas al usuario o por nombre/prefijo. Indica siempre el contexto de la operación para filtrar los tipos correctos.';
+        return 'Busca resoluciones (POS, facturación electrónica, notas, etc.) asignadas al usuario o por nombre/prefijo. Indica siempre el contexto de la operación.';
     }
 
     public function parameters(): array
@@ -22,74 +23,23 @@ class BuscarResolucionSkill extends Skill
         return [
             'busqueda' => [
                 'type' => 'string',
-                'description' => 'Nombre, prefijo o número de resolución a buscar. Opcional si se usan las asignadas al usuario.',
+                'description' => 'Nombre, prefijo o número de resolución. Opcional.',
                 'required' => false,
             ],
             'contexto' => [
                 'type' => 'string',
-                'description' => 'Operación para la que se busca la resolución: "venta", "nota_credito", "nota_debito", "documento_soporte", etc.',
+                'description' => 'Operación: "venta", "nota_credito", etc.',
                 'required' => true,
             ],
-            'tipos' => [
-                'type' => 'array',
-                'description' => 'Tipos específicos de resolución permitidos (opcional, sobreescribe el mapa por defecto del contexto). Valores válidos: pos, factura_electronica, contingencia, nota_debito, nota_credito, documento_equivalente.',
+            'auto' => [
+                'type' => 'boolean',
+                'description' => 'Si es true, la skill elige la primera resolución automáticamente y no pregunta.',
                 'required' => false,
             ],
         ];
     }
 
-    /**
-     * Mapa de contexto → tipos de resolución permitidos.
-     * Se usan las constantes de FacResoluciones.
-     */
-    private function tiposPorContexto(): array
-    {
-        return [
-            'venta' => [
-                FacResoluciones::TIPO_POS,
-                FacResoluciones::TIPO_FACTURA_ELECTRONICA,
-            ],
-            'pos' => [
-                FacResoluciones::TIPO_POS,
-            ],
-            'factura_electronica' => [
-                FacResoluciones::TIPO_FACTURA_ELECTRONICA,
-            ],
-            'contingencia' => [
-                FacResoluciones::TIPO_POS,
-                FacResoluciones::TIPO_FACTURA_ELECTRONICA,
-            ],
-            'nota_credito' => [
-                FacResoluciones::TIPO_NOTA_CREDITO,
-            ],
-            'nota_debito' => [
-                FacResoluciones::TIPO_NOTA_DEBITO,
-            ],
-            'documento_soporte' => [
-                FacResoluciones::TIPO_DOCUEMNTO_EQUIVALENTE,
-            ],
-        ];
-    }
-
-    /**
-     * Mapa de alias de tipo → constante.
-     */
-    private function mapaTipos(): array
-    {
-        return [
-            'pos'                  => FacResoluciones::TIPO_POS,
-            'factura_electronica'  => FacResoluciones::TIPO_FACTURA_ELECTRONICA,
-            'factura electronica'  => FacResoluciones::TIPO_FACTURA_ELECTRONICA,
-            'nota_debito'          => FacResoluciones::TIPO_NOTA_DEBITO,
-            'nota_debito'          => FacResoluciones::TIPO_NOTA_DEBITO,
-            'nota_credito'         => FacResoluciones::TIPO_NOTA_CREDITO,
-            'contingencia'         => FacResoluciones::TIPO_FACTURA_ELECTRONICA,
-            'documento_equivalente'=> FacResoluciones::TIPO_DOCUEMNTO_EQUIVALENTE,
-            'documento_soporte'    => FacResoluciones::TIPO_DOCUEMNTO_EQUIVALENTE,
-        ];
-    }
-
-    public function run(array $args, array &$state): array
+    public function run(array $args, Estado $state): array
     {
         $busqueda = trim($args['busqueda'] ?? '');
         $contexto = strtolower(trim($args['contexto'] ?? ''));
@@ -97,12 +47,11 @@ class BuscarResolucionSkill extends Skill
         if ($contexto === '') {
             return [
                 'success' => false,
-                'message' => 'Debe indicar el contexto de la operación (venta, nota_credito, etc.).',
+                'message' => 'Debe indicar el contexto de la operación.',
                 'resoluciones' => [],
             ];
         }
 
-        // Resolver tipos permitidos
         $tiposPermitidos = $this->resolverTipos($contexto, $args['tipos'] ?? null);
 
         if (empty($tiposPermitidos)) {
@@ -113,69 +62,83 @@ class BuscarResolucionSkill extends Skill
             ];
         }
 
-        // 1) Por permisos del usuario logueado
         $idsPermitidos = $this->idsResolucionesDelUsuario($state);
         $lista         = [];
-        $origen        = 'permisos_usuario';
 
         if (!empty($idsPermitidos)) {
-            $lista = $this->queryResoluciones(
-                ids: $idsPermitidos,
-                tipos: $tiposPermitidos,
-                busqueda: $busqueda
-            );
+            $lista = $this->queryResoluciones($idsPermitidos, $tiposPermitidos, $busqueda);
         }
 
-        // 2) Fallback: búsqueda global por nombre/prefijo/número
         if (empty($lista) && $busqueda !== '') {
-            $origen = 'busqueda_global';
-            $lista  = $this->queryResoluciones(
-                ids: null,
-                tipos: $tiposPermitidos,
-                busqueda: $busqueda
-            );
+            $lista = $this->queryResoluciones(null, $tiposPermitidos, $busqueda);
         }
 
-        // 3) Si no hay búsqueda y sí permisos: devolver todas las permitidas del contexto
         if (empty($lista) && $busqueda === '' && !empty($idsPermitidos)) {
-            $lista = $this->queryResoluciones(
-                ids: $idsPermitidos,
-                tipos: $tiposPermitidos,
-                busqueda: ''
-            );
+            $lista = $this->queryResoluciones($idsPermitidos, $tiposPermitidos, '');
         }
 
         if (empty($lista)) {
             return [
                 'success' => false,
-                'message' => 'No se encontraron resoluciones disponibles para este contexto.',
+                'message' => 'No se encontraron resoluciones disponibles.',
                 'contexto' => $contexto,
                 'resoluciones' => [],
             ];
         }
 
-        // Guardar en el estado (clave por contexto para no pisar otras)
-        $claveId  = "id_resolucion_{$contexto}";
-        $claveObj = "resolucion_{$contexto}";
+        $auto = (bool) ($args['auto'] ?? false);
 
-        if (count($lista) === 1) {
-            $state[$claveId]  = $lista[0]['id'];
-            $state[$claveObj] = $lista[0];
-        } else {
-            $state["resoluciones_candidatas_{$contexto}"] = $lista;
+        if ($auto || count($lista) === 1) {
+            $state->setBorrador("id_resolucion_{$contexto}", $lista[0]['id']);
+            $state->setBorrador("resolucion_{$contexto}", $lista[0]);
+            $state->limpiarCandidatos("resolucion_{$contexto}");
+
+            return [
+                'success'      => true,
+                'contexto'     => $contexto,
+                'resolucion'   => $lista[0],
+                'resoluciones' => $lista,
+                'message'      => "Resolución '{$lista[0]['nombre']}' fijada en el borrador.",
+            ];
         }
+
+        $state->setCandidatos("resolucion_{$contexto}", $lista);
 
         return [
             'success'      => true,
             'contexto'     => $contexto,
-            'origen'       => $origen,
             'resoluciones' => $lista,
+            'message'      => 'Se encontraron varias resoluciones. Pide al usuario que elija una.',
         ];
     }
 
-    /**
-     * Resuelve la lista de tipos (constantes) permitidos.
-     */
+    private function tiposPorContexto(): array
+    {
+        return [
+            'venta' => [FacResoluciones::TIPO_POS, FacResoluciones::TIPO_FACTURA_ELECTRONICA],
+            'pos'   => [FacResoluciones::TIPO_POS],
+            'factura_electronica' => [FacResoluciones::TIPO_FACTURA_ELECTRONICA],
+            'contingencia' => [FacResoluciones::TIPO_POS, FacResoluciones::TIPO_FACTURA_ELECTRONICA],
+            'nota_credito' => [FacResoluciones::TIPO_NOTA_CREDITO],
+            'nota_debito'  => [FacResoluciones::TIPO_NOTA_DEBITO],
+            'documento_soporte' => [FacResoluciones::TIPO_DOCUEMNTO_EQUIVALENTE],
+        ];
+    }
+
+    private function mapaTipos(): array
+    {
+        return [
+            'pos'                   => FacResoluciones::TIPO_POS,
+            'factura_electronica'   => FacResoluciones::TIPO_FACTURA_ELECTRONICA,
+            'factura electronica'   => FacResoluciones::TIPO_FACTURA_ELECTRONICA,
+            'nota_debito'           => FacResoluciones::TIPO_NOTA_DEBITO,
+            'nota_credito'          => FacResoluciones::TIPO_NOTA_CREDITO,
+            'contingencia'          => FacResoluciones::TIPO_FACTURA_ELECTRONICA,
+            'documento_equivalente' => FacResoluciones::TIPO_DOCUEMNTO_EQUIVALENTE,
+            'documento_soporte'     => FacResoluciones::TIPO_DOCUEMNTO_EQUIVALENTE,
+        ];
+    }
+
     private function resolverTipos(string $contexto, ?array $tiposCustom): array
     {
         if (!empty($tiposCustom)) {
@@ -193,9 +156,6 @@ class BuscarResolucionSkill extends Skill
         return $this->tiposPorContexto()[$contexto] ?? [];
     }
 
-    /**
-     * Ejecuta la consulta a FacResoluciones.
-     */
     private function queryResoluciones(?array $ids, array $tipos, string $busqueda): array
     {
         $query = FacResoluciones::query()->whereIn('tipo_resolucion', $tipos);
@@ -219,21 +179,14 @@ class BuscarResolucionSkill extends Skill
             ->toArray();
     }
 
-    /**
-     * IDs de resoluciones asignadas al usuario logueado.
-     * Lee usuario_permisos.ids_resolucion_responsable (ej: "1,2,3").
-     */
-    private function idsResolucionesDelUsuario(array $state): array
+    private function idsResolucionesDelUsuario(Estado $state): array
     {
-        $idUser    = $state['id_user']    ?? auth()->id();
-        $idEmpresa = $state['id_empresa'] ?? null;
+        $idUser    = $state->idUser();
+        $idEmpresa = $state->idEmpresa();
 
-        if (!$idUser) {
-            return [];
-        }
+        if (!$idUser) return [];
 
         $query = UsuarioPermisos::query()->where('id_user', $idUser);
-
         if ($idEmpresa) {
             $query->where('id_empresa', $idEmpresa);
         }
@@ -241,9 +194,7 @@ class BuscarResolucionSkill extends Skill
         return $query->pluck('ids_resolucion_responsable')
             ->filter()
             ->flatMap(function ($valor) {
-                if (is_array($valor)) {
-                    return $valor;
-                }
+                if (is_array($valor)) return $valor;
                 return array_map('trim', explode(',', $valor));
             })
             ->filter(fn ($id) => is_numeric($id))

@@ -177,6 +177,9 @@
         </svg>
     </div>
 
+    <!-- CHAT IA -->
+     @include('components.ia-chat')
+
     <!-- FOOTER -->
     @include('layouts.footers.footer')
 
@@ -229,6 +232,8 @@
     <!-- DATAPICKER -->
     <script src="assets/js/sistema/moment.min.js"></script>
     <script src="assets/js/sistema/daterangepicker.min.js"></script>
+    <!-- IA CHAT -->
+    <script src="assets/js/sistema/iaChat.min.js"></script>
 
     <!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js" rel="stylesheet"></script> -->
     

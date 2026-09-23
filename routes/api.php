@@ -140,6 +140,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::post('ia/chat', [AIChatController::class, 'chat']);
         Route::post('ia/reset', [AIChatController::class, 'reset']);
 
+        Route::get('ia/conversaciones', [AIChatController::class, 'conversaciones']);
+        Route::get('ia/conversaciones/{sessionId}/mensajes', [AIChatController::class, 'mensajes']);
+
         //SISTEMA POS
         Route::prefix('pos')->controller(PosController::class)->group(function () {
             Route::get('pedidos', 'pedidos');

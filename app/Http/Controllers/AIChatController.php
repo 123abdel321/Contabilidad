@@ -2,39 +2,165 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\AI\ERPAssistantService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+//SERVICES
+use App\Services\AI\Estado;
+use App\Services\AI\ERPAssistantService;
+//MODELS
+use App\Models\Empresas\AiConversacion;
 
 class AIChatController extends Controller
 {
-    public function chat(Request $request, ERPAssistantService $assistant)
+    public function chat(Request $request)
     {
-        $mensaje = $request->get('mensaje', '');
-        $conversationId = $request->get('conversation_id', 'default');
-        
-        $cacheKey = "ia_draft:{$conversationId}";
-        $state = Cache::get($cacheKey, []);
+        $request->validate([
+            'mensaje'    => 'required|string',
+            'session_id' => 'nullable|uuid',
+        ]);
 
-        $result = $assistant->chat($mensaje, $state);
+        $idUser    = $request->user()->id;
+        $idEmpresa = $request->user()->id_empresa;
 
-        Cache::put($cacheKey, $state, now()->addHours(2));
+        // ---------------------------------------------------------
+        // 1. Buscar o crear la conversación
+        // ---------------------------------------------------------
+        $sessionId = $request->input('session_id');
 
+        if ($sessionId) {
+            $conversacion = AiConversacion::where('session_id', $sessionId)
+                ->where('id_user', $idUser)
+                ->where('id_empresa', $idEmpresa)
+                ->first();
+        } else {
+            $conversacion = null;
+        }
+
+        if (!$conversacion) {
+            $sessionId    = (string) Str::uuid();
+            $conversacion = AiConversacion::create([
+                'session_id' => $sessionId,
+                'id_user'    => $idUser,
+                'id_empresa' => $idEmpresa,
+                'contexto'   => [
+                    'id_user'    => $idUser,
+                    'id_empresa' => $idEmpresa,
+                ],
+                'borrador'   => [],
+                'candidatos' => [],
+                'historial'  => [],
+            ]);
+        }
+
+        // ---------------------------------------------------------
+        // 2. Si la conversación ya está cerrada, arranca una nueva
+        // ---------------------------------------------------------
+        if ($conversacion->estaCerrada()) {
+            $sessionId    = (string) Str::uuid();
+            $conversacion = AiConversacion::create([
+                'session_id' => $sessionId,
+                'id_user'    => $idUser,
+                'id_empresa' => $idEmpresa,
+                'contexto'   => [
+                    'id_user'    => $idUser,
+                    'id_empresa' => $idEmpresa,
+                ],
+                'borrador'   => [],
+                'candidatos' => [],
+                'historial'  => [],
+            ]);
+        }
+
+        // ---------------------------------------------------------
+        // 3. Construir Estado desde la conversación
+        // ---------------------------------------------------------
+        $state = new Estado($conversacion->toEstadoArray());
+
+        // Garantizar contexto (por si acaso)
+        if (!$state->idUser())    $state->setContexto('id_user', $idUser);
+        if (!$state->idEmpresa()) $state->setContexto('id_empresa', $idEmpresa);
+
+        // ---------------------------------------------------------
+        // 4. Llamar al asistente
+        // ---------------------------------------------------------
+        $resultado = app(ERPAssistantService::class)->chat(
+            $request->input('mensaje'),
+            $state
+        );
+
+        // ---------------------------------------------------------
+        // 5. Persistir
+        // ---------------------------------------------------------
+        $conversacion->update([
+            'flujo'      => $state->flujo(),
+            'contexto'   => $state->toArray()['contexto'],
+            'borrador'   => $state->borrador(),
+            'candidatos' => $state->toArray()['candidatos'],
+            'historial'  => $state->historial(),
+            'resultado'  => $state->resultado(),
+            'cerrada'    => $state->resultado() !== null,
+        ]);
+
+        // ---------------------------------------------------------
+        // 6. Respuesta
+        // ---------------------------------------------------------
         return response()->json([
-            'respuesta' => $result['respuesta'],
-            'skills' => $result['skills'],
-            'draft' => [
-                'id_cliente' => $state['id_cliente'] ?? null,
-                'cliente' => $state['cliente'] ?? null,
-            ],
+            'session_id' => $sessionId,
+            'respuesta'  => $resultado['respuesta'],
+            'skills'     => $resultado['skills'],
+            'draft'      => $resultado['draft'],
+            'cerrada'    => $conversacion->estaCerrada(),
         ]);
     }
 
+    /**
+     * Reinicia la conversación actual (el front debe mandar session_id).
+     */
     public function reset(Request $request)
     {
-        $conversationId = $request->get('conversation_id', 'default');
-        Cache::forget("ia_draft:{$conversationId}");
+        $request->validate([
+            'session_id' => 'nullable|uuid',
+        ]);
 
-        return response()->json(['ok' => true]);
+        $sessionId = $request->input('session_id');
+
+        if ($sessionId) {
+            AiConversacion::where('session_id', $sessionId)
+                ->where('id_user', $request->user()->id)
+                ->update(['cerrada' => true]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function conversaciones(Request $request)
+    {
+        $conversaciones = AiConversacion::where('id_user', $request->user()->id)
+            ->where('id_empresa', $request->user()->id_empresa)
+            ->orderBy('updated_at', 'desc')
+            ->limit(20)
+            ->get(['session_id', 'flujo', 'borrador', 'resultado', 'cerrada', 'updated_at']);
+
+        return response()->json([
+            'success' => true,
+            'data' => $conversaciones
+        ]);
+    }
+
+    public function mensajes(Request $request, $sessionId)
+    {
+        $conversacion = AiConversacion::where('session_id', $sessionId)
+            ->where('id_user', $request->user()->id)
+            ->firstOrFail();
+
+        // Devolvemos el historial formateado para mostrarlo en el chat
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'historial' => $conversacion->historial ?? [],
+                'borrador' => $conversacion->borrador ?? [],
+                'resultado' => $conversacion->resultado,
+            ]
+        ]);
     }
 }

@@ -46,12 +46,40 @@ class SkillRegistry
         return isset($this->skills[$name]);
     }
 
-    public function run(string $name, array $args, array &$state): array
+    /**
+     * Ejecuta una skill por nombre, pasándole el Estado actual.
+     */
+    public function run(string $name, array $args, Estado $state): array
     {
         if (!$this->has($name)) {
             return ['success' => false, 'message' => "Skill {$name} no registrada."];
         }
 
         return $this->skills[$name]->run($args, $state);
+    }
+
+    /**
+     * Devuelve solo las definiciones de un subconjunto de skills.
+     * Útil para que cada Flujo exponga únicamente sus tools.
+     */
+    public function definitionsDe(array $nombres): array
+    {
+        $definiciones = [];
+
+        foreach ($nombres as $nombre) {
+            if ($this->has($nombre)) {
+                $definiciones[] = $this->skills[$nombre]->definition();
+            }
+        }
+
+        return $definiciones;
+    }
+
+    /**
+     * Devuelve las definiciones filtradas por las skills permitidas de un Flujo.
+     */
+    public function definitionsParaFlujo(\App\Services\AI\Flujos\Flujo $flujo): array
+    {
+        return $this->definitionsDe($flujo->skillsPermitidas());
     }
 }

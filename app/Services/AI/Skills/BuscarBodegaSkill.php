@@ -4,6 +4,7 @@ namespace App\Services\AI\Skills;
 
 use App\Models\Sistema\FacBodegas;
 use App\Models\Empresas\UsuarioPermisos;
+use App\Services\AI\Estado;
 
 class BuscarBodegaSkill extends Skill
 {
@@ -14,7 +15,7 @@ class BuscarBodegaSkill extends Skill
 
     public function description(): string
     {
-        return 'Busca bodegas asignadas al usuario logueado o por nombre/código. Úsala antes de crear una venta o movimiento de inventario.';
+        return 'Lista las bodegas permitidas al usuario o busca una por nombre/código. En un flujo de venta, llama esta skill SIN "busqueda" para obtener las bodegas permitidas.';
     }
 
     public function parameters(): array
@@ -22,34 +23,31 @@ class BuscarBodegaSkill extends Skill
         return [
             'busqueda' => [
                 'type' => 'string',
-                'description' => 'Nombre o código de la bodega a buscar. Opcional si se usan las asignadas al usuario.',
+                'description' => 'OPCIONAL. Solo si el usuario quiere localizar una bodega específica.',
+                'required' => false,
+            ],
+            'auto' => [
+                'type' => 'boolean',
+                'description' => 'Si es true, la skill elige la primera bodega automáticamente y no pregunta. Úsalo al inicio del flujo de venta.',
                 'required' => false,
             ],
         ];
     }
 
-    public function run(array $args, array &$state): array
+    public function run(array $args, Estado $state): array
     {
         $busqueda = trim($args['busqueda'] ?? '');
+        $auto     = (bool) ($args['auto'] ?? false);
 
-        // 1) Por permisos del usuario logueado
         $idsPermitidos = $this->idsBodegasDelUsuario($state);
         $lista         = [];
-        $origen        = 'permisos_usuario';
 
         if (!empty($idsPermitidos)) {
             $lista = $this->queryBodegas($idsPermitidos, $busqueda);
         }
 
-        // 2) Fallback: búsqueda global por nombre/código
         if (empty($lista) && $busqueda !== '') {
-            $origen = 'busqueda_global';
-            $lista  = $this->queryBodegas(null, $busqueda);
-        }
-
-        // 3) Si no hay búsqueda y sí permisos: devolver todas las permitidas
-        if (empty($lista) && $busqueda === '' && !empty($idsPermitidos)) {
-            $lista = $this->queryBodegas($idsPermitidos, '');
+            $lista = $this->queryBodegas(null, $busqueda);
         }
 
         if (empty($lista)) {
@@ -60,18 +58,26 @@ class BuscarBodegaSkill extends Skill
             ];
         }
 
-        // Guardar en el estado
-        if (count($lista) === 1) {
-            $state['id_bodega'] = $lista[0]['id'];
-            $state['bodega']    = $lista[0];
-        } else {
-            $state['bodegas_candidatas'] = $lista;
+        // Auto-selección: tomamos la primera
+        if ($auto || count($lista) === 1) {
+            $state->setBorrador('id_bodega', $lista[0]['id']);
+            $state->setBorrador('bodega', $lista[0]);
+            $state->limpiarCandidatos('bodega');
+
+            return [
+                'success' => true,
+                'bodega'  => $lista[0],
+                'bodegas' => $lista,
+                'message' => "Bodega '{$lista[0]['nombre']}' fijada en el borrador.",
+            ];
         }
+
+        $state->setCandidatos('bodega', $lista);
 
         return [
             'success' => true,
-            'origen'  => $origen,
             'bodegas' => $lista,
+            'message' => 'Se encontraron varias bodegas. Pide al usuario que elija una.',
         ];
     }
 
@@ -97,14 +103,10 @@ class BuscarBodegaSkill extends Skill
             ->toArray();
     }
 
-    /**
-     * IDs de bodegas asignadas al usuario logueado.
-     * Lee usuario_permisos.ids_bodegas_responsable (ej: "1,2,3").
-     */
-    private function idsBodegasDelUsuario(array $state): array
+    private function idsBodegasDelUsuario(Estado $state): array
     {
-        $idUser    = $state['id_user']    ?? auth()->id();
-        $idEmpresa = $state['id_empresa'] ?? null;
+        $idUser    = $state->idUser();
+        $idEmpresa = $state->idEmpresa();
 
         if (!$idUser) {
             return [];
@@ -119,9 +121,7 @@ class BuscarBodegaSkill extends Skill
         return $query->pluck('ids_bodegas_responsable')
             ->filter()
             ->flatMap(function ($valor) {
-                if (is_array($valor)) {
-                    return $valor;
-                }
+                if (is_array($valor)) return $valor;
                 return array_map('trim', explode(',', $valor));
             })
             ->filter(fn ($id) => is_numeric($id))
