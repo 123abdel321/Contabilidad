@@ -77,6 +77,11 @@ function enviarMensajeAiChat() {
             agregarMensajeAiChat('Conversación finalizada. Usa "+" para iniciar una nueva.', 'sistema');
             cargarConversacionesAiChat();
         }
+
+        if (res.pdf_url) {
+            mostrarPdfAiChat(res.pdf_url);
+        }
+
     }).fail((err) => {
         var mensaje = 'Error de conexión.';
         if (err.responseJSON && err.responseJSON.message) {
@@ -210,6 +215,13 @@ function cargarConversacionAiChat(sessionId) {
                 items[j].classList.add('activa');
             }
         }
+
+        if (res.data.resultado && res.data.resultado.id) {
+            mostrarPdfAiChat(base_web + 'ventas-print/' + res.data.resultado.id);
+        } else {
+            cerrarPdfAiChat();
+        }
+
     }).fail((err) => {
         var mensaje = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Error al cargar conversación.';
         agregarToast('error', 'Error IA', mensaje);
@@ -285,4 +297,71 @@ $(document).on('click', '.ai-chat-sidebar-item', function () {
     if (sessionId) {
         cargarConversacionAiChat(sessionId);
     }
+});
+
+function mostrarPdfAiChat(url) {
+    var viewer  = document.getElementById('ai-chat-pdf-viewer');
+    var iframe  = document.getElementById('ai-chat-pdf-iframe');
+    var abrir   = document.getElementById('ai-chat-pdf-abrir');
+    var loading = document.getElementById('ai-chat-pdf-loading');
+
+    // Reset
+    iframe.src = 'about:blank';
+    loading.classList.remove('oculto');
+    viewer.style.display = 'flex';
+    abrir.href = url;
+
+    // Precargar el PDF
+    fetch(url, {
+        method: 'GET',
+        headers: headers,   // tus credenciales
+        credentials: 'include',
+    })
+    .then(function (response) {
+        if (!response.ok) throw new Error('No se pudo generar la factura.');
+        return response.blob();
+    })
+    .then(function (blob) {
+        var blobUrl = URL.createObjectURL(blob);
+
+        iframe.src = blobUrl;
+
+        iframe.onload = function () {
+            setTimeout(function () {
+                loading.classList.add('oculto');
+            }, 200);
+        };
+
+        // Libera memoria cuando se cierre el visor
+        iframe.setAttribute('data-blob-url', blobUrl);
+    })
+    .catch(function (error) {
+        loading.innerHTML = '<div style="padding:20px;text-align:center;color:#b91c1c;font-size:13px;">⚠️ ' + error.message + '</div>';
+    });
+}
+
+function cerrarPdfAiChat() {
+    var viewer  = document.getElementById('ai-chat-pdf-viewer');
+    var iframe  = document.getElementById('ai-chat-pdf-iframe');
+    var loading = document.getElementById('ai-chat-pdf-loading');
+
+    // Limpia el blob si existe
+    var blobUrl = iframe.getAttribute('data-blob-url');
+    if (blobUrl) {
+        URL.revokeObjectURL(blobUrl);
+        iframe.removeAttribute('data-blob-url');
+    }
+
+    iframe.src = 'about:blank';
+    loading.classList.remove('oculto');
+    loading.innerHTML = `
+        <div class="ai-chat-pdf-spinner"></div>
+        <div class="ai-chat-pdf-loading-texto">Generando factura...</div>
+        <div class="ai-chat-pdf-loading-subtexto">Esto puede tardar unos segundos</div>
+    `;
+    viewer.style.display = 'none';
+}
+
+$(document).on('click', '#ai-chat-pdf-cerrar', function () {
+    cerrarPdfAiChat();
 });

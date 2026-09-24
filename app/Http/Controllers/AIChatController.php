@@ -104,12 +104,19 @@ class AIChatController extends Controller
         // ---------------------------------------------------------
         // 6. Respuesta
         // ---------------------------------------------------------
+        $pdfUrl = null;
+
+        if ($state->resultado() && !empty($state->resultado()['id'])) {
+            $pdfUrl = url("/ventas-print/{$state->resultado()['id']}");
+        }
+
         return response()->json([
             'session_id' => $sessionId,
             'respuesta'  => $resultado['respuesta'],
             'skills'     => $resultado['skills'],
             'draft'      => $resultado['draft'],
             'cerrada'    => $conversacion->estaCerrada(),
+            'pdf_url'    => $pdfUrl,
         ]);
     }
 

@@ -248,6 +248,118 @@
             display: none;
         }
     }
+
+    .ai-chat-pdf-viewer {
+        border-top: 2px solid #4f46e5;
+        background: #f8f9ff;
+        display: flex;
+        flex-direction: column;
+        height: 55%;
+        min-height: 280px;
+    }
+
+    .ai-chat-pdf-header {
+        padding: 8px 12px;
+        background: #eef2ff;
+        border-bottom: 1px solid #d1d5db;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        color: #374151;
+        font-weight: 600;
+    }
+
+    .ai-chat-pdf-header > div {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ai-chat-pdf-btn {
+        background: #4f46e5;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .ai-chat-pdf-btn:hover {
+        background: #4338ca;
+        color: white;
+    }
+
+    .ai-chat-pdf-btn-cerrar {
+        background: transparent;
+        border: none;
+        font-size: 18px;
+        color: #6b7280;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0 4px;
+    }
+
+    .ai-chat-pdf-body {
+        position: relative;
+        flex: 1;
+        background: white;
+        overflow: hidden;
+    }
+
+    .ai-chat-pdf-loading {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9ff;
+        z-index: 2;
+        transition: opacity 0.3s;
+    }
+
+    .ai-chat-pdf-loading.oculto {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .ai-chat-pdf-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #e0e7ff;
+        border-top-color: #4f46e5;
+        border-radius: 50%;
+        animation: aiChatPdfSpin 0.8s linear infinite;
+        margin-bottom: 12px;
+    }
+
+    @keyframes aiChatPdfSpin {
+        to { transform: rotate(360deg); }
+    }
+
+    .ai-chat-pdf-loading-texto {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .ai-chat-pdf-loading-subtexto {
+        font-size: 11px;
+        color: #9ca3af;
+        margin-top: 4px;
+    }
+
+    #ai-chat-pdf-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: white;
+        position: relative;
+        z-index: 1;
+    }
+
 </style>
 
 <div id="ai-chat-widget" class="ai-chat-widget">
@@ -269,6 +381,24 @@
         </div>
 
         <div id="ai-chat-mensajes" class="ai-chat-mensajes"></div>
+
+        <div id="ai-chat-pdf-viewer" class="ai-chat-pdf-viewer" style="display:none;">
+            <div class="ai-chat-pdf-header">
+                <span>Factura generada</span>
+                <div>
+                    <a id="ai-chat-pdf-abrir" href="#" target="_blank" class="ai-chat-pdf-btn">Abrir en pestaña</a>
+                    <button type="button" id="ai-chat-pdf-cerrar" class="ai-chat-pdf-btn-cerrar">×</button>
+                </div>
+            </div>
+            <div class="ai-chat-pdf-body">
+                <div id="ai-chat-pdf-loading" class="ai-chat-pdf-loading">
+                    <div class="ai-chat-pdf-spinner"></div>
+                    <div class="ai-chat-pdf-loading-texto">Generando factura...</div>
+                    <div class="ai-chat-pdf-loading-subtexto">Esto puede tardar unos segundos</div>
+                </div>
+                <iframe id="ai-chat-pdf-iframe" src=""></iframe>
+            </div>
+        </div>
 
         <div class="ai-chat-input-wrap">
             <input type="text" id="ai-chat-input" placeholder="Escribe tu mensaje..." autocomplete="off">

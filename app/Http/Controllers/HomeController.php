@@ -63,11 +63,12 @@ class HomeController extends Controller
             }
         }
 
-
-        
+        $user = $request->user();
+        $esDios = $user->rol_portafolio;
         
         $data = [
             'menus' => $menus->groupBy('id_padre'),
+            'esDios' => $esDios,
             'empresa' => $empresa,
             'usuario_empresa' => UsuarioEmpresa::where('id_empresa', $request->user()['id_empresa'])
                 ->where('id_usuario', $request->user()['id'])

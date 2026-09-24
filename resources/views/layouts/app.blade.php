@@ -178,7 +178,9 @@
     </div>
 
     <!-- CHAT IA -->
-     @include('components.ia-chat')
+    @if($esDios)
+        @include('components.ia-chat')
+    @endif
 
     <!-- FOOTER -->
     @include('layouts.footers.footer')
@@ -233,7 +235,9 @@
     <script src="assets/js/sistema/moment.min.js"></script>
     <script src="assets/js/sistema/daterangepicker.min.js"></script>
     <!-- IA CHAT -->
-    <script src="assets/js/sistema/iaChat.min.js"></script>
+    @if($esDios)
+    <script src="assets/js/sistema/iaChat.js"></script>
+    @endif
 
     <!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js" rel="stylesheet"></script> -->
     
