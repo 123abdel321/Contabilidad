@@ -25,6 +25,11 @@ function abrirAiChat() {
         agregarMensajeAiChat('Hola 👋 ¿Qué venta u operación quieres hacer?', 'sistema');
     }
 
+    // Inicializar dictado por voz (solo la primera vez)
+    if (!aiChatReconocimiento) {
+        inicializarDictadoAiChat();
+    }
+
     cargarConversacionesAiChat();
 }
 
@@ -365,3 +370,97 @@ function cerrarPdfAiChat() {
 $(document).on('click', '#ai-chat-pdf-cerrar', function () {
     cerrarPdfAiChat();
 });
+
+// ---------------------------------------------------------------------------
+// DICTADO POR VOZ (Web Speech API)
+// ---------------------------------------------------------------------------
+var aiChatReconocimiento = null;
+var aiChatGrabando = false;
+
+function inicializarDictadoAiChat() {
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    // Si el navegador no soporta la API, ocultar el botón
+    if (!SpeechRecognition) {
+        document.getElementById('ai-chat-mic').classList.add('oculto');
+        return;
+    }
+
+    aiChatReconocimiento = new SpeechRecognition();
+
+    // Configuración
+    aiChatReconocimiento.lang = 'es-CO';          // Español (Colombia)
+    aiChatReconocimiento.continuous = false;      // Solo una frase a la vez
+    aiChatReconocimiento.interimResults = true;   // Mostrar resultados parciales
+    aiChatReconocimiento.maxAlternatives = 1;
+
+    // Cuando llega un resultado (parcial o final)
+    aiChatReconocimiento.onresult = function (event) {
+        var input = document.getElementById('ai-chat-input');
+        var transcripcion = '';
+
+        for (var i = event.resultIndex; i < event.results.length; i++) {
+            transcripcion += event.results[i][0].transcript;
+        }
+
+        input.value = transcripcion;
+
+        // Si el resultado es final, lo marcamos como completo
+        if (event.results[event.results.length - 1].isFinal) {
+            // El texto ya está en el input, listo para enviar
+        }
+    };
+
+    // Cuando termina de escuchar
+    aiChatReconocimiento.onend = function () {
+        aiChatGrabando = false;
+        document.getElementById('ai-chat-mic').classList.remove('grabando');
+        document.getElementById('ai-chat-input').focus();
+    };
+
+    // Manejo de errores
+    aiChatReconocimiento.onerror = function (event) {
+        aiChatGrabando = false;
+        document.getElementById('ai-chat-mic').classList.remove('grabando');
+
+        var mensaje = 'No se pudo escuchar.';
+
+        if (event.error === 'not-allowed') {
+            mensaje = 'Permiso de micrófono denegado. Habilítalo en tu navegador.';
+        } else if (event.error === 'no-speech') {
+            mensaje = 'No se detectó voz. Intenta de nuevo.';
+        } else if (event.error === 'audio-capture') {
+            mensaje = 'No hay micrófono disponible.';
+        }
+
+        agregarToast('error', 'Dictado', mensaje);
+    };
+
+    // Eventos del botón
+    $(document).on('click', '#ai-chat-mic', function () {
+        if (aiChatGrabando) {
+            aiChatReconocimiento.stop();
+        } else {
+            // Limpia el input antes de empezar a dictar
+            document.getElementById('ai-chat-input').value = '';
+            aiChatReconocimiento.start();
+            aiChatGrabando = true;
+            $(this).addClass('grabando');
+        }
+    });
+
+    // Iniciar reconocimiento (debe hacerse dentro de un gesto de usuario)
+    // Lo dejamos listo para cuando se necesite
+}
+
+// ---------------------------------------------------------------------------
+// Detectar soporte y mostrar/ocultar botón
+// ---------------------------------------------------------------------------
+function verificarSoporteDictadoAiChat() {
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var btnMic = document.getElementById('ai-chat-mic');
+
+    if (!SpeechRecognition && btnMic) {
+        btnMic.classList.add('oculto');
+    }
+}

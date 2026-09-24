@@ -181,6 +181,45 @@
         display: flex;
         gap: 8px;
         background: white;
+        align-items: center;
+    }
+
+    .ai-chat-mic {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: none;
+        background: #eef2ff;
+        color: #4f46e5;
+        cursor: pointer;
+        transition: all 0.2s;
+        flex-shrink: 0;
+    }
+
+    .ai-chat-mic:hover {
+        background: #e0e7ff;
+    }
+
+    .ai-chat-mic.grabando {
+        background: #dc2626;
+        color: white;
+        animation: aiChatMicPulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes aiChatMicPulse {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5);
+        }
+        50% {
+            box-shadow: 0 0 0 8px rgba(220, 38, 38, 0);
+        }
+    }
+
+    .ai-chat-mic.oculto {
+        display: none;
     }
 
     .ai-chat-input-wrap input {
@@ -402,6 +441,14 @@
 
         <div class="ai-chat-input-wrap">
             <input type="text" id="ai-chat-input" placeholder="Escribe tu mensaje..." autocomplete="off">
+            <button type="button" id="ai-chat-mic" class="ai-chat-mic" title="Dictar por voz">
+                <svg style="position: fixed;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+            </button>
             <button type="button" id="ai-chat-enviar">Enviar</button>
         </div>
     </div>
