@@ -61,8 +61,8 @@ class ResumenCarteraExport implements FromView, WithColumnWidths, WithStyles, Wi
         }
 
         if ($this->tipo_informe != 'resumen_general') {
-            $this->cuentas[] = 'TOTAL ABONO';
-            $this->cuentas[] = 'FECHA MANUAL';
+            $this->cuentas[] = 'TOTAL PAGO';
+            $this->cuentas[] = 'FECHA PAGO';
         }
 
         $this->cuentas[] = 'SALDO FINAL';
