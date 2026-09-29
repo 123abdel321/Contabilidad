@@ -148,16 +148,22 @@ class ResumenCarteraController extends Controller
                 'logo_empresa' => $empresa->logo,
             ];
 
-            $filtros = (object)[
+            $nitData = null;
+            if ($request->get('id_nit')) {
+                $nitData = Nits::find($request->get('id_nit'));
+            }
+
+            $filtros = [
                 'fecha_desde' => $request->get('fecha_desde'),
                 'fecha_hasta' => $request->get('fecha_hasta'),
-                'id_nit' => $request->get('id_nit') ? Nits::find($request->get('id_nit'))->numero_documento . ' - ' . (Nits::find($request->get('id_nit'))->nombre_completo ?? Nits::find($request->get('id_nit'))->nombre) : null,
+                'id_nit' => $nitData ? "{$nitData->numero_documento} - {$nitData->nombre_completo}" : null,
+                'ubicacion' =>  $nitData && $nitData->apartamentos ? "{$nitData->apartamentos}" : null,
             ];
 
             Bus::chain([
                 function () use ($id_informe, &$empresa, &$tipoInforme, &$filtros, &$fileName) {
                     // Almacena el archivo en DigitalOcean Spaces o donde lo necesites
-                    (new ResumenCarteraExport($id_informe, $empresa, $filtros, $tipoInforme))->store($fileName, 'do_spaces', null, [
+                    (new ResumenCarteraExport($id_informe, $empresa, (object)$filtros, $tipoInforme))->store($fileName, 'do_spaces', null, [
                         'visibility' => 'public'
                     ]);
                 },
