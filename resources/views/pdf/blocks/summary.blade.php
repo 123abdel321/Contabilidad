@@ -1,3 +1,4 @@
+@if($resumen['titulo'])
 <div class="box" style="width: 100%;">
     <table class="box-table" style="margin-left: auto; width: 100%;">
         <tr class="resumen-title">
@@ -18,3 +19,4 @@
         @endforeach
     </table>
 </div>
+@endif
