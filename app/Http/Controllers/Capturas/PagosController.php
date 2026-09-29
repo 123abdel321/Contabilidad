@@ -1176,9 +1176,9 @@ class PagosController extends Controller
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        $data = (new PagosPdf($empresa, $pago))->buildPdf()->getData();
+        $claveUrl = $this->generarClavePDF($empresa->id, $pago->id_comprobante, $pago->consecutivo, $pago->fecha_manual);
  
-        return (new PagosPdf($empresa, $pago))
+        return (new PagosPdf($empresa, $pago, $claveUrl))
             ->buildPdf()
             ->showPdf();
     }
@@ -1202,9 +1202,10 @@ class PagosController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $data = (new PagosPdf($empresa, $pago))->buildPdf()->getData();
+        $claveUrl = $this->generarClavePDF($empresa->id, $pago->id_comprobante, $pago->consecutivo, $pago->fecha_manual);
+        // $data = (new PagosPdf($empresa, $pago))->buildPdf()->getData();
  
-        return (new PagosPdf($empresa, $pago))
+        return (new PagosPdf($empresa, $pago, $claveUrl))
             ->buildPdf()
             ->showPdf();
     }

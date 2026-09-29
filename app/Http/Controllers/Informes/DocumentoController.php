@@ -199,7 +199,7 @@ class DocumentoController extends Controller
             if ($comprobante->tipo_comprobante == Comprobantes::TIPO_EGRESOS) {
                 $pagos = ConPagos::where('id', $documento->relation_id)->first();
                 if ($pagos) {
-                    return (new PagosPdf($empresa, $pagos))
+                    return (new PagosPdf($empresa, $pagos, $claveUrl))
                         ->buildPdf()
                         ->showPdf();
                 }
@@ -258,7 +258,7 @@ class DocumentoController extends Controller
             return response()->json([
                 'success'=>	false,
                 'data' => [],
-                'message'=> "El documento: {$documento->id} no tiene cabezas para imprimir"
+                'message'=> "El documento: no tiene cabezas para imprimir"
             ]);
         }
         
@@ -309,7 +309,7 @@ class DocumentoController extends Controller
         if ($comprobante->tipo_comprobante == Comprobantes::TIPO_EGRESOS) {
             $pagos = ConPagos::where('id', $documento->relation_id)->first();
             if ($pagos) {
-                return (new PagosPdf($empresa, $pagos))
+                return (new PagosPdf($empresa, $pagos, $claveUrl))
                     ->buildPdf()
                     ->showPdf();
             }
