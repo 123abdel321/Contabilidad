@@ -52,7 +52,7 @@
                     @endif
 
                     @if ($tipo_informe != 'resumen_general')
-                        <td style="{{ $estiloTd }} padding: 4px; border: 1px solid #ddd;">{{ $detalle->total_abono }}</td>
+                        <td style="{{ $estiloTd }} padding: 4px; border: 1px solid #ddd;">{{ number_format($detalle->total_abono) }}</td>
                         <td style="{{ $estiloTd }} padding: 4px; border: 1px solid #ddd;">
                             @if(!$esTotal)
                                 {{ $fechaFormateada }}
