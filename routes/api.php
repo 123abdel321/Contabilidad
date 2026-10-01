@@ -295,9 +295,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         });
         
         Route::controller(SuscripcionController::class)->group(function () {
-            Route::get('suscripcion-componentes', 'componentesGet');
-            Route::post('suscripcion-componentes', 'componentesPost');
-            Route::get('suscripcion-combos', 'combosGet');
+            // Route::get('suscripcion-consumo-actual', 'consumoActualGet');
+            
+            //COMPONENTES
+            // Route::get('suscripcion-componentes', 'componentesGet');
+            // Route::post('suscripcion-componentes', 'componentesPost');
+            // Route::get('suscripcion-combos', 'combosGet');
+            // //PAGOS
+            Route::get('suscripcion-pagos', 'pagosGet');
         });
         
         //IMPUESTOS
@@ -342,6 +347,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('nit/combo-nit', 'comboNit');
             Route::get('nit/combo-tipo-documento', 'comboTipoDocumento');
             Route::get('nit/informacion', 'getNitInfo');
+            Route::get('nit/{id}', 'getNit');
             Route::get('nit/empleado-activo', 'comboEmpleado');
         });
         //FAMILIAS

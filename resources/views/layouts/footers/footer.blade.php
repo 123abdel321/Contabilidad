@@ -14,11 +14,12 @@
 </style>
 
 <div class="footer-navigation">
-     <ul class="nav nav-tabs navbuttons" id="footer-navigation">
-        <li class="nav-item">
-            <div class="nav-link col active seleccionar-view" id="tab-dashboard">
-                <i class="fas fa-home"></i>&nbsp;
-                Inicio&nbsp;
+    <ul class="nav nav-tabs navbuttons" id="footer-navigation">
+        <li class="nav-item" id="lista_view_dashboard">
+            <div class="nav-link col active seleccionar-view"
+                 id="tab-dashboard"
+                 onclick="seleccionarView('dashboard')">
+                <i class="fas fa-home"></i>&nbsp;Inicios
             </div>
         </li>
     </ul>

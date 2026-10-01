@@ -182,6 +182,9 @@
         @include('components.ia-chat')
     @endif
 
+    @include('pages.capturas.nit-detail')
+    @include('pages.capturas.nit-form-general')
+
     <!-- FOOTER -->
     @include('layouts.footers.footer')
 
@@ -227,7 +230,6 @@
     <!-- PUSHER -->
     <script src="assets/js/sistema/pusher.min.js"></script>
     <!-- SISTEMA -->
-    <script src="assets/js/sistema/sistema.js?v={{ config('app.version') }}" rel="stylesheet"></script>
     <script src="assets/js/sistema/handsontable.full.min.js"></script>
     <!-- FULL CALENDER -->
     <script src="assets/js/sistema/fullcalendar.min.js"></script>
@@ -238,6 +240,10 @@
     @if($esDios)
     <script src="assets/js/sistema/iaChat.js"></script>
     @endif
+
+    <script src="assets/js/sistema/sistema.js?v={{ config('app.version') }}"></script>
+    <script src="assets/js/sistema/nitGenerales.js?v={{ config('app.version') }}"></script>
+    <script src="assets/js/sistema/tab-manager.js?v={{ config('app.version') }}"></script>
 
     <!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js" rel="stylesheet"></script> -->
     

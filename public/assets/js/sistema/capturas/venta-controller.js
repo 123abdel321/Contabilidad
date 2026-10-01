@@ -558,18 +558,11 @@ function cargarCombosVenta() {
         };
         var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
         $comboCliente.append(newOption).val(dataCliente.id).trigger('change');
+        procesarCambioClienteVenta();
     }
 
     $('#id_cliente_venta').on('select2:close', function(event) {
-        var data = $(this).select2('data');
-        if(data.length){
-            loadAnticiposCliente();
-            clearFormasPagoVenta();
-            responsabilidadesVenta = getResponsabilidades(data[0].id_responsabilidades);
-            actualizarInfoRetencionVentas();
-            
-            if (vendedoresVentas) loadVendedorCliente();
-        }
+        procesarCambioClienteVenta();
     });
     
     $('#id_resolucion_venta').on('select2:close', function(event) {
@@ -588,6 +581,23 @@ function cargarPopoverVenta() {
         container: 'body',
         customClass: 'popover-formas-pagos'
     });
+}
+
+function procesarCambioClienteVenta() {
+    var data = $('#id_cliente_venta').select2('data');
+
+    if (!data.length) {
+        $("#btn_ver_cliente_venta").hide();
+        return;
+    }
+
+    $("#btn_ver_cliente_venta").show();
+    loadAnticiposCliente();
+    clearFormasPagoVenta();
+    responsabilidadesVenta = getResponsabilidades(data[0].id_responsabilidades);
+    actualizarInfoRetencionVentas();
+
+    if (vendedoresVentas) loadVendedorCliente();
 }
 
 function focusCantidadVenta (idRow) {
@@ -741,14 +751,12 @@ $(document).on('keydown', '.custom-venta_producto .select2-search__field', funct
 
 $(document).on('keydown', '.custom-id_cliente_venta .select2-search__field', function (event) {
     if (event.keyCode == 13){
-        openModalNewNit();
+        openModalNewNitVenta();
         var documentoBuscado = $('.select2-search__field').val();
         $comboCliente.select2('close');
         $("#numero_documento_venta_nit").val(documentoBuscado);
     }
 });
-
-
 
 function cargarchangesVenta() {
     $("#id_vendedor_venta").on('change', function(event) {
@@ -1935,9 +1943,67 @@ function focusNextFormasPagoVentas(idFormaPago) {
     focusFormaPagoVenta(idFormaPagoFocus);
 }
 
-function openModalNewNit() {
-    clearFormNitsVenta();
-    $("#nitVentaFormModal").modal('show');
+function openModalNewNitVenta() {
+    abrirNitGeneral({
+        modo: 'create',
+        captura: 'venta',
+        onSave: function (dataNit) {
+            var dataCliente = {
+                id: dataNit.id,
+                text: dataNit.numero_documento + ' - ' + dataNit.nombre_completo
+            };
+            var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
+            $comboCliente.append(newOption).val(dataCliente.id).trigger('change');
+
+            procesarCambioClienteVenta();
+
+            agregarToast('exito', 'Creación exitosa', 'Cliente creado con éxito!', true);
+            document.getElementById('iniciarCapturaVenta').click();
+        }
+    });
+}
+
+function openModalViewNitVenta() {
+    var data = $('#id_cliente_venta').select2('data');
+
+    if (!data.length) {
+        agregarToast('warning', 'Sin cliente', 'Selecciona un cliente primero');
+        return;
+    }
+
+    abrirNitDetalle(data[0].id);
+}
+
+function openModalEditNitVenta() {
+    var data = $('#id_cliente_venta').select2('data');
+    if (!data.length) {
+        agregarToast('warning', 'Sin cliente', 'Selecciona un cliente primero');
+        return;
+    }
+    abrirNitGeneral({
+        modo: 'edit',
+        id: data[0].id,
+        onUpdate: function (dataNit) {
+
+            var $sel = $('#id_cliente_venta');
+            var optText = dataNit.numero_documento + ' - ' + dataNit.nombre_completo;
+
+            // 1. Eliminar la opción vieja (por id)
+            $sel.find("option[value='" + dataNit.id + "']").remove();
+
+            // 2. Agregar la nueva opción con el texto actualizado
+            var newOption = new Option(optText, dataNit.id, true, true);
+            $sel.append(newOption);
+
+            // 3. Setear el valor y disparar change para que select2 refresque
+            $sel.val(dataNit.id).trigger('change');
+
+            // 4. Ejecutar tu lógica
+            procesarCambioClienteVenta();
+
+            agregarToast('exito', 'Edición exitosa', 'Cliente actualizado con éxito!', true);
+        }
+    });
 }
 
 function clearFormNitsVenta() {
@@ -2016,4 +2082,3 @@ $(document).on('click', '#saveNitVenta', function () {
         form.classList.add('was-validated');
     }
 });
-

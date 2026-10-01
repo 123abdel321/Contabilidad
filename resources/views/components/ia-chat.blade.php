@@ -39,7 +39,7 @@
     }
 
     .ai-chat-sidebar-header button {
-        background: #4f46e5;
+        background: #003883;
         color: white;
         border: none;
         width: 24px;
@@ -111,7 +111,7 @@
 
     .ai-chat-header {
         padding: 12px 16px;
-        background: #4f46e5;
+        background: #003883;
         color: white;
         font-weight: 600;
         display: flex;
@@ -152,7 +152,7 @@
 
     .ai-chat-msg.user {
         align-self: flex-end;
-        background: #4f46e5;
+        background: #003883;
         color: white;
         border-radius: 12px 12px 0 12px;
     }
@@ -193,7 +193,7 @@
         border-radius: 50%;
         border: none;
         background: #eef2ff;
-        color: #4f46e5;
+        color: #003883;
         cursor: pointer;
         transition: all 0.2s;
         flex-shrink: 0;
@@ -232,12 +232,12 @@
     }
 
     .ai-chat-input-wrap input:focus {
-        border-color: #4f46e5;
+        border-color: #003883;
     }
 
     .ai-chat-input-wrap button {
         padding: 9px 18px;
-        background: #4f46e5;
+        background: #003883;
         color: white;
         border: none;
         border-radius: 8px;
@@ -258,7 +258,7 @@
         width: 56px;
         height: 56px;
         border-radius: 50%;
-        background: #4f46e5;
+        background: #003883;
         color: white;
         border: none;
         font-size: 24px;
@@ -289,7 +289,7 @@
     }
 
     .ai-chat-pdf-viewer {
-        border-top: 2px solid #4f46e5;
+        border-top: 2px solid #003883;
         background: #f8f9ff;
         display: flex;
         flex-direction: column;
@@ -316,7 +316,7 @@
     }
 
     .ai-chat-pdf-btn {
-        background: #4f46e5;
+        background: #003883;
         color: white;
         padding: 4px 10px;
         border-radius: 6px;
@@ -368,7 +368,7 @@
         width: 40px;
         height: 40px;
         border: 4px solid #e0e7ff;
-        border-top-color: #4f46e5;
+        border-top-color: #003883;
         border-radius: 50%;
         animation: aiChatPdfSpin 0.8s linear infinite;
         margin-bottom: 12px;

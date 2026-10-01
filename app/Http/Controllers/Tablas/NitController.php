@@ -538,4 +538,25 @@ class NitController extends Controller
         ], 200);
     }
 
+    public function getNit ($id)
+    {
+        $nit = Nits::where('id', $id)
+            ->select(
+                '*',
+                DB::raw("CASE
+                    WHEN id IS NOT NULL AND razon_social IS NOT NULL AND razon_social != '' THEN razon_social
+                    WHEN id IS NOT NULL AND (razon_social IS NULL OR razon_social = '') THEN CONCAT_WS(' ', primer_nombre, primer_apellido)
+                    ELSE NULL
+                END AS nombre_nit")
+            )
+            ->with('ciudad', 'tipo_documento');
+
+        // $nit = Nits::whereNumeroDocumento($request->get("numero_documento"));
+
+        return response()->json([
+            "success"=>true,
+            "data"=>$nit->first()
+        ], 200);
+    }
+
 }

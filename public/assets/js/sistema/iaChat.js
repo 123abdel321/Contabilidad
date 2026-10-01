@@ -3,6 +3,7 @@ var aiChatEnviando = false;
 var aiChatWidget = null;
 var aiChatMensajes = null;
 var aiChatLista = null;
+var aiChatUltimoEnvio = 0;
 
 // ---------------------------------------------------------------------------
 // ABRIR / CERRAR
@@ -48,6 +49,12 @@ function toggleSidebarAiChat() {
 // ---------------------------------------------------------------------------
 function enviarMensajeAiChat() {
     if (aiChatEnviando) return;
+
+    var ahora = Date.now();
+    if (ahora - aiChatUltimoEnvio < 800) {
+        return;
+    }
+    aiChatUltimoEnvio = ahora;
 
     var input = document.getElementById('ai-chat-input');
     var texto = input.value.trim();

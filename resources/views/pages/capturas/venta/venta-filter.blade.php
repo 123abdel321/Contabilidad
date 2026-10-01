@@ -10,85 +10,183 @@
         <div id="collapseVentaGeneral" class="accordion-collapse collapse show" data-bs-parent="#accordionRental">
             <div class="accordion-body text-sm" style="padding: 0 !important;">
 
-                <form id="ventaFilterForm" class="needs-validation row" style="margin-top: 10px;" novalidate>
-                    
-                    <div class="col-6 col-sm-5 col-md-3">
-                        <label for="id_cliente_venta">Cliente<span style="color: red">*</span></label>
+                <form id="ventaFilterForm" class="needs-validation row g-2" style="margin-top: 10px;" novalidate>
+
+                    <!-- CLIENTE -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="id_cliente_venta">
+                            Cliente<span style="color: red">*</span>
+                        </label>
+
                         <div class="input-group">
-                            <select name="id_cliente_venta" id="id_cliente_venta" class="form-control form-control-sm" style="font-size: 13px;" required>
+                            <select name="id_cliente_venta"
+                                    id="id_cliente_venta"
+                                    class="form-control form-control-sm"
+                                    style="font-size: 13px;"
+                                    required>
                             </select>
-                            <span id="" href="javascript:void(0)" onclick="openModalNewNit()" class="btn badge bg-gradient-light" style="min-width: 40px; position: static; height: 30px; border-radius: 0px 5px 5px 0px; box-shadow: 0px 0px 0px 0px, 0px 0px 0px 0px;">
+
+                            <span id="btn_ver_cliente_venta"
+                                onclick="openModalViewNitVenta()"
+                                class="btn badge bg-gradient-light btn-cliente-action"
+                                title="Ver cliente"
+                                style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none; display: none;">
+                                <i class="fas fa-eye" style="font-size: 15px; margin-top: 2px;"></i>
+                            </span>
+
+                            <span onclick="openModalNewNitVenta()"
+                                class="btn badge bg-gradient-light btn-cliente-action"
+                                title="Crear cliente"
+                                style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none;">
                                 <i class="fas fa-user-plus" style="font-size: 15px; margin-top: 2px;"></i>
                             </span>
+
+                            <span onclick="openModalEditNitVenta()"
+                                class="btn badge bg-gradient-light btn-cliente-action"
+                                title="Editar cliente"
+                                style="min-width: 40px; position: static; height: 30px; border-radius: 0 5px 5px 0; box-shadow: none;">
+                                <i class="fas fa-user-edit" style="font-size: 15px; margin-top: 2px;"></i>
+                            </span>
+
                             <div class="invalid-feedback">
                                 El cliente es requerido
                             </div>
                         </div>
                     </div>
 
+                    <!-- VENDEDOR -->
                     @if ($vendedores_ventas)
-                        <div class="form-group col-6 col-sm-3 col-md-2">
-                            <label for="id_vendedor_venta">Vendedor<span style="color: red">*</span></label>
-                            <select name="id_vendedor_venta" id="id_vendedor_venta" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
+                        <div class="form-group col-12 col-sm-6 col-md-3 col-lg-2">
+                            <label for="id_vendedor_venta">
+                                Vendedor<span style="color: red">*</span>
+                            </label>
+
+                            <select name="id_vendedor_venta"
+                                    id="id_vendedor_venta"
+                                    class="form-control form-control-sm"
+                                    style="width: 100%; font-size: 13px;">
                             </select>
-                            
+
                             <div class="invalid-feedback">
                                 El vendedor es requerido
                             </div>
                         </div>
                     @endif
 
-                    <div class="form-group col-6 col-sm-3 col-md-2">
-                        <label for="id_resolucion_venta">Resolucion<span style="color: red">*</span></label>
-                        <select name="id_resolucion_venta" id="id_resolucion_venta" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
+                    <!-- RESOLUCIÓN -->
+                    <div class="form-group col-12 col-sm-6 col-md-3 col-lg-2">
+                        <label for="id_resolucion_venta">
+                            Resolución<span style="color: red">*</span>
+                        </label>
+
+                        <select name="id_resolucion_venta"
+                                id="id_resolucion_venta"
+                                class="form-control form-control-sm"
+                                style="width: 100%; font-size: 13px;"
+                                required>
                         </select>
-                        
+
                         <div class="invalid-feedback">
                             La resolución es requerida
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-3 col-md-2">
-                        <label for="id_bodega_venta">Bodega<span style="color: red">*</span></label>
-                        <select name="id_bodega_venta" id="id_bodega_venta" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
+                    <!-- BODEGA -->
+                    <div class="form-group col-12 col-sm-6 col-md-3 col-lg-2">
+                        <label for="id_bodega_venta">
+                            Bodega<span style="color: red">*</span>
+                        </label>
+
+                        <select name="id_bodega_venta"
+                                id="id_bodega_venta"
+                                class="form-control form-control-sm"
+                                style="width: 100%; font-size: 13px;"
+                                required>
                         </select>
-                        
+
                         <div class="invalid-feedback">
                             La bodega es requerida
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-3 col-md-1">
-                        <label for="fecha_manual_venta" class="form-control-label">Fecha <span style="color: red">*</span></label>
-                        <input name="fecha_manual_venta" id="fecha_manual_venta" class="form-control form-control-sm" type="datetime-local" required disabled>
+                    <!-- FECHA -->
+                    <div class="form-group col-12 col-sm-6 col-md-3 col-lg-2">
+                        <label for="fecha_manual_venta" class="form-control-label">
+                            Fecha<span style="color: red">*</span>
+                        </label>
+
+                        <input name="fecha_manual_venta"
+                            id="fecha_manual_venta"
+                            class="form-control form-control-sm"
+                            type="datetime-local"
+                            required
+                            disabled>
+
                         <div class="invalid-feedback">
                             La fecha es requerida
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-3 col-md-1">
-                        <label for="documento_referencia_venta" class="form-control-label">No. factura <span style="color: red">*</span></label>
-                        <input type="text" class="form-control form-control-sm" name="documento_referencia_venta" id="documento_referencia_venta" required disabled>
-                        <i class="fa fa-spinner fa-spin fa-fw venta-load" id="documento_referencia_venta_loading" style="display: none;"></i>
+                    <!-- NÚMERO FACTURA -->
+                    <div class="form-group col-12 col-sm-6 col-md-3 col-lg-2">
+                        <label for="documento_referencia_venta" class="form-control-label">
+                            No. factura<span style="color: red">*</span>
+                        </label>
+
+                        <div style="position: relative;">
+                            <input type="text"
+                                class="form-control form-control-sm"
+                                name="documento_referencia_venta"
+                                id="documento_referencia_venta"
+                                required
+                                disabled>
+
+                            <i class="fa fa-spinner fa-spin fa-fw venta-load"
+                            id="documento_referencia_venta_loading"
+                            style="display: none;">
+                            </i>
+                        </div>
+
                         <div class="invalid-feedback" id="error_documento_referencia_venta">
-                            El No. factura requerida
+                            El No. factura es requerido
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-5 col-md-3">
-                        <label for="observacion_venta" class="form-control-label">Observación </label>
-                        <input type="text" class="form-control form-control-sm" name="observacion_venta" id="observacion_venta">
+                    <!-- OBSERVACIÓN -->
+                    <div class="form-group col-12 col-md-6 col-lg-4">
+                        <label for="observacion_venta" class="form-control-label">
+                            Observación
+                        </label>
+
+                        <input type="text"
+                            class="form-control form-control-sm"
+                            name="observacion_venta"
+                            id="observacion_venta">
                     </div>
 
-                    <div id="input-anticipos-venta" class="form-group col-6 col-sm-4 col-md-2" style="display: none;">
-                        <label for="id_saldo_anticipo_venta" class="form-control-label">Anticipos <span style="color: red">*</span></label>
-                        <input name="id_saldo_anticipo_venta" id="id_saldo_anticipo_venta" class="form-control form-control-sm" type="text" disabled style="text-align: right;">
+                    <!-- ANTICIPOS -->
+                    <div id="input-anticipos-venta"
+                        class="form-group col-12 col-sm-6 col-md-3 col-lg-2"
+                        style="display: none;">
+
+                        <label for="id_saldo_anticipo_venta" class="form-control-label">
+                            Anticipos<span style="color: red">*</span>
+                        </label>
+
+                        <input name="id_saldo_anticipo_venta"
+                            id="id_saldo_anticipo_venta"
+                            class="form-control form-control-sm"
+                            type="text"
+                            disabled
+                            style="text-align: right;">
+
                         <div class="invalid-feedback" id="error-anticipo-cliente-venta">
                             Valor superado
                         </div>
                     </div>
-                    
-                </form>
+
+                </form>    
+
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
                     <span id="iniciarCapturaVenta" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;">
