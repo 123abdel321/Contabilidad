@@ -179,7 +179,7 @@
 
     <!-- CHAT IA -->
     @if($esDios)
-        @include('components.ia-chat')
+        <!-- @include('components.ia-chat') -->
     @endif
 
     @include('pages.capturas.nit-detail')
@@ -238,7 +238,7 @@
     <script src="assets/js/sistema/daterangepicker.min.js"></script>
     <!-- IA CHAT -->
     @if($esDios)
-    <script src="assets/js/sistema/iaChat.js"></script>
+    <!-- <script src="assets/js/sistema/iaChat.js"></script> -->
     @endif
 
     <script src="assets/js/sistema/sistema.js?v={{ config('app.version') }}"></script>
