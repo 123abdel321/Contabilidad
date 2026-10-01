@@ -294,8 +294,8 @@ function abrirNitDetalle(id) {
         $('#nitDetailObservaciones').text(d.observaciones || 'Sin observaciones');
 
         // Imagen
-        if (d.imagen_url) {
-            $('#nitDetailImagen').attr('src', d.imagen_url).show();
+        if (d.logo_nit) {
+            $('#nitDetailImagen').attr('src', d.logo_nit).show();
             $('#nitDetailImagenDefault').hide();
         } else {
             $('#nitDetailImagen').hide();
