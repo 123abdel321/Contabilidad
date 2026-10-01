@@ -295,8 +295,9 @@ function abrirNitDetalle(id) {
 
         // Imagen
         if (d.logo_nit) {
-            $('#nitDetailImagen').attr('src', d.logo_nit).show();
-            $('#nitDetailImagenDefault').hide();
+            $('#nitDetailImagen').attr('src', 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/'+d.logo_nit).show();
+            const elemento = document.getElementById("nitDetailImagenDefault");
+            elemento.style.setProperty("display", "none", "important");
         } else {
             $('#nitDetailImagen').hide();
             $('#nitDetailImagenDefault').show();
