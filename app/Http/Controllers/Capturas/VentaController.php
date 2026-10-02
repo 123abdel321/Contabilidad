@@ -225,7 +225,7 @@ class VentaController extends Controller
         try {
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA VENTA
-            $this->nit = $this->findCliente($request->get('id_cliente'));
+            $this->nit = $this->findCliente($request->get('id_cliente'), $request->get('calcula_retencion'));
             $venta = $this->createFacturaVenta($request);
             $enviarFacturaElectronica = false;
 
@@ -1136,7 +1136,7 @@ class VentaController extends Controller
 
     private function createFacturaVenta ($request)
     {
-        $this->calcularTotales($request->get('productos'));
+        $this->calcularTotales($request->get('productos'), $request->get('calcula_retencion'));
         $propina = $request->get('propina');
         if ($propina) {
             $this->totalesFactura['propina'] = $propina;
@@ -1305,7 +1305,7 @@ class VentaController extends Controller
         return [];
     }
 
-    private function calcularTotales($productos)
+    private function calcularTotales($productos, $calcula_retencion)
     {
         $ivaIncluido = VariablesEntorno::where('nombre', 'iva_incluido')->first();
         $this->ivaIncluido = $ivaIncluido ? $ivaIncluido->valor : false;
@@ -1390,7 +1390,7 @@ class VentaController extends Controller
         }
 
         // CALCULAR RETENCIÓN EN LA FUENTE
-        if (in_array('7', $responsabilidades) &&
+        if ($calcula_retencion &&
             $this->totalesFactura['total_factura'] >= $this->totalesFactura['tope_retencion'] &&
             $this->totalesFactura['porcentaje_rete_fuente'] > 0
         ) {
@@ -1414,9 +1414,9 @@ class VentaController extends Controller
         return [];
     }
 
-    private function findCliente ($id_cliente)
+    private function findCliente ($id_cliente, $calcula_retencion)
     {
-        return Nits::whereId($id_cliente)
+        $nit = Nits::whereId($id_cliente)
             ->select(
                 '*',
                 DB::raw("CASE
@@ -1427,6 +1427,13 @@ class VentaController extends Controller
                 'id_responsabilidades'
             )
             ->first();
+
+        if ($calcula_retencion != $nit->retencion) {
+            $nit->retencion = $calcula_retencion;
+            $nit->save();
+        }
+
+        return $nit;
     }
 
     private function findProducto ($id_producto)

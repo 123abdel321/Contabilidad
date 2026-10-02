@@ -17,6 +17,7 @@ var totalAnticiposVenta = null;
 var validarFacturaVenta = null;
 var porcentajeRetencionVenta = 0;
 var responsabilidadesVenta = [];
+var calculaRetencionVenta = false;
 var abrirFormasPagoVentas = false;
 var totalAnticiposDisponibles = 0;
 var totalAnticiposVentaCuenta = null;
@@ -558,11 +559,14 @@ function cargarCombosVenta() {
         };
         var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
         $comboCliente.append(newOption).val(dataCliente.id).trigger('change');
-        procesarCambioClienteVenta();
+        procesarCambioClienteVenta(primeraNit);
     }
 
     $('#id_cliente_venta').on('select2:close', function(event) {
-        procesarCambioClienteVenta();
+        var data = $(this).select2('data');
+        if(data.length){
+            procesarCambioClienteVenta(data[0]);
+        }
     });
     
     $('#id_resolucion_venta').on('select2:close', function(event) {
@@ -583,20 +587,25 @@ function cargarPopoverVenta() {
     });
 }
 
-function procesarCambioClienteVenta() {
-    var data = $('#id_cliente_venta').select2('data');
-
-    if (!data.length) {
+function procesarCambioClienteVenta(data) {
+    if (!data) {
         $("#btn_ver_cliente_venta").hide();
         return;
     }
 
+    calculaRetencionVenta = false;
     $("#btn_ver_cliente_venta").show();
-    loadAnticiposCliente();
-    clearFormasPagoVenta();
-    responsabilidadesVenta = getResponsabilidades(data[0].id_responsabilidades);
-    actualizarInfoRetencionVentas();
+    $('#checkRetencionVentas').prop('checked', false);
+    
+    if (data.retencion) {
+        calculaRetencionVenta = true;
+        $('#checkRetencionVentas').prop('checked', true);
+    }
 
+    responsabilidadesVenta = getResponsabilidades(data.id_responsabilidades);
+    clearFormasPagoVenta();
+    loadAnticiposCliente();
+    changeRetencionVentas();
     if (vendedoresVentas) loadVendedorCliente();
 }
 
@@ -1177,7 +1186,7 @@ function calcularRetencionVentas(valorBruto, total) {
 
     retencion = 0;
 
-    if (responsabilidadesVenta.includes('7')) {
+    if (calculaRetencionVenta) {
         [base, porcentaje] = obtenerDatosRetencionVenta(valorBruto);
     
         if (total >= base && porcentaje) {
@@ -1233,10 +1242,10 @@ function actualizarInfoRetencionVentas() {
     let valorSubtotal = new Intl.NumberFormat('ja-JP').format(subtotal);
     let responsableRetencion = '';
 
-    if (responsabilidadesVenta.includes('7')) {
-        responsableRetencion = `<b class='titulo-popover'>Con responsablidad:</b> 07 => Calcula retención en la fuente`;
+    if (calculaRetencionVenta) {
+        responsableRetencion = `<b class='titulo-popover'>Con permiso:</b> Calcula retención en la fuente`;
     } else {
-        responsableRetencion = `<b class='titulo-popover'>Sin responsablidad:</b> 07 => No calcula retención en la fuente`;
+        responsableRetencion = `<b class='titulo-popover'>Sin permiso:</b> 07 => No calcula retención en la fuente`;
     }
 
     const nuevoTitulo = `
@@ -1733,6 +1742,7 @@ function saveVenta() {
         id_vendedor: $("#id_vendedor_venta").val(),
         documento_referencia: $("#documento_referencia_venta").val(),
         observacion: $("#observacion_venta").val(),
+        calcula_retencion: calculaRetencionVenta ? 1 : 0,
     }
 
     disabledFormasPagoVenta();
@@ -1943,6 +1953,18 @@ function focusNextFormasPagoVentas(idFormaPago) {
     focusFormaPagoVenta(idFormaPagoFocus);
 }
 
+function changeRetencionVentas() {
+    calculaRetencionVenta = true;
+    $('#totales_retencion').removeClass('totales_retencion_disable');
+    if (!$('#checkRetencionVentas').is(':checked')) {
+        calculaRetencionVenta = false;
+        $('#totales_retencion').addClass('totales_retencion_disable');
+    }
+
+    actualizarInfoRetencionVentas();
+    mostrarValoresVentas();
+}
+
 function openModalNewNitVenta() {
     abrirNitGeneral({
         modo: 'create',
@@ -1955,8 +1977,8 @@ function openModalNewNitVenta() {
             var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
             $comboCliente.append(newOption).val(dataCliente.id).trigger('change');
 
-            procesarCambioClienteVenta();
-
+            procesarCambioClienteVenta(dataNit);
+            
             agregarToast('exito', 'Creación exitosa', 'Cliente creado con éxito!', true);
             document.getElementById('iniciarCapturaVenta').click();
         }
@@ -1988,97 +2010,13 @@ function openModalEditNitVenta() {
             var $sel = $('#id_cliente_venta');
             var optText = dataNit.numero_documento + ' - ' + dataNit.nombre_completo;
 
-            // 1. Eliminar la opción vieja (por id)
             $sel.find("option[value='" + dataNit.id + "']").remove();
-
-            // 2. Agregar la nueva opción con el texto actualizado
             var newOption = new Option(optText, dataNit.id, true, true);
             $sel.append(newOption);
-
-            // 3. Setear el valor y disparar change para que select2 refresque
             $sel.val(dataNit.id).trigger('change');
 
-            // 4. Ejecutar tu lógica
-            procesarCambioClienteVenta();
-
+            procesarCambioClienteVenta(dataNit);
             agregarToast('exito', 'Edición exitosa', 'Cliente actualizado con éxito!', true);
         }
     });
 }
-
-function clearFormNitsVenta() {
-    $("#id_tipo_documento_venta_nit").val('').change();
-    $("#id_ciudad_venta_nit").val('').change();
-    $("#observaciones_venta_nit").val('');
-    $("#numero_documento_venta_nit").val('');
-    $("#tipo_contribuyente_venta_nit").val(2).change();
-    $("#primer_apellido_venta_nit").val('');
-    $("#segundo_apellido_venta_nit").val('');
-    $("#primer_nombre_venta_nit").val('');
-    $("#otros_nombres_venta_nit").val('');
-    $("#razon_social_venta_nit").val('');
-    $("#telefono_1_venta_nit").val('');
-    $("#direccion_venta_nit").val('');
-    $("#email_venta_nit").val('');
-}
-
-$(document).on('click', '#saveNitVenta', function () {
-    var form = document.querySelector('#ventaNitsForm');
-
-    if(form.checkValidity()){
-
-        $("#saveNitVentaLoading").show();
-        $("#saveNitVenta").hide();
-
-        let data = {
-            id_tipo_documento: $("#id_tipo_documento_venta_nit").val(),
-            numero_documento: $("#numero_documento_venta_nit").val(),
-            tipo_contribuyente: $("#tipo_contribuyente_venta_nit").val(),
-            primer_apellido: $("#primer_apellido_venta_nit").val(),
-            segundo_apellido: $("#segundo_apellido_venta_nit").val(),
-            primer_nombre: $("#primer_nombre_venta_nit").val(),
-            otros_nombres: $("#otros_nombres_venta_nit").val(),
-            razon_social: $("#razon_social_venta_nit").val(),
-            direccion: $("#direccion_venta_nit").val(),
-            email: $("#email_venta_nit").val(),
-            telefono_1: $("#telefono_1_venta_nit").val(),
-            id_ciudad: $("#id_ciudad_venta_nit").val(),
-            observaciones: $("#observaciones_venta_nit").val(),
-        }
-
-        $.ajax({
-            url: base_url + 'nit',
-            method: 'POST',
-            data: JSON.stringify(data),
-            headers: headers,
-            dataType: 'json',
-        }).done((res) => {
-            if(res.success){
-                clearFormNitsVenta();
-                $("#saveNitVenta").show();
-                $("#saveNitVentaLoading").hide();
-                $("#nitVentaFormModal").modal('hide');
-
-                var dataCliente = {
-                    id: res.data.id,
-                    text: res.data.numero_documento + ' - ' + res.data.nombre_completo
-                };
-                var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
-                $comboCliente.append(newOption).val(dataCliente.id).trigger('change');
-
-                agregarToast('exito', 'Creación exitosa', 'Cedula nit creada con exito!', true);
-
-                document.getElementById('iniciarCapturaVenta').click();
-            }
-        }).fail((err) => {
-            $('#saveNitVenta').show();
-            $('#saveNitVentaLoading').hide();
-            
-            var mensaje = err.responseJSON.message;
-            var errorsMsg = arreglarMensajeError(mensaje);
-            agregarToast('error', 'Creación errada', errorsMsg);
-        });
-    } else {
-        form.classList.add('was-validated');
-    }
-});

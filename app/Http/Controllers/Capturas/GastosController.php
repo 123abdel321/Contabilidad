@@ -172,7 +172,7 @@ class GastosController extends Controller
             $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
             $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
             
-            $this->proveedor = $this->findProveedor($request->get('id_proveedor'));
+            $this->proveedor = $this->findProveedor($request->get('id_proveedor'), $request->get('calcula_retencion'));
             $responsabilidades = $this->getResponsabilidades($this->proveedor->id_responsabilidades);
             $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
 
@@ -191,13 +191,12 @@ class GastosController extends Controller
                 $gasto->delete();
             }
 
-            if (!in_array('5', $responsabilidades)) {
-                $this->tipoRetencion = 'cuenta_retencion_declarante';
-            }
+            // if (!in_array('5', $responsabilidades)) {
+            //     $this->tipoRetencion = 'cuenta_retencion_declarante';
+            // }
             
             //CREAR FACTURA GASTO
             $gasto = $this->createFacturaGasto($request);
-            
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE GASTOS
             $documentoGeneral = new Documento(
                 $request->get('id_comprobante'),
@@ -563,7 +562,7 @@ class GastosController extends Controller
 
             $movimientos = json_decode($request->get('movimiento'));
             $pagos = json_decode($request->get('pagos'));
-            $this->proveedor = $this->findProveedor($request->get('id_nit'));
+            $this->proveedor = $this->findProveedor($request->get('id_nit'), $request->get('calcula_retencion'));
             
             $porcentaje_iva_aiu = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
             $porcentaje_iva_aiu = $porcentaje_iva_aiu ? $porcentaje_iva_aiu->valor : 0;
@@ -571,7 +570,7 @@ class GastosController extends Controller
             $redondeo_gastos = VariablesEntorno::where('nombre', 'redondeo_gastos')->first();
             $redondeo_gastos = $redondeo_gastos ? floatval($redondeo_gastos->valor) : null;
 
-            $this->calcularTotales($movimientos, $request->get('id_nit'));
+            $this->calcularTotales($movimientos, $request->get('id_nit'), $request->get('calcula_retencion'));
             $this->calcularFormasPago($pagos);
 
             $documentoGeneral = new Documento();
@@ -807,7 +806,7 @@ class GastosController extends Controller
     private function createFacturaGasto($request)
     {
         
-        $this->calcularTotales($request->get('gastos'), $request->get('id_proveedor'));
+        $this->calcularTotales($request->get('gastos'), $request->get('id_proveedor'), $request->get('calcula_retencion'));
         $this->calcularFormasPago($request->get('pagos'));
         
         $gasto = ConGastos::create([
@@ -833,15 +832,13 @@ class GastosController extends Controller
         return $gasto;
     }
 
-    private function calcularTotales($gastos, $idNit)
+    private function calcularTotales($gastos, $idNit, $calcula_retencion)
     {
-        
         $subtotalGeneral = 0;
         $redondeo_gastos = VariablesEntorno::where('nombre', 'redondeo_gastos')->first();
         $redondeo_gastos = $redondeo_gastos ? floatval($redondeo_gastos->valor) : null;
         
         $nit = Nits::find($idNit);
-        $responsabilidades = $this->getResponsabilidades($nit->id_responsabilidades);
         
         foreach ($gastos as $gasto) {
             $gasto = (object)$gasto;
@@ -915,17 +912,17 @@ class GastosController extends Controller
             $valorRetencion = 0;
             $valorReteIca = 0;
             $ivaGasto = 0;
-            
+
             if ($baseAIU) {
                 $porcentajeIva = VariablesEntorno::where('nombre', 'porcentaje_iva_aiu')->first();
                 $porcentajeIva = $porcentajeIva ? floatval($porcentajeIva->valor) : 0;
 
                 if ($nit->sumar_aiu) {
-                    if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
+                    if ($calcula_retencion && $porcentajeRetencion) {
                         $valorRetencion = (($baseAIU + $subtotalGasto) - $gasto->no_valor_iva) * ($porcentajeRetencion / 100);
                     }
                 } else {
-                    if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
+                    if ($calcula_retencion && $porcentajeRetencion) {
                         $valorRetencion = ($subtotalGasto - $gasto->no_valor_iva) * ($porcentajeRetencion / 100);
                     }
                 }
@@ -933,7 +930,7 @@ class GastosController extends Controller
                 $valorReteIca = $porcentajeReteIca ? $baseAIU * ($porcentajeReteIca / 1000) : 0;
                 $ivaGasto = $porcentajeIva ? $baseAIU * ($porcentajeIva / 100) : 0;
             } else {
-                if (in_array('7', $responsabilidades) && $porcentajeRetencion) {
+                if ($calcula_retencion && $porcentajeRetencion) {
                     $valorRetencion = ($subtotalGasto - $gasto->no_valor_iva) * ($porcentajeRetencion / 100);
                 }
                 $valorReteIca = $porcentajeReteIca ? ($subtotalGasto - $gasto->no_valor_iva) * ($porcentajeReteIca / 1000) : 0;
@@ -974,9 +971,9 @@ class GastosController extends Controller
         return [];
     }
 
-    private function findProveedor ($id_proveedor)
+    private function findProveedor ($id_proveedor, $calcula_retencion)
     {
-        return Nits::whereId($id_proveedor)
+        $nit = Nits::whereId($id_proveedor)
             ->select(
                 '*',
                 DB::raw("CASE
@@ -986,6 +983,13 @@ class GastosController extends Controller
                 END AS nombre_nit")
             )
             ->first();
+
+        if ($calcula_retencion != $nit->retencion) {
+            $nit->retencion = $calcula_retencion;
+            $nit->save();
+        }
+
+        return $nit;
     }
 
     private function addFormaPago($documentoReferencia, $formaPago, $nit, $pagoItem, $gasto, $valor, $saldo)

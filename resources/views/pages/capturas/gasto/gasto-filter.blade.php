@@ -14,14 +14,31 @@
 
                     <input name="id_gasto_up" id="id_gasto_up" class="form-control form-control-sm" type="text" style="display: none;">
 
-                    <div class="form-group col-12 col-sm-4 col-md-3">
-                        <label>Proveedor <span style="color: red">*</span></label>
-                        <select name="id_nit_gasto" id="id_nit_gasto" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
-                        </select>
-                        
-                        <div class="invalid-feedback">
-                            El proveedor es requerido
+                    <!-- NIT -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="id_nit_gasto">Proveedor <span style="color: red">*</span></label>
+
+                        <div class="input-group">
+                            <select name="id_nit_gasto" id="id_nit_gasto" class="form-control form-control-sm" style="font-size: 13px;" required>
+                            </select>
+
+                            <span id="btn_ver_cliente_gasto"onclick="openModalViewNitGasto()"class="btn badge bg-gradient-light btn-cliente-action"title="Ver cliente"style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none; display: none;">
+                                <i class="fas fa-eye" style="font-size: 15px; margin-top: 2px;"></i>
+                            </span>
+
+                            <span @if($puede_editar_nit) onclick="openModalEditNitGasto()" @endif  class="btn badge bg-gradient-light btn-cliente-action {{ !$puede_editar_nit ? 'disabled' : '' }}"  title="Editar cliente"  style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none;">
+                                <i class="fas fa-user-edit" style="font-size: 15px; margin-top: 2px;"></i>
+                            </span>
+
+                            <span @if($puede_crear_nit) onclick="openModalNewNitGasto()" @endif class="btn badge bg-gradient-light btn-cliente-action {{ !$puede_crear_nit ? 'disabled' : '' }}" title="Crear cliente" style="min-width: 40px; position: static; height: 30px; border-radius: 0 5px 5px 0; box-shadow: none;">
+                                <i class="fas fa-user-plus" style="font-size: 15px; margin-top: 2px;"></i>
+                            </span>
+
+                            <div class="invalid-feedback">
+                                El proveedor es requerido
+                            </div>
                         </div>
+
                     </div>
 
                     <div class="form-group col-12 col-sm-4 col-md-2">

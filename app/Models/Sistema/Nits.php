@@ -65,6 +65,7 @@ class Nits extends Model
 		'logo_nit',
 		'declarante',
 		'sumar_aiu',
+		'retencion',
 		'proveedor',
 		'porcentaje_aiu',
 		'porcentaje_reteica',

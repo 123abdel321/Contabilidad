@@ -97,7 +97,24 @@ function llenarFormNitGeneral(d) {
     $("#direccion_general_nit").val(d.direccion);
     $("#email_general_nit").val(d.email);
     $("#telefono_1_general_nit").val(d.telefono_1);
-    $("#observaciones_general_nit").val(d.observaciones);
+    
+    if (d.sumar_aiu) {
+        $('#sumar_aiu_general_nits').prop('checked', true);
+    } else {
+        $('#sumar_aiu_general_nits').prop('checked', false);
+    }
+
+    if (d.proveedor) {
+        $('#proveedor_general_nit').prop('checked', true);
+    } else {
+        $('#proveedor_general_nit').prop('checked', false);
+    }
+
+    if (d.retencion) {
+        $('#retencion_general_nit').prop('checked', true);
+    } else {
+        $('#retencion_general_nit').prop('checked', false);
+    }
 }
 
 function setFormNitGeneralReadonly(readonly) {
@@ -126,6 +143,11 @@ function clearFormNitGeneral() {
     $("#email_general_nit").val('');
     $("#telefono_1_general_nit").val('');
     $("#observaciones_general_nit").val('');
+    
+    $('#retencion_general_nit').prop('checked', false);
+    $('#proveedor_general_nit').prop('checked', false);
+    $('#sumar_aiu_general_nits').prop('checked', false);
+    
 }
 
 // ------------------------------------------------------------
@@ -164,6 +186,9 @@ function guardarNitGeneral() {
         telefono_1: $("#telefono_1_general_nit").val(),
         id_ciudad: $("#id_ciudad_general_nit").val(),
         observaciones: $("#observaciones_general_nit").val(),
+        sumar_aiu: $("input[type='checkbox']#sumar_aiu_general_nits").is(':checked') ? '1' : '',
+        proveedor: $("input[type='checkbox']#proveedor_general_nit").is(':checked') ? '1' : '',
+        retencion: $("input[type='checkbox']#retencion_general_nit").is(':checked') ? '1' : '',
     };
     if (esEdicion) data.id = idNit;
 

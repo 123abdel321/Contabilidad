@@ -15,6 +15,7 @@ var porcentajeAIUGastos = 0;
 var porcentajeReteica = 0;
 var validandoDatosIva = false;
 let responsabilidadesGasto = [];
+var calculaRetencionGasto = false;
 var validarFacturaGastos = false;
 var abrirFormasPagoGastos = false;
 var gasto_table_movimiento = null;
@@ -486,7 +487,8 @@ function cargarTablasGasto() {
             data: function ( d ) {
                 d.id_nit = $("#id_nit_gasto").val(),
                 d.pagos = JSON.stringify(getGastosPagos()),
-                d.movimiento = JSON.stringify(getGastosData())
+                d.movimiento = JSON.stringify(getGastosData()),
+                d.calcula_retencion = calculaRetencionGasto ? 1 : 0
             }
         },
         rowCallback: function(row, data, index){
@@ -561,6 +563,7 @@ function clearFormasPagoGasto() {
             $('#gasto_forma_pago_'+formaPago.id).val(0);
         }
     }
+    calcularGastosPagos();
 }
 
 function disabledFormasPagoGasto(estado = true) {
@@ -677,7 +680,7 @@ function addRowGastos(openCuenta = true) {
 function changeConceptoGasto(idGasto) {
     let data = $('#combo_concepto_gasto_'+idGasto).select2('data')[0];
     if (!data) return;
-    
+    console.log('changeConceptoGasto: ',data);
     var indexGasto = dataGasto.findIndex(item => item.id == idGasto);
     var indexTable = getIndexById(idGasto, gasto_table);
     var proveedor = $comboNitGastos.select2('data')[0];
@@ -699,19 +702,17 @@ function changeConceptoGasto(idGasto) {
         }
     }
     //RETENCION
-    if (!responsabilidadesGasto.includes('5')) {
-        if (data.cuenta_retencion_declarante && data.cuenta_retencion_declarante.impuesto) {
-            var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion_declarante.impuesto.id);
-            if (!existe || existe < 0) {
-                retencionesGasto.push({
-                    cuenta: data.cuenta_retencion_declarante.cuenta,
-                    nombre: data.cuenta_retencion_declarante.nombre,
-                    id_retencion: data.cuenta_retencion_declarante.impuesto.id,
-                    porcentaje: parseFloat(data.cuenta_retencion_declarante.impuesto.porcentaje),
-                    base: parseFloat(data.cuenta_retencion_declarante.impuesto.base),
-                    total_uvt: parseFloat(data.cuenta_retencion_declarante.impuesto.total_uvt),
-                });
-            }
+    if (!responsabilidadesGasto.includes('5') && data.cuenta_retencion_declarante && data.cuenta_retencion_declarante.impuesto) {
+        var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion_declarante.impuesto.id);
+        if (!existe || existe < 0) {
+            retencionesGasto.push({
+                cuenta: data.cuenta_retencion_declarante.cuenta,
+                nombre: data.cuenta_retencion_declarante.nombre,
+                id_retencion: data.cuenta_retencion_declarante.impuesto.id,
+                porcentaje: parseFloat(data.cuenta_retencion_declarante.impuesto.porcentaje),
+                base: parseFloat(data.cuenta_retencion_declarante.impuesto.base),
+                total_uvt: parseFloat(data.cuenta_retencion_declarante.impuesto.total_uvt),
+            });
         }
     } else {
 
@@ -848,7 +849,7 @@ function changeValorDescuentoGasto (idGasto, event = null) {
         var valorReteIca = 0;
         var valorIva = 0;
 
-        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU, idGasto);
+        var [valorRetencion, porcentajeRetencion] = calcularRetencionGastos(null, valorSubtotal - valorNoiva, baseAIU, idGasto);
         valorRetencion = redondear(valorRetencion, redondeoGastos);
         
         if (baseAIU) {
@@ -914,7 +915,7 @@ function changeValorNoIvaGasto (idGasto, event = null) {
         var valorReteIca = 0;
         var valorIva = 0;
 
-        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal, baseAIU, idGasto);
+        var [valorRetencion, porcentajeRetencion] = calcularRetencionGastos(null, valorSubtotal, baseAIU, idGasto);
         valorRetencion = redondear(valorRetencion, redondeoGastos);
 
         if (baseAIU) {
@@ -1027,7 +1028,7 @@ function changePorcentajeDescuentoGasto (idGasto, event = null) {
         var valorReteIca = 0;
         var valorIva = 0;
 
-        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU);
+        var [valorRetencion, porcentajeRetencion] = calcularRetencionGastos(null, valorSubtotal - valorNoiva, baseAIU);
 
         if (baseAIU) {
             valorReteIca = dataGasto[indexGasto].porcentaje_reteica ? baseAIU * (dataGasto[indexGasto].porcentaje_reteica / 1000) : 0;
@@ -1085,7 +1086,7 @@ function changeValorGasto (idGasto, event = null) {
         var valorReteIca = 0;
         var valorIva = 0;
 
-        var [valorRetencion, porcentajeRetencion] = calcularRetencion(null, valorSubtotal - valorNoiva, baseAIU, idGasto);
+        var [valorRetencion, porcentajeRetencion] = calcularRetencionGastos(null, valorSubtotal - valorNoiva, baseAIU, idGasto);
         valorRetencion = redondear(valorRetencion, redondeoGastos);
         
         if (baseAIU) {
@@ -1270,7 +1271,7 @@ function totalValoresGastos () {
     return [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total, gasto_aiu];
 }
 
-function calcularRetencion (valorSubtotal = null, valorGastoRow, baseAIU = 0, idGasto = null) {
+function calcularRetencionGastos (valorSubtotal = null, valorGastoRow, baseAIU = 0, idGasto = null) {
 
     let calcularRow = false;
     let totalRetencion = 0;
@@ -1290,7 +1291,7 @@ function calcularRetencion (valorSubtotal = null, valorGastoRow, baseAIU = 0, id
 
     [base, porcentaje] = obtenerDatosRetencionGastos(valorSubtotal);
 
-    if (responsabilidadesGasto.includes('7')) {
+    if (calculaRetencionGasto) {
         if (baseAIU) {
             if (sumarAIU) {
                 totalRetencion = (valorSubtotal + baseAIU) * (porcentaje / 100);
@@ -1325,7 +1326,7 @@ function obtenerDatosRetencionGastos(valorSubtotal) {
 }
 
 function actualizarInfoRetencionGastos() {
-    const iconInfo = document.getElementById('icon_info_retencion');
+    const iconInfo = document.getElementById('icon_info_retencion_gasto');
     var [gasto_iva, gasto_reteica, gasto_retencion, gasto_descuento, gasto_total, gasto_sub_total, gasto_aiu] = totalValoresGastos();
 
     var porcentaje = 0;
@@ -1347,14 +1348,14 @@ function actualizarInfoRetencionGastos() {
     $("#nombre_info_retencion_gasto").html(`RETENCIÓN %${porcentaje}:`);
 
     let baseformat = new Intl.NumberFormat('ja-JP').format(base);
-    let totalUVTs = new Intl.NumberFormat('ja-JP').format(valor_uvt);
+    let totalUVTs = new Intl.NumberFormat('ja-JP').format(valorUvtGastos);
     let valorSubtotal = new Intl.NumberFormat('ja-JP').format(gasto_sub_total);
     let aiuNombre = '';
     let responsableRetencion = '';
     let declaranteRenta = '';
 
-    if (responsabilidadesGasto.includes('7')) {
-        responsableRetencion = `<b class='titulo-popover'>Con responsablidad:</b> 07 => Calcula retención en la fuente`;
+    if (calculaRetencionGasto) {
+        responsableRetencion = `<b class='titulo-popover'>Con permiso:</b> Calcula retención en la fuente`;
     } else {
         responsableRetencion = `<b class='titulo-popover'>Sin responsablidad:</b> 07 => No calcula retención en la fuente`;
     }
@@ -1551,6 +1552,7 @@ function saveGasto () {
         documento_referencia: $("#documento_referencia_gasto").val(),
         consecutivo: $("#consecutivo_gasto").val(),
         id_gasto: $("#id_gasto_up").val(),
+        calcula_retencion: calculaRetencionGasto ? 1 : 0,
     }
 
     disabledFormasPagoGasto();
@@ -1689,33 +1691,48 @@ function deleteGastoRow (idGasto) {
 }
 
 $(document).on('change', '#id_nit_gasto', function () {
-    let data = $('#id_nit_gasto').select2('data')[0];
-    if(gasto_table.rows().data().length){
-        gasto_table.clear([]).draw();
-        gasto_table.row(0).remove().draw();
-        mostrarValoresGastos();
-        var countE = new CountUp('total_faltante_gasto', 0, 0, 2, 0.5);
-            countE.start();
+    var data = $(this).select2('data');
+    if(!data.length){
+        return;
     }
-    
-    $('#total_faltante_gasto').val('0.00');
-    $('#cancelarCapturaGasto').hide();
-    $('#input_anticipos_gasto').hide();
-    var columnAIU = gasto_table.column(3);//AIU
-    porcentajeAIUGastos = 0;
-    columnAIU.visible(false);
-    if (data && data.porcentaje_aiu && data.porcentaje_aiu != 0) configurarAIU(data.porcentaje_aiu);
+
+    procesarCambioNitGasto(data[0]);
+
     setTimeout(function(){
         $('#documento_referencia_gasto').focus().select();
     },10);
 
     loadAnticiposGasto();
+});
+
+function procesarCambioNitGasto(data) {
+    console.log('procesarCambioNitGasto: ',data);
+    if (!data) {
+        $("#btn_ver_cliente_gasto").hide();
+        return;
+    }
 
     if (!calculandoDatos) {
         calculandoDatos = false;
     }
 
-});
+    calculaRetencionGasto = false;
+    $("#btn_ver_cliente_gasto").show();
+    $('#checkRetencionGastos').prop('checked', false);
+
+    if (data.retencion) {
+        calculaRetencionGasto = true;
+        $('#checkRetencionGastos').prop('checked', true);
+    }
+
+    var columnAIU = gasto_table.column(3);//AIU
+    porcentajeAIUGastos = 0;
+    columnAIU.visible(false);
+    if (data.porcentaje_aiu && data.porcentaje_aiu != 0) configurarAIU(data.porcentaje_aiu);
+
+    changeRetencionGasto();
+    clearFormasPagoGasto();
+}
 
 $(document).on('change', '#id_comprobante_gasto', function () {
     consecutivoSiguienteGasto();
@@ -1877,11 +1894,11 @@ function agregarPagosGastos(pagos) {
     calcularGastosPagos(ultimoPago);
 }
 
-function cancelarGasto() {
+function cancelarGasto(resetNit = true) {
 
     const dateNow = new Date;
 
-    $comboNitGastos.val(0).trigger('change');
+    if (resetNit) $comboNitGastos.val(0).trigger('change');
     totalAnticiposGasto = 0;
     dataGasto = [];
     idGastoTable = 0;
@@ -2093,4 +2110,74 @@ function enterConsecutivoGastos(event) {
         document.getElementById('iniciarCapturaGasto').click();
         return;
     }
+}
+
+function changeRetencionGasto() {
+    calculaRetencionGasto = true;
+    $('#totales_retencion_gastos').removeClass('totales_retencion_disable');
+    if (!$('#checkRetencionGastos').is(':checked')) {
+        calculaRetencionGasto = false;
+        $('#totales_retencion_gastos').addClass('totales_retencion_disable');
+    }
+
+    actualizarInfoRetencionGastos();
+    dataGasto.forEach(gastoRow => {
+        changeValorGasto(gastoRow.id);
+    });
+}
+
+function openModalNewNitGasto() {
+    abrirNitGeneral({
+        modo: 'create',
+        captura: 'venta',
+        onSave: function (dataNit) {
+            var dataCliente = {
+                id: dataNit.id,
+                text: dataNit.numero_documento + ' - ' + dataNit.nombre_completo
+            };
+            var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
+            $comboNitGastos.append(newOption).val(dataCliente.id).trigger('change');
+
+            procesarCambioNitGasto(dataNit);
+            
+            agregarToast('exito', 'Creación exitosa', 'Nit creado con éxito!', true);
+            document.getElementById('iniciarCapturaGasto').click();
+        }
+    });
+}
+
+function openModalViewNitGasto() {
+    var data = $('#id_nit_gasto').select2('data');
+
+    if (!data.length) {
+        agregarToast('warning', 'Sin nit', 'Selecciona un nit primero');
+        return;
+    }
+
+    abrirNitDetalle(data[0].id);
+}
+
+function openModalEditNitGasto() {
+    var data = $('#id_nit_gasto').select2('data');
+    if (!data.length) {
+        agregarToast('warning', 'Sin nit', 'Selecciona un nit primero');
+        return;
+    }
+    abrirNitGeneral({
+        modo: 'edit',
+        id: data[0].id,
+        onUpdate: function (dataNit) {
+            console.log('openModalEditNitGasto: ',dataNit);
+            var $sel = $('#id_nit_gasto');
+            var optText = dataNit.numero_documento + ' - ' + dataNit.nombre_completo;
+
+            $sel.find("option[value='" + dataNit.id + "']").remove();
+            var newOption = new Option(optText, dataNit.id, true, true);
+            $sel.append(newOption);
+            $sel.val(dataNit.id).trigger('change');
+
+            procesarCambioNitGasto(dataNit);
+            agregarToast('exito', 'Edición exitosa', 'Nit actualizado con éxito!', true);
+        }
+    });
 }

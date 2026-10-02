@@ -115,6 +115,10 @@
         padding: 0.1rem 0.1rem;
     }
 
+    #gastoFilterForm .select2-container--bootstrap-5 {
+        height: 30px;
+    }
+
 </style>
 
 <div class="container-fluid py-2">
@@ -123,7 +127,10 @@
         <div class="card mb-4">
             <div class="card-body" style="padding: 0 !important;">
 
-            @include('pages.capturas.gasto.gasto-filter')
+            @include('pages.capturas.gasto.gasto-filter', [
+                'puede_editar_nit' => auth()->user()->can('cedulas_nits update'),
+                'puede_crear_nit' => auth()->user()->can('cedulas_nits create')
+            ])
 
             </div>
         </div>
@@ -168,21 +175,37 @@
                                 <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">IVA: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_iva">0.00</h6></td>
                             </tr>
-                            <tr >
+
+                            <tr id="totales_retencion_gastos" class="totales_retencion_disable">
                                 <td>
-                                    <h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">
-                                        <i
-                                            id="icon_info_retencion"
-                                            class="fas fa-info icon-info"
-                                            title="<b class='titulo-popover'>Base:</b> 0<br/> <b class='titulo-popover'>Subtotal:</b> 0"
-                                            data-toggle="popover"
-                                            data-html="true"
-                                        ></i>
-                                        <b id="nombre_info_retencion_gasto" style="font-weight: 500;">RETENCIÓN:</b>
+                                    <div class="d-flex align-items-center">
+                                        <h6 class="mb-0 me-2" style="font-size: 0.9rem; font-weight: 500;">
+                                            <i
+                                                id="icon_info_retencion_gasto"
+                                                class="fas fa-info icon-info"
+                                                title="<b class='titulo-popover'>Base:</b> 0<br/> <b class='titulo-popover'>Subtotal:</b> 0"
+                                                data-toggle="popover"
+                                                data-html="true"
+                                            ></i>
+
+                                            <b id="nombre_info_retencion_gasto" style="font-weight: 500;">
+                                                RETENCIÓN:
+                                            </b>
+                                        </h6>
+
+                                        <div class="form-check mb-0">
+                                            <input class="form-check-input" type="checkbox" id="checkRetencionGastos" value="" onChange="changeRetencionGasto()">
+                                        </div>
+                                    </div>
+                                </td>
+                                
+                                <td>
+                                    <h6 class="mb-0 float-end" style="font-size: 0.9rem;" id="gasto_retencion">
+                                        0.00
                                     </h6>
                                 </td>
-                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_retencion">0.00</h6></td>
                             </tr>
+
                             <tr id="gasto_reteica_disp_view" style="display: none;">
                                 <td><h6 id="texto_gasto_reteica" style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">RETEICA: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="gasto_reteica">0.00</h6></td>
@@ -233,7 +256,7 @@
         let centrosCostosGastos = @json($centro_costos);
         let porcentajeIvaAIU = @json($porcentaje_iva_aiu);
         let redondeoGastos = @json($redondeo_gastos);
-        let valor_uvt = @json($valor_uvt);
+        let valorUvtGastos = @json($valor_uvt);
     </script>
     
 </div>

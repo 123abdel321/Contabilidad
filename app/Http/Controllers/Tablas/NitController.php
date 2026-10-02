@@ -232,6 +232,7 @@ class NitController extends Controller
                 // 'declarante' => $request->get('declarante'),
                 'sumar_aiu' => $request->get('sumar_aiu'),
                 'proveedor' => $request->get('proveedor') ? 1 : 0,
+                'retencion' => $request->get('retencion') ? 1 : 0,
                 'plazo' => 0,
                 'created_by' => request()->user()->id,
                 'updated_by' => request()->user()->id,
@@ -310,6 +311,7 @@ class NitController extends Controller
                 'porcentaje_reteica' => $request->get('porcentaje_reteica'),
                 'proveedor' => $request->get('proveedor'),
                 'sumar_aiu' => $request->get('sumar_aiu'),
+                'retencion' => $request->get('retencion'),
                 'updated_by' => request()->user()->id,
             ]);
 
@@ -380,22 +382,8 @@ class NitController extends Controller
         // Seleccionas solo los campos de la base de datos que la función y el Accessor necesitan.
         // El campo 'text' se agregará automáticamente al final.
         $nits = Nits::select(
-            'id',
-            'id_tipo_documento',
-            'id_ciudad',
-            'primer_nombre',
-            \DB::raw('numero_documento AS segundo_nombre'), // Mantienes esto para compatibilidad
-            'primer_apellido',
-            'segundo_apellido',
-            'razon_social', // Necesario para el Accessor
-            'numero_documento', // Necesario para el Accessor
-            'apartamentos', // Necesario para el Accessor
-            'otros_nombres', // Necesario para el Accessor
-            'email',
-            'sumar_aiu',
-            'porcentaje_aiu',
-            'porcentaje_reteica',
-            'id_responsabilidades',
+            '*',
+            \DB::raw('numero_documento AS segundo_nombre'),
             \DB::raw('telefono_1 AS telefono')
         );
 

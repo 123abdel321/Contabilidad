@@ -14,38 +14,22 @@
 
                     <!-- CLIENTE -->
                     <div class="col-12 col-md-6 col-lg-4">
-                        <label for="id_cliente_venta">
-                            Cliente<span style="color: red">*</span>
-                        </label>
+                        <label for="id_cliente_venta">Cliente <span style="color: red">*</span></label>
 
                         <div class="input-group">
-                            <select name="id_cliente_venta"
-                                    id="id_cliente_venta"
-                                    class="form-control form-control-sm"
-                                    style="font-size: 13px;"
-                                    required>
+                            <select name="id_cliente_venta" id="id_cliente_venta" class="form-control form-control-sm" style="font-size: 13px;" required>
                             </select>
 
-                            <span id="btn_ver_cliente_venta"
-                                onclick="openModalViewNitVenta()"
-                                class="btn badge bg-gradient-light btn-cliente-action"
-                                title="Ver cliente"
-                                style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none; display: none;">
+                            <span id="btn_ver_cliente_venta"onclick="openModalViewNitVenta()"class="btn badge bg-gradient-light btn-cliente-action"title="Ver cliente"style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none; display: none;">
                                 <i class="fas fa-eye" style="font-size: 15px; margin-top: 2px;"></i>
                             </span>
 
-                            <span onclick="openModalNewNitVenta()"
-                                class="btn badge bg-gradient-light btn-cliente-action"
-                                title="Crear cliente"
-                                style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none;">
-                                <i class="fas fa-user-plus" style="font-size: 15px; margin-top: 2px;"></i>
+                            <span @if($puede_editar_nit) onclick="openModalEditNitVenta()" @endif  class="btn badge bg-gradient-light btn-cliente-action {{ !$puede_editar_nit ? 'disabled' : '' }}"  title="Editar cliente"  style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none;">
+                                <i class="fas fa-user-edit" style="font-size: 15px; margin-top: 2px;"></i>
                             </span>
 
-                            <span onclick="openModalEditNitVenta()"
-                                class="btn badge bg-gradient-light btn-cliente-action"
-                                title="Editar cliente"
-                                style="min-width: 40px; position: static; height: 30px; border-radius: 0 5px 5px 0; box-shadow: none;">
-                                <i class="fas fa-user-edit" style="font-size: 15px; margin-top: 2px;"></i>
+                            <span @if($puede_crear_nit) onclick="openModalNewNitVenta()" @endif class="btn badge bg-gradient-light btn-cliente-action {{ !$puede_crear_nit ? 'disabled' : '' }}" title="Crear cliente" style="min-width: 40px; position: static; height: 30px; border-radius: 0 5px 5px 0; box-shadow: none;">
+                                <i class="fas fa-user-plus" style="font-size: 15px; margin-top: 2px;"></i>
                             </span>
 
                             <div class="invalid-feedback">

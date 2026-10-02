@@ -1042,3 +1042,12 @@ div.dataTables_processing {
     30% { left: 150%; } /* Cruza rápidamente */
     100% { left: 150%; } /* Pausa antes de volver a empezar */
 }
+
+/* RETENCION */
+.totales_retencion_disable {
+    background-color: #eeeeee;
+}
+
+.totales_retencion_disable td h6 {
+    color: #a7a7a7;
+}

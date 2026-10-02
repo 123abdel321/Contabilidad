@@ -149,6 +149,11 @@
                     </div>
 
                     <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6">
+                        <input class="form-check-input" type="checkbox" name="retencion_nit" id="retencion_nit" style="height: 20px;" checked>
+                        <label class="form-check-label" for="retencion_nit">Calcula Retención</label>
+                    </div>
+
+                    <div class="form-check form-switch col-12 col-sm-6 col-12 col-sm-6 col-md-6">
                         <input class="form-check-input" type="checkbox" name="proveedor_nit" id="proveedor_nit" style="height: 20px;" checked>
                         <label class="form-check-label" for="proveedor_nit">Proveedor</label>
                     </div>
