@@ -1205,16 +1205,7 @@ function focusOutFechaGastos() {
             cancelButtonText: "No, usar fecha actual"
         }).then((result) => {
             if (!result.isConfirmed) {
-                const dateNow = new Date();
-
-                const fechaHoraGasto =
-                    dateNow.getFullYear() + '-' +
-                    ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' +
-                    ("0" + dateNow.getDate()).slice(-2) + 'T' +
-                    ("0" + dateNow.getHours()).slice(-2) + ':' +
-                    ("0" + dateNow.getMinutes()).slice(-2);
-
-                $('#fecha_manual_gasto').val(fechaHoraGasto);
+                cargarFechasGasto();
             }
         });
     }
@@ -1908,15 +1899,9 @@ function cancelarGasto(resetNit = true) {
 
     clearFormasPagoGasto();
     mostrarValoresGastos();
-
-    var fechaHoraGasto = dateNow.getFullYear() + '-' + 
-        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
-        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
-        ("0" + dateNow.getHours()).slice(-2) + ':' + 
-        ("0" + dateNow.getMinutes()).slice(-2);
+    cargarFechasGasto();
     
     $('#total_faltante_gasto').val('0.00');
-    $('#fecha_manual_gasto').val(fechaHoraGasto);
     $('#agregarGasto').hide();
     $('#crearCapturaGasto').hide();
     $('#iniciarCapturaGasto').show();
