@@ -362,6 +362,7 @@ class GastosController extends Controller
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
             }
+
             //AGREGAR FORMAS DE PAGO
             $totalGasto = $this->totalesFactura['total_pagado'];
             foreach ($request->get('pagos') as $pagoItem) {
@@ -443,8 +444,8 @@ class GastosController extends Controller
             if (count($archivos)) {
                 foreach ($archivos as $archivo) {
                     $archivoCache = ArchivosCache::where('id', $archivo['id'])->first();
-                    $finalPath = 'portafolio/empresas/'.request()->user()->id_empresa.'/gastos/'.$archivoCache->name_file;
-                    if (Storage::exists($archivoCache->relative_path)) {
+                    if ($archivoCache && Storage::exists($archivoCache->relative_path)) {
+                        $finalPath = 'portafolio/empresas/'.request()->user()->id_empresa.'/gastos/'.$archivoCache->name_file;
                         Storage::move($archivoCache->relative_path, $finalPath);
                         
                         $archivo = new ArchivosGenerales([
@@ -456,8 +457,14 @@ class GastosController extends Controller
                         ]);
                         $archivo->relation()->associate($gasto);
                         $gasto->archivos()->save($archivo);
+                        $archivoCache->delete();
+                    } else {
+                        $archivo = ArchivosGenerales::where('id', $archivo['id'])->first();
+                        if ($archivo) {
+                            $archivo->relation()->associate($gasto);
+                            $gasto->archivos()->save($archivo);
+                        }
                     }
-                    $archivoCache->delete();
                 }
             }
 

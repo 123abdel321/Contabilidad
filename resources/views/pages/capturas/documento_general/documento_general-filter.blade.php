@@ -42,31 +42,37 @@
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->
-                    <span id="iniciarCapturaDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px;">
+                    <span id="iniciarCapturaDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;">
                         <i class="fas fa-folder-open" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">INICIAR CAPTURA</b>
                     </span>
-                    <span id="iniciarCapturaDocumentosLoading" class="badge bg-gradient-info" style="display:none; min-width: 40px; margin-bottom: 16px;">
+                    <span id="iniciarCapturaDocumentosLoading" class="badge bg-gradient-success btn-bg-excel" style="display:none; min-width: 40px; margin-bottom: 16px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>
                         <b style="vertical-align: text-top;">CARGANDO</b>
                     </span>
-                    <span id="agregarDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; display:none;">
+                    <span id="agregarDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-info" style="min-width: 40px; display:none;">
                         <i class="fas fa-plus-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">AGREGAR DOCUMENTO</b>
                     </span>
-                    <span id="cancelarCapturaDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-danger" style="min-width: 40px; display:none;">
+                    <span id="cancelarCapturaDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-danger btn-bg-danger" style="min-width: 40px; display:none;">
                         <!-- <i class="fas fa-folder-minus" style="font-size: 17px;"></i> -->
                         <i class="fas fa-times-circle" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">CANCELAR CAPTURA</b>
                     </span>
-                    <span id="crearCapturaDocumentosDisabled" href="javascript:void(0)" class="badge bg-success" style="min-width: 40px; display:none; float: right; background-color: #2dce899c !important; cursor: no-drop;">
+                    
+                    <span id="crearCapturaDocumentosDisabled" href="javascript:void(0)" class="badge bg-gradient-dark" style="min-width: 40px; display:none; float: right; background-color: #2dce899c !important; cursor: no-drop;">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR DOCUMENTO</b>
                         <i class="fas fa-lock" style="color: red; position: absolute; margin-top: -10px; margin-left: 4px;"></i>
                     </span>
-                    <span id="crearCapturaDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-success" style="min-width: 40px; display:none; float: right;" onclick="capturarDcoumentosGenerales()">
+                    <span id="crearCapturaDocumentos" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-excel" style="min-width: 40px; display:none; float: right;" onclick="capturarDcoumentosGenerales()">
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR DOCUMENTO</b>
+                    </span>
+                    <span id="adjuntarArchivosGenerales" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px; display:none; float: right; margin-right: 5px;">
+                        <i class="fa-solid fa-file-import" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">ADJUNTOS</b>
+                        <span id="adjuntosDocumentoContador" class="badge bg-white text-dark ms-1" style="display:none;">0</span>
                     </span>
                 </div>
             </div>

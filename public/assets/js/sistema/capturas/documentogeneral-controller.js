@@ -8,21 +8,25 @@ var validarFactura = null;
 var calcularCabeza = true;
 var nuevaFacturaDG = false; 
 var cuentaExtractoDg = null
+var documentosArchivos = [];
 var askSaveDocumentos = true;
 var $comboComprobante = null;
 var documento_extracto = null;
 var consecutivoUltimo = false;
 var consecutivoEditado = false;
 var guardarDocumentoDG = false;
+var uploadedFilesDocumentos = [];
 var documento_general_table = null;
 var guardarDocumentoGeneral = false;
 var ignoreChangeEventGeneral = false;
+var limpiarInputFileDocumentos = false;
 
 
 function documentogeneralInit() {
 
     initConfigDocumentoGeneral();
     initTablaDocumentoGeneral();
+    initFilePondDocumentoGeneral();
     initTablaDocumentoGeneralExtracto();
     initCombosActionDocumentoGeneral();
 
@@ -30,6 +34,99 @@ function documentogeneralInit() {
     setTimeout(function(){
         $comboComprobante.select2("open");
     },10);
+}
+
+$(document).on('click', '#adjuntarArchivosGenerales', function () {
+    $("#documentoAdjuntosModal").modal('show');
+});
+
+function initFilePondDocumentoGeneral() {
+    pondDocumentos = FilePond.create(document.querySelector('#documento-files'), {
+        allowImagePreview: true,
+        imagePreviewUpscale: true,
+        allowMultiple: true,
+        instantUpload: true,
+    });
+
+    $('.filepond--credits').remove();
+
+    pondDocumentos.setOptions({
+        server: {
+            process: {
+                url: 'archivos-cache',       // mismo endpoint que pqrsf
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                onload: (response) => {
+                    const uploaded = JSON.parse(response);
+                    uploadedFilesDocumentos.push({
+                        id: uploaded.id,
+                        url: uploaded.path
+                    });
+                    actualizarContadorAdjuntosDocumento();
+                    return uploaded.path;
+                },
+                onerror: (response) => {
+                    console.error('Error al subir archivo: ', response);
+                }
+            },
+            revert: {
+                url: 'archivos-cache',
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+            }
+        }
+    });
+
+    // Eliminar un archivo ya subido (revert en cache)
+    pondDocumentos.on('removefile', (error, file) => {
+        if (error) return;
+
+        if (limpiarInputFileDocumentos) {
+            limpiarInputFileDocumentos = false;
+            return;
+        }
+
+        const id = file.getMetadata('id');
+        // quitar del array local
+        uploadedFilesDocumentos = uploadedFilesDocumentos.filter(a => a.id != id);
+        actualizarContadorAdjuntosDocumento();
+    });
+
+    clearFilesInputDocumento();
+}
+
+function actualizarContadorAdjuntosDocumento() {
+    const total = uploadedFilesDocumentos.length;
+    const $badge = $('#adjuntosDocumentoContador');
+    if (total > 0) {
+        $badge.text(total).show();
+    } else {
+        $badge.hide();
+    }
+}
+
+function clearFilesInputDocumento() {
+    uploadedFilesDocumentos = [];
+    if (!pondDocumentos) return;
+
+    limpiarInputFileGastos = true;
+    pondDocumentos.removeFiles();
+    actualizarContadorAdjuntosDocumento();
+}
+
+function getIconByExtension(name) {
+    const ext = name.split('.').pop().toLowerCase();
+    switch (ext) {
+        case 'pdf': return 'fas fa-file-pdf';
+        case 'jpg': case 'jpeg': case 'png': case 'webp': return 'fas fa-file-image';
+        case 'xls': case 'xlsx': return 'fas fa-file-excel';
+        case 'doc': case 'docx': return 'fas fa-file-word';
+        default:    return 'fas fa-file';
+    }
 }
 
 function initConfigDocumentoGeneral() {
@@ -1061,8 +1158,9 @@ function focusNextRow(columnIndex, rowId) {
                     const nitData = $(`#combo_nits_${prevRow}`).select2('data');
                     if (nitData && nitData.length > 0) {
                         const option = new Option(nitData[0].text, nitData[0].id, false, false);
-                        $input.append(option).trigger('change');
+                        $input.append(option);
                         $(`#concepto_${rowId}`).val($(`#concepto_${prevRow}`).val());
+                        setTimeout(() => $input.select2('open'), 10);
                         scrollToDG(250);
                         break;
                     }
@@ -1361,6 +1459,7 @@ function searchCaptura() {
 
                 $("#agregarDocumentos").show();
                 $("#cancelarCapturaDocumentos").show();
+                $("#adjuntarArchivosGenerales").show();
                 $("#iniciarCapturaDocumentosLoading").hide();
                 $("#crearCapturaDocumentos").show();
 
@@ -1511,6 +1610,7 @@ function cancelarFacturas() {
     $("#iniciarCapturaDocumentos").show();
     $("#agregarDocumentos").hide();
     $("#cancelarCapturaDocumentos").hide();
+    $("#adjuntarArchivosGenerales").hide();
     $("#crearCapturaDocumentos").hide();
     $("#crearCapturaDocumentosDisabled").hide();
     $("#iniciarCapturaDocumentosLoading").hide();
@@ -1542,6 +1642,7 @@ function cargarNuevoConsecutivo() {
     $("#iniciarCapturaDocumentos").show();
     $("#agregarDocumentos").hide();
     $("#cancelarCapturaDocumentos").hide();
+    $("#adjuntarArchivosGenerales").hide();
     $("#crearCapturaDocumentos").hide();
     $("#crearCapturaDocumentosDisabled").hide();
     $("#iniciarCapturaDocumentosLoading").hide();
@@ -1841,6 +1942,7 @@ function saveDocumentos() {
     $("#crearCapturaDocumentos").hide();
     $("#iniciarCapturaDocumentos").hide();
     $("#cancelarCapturaDocumentos").hide();
+    $("#adjuntarArchivosGenerales").hide();
     $("#crearCapturaDocumentosDisabled").hide();
     $("#iniciarCapturaDocumentosLoading").show();
 
@@ -1854,6 +1956,7 @@ function saveDocumentos() {
         id_comprobante: $("#id_comprobante").val(),
         consecutivo: $("#consecutivo").val(),
         editing_documento: $("#editing_documento").val(),
+        archivos: uploadedFilesDocumentos,
     }
 
     $.ajax({
@@ -1879,6 +1982,7 @@ function saveDocumentos() {
             $("#crearCapturaDocumentos").show();
             $("#iniciarCapturaDocumentos").hide();
             $("#cancelarCapturaDocumentos").show();
+            $("#adjuntarArchivosGenerales").show();
             $("#crearCapturaDocumentosDisabled").hide();
             $("#iniciarCapturaDocumentosLoading").hide();
 
@@ -1898,6 +2002,7 @@ function saveDocumentos() {
         $("#crearCapturaDocumentos").show();
         $("#iniciarCapturaDocumentos").hide();
         $("#cancelarCapturaDocumentos").show();
+        $("#adjuntarArchivosGenerales").show();
         $("#crearCapturaDocumentosDisabled").hide();
         $("#iniciarCapturaDocumentosLoading").hide();
 

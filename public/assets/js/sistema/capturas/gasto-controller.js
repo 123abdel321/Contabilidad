@@ -33,7 +33,6 @@ function gastoInit () {
     cargarFechasGasto();
     cargarCombosGasto();
     cargarTablasGasto();
-    cargarChangeGasto();
     initFilePondGastos();
     loadFormasPagoGastos();
     
@@ -559,41 +558,6 @@ $(document).on('click', '#adjuntarArchivosGastos', function () {
     $("#gastoAdjuntosModal").modal('show');
 });
 
-function cargarChangeGasto() {
-        // Seleccionar archivos
-    $(document).on('change', '#gasto_archivos_input', function (e) {
-        const files = Array.from(e.target.files || []);
-        if (!files.length) return;
-
-        files.forEach(file => {
-            if (file.size > 10 * 1024 * 1024) {
-                agregarToast('warning', 'Archivo muy grande', `"${file.name}" supera los 10 MB`);
-                return;
-            }
-            gastoArchivos.push(file);
-        });
-
-        // Limpiar el input para permitir volver a seleccionar el mismo archivo
-        $(this).val('');
-        renderGastoArchivos();
-    });
-
-    // Eliminar un archivo de la lista (antes de guardar)
-    $(document).on('click', '.gasto-archivo-remove', function () {
-        const idx = $(this).data('index');
-        const tipo = $(this).data('tipo');
-
-        if (tipo === 'nuevo') {
-            gastoArchivos.splice(idx, 1);
-        } else {
-            // existente (modo edición)
-            const id = $(this).data('id');
-            gastoArchivosEliminar.push(id);
-        }
-        renderGastoArchivos();
-    });
-}
-
 function initFilePondGastos() {
     pondGastos = FilePond.create(document.querySelector('#gasto-files'), {
         allowImagePreview: true,
@@ -670,61 +634,6 @@ function clearFilesInputGastos() {
     limpiarInputFileGastos = true;
     pondGastos.removeFiles();
     actualizarContadorAdjuntosGasto();
-}
-
-function renderGastoArchivos() {
-    const $lista = $('#gasto_archivos_lista');
-    $lista.empty();
-
-    // Archivos nuevos
-    gastoArchivos.forEach((file, index) => {
-        const icon = getIconByExtension(file.name);
-        const size = (file.size / 1024).toFixed(1) + ' KB';
-
-        $lista.append(`
-            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                <div class="d-flex align-items-center gap-2 text-truncate">
-                    <i class="${icon} text-primary"></i>
-                    <span class="text-truncate" title="${file.name}">${file.name}</span>
-                    <small class="text-muted">${size}</small>
-                </div>
-                <button type="button"
-                        class="btn btn-sm btn-link text-danger gasto-archivo-remove p-0"
-                        data-index="${index}"
-                        data-tipo="nuevo"
-                        title="Quitar">
-                    <i class="fas fa-times"></i>
-                </button>
-            </li>
-        `);
-    });
-
-    // Archivos existentes (solo si ya tienes uno cargado y no está marcado para eliminar)
-    if (typeof gastoArchivosExistentes !== 'undefined' && gastoArchivosExistentes.length) {
-        gastoArchivosExistentes.forEach((archivo, index) => {
-            if (gastoArchivosEliminar.includes(archivo.id)) return;
-            const icon = getIconByExtension(archivo.url_archivo);
-
-            $lista.append(`
-                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                    <div class="d-flex align-items-center gap-2 text-truncate">
-                        <i class="${icon} text-success"></i>
-                        <a href="${archivo.url_archivo}" target="_blank" class="text-truncate" title="${archivo.nombre_original ?? ''}">
-                            ${archivo.nombre_original ?? archivo.url_archivo.split('/').pop()}
-                        </a>
-                    </div>
-                    <button type="button"
-                            class="btn btn-sm btn-link text-danger gasto-archivo-remove p-0"
-                            data-index="${index}"
-                            data-id="${archivo.id}"
-                            data-tipo="existente"
-                            title="Eliminar">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </li>
-            `);
-        });
-    }
 }
 
 function getIconByExtension(name) {

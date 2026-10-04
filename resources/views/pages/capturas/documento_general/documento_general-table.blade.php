@@ -1,4 +1,4 @@
-<table id="documentoReferenciaTable" class="table table-bordered display responsive" width="100%">
+<table id="documentoReferenciaTable" class="table table-bordered display table-captura-general responsive" width="100%">
     <thead>
         <tr style="border: 0px !important;">
             <th style="border-radius: 15px 0px 0px 0px !important;"><i class="fas fa-sliders-h"></i></th>

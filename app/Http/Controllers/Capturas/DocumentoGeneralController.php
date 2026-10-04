@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessBorrarDocumentos;
 use App\Jobs\ProcessGenerarDocumentos;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 //TRAITS
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
@@ -23,10 +24,12 @@ use App\Models\Sistema\ConGastos;
 use App\Models\Sistema\PlanCuentas;
 use App\Models\Sistema\CentroCostos;
 use App\Models\Sistema\Comprobantes;
+use App\Models\Sistema\ArchivosCache;
 use App\Models\Sistema\FacDocumentos;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\DocumentosGeneral;
+use App\Models\Sistema\ArchivosGenerales;
 
 class DocumentoGeneralController extends Controller
 {
@@ -553,6 +556,36 @@ class DocumentoGeneralController extends Controller
 				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
 
+			// PROCESAR ARCHIVOS
+            $archivos = $request->get('archivos');
+            if (count($archivos)) {
+                foreach ($archivos as $archivo) {
+                    $archivoCache = ArchivosCache::where('id', $archivo['id'])->first();
+                    if ($archivoCache && Storage::exists($archivoCache->relative_path)) {
+                        $finalPath = 'portafolio/empresas/'.request()->user()->id_empresa.'/documentos/'.$archivoCache->name_file;
+                        Storage::move($archivoCache->relative_path, $finalPath);
+                        
+                        $archivo = new ArchivosGenerales([
+                            'tipo_archivo' => $archivoCache->tipo_archivo,
+                            'url_archivo' => $finalPath,
+                            'estado' => 1,
+                            'created_by' => request()->user()->id,
+                            'updated_by' => request()->user()->id
+                        ]);
+
+                        $archivo->relation()->associate($facDocumento);
+                        $facDocumento->archivos()->save($archivo);
+                        $archivoCache->delete();
+                    } else {
+                        $archivo = ArchivosGenerales::where('id', $archivo['id'])->first();
+                        if ($archivo) {
+                            $archivo->relation()->associate($facDocumento);
+                            $facDocumento->archivos()->save($archivo);
+                        }
+                    }
+                }
+            }
+
 			if($request->get('editing_documento')) {
 				$facDocumento->debito = $debito;
 				$facDocumento->credito = $credito;
@@ -764,25 +797,44 @@ class DocumentoGeneralController extends Controller
 
     public function getConsecutivo(Request $request)
     {
-		$consecutivo = null;
+		try {
 
-		if ($request->get('id_comprobante')) {
-			$consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
-		}
+			$consecutivo = null;
 
-		if ($request->get('id_resolucion')) {
-			$resolucion = FacResoluciones::where('id', $request->get('id_resolucion'))
-				->with('comprobante')
-				->first();
+			if ($request->get('id_comprobante')) {
+				$consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
+			}
 
-			$consecutivo = $this->getNextConsecutive($resolucion->comprobante->id, $request->get('fecha_manual'));
-		}
+			if ($request->get('id_resolucion')) {
+				$resolucion = FacResoluciones::where('id', $request->get('id_resolucion'))
+					->with('comprobante')
+					->first();
 
-        return response()->json([
-    		'success'=>	true,
-    		'data' => $consecutivo,
-    		'message'=> 'Consecutivo siguiente generado con exito!'
-    	]);
+				if (!$resolucion->comprobante) {
+					return response()->json([
+						'success'=>	false,
+						'data' => [],
+						'message'=> "La resolución {$resolucion->prefijo} - {$resolucion->nombre} no tiene comprobante asociado"
+					], Response::HTTP_UNPROCESSABLE_ENTITY);
+				}
+
+				$consecutivo = $this->getNextConsecutive($resolucion->comprobante->id, $request->get('fecha_manual'));
+			}
+
+			return response()->json([
+				'success'=>	true,
+				'data' => $consecutivo,
+				'message'=> 'Consecutivo siguiente generado con exito!'
+			]);
+
+		} catch (Exception $e) {
+
+            return response()->json([
+                "success"=>false,
+                'data' => [],
+                "message"=>$e->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
 	public function getAnioCerrado(Request $request)

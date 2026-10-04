@@ -43,4 +43,9 @@ class FacDocumentos extends Model
 	{
 		return $this->belongsTo('App\Models\Sistema\Nits', 'id_nit');
 	}
+
+    public function archivos()
+    {
+        return $this->morphMany(ArchivosGenerales::class, 'relation');
+    }
 }

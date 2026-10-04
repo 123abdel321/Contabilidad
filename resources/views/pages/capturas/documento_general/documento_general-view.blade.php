@@ -34,6 +34,19 @@
         text-align: -webkit-center !important;
     }
 
+    .table-captura-general {
+        max-height: 320px;
+        overflow: auto;
+    }
+
+    .table-captura-general thead th {
+        padding: 0.3rem 1.2rem !important;
+    }
+
+    .table-captura-general > :not(caption) > * > * {
+        padding: 0.1rem 0.1rem;
+    }
+
     .btn-group {
         box-shadow: 0 0px 0px rgba(50, 50, 93, 0.1), 0 0px 0px rgba(0, 0, 0, 0.08);
     }
@@ -96,6 +109,7 @@
         
         @include('pages.capturas.documento_general.documento_general-form')
         @include('pages.capturas.documento_general.documento_general-extracto')
+        @include('pages.capturas.documento_general.documento_general-adjuntos')
 
     </div>
 
