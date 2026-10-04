@@ -14,19 +14,19 @@
 
                     <input name="id_gasto_up" id="id_gasto_up" class="form-control form-control-sm" type="text" style="display: none;">
 
-                    <!-- NIT -->
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <!-- Proveedor -->
+                    <div class="col-12 col-md-6 col-lg-3">
                         <label for="id_nit_gasto">Proveedor <span style="color: red">*</span></label>
 
                         <div class="input-group">
                             <select name="id_nit_gasto" id="id_nit_gasto" class="form-control form-control-sm" style="font-size: 13px;" required>
                             </select>
 
-                            <span id="btn_ver_cliente_gasto"onclick="openModalViewNitGasto()"class="btn badge bg-gradient-light btn-cliente-action"title="Ver cliente"style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none; display: none;">
+                            <span id="btn_ver_cliente_gasto" onclick="openModalViewNitGasto()" class="btn badge bg-gradient-light btn-cliente-action" title="Ver cliente" style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none; display: none;">
                                 <i class="fas fa-eye" style="font-size: 15px; margin-top: 2px;"></i>
                             </span>
 
-                            <span @if($puede_editar_nit) onclick="openModalEditNitGasto()" @endif  class="btn badge bg-gradient-light btn-cliente-action {{ !$puede_editar_nit ? 'disabled' : '' }}"  title="Editar cliente"  style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none;">
+                            <span @if($puede_editar_nit) onclick="openModalEditNitGasto()" @endif class="btn badge bg-gradient-light btn-cliente-action {{ !$puede_editar_nit ? 'disabled' : '' }}" title="Editar cliente" style="min-width: 40px; position: static; height: 30px; border-radius: 0; box-shadow: none;">
                                 <i class="fas fa-user-edit" style="font-size: 15px; margin-top: 2px;"></i>
                             </span>
 
@@ -38,30 +38,32 @@
                                 El proveedor es requerido
                             </div>
                         </div>
-
                     </div>
 
-                    <div class="form-group col-12 col-sm-4 col-md-2">
+                    <!-- Comprobante -->
+                    <div class="form-group col-12 col-sm-4 col-md-2 col-lg-2">
                         <label>Comprobante <span style="color: red">*</span></label>
                         <select name="id_comprobante_gasto" id="id_comprobante_gasto" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
-                        
+
                         <div class="invalid-feedback">
                             El comprobante es requerido
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-4 col-md-2">
+                    <!-- Centro costo -->
+                    <div class="form-group col-12 col-sm-4 col-md-2 col-lg-2">
                         <label>Centro costo <span style="color: red">*</span></label>
                         <select name="id_centro_costos_gasto" id="id_centro_costos_gasto" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
                         </select>
-                        
+
                         <div class="invalid-feedback">
                             El centro de costo es requerido
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-4 col-md-2">
+                    <!-- Fecha -->
+                    <div class="form-group col-12 col-sm-4 col-md-2 col-lg-2">
                         <label for="example-text-input" class="form-control-label">Fecha <span style="color: red">*</span></label>
                         <input name="fecha_manual_gasto" id="fecha_manual_gasto" class="form-control form-control-sm" type="datetime-local" onfocusout="focusOutFechaGastos()" required>
 
@@ -70,7 +72,8 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-4 col-md-2">
+                    <!-- No. factura -->
+                    <div class="form-group col-12 col-sm-4 col-md-2 col-lg-2">
                         <label for="example-text-input" class="form-control-label">No. factura <span style="color: red">*</span></label>
                         <input type="text" class="form-control form-control-sm" name="documento_referencia_gasto" id="documento_referencia_gasto" onkeydown="buscarFacturaGasto(event)" style="background-position: right 0.75rem center !important;" required>
                         <i class="fa fa-spinner fa-spin fa-fw gasto-load" id="documento_referencia_gasto_loading" style="display: none;"></i>
@@ -79,12 +82,14 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-12 col-sm-4 col-md-1">
+                    <!-- Consecutivo -->
+                    <div class="form-group col-12 col-sm-4 col-md-2 col-lg-1">
                         <label for="example-text-input" class="form-control-label">Consecutivo</label>
                         <input type="text" class="form-control form-control-sm" name="consecutivo_gasto" id="consecutivo_gasto" onkeydown="enterConsecutivoGastos(event)" disabled required>
                     </div>
 
                 </form>
+
                 <div class="col-md normal-rem" style="margin-top: -5px;">
                     <!-- BOTON GENERAR -->
                     <span id="iniciarCapturaGasto" href="javascript:void(0)" class="btn badge bg-gradient-info btn-bg-gold" style="min-width: 40px;">
