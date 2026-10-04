@@ -22,6 +22,8 @@ class ArchivosCacheController extends Controller
     {
         try {
 
+            info("Cargando archivos");
+
             $idUsuario = request()->user()->id;
             
             // Función helper para obtener el primer archivo encontrado
