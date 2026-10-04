@@ -110,9 +110,14 @@
                         <i class="fas fa-save" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">GRABAR GASTO</b>
                     </span>
-                    <span id="movimientoContableGasto" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px; display:none; float: right;">
+                    <span id="movimientoContableGasto" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px; display:none; float: right; margin-left: 4px;">
                         <i class="fa-solid fa-calculator" style="font-size: 17px;"></i>&nbsp;
                         <b style="vertical-align: text-top;">VER MOVIMIENTO CONTABLE</b>
+                    </span>
+                    <span id="adjuntarArchivosGastos" href="javascript:void(0)" class="btn badge bg-gradient-success btn-bg-gold" style="min-width: 40px; display:none; float: right; margin-left: 4px;">
+                        <i class="fa-solid fa-file-import" style="font-size: 17px;"></i>&nbsp;
+                        <b style="vertical-align: text-top;">ADJUNTOS</b>
+                        <span id="adjuntosGastoContador" class="badge bg-white text-dark ms-1" style="display:none;">0</span>
                     </span>
                     <span id="iniciarCapturaGastoLoading" class="badge bg-gradient-success btn-bg-excel" style="display:none; min-width: 40px; margin-bottom: 12px; float: inline-end;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>

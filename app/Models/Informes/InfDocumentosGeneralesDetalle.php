@@ -40,6 +40,11 @@ class InfDocumentosGeneralesDetalle extends Model
         'credito',
         'diferencia',
         'nivel',
+        'anulado',
+        'total_columnas',
+        'tiene_archivos',
+        'relation_id',
+        'relation_type',
         'fecha_creacion',
         'fecha_edicion',
     ];

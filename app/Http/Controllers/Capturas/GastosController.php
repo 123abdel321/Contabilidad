@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\Printers\GastosPdf;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Traits\BegConsecutiveTrait;
 use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
@@ -23,11 +24,13 @@ use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\CentroCostos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\ConGastoPagos;
+use App\Models\Sistema\ArchivosCache;
 use App\Models\Sistema\FacResoluciones;
 use App\Models\Sistema\ConGastoDetalles;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Sistema\ConConceptoGastos;
 use App\Models\Sistema\DocumentosGeneral;
+use App\Models\Sistema\ArchivosGenerales;
 
 class GastosController extends Controller
 {
@@ -106,6 +109,7 @@ class GastosController extends Controller
             'pagos' => 'array|required',
             'pagos.*.id' => 'required|exists:sam.fac_formas_pagos,id',
             'pagos.*.valor' => 'required',
+
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -186,6 +190,7 @@ class GastosController extends Controller
             if ($gasto) {
                 $actualizarConsecutivo = false;
                 $gasto->documentos()->delete();
+                $gasto->archivos()->delete();
                 $gasto->detalles()->delete();
                 $gasto->pagos()->delete();
                 $gasto->delete();
@@ -197,6 +202,7 @@ class GastosController extends Controller
             
             //CREAR FACTURA GASTO
             $gasto = $this->createFacturaGasto($request);
+
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE GASTOS
             $documentoGeneral = new Documento(
                 $request->get('id_comprobante'),
@@ -432,6 +438,29 @@ class GastosController extends Controller
                 }
             }
 
+            // PROCESAR ARCHIVOS
+            $archivos = $request->get('archivos');
+            if (count($archivos)) {
+                foreach ($archivos as $archivo) {
+                    $archivoCache = ArchivosCache::where('id', $archivo['id'])->first();
+                    $finalPath = 'portafolio/empresas/'.request()->user()->id_empresa.'/gastos/'.$archivoCache->name_file;
+                    if (Storage::exists($archivoCache->relative_path)) {
+                        Storage::move($archivoCache->relative_path, $finalPath);
+                        
+                        $archivo = new ArchivosGenerales([
+                            'tipo_archivo' => $archivoCache->tipo_archivo,
+                            'url_archivo' => $finalPath,
+                            'estado' => 1,
+                            'created_by' => request()->user()->id,
+                            'updated_by' => request()->user()->id
+                        ]);
+                        $archivo->relation()->associate($gasto);
+                        $gasto->archivos()->save($archivo);
+                    }
+                    $archivoCache->delete();
+                }
+            }
+
             if ($actualizarConsecutivo) {
                 $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
             }
@@ -489,6 +518,7 @@ class GastosController extends Controller
         $gasto = ConGastos::with(
                 'nit',
                 'pagos',
+                'archivos',
                 'documentos',
                 'detalles.concepto',
                 'detalles.cuenta_retencion.impuesto',

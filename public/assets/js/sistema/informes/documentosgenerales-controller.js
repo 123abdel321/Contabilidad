@@ -109,10 +109,44 @@ function documentosgeneralesInit() {
                 if (row.nivel == 99) return 'TOTALES'
                 if (row.id_cuenta) return row.cuenta;
                 if (row.nivel == 1 && agrupadoPorDocumento) {
-                    var html = ``;
                     if (row.anulado == 1) return '';
-                    html+= `<span id="imprimirdocumentogeneral_${row.id}" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-documentogeneral" style="margin-bottom: 0rem !important; color: black; background-color: white !important;">Imprimir</span>&nbsp;`;
-                    html+= `<span id="anulardocumentogeneral_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger anular-documentogeneral" style="margin-bottom: 0rem !important;">Anular</span>`;
+
+                    var html = '';
+
+                    // Adjuntos (solo si tiene archivos)
+                    if (row.tiene_archivos) {
+                        html += `
+                            <span id="adjuntosdocumentogeneral_${row.id}"
+                                href="javascript:void(0)"
+                                class="btn badge bg-gradient-dark adjuntos-documentogeneral"
+                                title="Ver archivos adjuntos"
+                                style="margin-bottom: 0rem !important; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%;">
+                                <i class="fas fa-paperclip" style="font-size: 13px;"></i>
+                            </span>
+                        `;
+                    }
+
+                    // Imprimir
+                    html += `
+                        <span id="imprimirdocumentogeneral_${row.id}"
+                            href="javascript:void(0)"
+                            class="btn badge btn-outline-dark imprimir-documentogeneral"
+                            title="Imprimir documento"
+                            style="margin-bottom: 0rem !important; color: black; background-color: white !important; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%;">
+                            <i class="fas fa-print" style="font-size: 13px;"></i>
+                        </span>
+                    `;
+
+                    // Anular
+                    html += `
+                        <span id="anulardocumentogeneral_${row.id}"
+                            href="javascript:void(0)"
+                            class="btn badge bg-gradient-danger anular-documentogeneral"
+                            title="Anular documento"
+                            style="margin-bottom: 0rem !important; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%;">
+                            <i class="fas fa-ban" style="font-size: 13px;"></i>
+                        </span>
+                    `;
 
                     return html;
                 }
@@ -191,13 +225,50 @@ function documentosgeneralesInit() {
                 return html;
             }},
             {"data": function (row, type, set){
-                var html = '';
                 if (row.nivel == 1 && agrupadoPorDocumento) {
-                    html+= `<span id="imprimirdocumentogeneral_${row.id}" href="javascript:void(0)" class="btn badge btn-outline-dark imprimir-documentogeneral" style="margin-bottom: 0rem !important; color: black; background-color: white !important;">Imprimir</span>&nbsp;`;
-                    html+= `<span id="anulardocumentogeneral_${row.id}" href="javascript:void(0)" class="btn badge bg-gradient-danger anular-documentogeneral" style="margin-bottom: 0rem !important;">Anular</span>`;
+                    if (row.anulado == 1) return '';
+
+                    var html = '';
+
+                    // Adjuntos (solo si tiene archivos)
+                    if (row.tiene_archivos) {
+                        html += `
+                            <span id="adjuntosdocumentogeneral_${row.id}"
+                                href="javascript:void(0)"
+                                class="btn badge bg-gradient-dark adjuntos-documentogeneral"
+                                title="Ver archivos adjuntos"
+                                style="margin-bottom: 0rem !important; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%;">
+                                <i class="fas fa-paperclip" style="font-size: 13px;"></i>
+                            </span>
+                        `;
+                    }
+
+                    // Imprimir
+                    html += `
+                        <span id="imprimirdocumentogeneral_${row.id}"
+                            href="javascript:void(0)"
+                            class="btn badge btn-outline-dark imprimir-documentogeneral"
+                            title="Imprimir documento"
+                            style="margin-bottom: 0rem !important; color: black; background-color: white !important; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%;">
+                            <i class="fas fa-print" style="font-size: 13px;"></i>
+                        </span>
+                    `;
+
+                    // Anular
+                    html += `
+                        <span id="anulardocumentogeneral_${row.id}"
+                            href="javascript:void(0)"
+                            class="btn badge bg-gradient-danger anular-documentogeneral"
+                            title="Anular documento"
+                            style="margin-bottom: 0rem !important; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%;">
+                            <i class="fas fa-ban" style="font-size: 13px;"></i>
+                        </span>
+                    `;
 
                     return html;
                 }
+
+                // Última columna: usuario que editó
                 var html = '<div class="button-user" onclick="showUser('+row.updated_by+',`'+row.fecha_edicion+'`,0)"><i class="fas fa-user icon-user"></i>&nbsp;'+row.fecha_edicion+'</div>';
                 if(!row.updated_by && !row.fecha_edicion) return '';
                 if(!row.updated_by ) html = '<div class=""><i class="fas fa-user-times icon-user-none"></i>'+row.fecha_edicion+'</div>';
@@ -398,6 +469,18 @@ $(document).on('click', '.imprimir-documentogeneral', function () {
     var data = getDataById(id, documentos_generales_table);
     
     window.open(`/documentos-generales-print/${data.id_comprobante}/${data.consecutivo}/${data.fecha_manual}`, "_blank");
+});
+
+$(document).on('click', '.adjuntos-documentogeneral', function () {
+
+    var id = this.id.split('_')[1];
+
+    var data = getDataById(id, documentos_generales_table);
+
+    abrirVisorArchivosDocumento(
+        data.relation_id,
+        data.relation_type
+    );
 });
 
 $(document).on('click', '.anular-documentogeneral', function () {

@@ -69,9 +69,13 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
 
             $this->id_documentos_generales = $documentosGenerales->id;
             
-            if ($this->request['agrupar'] && $this->request['agrupado']) $this->documentosGeneralesAgruparNiveles();
-            else if (!$this->request['agrupar']) $this->documentosGeneralesSinAgrupar();
-            else if ($this->request['agrupar']) $this->documentosGeneralesAgruparNormal();
+            if ($this->request['agrupar'] && $this->request['agrupado']) {
+                $this->documentosGeneralesAgruparNiveles();
+            } else if (!$this->request['agrupar']){
+                $this->documentosGeneralesSinAgrupar();
+            } else if ($this->request['agrupar']){
+                $this->documentosGeneralesAgruparNormal();
+            }
             
             foreach (array_chunk($this->documentosCollection,233) as $documentosCollection){
                 DB::connection('informes')
@@ -226,6 +230,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                         'nivel' => 0,
                         'anulado' => $documento->anulado,
                         'total_columnas' => '',
+                        'tiene_archivos' => 0,
+                        'relation_id' => null,
+                        'relation_type' => null,
                         'fecha_creacion' => $documento->fecha_creacion,
                         'fecha_edicion' => $documento->fecha_edicion,
                         'created_by' => $documento->created_by,
@@ -279,6 +286,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'credito' => $totaldata->credito,
             'diferencia' => $totaldata->diferencia,
             'total_columnas' => $totaldata->total_columnas,
+            'tiene_archivos' => 0,
+            'relation_id' => null,
+            'relation_type' => null,
             'nivel' => 99,
             'anulado' => 0,
             'fecha_creacion' => null,
@@ -327,6 +337,8 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
                 DB::raw("DATE_FORMAT(DG.updated_at, '%Y-%m-%d %T') AS fecha_edicion"),
                 "DG.created_by",
                 "DG.updated_by",
+                "DG.relation_id",
+                "DG.relation_type",
                 "DG.anulado",
                 "debito",
                 "credito",
@@ -388,6 +400,16 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
 
     private function newCuentaTotal($cuenta, $documento)
     {
+        $tieneArchivos = 0;
+        if ($documento->relation_id && $documento->relation_type) {
+            $tieneArchivos = DB::connection('sam')
+                ->table('archivos_generales')
+                ->where('estado', 1)
+                ->where('relation_id', $documento->relation_id)
+                ->where('relation_type', $documento->relation_type)
+                ->exists() ? 1 : 0;
+        }
+
         $this->documentosCollection[$cuenta] = [
             'id_documentos_generales' => $this->id_documentos_generales,
             'id_nit' => in_array('id_nit', $this->agrupacion) ? $documento->id_nit : null,
@@ -415,6 +437,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'credito' => $documento->credito,
             'diferencia' => $documento->diferencia,
             'total_columnas' => $documento->total_columnas,
+            'tiene_archivos' => $tieneArchivos,
+            'relation_id' => $documento->relation_id,
+            'relation_type' => $documento->relation_type,
             'nivel' => 1,
             'anulado' => $documento->anulado,
             'fecha_creacion' => null,
@@ -453,6 +478,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'credito' => $documento->credito,
             'diferencia' => $documento->diferencia,
             'total_columnas' => $documento->total_columnas,
+            'tiene_archivos' => 0,
+            'relation_id' => null,
+            'relation_type' => null,
             'nivel' => count($agrupacionesTotales),
             'anulado' => $documento->anulado,
             'fecha_creacion' => null,
@@ -493,6 +521,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'nivel' => 0,
             'anulado' => $documento->anulado,
             'total_columnas' => '',
+            'tiene_archivos' => 0,
+            'relation_id' => null,
+            'relation_type' => null,
             'fecha_creacion' => $documento->fecha_creacion,
             'fecha_edicion' => $documento->fecha_edicion,
             'created_by' => $documento->created_by,
@@ -531,6 +562,9 @@ class ProcessInformeDocumentosGenerales implements ShouldQueue
             'nivel' => 0,
             'anulado' => $documento->anulado,
             'total_columnas' => '',
+            'tiene_archivos' => 0,
+            'relation_id' => null,
+            'relation_type' => null,
             'fecha_creacion' => $documento->fecha_creacion,
             'fecha_edicion' => $documento->fecha_edicion,
             'created_by' => $documento->created_by,

@@ -1,5 +1,9 @@
 var dataGasto = [];
+var gastoArchivos = [];
 var idGastoTable = 0;
+var pondGastos = null;
+var uploadedFilesGastos = [];
+var limpiarInputFileGastos = false;
 var sumarAIU = false;
 var fechaGasto = null;
 var gasto_table = null;
@@ -10,6 +14,7 @@ var gasto_pagos_table = null;
 var totalAnticiposGasto = null;
 var $comboNitGastos = null;
 var guardandoGasto = false;
+var gastoArchivosEliminar = [];
 var retencionesGasto = [];
 var porcentajeAIUGastos = 0;
 var porcentajeReteica = 0;
@@ -28,6 +33,8 @@ function gastoInit () {
     cargarFechasGasto();
     cargarCombosGasto();
     cargarTablasGasto();
+    cargarChangeGasto();
+    initFilePondGastos();
     loadFormasPagoGastos();
     
     $('[data-toggle="popover"]').popover({
@@ -548,6 +555,189 @@ function cargarTablasGasto() {
     }
 }
 
+$(document).on('click', '#adjuntarArchivosGastos', function () {
+    $("#gastoAdjuntosModal").modal('show');
+});
+
+function cargarChangeGasto() {
+        // Seleccionar archivos
+    $(document).on('change', '#gasto_archivos_input', function (e) {
+        const files = Array.from(e.target.files || []);
+        if (!files.length) return;
+
+        files.forEach(file => {
+            if (file.size > 10 * 1024 * 1024) {
+                agregarToast('warning', 'Archivo muy grande', `"${file.name}" supera los 10 MB`);
+                return;
+            }
+            gastoArchivos.push(file);
+        });
+
+        // Limpiar el input para permitir volver a seleccionar el mismo archivo
+        $(this).val('');
+        renderGastoArchivos();
+    });
+
+    // Eliminar un archivo de la lista (antes de guardar)
+    $(document).on('click', '.gasto-archivo-remove', function () {
+        const idx = $(this).data('index');
+        const tipo = $(this).data('tipo');
+
+        if (tipo === 'nuevo') {
+            gastoArchivos.splice(idx, 1);
+        } else {
+            // existente (modo edición)
+            const id = $(this).data('id');
+            gastoArchivosEliminar.push(id);
+        }
+        renderGastoArchivos();
+    });
+}
+
+function initFilePondGastos() {
+    pondGastos = FilePond.create(document.querySelector('#gasto-files'), {
+        allowImagePreview: true,
+        imagePreviewUpscale: true,
+        allowMultiple: true,
+        instantUpload: true,
+    });
+
+    $('.filepond--credits').remove();
+
+    pondGastos.setOptions({
+        server: {
+            process: {
+                url: 'archivos-cache',       // mismo endpoint que pqrsf
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                onload: (response) => {
+                    const uploaded = JSON.parse(response);
+                    uploadedFilesGastos.push({
+                        id: uploaded.id,
+                        url: uploaded.path
+                    });
+                    actualizarContadorAdjuntosGasto();
+                    return uploaded.path;
+                },
+                onerror: (response) => {
+                    console.error('Error al subir archivo: ', response);
+                }
+            },
+            revert: {
+                url: 'archivos-cache',
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+            }
+        }
+    });
+
+    // Eliminar un archivo ya subido (revert en cache)
+    pondGastos.on('removefile', (error, file) => {
+        if (error) return;
+
+        if (limpiarInputFileGastos) {
+            limpiarInputFileGastos = false;
+            return;
+        }
+
+        const id = file.getMetadata('id');
+        // quitar del array local
+        uploadedFilesGastos = uploadedFilesGastos.filter(a => a.id != id);
+        actualizarContadorAdjuntosGasto();
+    });
+
+    clearFilesInputGastos();
+}
+
+function actualizarContadorAdjuntosGasto() {
+    const total = uploadedFilesGastos.length;
+    const $badge = $('#adjuntosGastoContador');
+    if (total > 0) {
+        $badge.text(total).show();
+    } else {
+        $badge.hide();
+    }
+}
+
+function clearFilesInputGastos() {
+    uploadedFilesGastos = [];
+    if (!pondGastos) return;
+
+    limpiarInputFileGastos = true;
+    pondGastos.removeFiles();
+    actualizarContadorAdjuntosGasto();
+}
+
+function renderGastoArchivos() {
+    const $lista = $('#gasto_archivos_lista');
+    $lista.empty();
+
+    // Archivos nuevos
+    gastoArchivos.forEach((file, index) => {
+        const icon = getIconByExtension(file.name);
+        const size = (file.size / 1024).toFixed(1) + ' KB';
+
+        $lista.append(`
+            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                <div class="d-flex align-items-center gap-2 text-truncate">
+                    <i class="${icon} text-primary"></i>
+                    <span class="text-truncate" title="${file.name}">${file.name}</span>
+                    <small class="text-muted">${size}</small>
+                </div>
+                <button type="button"
+                        class="btn btn-sm btn-link text-danger gasto-archivo-remove p-0"
+                        data-index="${index}"
+                        data-tipo="nuevo"
+                        title="Quitar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </li>
+        `);
+    });
+
+    // Archivos existentes (solo si ya tienes uno cargado y no está marcado para eliminar)
+    if (typeof gastoArchivosExistentes !== 'undefined' && gastoArchivosExistentes.length) {
+        gastoArchivosExistentes.forEach((archivo, index) => {
+            if (gastoArchivosEliminar.includes(archivo.id)) return;
+            const icon = getIconByExtension(archivo.url_archivo);
+
+            $lista.append(`
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <div class="d-flex align-items-center gap-2 text-truncate">
+                        <i class="${icon} text-success"></i>
+                        <a href="${archivo.url_archivo}" target="_blank" class="text-truncate" title="${archivo.nombre_original ?? ''}">
+                            ${archivo.nombre_original ?? archivo.url_archivo.split('/').pop()}
+                        </a>
+                    </div>
+                    <button type="button"
+                            class="btn btn-sm btn-link text-danger gasto-archivo-remove p-0"
+                            data-index="${index}"
+                            data-id="${archivo.id}"
+                            data-tipo="existente"
+                            title="Eliminar">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </li>
+            `);
+        });
+    }
+}
+
+function getIconByExtension(name) {
+    const ext = name.split('.').pop().toLowerCase();
+    switch (ext) {
+        case 'pdf': return 'fas fa-file-pdf';
+        case 'jpg': case 'jpeg': case 'png': case 'webp': return 'fas fa-file-image';
+        case 'xls': case 'xlsx': return 'fas fa-file-excel';
+        case 'doc': case 'docx': return 'fas fa-file-word';
+        default:    return 'fas fa-file';
+    }
+}
+
 function loadFormasPagoGastos() {
     gasto_pagos_table.ajax.reload(function(res) {
         disabledFormasPagoGasto(true);
@@ -798,6 +988,7 @@ function mostrarValoresGastos () {
 
     if (gasto_total) {
         disabledFormasPagoGasto(false);
+        $("#adjuntarArchivosGastos").show();
         $("#movimientoContableGasto").show();
     }
     else disabledFormasPagoGasto();
@@ -1529,6 +1720,7 @@ function saveGasto () {
     $("#agregarGasto").hide();
     $("#crearCapturaGasto").hide();
     $("#cancelarCapturaGasto").hide();
+    $("#adjuntarArchivosGastos").hide();
     $("#movimientoContableGasto").hide();
     $("#crearCapturaGastoDisabled").hide();
     $("#iniciarCapturaGastoLoading").show();
@@ -1544,10 +1736,11 @@ function saveGasto () {
         consecutivo: $("#consecutivo_gasto").val(),
         id_gasto: $("#id_gasto_up").val(),
         calcula_retencion: calculaRetencionGasto ? 1 : 0,
-    }
+        archivos: uploadedFilesGastos,
+    };
 
     disabledFormasPagoGasto();
-    
+
     $.ajax({
         url: base_url + 'gastos',
         method: 'POST',
@@ -1555,36 +1748,27 @@ function saveGasto () {
         headers: headers,
         dataType: 'json',
     }).done((res) => {
-        
         cancelarGasto();
         consecutivoSiguienteGasto();
-
         $("#iniciarCapturaGasto").show();
         $("#iniciarCapturaGastoLoading").hide();
-
         agregarToast('exito', 'Creación exitosa', 'Gasto creado con exito!', true);
-
         guardandoGasto = false;
-        if(res.impresion) {
-            window.open("/gasto-print/"+res.impresion, '_blank');
-        }
-
+        if(res.impresion) window.open("/gasto-print/"+res.impresion, '_blank');
         dataGasto = [];
-
         setTimeout(function(){
             $('#id_nit_gasto').focus();
             $comboNitGastos.select2("open");
         },10);
     }).fail((err) => {
         guardandoGasto = false;
-        
         disabledFormasPagoGasto(false);
         $("#agregarGasto").show();
         $("#crearCapturaGasto").show();
         $("#cancelarCapturaGasto").show();
+        $("#adjuntarArchivosGastos").show();
         $("#movimientoContableGasto").show();
         $("#iniciarCapturaGastoLoading").hide();
-
         var mensaje = err.responseJSON.message;
         var errorsMsg = arreglarMensajeError(mensaje);
         agregarToast('error', 'Creación errada', errorsMsg);
@@ -1674,10 +1858,10 @@ function deleteGastoRow (idGasto) {
 
     if (gasto_table.rows().data().length == 0) {
         retencionesGasto = [];
+        $("#movimientoContableGasto").hide();
     }
 
     $("#crearCapturaGasto").hide();
-    $("#movimientoContableGasto").hide();
     $("#crearCapturaGastoDisabled").show();
 }
 
@@ -1740,6 +1924,7 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
 
         $("#crearCapturaGasto").hide();
         $("#iniciarCapturaGasto").hide();
+        $("#adjuntarArchivosGastos").show();
         $("#movimientoContableGasto").hide();
         $("#iniciarCapturaGastoLoading").show();
 
@@ -1760,6 +1945,7 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
                 calculandoDatos = true;
                 
                 const gastos = res.data;
+                
                 const pagos = gastos.pagos;
                 const detalles = gastos.detalles;
                 const documentos = gastos.documentos;
@@ -1767,6 +1953,24 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
                 $("#id_gasto_up").val(gastos.id);
                 $("#fecha_manual_gasto").val(documentos[0].fecha_manual);
                 $("#documento_referencia_gasto").val(gastos.documento_referencia);
+
+                if (gastos.archivos) {
+                    uploadedFilesGastos = (gastos.archivos || []).map(a => ({
+                        id: a.id,
+                        url: a.url_archivo
+                    }));
+
+                    // Recrear FilePond con los archivos existentes
+                    pondGastos.removeFiles();
+                    gastos.archivos?.forEach(archivo => {
+                        pondGastos.addFile(archivo.url_archivo, {
+                            type: 'local',
+                            metadata: { id: archivo.id }
+                        });
+                    });
+
+                    actualizarContadorAdjuntosGasto();
+                }
                 
                 if (gastos.nit) {
                     var dataFormato = {
@@ -1806,6 +2010,7 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
 
                 $("#agregarGasto").show();
                 $("#cancelarCapturaGasto").show();
+                $("#adjuntarArchivosGastos").show();
                 $("#iniciarCapturaGasto").hide();
                 $("#iniciarCapturaGastoLoading").hide();
                 
@@ -1816,6 +2021,7 @@ $(document).on('click', '#iniciarCapturaGasto', function () {
                 $("#id_gasto_up").val("");
                 $("#agregarGasto").show();
                 $("#cancelarCapturaGasto").show();
+                $("#adjuntarArchivosGastos").show();
                 $("#crearCapturaGastoDisabled").show();
                 $("#iniciarCapturaGasto").hide();
                 $("#iniciarCapturaGastoLoading").hide();
@@ -1894,9 +2100,11 @@ function cancelarGasto(resetNit = true) {
     dataGasto = [];
     idGastoTable = 0;
     retencionesGasto = [];
+    uploadedFilesGastos = [];
     gasto_table.clear().draw();
     totalAnticiposGastoCuenta = [];
 
+    actualizarContadorAdjuntosGasto();
     clearFormasPagoGasto();
     mostrarValoresGastos();
     cargarFechasGasto();
@@ -1907,6 +2115,7 @@ function cancelarGasto(resetNit = true) {
     $('#iniciarCapturaGasto').show();
     $('#cancelarCapturaGasto').hide();
     $('#input_anticipos_gasto').hide();
+    $("#adjuntarArchivosGastos").hide();
     $("#movimientoContableGasto").hide();
     $('#gasto_anticipo_disp_view').hide();
     $('#crearCapturaGastoDisabled').hide();

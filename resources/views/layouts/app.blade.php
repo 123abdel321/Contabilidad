@@ -32,6 +32,10 @@
     <link href="assets/css/sistema/ht-theme-main.min.css" rel="stylesheet" />
     <!-- <link href="assets/css/sistema/ht-theme-main.min.css" rel="stylesheet" /> -->
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@15.0/styles/ht-theme-horizon.css" /> 
+    <!-- FILEPOND -->
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins/filepond.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins/filepond-plugin-image-preview.min.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins/filepond-plugin-file-poster.min.css') }}" rel="stylesheet" />
     <!-- quill -->
     <link href="assets/css/sistema/quill.snow.css" rel="stylesheet" />
     <!-- DATAPICKER -->
@@ -184,6 +188,7 @@
 
     @include('pages.capturas.nit-detail')
     @include('pages.capturas.nit-form-general')
+    @include('pages.capturas.adjuntos-generales')
 
     <!-- FOOTER -->
     @include('layouts.footers.footer')
@@ -218,7 +223,13 @@
     <!-- QUILL -->
     <script src="assets/js/sistema/quill.min.js"></script>
 
-    
+    <!-- FILEPOND -->
+    <script src="{{ asset('assets/js/plugins/filepond.js') }}"></script>
+    <script src="{{ asset('assets/js/plugins/filepond-plugin-image-transform.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugins/filepond-plugin-image-resize.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugins/filepond-plugin-image-preview.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugins/filepond-plugin-image-editor.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugins/filepond-plugin-file-validate-type.js') }}"></script>
     <!-- SELECT 2  -->
     <script src="assets/js/sistema/select2.full.min.js"></script>
     <!-- VALIDATE -->
@@ -244,6 +255,8 @@
     <script src="assets/js/sistema/sistema.js?v={{ config('app.version') }}"></script>
     <script src="assets/js/sistema/nitGenerales.js?v={{ config('app.version') }}"></script>
     <script src="assets/js/sistema/tab-manager.js?v={{ config('app.version') }}"></script>
+    <script src="assets/js/sistema/visorAdjuntos.js?v={{ config('app.version') }}"></script>
+
 
     <!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js" rel="stylesheet"></script> -->
     

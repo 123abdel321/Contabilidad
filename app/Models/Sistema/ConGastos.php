@@ -65,4 +65,9 @@ class ConGastos extends Model
 	{
 		return $this->hasMany(ConGastoPagos::class, 'id_gasto');
 	}
+
+    public function archivos()
+    {
+        return $this->morphMany(ArchivosGenerales::class, 'relation');
+    }
 }

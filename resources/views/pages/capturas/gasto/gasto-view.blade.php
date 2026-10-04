@@ -243,6 +243,7 @@
         </div>
     </div>
 
+    @include('pages.capturas.gasto.gasto-adjuntos')
     @include('pages.capturas.gasto.gasto-anticipos')
     @include('pages.capturas.gasto.gasto-movimiento')
 

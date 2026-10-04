@@ -74,6 +74,7 @@ use App\Http\Controllers\Importador\DocumentosImportadorController;
 //SISTEMA
 use App\Http\Controllers\Sistema\EcoController;
 use App\Http\Controllers\Sistema\UbicacionController;
+use App\Http\Controllers\Sistema\ArchivosCacheController;
 //CONFIGURACION
 use App\Http\Controllers\Configuracion\EntornoController;
 use App\Http\Controllers\Configuracion\EmpresaController;
@@ -644,6 +645,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         //NOTIFICACIONES
         Route::controller(EcoController::class)->group(function () {
             Route::post('eco-register', 'register');                     
+        });
+        //ARCHIVOS
+        Route::controller(ArchivosCacheController::class)->group(function () {
+            Route::get('archivos', 'getArchivos');                     
         });
         
     });

@@ -10,7 +10,9 @@ use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserProfileController;
+//SISTEMA
 use App\Http\Controllers\Sistema\EcoController;
+use App\Http\Controllers\Sistema\ArchivosCacheController;
 //INFORMES
 use App\Http\Controllers\Informes\CarteraController;
 use App\Http\Controllers\Informes\BalanceController;
@@ -391,6 +393,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::post('/importdocumentos-importar', [DocumentosImportadorController::class, 'importar']);
 		//NOTIFICACIONES
 		Route::get('/notificaciones', [EcoController::class, 'index']);
+
+		// ARCHIVOS CACHE
+		Route::post('/archivos-cache', [ArchivosCacheController::class, 'store']);
+		Route::delete('/archivos-cache', [ArchivosCacheController::class, 'delete']);
 	});
 
 	//ARGON
