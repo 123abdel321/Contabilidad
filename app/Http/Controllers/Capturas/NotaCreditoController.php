@@ -151,6 +151,7 @@ class NotaCreditoController extends Controller
                 true // indica que se debe guardar en BD
             );
             
+            
             if (!$documentoGeneral['success']) {
                 DB::connection('sam')->rollback();
                 return response()->json([
@@ -312,7 +313,7 @@ class NotaCreditoController extends Controller
             if ($guardarEnBD && $notaCredito) {
                 $this->crearNotaCreditoDetalle($notaCredito, $productoDb, $detalleProducto, $producto, $totalesProducto);
             }
-            
+
             // Agregar movimientos contables
             $resultMovimientos = $this->agregarMovimientosProducto(
                 $documentoGeneral,
@@ -321,7 +322,7 @@ class NotaCreditoController extends Controller
                 $totalesProducto,
                 $nit,
                 $clienteId,
-                $this->facturaVentas->docReferencia
+                $this->facturaVentas->documento_referencia
             );
 
             if (is_array($resultMovimientos) && isset($resultMovimientos['error'])) {
@@ -340,7 +341,7 @@ class NotaCreditoController extends Controller
                 $documentoGeneral,
                 $nit,
                 $clienteId,
-                $this->facturaVentas->docReferencia
+                $this->facturaVentas->documento_referencia
             );
             
             if (is_array($resultReteFuente) && isset($resultReteFuente['error'])) {
@@ -499,7 +500,7 @@ class NotaCreditoController extends Controller
                 ];
             }
 
-            $docRefCosto = $this->facturaVentas->docReferencia;
+            $docRefCosto = $this->facturaVentas->documento_referencia;
             $naturalezaCostoOpuesta = $cuentaCosto->naturaleza_ventas == PlanCuentas::CREDITO ? PlanCuentas::DEBITO : PlanCuentas::CREDITO;
             
             $docCosto = new DocumentosGeneral([
