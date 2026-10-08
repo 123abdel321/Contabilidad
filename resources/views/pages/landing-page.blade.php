@@ -4,62 +4,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Portafolio ERP | Software Contable y Facturación Electrónica DIAN Colombia</title>
+    <!-- ============================================
+         TITLE PRINCIPAL — ERP Suite multi-módulo
+         ============================================ -->
+    <title>Portafolio ERP | Suite de Gestión Empresarial, Facturación Electrónica DIAN, POS y Propiedad Horizontal</title>
 
+    <!-- ============================================
+         FAVICONS
+         ============================================ -->
     <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
     <link rel="apple-touch-icon" href="/img/logo_contabilidad.png">
     <link rel="mask-icon" href="/img/logo_contabilidad.png" color="#4f46e5">
+    <link rel="manifest" href="/manifest.webmanifest">
 
+    <!-- ============================================
+         SEO PRIMARIO
+         ============================================ -->
     <meta name="description"
-        content="Software ERP colombiano con Contabilidad DIAN, Facturación Electrónica, Nómina y POS. Todo en una plataforma 100% web. Cumple con la normativa fiscal.">
+        content="Portafolio ERP es la suite de gestión empresarial para Colombia y Latinoamérica: facturación electrónica DIAN, contabilidad, nómina, POS, inventario y propiedad horizontal. 100% web, multiempresa y multi-sucursal.">
+    <meta name="keywords"
+        content="ERP Colombia, software contable, facturación electrónica DIAN, nómina electrónica, POS, propiedad horizontal, Máximo PH, ERP pymes, software empresarial, contabilidad Colombia">
+    <meta name="author" content="Portafolio ERP">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
     <meta name="theme-color" content="#4f46e5">
-    <meta name="robots" content="index, follow">
+    <meta name="color-scheme" content="light dark">
     <link rel="canonical" href="https://portafolioerp.com/">
 
+    <!-- ============================================
+         HREFLANG — Preparado para expansión LatAm
+         ============================================ -->
+    <link rel="alternate" hreflang="es-co" href="https://portafolioerp.com/">
+    <link rel="alternate" hreflang="es" href="https://portafolioerp.com/">
+    <link rel="alternate" hreflang="x-default" href="https://portafolioerp.com/">
+
+    <!-- ============================================
+         OPEN GRAPH (Facebook, LinkedIn, WhatsApp)
+         ============================================ -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Portafolio ERP">
     <meta property="og:locale" content="es_CO">
-    <meta property="og:title" content="Portafolio ERP - Software Contable y Facturación Electrónica DIAN">
+    <meta property="og:locale:alternate" content="es_ES">
+    <meta property="og:title" content="Portafolio ERP — Suite de Gestión Empresarial para Colombia">
     <meta property="og:description"
-        content="Software ERP colombiano con Contabilidad DIAN, Facturación Electrónica, Nómina y POS. 100% web.">
+        content="Facturación electrónica DIAN, contabilidad, nómina, POS y propiedad horizontal en una sola plataforma 100% web. Multiempresa y multi-sucursal.">
     <meta property="og:url" content="https://portafolioerp.com/">
     <meta property="og:image" content="https://portafolioerp.com/img/og-image.jpg">
+    <meta property="og:image:secure_url" content="https://portafolioerp.com/img/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Portafolio ERP — Suite de gestión empresarial">
 
+    <!-- ============================================
+         TWITTER / X
+         ============================================ -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Portafolio ERP - Software Contable DIAN Colombia">
+    <meta name="twitter:site" content="@portafolioerp">
+    <meta name="twitter:creator" content="@portafolioerp">
+    <meta name="twitter:title" content="Portafolio ERP — Suite de Gestión Empresarial">
     <meta name="twitter:description"
-        content="Automatiza tu empresa con Portafolio ERP. Facturación DIAN, contabilidad y nómina en una sola plataforma.">
+        content="Facturación DIAN, contabilidad, nómina, POS y propiedad horizontal en una sola plataforma.">
     <meta name="twitter:image" content="https://portafolioerp.com/img/og-image.jpg">
+    <meta name="twitter:image:alt" content="Portafolio ERP dashboard">
 
+    <!-- ============================================
+         SUBPRODUCTOS — POS y Máximo PH
+         ============================================ -->
+    <link rel="me" href="https://pos.portafolioerp.com">
+    <link rel="me" href="https://maximoph.co">
+
+    <!-- ============================================
+         PERFORMANCE
+         ============================================ -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://app.portafolioerp.com">
+    <link rel="preconnect" href="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com" crossorigin>
+    <link rel="dns-prefetch" href="https://pos.portafolioerp.com">
+    <link rel="dns-prefetch" href="https://maximoph.co">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
 
+    <!-- ============================================
+         JSON-LD 1: ORGANIZACIÓN
+         ============================================ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://portafolioerp.com/#organization",
+      "name": "Portafolio ERP",
+      "url": "https://portafolioerp.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://portafolioerp.com/img/logo_contabilidad.png",
+        "width": 512,
+        "height": 512
+      },
+      "description": "Suite de gestión empresarial para Colombia y Latinoamérica: facturación electrónica DIAN, contabilidad, nómina, POS y propiedad horizontal.",
+      "foundingLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Medellín",
+          "addressRegion": "Antioquia",
+          "addressCountry": "CO"
+        }
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Medellín",
+        "addressRegion": "Antioquia",
+        "addressCountry": "CO"
+      },
+      "contactPoint": [{
+        "@type": "ContactPoint",
+        "telephone": "+57-333-247-5846",
+        "contactType": "sales",
+        "areaServed": ["CO", "MX", "PE", "CL", "EC"],
+        "availableLanguage": ["es"]
+      }],
+      "sameAs": [
+        "https://pos.portafolioerp.com",
+        "https://maximoph.co",
+        "https://facebook.com/portafolioerp",
+        "https://linkedin.com/company/portafolioerp",
+        "https://instagram.com/portafolioerp",
+        "https://youtube.com/@portafolioerp"
+      ]
+    }
+    </script>
+
+    <!-- ============================================
+         JSON-LD 2: APLICACIÓN / SOFTWARE (multi-módulo)
+         ============================================ -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
+      "@id": "https://portafolioerp.com/#software",
       "name": "Portafolio ERP",
+      "alternateName": "Portafolio Suite ERP",
       "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Web",
+      "applicationSubCategory": "ERP",
+      "operatingSystem": "Web, Windows, macOS, Linux, iOS, Android",
+      "softwareVersion": "2.0",
+      "description": "Suite ERP 100% web con facturación electrónica DIAN, contabilidad, nómina electrónica, POS, inventario y propiedad horizontal. Multiempresa y multi-sucursal.",
+      "featureList": [
+        "Facturación electrónica DIAN",
+        "Contabilidad con causación automática",
+        "Nómina electrónica DIAN",
+        "Punto de Venta (POS)",
+        "Inventario y almacenes",
+        "Propiedad horizontal (Máximo PH)",
+        "Multiempresa y multi-sucursal",
+        "Cumplimiento tributario Colombia"
+      ],
+      "publisher": { "@id": "https://portafolioerp.com/#organization" },
       "offers": {
         "@type": "Offer",
         "price": "50000",
-        "priceCurrency": "COP"
+        "priceCurrency": "COP",
+        "url": "https://portafolioerp.com/precios",
+        "availability": "https://schema.org/InStock"
       },
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "4.8",
+        "bestRating": "5",
         "reviewCount": "127"
       },
-      "description": "Software ERP colombiano con Contabilidad DIAN, Facturación Electrónica, Nómina y POS integrados",
-      "featureList": "Contabilidad, Facturación DIAN, Nómina, Punto de Venta, Reportes",
-      "softwareVersion": "2.0"
+      "areaServed": [
+        { "@type": "Country", "name": "Colombia" },
+        { "@type": "Country", "name": "México" },
+        { "@type": "Country", "name": "Perú" },
+        { "@type": "Country", "name": "Chile" },
+        { "@type": "Country", "name": "Ecuador" }
+      ],
+      "screenshot": [
+        "https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/mackbook_portafolio_erp.png"
+      ]
     }
     </script>
 
+    <!-- ============================================
+         JSON-LD 3: LISTA DE PRODUCTOS (POS + Máximo PH)
+         ============================================ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Módulos de Portafolio ERP",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "SoftwareApplication",
+            "name": "Portafolio POS",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "url": "https://pos.portafolioerp.com",
+            "description": "Punto de venta web integrado con inventario, facturación electrónica DIAN y contabilidad.",
+            "publisher": { "@id": "https://portafolioerp.com/#organization" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "SoftwareApplication",
+            "name": "Máximo PH",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "url": "https://maximoph.co",
+            "description": "Software líder en propiedad horizontal para administración de conjuntos y edificios en Colombia.",
+            "publisher": { "@id": "https://portafolioerp.com/#organization" }
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- ============================================
+         JSON-LD 4: WEBSITE CON SearchAction
+         ============================================ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://portafolioerp.com/#website",
+      "url": "https://portafolioerp.com/",
+      "name": "Portafolio ERP",
+      "inLanguage": "es-CO",
+      "publisher": { "@id": "https://portafolioerp.com/#organization" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://portafolioerp.com/buscar?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- ============================================
+         JSON-LD 5: BREADCRUMB (home)
+         ============================================ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": "https://portafolioerp.com/"
+      }]
+    }
+    </script>
+
+    <!-- ============================================
+         ANTI-FLASH DE TEMA (evita parpadeo)
+         ============================================ -->
     <script>
         (function () {
             try {
@@ -506,7 +717,7 @@
                             </a>
                         </div>
 
-                        <div class="module-visual scale-in" style="width: 100% !important;height: 100%;">
+                        <div class="module-visual scale-in">
                             <div class="module-visual-images">
                                 <img src="https://app.portafolioerp.com/img/facturacion-1.png"
                                     alt="Ventana de facturación electrónica" class="module-visual-img" loading="lazy"
@@ -909,11 +1120,13 @@
                         </div>
 
                         <div class="module-visual scale-in">
-                            <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/pos-portafolioerp.png"
-                                alt="Punto de Venta Portafolio ERP"
-                                class="module-visual-single"
-                                loading="lazy"
-                                onerror="this.style.display='none'; this.parentElement.querySelector('.module-visual-fallback').style.display='flex';">
+                            <div class="module-visual-frame">
+                                <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/pos-portafolioerp.png"
+                                    alt="Punto de Venta Portafolio ERP"
+                                    class="module-visual-single"
+                                    loading="lazy"
+                                    onerror="this.style.display='none'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='flex';">
+                            </div>
 
                             <div class="module-visual-fallback" style="display:none;">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1054,21 +1267,15 @@
                         </div>
 
                         <div class="module-visual scale-in">
-
-                            <div class="module-visual-fallback" style="display:none;">
-                                <div>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <path d="M3 21h18" />
-                                        <path d="M5 21V7l8-4v18" />
-                                        <path d="M19 21V11l-6-4" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <path d="M3 3v18h18" />
-                                        <path d="m19 9-5 5-4-4-3 3" />
-                                    </svg>
-                                </div>
+                            <!-- Sin imágenes ni fallback visible en móvil. Solo espacio reservado en desktop -->
+                            <div class="module-visual-images" style="display:none;">
+                                <img src="https://app.portafolioerp.com/img/maximo-ph-1.png"
+                                    alt="Maximo PH" class="module-visual-img" loading="lazy"
+                                    width="650" height="650"
+                                    onerror="this.style.display='none'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
+                                <img src="https://app.portafolioerp.com/img/maximo-ph-2.png"
+                                    alt="Maximo PH" class="module-visual-img secondary" loading="lazy"
+                                    width="650" height="650" onerror="this.style.display='none';">
                             </div>
                         </div>
                     </div>
