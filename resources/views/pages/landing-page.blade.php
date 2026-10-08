@@ -23,7 +23,7 @@
          SEO PRIMARIO
          ============================================ -->
     <meta name="description"
-        content="Portafolio ERP es la suite de gestión empresarial para Colombia y Latinoamérica: facturación electrónica DIAN, contabilidad, nómina, POS, inventario y propiedad horizontal. 100% web, multiempresa y multi-sucursal.">
+        content="Portafolio ERP es la suite de gestión empresarial para Colombia y Latinoamérica: facturación electrónica DIAN, contabilidad, nómina, POS, inventario y propiedad horizontal. 100% web, multiempresa y multi-sucursal. Cotización a la medida según tu operación.">
     <meta name="keywords"
         content="ERP Colombia, software contable, facturación electrónica DIAN, nómina electrónica, POS, propiedad horizontal, Máximo PH, ERP pymes, software empresarial, contabilidad Colombia">
     <meta name="author" content="Portafolio ERP">
@@ -49,7 +49,7 @@
     <meta property="og:locale:alternate" content="es_ES">
     <meta property="og:title" content="Portafolio ERP — Suite de Gestión Empresarial para Colombia">
     <meta property="og:description"
-        content="Facturación electrónica DIAN, contabilidad, nómina, POS y propiedad horizontal en una sola plataforma 100% web. Multiempresa y multi-sucursal.">
+        content="Facturación electrónica DIAN, contabilidad, nómina, POS y propiedad horizontal en una sola plataforma 100% web. Planes a la medida de tu operación.">
     <meta property="og:url" content="https://portafolioerp.com/">
     <meta property="og:image" content="https://portafolioerp.com/img/og-image.jpg">
     <meta property="og:image:secure_url" content="https://portafolioerp.com/img/og-image.jpg">
@@ -140,6 +140,7 @@
 
     <!-- ============================================
          JSON-LD 2: APLICACIÓN / SOFTWARE (multi-módulo)
+         Nota: sin precios fijos — modelo de cotización personalizada
          ============================================ -->
     <script type="application/ld+json">
     {
@@ -152,24 +153,26 @@
       "applicationSubCategory": "ERP",
       "operatingSystem": "Web, Windows, macOS, Linux, iOS, Android",
       "softwareVersion": "2.0",
-      "description": "Suite ERP 100% web con facturación electrónica DIAN, contabilidad, nómina electrónica, POS, inventario y propiedad horizontal. Multiempresa y multi-sucursal.",
+      "description": "Suite ERP 100% web con facturación electrónica DIAN, contabilidad, nómina electrónica, POS, inventario y propiedad horizontal. Multiempresa y multi-sucursal. Planes y precios personalizados según el tamaño y las necesidades de cada empresa.",
       "featureList": [
         "Facturación electrónica DIAN",
         "Contabilidad con causación automática",
         "Nómina electrónica DIAN",
-        "Punto de Venta (POS)",
+        "Punto de Venta (POS) — pos.portafolioerp.com",
         "Inventario y almacenes",
-        "Propiedad horizontal (Máximo PH)",
+        "Máximo PH — Propiedad Horizontal (maximoph.co)",
         "Multiempresa y multi-sucursal",
         "Cumplimiento tributario Colombia"
       ],
       "publisher": { "@id": "https://portafolioerp.com/#organization" },
       "offers": {
         "@type": "Offer",
-        "price": "50000",
-        "priceCurrency": "COP",
-        "url": "https://portafolioerp.com/precios",
-        "availability": "https://schema.org/InStock"
+        "url": "https://portafolioerp.com/cotizacion",
+        "availability": "https://schema.org/InStock",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "description": "Cotización personalizada según número de usuarios, volumen de facturación y módulos contratados."
+        }
       },
       "aggregateRating": {
         "@type": "AggregateRating",
@@ -221,7 +224,7 @@
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Web",
             "url": "https://maximoph.co",
-            "description": "Software líder en propiedad horizontal para administración de conjuntos y edificios en Colombia.",
+            "description": "Software líder en propiedad horizontal para la administración de conjuntos, edificios y unidades residenciales en Colombia.",
             "publisher": { "@id": "https://portafolioerp.com/#organization" }
           }
         }
