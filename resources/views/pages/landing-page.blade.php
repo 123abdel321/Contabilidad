@@ -1,17 +1,47 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Portafolio ERP | Software Contable y Facturación Electrónica DIAN para Colombia</title>
 
-    <link rel="mask-icon" href="https://maximoph.co/img/logo_contabilidad.png" color="#000000">
-    <link rel="alternate icon" class="js-site-favicon" type="image/png" href="/img/logo_contabilidad.png">
-    <link rel="icon" class="js-site-favicon" type="image/png" href="/img/logo_contabilidad.png">
-    
-    <meta name="description" content="Software ERP colombiano con Contabilidad DIAN, Facturación Electrónica, Nómina y POS. Todo en una plataforma 100% web. Cumple con la normativa fiscal.">
-    
+    <title>Portafolio ERP | Software Contable y Facturación Electrónica DIAN Colombia</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
+    <link rel="apple-touch-icon" href="/img/logo_contabilidad.png">
+    <link rel="mask-icon" href="/img/logo_contabilidad.png" color="#4f46e5">
+
+    <!-- SEO Meta -->
+    <meta name="description"
+        content="Software ERP colombiano con Contabilidad DIAN, Facturación Electrónica, Nómina y POS. Todo en una plataforma 100% web. Cumple con la normativa fiscal.">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://portafolioerp.com/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Portafolio ERP">
+    <meta property="og:locale" content="es_CO">
+    <meta property="og:title" content="Portafolio ERP - Software Contable y Facturación Electrónica DIAN">
+    <meta property="og:description"
+        content="Software ERP colombiano con Contabilidad DIAN, Facturación Electrónica, Nómina y POS. 100% web.">
+    <meta property="og:url" content="https://portafolioerp.com/">
+    <meta property="og:image" content="https://portafolioerp.com/img/og-image.jpg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Portafolio ERP - Software Contable DIAN Colombia">
+    <meta name="twitter:description"
+        content="Automatiza tu empresa con Portafolio ERP. Facturación DIAN, contabilidad y nómina en una sola plataforma.">
+    <meta name="twitter:image" content="https://portafolioerp.com/img/og-image.jpg">
+
+    <!-- Fonts: Variable font local para máximo rendimiento -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
     <!-- Schema Markup para Software -->
     <script type="application/ld+json">
     {
@@ -22,989 +52,88 @@
       "operatingSystem": "Web",
       "offers": {
         "@type": "Offer",
-        "price": "99000",
+        "price": "50000",
         "priceCurrency": "COP"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "127"
       },
       "description": "Software ERP colombiano con Contabilidad DIAN, Facturación Electrónica, Nómina y POS integrados",
       "featureList": "Contabilidad, Facturación DIAN, Nómina, Punto de Venta, Reportes",
       "softwareVersion": "2.0"
     }
     </script>
-    
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #3b82f6;
-            --secondary: #1e40af;
-            --dark: #1e293b;
-            --darker: #0f172a;
-            --light: #ffffff;
-            --gray: #64748b;
-            --gray-light: #f1f5f9;
-            --gray-dark: #334155;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --border-radius: 12px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
-        
-        [data-theme="dark"] {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --primary-light: #60a5fa;
-            --secondary: #93c5fd;
-            --dark: #f8fafc;
-            --darker: #f1f5f9;
-            --light: #0f172a;
-            --gray: #94a3b8;
-            --gray-light: #1e293b;
-            --gray-dark: #cbd5e1;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--light);
-            color: var(--dark);
-            line-height: 1.6;
-            transition: var(--transition);
-            overflow-x: hidden;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header & Navigation */
-        .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: var(--light);
-            border-bottom: 1px solid var(--gray-light);
-            z-index: 1000;
-            transition: var(--transition);
-            padding: 1rem 0;
-        }
-        
-        .header.scrolled {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: var(--shadow);
-        }
-        
-        [data-theme="dark"] .header {
-            background: rgba(15, 23, 42, 0.95);
-            border-bottom: 1px solid #1e293b;
-        }
 
-        [data-theme="dark"] .header.scrolled {
-            background: rgba(15, 23, 42, 0.98);
-            backdrop-filter: blur(10px);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            font-weight: 700;
-        }
-        
-        .logo img {
-            height: 40px;
-            width: auto;
-        }
-        
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .nav {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-        
-        .nav-link {
-            color: var(--dark);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: var(--transition);
-            padding: 0.5rem 0;
-            position: relative;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary);
-            transition: var(--transition);
-        }
-        
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 100%;
-        }
-        
-        .nav-link:hover,
-        .nav-link.active {
-            color: var(--primary);
-        }
-        
-        [data-theme="dark"] .nav-link {
-            color: #e2e8f0;
-        }
+    <!-- Prevención de flash en tema oscuro (debe ir ANTES del CSS) -->
+    <script>
+        (function () {
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
 
-        [data-theme="dark"] .nav-link:hover {
-            color: var(--primary-light);
-        }
-        
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            text-decoration: none;
-            transition: var(--transition);
-            border: 2px solid transparent;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
-        
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-        
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-        
-        [data-theme="dark"] .btn-outline {
-            color: var(--primary-light);
-            border-color: var(--primary-light);
-        }
+    <link rel="apple-touch-icon" href="/img/logo_contabilidad.png">
+    <link href="assets/css/sistema/landing-page.css" rel="stylesheet" />
 
-        [data-theme="dark"] .btn-outline:hover {
-            background: var(--primary-light);
-            color: #0f172a;
-        }
-        
-        .btn-lg {
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-        }
-        
-        /* Hero Section */
-        .hero {
-            padding: 180px 0 120px;
-            background: linear-gradient(135deg, var(--gray-light) 0%, var(--light) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        [data-theme="dark"] .hero {
-            background: linear-gradient(135deg, #1a202c 0%, #0f172a 100%);
-        }
-        
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-        
-        .hero-content {
-            max-width: 600px;
-        }
-        
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(37, 99, 235, 0.1);
-            color: var(--primary);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-        }
-        
-        [data-theme="dark"] .hero-badge {
-            background: rgba(59, 130, 246, 0.2);
-            color: var(--primary-light);
-        }
-        
-        .hero-title {
-            font-size: 3.5rem;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-        
-        .hero-title .highlight {
-            color: var(--primary);
-            position: relative;
-        }
-        
-        .hero-title .highlight::after {
-            content: '';
-            position: absolute;
-            bottom: 5px;
-            left: 0;
-            width: 100%;
-            height: 8px;
-            background: rgba(37, 99, 235, 0.2);
-            z-index: -1;
-        }
-        
-        .hero-description {
-            font-size: 1.125rem;
-            color: var(--gray);
-            margin-bottom: 2rem;
-        }
-        
-        [data-theme="dark"] .hero-description {
-            color: #cbd5e1;
-        }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 3rem;
-        }
-        
-        .hero-features {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-        }
-        
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.875rem;
-            color: var(--gray);
-        }
-        
-        [data-theme="dark"] .feature-item {
-            color: #cbd5e1;
-        }
-        
-        .feature-item svg {
-            color: var(--success);
-            flex-shrink: 0;
-        }
-        
-        .hero-visual {
-            position: relative;
-        }
-        
-        .dashboard-preview {
-            background: var(--light);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--gray-light);
-            transform: perspective(1000px) rotateY(-10deg);
-            transition: var(--transition);
-        }
-        
-        .dashboard-preview:hover {
-            transform: perspective(1000px) rotateY(0deg);
-        }
-        
-        [data-theme="dark"] .dashboard-preview {
-            background: #1e293b;
-            border: 1px solid #334155;
-            color: #e2e8f0;
-        }
-        
-        /* Section Styles */
-        .section {
-            padding: 100px 0;
-        }
-        
-        .section-header {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 4rem;
-        }
-        
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-        
-        .section-subtitle {
-            font-size: 1.125rem;
-            color: var(--gray);
-        }
-        
-        [data-theme="dark"] .section-subtitle {
-            color: #94a3b8;
-        }
-        
-        /* Problems Section */
-        .problems {
-            background: var(--gray-light);
-            padding: 100px 0;
-        }
-        
-        [data-theme="dark"] .problems {
-            background: #111827;
-        }
-        
-        .problems-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-        
-        .problem-card {
-            background: var(--light);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-        }
-        
-        .problem-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        [data-theme="dark"] .problem-card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            color: #e2e8f0;
-        }
-        
-        .problem-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            color: white;
-        }
-        
-        .problem-icon-1 {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        }
-        
-        .problem-icon-2 {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        }
-        
-        .problem-icon-3 {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        }
-        
-        /* Solutions Section */
-        .solutions-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-        }
-        
-        .solution-card {
-            background: var(--light);
-            border: 2px solid var(--gray-light);
-            border-radius: var(--border-radius);
-            padding: 2.5rem;
-            transition: var(--transition);
-        }
-        
-        .solution-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        [data-theme="dark"] .solution-card {
-            background: #1e293b;
-            border-color: #334155;
-            color: #e2e8f0;
-        }
-        
-        .solution-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            background: var(--primary);
-            color: white;
-        }
-        
-        /* Pricing Section */
-        .pricing {
-            background: var(--gray-light);
-            padding: 100px 0;
-        }
-        
-        [data-theme="dark"] .pricing {
-            background: #111827;
-        }
-        
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-        
-        .pricing-card {
-            background: var(--light);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            position: relative;
-        }
-        
-        .pricing-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .pricing-card.featured {
-            border: 2px solid var(--primary);
-            transform: scale(1.05);
-        }
-        
-        [data-theme="dark"] .pricing-card {
-            background: #1e293b;
-            border-color: #334155;
-            color: #e2e8f0;
-        }
-        
-        [data-theme="dark"] .pricing-card.featured {
-            border-color: var(--primary-light);
-            background: linear-gradient(135deg, #1e293b 0%, #2d3748 100%);
-        }
-        
-        .featured-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--primary);
-            color: white;
-            padding: 0.25rem 1rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        [data-theme="dark"] .featured-badge {
-            background: var(--primary-light);
-        }
-        
-        .pricing-header {
-            padding: 2rem;
-            text-align: center;
-            border-bottom: 1px solid var(--gray-light);
-        }
-        
-        .pricing-price {
-            margin: 1.5rem 0;
-        }
-        
-        .price-amount {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1;
-        }
-        
-        [data-theme="dark"] .price-amount {
-            color: var(--primary-light);
-        }
-        
-        .price-period {
-            color: var(--gray);
-            font-size: 0.875rem;
-        }
-        
-        .pricing-features {
-            padding: 2rem;
-            list-style: none;
-        }
-        
-        .pricing-features li {
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .pricing-features li svg {
-            color: var(--success);
-            flex-shrink: 0;
-        }
-        
-        .pricing-footer {
-            padding: 0 2rem 2rem;
-        }
-        
-        /* CTA Section */
-        .cta {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 100px 0;
-            text-align: center;
-        }
-        
-        [data-theme="dark"] .cta {
-            background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
-        }
-        
-        .cta-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .cta-title {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .cta-description {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-        
-        /* Botones CTA */
-        .btn-white {
-            background: white;
-            color: var(--primary);
-        }
-
-        .btn-white:hover {
-            background: #f1f5f9;
-            color: var(--primary-dark);
-        }
-
-        .btn-outline-white {
-            background: transparent;
-            color: white;
-            border-color: white;
-        }
-
-        .btn-outline-white:hover {
-            background: white;
-            color: var(--primary);
-        }
-        
-        /* Footer */
-        .footer {
-            background: var(--darker);
-            color: var(--gray);
-            padding: 80px 0 40px;
-        }
-        
-        [data-theme="dark"] .footer {
-            background: #111827;
-        }
-        
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
-        
-        .footer-brand p {
-            margin-top: 1rem;
-            color: var(--gray);
-        }
-        
-        .footer-column h4 {
-            color: var(--light);
-            font-size: 1.125rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-        }
-        
-        .footer-column ul {
-            list-style: none;
-        }
-        
-        .footer-column li {
-            margin-bottom: 0.75rem;
-        }
-        
-        .footer-column a {
-            color: var(--gray);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .footer-column a:hover {
-            color: var(--primary-light);
-        }
-        
-        .footer-bottom {
-            padding-top: 2rem;
-            border-top: 1px solid var(--gray-dark);
-            text-align: center;
-            font-size: 0.875rem;
-        }
-        
-        /* Mobile Menu */
-        .mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-        }
-        
-        .hamburger-line {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: var(--dark);
-            margin: 4px 0;
-            transition: var(--transition);
-        }
-        
-        [data-theme="dark"] .hamburger-line {
-            background: var(--dark);
-        }
-        
-        /* Mobile Menu Active State - AQUÍ ESTÁ LA SOLUCIÓN */
-        .nav.active {
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 80px;
-            left: 0;
-            width: 100%;
-            background: var(--light);
-            padding: 2rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            animation: slideDown 0.3s ease;
-        }
-        
-        [data-theme="dark"] .nav.active {
-            background: #0f172a;
-            border: 1px solid #334155;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .nav.active .nav-link {
-            padding: 0.75rem 0;
-            font-size: 1.1rem;
-        }
-
-        .nav.active .btn {
-            margin-top: 1rem;
-            width: 100%;
-            justify-content: center;
-        }
-
-        /* Hamburger Animation */
-        .mobile-menu-toggle.active .hamburger-line:nth-child(1) {
-            transform: rotate(45deg) translate(6px, 6px);
-        }
-
-        .mobile-menu-toggle.active .hamburger-line:nth-child(2) {
-            opacity: 0;
-        }
-
-        .mobile-menu-toggle.active .hamburger-line:nth-child(3) {
-            transform: rotate(-45deg) translate(6px, -6px);
-        }
-        
-        /* Theme Toggle - CORREGIDO */
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--dark);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-            width: 44px;
-            height: 44px;
-            position: relative;
-            background: var(--gray-light);
-            border: 1px solid var(--gray-light);
-        }
-        
-        .theme-toggle:hover {
-            background: var(--primary);
-            color: white;
-            transform: rotate(15deg);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-        
-        [data-theme="dark"] .theme-toggle {
-            background: #334155;
-            color: var(--light);
-            border-color: #475569;
-        }
-        
-        [data-theme="dark"] .theme-toggle:hover {
-            background: var(--primary-light);
-            color: white;
-        }
-        
-        .sun-icon, .moon-icon {
-            width: 20px;
-            height: 20px;
-            transition: all 0.5s ease;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        
-        .sun-icon { 
-            opacity: 0;
-            color: yellow;
-            transform: translate(-50%, -50%) rotate(90deg);
-        }
-        
-        .moon-icon { 
-            opacity: 1;
-            color: black;
-            transform: translate(-50%, -50%) rotate(0deg);
-        }
-        
-        [data-theme="dark"] .sun-icon { 
-            opacity: 1;
-            transform: translate(-50%, -50%) rotate(0deg);
-        }
-        
-        [data-theme="dark"] .moon-icon { 
-            opacity: 0;
-            transform: translate(-50%, -50%) rotate(-90deg);
-        }
-        
-        /* Indicador visual del tema actual */
-        .theme-toggle::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--primary);
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        [data-theme="dark"] .theme-toggle::after {
-            background: var(--primary-light);
-            opacity: 1;
-        }
-        
-        /* Scroll to Top */
-        .scroll-top-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: var(--transition);
-            z-index: 999;
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .scroll-top-btn.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .scroll-top-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-5px);
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .hero-grid,
-            .solutions-grid,
-            .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero-features,
-            .problems-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .footer-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .nav {
-                display: none;
-            }
-            
-            .mobile-menu-toggle {
-                display: block;
-            }
-            
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
-            }
-            
-            .hero-features,
-            .problems-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            /* Botón del tema en móvil */
-            .nav:not(.active) .theme-toggle {
-                display: none;
-            }
-            
-            .nav.active .theme-toggle {
-                align-self: center;
-                margin-top: 1.5rem;
-                width: 50px;
-                height: 50px;
-            }
-        }
-    </style>
-
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
-    <!-- Header -->
+
+    <!-- ============================================
+         HEADER
+         ============================================ -->
     <header class="header" id="header">
         <div class="container header-content">
-            <a href="/" class="logo">
-                <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="Portafolio ERP">
+            <a href="/" class="logo" aria-label="Portafolio ERP - Inicio">
+                <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="Portafolio ERP" width="40"
+                    height="40">
                 <span class="logo-text">PORTAFOLIO ERP</span>
             </a>
-            
-            <nav class="nav">
-                <a href="#inicio" class="nav-link">Inicio</a>
+
+            <nav class="nav" id="nav" aria-label="Navegación principal">
+                <a href="#inicio" class="nav-link active">Inicio</a>
                 <a href="#soluciones" class="nav-link">Soluciones</a>
                 <a href="#modulos" class="nav-link">Módulos</a>
                 <a href="#precios" class="nav-link">Precios</a>
                 <a href="#contacto" class="nav-link">Contacto</a>
-                <a href="/login" class="btn btn-outline">
-                    <i class="fas fa-sign-in-alt"></i> Ingresar
-                </a>
-                <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
-                    <i class="fas fa-sun sun-icon"></i>
-                    <i class="fas fa-moon moon-icon"></i>
-                </button>
+
+                <div class="nav-actions">
+                    <a href="/login" class="btn btn-outline">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                            <polyline points="10 17 15 12 10 7" />
+                            <line x1="15" y1="12" x2="3" y2="12" />
+                        </svg>
+                        Ingresar
+                    </a>
+
+                    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema claro/oscuro"
+                        title="Cambiar tema">
+                        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4" />
+                            <path
+                                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                        </svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                        </svg>
+                    </button>
+                </div>
             </nav>
-            
-            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Abrir menú" aria-expanded="false"
+                aria-controls="nav">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
@@ -1012,362 +141,517 @@
         </div>
     </header>
 
-    <!-- Scroll to Top Button -->
-    <button class="scroll-top-btn" id="scrollTopBtn">
-        <i class="fas fa-chevron-up"></i>
+    <!-- ============================================
+         BOTONES FLOTANTES
+         ============================================ -->
+    <a href="https://wa.me/573207141104?text=Hola,%20quiero%20una%20demo%20de%20Portafolio%20ERP" target="_blank"
+        rel="noopener noreferrer" class="whatsapp-float" aria-label="Contáctanos por WhatsApp">
+        <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
+            <path
+                d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72,24,24,0,0,1,19.29-23.54l11.48,22.95-9.49,14.23a8,8,0,0,0-.57,7.48,56.69,56.69,0,0,0,30.15,30.15,8,8,0,0,0,7.48-.56l14.23-9.49,22.95,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a88,88,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216l12.47-37.4a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z" />
+        </svg>
+    </a>
+
+    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Volver arriba">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M12 19V5M5 12l7-7 7 7" />
+        </svg>
     </button>
 
-    <!-- Hero Section -->
-    <section id="inicio" class="hero">
-        <div class="container">
-            <div class="hero-grid">
-                <div class="hero-content">
-                    <div class="hero-badge">
-                        <i class="fas fa-shield-alt"></i>
-                        Certificado DIAN - 100% Colombiano
-                    </div>
-                    
-                    <h1 class="hero-title">
-                        Software ERP que <span class="highlight">elimina las sanciones de la DIAN</span> y automatiza tu empresa
-                    </h1>
-                    
-                    <p class="hero-description">
-                        Contabilidad, facturación electrónica, nómina y POS integrados en una sola plataforma 100% web. 
-                        Diseñado específicamente para el mercado colombiano. Sin instalaciones, sin complicaciones.
-                    </p>
-                    
-                    <div class="hero-buttons">
-                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20una%20demo%20de%20Portafolio%20ERP" 
-                           target="_blank" 
-                           class="btn btn-primary btn-lg">
-                            <i class="fab fa-whatsapp"></i> Solicitar Demo Gratis
-                        </a>
-                        
-                        <a href="#precios" class="btn btn-outline btn-lg">
-                            <i class="fas fa-eye"></i> Ver Planes
-                        </a>
-                    </div>
-                    
-                    <div class="hero-features">
-                        <div class="feature-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Facturación Electrónica DIAN</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>100% Web - Sin instalación</span>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Soporte 24/7 Colombia</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hero-visual">
-                    <div class="dashboard-preview">
-                        <div class="dashboard-header">
-                            <h3><i class="fas fa-chart-line"></i> Dashboard Ejecutivo</h3>
-                            <div style="display: flex; gap: 1rem; margin: 1.5rem 0;">
-                                <div>
-                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">$8.4M</div>
-                                    <div style="font-size: 0.875rem; color: var(--gray);">Ingresos mensuales</div>
+    <main id="main">
+        <!-- ============================================
+             HERO
+             ============================================ -->
+        <section id="inicio" class="hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-content">
+
+                        <h1 class="hero-title">
+                            El ERP <span class="highlight">que conecta</span> toda tu empresa
+                        </h1>
+
+                        <div class="system-features">
+                            <div class="system-feature">
+                                <div class="system-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                        <polyline points="22 4 12 14.01 9 11.01"/>
+                                    </svg>
                                 </div>
                                 <div>
-                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">1,247</div>
-                                    <div style="font-size: 0.875rem; color: var(--gray);">Facturas DIAN</div>
+                                    <div class="system-feature-title">Validación DIAN automática</div>
+                                    <div class="system-feature-text">Cada factura se envía y valida en tiempo real</div>
+                                </div>
+                            </div>
+                            
+                            <div class="system-feature">
+                                <div class="system-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                        <line x1="8" y1="21" x2="16" y2="21"/>
+                                        <line x1="12" y1="17" x2="12" y2="21"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="system-feature-title">100% Web, sin instalaciones</div>
+                                    <div class="system-feature-text">Accede desde cualquier dispositivo</div>
+                                </div>
+                            </div>
+                            
+                            <div class="system-feature">
+                                <div class="system-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                        <path d="m2 17 10 5 10-5"/>
+                                        <path d="m2 12 10 5 10-5"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="system-feature-title">Módulos integrados</div>
+                                    <div class="system-feature-text">Facturación electronica, Contabilidad, nómina, POS e inventario</div>
                                 </div>
                             </div>
                         </div>
-                        <div style="background: linear-gradient(135deg, var(--gray-light) 0%, var(--light) 100%); height: 180px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--gray);">
-                            <i class="fas fa-chart-bar" style="font-size: 2rem; margin-right: 1rem;"></i>
-                            Dashboard interactivo en tiempo real
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Problems Section -->
-    <section id="soluciones" class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">¿Problemas con tu contabilidad actual?</h2>
-                <p class="section-subtitle">Estos son los principales problemas que resolvemos para empresas colombianas</p>
-            </div>
-            
-            <div class="problems-grid">
-                <div class="problem-card">
-                    <div class="problem-icon problem-icon-1">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <h3>Sanciones DIAN por errores</h3>
-                    <p>Facturas electrónicas rechazadas, reportes incorrectos y multas que afectan tu flujo de caja y reputación fiscal.</p>
-                </div>
-                
-                <div class="problem-card">
-                    <div class="problem-icon problem-icon-2">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <h3>Procesos manuales lentos</h3>
-                    <p>Hojas de cálculo interminables, datos duplicados y horas perdidas en tareas repetitivas que podrían automatizarse.</p>
-                </div>
-                
-                <div class="problem-card">
-                    <div class="problem-icon problem-icon-3">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Falta de visibilidad real</h3>
-                    <p>Decisiones a ciegas porque no tienes reportes actualizados ni dashboard en tiempo real de tu negocio.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+                        <br/>
 
-    <!-- Solutions Section -->
-    <section id="modulos" class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">La solución completa para tu empresa</h2>
-                <p class="section-subtitle">Todo integrado en una sola plataforma poderosa y simple de usar</p>
-            </div>
-            
-            <div class="solutions-grid">
-                <div class="solution-card">
-                    <div class="solution-icon">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                    </div>
-                    <h3>Facturación Electrónica DIAN</h3>
-                    <p>Emisión automática de facturas electrónicas, notas crédito/débito, documentos equivalentes y validación en tiempo real con la DIAN.</p>
-                    <ul style="margin-top: 1rem; list-style: none;">
-                        <li><i class="fas fa-check text-success"></i> Validación automática DIAN</li>
-                        <li><i class="fas fa-check text-success"></i> Resoluciones automáticas</li>
-                        <li><i class="fas fa-check text-success"></i> Envío automático al cliente</li>
-                    </ul>
-                </div>
-                
-                <div class="solution-card">
-                    <div class="solution-icon">
-                        <i class="fas fa-balance-scale"></i>
-                    </div>
-                    <h3>Contabilidad Automatizada</h3>
-                    <p>Sistema contable completo con Plan de Cuentas PUC, estados financieros automáticos, conciliación bancaria y medios magnéticos.</p>
-                    <ul style="margin-top: 1rem; list-style: none;">
-                        <li><i class="fas fa-check text-success"></i> Plan de Cuentas PUC actualizado</li>
-                        <li><i class="fas fa-check text-success"></i> Estados financieros automáticos</li>
-                        <li><i class="fas fa-check text-success"></i> Conciliación bancaria</li>
-                    </ul>
-                </div>
-                
-                <div class="solution-card">
-                    <div class="solution-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Nómina Electrónica</h3>
-                    <p>Gestión completa de nómina electrónica, prestaciones sociales, reportes PILA y control de talento humano totalmente integrado.</p>
-                    <ul style="margin-top: 1rem; list-style: none;">
-                        <li><i class="fas fa-check text-success"></i> Nómina electrónica DIAN</li>
-                        <li><i class="fas fa-check text-success"></i> Prestaciones automáticas</li>
-                        <li><i class="fas fa-check text-success"></i> Reportes ministeriales</li>
-                    </ul>
-                </div>
-                
-                <div class="solution-card">
-                    <div class="solution-icon">
-                        <i class="fas fa-cash-register"></i>
-                    </div>
-                    <h3>Punto de Venta (POS)</h3>
-                    <p>Sistema de ventas integrado con inventario, caja y facturación en tiempo real. Perfecto para retail y servicios.</p>
-                    <ul style="margin-top: 1rem; list-style: none;">
-                        <li><i class="fas fa-check text-success"></i> Control de inventario</li>
-                        <li><i class="fas fa-check text-success"></i> Múltiples formas de pago</li>
-                        <li><i class="fas fa-check text-success"></i> Integración contable</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section id="precios" class="pricing">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Planes diseñados para cada negocio</h2>
-                <p class="section-subtitle">Elige el plan perfecto. Todos incluyen facturación electrónica DIAN</p>
-            </div>
-            
-            <div class="pricing-grid">
-                <!-- Plan Básico -->
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Básico</h3>
-                        <p>Para pequeñas empresas</p>
-                        <div class="pricing-price">
-                            <div class="price-amount">$50.000</div>
-                            <div class="price-period">/mes + IVA</div>
+                        <div class="hero-buttons">
+                            <a href="https://wa.me/573207141104?text=Hola,%20quiero%20una%20demo%20de%20Portafolio%20ERP"
+                                target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path
+                                        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                                </svg>
+                                Empieza gratis
+                            </a>
                         </div>
                     </div>
 
-                    <ul class="pricing-features">
-                        <li><i class="fas fa-check" style="color: var(--success);"></i><b>Facturación Electrónica incluida</b></li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 30 facturas electrónicas mensuales</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 500 facturas POS mensuales</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Módulo POS integrado</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 1 puntos de venta</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 1 bodegas de inventario</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Nómina para 1 a 5 empleados</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Manejo de AIU</li>
-                    </ul>
+                    <div class="hero-visual">
+    
+                        <!-- Anillos orbitales -->
+                        <div class="orbit-ring"></div>
+                        <div class="orbit-ring orbit-ring-inner"></div>
+                        
+                        <!-- Mockup MacBook central -->
+                        <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/mackbook_portafolio_erp.png"
+                            alt="Dashboard interactivo de Portafolio ERP" 
+                            class="hero-screenshot" 
+                            loading="eager"
+                            fetchpriority="high" 
+                            width="560" 
+                            height="420"
+                            onerror="this.style.display='none'; this.parentElement.querySelector('.hero-screenshot-fallback').style.display='flex';">
+
+                        <!-- Tarjeta flotante 1 -->
+                        <div class="float-card float-card-1 float-card-success">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <div class="float-card-content">
+                                <span class="float-card-label">Factura #1247</span>
+                                <span class="float-card-value">Enviada DIAN ✓</span>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta flotante 2 -->
+                        <div class="float-card float-card-2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="1" x2="12" y2="23" />
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                            </svg>
+                            <div class="float-card-content">
+                                <span class="float-card-label">Ingresos del mes</span>
+                                <span class="float-card-value">$8.420.000</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+
                     
-                    <div class="pricing-footer">
-                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20el%20plan%20Básico" 
-                           target="_blank" 
-                           class="btn btn-outline btn-block">
-                            <i class="fab fa-whatsapp"></i> Solicitar
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+            SISTEMA GENERAL - Factura con DIAN orbitando
+            ============================================ -->
+        <section id="sistema" class="system-section">
+            <div class="container">
+                <div class="system-grid">
+                    
+                    <!-- LADO IZQUIERDO: Factura con DIAN orbitando -->
+                    <div class="system-visual scale-in">
+                        
+                        <!-- Anillo de órbita (visible, decorativo) -->
+                        <div class="orbit-ring"></div>
+                        <div class="orbit-ring orbit-ring-inner"></div>
+                        
+                        <!-- Factura central -->
+                        <div class="invoice-wrapper">
+                            <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/venta_factura.png" 
+                                alt="Factura electrónica Portafolio ERP" 
+                                loading="lazy">
+                        </div>
+                        
+                        <!-- DIAN orbitando en el anillo exterior -->
+                        <div class="orbit-satellite">
+                            <div class="orbit-satellite-inner">
+                                <img src="https://content.ceta.org.co/wp-media-folder-portal-cetapp/wp-content/uploads/2024/10/herramietnas-dian.webp" 
+                                    alt="DIAN" 
+                                    loading="lazy">
+                            </div>
+                        </div>
+                        
+                        <!-- Segundo satélite: check de éxito -->
+                        <div class="orbit-satellite orbit-satellite-2">
+                            <div class="orbit-satellite-inner">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+            MÓDULO: FACTURACIÓN
+            ============================================ -->
+        <section id="facturacion" class="module-section">
+            <div class="container">
+                <div class="module-grid">
+                    <div class="module-content fade-in-up">
+                        <div class="module-eyebrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="9" y1="15" x2="15" y2="15" />
+                                <line x1="9" y1="11" x2="15" y2="11" />
+                                <line x1="9" y1="7" x2="12" y2="7" />
+                            </svg>
+                            Facturación
+                        </div>
+
+                        <h2 class="module-title">
+                            Factura, vende y controla tu negocio desde un solo lugar
+                        </h2>
+
+                        <p class="module-lead">
+                            Simplifica tu operación comercial con una solución de facturación electrónica
+                            completa, rápida y conectada con el resto de tu empresa.
+                        </p>
+
+                        <ul class="module-features">
+                            <li>Facturación Electrónica y POS Electrónico</li>
+                            <li>Documento Soporte Electrónico <strong>ILIMITADO</strong></li>
+                            <li>Notas Crédito y Débito Electrónicas Ilimitadas</li>
+                            <li>Control de días y cupos para tus ventas</li>
+                            <li>Informes avanzados para analizar tus ventas y operación</li>
+                        </ul>
+
+                        <p class="module-outro">
+                            Todo lo que necesitas para facturar, controlar y hacer crecer tu negocio,
+                            en una plataforma diseñada para trabajar contigo.
+                        </p>
+
+                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20empezar%20con%20el%20módulo%20de%20Facturación"
+                            target="_blank" rel="noopener noreferrer" class="module-cta">
+                            Empieza gratis
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
                         </a>
                     </div>
-                </div>
-                
-                <!-- Plan Profesional (Featured) -->
-                <div class="pricing-card featured">
-                    <div class="featured-badge">MÁS POPULAR</div>
-                    <div class="pricing-header">
-                        <h3>Profesional</h3>
-                        <p>Para empresas en crecimiento</p>
-                        <div class="pricing-price">
-                            <div class="price-amount">$100.000</div>
-                            <div class="price-period">/mes + IVA</div>
+
+                    <div class="module-visual scale-in">
+                        <div class="module-visual-images">
+                            <img src="https://app.portafolioerp.com/img/facturacion-1.png"
+                                alt="Ventana de facturación electrónica" class="module-visual-img" loading="lazy"
+                                width="650" height="650"
+                                onerror="this.style.opacity='0'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
+                            <img src="https://app.portafolioerp.com/img/facturacion-2.png" alt="Informes de facturación"
+                                class="module-visual-img secondary" loading="lazy" width="650" height="650"
+                                onerror="this.style.opacity='0';">
+                        </div>
+
+                        <div class="module-visual-fallback" style="display:none;">
+                            <div>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                </svg>
+                            </div>
+                            <div>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M3 3v18h18" />
+                                    <path d="m19 9-5 5-4-4-3 3" />
+                                </svg>
+                            </div>
                         </div>
                     </div>
-                    
-                    <ul class="pricing-features">
-                        <li><i class="fas fa-check" style="color: var(--success);"></i><b>Facturación Electrónica incluida</b></li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 300 facturas electrónicas mensuales</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 2.000 facturas POS mensuales</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Módulo POS integrado</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 2 puntos de venta</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 2 bodegas de inventario</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Nómina para 5 a 15 empleados</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Manejo de AIU</li>
-                    </ul>
-                    
-                    <div class="pricing-footer">
-                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20el%20plan%20Profesional" 
-                           target="_blank" 
-                           class="btn btn-primary btn-block">
-                            <i class="fab fa-whatsapp"></i> Comenzar Prueba
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+            MÓDULO: CONTABILIDAD
+            ============================================ -->
+        <section id="contabilidad" class="module-section alt-bg">
+            <div class="container">
+                <div class="module-grid reverse">
+                    <div class="module-content fade-in-up">
+                        <div class="module-eyebrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                            </svg>
+                            Contabilidad
+                        </div>
+
+                        <h2 class="module-title">
+                            Lleva el control financiero de tu empresa con precisión
+                        </h2>
+
+                        <p class="module-lead">
+                            Una contabilidad completa para organizar tus finanzas, analizar el desempeño
+                            de tu empresa y tomar decisiones basadas en información confiable y actualizada.
+                        </p>
+
+                        <ul class="module-features">
+                            <li>Centros de Costos para controlar cada área de tu empresa</li>
+                            <li>Medios Magnéticos / Información Exógena</li>
+                            <li>Gestión y control de Presupuesto</li>
+                            <!-- <li>Conciliación Bancaria Automática</li> -->
+                        </ul>
+
+                        <p class="module-outro">
+                            Mucho más que llevar cuentas: <strong>obtén una visión clara de tus finanzas
+                            y toma el control de tu negocio.</strong>
+                        </p>
+
+                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20empezar%20con%20el%20módulo%20de%20Contabilidad"
+                            target="_blank" rel="noopener noreferrer" class="module-cta">
+                            Empieza gratis
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
                         </a>
                     </div>
-                </div>
-                
-                <!-- Plan Empresarial -->
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Empresarial</h3>
-                        <p>Para empresas consolidadas</p>
-                        <div class="pricing-price">
-                            <div class="price-amount">$300.000</div>
-                            <div class="price-period">/mes + IVA</div>
+
+                    <div class="module-visual scale-in">
+                        <div class="module-visual-images">
+                            <img src="https://app.portafolioerp.com/img/contabilidad-1.png"
+                                alt="Ventana de contabilidad" class="module-visual-img" loading="lazy" width="650"
+                                height="650"
+                                onerror="this.style.opacity='0'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
+                            <img src="https://app.portafolioerp.com/img/contabilidad-2.png" alt="Estados financieros"
+                                class="module-visual-img secondary" loading="lazy" width="650" height="650"
+                                onerror="this.style.opacity='0';">
+                        </div>
+
+                        <div class="module-visual-fallback" style="display:none;">
+                            <div>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                </svg>
+                            </div>
+                            <div>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M3 3v18h18" />
+                                    <path d="m19 9-5 5-4-4-3 3" />
+                                </svg>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
 
-                    <ul class="pricing-features">
-                        <li><i class="fas fa-check" style="color: var(--success);"></i><b>Facturación Electrónica incluida</b></li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Facturas electrónicas Ilimitadas</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Facturas POS Ilimitadas</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Módulo POS integrado</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 3 puntos de venta</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Hasta 3 bodegas de inventario</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Nómina Ilimitadas</li>
-                        <li><i class="fas fa-check" style="color: var(--success);"></i>Manejo de AIU</li>
-                    </ul>
-                    
-                    <div class="pricing-footer">
-                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20el%20plan%20Empresarial" 
-                           target="_blank" 
-                           class="btn btn-outline btn-block">
-                            <i class="fas fa-phone"></i> Contactar Ventas
+        <!-- ============================================
+     MÓDULO: NÓMINA
+     ============================================ -->
+        <section id="nomina" class="module-section">
+            <div class="container">
+                <div class="module-grid">
+                    <div class="module-content fade-in-up">
+                        <div class="module-eyebrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                            Nómina
+                        </div>
+
+                        <h2 class="module-title">
+                            Una nómina más sencilla, precisa y bajo control
+                        </h2>
+
+                        <p class="module-lead">
+                            Automatiza la gestión de tus empleados y deja atrás los procesos manuales.
+                            Portafolio Nómina reúne en una sola plataforma todo lo necesario para liquidar,
+                            reportar y administrar tu nómina de manera eficiente.
+                        </p>
+
+                        <ul class="module-features">
+                            <li>Nómina Electrónica ante la DIAN</li>
+                            <li>Liquidación de primas, vacaciones y cesantías</li>
+                            <li>Incapacidades y licencias</li>
+                            <li>Liquidaciones definitivas</li>
+                            <li>Archivo bancario para pago de nómina</li>
+                        </ul>
+
+                        <p class="module-outro">
+                            <strong>Menos trabajo manual, menos errores y más control</strong> sobre la
+                            gestión de tu equipo, con integración directa a la Contabilidad PRO.
+                        </p>
+
+                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20empezar%20con%20el%20módulo%20de%20Nómina"
+                            target="_blank" rel="noopener noreferrer" class="module-cta">
+                            Empieza gratis
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
                         </a>
+                    </div>
+
+                    <div class="module-visual scale-in">
+                        <div class="module-visual-images">
+                            <img src="https://app.portafolioerp.com/img/nomina-1.png"
+                                alt="Ventana de nómina electrónica" class="module-visual-img" loading="lazy" width="650"
+                                height="650"
+                                onerror="this.style.opacity='0'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
+                            <img src="https://app.portafolioerp.com/img/nomina-2.png" alt="Liquidación de nómina"
+                                class="module-visual-img secondary" loading="lazy" width="650" height="650"
+                                onerror="this.style.opacity='0';">
+                        </div>
+
+                        <div class="module-visual-fallback" style="display:none;">
+                            <div>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                </svg>
+                            </div>
+                            <div>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M3 3v18h18" />
+                                    <path d="m19 9-5 5-4-4-3 3" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <div style="text-align: center; margin-top: 3rem; color: var(--gray);">
-                <p><i class="fas fa-info-circle"></i> Todos los planes incluyen certificado digital DIAN y actualizaciones automáticas.</p>
-                <p>¿Necesitas un plan personalizado? <a href="https://wa.me/573207141104" target="_blank" style="color: var(--primary);">Contáctanos</a></p>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- CTA Section -->
-    <section id="contacto" class="section">
-        <div class="container">
-            <div class="cta-content">
-                <h2 class="cta-title">¿Listo para transformar tu empresa?</h2>
-                <p class="cta-description">
-                    Únete a las empresas colombianas que ya automatizaron sus procesos 
-                    y cumplen sin estrés con la DIAN
-                </p>
-                
-                <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem;">
-                    <a href="https://wa.me/573207141104?text=Hola,%20quiero%20comenzar%20con%20Portafolio%20ERP" 
-                       target="_blank" 
-                       class="btn btn-white btn-lg">
-                        <i class="fab fa-whatsapp"></i> Comenzar Gratis 15 Días
-                    </a>
-                    
-                    <a href="#contacto" class="btn btn-outline-white btn-lg">
-                        <i class="fas fa-calendar-alt"></i> Agendar Demo
-                    </a>
-                </div>
-                
-                <div style="opacity: 0.8; font-size: 0.9rem;">
-                    <p><i class="fas fa-check"></i> Sin tarjeta de crédito • Sin compromisos • Implementación en 48h</p>
+        <!-- ============================================
+             ESTADÍSTICAS
+             ============================================ -->
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-block fade-in-up stagger-1">
+                        <div class="stat-number-wrap">
+                            <span class="stat-number" data-count="50">0</span>
+                            <span class="stat-suffix">+</span>
+                        </div>
+                        <p class="stat-label">Empresas colombianas confían en nosotros</p>
+                    </div>
+                    <div class="stat-block fade-in-up stagger-2">
+                        <div class="stat-number-wrap">
+                            <span class="stat-number" data-count="1000">0</span>
+                            <span class="stat-suffix">+</span>
+                        </div>
+                        <p class="stat-label">Facturas electrónicas procesadas al mes</p>
+                    </div>
+                    <div class="stat-block fade-in-up stagger-3">
+                        <div class="stat-number-wrap">
+                            <span class="stat-number" data-count="99">0</span>
+                            <span class="stat-suffix">%</span>
+                        </div>
+                        <p class="stat-label">Uptime garantizado en nuestra plataforma</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <section id="contacto" class="footer">
+    </main>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="/" class="logo">
-                        <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="Portafolio ERP">
+                        <img src="https://app.portafolioerp.com/img/logo_contabilidad.png" alt="Portafolio ERP"
+                            width="40" height="40">
                         <span class="logo-text">PORTAFOLIO ERP</span>
                     </a>
-                    <p>El software ERP diseñado específicamente para empresas colombianas. Cumplimiento DIAN garantizado.</p>
-                    
-                    <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-                        <a href="https://facebook.com" target="_blank" style="color: var(--gray);">
-                            <i class="fab fa-facebook-f"></i>
+                    <p>El software ERP diseñado específicamente para empresas colombianas. Cumplimiento DIAN
+                        garantizado, 100% web.</p>
+
+                    <div class="footer-social">
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
                         </a>
-                        <a href="https://linkedin.com" target="_blank" style="color: var(--gray);">
-                            <i class="fab fa-linkedin-in"></i>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
                         </a>
-                        <a href="https://instagram.com" target="_blank" style="color: var(--gray);">
-                            <i class="fab fa-instagram"></i>
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
+                            aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.322a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z" />
+                            </svg>
                         </a>
-                        <a href="https://youtube.com" target="_blank" style="color: var(--gray);">
-                            <i class="fab fa-youtube"></i>
+                        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                            </svg>
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="footer-column">
                     <h4>Producto</h4>
                     <ul>
-                        <li><a href="#soluciones">Facturación Electrónica</a></li>
-                        <li><a href="#soluciones">Contabilidad</a></li>
-                        <li><a href="#soluciones">Nómina</a></li>
-                        <li><a href="#soluciones">Punto de Venta</a></li>
-                        <li><a href="https://pos.portafolioerp.com" target="_blank">Módulo POS</a></li>
-                        <li><a href="https://maximoph.co" target="_blank">Maximoph PH</a></li>
+                        <li><a href="#modulos">Facturación Electrónica</a></li>
+                        <li><a href="#modulos">Contabilidad</a></li>
+                        <li><a href="#modulos">Nómina</a></li>
+                        <li><a href="#modulos">Punto de Venta</a></li>
+                        <li><a href="https://pos.portafolioerp.com" target="_blank" rel="noopener noreferrer">Módulo
+                                POS</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-column">
                     <h4>Empresa</h4>
                     <ul>
@@ -1376,278 +660,342 @@
                         <li><a href="#">Soporte</a></li>
                         <li><a href="#">Blog</a></li>
                         <li><a href="#">Términos</a></li>
-                        <li><a href="#">Privacidad</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-column">
                     <h4>Contacto</h4>
                     <ul>
-                        <li><i class="fas fa-phone"></i> +57 320 714 1104</li>
-                        <li><i class="fas fa-envelope"></i> portafolioerp@gmail.com</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Medellín, Colombia</li>
-                        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/573207141104" target="_blank">WhatsApp Business</a></li>
+                        <li>
+                            <a href="tel:+573207141104">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path
+                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                </svg>
+                                +57 320 714 1104
+                            </a>
+                        </li>
+                        <li>
+                            <a href="mailto:portafolioerp@gmail.com">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path
+                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                    <polyline points="22,6 12,13 2,6" />
+                                </svg>
+                                portafolioerp@gmail.com
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" rel="noopener">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                    <circle cx="12" cy="10" r="3" />
+                                </svg>
+                                Medellín, Colombia
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://wa.me/573207141104" target="_blank" rel="noopener noreferrer">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                                </svg>
+                                WhatsApp Business
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
                 <p>&copy; 2024 Portafolio ERP. Todos los derechos reservados.</p>
-                <p style="margin-top: 0.5rem; font-size: 0.875rem;">
-                    Software ERP colombiano - Certificado DIAN - Cumplimiento normativo 100%
-                </p>
+                <p>Software ERP colombiano · Certificado DIAN · Cumplimiento normativo 100%</p>
             </div>
         </div>
-    </section>
+    </footer>
 
+    <!-- ============================================
+         JAVASCRIPT
+         ============================================ -->
     <script>
-        // Theme Toggle
-        const themeToggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
-        
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const systemTheme = detectSystemTheme();
-            
-            if (savedTheme) {
-                applyTheme(savedTheme);
-            } else {
-                applyTheme(systemTheme);
-            }
-        }
+        (function () {
+            'use strict';
 
-        function detectSystemTheme() {
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                return 'dark';
-            }
-            return 'light';
-        }
+            /* ============================================
+               TEMA CLARO/OSCURO
+               ============================================ */
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
 
-        // Aplicar tema con transición suave
-        function applyTheme(theme) {
-            // Deshabilitar transiciones momentáneamente para evitar parpadeo
-            html.style.transition = 'none';
-            html.setAttribute('data-theme', theme);
-            
-            // Forzar reflow
-            html.offsetHeight;
-            
-            // Rehabilitar transiciones
-            html.style.transition = '';
-            
-            // Guardar en localStorage
-            localStorage.setItem('theme', theme);
-            
-            // Actualizar metatag para tema (opcional pero recomendado)
-            updateThemeMeta(theme);
-        }
-                
-        function toggleTheme() {
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            // Agregar clase para animación
-            html.classList.add('theme-changing');
-            
-            // Cambiar tema
-            applyTheme(newTheme);
-            
-            // Efecto visual en el botón
-            themeToggle.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                themeToggle.style.transform = '';
-            }, 150);
-            
-            // Quitar clase después de la animación
-            setTimeout(() => {
-                html.classList.remove('theme-changing');
-            }, 500);
-        }
+            function applyTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                try {
+                    localStorage.setItem('theme', theme);
+                } catch (e) { }
 
-        function updateThemeMeta(theme) {
-            const themeColor = theme === 'dark' ? '#0f172a' : '#ffffff';
-            const themeMeta = document.querySelector('meta[name="theme-color"]');
-            
-            if (themeMeta) {
-                themeMeta.content = themeColor;
-            } else {
-                const meta = document.createElement('meta');
-                meta.name = 'theme-color';
-                meta.content = themeColor;
-                document.head.appendChild(meta);
-            }
-        }
-
-        if (window.matchMedia) {
-            const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            colorSchemeQuery.addEventListener('change', (e) => {
-                // Solo cambiar si el usuario no ha guardado una preferencia
-                if (!localStorage.getItem('theme')) {
-                    const newTheme = e.matches ? 'dark' : 'light';
-                    applyTheme(newTheme);
+                // Actualizar meta theme-color
+                let themeMeta = document.querySelector('meta[name="theme-color"]');
+                if (!themeMeta) {
+                    themeMeta = document.createElement('meta');
+                    themeMeta.name = 'theme-color';
+                    document.head.appendChild(themeMeta);
                 }
-            });
-        }
-        
-        // Header Scroll Effect
-        const header = document.getElementById('header');
-        
-        function handleScroll() {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
+                themeMeta.content = theme === 'dark' ? '#0a0f1e' : '#4f46e5';
             }
-        }
-        
-        // Mobile Menu Toggle - CORREGIDO
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const nav = document.querySelector('.nav');
-        
-        function toggleMobileMenu() {
-            nav.classList.toggle('active');
-            mobileMenuToggle.classList.toggle('active');
-            
-            // Prevenir scroll del body cuando el menú está abierto
-            if (nav.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            } else {
+
+            function toggleTheme() {
+                const current = html.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                applyTheme(next);
+
+                // Micro animación en el botón
+                themeToggle.style.transform = 'scale(0.85) rotate(180deg)';
+                setTimeout(() => {
+                    themeToggle.style.transform = '';
+                }, 250);
+            }
+
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+
+            // Escuchar cambios del sistema (solo si no hay preferencia guardada)
+            if (window.matchMedia) {
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                    try {
+                        if (!localStorage.getItem('theme')) {
+                            applyTheme(e.matches ? 'dark' : 'light');
+                        }
+                    } catch (err) { }
+                });
+            }
+
+            /* ============================================
+               HEADER SCROLL
+               ============================================ */
+            const header = document.getElementById('header');
+            let lastScrollY = 0;
+
+            function handleScroll() {
+                const y = window.scrollY;
+                if (y > 30) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                lastScrollY = y;
+
+                // Scroll top button
+                if (scrollTopBtn) {
+                    if (y > 400) {
+                        scrollTopBtn.classList.add('visible');
+                    } else {
+                        scrollTopBtn.classList.remove('visible');
+                    }
+                }
+
+                updateActiveNav();
+            }
+
+            /* ============================================
+               MENÚ MÓVIL
+               ============================================ */
+            const mobileToggle = document.getElementById('mobileToggle');
+            const nav = document.getElementById('nav');
+
+            function toggleMobileMenu() {
+                const isActive = nav.classList.toggle('active');
+                mobileToggle.classList.toggle('active');
+                mobileToggle.setAttribute('aria-expanded', isActive);
+
+                if (isActive) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            }
+
+            function closeMobileMenu() {
+                nav.classList.remove('active');
+                mobileToggle.classList.remove('active');
+                mobileToggle.setAttribute('aria-expanded', 'false');
                 document.body.style.overflow = '';
             }
-        }
-        
-        // Cerrar menú al hacer clic en un enlace
-        function closeMobileMenu() {
-            nav.classList.remove('active');
-            mobileMenuToggle.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        // Scroll to Top Button
-        const scrollTopBtn = document.getElementById('scrollTopBtn');
-        
-        function handleScrollTop() {
-            if (window.scrollY > 300) {
-                scrollTopBtn.classList.add('visible');
-            } else {
-                scrollTopBtn.classList.remove('visible');
+
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleMobileMenu();
+                });
             }
-        }
-        
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-        
-        // Smooth Scroll for Anchor Links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                // Solo prevenir default si es un enlace interno
-                if (targetId.startsWith('#')) {
-                    e.preventDefault();
-                    
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        const headerHeight = header.offsetHeight;
-                        const targetPosition = targetElement.offsetTop - headerHeight;
-                        
-                        window.scrollTo({
-                            top: targetPosition,
-                            behavior: 'smooth'
-                        });
-                        
-                        // Cerrar menú móvil
+
+            // Cerrar al hacer clic fuera
+            document.addEventListener('click', (e) => {
+                if (nav && nav.classList.contains('active')) {
+                    if (!nav.contains(e.target) && !mobileToggle.contains(e.target)) {
                         closeMobileMenu();
                     }
                 }
             });
-        });
-        
-        // Active Navigation on Scroll
-        function updateActiveNav() {
-            const sections = document.querySelectorAll('section[id]');
+
+            // Cerrar al redimensionar
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (window.innerWidth > 768 && nav.classList.contains('active')) {
+                        closeMobileMenu();
+                    }
+                }, 150);
+            });
+
+            /* ============================================
+               SMOOTH SCROLL
+               ============================================ */
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#' || targetId.length < 2) return;
+
+                    const target = document.querySelector(targetId);
+                    if (!target) return;
+
+                    e.preventDefault();
+
+                    const headerHeight = header ? header.offsetHeight : 0;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+
+                    closeMobileMenu();
+                });
+            });
+
+            /* ============================================
+               NAV ACTIVO EN SCROLL
+               ============================================ */
             const navLinks = document.querySelectorAll('.nav-link');
-            
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop - 100;
-                const sectionHeight = section.clientHeight;
-                if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-                    current = section.getAttribute('id');
-                }
-            });
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
-                }
-            });
-        }
-        
-        // Cerrar menú al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            const isClickInsideNav = nav.contains(e.target);
-            const isClickOnToggle = mobileMenuToggle.contains(e.target);
-            
-            if (!isClickInsideNav && !isClickOnToggle && nav.classList.contains('active')) {
-                closeMobileMenu();
+
+            function updateActiveNav() {
+                const scrollY = window.pageYOffset;
+                const sections = document.querySelectorAll('section[id]');
+
+                let currentId = '';
+                sections.forEach(section => {
+                    const top = section.offsetTop - 150;
+                    const height = section.offsetHeight;
+                    if (scrollY >= top && scrollY < top + height) {
+                        currentId = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentId}`) {
+                        link.classList.add('active');
+                    }
+                });
             }
-        });
-        
-        // Cerrar menú al redimensionar ventana (si se hace más grande)
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && nav.classList.contains('active')) {
-                closeMobileMenu();
+
+            /* ============================================
+               SCROLL TO TOP
+               ============================================ */
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+            if (scrollTopBtn) {
+                scrollTopBtn.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
             }
-        });
-        
-        // Initialize Everything
-        document.addEventListener('DOMContentLoaded', () => {
-            // Inicializar tema primero
-            initTheme();
-            
-            // Agregar transiciones suaves para elementos específicos
-            const style = document.createElement('style');
-            style.textContent = `
-                .theme-changing * {
-                    transition: background-color 0.5s ease, 
-                                border-color 0.5s ease, 
-                                color 0.5s ease,
-                                transform 0.5s ease !important;
-                }
-            `;
-            document.head.appendChild(style);
-            
-            // Evento para el botón del tema
-            themeToggle.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevenir que se cierre el menú móvil
-                toggleTheme();
+
+            /* ============================================
+               INTERSECTION OBSERVER - ANIMACIONES
+               ============================================ */
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -80px 0px'
+            };
+
+            const animationObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        animationObserver.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in-up, .fade-in, .scale-in').forEach(el => {
+                animationObserver.observe(el);
             });
-            
-            // ¡¡¡FALTA ESTO!!! Evento para el botón hamburguesa
-            mobileMenuToggle.addEventListener('click', (e) => {
-                e.stopPropagation(); // Importante para que no se cierre inmediatamente
-                toggleMobileMenu();
+
+            /* ============================================
+               CONTADORES ANIMADOS
+               ============================================ */
+            function animateCounter(el) {
+                const target = parseInt(el.dataset.count, 10);
+                const duration = 2000;
+                const frameDuration = 1000 / 60;
+                const totalFrames = Math.round(duration / frameDuration);
+                const easeOutQuart = t => 1 - Math.pow(1 - t, 4);
+                let frame = 0;
+
+                const counter = setInterval(() => {
+                    frame++;
+                    const progress = easeOutQuart(frame / totalFrames);
+                    const current = Math.round(target * progress);
+                    el.textContent = current.toLocaleString('es-CO');
+
+                    if (frame === totalFrames) {
+                        clearInterval(counter);
+                        el.textContent = target.toLocaleString('es-CO');
+                    }
+                }, frameDuration);
+            }
+
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('.stat-number[data-count]').forEach(el => {
+                counterObserver.observe(el);
             });
-            
-            // Resto de tu código de inicialización...
+
+            /* ============================================
+               INIT
+               ============================================ */
+            // Estado inicial
             handleScroll();
-            handleScrollTop();
             updateActiveNav();
-            
-            // Escuchar scroll
+
+            // Escuchar scroll (con throttling)
+            let ticking = false;
             window.addEventListener('scroll', () => {
-                handleScroll();
-                handleScrollTop();
-                updateActiveNav();
-            });
-        });
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        handleScroll();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
+
+        })();
     </script>
 </body>
+
 </html>
