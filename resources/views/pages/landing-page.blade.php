@@ -175,9 +175,10 @@
                         <div class="system-features">
                             <div class="system-feature">
                                 <div class="system-feature-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                        <polyline points="22 4 12 14.01 9 11.01"/>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                        <polyline points="22 4 12 14.01 9 11.01" />
                                     </svg>
                                 </div>
                                 <div>
@@ -185,13 +186,14 @@
                                     <div class="system-feature-text">Cada factura se envía y valida en tiempo real</div>
                                 </div>
                             </div>
-                            
+
                             <div class="system-feature">
                                 <div class="system-feature-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                                        <line x1="8" y1="21" x2="16" y2="21"/>
-                                        <line x1="12" y1="17" x2="12" y2="21"/>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                                        <line x1="8" y1="21" x2="16" y2="21" />
+                                        <line x1="12" y1="17" x2="12" y2="21" />
                                     </svg>
                                 </div>
                                 <div>
@@ -199,23 +201,25 @@
                                     <div class="system-feature-text">Accede desde cualquier dispositivo</div>
                                 </div>
                             </div>
-                            
+
                             <div class="system-feature">
                                 <div class="system-feature-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                                        <path d="m2 17 10 5 10-5"/>
-                                        <path d="m2 12 10 5 10-5"/>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                        <path d="m2 17 10 5 10-5" />
+                                        <path d="m2 12 10 5 10-5" />
                                     </svg>
                                 </div>
                                 <div>
                                     <div class="system-feature-title">Módulos integrados</div>
-                                    <div class="system-feature-text">Facturación electronica, Contabilidad, nómina, POS e inventario</div>
+                                    <div class="system-feature-text">Facturación electronica, Contabilidad, nómina, POS
+                                        e inventario</div>
                                 </div>
                             </div>
                         </div>
 
-                        <br/>
+                        <br />
 
                         <div class="hero-buttons">
                             <a href="https://wa.me/573207141104?text=Hola,%20quiero%20una%20demo%20de%20Portafolio%20ERP"
@@ -230,19 +234,15 @@
                     </div>
 
                     <div class="hero-visual">
-    
+
                         <!-- Anillos orbitales -->
                         <div class="orbit-ring"></div>
                         <div class="orbit-ring orbit-ring-inner"></div>
-                        
+
                         <!-- Mockup MacBook central -->
                         <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/mackbook_portafolio_erp.png"
-                            alt="Dashboard interactivo de Portafolio ERP" 
-                            class="hero-screenshot" 
-                            loading="eager"
-                            fetchpriority="high" 
-                            width="560" 
-                            height="420"
+                            alt="Dashboard interactivo de Portafolio ERP" class="hero-screenshot" loading="eager"
+                            fetchpriority="high" width="560" height="420"
                             onerror="this.style.display='none'; this.parentElement.querySelector('.hero-screenshot-fallback').style.display='flex';">
 
                         <!-- Tarjeta flotante 1 -->
@@ -269,59 +269,114 @@
                                 <span class="float-card-value">$8.420.000</span>
                             </div>
                         </div>
-                        
+
                     </div>
 
-                    
+
                 </div>
             </div>
         </section>
+        
 
         <!-- ============================================
-            SISTEMA GENERAL - Factura con DIAN orbitando
+            SISTEMA - Factura central con 4 módulos orbitando
             ============================================ -->
-        <section id="sistema" class="system-section">
+        <section id="sistema" class="teaser-orbit">
             <div class="container">
-                <div class="system-grid">
-                    
-                    <!-- LADO IZQUIERDO: Factura con DIAN orbitando -->
-                    <div class="system-visual scale-in">
-                        
-                        <!-- Anillo de órbita (visible, decorativo) -->
-                        <div class="orbit-ring"></div>
-                        <div class="orbit-ring orbit-ring-inner"></div>
-                        
+                <div class="teaser-orbit-grid">
+
+                    <!-- IZQUIERDA: Factura con 4 módulos girando -->
+                    <div class="teaser-orbit-visual fade-in-up">
+                        <div class="teaser-orbit-glow"></div>
+
+                        <!-- Anillos orbitales -->
+                        <div class="teaser-orbit-ring"></div>
+                        <div class="teaser-orbit-ring teaser-orbit-ring-inner"></div>
+
                         <!-- Factura central -->
-                        <div class="invoice-wrapper">
-                            <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/venta_factura.png" 
-                                alt="Factura electrónica Portafolio ERP" 
+                        <div class="teaser-orbit-invoice">
+                            <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/venta_factura.png"
+                                alt="Factura electrónica Portafolio ERP"
                                 loading="lazy">
                         </div>
-                        
-                        <!-- DIAN orbitando en el anillo exterior -->
-                        <div class="orbit-satellite">
-                            <div class="orbit-satellite-inner">
-                                <img src="https://content.ceta.org.co/wp-media-folder-portal-cetapp/wp-content/uploads/2024/10/herramietnas-dian.webp" 
-                                    alt="DIAN" 
-                                    loading="lazy">
-                            </div>
-                        </div>
-                        
-                        <!-- Segundo satélite: check de éxito -->
-                        <div class="orbit-satellite orbit-satellite-2">
-                            <div class="orbit-satellite-inner">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12"/>
+
+                        <!-- Satélite 1: Facturación -->
+                        <div class="teaser-orbit-satellite">
+                            <div class="teaser-orbit-satellite-inner">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="9" y1="15" x2="15" y2="15"/>
+                                    <line x1="9" y1="11" x2="15" y2="11"/>
                                 </svg>
                             </div>
                         </div>
-                        
+
+                        <!-- Satélite 2: Contabilidad -->
+                        <div class="teaser-orbit-satellite teaser-orbit-satellite-2">
+                            <div class="teaser-orbit-satellite-inner">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="1" x2="12" y2="23"/>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Satélite 3: Nómina -->
+                        <div class="teaser-orbit-satellite teaser-orbit-satellite-3">
+                            <div class="teaser-orbit-satellite-inner">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Satélite 4: POS -->
+                        <div class="teaser-orbit-satellite teaser-orbit-satellite-4">
+                            <div class="teaser-orbit-satellite-inner">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="9" cy="21" r="1"/>
+                                    <circle cx="20" cy="21" r="1"/>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                                </svg>
+                            </div>
+                        </div>
+
                     </div>
-                    
-                    
+
+                    <!-- DERECHA: Texto -->
+                    <div class="teaser-orbit-content fade-in-up stagger-1">
+                        <div class="module-eyebrow">
+                            <div class="module-icon-animated">
+                                <div class="module-icon-ring"></div>
+                                <div class="module-icon-core">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <path d="M12 6v6l4 2"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            Todo en uno
+                        </div>
+
+                        <h2 class="teaser-orbit-title">
+                            Todo tu negocio, <span class="highlight">conectado</span>
+                        </h2>
+
+                        <p class="teaser-orbit-text">
+                            Factura, contabiliza, paga nómina y vende desde una sola plataforma.
+                            Cada movimiento se sincroniza automáticamente — sin copiar datos, sin doble trabajo.
+                        </p>
+                    </div>
+
                 </div>
             </div>
         </section>
+
 
         <!-- ============================================
             MÓDULO: FACTURACIÓN
@@ -330,15 +385,20 @@
             <div class="container">
                 <div class="module-grid">
                     <div class="module-content fade-in-up">
+                        <!-- Facturación: reemplaza el <div class="module-eyebrow"> actual por este -->
                         <div class="module-eyebrow">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                <polyline points="14 2 14 8 20 8" />
-                                <line x1="9" y1="15" x2="15" y2="15" />
-                                <line x1="9" y1="11" x2="15" y2="11" />
-                                <line x1="9" y1="7" x2="12" y2="7" />
-                            </svg>
+                            <div class="module-icon-animated">
+                                <div class="module-icon-ring"></div>
+                                <div class="module-icon-core">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="9" y1="15" x2="15" y2="15" />
+                                        <line x1="9" y1="11" x2="15" y2="11" />
+                                    </svg>
+                                </div>
+                            </div>
                             Facturación
                         </div>
 
@@ -351,12 +411,82 @@
                             completa, rápida y conectada con el resto de tu empresa.
                         </p>
 
-                        <ul class="module-features">
-                            <li>Facturación Electrónica y POS Electrónico</li>
-                            <li>Documento Soporte Electrónico <strong>ILIMITADO</strong></li>
-                            <li>Notas Crédito y Débito Electrónicas Ilimitadas</li>
-                            <li>Control de días y cupos para tus ventas</li>
-                            <li>Informes avanzados para analizar tus ventas y operación</li>
+                        <ul class="module-features-list">
+                            <li>
+                                <div class="module-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="9" y1="15" x2="15" y2="15" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Facturación Electrónica y POS Electrónico</div>
+                                    <div class="module-feature-text">Emite facturas DIAN válidas en segundos desde
+                                        cualquier dispositivo</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="module-feature-icon module-feature-icon-success">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                        <polyline points="22 4 12 14.01 9 11.01" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Documento Soporte Electrónico ILIMITADO</div>
+                                    <div class="module-feature-text">Soporta tus compras sin costo adicional, sin
+                                        límites mensuales</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="module-feature-icon module-feature-icon-accent">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 3v18h18" />
+                                        <path d="m19 9-5 5-4-4-3 3" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Notas Crédito y Débito Ilimitadas</div>
+                                    <div class="module-feature-text">Ajusta tus ventas electrónicamente sin
+                                        restricciones</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="module-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                        <line x1="16" y1="2" x2="16" y2="6" />
+                                        <line x1="8" y1="2" x2="8" y2="6" />
+                                        <line x1="3" y1="10" x2="21" y2="10" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Control de días y cupos</div>
+                                    <div class="module-feature-text">Configura plazos, cupos de crédito y controla tu
+                                        cartera desde la factura</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="module-feature-icon module-feature-icon-success">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path
+                                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                                        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                                        <line x1="12" y1="22.08" x2="12" y2="12" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Informes avanzados con filtros</div>
+                                    <div class="module-feature-text">Analiza tus ventas por producto, cliente, fecha y
+                                        vendedor</div>
+                                </div>
+                            </li>
                         </ul>
 
                         <p class="module-outro">
@@ -413,10 +543,15 @@
                 <div class="module-grid reverse">
                     <div class="module-content fade-in-up">
                         <div class="module-eyebrow">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                            </svg>
+                            <div class="module-icon-animated module-icon-animated-success">
+                                <div class="module-icon-ring"></div>
+                                <div class="module-icon-core">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                    </svg>
+                                </div>
+                            </div>
                             Contabilidad
                         </div>
 
@@ -429,16 +564,72 @@
                             de tu empresa y tomar decisiones basadas en información confiable y actualizada.
                         </p>
 
-                        <ul class="module-features">
-                            <li>Centros de Costos para controlar cada área de tu empresa</li>
-                            <li>Medios Magnéticos / Información Exógena</li>
-                            <li>Gestión y control de Presupuesto</li>
-                            <!-- <li>Conciliación Bancaria Automática</li> -->
+                        <ul class="module-features-list">
+                            <li>
+                                <div class="module-feature-icon module-feature-icon-success">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 3v18h18" />
+                                        <rect x="7" y="10" width="3" height="8" />
+                                        <rect x="12" y="6" width="3" height="12" />
+                                        <rect x="17" y="13" width="3" height="5" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Centros de Costos</div>
+                                    <div class="module-feature-text">Controla la rentabilidad por área, proyecto o
+                                        sucursal</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="module-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="9" y1="13" x2="15" y2="13" />
+                                        <line x1="9" y1="17" x2="15" y2="17" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Medios Magnéticos / Exógena</div>
+                                    <div class="module-feature-text">Genera los reportes DIAN sin dolores de cabeza
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="module-feature-icon module-feature-icon-accent">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M12 6v6l4 2" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Gestión y control de Presupuesto</div>
+                                    <div class="module-feature-text">Planifica tus ingresos y gastos, compara ejecución
+                                        vs presupuesto</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="module-feature-icon module-feature-icon-success">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                        <polyline points="22 4 12 14.01 9 11.01" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Estados Financieros</div>
+                                    <div class="module-feature-text">Balance general, estado de resultados y flujo de
+                                        efectivo automáticos</div>
+                                </div>
+                            </li>
                         </ul>
 
                         <p class="module-outro">
                             Mucho más que llevar cuentas: <strong>obtén una visión clara de tus finanzas
-                            y toma el control de tu negocio.</strong>
+                                y toma el control de tu negocio.</strong>
                         </p>
 
                         <a href="https://wa.me/573207141104?text=Hola,%20quiero%20empezar%20con%20el%20módulo%20de%20Contabilidad"
@@ -489,13 +680,18 @@
                 <div class="module-grid">
                     <div class="module-content fade-in-up">
                         <div class="module-eyebrow">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                            </svg>
+                            <div class="module-icon-animated module-icon-animated-accent">
+                                <div class="module-icon-ring"></div>
+                                <div class="module-icon-core">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                </div>
+                            </div>
                             Nómina
                         </div>
 
@@ -509,12 +705,77 @@
                             reportar y administrar tu nómina de manera eficiente.
                         </p>
 
-                        <ul class="module-features">
-                            <li>Nómina Electrónica ante la DIAN</li>
-                            <li>Liquidación de primas, vacaciones y cesantías</li>
-                            <li>Incapacidades y licencias</li>
-                            <li>Liquidaciones definitivas</li>
-                            <li>Archivo bancario para pago de nómina</li>
+                        <ul class="module-features-list">
+                            <li>
+                                <div class="module-feature-icon module-feature-icon-accent">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="9" y1="15" x2="15" y2="15" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Nómina Electrónica ante la DIAN</div>
+                                    <div class="module-feature-text">Envía la nómina electrónica validada al 100% con la
+                                        DIAN</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="module-feature-icon module-feature-icon-success">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="1" x2="12" y2="23" />
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Primas, vacaciones y cesantías</div>
+                                    <div class="module-feature-text">Liquidación automática y cálculo exacto según la
+                                        normativa</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="module-feature-icon module-feature-icon-danger">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Incapacidades y licencias</div>
+                                    <div class="module-feature-text">Registra incapacidades, licencias de
+                                        maternidad/paternidad y más</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="module-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 11l3 3L22 4" />
+                                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Liquidaciones definitivas</div>
+                                    <div class="module-feature-text">Retiro de empleados, paz y salvo y liquidación
+                                        completa en un clic</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="module-feature-icon module-feature-icon-success">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="6" width="20" height="12" rx="2" />
+                                        <path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="module-feature-title">Archivo bancario para pago</div>
+                                    <div class="module-feature-text">Genera el archivo para pago masivo por banco sin
+                                        errores</div>
+                                </div>
+                            </li>
                         </ul>
 
                         <p class="module-outro">
@@ -559,6 +820,156 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+            MÓDULO: POS - Punto de Venta
+            ============================================ -->
+        <section id="pos" class="pos-section">
+            <div class="container">
+                <div class="pos-grid">
+
+                    <!-- LADO IZQUIERDO: Imagen del POS con efectos -->
+                    <div class="pos-visual scale-in">
+
+                        <!-- Glow de fondo -->
+                        <div class="pos-glow"></div>
+
+                        <!-- Pantallazo del POS -->
+                        <div class="pos-screenshot">
+                            <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/pos-portafolioerp.png"
+                                alt="Punto de Venta Portafolio ERP" loading="lazy">
+                        </div>
+
+                        <!-- Badge flotante: Venta completada -->
+                        <div class="pos-badge pos-badge-1">
+                            <div class="pos-badge-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                            </div>
+                            <div class="pos-badge-content">
+                                <span class="pos-badge-label">Venta #892</span>
+                                <span class="pos-badge-value">Completada</span>
+                            </div>
+                        </div>
+
+                        <!-- Badge flotante: Efectivo -->
+                        <div class="pos-badge pos-badge-2">
+                            <div class="pos-badge-icon pos-badge-icon-accent">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="6" width="20" height="12" rx="2" />
+                                    <circle cx="12" cy="12" r="2" />
+                                    <path d="M6 12h.01M18 12h.01" />
+                                </svg>
+                            </div>
+                            <div class="pos-badge-content">
+                                <span class="pos-badge-label">Caja abierta</span>
+                                <span class="pos-badge-value">$1.240.000</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- LADO DERECHO: Contenido -->
+                    <div class="pos-content fade-in-up">
+                        <div class="pos-eyebrow">
+                            <div class="module-icon-animated module-icon-animated-danger">
+                                <div class="module-icon-ring"></div>
+                                <div class="module-icon-core">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="9" cy="21" r="1" />
+                                        <circle cx="20" cy="21" r="1" />
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                    </svg>
+                                </div>
+                            </div>
+                            Punto de Venta
+                        </div>
+
+                        <h2 class="pos-title">
+                            Vende más rápido y controla tu caja en tiempo real
+                        </h2>
+
+                        <p class="pos-lead">
+                            Un punto de venta ágil, integrado con tu inventario, facturación electrónica
+                            y contabilidad. Ideal para tiendas, restaurantes, ferreterías y cualquier
+                            negocio que necesite vender rápido sin perder el control.
+                        </p>
+
+                        <ul class="pos-features">
+                            <li>
+                                <div class="pos-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="pos-feature-title">Ventas en segundos</div>
+                                    <div class="pos-feature-text">Interfaz rápida con búsqueda inteligente de productos
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pos-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="6" width="20" height="12" rx="2" />
+                                        <circle cx="12" cy="12" r="2" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="pos-feature-title">Múltiples formas de pago</div>
+                                    <div class="pos-feature-text">Efectivo, tarjeta, transferencia y pagos mixtos</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pos-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path
+                                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                                        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                                        <line x1="12" y1="22.08" x2="12" y2="12" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="pos-feature-title">Inventario sincronizado</div>
+                                    <div class="pos-feature-text">Stock actualizado automáticamente con cada venta</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pos-feature-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="pos-feature-title">Factura electrónica automática</div>
+                                    <div class="pos-feature-text">Genera y envía la factura DIAN sin salir del POS</div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <a href="https://wa.me/573207141104?text=Hola,%20quiero%20empezar%20con%20el%20módulo%20POS"
+                            target="_blank" rel="noopener noreferrer" class="module-cta">
+                            Empieza gratis
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </section>

@@ -2396,3 +2396,1227 @@ ul {
         transform: none;
     }
 }
+
+/* ============================================
+   ICONOS ANIMADOS EN MÓDULOS
+   ============================================ */
+.module-icon-animated {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.module-icon-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1.5px dashed color-mix(in srgb, var(--primary) 40%, transparent);
+    animation: icon-ring-spin 8s linear infinite;
+}
+
+.module-icon-ring::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--primary);
+}
+
+.module-icon-core {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary-soft);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    animation: icon-pulse 3s ease-in-out infinite;
+}
+
+.module-icon-core svg {
+    width: 18px;
+    height: 18px;
+}
+
+@keyframes icon-ring-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes icon-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+/* Variantes de color */
+.module-icon-animated-success .module-icon-ring {
+    border-color: color-mix(in srgb, var(--success) 40%, transparent);
+}
+
+.module-icon-animated-success .module-icon-ring::before {
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success);
+}
+
+.module-icon-animated-success .module-icon-core {
+    background: var(--success-soft);
+    color: var(--success);
+}
+
+.module-icon-animated-accent .module-icon-ring {
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.module-icon-animated-accent .module-icon-ring::before {
+    background: var(--accent-dark);
+    box-shadow: 0 0 8px var(--accent);
+}
+
+.module-icon-animated-accent .module-icon-core {
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+}
+
+.module-icon-animated-danger .module-icon-ring {
+    border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+}
+
+.module-icon-animated-danger .module-icon-ring::before {
+    background: var(--danger);
+    box-shadow: 0 0 8px var(--danger);
+}
+
+.module-icon-animated-danger .module-icon-core {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+/* ============================================
+   SECCIÓN POS
+   ============================================ */
+.pos-section {
+    position: relative;
+    padding: 6rem 0;
+    background: var(--bkg);
+    overflow: hidden;
+}
+
+.pos-section::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -15%;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, var(--primary-soft) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.pos-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+}
+
+/* Visual del POS */
+.pos-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+}
+
+.pos-glow {
+    position: absolute;
+    inset: 10%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--primary-soft) 0%, transparent 70%);
+    animation: pulse-slow 5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.pos-screenshot {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    z-index: 2;
+    animation: hero-float 6s ease-in-out infinite;
+}
+
+.pos-screenshot img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: 
+        0 30px 60px -15px rgba(79, 70, 229, 0.35),
+        0 15px 30px -10px rgba(0, 0, 0, 0.15),
+        0 0 0 1px color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+/* Badges flotantes del POS */
+.pos-badge {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.125rem;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-xl);
+    z-index: 3;
+    animation: float-oscillate 4s ease-in-out infinite;
+}
+
+.pos-badge-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--success-soft);
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.pos-badge-icon-accent {
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+}
+
+.pos-badge-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.pos-badge-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    line-height: 1.2;
+}
+
+.pos-badge-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-lighter);
+}
+
+.pos-badge-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.pos-badge-1 {
+    top: 8%;
+    left: -8%;
+    animation-delay: 0s;
+}
+
+.pos-badge-2 {
+    bottom: 10%;
+    right: -8%;
+    animation-delay: 2s;
+}
+
+/* Contenido del POS */
+.pos-content {
+    padding-left: 1rem;
+}
+
+.pos-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.pos-title {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+    text-wrap: balance;
+}
+
+.pos-lead {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+.pos-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.125rem;
+    margin-bottom: 2rem;
+    padding: 0;
+}
+
+.pos-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.pos-feature-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.pos-feature-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.pos-feature-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.125rem;
+    line-height: 1.3;
+}
+
+.pos-feature-text {
+    font-size: 0.85rem;
+    color: var(--ink-lighter);
+    line-height: 1.4;
+}
+
+/* ============================================
+   RESPONSIVE - Iconos y POS
+   ============================================ */
+@media (max-width: 1024px) {
+    .pos-grid {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+    }
+    
+    .pos-visual {
+        order: -1;
+        min-height: 420px;
+    }
+    
+    .pos-content {
+        padding-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .pos-section {
+        padding: 4rem 0;
+    }
+    
+    .pos-visual {
+        min-height: 340px;
+    }
+    
+    .pos-screenshot {
+        max-width: 340px;
+    }
+    
+    .pos-badge {
+        padding: 0.625rem 0.875rem;
+        gap: 0.5rem;
+    }
+    
+    .pos-badge-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .pos-badge-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .pos-badge-label {
+        font-size: 0.625rem;
+    }
+    
+    .pos-badge-value {
+        font-size: 0.8rem;
+    }
+    
+    .pos-badge-1 {
+        top: 0;
+        left: -3%;
+    }
+    
+    .pos-badge-2 {
+        bottom: 0;
+        right: -3%;
+    }
+    
+    /* Iconos de módulos más pequeños en móvil */
+    .module-icon-animated {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .module-icon-core {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .module-icon-core svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* ============================================
+   FONDOS ALTERNADOS DE SECCIONES
+   ============================================ */
+.module-section.alt-bg {
+    background: var(--bkg-alt);
+}
+
+/* Los módulos pares ya tienen alt-bg por clase, ahora alternamos
+   también el módulo POS (que va después de Nómina) */
+.pos-section {
+    background: var(--bkg-alt);
+}
+
+.pos-section.alt-bg {
+    background: var(--bkg);
+}
+
+/* ============================================
+   FEATURES DE MÓDULOS - ESTILO TARJETAS (como POS)
+   ============================================ */
+.module-features-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 0;
+}
+
+.module-features-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+}
+
+.module-feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.module-feature-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.module-feature-icon-success {
+    background: var(--success-soft);
+    color: var(--success);
+}
+
+.module-feature-icon-accent {
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+}
+
+.module-feature-icon-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.module-feature-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.125rem;
+    line-height: 1.3;
+}
+
+.module-feature-text {
+    font-size: 0.8rem;
+    color: var(--ink-lighter);
+    line-height: 1.4;
+}
+
+/* ============================================
+   SECCIÓN SISTEMA - Imagen MacBook con REVEAL ON SCROLL
+   ============================================ */
+.system-section {
+    position: relative;
+    padding: 8rem 0 0;
+    background: linear-gradient(180deg, var(--bkg) 0%, var(--bkg-alt) 100%);
+    overflow: hidden;
+}
+
+[data-theme="dark"] .system-section {
+    background: linear-gradient(180deg, var(--bkg) 0%, var(--bkg-alt-2) 100%);
+}
+
+.system-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 4rem;
+    padding: 0 1.5rem;
+}
+
+.system-header .system-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--primary-soft);
+    color: var(--primary);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.system-header .system-eyebrow svg {
+    width: 14px;
+    height: 14px;
+}
+
+.system-title {
+    font-size: clamp(1.875rem, 4vw, 2.75rem);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    text-wrap: balance;
+}
+
+.system-subtitle {
+    font-size: 1.125rem;
+    color: var(--ink-light);
+    line-height: 1.7;
+    text-wrap: balance;
+}
+
+/* Reveal del MacBook */
+.system-reveal {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    overflow: hidden;
+}
+
+.system-reveal-inner {
+    position: relative;
+    transform: translateY(120px);
+    opacity: 0;
+    transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.1),
+                opacity 1s ease-out;
+    will-change: transform, opacity;
+}
+
+.system-reveal.in-view .system-reveal-inner {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.system-reveal img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    filter: drop-shadow(0 40px 80px rgba(79, 70, 229, 0.35));
+    display: block;
+}
+
+/* Glow detrás de la imagen */
+.system-reveal::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    height: 400px;
+    background: radial-gradient(ellipse, var(--primary-soft) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.system-reveal-inner {
+    position: relative;
+    z-index: 1;
+}
+
+/* Responsive del reveal */
+@media (max-width: 768px) {
+    .system-section {
+        padding: 5rem 0 0;
+    }
+
+    .system-header {
+        margin-bottom: 3rem;
+    }
+
+    .system-reveal-inner {
+        transform: translateY(60px);
+    }
+
+    .system-reveal img {
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+}
+
+@media (max-width: 1024px) {
+    .system-diagram {
+        max-width: 380px;
+    }
+}
+
+/* ============================================
+   TEASER MEDIUM - Mini-hero compacto
+   ============================================ */
+.teaser-medium {
+    position: relative;
+    padding: 4rem 0;
+    background: var(--bkg-alt);
+    overflow: hidden;
+}
+
+[data-theme="dark"] .teaser-medium {
+    background: var(--bkg-alt-2);
+}
+
+.teaser-medium-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 0.85fr 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+
+/* Visual - Factura */
+.teaser-medium-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 280px;
+}
+
+.teaser-medium-glow {
+    position: absolute;
+    inset: 15%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--primary-soft) 0%, transparent 70%);
+    animation: pulse-slow 5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.teaser-medium-visual img {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    border-radius: var(--radius-lg);
+    background: white;
+    box-shadow:
+        0 20px 40px -12px rgba(79, 70, 229, 0.25),
+        0 10px 20px -8px rgba(0, 0, 0, 0.10),
+        0 0 0 1px color-mix(in srgb, var(--border) 60%, transparent);
+    animation: hero-float 6s ease-in-out infinite;
+}
+
+.teaser-medium-badge {
+    position: absolute;
+    bottom: 12%;
+    right: 5%;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.875rem;
+    background: var(--surface-elevated);
+    color: var(--success);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: var(--shadow-lg);
+    animation: float-oscillate 4s ease-in-out infinite;
+    white-space: nowrap;
+}
+
+.teaser-medium-badge svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Contenido */
+.teaser-medium-content {
+    padding-left: 0.5rem;
+}
+
+.teaser-medium-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.875rem;
+    background: var(--primary-soft);
+    color: var(--primary);
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.teaser-medium-eyebrow svg {
+    width: 13px;
+    height: 13px;
+}
+
+.teaser-medium-title {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.875rem;
+    text-wrap: balance;
+}
+
+.teaser-medium-text {
+    font-size: 0.95rem;
+    color: var(--ink-light);
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+    max-width: 480px;
+}
+
+/* Chips */
+.teaser-medium-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.teaser-chip-medium {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.875rem;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all var(--transition);
+}
+
+.teaser-chip-medium svg {
+    width: 15px;
+    height: 15px;
+    color: var(--primary);
+    transition: color var(--transition);
+}
+
+.teaser-chip-medium:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.teaser-chip-medium:hover svg {
+    color: white;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+    .teaser-medium {
+        padding: 3.5rem 0;
+    }
+
+    .teaser-medium-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .teaser-medium-visual {
+        min-height: 240px;
+        order: -1;
+    }
+
+    .teaser-medium-visual img {
+        max-width: 200px;
+    }
+
+    .teaser-medium-badge {
+        bottom: 8%;
+        right: 20%;
+    }
+
+    .teaser-medium-content {
+        text-align: center;
+        padding-left: 0;
+    }
+
+    .teaser-medium-text {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .teaser-medium-chips {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .teaser-medium {
+        padding: 3rem 0;
+    }
+
+    .teaser-medium-visual {
+        min-height: 200px;
+    }
+
+    .teaser-medium-visual img {
+        max-width: 170px;
+    }
+
+    .teaser-medium-badge {
+        font-size: 0.65rem;
+        padding: 0.4rem 0.7rem;
+        bottom: 5%;
+        right: 12%;
+    }
+
+    .teaser-medium-title {
+        font-size: 1.35rem;
+    }
+
+    .teaser-medium-text {
+        font-size: 0.875rem;
+    }
+
+    .teaser-chip-medium {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.75rem;
+    }
+}
+
+/* ============================================
+   TEASER ORBIT - Factura con 4 módulos girando
+   ============================================ */
+.teaser-orbit {
+    position: relative;
+    padding: 4rem 0;
+    background: var(--bkg-alt);
+    overflow: hidden;
+}
+
+[data-theme="dark"] .teaser-orbit {
+    background: var(--bkg-alt-2);
+}
+
+.teaser-orbit-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 0.9fr 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+
+/* Visual - Factura con órbita */
+.teaser-orbit-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    aspect-ratio: 1;
+    max-width: 340px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.teaser-orbit-glow {
+    position: absolute;
+    inset: 15%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--primary-soft) 0%, transparent 70%);
+    animation: pulse-slow 5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Anillos orbitales */
+.teaser-orbit-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1.5px dashed color-mix(in srgb, var(--primary) 25%, transparent);
+    animation: orbit-spin 30s linear infinite;
+    pointer-events: none;
+}
+
+.teaser-orbit-ring::before,
+.teaser-orbit-ring::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--primary);
+}
+
+.teaser-orbit-ring::before {
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.teaser-orbit-ring::after {
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.teaser-orbit-ring-inner {
+    inset: 14%;
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--primary) 12%, transparent);
+    animation-duration: 20s;
+    animation-direction: reverse;
+}
+
+/* Factura central */
+.teaser-orbit-invoice {
+    position: relative;
+    width: 52%;
+    z-index: 2;
+    animation: invoice-pulse 5s ease-in-out infinite;
+}
+
+.teaser-orbit-invoice img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    background: white;
+    box-shadow:
+        0 20px 40px -12px rgba(79, 70, 229, 0.30),
+        0 10px 20px -8px rgba(0, 0, 0, 0.12),
+        0 0 0 1px color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+@keyframes invoice-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+/* ============================================
+   SATÉLITES ORBITALES - Fuera de la factura
+   ============================================ */
+.teaser-orbit-satellite {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 56px;
+    height: 56px;
+    margin: -28px 0 0 -28px;
+    animation: orbit-satellite-rotate 24s linear infinite;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.teaser-orbit-satellite-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 8px 20px rgba(79, 70, 229, 0.25),
+        0 0 0 3px var(--bkg-alt),
+        0 0 0 5px color-mix(in srgb, var(--primary) 15%, transparent);
+    animation: orbit-satellite-counter-rotate 24s linear infinite;
+    padding: 10px;
+    color: var(--primary);
+}
+
+.teaser-orbit-satellite-inner svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Colores por satélite */
+.teaser-orbit-satellite-2 .teaser-orbit-satellite-inner {
+    color: var(--success);
+    box-shadow:
+        0 8px 20px rgba(16, 185, 129, 0.25),
+        0 0 0 3px var(--bkg-alt),
+        0 0 0 5px color-mix(in srgb, var(--success) 15%, transparent);
+}
+
+.teaser-orbit-satellite-3 .teaser-orbit-satellite-inner {
+    color: var(--accent-dark);
+    box-shadow:
+        0 8px 20px rgba(251, 191, 36, 0.30),
+        0 0 0 3px var(--bkg-alt),
+        0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.teaser-orbit-satellite-4 .teaser-orbit-satellite-inner {
+    color: var(--danger);
+    box-shadow:
+        0 8px 20px rgba(239, 68, 68, 0.25),
+        0 0 0 3px var(--bkg-alt),
+        0 0 0 5px color-mix(in srgb, var(--danger) 15%, transparent);
+}
+
+/* ============================================
+   ANIMACIONES DE ÓRBITA - Radio en píxeles
+   ============================================ */
+/* El radio de 130px hace que los satélites giren
+   POR FUERA de la factura (~90px de ancho).
+   
+   Ajusta este valor para acercar o alejar los satélites:
+   - 110px → pegados a la factura
+   - 130px → cómodos (recomendado)
+   - 150px → muy separados */
+@keyframes orbit-satellite-rotate {
+    from { transform: rotate(0deg) translateX(130px) rotate(0deg); }
+    to   { transform: rotate(360deg) translateX(130px) rotate(0deg); }
+}
+
+@keyframes orbit-satellite-counter-rotate {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(-360deg); }
+}
+
+/* ============================================
+   DESFASE DE SATÉLITES (4 satélites = 90° c/u)
+   ============================================ */
+.teaser-orbit-satellite {
+    animation-delay: 0s;
+}
+.teaser-orbit-satellite .teaser-orbit-satellite-inner {
+    animation-delay: 0s;
+}
+
+.teaser-orbit-satellite-2 {
+    animation-delay: -6s;
+}
+.teaser-orbit-satellite-2 .teaser-orbit-satellite-inner {
+    animation-delay: -6s;
+}
+
+.teaser-orbit-satellite-3 {
+    animation-delay: -12s;
+}
+.teaser-orbit-satellite-3 .teaser-orbit-satellite-inner {
+    animation-delay: -12s;
+}
+
+.teaser-orbit-satellite-4 {
+    animation-delay: -18s;
+}
+.teaser-orbit-satellite-4 .teaser-orbit-satellite-inner {
+    animation-delay: -18s;
+}
+
+/* ============================================
+   RESPONSIVE - Radio menor en pantallas pequeñas
+   ============================================ */
+@media (max-width: 1024px) {
+    .teaser-orbit-satellite {
+        width: 48px;
+        height: 48px;
+        margin: -24px 0 0 -24px;
+    }
+
+    .teaser-orbit-satellite-inner {
+        padding: 8px;
+    }
+
+    @keyframes orbit-satellite-rotate {
+        from { transform: rotate(0deg) translateX(115px) rotate(0deg); }
+        to   { transform: rotate(360deg) translateX(115px) rotate(0deg); }
+    }
+}
+
+@media (max-width: 640px) {
+    .teaser-orbit-satellite {
+        width: 40px;
+        height: 40px;
+        margin: -20px 0 0 -20px;
+    }
+
+    .teaser-orbit-satellite-inner {
+        padding: 6px;
+        box-shadow:
+            0 6px 16px rgba(79, 70, 229, 0.25),
+            0 0 0 2px var(--bkg-alt),
+            0 0 0 4px color-mix(in srgb, var(--primary) 15%, transparent);
+    }
+
+    @keyframes orbit-satellite-rotate {
+        from { transform: rotate(0deg) translateX(95px) rotate(0deg); }
+        to   { transform: rotate(360deg) translateX(95px) rotate(0deg); }
+    }
+}
+
+/* Animaciones de órbita */
+@keyframes orbit-satellite-rotate {
+    from { transform: rotate(0deg) translateX(50%) rotate(0deg); }
+    to   { transform: rotate(360deg) translateX(50%) rotate(0deg); }
+}
+
+@keyframes orbit-satellite-counter-rotate {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(-360deg); }
+}
+
+/* Contenido */
+.teaser-orbit-content {
+    padding-left: 0.5rem;
+}
+
+.teaser-orbit-title {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.875rem;
+    text-wrap: balance;
+}
+
+.teaser-orbit-text {
+    font-size: 0.95rem;
+    color: var(--ink-light);
+    line-height: 1.65;
+    max-width: 480px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+    .teaser-orbit {
+        padding: 3.5rem 0;
+    }
+
+    .teaser-orbit-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .teaser-orbit-visual {
+        max-width: 300px;
+        min-height: 300px;
+        order: -1;
+    }
+
+    .teaser-orbit-content {
+        text-align: center;
+        padding-left: 0;
+    }
+
+    .teaser-orbit-text {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .teaser-orbit-content .module-eyebrow {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .teaser-orbit {
+        padding: 3rem 0;
+    }
+
+    .teaser-orbit-visual {
+        max-width: 260px;
+        min-height: 260px;
+    }
+
+    .teaser-orbit-satellite {
+        width: 44px;
+        height: 44px;
+        margin: -22px 0 0 -22px;
+    }
+
+    .teaser-orbit-satellite-inner {
+        padding: 8px;
+        box-shadow:
+            0 6px 16px rgba(79, 70, 229, 0.25),
+            0 0 0 2px var(--bkg-alt),
+            0 0 0 4px color-mix(in srgb, var(--primary) 15%, transparent);
+    }
+
+    .teaser-orbit-title {
+        font-size: 1.35rem;
+    }
+
+    .teaser-orbit-text {
+        font-size: 0.875rem;
+    }
+}
