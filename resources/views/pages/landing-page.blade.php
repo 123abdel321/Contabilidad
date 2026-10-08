@@ -7,19 +7,16 @@
 
     <title>Portafolio ERP | Software Contable y Facturación Electrónica DIAN Colombia</title>
 
-    <!-- Favicons -->
     <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
     <link rel="apple-touch-icon" href="/img/logo_contabilidad.png">
     <link rel="mask-icon" href="/img/logo_contabilidad.png" color="#4f46e5">
 
-    <!-- SEO Meta -->
     <meta name="description"
         content="Software ERP colombiano con Contabilidad DIAN, Facturación Electrónica, Nómina y POS. Todo en una plataforma 100% web. Cumple con la normativa fiscal.">
     <meta name="theme-color" content="#4f46e5">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://portafolioerp.com/">
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Portafolio ERP">
     <meta property="og:locale" content="es_CO">
@@ -29,20 +26,17 @@
     <meta property="og:url" content="https://portafolioerp.com/">
     <meta property="og:image" content="https://portafolioerp.com/img/og-image.jpg">
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Portafolio ERP - Software Contable DIAN Colombia">
     <meta name="twitter:description"
         content="Automatiza tu empresa con Portafolio ERP. Facturación DIAN, contabilidad y nómina en una sola plataforma.">
     <meta name="twitter:image" content="https://portafolioerp.com/img/og-image.jpg">
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
 
-    <!-- Schema Markup -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -66,7 +60,6 @@
     }
     </script>
 
-    <!-- Prevención de flash en tema oscuro -->
     <script>
         (function () {
             try {
@@ -85,9 +78,6 @@
 
 <body>
 
-    <!-- ============================================
-         HEADER
-         ============================================ -->
     <header class="header" id="header">
         <div class="container header-content">
             <a href="/" class="logo" aria-label="Portafolio ERP - Inicio">
@@ -139,9 +129,6 @@
         </div>
     </header>
 
-    <!-- ============================================
-         BOTONES FLOTANTES
-         ============================================ -->
     <a href="https://wa.me/573332475846?text=Hola,%20quiero%20una%20demo%20de%20Portafolio%20ERP" target="_blank"
         rel="noopener noreferrer" class="whatsapp-float" aria-label="Contáctanos por WhatsApp">
         <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">
@@ -159,9 +146,6 @@
 
     <main id="main">
 
-        <!-- ============================================
-             HERO
-             ============================================ -->
         <section id="inicio" class="hero">
             <div class="container">
                 <div class="hero-grid">
@@ -265,9 +249,6 @@
             </div>
         </section>
 
-        <!-- ============================================
-             TEASER - Factura con 4 módulos girando
-             ============================================ -->
         <section id="sistema" class="teaser-orbit">
             <div class="container">
                 <div class="teaser-orbit-grid">
@@ -283,7 +264,6 @@
                                 alt="Factura electrónica Portafolio ERP" loading="lazy">
                         </div>
 
-                        <!-- Satélite 1: Facturación -->
                         <div class="teaser-orbit-satellite">
                             <div class="teaser-orbit-satellite-inner">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -296,7 +276,6 @@
                             </div>
                         </div>
 
-                        <!-- Satélite 2: Contabilidad -->
                         <div class="teaser-orbit-satellite teaser-orbit-satellite-2">
                             <div class="teaser-orbit-satellite-inner">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -307,7 +286,6 @@
                             </div>
                         </div>
 
-                        <!-- Satélite 3: Nómina -->
                         <div class="teaser-orbit-satellite teaser-orbit-satellite-3">
                             <div class="teaser-orbit-satellite-inner">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -320,7 +298,6 @@
                             </div>
                         </div>
 
-                        <!-- Satélite 4: POS -->
                         <div class="teaser-orbit-satellite teaser-orbit-satellite-4">
                             <div class="teaser-orbit-satellite-inner">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -362,63 +339,50 @@
             </div>
         </section>
 
-        <!-- ============================================
-     MODULES WRAPPER con RAMA SVG GLOBAL
-     ============================================ -->
         <div class="modules-wrapper">
 
-            <!-- Franjas de fondo alternadas (no tapan la rama) -->
             <div class="module-bg-stripe module-bg-stripe-1"></div>
             <div class="module-bg-stripe module-bg-stripe-2"></div>
             <div class="module-bg-stripe module-bg-stripe-3"></div>
             <div class="module-bg-stripe module-bg-stripe-4"></div>
 
-            <!-- Rama SVG que conecta los 4 módulos -->
             <div class="modules-branch" aria-hidden="true">
                 <svg viewBox="0 0 200 3000" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Rama base (gris tenue) -->
                     <path class="branch-path branch-path-base" d="M 100 0 
-                     C 100 100, 40 150, 40 250 
-                     C 40 350, 160 400, 160 500 
-                     C 160 600, 40 650, 40 750 
-                     C 40 850, 160 900, 160 1000
-                     C 160 1100, 40 1150, 40 1250
-                     C 40 1350, 160 1400, 160 1500
-                     C 160 1600, 40 1650, 40 1750
-                     C 40 1850, 160 1900, 160 2000
-                     C 160 2100, 40 2150, 40 2250
-                     C 40 2350, 160 2400, 160 2500
-                     C 160 2600, 40 2650, 40 2750
-                     C 40 2850, 100 2900, 100 3000" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" />
+                 C 100 120, 60 180, 60 280 
+                 C 60 380, 140 440, 140 540 
+                 C 140 640, 60 700, 60 800 
+                 C 60 900, 140 960, 140 1060
+                 C 140 1160, 60 1220, 60 1320
+                 C 60 1420, 140 1480, 140 1580
+                 C 140 1680, 60 1740, 60 1840
+                 C 60 1940, 140 2000, 140 2100
+                 C 140 2200, 60 2260, 60 2360
+                 C 60 2460, 140 2520, 140 2620
+                 C 140 2720, 60 2780, 60 2880
+                 C 60 2960, 100 2980, 100 3000" fill="none" stroke="currentColor" stroke-linecap="round" />
 
-                    <!-- Rama activa (coloreada con el scroll) -->
                     <path class="branch-path branch-path-active" d="M 100 0 
-                     C 100 100, 40 150, 40 250 
-                     C 40 350, 160 400, 160 500 
-                     C 160 600, 40 650, 40 750 
-                     C 40 850, 160 900, 160 1000
-                     C 160 1100, 40 1150, 40 1250
-                     C 40 1350, 160 1400, 160 1500
-                     C 160 1600, 40 1650, 40 1750
-                     C 40 1850, 160 1900, 160 2000
-                     C 160 2100, 40 2150, 40 2250
-                     C 40 2350, 160 2400, 160 2500
-                     C 160 2600, 40 2650, 40 2750
-                     C 40 2850, 100 2900, 100 3000" fill="none" stroke="currentColor" stroke-width="3"
-                        stroke-linecap="round" />
+                 C 100 120, 60 180, 60 280 
+                 C 60 380, 140 440, 140 540 
+                 C 140 640, 60 700, 60 800 
+                 C 60 900, 140 960, 140 1060
+                 C 140 1160, 60 1220, 60 1320
+                 C 60 1420, 140 1480, 140 1580
+                 C 140 1680, 60 1740, 60 1840
+                 C 60 1940, 140 2000, 140 2100
+                 C 140 2200, 60 2260, 60 2360
+                 C 60 2460, 140 2520, 140 2620
+                 C 140 2720, 60 2780, 60 2880
+                 C 60 2960, 100 2980, 100 3000" fill="none" stroke="currentColor" stroke-linecap="round" />
 
-                    <!-- Nodos por módulo -->
-                    <circle class="branch-node branch-node-1" cx="100" cy="375" r="8" />
-                    <circle class="branch-node branch-node-2" cx="100" cy="1125" r="8" />
-                    <circle class="branch-node branch-node-3" cx="100" cy="1875" r="8" />
-                    <circle class="branch-node branch-node-4" cx="100" cy="2625" r="8" />
+                    <circle class="branch-node branch-node-1" cx="100" cy="375" r="9" />
+                    <circle class="branch-node branch-node-2" cx="100" cy="1125" r="9" />
+                    <circle class="branch-node branch-node-3" cx="100" cy="1875" r="9" />
+                    <circle class="branch-node branch-node-4" cx="100" cy="2625" r="9" />
                 </svg>
             </div>
 
-            <!-- ============================================
-         MÓDULO: FACTURACIÓN
-         ============================================ -->
             <section id="facturacion" class="module-section" data-branch-color="#4f46e5">
                 <div class="container">
                     <div class="module-grid">
@@ -453,16 +417,14 @@
                                     <div class="module-feature-icon">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                            <polyline points="14 2 14 8 20 8" />
-                                            <line x1="9" y1="15" x2="15" y2="15" />
+                                            <circle cx="12" cy="12" r="10" />
+                                            <polyline points="12 6 12 12 16 14" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <div class="module-feature-title">Facturación Electrónica y POS Electrónico
-                                        </div>
-                                        <div class="module-feature-text">Emite facturas DIAN válidas en segundos desde
-                                            cualquier dispositivo</div>
+                                        <div class="module-feature-title">Pagos reflejados en tiempo real</div>
+                                        <div class="module-feature-text">Cada transacción se actualiza al instante en el
+                                            sistema</div>
                                     </div>
                                 </li>
                                 <li>
@@ -474,23 +436,24 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <div class="module-feature-title">Documento Soporte Electrónico ILIMITADO</div>
-                                        <div class="module-feature-text">Soporta tus compras sin costo adicional, sin
-                                            límites mensuales</div>
+                                        <div class="module-feature-title">Facturación electrónica DIAN</div>
+                                        <div class="module-feature-text">Emite facturas válidas en segundos con
+                                            validación automática</div>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="module-feature-icon module-feature-icon-accent">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M3 3v18h18" />
-                                            <path d="m19 9-5 5-4-4-3 3" />
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                            <polyline points="14 2 14 8 20 8" />
+                                            <line x1="9" y1="15" x2="15" y2="15" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <div class="module-feature-title">Notas Crédito y Débito Ilimitadas</div>
-                                        <div class="module-feature-text">Ajusta tus ventas electrónicamente sin
-                                            restricciones</div>
+                                        <div class="module-feature-title">Documento Soporte Ilimitado</div>
+                                        <div class="module-feature-text">Sin costos adicionales ni límites mensuales
+                                        </div>
                                     </div>
                                 </li>
                                 <li>
@@ -504,10 +467,9 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <div class="module-feature-title">Control de días y cupos</div>
-                                        <div class="module-feature-text">Configura plazos, cupos de crédito y controla
-                                            tu
-                                            cartera desde la factura</div>
+                                        <div class="module-feature-title">Causación automática de cuentas</div>
+                                        <div class="module-feature-text">Cada venta se contabiliza automáticamente sin
+                                            intervención</div>
                                     </div>
                                 </li>
                                 <li>
@@ -523,8 +485,7 @@
                                     <div>
                                         <div class="module-feature-title">Informes avanzados con filtros</div>
                                         <div class="module-feature-text">Analiza tus ventas por producto, cliente, fecha
-                                            y
-                                            vendedor</div>
+                                            y vendedor</div>
                                     </div>
                                 </li>
                             </ul>
@@ -545,39 +506,21 @@
                             </a>
                         </div>
 
-                        <div class="module-visual scale-in">
+                        <div class="module-visual scale-in" style="width: 100% !important;height: 100%;">
                             <div class="module-visual-images">
                                 <img src="https://app.portafolioerp.com/img/facturacion-1.png"
                                     alt="Ventana de facturación electrónica" class="module-visual-img" loading="lazy"
                                     width="650" height="650"
-                                    onerror="this.style.opacity='0'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
+                                    onerror="this.style.display='none'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
                                 <img src="https://app.portafolioerp.com/img/facturacion-2.png"
                                     alt="Informes de facturación" class="module-visual-img secondary" loading="lazy"
-                                    width="650" height="650" onerror="this.style.opacity='0';">
-                            </div>
-
-                            <div class="module-visual-fallback" style="display:none;">
-                                <div>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                        <polyline points="14 2 14 8 20 8" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <path d="M3 3v18h18" />
-                                        <path d="m19 9-5 5-4-4-3 3" />
-                                    </svg>
-                                </div>
+                                    width="650" height="650" onerror="this.style.display='none';">
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ============================================
-         MÓDULO: CONTABILIDAD
-         ============================================ -->
             <section id="contabilidad" class="module-section" data-branch-color="#10b981">
                 <div class="container">
                     <div class="module-grid reverse">
@@ -605,6 +548,34 @@
                             </p>
 
                             <ul class="module-features-list">
+                                <li>
+                                    <div class="module-feature-icon module-feature-icon-success">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                            <polyline points="22 4 12 14.01 9 11.01" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="module-feature-title">Causación automática de asientos</div>
+                                        <div class="module-feature-text">Cada movimiento se contabiliza automáticamente
+                                            con clasificación inteligente</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="module-feature-icon module-feature-icon-accent">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 3v18h18" />
+                                            <path d="m19 9-5 5-4-4-3 3" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="module-feature-title">Reportes en tiempo real</div>
+                                        <div class="module-feature-text">Estados financieros actualizados al instante
+                                            con cada transacción</div>
+                                    </div>
+                                </li>
                                 <li>
                                     <div class="module-feature-icon module-feature-icon-success">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -646,25 +617,9 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <div class="module-feature-title">Gestión y control de Presupuesto</div>
-                                        <div class="module-feature-text">Planifica tus ingresos y gastos, compara
-                                            ejecución
-                                            vs presupuesto</div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="module-feature-icon module-feature-icon-success">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                            <polyline points="22 4 12 14.01 9 11.01" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="module-feature-title">Estados Financieros</div>
-                                        <div class="module-feature-text">Balance general, estado de resultados y flujo
-                                            de
-                                            efectivo automáticos</div>
+                                        <div class="module-feature-title">Cumplimiento tributario</div>
+                                        <div class="module-feature-text">Certificados de retención, ICA e IVA generados
+                                            automáticamente</div>
                                     </div>
                                 </li>
                             </ul>
@@ -688,35 +643,18 @@
                         <div class="module-visual scale-in">
                             <div class="module-visual-images">
                                 <img src="https://app.portafolioerp.com/img/contabilidad-1.png"
-                                    alt="Ventana de contabilidad" class="module-visual-img" loading="lazy" width="650"
-                                    height="650"
-                                    onerror="this.style.opacity='0'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
+                                    alt="Ventana de contabilidad" class="module-visual-img" loading="lazy"
+                                    width="650" height="650"
+                                    onerror="this.style.display='none'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
                                 <img src="https://app.portafolioerp.com/img/contabilidad-2.png"
                                     alt="Estados financieros" class="module-visual-img secondary" loading="lazy"
-                                    width="650" height="650" onerror="this.style.opacity='0';">
-                            </div>
-
-                            <div class="module-visual-fallback" style="display:none;">
-                                <div>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <path d="M3 3v18h18" />
-                                        <path d="m19 9-5 5-4-4-3 3" />
-                                    </svg>
-                                </div>
+                                    width="650" height="650" onerror="this.style.display='none';">
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ============================================
-         MÓDULO: NÓMINA
-         ============================================ -->
             <section id="nomina" class="module-section" data-branch-color="#f59e0b">
                 <div class="container">
                     <div class="module-grid">
@@ -758,10 +696,9 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <div class="module-feature-title">Nómina Electrónica ante la DIAN</div>
+                                        <div class="module-feature-title">Nómina Electrónica DIAN</div>
                                         <div class="module-feature-text">Envía la nómina electrónica validada al 100%
-                                            con la
-                                            DIAN</div>
+                                            con la DIAN</div>
                                     </div>
                                 </li>
                                 <li>
@@ -773,10 +710,9 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <div class="module-feature-title">Primas, vacaciones y cesantías</div>
-                                        <div class="module-feature-text">Liquidación automática y cálculo exacto según
-                                            la
-                                            normativa</div>
+                                        <div class="module-feature-title">Causación automática</div>
+                                        <div class="module-feature-text">Cada liquidación se contabiliza automáticamente
+                                            en el sistema</div>
                                     </div>
                                 </li>
                                 <li>
@@ -788,8 +724,8 @@
                                     </div>
                                     <div>
                                         <div class="module-feature-title">Incapacidades y licencias</div>
-                                        <div class="module-feature-text">Registra incapacidades, licencias de
-                                            maternidad/paternidad y más</div>
+                                        <div class="module-feature-text">Registra incapacidades y licencias de
+                                            maternidad/paternidad</div>
                                     </div>
                                 </li>
                                 <li>
@@ -817,8 +753,7 @@
                                     <div>
                                         <div class="module-feature-title">Archivo bancario para pago</div>
                                         <div class="module-feature-text">Genera el archivo para pago masivo por banco
-                                            sin
-                                            errores</div>
+                                            sin errores</div>
                                     </div>
                                 </li>
                             </ul>
@@ -844,34 +779,16 @@
                                 <img src="https://app.portafolioerp.com/img/nomina-1.png"
                                     alt="Ventana de nómina electrónica" class="module-visual-img" loading="lazy"
                                     width="650" height="650"
-                                    onerror="this.style.opacity='0'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
+                                    onerror="this.style.display='none'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
                                 <img src="https://app.portafolioerp.com/img/nomina-2.png" alt="Liquidación de nómina"
                                     class="module-visual-img secondary" loading="lazy" width="650" height="650"
-                                    onerror="this.style.opacity='0';">
-                            </div>
-
-                            <div class="module-visual-fallback" style="display:none;">
-                                <div>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                        <circle cx="9" cy="7" r="4" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <path d="M3 3v18h18" />
-                                        <path d="m19 9-5 5-4-4-3 3" />
-                                    </svg>
-                                </div>
+                                    onerror="this.style.display='none';">
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ============================================
-         MÓDULO: POS
-         ============================================ -->
             <section id="pos" class="module-section" data-branch-color="#ef4444">
                 <div class="container">
                     <div class="module-grid reverse">
@@ -906,6 +823,20 @@
                                     <div class="module-feature-icon">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <polyline points="12 6 12 12 16 14" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="module-feature-title">Pagos reflejados en tiempo real</div>
+                                        <div class="module-feature-text">Cada venta se registra al instante en el
+                                            sistema y la contabilidad</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="module-feature-icon module-feature-icon-accent">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
                                             <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                                         </svg>
                                     </div>
@@ -913,20 +844,6 @@
                                         <div class="module-feature-title">Ventas en segundos</div>
                                         <div class="module-feature-text">Interfaz rápida con búsqueda inteligente de
                                             productos</div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="module-feature-icon module-feature-icon-accent">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <rect x="2" y="6" width="20" height="12" rx="2" />
-                                            <circle cx="12" cy="12" r="2" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="module-feature-title">Múltiples formas de pago</div>
-                                        <div class="module-feature-text">Efectivo, tarjeta, transferencia y pagos mixtos
-                                        </div>
                                     </div>
                                 </li>
                                 <li>
@@ -942,12 +859,25 @@
                                     <div>
                                         <div class="module-feature-title">Inventario sincronizado</div>
                                         <div class="module-feature-text">Stock actualizado automáticamente con cada
-                                            venta
-                                        </div>
+                                            venta</div>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="module-feature-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="2" y="6" width="20" height="12" rx="2" />
+                                            <circle cx="12" cy="12" r="2" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="module-feature-title">Múltiples formas de pago</div>
+                                        <div class="module-feature-text">Efectivo, tarjeta, transferencia y pagos mixtos
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="module-feature-icon module-feature-icon-accent">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -957,8 +887,7 @@
                                     <div>
                                         <div class="module-feature-title">Factura electrónica automática</div>
                                         <div class="module-feature-text">Genera y envía la factura DIAN sin salir del
-                                            POS
-                                        </div>
+                                            POS</div>
                                     </div>
                                 </li>
                             </ul>
@@ -980,22 +909,158 @@
                         </div>
 
                         <div class="module-visual scale-in">
-                            <div class="module-visual-images">
-                                <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/pos-portafolioerp.png"
-                                    alt="Punto de Venta Portafolio ERP" class="module-visual-img" loading="lazy"
-                                    width="650" height="650"
-                                    onerror="this.style.opacity='0'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
-                                <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/pos-portafolioerp.png"
-                                    alt="POS Portafolio ERP" class="module-visual-img secondary" loading="lazy"
-                                    width="650" height="650" onerror="this.style.opacity='0';">
+                            <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/pos-portafolioerp.png"
+                                alt="Punto de Venta Portafolio ERP"
+                                class="module-visual-single"
+                                loading="lazy"
+                                onerror="this.style.display='none'; this.parentElement.querySelector('.module-visual-fallback').style.display='flex';">
+
+                            <div class="module-visual-fallback" style="display:none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="9" cy="21" r="1" />
+                                    <circle cx="20" cy="21" r="1" />
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                </svg>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="maximo-ph" class="module-section" data-branch-color="#8b5cf6">
+                <div class="container">
+                    <div class="module-grid">
+                        <div class="module-content fade-in-up">
+                            <div class="module-eyebrow">
+                                <div class="module-icon-animated">
+                                    <div class="module-icon-ring"></div>
+                                    <div class="module-icon-core">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 21h18" />
+                                            <path d="M5 21V7l8-4v18" />
+                                            <path d="M19 21V11l-6-4" />
+                                            <path d="M9 9v.01" />
+                                            <path d="M9 12v.01" />
+                                            <path d="M9 15v.01" />
+                                            <path d="M9 18v.01" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                Maximo PH
+                            </div>
+
+                            <h2 class="module-title">
+                                Software líder en Propiedad Horizontal
+                            </h2>
+
+                            <p class="module-lead">
+                                Ecosistema integral diseñado para optimizar la gestión administrativa, facturación
+                                y contable de tu comunidad. Mantente informado en tiempo real con nuestro soporte
+                                personalizado.
+                            </p>
+
+                            <ul class="module-features-list">
+                                <li>
+                                    <div class="module-feature-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 3v18h18" />
+                                            <rect x="7" y="10" width="3" height="8" />
+                                            <rect x="12" y="6" width="3" height="12" />
+                                            <rect x="17" y="13" width="3" height="5" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="module-feature-title">Facturación por Coeficientes</div>
+                                        <div class="module-feature-text">Cálculo automático de administración por
+                                            coeficientes, separado por cada inmueble</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="module-feature-icon module-feature-icon-success">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                            <polyline points="22 4 12 14.01 9 11.01" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="module-feature-title">Cruce automático de anticipos</div>
+                                        <div class="module-feature-text">Gestión eficiente de pagos anticipados con
+                                            reconciliación automática</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="module-feature-icon module-feature-icon-accent">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <polyline points="12 6 12 12 16 14" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="module-feature-title">Causación de intereses</div>
+                                        <div class="module-feature-text">Cálculo automático de intereses por saldos
+                                            morosos en tiempo real</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="module-feature-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                            <polyline points="14 2 14 8 20 8" />
+                                            <line x1="9" y1="15" x2="15" y2="15" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="module-feature-title">Cuotas extras y multas</div>
+                                        <div class="module-feature-text">Aplica cuotas extraordinarias por coeficientes
+                                            o multas, individual o masivamente</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="module-feature-icon module-feature-icon-success">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                            <path d="m2 17 10 5 10-5" />
+                                            <path d="m2 12 10 5 10-5" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="module-feature-title">Facturación electrónica DIAN</div>
+                                        <div class="module-feature-text">Gestión completa de facturas electrónicas para
+                                            administraciones comerciales o mixtas</div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <p class="module-outro">
+                                <strong>Más de 500 propiedades confían en Maximo PH</strong> para optimizar
+                                su gestión administrativa y financiera.
+                            </p>
+
+                            <a href="https://wa.me/573332475846?text=Hola,%20quiero%20empezar%20con%20Maximo%20PH"
+                                target="_blank" rel="noopener noreferrer" class="module-cta">
+                                Comienza ahora
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                    <polyline points="12 5 19 12 12 19" />
+                                </svg>
+                            </a>
+                        </div>
+
+                        <div class="module-visual scale-in">
 
                             <div class="module-visual-fallback" style="display:none;">
                                 <div>
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <circle cx="9" cy="21" r="1" />
-                                        <circle cx="20" cy="21" r="1" />
-                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                        <path d="M3 21h18" />
+                                        <path d="M5 21V7l8-4v18" />
+                                        <path d="M19 21V11l-6-4" />
                                     </svg>
                                 </div>
                                 <div>
@@ -1013,9 +1078,6 @@
         </div>
         <!-- FIN modules-wrapper -->
 
-        <!-- ============================================
-             ESTADÍSTICAS
-             ============================================ -->
         <section class="stats-section">
             <div class="container">
                 <div class="stats-grid">
@@ -1046,9 +1108,6 @@
 
     </main>
 
-    <!-- ============================================
-         FOOTER
-         ============================================ -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
@@ -1166,16 +1225,10 @@
         </div>
     </footer>
 
-    <!-- ============================================
-         JAVASCRIPT
-         ============================================ -->
     <script>
         (function () {
             'use strict';
 
-            /* ============================================
-               TEMA CLARO/OSCURO
-               ============================================ */
             const themeToggle = document.getElementById('themeToggle');
             const html = document.documentElement;
 
@@ -1214,9 +1267,6 @@
                 });
             }
 
-            /* ============================================
-               HEADER SCROLL
-               ============================================ */
             const header = document.getElementById('header');
             const scrollTopBtn = document.getElementById('scrollTopBtn');
 
@@ -1239,9 +1289,6 @@
                 updateActiveNav();
             }
 
-            /* ============================================
-               MENÚ MÓVIL
-               ============================================ */
             const mobileToggle = document.getElementById('mobileToggle');
             const nav = document.getElementById('nav');
 
@@ -1284,9 +1331,6 @@
                 }, 150);
             });
 
-            /* ============================================
-               SMOOTH SCROLL
-               ============================================ */
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     const targetId = this.getAttribute('href');
@@ -1305,9 +1349,6 @@
                 });
             });
 
-            /* ============================================
-               NAV ACTIVO EN SCROLL
-               ============================================ */
             const navLinks = document.querySelectorAll('.nav-link');
 
             function updateActiveNav() {
@@ -1331,18 +1372,12 @@
                 });
             }
 
-            /* ============================================
-               SCROLL TO TOP
-               ============================================ */
             if (scrollTopBtn) {
                 scrollTopBtn.addEventListener('click', () => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
             }
 
-            /* ============================================
-               INTERSECTION OBSERVER - ANIMACIONES
-               ============================================ */
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: '0px 0px -80px 0px'
@@ -1361,9 +1396,6 @@
                 animationObserver.observe(el);
             });
 
-            /* ============================================
-               CONTADORES ANIMADOS
-               ============================================ */
             function animateCounter(el) {
                 const target = parseInt(el.dataset.count, 10);
                 const duration = 2000;
@@ -1398,9 +1430,6 @@
                 counterObserver.observe(el);
             });
 
-            /* ============================================
-               RAMA SVG GLOBAL - Animación con scroll
-               ============================================ */
             (function initBranch() {
                 const wrapper = document.querySelector('.modules-wrapper');
                 const branch = document.querySelector('.modules-branch');
@@ -1486,9 +1515,6 @@
                 window.addEventListener('resize', updateBranch);
             })();
 
-            /* ============================================
-               INIT
-               ============================================ */
             handleScroll();
             updateActiveNav();
 
