@@ -4,41 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- ============================================
-         TITLE PRINCIPAL — ERP Suite multi-módulo
+         TITLE Y DESCRIPTION
          ============================================ -->
-    <title>Portafolio ERP | Suite de Gestión Empresarial, Facturación Electrónica DIAN, POS y Propiedad Horizontal</title>
-
-    <!-- ============================================
-         FAVICONS
-         ============================================ -->
-    <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
-    <link rel="apple-touch-icon" href="/img/logo_contabilidad.png">
-    <link rel="mask-icon" href="/img/logo_contabilidad.png" color="#4f46e5">
-    <link rel="manifest" href="/manifest.webmanifest">
-
-    <!-- ============================================
-         SEO PRIMARIO
-         ============================================ -->
+    <title>Portafolio ERP | Software Contable, Facturación DIAN y Nómina</title>
     <meta name="description"
-        content="Portafolio ERP es la suite de gestión empresarial para Colombia y Latinoamérica: facturación electrónica DIAN, contabilidad, nómina, POS, inventario y propiedad horizontal. 100% web, multiempresa y multi-sucursal. Cotización a la medida según tu operación.">
-    <meta name="keywords"
-        content="ERP Colombia, software contable, facturación electrónica DIAN, nómina electrónica, POS, propiedad horizontal, Máximo PH, ERP pymes, software empresarial, contabilidad Colombia">
+        content="ERP 100% web para Colombia: facturación electrónica DIAN, contabilidad, nómina, POS y propiedad horizontal. Solicita tu cotización.">
+
     <meta name="author" content="Portafolio ERP">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <meta name="googlebot" content="index, follow">
     <meta name="theme-color" content="#4f46e5">
     <meta name="color-scheme" content="light dark">
     <link rel="canonical" href="https://portafolioerp.com/">
 
     <!-- ============================================
-         HREFLANG — Preparado para expansión LatAm
+         FAVICONS Y MANIFEST
          ============================================ -->
-    <link rel="alternate" hreflang="es-co" href="https://portafolioerp.com/">
-    <link rel="alternate" hreflang="es" href="https://portafolioerp.com/">
-    <link rel="alternate" hreflang="x-default" href="https://portafolioerp.com/">
+    <link rel="icon" type="image/png" href="/img/logo_contabilidad.png">
+    <link rel="apple-touch-icon" href="/img/logo_contabilidad.png">
+    <link rel="manifest" href="/manifest.webmanifest">
 
     <!-- ============================================
          OPEN GRAPH (Facebook, LinkedIn, WhatsApp)
@@ -46,13 +31,11 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Portafolio ERP">
     <meta property="og:locale" content="es_CO">
-    <meta property="og:locale:alternate" content="es_ES">
-    <meta property="og:title" content="Portafolio ERP — Suite de Gestión Empresarial para Colombia">
+    <meta property="og:title" content="Portafolio ERP | Software Contable, Facturación DIAN y Nómina">
     <meta property="og:description"
-        content="Facturación electrónica DIAN, contabilidad, nómina, POS y propiedad horizontal en una sola plataforma 100% web. Planes a la medida de tu operación.">
+        content="Facturación electrónica DIAN, contabilidad, nómina, POS y propiedad horizontal en una sola plataforma 100% web.">
     <meta property="og:url" content="https://portafolioerp.com/">
     <meta property="og:image" content="https://portafolioerp.com/img/og-image.jpg">
-    <meta property="og:image:secure_url" content="https://portafolioerp.com/img/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Portafolio ERP — Suite de gestión empresarial">
@@ -62,18 +45,11 @@
          ============================================ -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@portafolioerp">
-    <meta name="twitter:creator" content="@portafolioerp">
-    <meta name="twitter:title" content="Portafolio ERP — Suite de Gestión Empresarial">
+    <meta name="twitter:title" content="Portafolio ERP | Software Contable, Facturación DIAN y Nómina">
     <meta name="twitter:description"
         content="Facturación DIAN, contabilidad, nómina, POS y propiedad horizontal en una sola plataforma.">
     <meta name="twitter:image" content="https://portafolioerp.com/img/og-image.jpg">
     <meta name="twitter:image:alt" content="Portafolio ERP dashboard">
-
-    <!-- ============================================
-         SUBPRODUCTOS — POS y Máximo PH
-         ============================================ -->
-    <link rel="me" href="https://pos.portafolioerp.com">
-    <link rel="me" href="https://maximoph.co">
 
     <!-- ============================================
          PERFORMANCE
@@ -82,11 +58,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://app.portafolioerp.com">
     <link rel="preconnect" href="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com" crossorigin>
-    <link rel="dns-prefetch" href="https://pos.portafolioerp.com">
-    <link rel="dns-prefetch" href="https://maximoph.co">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <!-- Solo los pesos que realmente usas -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
     <!-- ============================================
          JSON-LD 1: ORGANIZACIÓN
@@ -104,16 +78,7 @@
         "width": 512,
         "height": 512
       },
-      "description": "Suite de gestión empresarial para Colombia y Latinoamérica: facturación electrónica DIAN, contabilidad, nómina, POS y propiedad horizontal.",
-      "foundingLocation": {
-        "@type": "Place",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Medellín",
-          "addressRegion": "Antioquia",
-          "addressCountry": "CO"
-        }
-      },
+      "description": "Suite de gestión empresarial para Colombia: facturación electrónica DIAN, contabilidad, nómina, POS y propiedad horizontal.",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Medellín",
@@ -124,7 +89,7 @@
         "@type": "ContactPoint",
         "telephone": "+57-333-247-5846",
         "contactType": "sales",
-        "areaServed": ["CO", "MX", "PE", "CL", "EC"],
+        "areaServed": "CO",
         "availableLanguage": ["es"]
       }],
       "sameAs": [
@@ -139,8 +104,10 @@
     </script>
 
     <!-- ============================================
-         JSON-LD 2: APLICACIÓN / SOFTWARE (multi-módulo)
-         Nota: sin precios fijos — modelo de cotización personalizada
+         JSON-LD 2: SOFTWARE
+         Sin aggregateRating ni Offer sin precio.
+         Agrégalos solo cuando tengas reseñas reales
+         visibles en la página o un precio "desde".
          ============================================ -->
     <script type="application/ld+json">
     {
@@ -148,131 +115,27 @@
       "@type": "SoftwareApplication",
       "@id": "https://portafolioerp.com/#software",
       "name": "Portafolio ERP",
-      "alternateName": "Portafolio Suite ERP",
       "applicationCategory": "BusinessApplication",
       "applicationSubCategory": "ERP",
-      "operatingSystem": "Web, Windows, macOS, Linux, iOS, Android",
-      "softwareVersion": "2.0",
-      "description": "Suite ERP 100% web con facturación electrónica DIAN, contabilidad, nómina electrónica, POS, inventario y propiedad horizontal. Multiempresa y multi-sucursal. Planes y precios personalizados según el tamaño y las necesidades de cada empresa.",
+      "operatingSystem": "Web",
+      "description": "Suite ERP 100% web con facturación electrónica DIAN, contabilidad, nómina electrónica, POS, inventario y propiedad horizontal. Multiempresa y multi-sucursal.",
       "featureList": [
         "Facturación electrónica DIAN",
         "Contabilidad con causación automática",
         "Nómina electrónica DIAN",
-        "Punto de Venta (POS) — pos.portafolioerp.com",
+        "Punto de Venta (POS)",
         "Inventario y almacenes",
-        "Máximo PH — Propiedad Horizontal (maximoph.co)",
-        "Multiempresa y multi-sucursal",
-        "Cumplimiento tributario Colombia"
+        "Propiedad horizontal (Máximo PH)",
+        "Multiempresa y multi-sucursal"
       ],
       "publisher": { "@id": "https://portafolioerp.com/#organization" },
-      "offers": {
-        "@type": "Offer",
-        "url": "https://portafolioerp.com/cotizacion",
-        "availability": "https://schema.org/InStock",
-        "priceSpecification": {
-          "@type": "PriceSpecification",
-          "description": "Cotización personalizada según número de usuarios, volumen de facturación y módulos contratados."
-        }
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "bestRating": "5",
-        "reviewCount": "127"
-      },
-      "areaServed": [
-        { "@type": "Country", "name": "Colombia" },
-        { "@type": "Country", "name": "México" },
-        { "@type": "Country", "name": "Perú" },
-        { "@type": "Country", "name": "Chile" },
-        { "@type": "Country", "name": "Ecuador" }
-      ],
-      "screenshot": [
-        "https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/mackbook_portafolio_erp.png"
-      ]
+      "areaServed": { "@type": "Country", "name": "Colombia" },
+      "screenshot": "https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/mackbook_portafolio_erp.png"
     }
     </script>
 
     <!-- ============================================
-         JSON-LD 3: LISTA DE PRODUCTOS — Los 5 módulos
-         ============================================ -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "name": "Módulos de Portafolio ERP",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "item": {
-            "@type": "SoftwareApplication",
-            "name": "Facturación Electrónica DIAN",
-            "applicationCategory": "BusinessApplication",
-            "operatingSystem": "Web",
-            "url": "https://portafolioerp.com/#facturacion",
-            "description": "Facturación electrónica DIAN con causación automática y validación en tiempo real.",
-            "publisher": { "@id": "https://portafolioerp.com/#organization" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "item": {
-            "@type": "SoftwareApplication",
-            "name": "Contabilidad",
-            "applicationCategory": "BusinessApplication",
-            "operatingSystem": "Web",
-            "url": "https://portafolioerp.com/#contabilidad",
-            "description": "Contabilidad completa con causación automática de asientos, reportes en tiempo real y medios magnéticos DIAN.",
-            "publisher": { "@id": "https://portafolioerp.com/#organization" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "item": {
-            "@type": "SoftwareApplication",
-            "name": "Nómina Electrónica",
-            "applicationCategory": "BusinessApplication",
-            "operatingSystem": "Web",
-            "url": "https://portafolioerp.com/#nomina",
-            "description": "Nómina electrónica DIAN, liquidaciones definitivas y archivo bancario para pago masivo.",
-            "publisher": { "@id": "https://portafolioerp.com/#organization" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 4,
-          "item": {
-            "@type": "SoftwareApplication",
-            "name": "Portafolio POS",
-            "applicationCategory": "BusinessApplication",
-            "operatingSystem": "Web",
-            "url": "https://pos.portafolioerp.com",
-            "description": "Punto de venta web integrado con inventario, facturación electrónica DIAN y contabilidad.",
-            "publisher": { "@id": "https://portafolioerp.com/#organization" }
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 5,
-          "item": {
-            "@type": "SoftwareApplication",
-            "name": "Máximo PH",
-            "applicationCategory": "BusinessApplication",
-            "operatingSystem": "Web",
-            "url": "https://maximoph.co",
-            "description": "Software líder en propiedad horizontal para la administración de conjuntos, edificios y unidades residenciales en Colombia.",
-            "publisher": { "@id": "https://portafolioerp.com/#organization" }
-          }
-        }
-      ]
-    }
-    </script>
-
-    <!-- ============================================
-         JSON-LD 4: WEBSITE CON SearchAction
+         JSON-LD 3: WEBSITE (sin SearchAction)
          ============================================ -->
     <script type="application/ld+json">
     {
@@ -282,93 +145,19 @@
       "url": "https://portafolioerp.com/",
       "name": "Portafolio ERP",
       "inLanguage": "es-CO",
-      "publisher": { "@id": "https://portafolioerp.com/#organization" },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://portafolioerp.com/buscar?q={search_term_string}"
-        },
-        "query-input": "required name=search_term_string"
-      }
+      "publisher": { "@id": "https://portafolioerp.com/#organization" }
     }
     </script>
 
     <!-- ============================================
-         JSON-LD 5: BREADCRUMB (home)
-         ============================================ -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [{
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Inicio",
-        "item": "https://portafolioerp.com/"
-      }]
-    }
-    </script>
-
-    <!-- ============================================
-         JSON-LD 6: SITE NAVIGATION — Sitelinks
-         Señala a Google las 5 secciones principales
-         ============================================ -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "name": "Navegación principal de Portafolio ERP",
-      "itemListElement": [
-        {
-          "@type": "SiteNavigationElement",
-          "position": 1,
-          "name": "Facturación",
-          "description": "Facturación electrónica DIAN con causación automática y validación en tiempo real.",
-          "url": "https://portafolioerp.com/#facturacion"
-        },
-        {
-          "@type": "SiteNavigationElement",
-          "position": 2,
-          "name": "Contabilidad",
-          "description": "Contabilidad completa con causación automática, reportes en tiempo real y medios magnéticos.",
-          "url": "https://portafolioerp.com/#contabilidad"
-        },
-        {
-          "@type": "SiteNavigationElement",
-          "position": 3,
-          "name": "Nómina",
-          "description": "Nómina electrónica DIAN, liquidaciones definitivas y archivo bancario para pago masivo.",
-          "url": "https://portafolioerp.com/#nomina"
-        },
-        {
-          "@type": "SiteNavigationElement",
-          "position": 4,
-          "name": "POS",
-          "description": "Punto de venta web integrado con inventario y facturación electrónica DIAN.",
-          "url": "https://pos.portafolioerp.com"
-        },
-        {
-          "@type": "SiteNavigationElement",
-          "position": 5,
-          "name": "Máximo PH",
-          "description": "Software líder en propiedad horizontal para administración de conjuntos y edificios.",
-          "url": "https://maximoph.co"
-        }
-      ]
-    }
-    </script>
-
-    <!-- ============================================
-         ANTI-FLASH DE TEMA (evita parpadeo)
+         ANTI-FLASH DE TEMA
          ============================================ -->
     <script>
         (function () {
             try {
                 const savedTheme = localStorage.getItem('theme');
                 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-                document.documentElement.setAttribute('data-theme', theme);
+                document.documentElement.setAttribute('data-theme', savedTheme || (prefersDark ? 'dark' : 'light'));
             } catch (e) {
                 document.documentElement.setAttribute('data-theme', 'light');
             }
