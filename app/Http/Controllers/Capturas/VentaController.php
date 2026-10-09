@@ -172,7 +172,7 @@ class VentaController extends Controller
                         ->first();
 
                     if (!$producto->id_familia) {
-                        $fail("El producto (".$producto->codigo." - ".$producto->nombre.") no tiene familia venta configurada");
+                        $fail("El producto (".$producto->codigo." - ".$producto->nombre.") no tiene familia configurada");
                     } else if (!$producto->familia->id_cuenta_venta) {
                         $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta venta configurada");
                     }
@@ -416,6 +416,7 @@ class VentaController extends Controller
                 $formaPago = $this->findFormaPago($pagoItem->id);
 
                 $pagoValor = $pagoItem->valor;
+                //VALIDAR CAMBIO
                 if ($formaPago->tipoFormaPago && $formaPago->tipoFormaPago->codigo == FacTipoFormasPago::EFECTIVO) {
                     $pagoValor = $pagoItem->valor - $this->totalesPagos['total_cambio'];
                 }

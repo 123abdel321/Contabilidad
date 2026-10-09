@@ -6,6 +6,7 @@ use DB;
 use DateTimeImmutable;
 use App\Helpers\Documento;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Helpers\Printers\ComprasPdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -21,6 +22,7 @@ use App\Models\Sistema\Comprobantes;
 use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\FacFormasPago;
 use App\Models\Sistema\FacCompraPagos;
+use App\Models\Sistema\PlanCuentasTipo;
 use App\Models\Sistema\VariablesEntorno;
 use App\Models\Empresas\UsuarioPermisos;
 use App\Models\Sistema\DocumentosGeneral;
@@ -33,6 +35,7 @@ class CompraController extends Controller
     use BegConsecutiveTrait;
     use BegDocumentHelpersTrait;
 
+    protected $nit = null;
     protected $bodega = null;
 	protected $messages = null;
     protected $compraData = [];
@@ -115,7 +118,9 @@ class CompraController extends Controller
                         ->with('familia')
                         ->first();
                     
-                    if (!$producto->familia->id_cuenta_compra) {
+                    if (!$producto->id_familia) {
+                        $fail("El producto (".$producto->codigo." - ".$producto->nombre.") no tiene familia configurada");
+                    } else if (!$producto->familia->id_cuenta_compra) {
                         $fail("La familia (".$producto->familia->codigo." - ".$producto->familia->nombre.") no tiene cuenta compra configurada");
                     }
 				}
@@ -127,6 +132,9 @@ class CompraController extends Controller
             'productos.*.iva_porcentaje' => 'required|min:0|max:99',
             'productos.*.iva_valor' => 'required|min:0',
             'productos.*.total' => 'required|min:0',
+            'pagos' => 'array|required',
+            'pagos.*.id' => 'required|exists:sam.fac_formas_pagos,id',
+            'pagos.*.valor' => 'required|numeric|min:1',
         ];
 
         $validator = Validator::make($request->all(), $rules, $this->messages);
@@ -136,7 +144,7 @@ class CompraController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=>$validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         
         $comprobanteCompras = Comprobantes::where('id', $request->get('id_comprobante'))->first();
@@ -146,13 +154,13 @@ class CompraController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=> ['Comprobante compras' => ['El Comprobante de compras es incorrecto!']]
-            ], 422);
-        } else {
-            $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
-            $request->request->add([
-                'consecutivo' => $consecutivo
-            ]);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+
+        $consecutivo = $this->getNextConsecutive($request->get('id_comprobante'), $request->get('fecha_manual'));
+        $request->request->add([
+            'consecutivo' => $consecutivo
+        ]);
 
         $existeDocumento = DocumentosGeneral::where('documento_referencia', $request->get('documento_referencia'))
             ->where('id_comprobante', $request->get('id_comprobante'));
@@ -162,7 +170,7 @@ class CompraController extends Controller
                 "success"=>false,
                 'data' => [],
                 "message"=> ['Documento referencia' => ["El Documento referencia {$request->get('documento_referencia')} ya existe!"]]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $hoy = new DateTimeImmutable('today');
@@ -185,14 +193,16 @@ class CompraController extends Controller
                 "message" => [
                     'fecha_manual' => ['mensaje' => 'La fecha no puede ser mayor al día de hoy']
                 ]
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
             
             DB::connection('sam')->beginTransaction();
             //CREAR FACTURA COMPRAR
+            $this->nit = $this->findProveedor($request->get('id_proveedor'));
             $compra = $this->createFacturaCompra($request);
+            $enviarFacturaElectronica = false;
             
             //GUARDAR DETALLE & MOVIMIENTO CONTABLE COMPRAS
             $documentoGeneral = new Documento(
@@ -200,14 +210,17 @@ class CompraController extends Controller
                 $compra,
                 $request->get('fecha_manual'),
                 $request->get('consecutivo'),
-                false
+                false,
+                true
             );
             
+            //AGREGAR DETALLE DE PRODUCTOS
             foreach ($request->get('productos') as $producto) {
                 $producto = (object)$producto;
-                
-                $nit = $this->findProveedor($compra->id_proveedor);
                 $productoDb = $this->findProducto($producto->id_producto);
+
+                $subTotal = (float)$producto->costo * $producto->cantidad;
+                
                 //CREAR COMPRA DETALLE
                 FacCompraDetalles::create([
                     'id_compra' => $compra->id,
@@ -219,7 +232,7 @@ class CompraController extends Controller
                     'descripcion' => $productoDb->codigo.' - '.$productoDb->nombre,
                     'cantidad' => $producto->cantidad,
                     'costo' => $producto->costo,
-                    'subtotal' => $producto->costo * $producto->cantidad,
+                    'subtotal' => $subTotal,
                     'descuento_porcentaje' => $producto->descuento_porcentaje,
                     'descuento_valor' => $producto->descuento_valor,
                     'iva_porcentaje' => $producto->iva_porcentaje,
@@ -260,7 +273,7 @@ class CompraController extends Controller
                             "id_cuenta" => $cuentaRecord->id,
                             "id_nit" => $cuentaRecord->exige_nit ? $compra->id_proveedor : null,
                             "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $compra->id_centro_costos : null,
-                            "concepto" => 'COMPRA: '.$cuentaRecord->exige_concepto ? $nit->nombre_nit.' - '.$compra->documento_referencia : null,
+                            "concepto" => 'COMPRA: '.$cuentaRecord->exige_concepto ? $this->nit->nombre_nit.' - '.$compra->documento_referencia : null,
                             "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $compra->documento_referencia : null,
                             "debito" => $cuentaRecord->naturaleza_compras == PlanCuentas::DEBITO ? $producto->{$keyTotalItem} : 0,
                             "credito" => $cuentaRecord->naturaleza_compras == PlanCuentas::CREDITO ? $producto->{$keyTotalItem} : 0,
@@ -292,79 +305,117 @@ class CompraController extends Controller
                     'cantidad_anterior' => $bodegaProducto->cantidad,
                     'cantidad' => $producto->cantidad,
                     'tipo_tranferencia' => 1,
+                    'inventario' => $productoDb->familia->inventario ? 1 : 0,
                     'created_by' => request()->user()->id,
                     'updated_by' => request()->user()->id
                 ]);
+
+                if ($bodegaProducto && $productoDb->familia->inventario) {
+                    $bodegaProducto->updated_by = request()->user()->id;
+                    $bodegaProducto->cantidad+= $producto->cantidad;
+                    $bodegaProducto->save();
+                }
     
                 $movimiento->relation()->associate($compra);
                 $compra->bodegas()->save($movimiento);
-    
-                $bodegaProducto->cantidad+= $producto->cantidad;
-                $bodegaProducto->save();
             }
             
             //AGREGAR RETEFUENTE
             if ($this->totalesFactura['total_rete_fuente']) {
                 $cuentaRetencion = PlanCuentas::whereId($this->totalesFactura['id_cuenta_rete_fuente'])->first();
 
-                $doc = new DocumentosGeneral([
-                    "id_cuenta" => $cuentaRetencion->id,
-                    "id_nit" => $cuentaRetencion->exige_nit ? $compra->id_proveedor : null,
-                    "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $compra->id_centro_costos : null,
-                    "concepto" => 'TOTAL: '.$cuentaRetencion->exige_concepto ? $nit->nombre_nit.' - '.$compra->documento_referencia : null,
-                    "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $compra->documento_referencia : null,
-                    "debito" => $cuentaRetencion->naturaleza_compras == PlanCuentas::DEBITO ? $this->totalesFactura['total_rete_fuente'] : 0,
-                    "credito" => $cuentaRetencion->naturaleza_compras == PlanCuentas::CREDITO ? $this->totalesFactura['total_rete_fuente'] : 0,
-                    "created_by" => request()->user()->id,
-                    "updated_by" => request()->user()->id
-                ]);
-                $documentoGeneral->addRow($doc, $cuentaRetencion->naturaleza_compras);
+                if ($cuentaRetencion->naturaleza_compras == PlanCuentas::DEBITO || $cuentaRetencion->naturaleza_compras == PlanCuentas::CREDITO) {
+                    $doc = new DocumentosGeneral([
+                        "id_cuenta" => $cuentaRetencion->id,
+                        "id_nit" => $cuentaRetencion->exige_nit ? $compra->id_proveedor : null,
+                        "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $compra->id_centro_costos : null,
+                        "concepto" => 'TOTAL: '.$cuentaRetencion->exige_concepto ? $this->nit->nombre_nit.' - '.$compra->documento_referencia : null,
+                        "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $compra->documento_referencia : null,
+                        "debito" => $cuentaRetencion->naturaleza_compras == PlanCuentas::DEBITO ? $this->totalesFactura['total_rete_fuente'] : 0,
+                        "credito" => $cuentaRetencion->naturaleza_compras == PlanCuentas::CREDITO ? $this->totalesFactura['total_rete_fuente'] : 0,
+                        "created_by" => request()->user()->id,
+                        "updated_by" => request()->user()->id
+                    ]);
+                    $documentoGeneral->addRow($doc, $cuentaRetencion->naturaleza_compras);
+                } else {
+                    DB::connection('sam')->rollback();
+                    return response()->json([
+                        "success" => false,
+                        'data' => [],
+                        "message" => ['Cuenta retención' => ['La cuenta ' . $cuentaRetencion->cuenta . ' - ' . $cuentaRetencion->nombre . ' no tiene naturaleza en compras']]
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                }
+
             }
 
-            $totalProductos = $this->totalesFactura['total_factura'];
+            $saldoPendiente = $this->totalesFactura['total_factura'];
 
             //AGREGAR FORMAS DE PAGO
-            foreach ($request->get('pagos') as $pago) {
-                $pago = (object)$pago;
-                $pagoValor = $pago->id == 1 ? $pago->valor - $this->totalesPagos['total_cambio'] : $pago->valor;
+            foreach ($request->get('pagos') as $pagoItem) {
 
-                $formaPago = $this->findFormaPago($pago->id);
-                $totalProductos-= $pagoValor;
+                $pagoItem = (object)$pagoItem;
+                $formaPago = $this->findFormaPago($pagoItem->id);
+                
+                $pagoValor = $pagoItem->id == 1 ? $pagoItem->valor - $this->totalesPagos['total_cambio'] : $pagoItem->valor;
+                $saldoPendiente-= $pagoValor;
 
-                FacCompraPagos::create([
-                    'id_compra' => $compra->id,
-                    'id_forma_pago' => $formaPago->id,
-                    'valor' => $pagoValor,
-                    'saldo' => $totalProductos,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
+                $documentoReferenciaAnticipos = $this->isAnticiposDocumentoRefe($formaPago, $compra->id_nit);
+                //CRUZAR ANTICIPOS
+                if (count($documentoReferenciaAnticipos)) {
 
-                $doc = new DocumentosGeneral([
-                    'id_cuenta' => $formaPago->cuenta->id,
-                    'id_nit' => $formaPago->cuenta->exige_nit ? $compra->id_proveedor : null,
-                    'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $compra->id_centro_costos : null,
-                    'concepto' => 'TOTAL COMPRA: '.$formaPago->cuenta->exige_concepto ? $nit->nombre_nit.' - '.$compra->documento_referencia : null,
-                    'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $compra->documento_referencia : null,
-                    'debito' => $formaPago->cuenta->naturaleza_compras == PlanCuentas::DEBITO ? $pagoValor : 0,
-                    'credito' => $formaPago->cuenta->naturaleza_compras == PlanCuentas::CREDITO ? $pagoValor : 0,
-                    'created_by' => request()->user()->id,
-                    'updated_by' => request()->user()->id
-                ]);
-                $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_compras);
+                    $pagoAnticipos = $pagoItem->valor;
+
+                    foreach ($documentoReferenciaAnticipos as $anticipos) {
+
+                        if (!$pagoAnticipos) {
+                            break;
+                        }
+
+                        $anticipoUsado = 0;
+                        $anticipoDisponible = floatval($anticipos->saldo);
+
+                        if ($anticipoDisponible >= $pagoAnticipos) {
+                            $anticipoUsado = $pagoAnticipos;
+                        } else {
+                            $anticipoUsado = $anticipoDisponible;
+                        }
+
+                        $pagoAnticipos -= $anticipoUsado;
+
+                        $doc = $this->addFormaPago(
+                            $anticipos->documento_referencia,
+                            $formaPago,
+                            $pagoItem,
+                            $compra,
+                            $anticipoUsado,
+                            $saldoPendiente
+                        );
+                        $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_compras);
+                    }
+
+                } else {
+                    $doc = $this->addFormaPago(
+                        $compra->documento_referencia,
+                        $formaPago,
+                        $pagoItem,
+                        $compra,
+                        $pagoValor,
+                        $saldoPendiente
+                    );
+                    $documentoGeneral->addRow($doc, $formaPago->cuenta->naturaleza_compras);
+                }
             }
 
-            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
-
             if (!$documentoGeneral->save()) {
-
 				DB::connection('sam')->rollback();
 				return response()->json([
 					'success'=>	false,
 					'data' => [],
 					'message'=> $documentoGeneral->getErrors()
-				], 422);
+				], Response::HTTP_UNPROCESSABLE_ENTITY);
 			}
+
+            $this->updateConsecutivo($request->get('id_comprobante'), $request->get('consecutivo'));
 
             DB::connection('sam')->commit();
 
@@ -376,13 +427,12 @@ class CompraController extends Controller
 			], 200);
 
         } catch (Exception $e) {
-
 			DB::connection('sam')->rollback();
             return response()->json([
                 "success"=>false,
                 'data' => [],
                 "message"=>$e->getMessage()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -476,6 +526,65 @@ class CompraController extends Controller
         ]);
     }
 
+    public function calcularFormasPago($pagos)
+    {
+        $totalCambio = 0;
+        $totalPagos = 0;
+        foreach ($pagos as $pago) {
+            $pago = (object)$pago;
+            $totalPagos+= $pago->valor;
+            if ($pago->id == 1) $this->totalesPagos['total_efectivo']+= $pago->valor;
+            else $this->totalesPagos['total_otrospagos']+= $pago->valor;
+        }
+        if ($this->totalesFactura['total_factura'] < $totalPagos) {
+            $totalCambio = $totalPagos - $this->totalesFactura['total_factura'];
+        }
+        
+        $this->totalesPagos['total_cambio'] = $totalCambio;
+    }
+
+    public function showPdf(Request $request, $id)
+    {
+        $factura = FacCompras::whereId($id)->first();
+
+        if(!$factura) {
+            return response()->json([
+                'success'=>	false,
+                'data' => [],
+                'message'=> 'La factura no existe'
+            ]);
+        }
+
+        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
+        $data = (new ComprasPdf($empresa, $factura))->buildPdf()->getData();
+        
+        // return view('pdf.facturacion.compras', $data);
+ 
+        return (new ComprasPdf($empresa, $factura))
+            ->buildPdf()
+            ->showPdf();
+    }
+
+    private function isAnticiposDocumentoRefe($formaPago, $idNit)
+    {
+        $tiposCuenta = $formaPago->cuenta->tipos_cuenta;
+        foreach ($tiposCuenta as $tipoCuenta) {
+            if ($tipoCuenta->id_tipo_cuenta == PlanCuentasTipo::TIPO_CUENTA_ANTICIPO_PROVEEDORES_XC) {
+                $anticipoCuenta = (new Extracto(
+                    $idNit,
+                    null,
+                    null,
+                    Carbon::now()->format('Y-m-d H:i:s'),
+                    $formaPago->cuenta->id
+                ))->anticiposDiscriminados()->get();
+
+                return $anticipoCuenta;
+            }
+        }
+
+        return [];
+    }
+
     private function generarCompraDetalles($dataCompras, $detallar = true)
     {
         foreach ($dataCompras as $value) {
@@ -535,43 +644,30 @@ class CompraController extends Controller
         }
     }
 
-    public function calcularFormasPago($pagos)
+    private function addFormaPago($documentoReferencia, $formaPago, $pagoItem, $compra, $valor, $saldo)
     {
-        $totalCambio = 0;
-        $totalPagos = 0;
-        foreach ($pagos as $pago) {
-            $pago = (object)$pago;
-            $totalPagos+= $pago->valor;
-            if ($pago->id == 1) $this->totalesPagos['total_efectivo']+= $pago->valor;
-            else $this->totalesPagos['total_otrospagos']+= $pago->valor;
-        }
-        if ($this->totalesFactura['total_factura'] < $totalPagos) {
-            $totalCambio = $totalPagos - $this->totalesFactura['total_factura'];
-        }
-        
-        $this->totalesPagos['total_cambio'] = $totalCambio;
-    }
+        FacCompraPagos::create([
+            'id_compra' => $compra->id,
+            'id_forma_pago' => $formaPago->id,
+            'valor' => $valor,
+            'saldo' => $saldo,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
 
-    public function showPdf(Request $request, $id)
-    {
-        $factura = FacCompras::whereId($id)->first();
+        $doc = new DocumentosGeneral([
+            'id_cuenta' => $formaPago->cuenta->id,
+            'id_nit' => $formaPago->cuenta->exige_nit ? $compra->id_proveedor : null,
+            'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $compra->id_centro_costos : null,
+            'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $this->nit->nombre_nit.' - '.$compra->documento_referencia : null,
+            'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $compra->documento_referencia : null,
+            'debito' => $valor,
+            'credito' => $valor,
+            'created_by' => request()->user()->id,
+            'updated_by' => request()->user()->id
+        ]);
 
-        if(!$factura) {
-            return response()->json([
-                'success'=>	false,
-                'data' => [],
-                'message'=> 'La factura no existe'
-            ]);
-        }
-
-        $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        $data = (new ComprasPdf($empresa, $factura))->buildPdf()->getData();
-        
-        // return view('pdf.facturacion.compras', $data);
- 
-        return (new ComprasPdf($empresa, $factura))
-            ->buildPdf()
-            ->showPdf();
+        return $doc;
     }
 
     private function createFacturaCompra ($request)

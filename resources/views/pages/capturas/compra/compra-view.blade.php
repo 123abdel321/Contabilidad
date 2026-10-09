@@ -119,7 +119,10 @@
         <div class="card mb-4">
             <div class="card-body" style="padding: 0 !important;">
 
-                @include('pages.capturas.compra.compra-filter')
+                @include('pages.capturas.compra.compra-filter', [
+                    'puede_editar_nit' => auth()->user()->can('cedulas_nits update'),
+                    'puede_crear_nit' => auth()->user()->can('cedulas_nits create')
+                ])
 
             </div>
         </div>
@@ -157,20 +160,34 @@
                                 <td><h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">DESCUENTO: </h6></td>
                                 <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="compra_total_descuento">0.00</h6></td>
                             </tr>
-                            <tr id="totales_retencion">
+                            <tr id="totales_retencion_compra" class="totales_retencion_disable">
                                 <td>
-                                    <h6 style="margin-bottom: 0px; font-size: 0.9rem; font-weight: 500;">
-                                        <i
-                                            id="icon_info_retencion_compra"
-                                            class="fas fa-info icon-info"
-                                            title="<b class='titulo-popover'>Base:</b> 0<br/> <b class='titulo-popover'>Subtotal:</b> 0 <br/> <b class='titulo-popover'>Sin responsablidad:</b> 07 => Retención en la fuente a título de renta"
-                                            data-toggle="popover"
-                                            data-html="true"
-                                        ></i>
-                                        <b id="nombre_info_retencion_compra" style="font-weight: 500;">RETENCIÓN:</b>
+                                    <div class="d-flex align-items-center">
+                                        <h6 class="mb-0 me-2" style="font-size: 0.9rem; font-weight: 500;">
+                                            <i
+                                                id="icon_info_retencion_compra"
+                                                class="fas fa-info icon-info"
+                                                title="<b class='titulo-popover'>Base:</b> 0<br/> <b class='titulo-popover'>Subtotal:</b> 0 <br/> <b class='titulo-popover'>Sin responsablidad:</b> 07 => Retención en la fuente a título de renta"
+                                                data-toggle="popover"
+                                                data-html="true"
+                                            ></i>
+
+                                            <b id="nombre_info_retencion_compra" style="font-weight: 500;">
+                                                RETENCIÓN:
+                                            </b>
+                                        </h6>
+
+                                        <div class="form-check mb-0">
+                                            <input class="form-check-input" type="checkbox" id="checkRetencionCompras" value="" onChange="changeRetencionCompras()">
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <h6 class="mb-0 float-end" style="font-size: 0.9rem;" id="compra_total_retencion">
+                                        0.00
                                     </h6>
                                 </td>
-                                <td><h6 style="margin-bottom: 0px; float: right; font-size: 0.9rem;" id="compra_total_retencion">0.00</h6></td>
                             </tr>
                             <tr>
                                 <td><h6 style="margin-bottom: 0px; font-weight: bold;">TOTAL: </h6></td>

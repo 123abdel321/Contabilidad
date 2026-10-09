@@ -2,12 +2,13 @@ var fecha = null;
 var compra_table = null;
 var idCompraProducto = 0;
 var guardarCompra = false;
-var $comboCliente = null;
+var $comboClienteCompras = null;
 var createNewNit = false;
-var $comboVendedor = null;
+var $comboVendedorCompras = null;
 var retencionesCompras = [];
 var topeRetencionCompra = 0;
 var guardandoCompra = false;
+var calculaRetencionCompra = null;
 var $comboComprobanteCompras = null;
 var $comboBodegaCompra = null;
 var key13PressNewRow = false;
@@ -24,8 +25,17 @@ var validarExistenciasProducto = null;
 
 function compraInit () {
 
+    cargarchangesCompra();
     cargarFechasCompras();
+    cargarTablasCompras();
+    cargarCombosCompras();
+    cargarPopoverCompras();
+    cargarFormasDePagosCompras();
 
+    $('.water').hide();
+}
+
+function cargarTablasCompras() {
     compra_table = $('#compraTable').DataTable({
         dom: '',
         pageLength: 200,
@@ -324,7 +334,35 @@ function compraInit () {
         }
     });
 
-    $comboCliente = $('#id_cliente_compra').select2({
+    var column2 = compra_table.column(2);
+    var column5 = compra_table.column(5);
+    var column6 = compra_table.column(6);
+
+    if (compraDescuento){
+        column5.visible(true);
+        column6.visible(true);
+    } else {
+        column5.visible(false);
+        column6.visible(false);
+    }
+
+    if (compraExistencias) column2.visible(true);
+    else column2.visible(false);
+}
+
+function cargarFechasCompras() {
+    var dateNow = new Date();
+
+    var fechaHoraCompra = dateNow.getFullYear() + '-' + 
+        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
+        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
+        ("0" + dateNow.getHours()).slice(-2) + ':' + 
+        ("0" + dateNow.getMinutes()).slice(-2);
+    $('#fecha_manual_compra').val(fechaHoraCompra);
+}
+
+function cargarCombosCompras() {
+    $comboClienteCompras = $('#id_cliente_compra').select2({
         theme: 'bootstrap-5',
         delay: 250,
         dropdownCssClass: 'custom-id_cliente_compra',
@@ -353,7 +391,7 @@ function compraInit () {
         }
     });
 
-    $comboVendedor = $('#id_vendedor_compra').select2({
+    $comboVendedorCompras = $('#id_vendedor_compra').select2({
         theme: 'bootstrap-5',
         delay: 250,
         allowClear: true,
@@ -485,28 +523,14 @@ function compraInit () {
         $comboBodegaCompra.val(dataBodega.id).trigger('change');
     }
 
-    var column2 = compra_table.column(2);
-    var column5 = compra_table.column(5);
-    var column6 = compra_table.column(6);
-
-    if (compraDescuento){
-        column5.visible(true);
-        column6.visible(true);
-    } else {
-        column5.visible(false);
-        column6.visible(false);
-    }
-
-    if (compraExistencias) column2.visible(true);
-    else column2.visible(false);
-
     $('#id_cliente_compra').on('select2:close', function(event) {
         var data = $(this).select2('data');
         if(data.length){
-            loadAnticiposClienteCompras();
-            clearFormasPagoCompra();
-            responsabilidadesCompra = getResponsabilidades(data[0].id_responsabilidades);
-            actualizarInfoRetencionCompras();
+            procesarCambioClienteCompra(data[0]);
+            // loadAnticiposClienteCompras();
+            // clearFormasPagoCompra();
+            // responsabilidadesCompra = getResponsabilidades(data[0].id_responsabilidades);
+            // actualizarInfoRetencionCompras();
         }
     });
     
@@ -517,16 +541,139 @@ function compraInit () {
         }
     });
 
-    loadFormasPagoCompra();
-
     if (!primeraBodegaCompra || !primeraBodegaCompra.length) {
         agregarToast('warning', 'Sin bodegas asignadas', '', true);
     }
 
     setTimeout(function(){
-        $comboCliente.select2("open");
+        $comboClienteCompras.select2("open");
     },10);
+}
 
+function procesarCambioClienteCompra(data) {
+    if (!data) {
+        $("#btn_ver_cliente_compra").hide();
+        return;
+    }
+
+    calculaRetencionCompra = false;
+    $("#btn_ver_cliente_compra").show();
+    $('#checkRetencionCompras').prop('checked', false);
+
+    if (data.retencion) {
+        calculaRetencionCompra = true;
+        $('#checkRetencionCompras').prop('checked', true);
+    }
+
+    responsabilidadesCompra = getResponsabilidades(data.id_responsabilidades);
+    clearFormasPagoCompra();
+    changeRetencionCompras();
+    loadAnticiposClienteCompras();
+}
+
+function changeRetencionCompras() {
+    calculaRetencionCompra = true;
+    $('#totales_retencion_compra').removeClass('totales_retencion_disable');
+    if (!$('#checkRetencionCompras').is(':checked')) {
+        calculaRetencionCompra = false;
+        $('#totales_retencion_compra').addClass('totales_retencion_disable');
+    }
+
+    actualizarInfoRetencionCompras();
+    mostrarValoresCompras();
+}
+
+function openModalNewNitCompra() {
+    abrirNitGeneral({
+        modo: 'create',
+        captura: 'compra',
+        onSave: function (dataNit) {
+            var dataCliente = {
+                id: dataNit.id,
+                text: dataNit.numero_documento + ' - ' + dataNit.nombre_completo
+            };
+            var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
+            $comboClienteCompras.append(newOption).val(dataCliente.id).trigger('change');
+
+            procesarCambioClienteCompra(dataNit);
+            
+            agregarToast('exito', 'Creación exitosa', 'Cliente creado con éxito!', true);
+            document.getElementById('iniciarCapturaCompra').click();
+        }
+    });
+}
+
+function openModalViewNitCompra() {
+    var data = $('#id_cliente_compra').select2('data');
+
+    if (!data.length) {
+        agregarToast('warning', 'Sin cliente', 'Selecciona un cliente primero');
+        return;
+    }
+
+    abrirNitDetalle(data[0].id);
+}
+
+function openModalEditNitCompra() {
+    var data = $('#id_cliente_compra').select2('data');
+    if (!data.length) {
+        agregarToast('warning', 'Sin cliente', 'Selecciona un cliente primero');
+        return;
+    }
+    abrirNitGeneral({
+        modo: 'edit',
+        id: data[0].id,
+        onUpdate: function (dataNit) {
+
+            var $sel = $('#id_cliente_compra');
+            var optText = dataNit.numero_documento + ' - ' + dataNit.nombre_completo;
+
+            $sel.find("option[value='" + dataNit.id + "']").remove();
+            var newOption = new Option(optText, dataNit.id, true, true);
+            $sel.append(newOption);
+            $sel.val(dataNit.id).trigger('change');
+
+            procesarCambioClienteCompra(dataNit);
+            agregarToast('exito', 'Edición exitosa', 'Cliente actualizado con éxito!', true);
+        }
+    });
+}
+
+function cargarchangesCompra() {
+    $("#id_resolucion_compra").on('change', function(event) {
+        consecutivoSiguienteCompra();
+    });
+}
+
+function consecutivoSiguienteCompra() {
+    var id_resolucion = $('#id_resolucion_compra').val();
+    var fecha_manual = $('#fecha_manual_compra').val();
+    if(id_resolucion && fecha_manual) {
+
+        let data = {
+            id_resolucion: id_resolucion,
+            fecha_manual: fecha_manual
+        }
+
+        $.ajax({
+            url: base_url + 'consecutivo',
+            method: 'GET',
+            data: data,
+            headers: headers,
+            dataType: 'json',
+        }).done((res) => {
+            if(res.success){
+                $("#documento_referencia_compra").val(res.data);
+            }
+        }).fail((err) => {
+            var mensaje = err.responseJSON.message;
+            var errorsMsg = arreglarMensajeError(mensaje);
+            agregarToast('error', 'Creación errada', errorsMsg);
+        });
+    }
+}
+
+function cargarPopoverCompras() {
     $('[data-toggle="popover"]').popover({
         trigger: 'hover',
         html: true,
@@ -534,17 +681,6 @@ function compraInit () {
         container: 'body',
         customClass: 'popover-formas-pagos'
     });
-}
-
-function cargarFechasCompras() {
-    var dateNow = new Date();
-
-    var fechaHoraCompra = dateNow.getFullYear() + '-' + 
-        ("0" + (dateNow.getMonth() + 1)).slice(-2) + '-' + 
-        ("0" + dateNow.getDate()).slice(-2) + 'T' + 
-        ("0" + dateNow.getHours()).slice(-2) + ':' + 
-        ("0" + dateNow.getMinutes()).slice(-2);
-    $('#fecha_manual_compra').val(fechaHoraCompra);
 }
 
 function focusCantidadCompra (idRow) {
@@ -1072,11 +1208,11 @@ function cancelarCompra() {
     cargarFechasCompras();
 
     setTimeout(function(){
-        $comboCliente.select2("open");
+        $comboClienteCompras.select2("open");
     },10);
 }
 
-function loadFormasPagoCompra() {
+function cargarFormasDePagosCompras() {
     var totalRows = compra_table_pagos.rows().data().length;
     if(compra_table_pagos.rows().data().length){
         compra_table_pagos.clear([]).draw();
@@ -1312,7 +1448,7 @@ function saveCompra() {
 
             setTimeout(function(){
                 $('#id_cliente_compra').focus();
-                $comboCliente.select2("open");
+                $comboClienteCompras.select2("open");
             },10);
 
             loadAnticiposClienteCompras();
@@ -1542,8 +1678,8 @@ $(document).on('click', '#saveNitCompra', function () {
                     text: res.data.numero_documento + ' - ' + res.data.nombre_completo
                 };
                 var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
-                $comboCliente.append(newOption).trigger('change');
-                $comboCliente.val(dataCliente.id).trigger('change');
+                $comboClienteCompras.append(newOption).trigger('change');
+                $comboClienteCompras.val(dataCliente.id).trigger('change');
 
                 agregarToast('exito', 'Creación exitosa', 'Cedula nit creada con exito!', true);
 
@@ -1666,7 +1802,7 @@ $(document).on('keydown', '.custom-id_cliente_compra .select2-search__field', fu
     if (event.keyCode == 13){
         openModalNewNitCompras();
         var documentoBuscado = $('.select2-search__field').val();
-        $comboCliente.select2('close');
+        $comboClienteCompras.select2('close');
         $("#numero_documento_compra_nit").val(documentoBuscado);
     }
 });

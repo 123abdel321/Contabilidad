@@ -10,64 +10,43 @@
         <div id="collapseCompraGeneral" class="accordion-collapse collapse show" data-bs-parent="#accordionRental">
             <div class="accordion-body text-sm" style="padding: 0 !important;">
 
-                <form id="compraFilterForm" class="needs-validation row" style="margin-top: 10px;" novalidate>
-                    
-                    <div class="col-6 col-sm-5 col-md-3">
-                        <label for="id_cliente_compra">Proveedor<span style="color: red">*</span></label>
+                <form id="compraFilterForm" class="needs-validation row" style="margin-top:10px;" novalidate>
+
+                    <div class="form-group col-12 col-sm-6 col-md-6 col-lg-4">
+                        <label for="id_cliente_compra">Proveedor<span style="color:red">*</span></label>
                         <div class="input-group">
-                            <select name="id_cliente_compra" id="id_cliente_compra" class="form-control form-control-sm" style="font-size: 13px;" required>
-                            </select>
-                            <span id="" href="javascript:void(0)" onclick="openModalNewNit()" class="btn badge bg-gradient-light" style="min-width: 40px; position: static; height: 30px; border-radius: 0px 5px 5px 0px; box-shadow: 0px 0px 0px 0px, 0px 0px 0px 0px;">
-                                <i class="fas fa-user-plus" style="font-size: 15px; margin-top: 2px;"></i>
-                            </span>
-                            <div class="invalid-feedback">
-                                El proveedor es requerido
-                            </div>
+                            <select name="id_cliente_compra" id="id_cliente_compra" class="form-control form-control-sm" style="font-size:13px;" required></select>
+                            <span id="btn_ver_cliente_compra" onclick="openModalViewNitCompra()" class="btn badge bg-gradient-light btn-cliente-action" title="Ver proveedor" style="min-width:40px;height:30px;border-radius:0;box-shadow:none;display:none;"><i class="fas fa-eye" style="font-size:15px;margin-top:2px;"></i></span>
+                            <span @if($puede_editar_nit) onclick="openModalEditNitCompra()" @endif class="btn badge bg-gradient-light btn-cliente-action {{ !$puede_editar_nit ? 'disabled' : '' }}" title="Editar proveedor" style="min-width:40px;height:30px;border-radius:0;box-shadow:none;"><i class="fas fa-user-edit" style="font-size:15px;margin-top:2px;"></i></span>
+                            <span @if($puede_crear_nit) onclick="openModalNewNitCompra()" @endif class="btn badge bg-gradient-light btn-cliente-action {{ !$puede_crear_nit ? 'disabled' : '' }}" title="Crear proveedor" style="min-width:40px;height:30px;border-radius:0 5px 5px 0;box-shadow:none;"><i class="fas fa-user-plus" style="font-size:15px;margin-top:2px;"></i></span>
                         </div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-3 col-md-3">
-                        <label for="id_comprobante_compra">Comprobante<span style="color: red">*</span></label>
-                        <select name="id_comprobante_compra" id="id_comprobante_compra" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
-                        </select>
-                        
-                        <div class="invalid-feedback">
-                            El comprobante es requerida
-                        </div>
+                    <div class="form-group col-6 col-sm-6 col-md-3 col-lg-2">
+                        <label for="id_comprobante_compra">Comprobante<span style="color:red">*</span></label>
+                        <select name="id_comprobante_compra" id="id_comprobante_compra" class="form-control form-control-sm" style="width:100%;font-size:13px;" required></select>
+                        <div class="invalid-feedback">El comprobante es requerido</div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-3 col-md-2">
-                        <label for="id_bodega_compra">Bodega<span style="color: red">*</span></label>
-                        <select name="id_bodega_compra" id="id_bodega_compra" class="form-control form-control-sm" style="width: 100%; font-size: 13px;" required>
-                        </select>
-                        
-                        <div class="invalid-feedback">
-                            La bodega es requerida
-                        </div>
+                    <div class="form-group col-6 col-sm-4 col-md-3 col-lg-2">
+                        <label for="id_bodega_compra">Bodega<span style="color:red">*</span></label>
+                        <select name="id_bodega_compra" id="id_bodega_compra" class="form-control form-control-sm" style="width:100%;font-size:13px;" required></select>
+                        <div class="invalid-feedback">La bodega es requerida</div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-3 col-md-2">
-                        <label for="fecha_manual_compra" class="form-control-label">Fecha <span style="color: red">*</span></label>
+                    <div class="form-group col-6 col-sm-4 col-md-3 col-lg-2">
+                        <label for="fecha_manual_compra">Fecha<span style="color:red">*</span></label>
                         <input name="fecha_manual_compra" id="fecha_manual_compra" class="form-control form-control-sm" type="datetime-local" required>
-                        <div class="invalid-feedback">
-                            La fecha es requerida
-                        </div>
+                        <div class="invalid-feedback">La fecha es requerida</div>
                     </div>
 
-                    <div class="form-group col-6 col-sm-4 col-md-2">
-                        <label for="example-text-input" class="form-control-label">No. factura <span style="color: red">*</span></label>
-                        <input type="text" class="form-control form-control-sm" name="documento_referencia_compra" id="documento_referencia_compra" onkeydown="buscarFacturaCompra(event)" style="background-position: right 0.75rem center !important;" required>
-                        <i class="fa fa-spinner fa-spin fa-fw compra-load" id="documento_referencia_compra_loading" style="display: none;"></i>
-                        <div class="invalid-feedback" id="error_documento_referencia_compra">
-                            El No. factura requerido
-                        </div>
+                    <div class="form-group col-6 col-sm-4 col-md-3 col-lg-2">
+                        <label for="documento_referencia_compra">No. factura<span style="color:red">*</span></label>
+                        <input type="text" class="form-control form-control-sm" name="documento_referencia_compra" id="documento_referencia_compra" onkeydown="buscarFacturaCompra(event)" style="background-position:right 0.75rem center !important;" required>
+                        <i class="fa fa-spinner fa-spin fa-fw compra-load" id="documento_referencia_compra_loading" style="display:none;"></i>
+                        <div class="invalid-feedback" id="error_documento_referencia_compra">El No. factura es requerido</div>
                     </div>
 
-                    <!-- <div class="form-group col-6 col-sm-5 col-md-3">
-                        <label for="observacion_compra" class="form-control-label">Observación </label>
-                        <input type="text" class="form-control form-control-sm" name="observacion_compra" id="observacion_compra">
-                    </div> -->
-                    
                 </form>
                 <div class="col-md normal-rem">
                     <!-- BOTON GENERAR -->

@@ -381,6 +381,16 @@ function cargarFechasVentas() {
     else $("#fecha_manual_venta").prop('disabled', true);
 }
 
+function cargarPopoverVenta() {
+    $('[data-toggle="popover"]').popover({
+        trigger: 'hover',
+        html: true,
+        placement: 'top',
+        container: 'body',
+        customClass: 'popover-formas-pagos'
+    });
+}
+
 function cargarCombosVenta() {
     $comboCliente = $('#id_cliente_venta').select2({
         theme: 'bootstrap-5',
@@ -577,16 +587,6 @@ function cargarCombosVenta() {
     });
 }
 
-function cargarPopoverVenta() {
-    $('[data-toggle="popover"]').popover({
-        trigger: 'hover',
-        html: true,
-        placement: 'top',
-        container: 'body',
-        customClass: 'popover-formas-pagos'
-    });
-}
-
 function procesarCambioClienteVenta(data) {
     if (!data) {
         $("#btn_ver_cliente_venta").hide();
@@ -604,8 +604,8 @@ function procesarCambioClienteVenta(data) {
 
     responsabilidadesVenta = getResponsabilidades(data.id_responsabilidades);
     clearFormasPagoVenta();
-    loadAnticiposCliente();
     changeRetencionVentas();
+    loadAnticiposClienteVentas();
     if (vendedoresVentas) loadVendedorCliente();
 }
 
@@ -633,7 +633,7 @@ function focusVDescuentoVenta (idRow) {
     },80);
 }
 
-function loadAnticiposCliente() {
+function loadAnticiposClienteVentas() {
     totalAnticiposDisponibles = 0;
     $('#input-anticipos-venta').hide();
     $('#venta_anticipo_disp_view').hide();
@@ -1786,7 +1786,7 @@ function saveVenta() {
                 },10);
             }
 
-            loadAnticiposCliente();
+            loadAnticiposClienteVentas();
             disabledFormasPagoVenta();
             cargarFechasVentas();
 
