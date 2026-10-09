@@ -194,7 +194,7 @@
     </script>
 
     <!-- ============================================
-         JSON-LD 3: LISTA DE PRODUCTOS (POS + Máximo PH)
+         JSON-LD 3: LISTA DE PRODUCTOS — Los 5 módulos
          ============================================ -->
     <script type="application/ld+json">
     {
@@ -207,6 +207,45 @@
           "position": 1,
           "item": {
             "@type": "SoftwareApplication",
+            "name": "Facturación Electrónica DIAN",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "url": "https://portafolioerp.com/#facturacion",
+            "description": "Facturación electrónica DIAN con causación automática y validación en tiempo real.",
+            "publisher": { "@id": "https://portafolioerp.com/#organization" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "SoftwareApplication",
+            "name": "Contabilidad",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "url": "https://portafolioerp.com/#contabilidad",
+            "description": "Contabilidad completa con causación automática de asientos, reportes en tiempo real y medios magnéticos DIAN.",
+            "publisher": { "@id": "https://portafolioerp.com/#organization" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": "SoftwareApplication",
+            "name": "Nómina Electrónica",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "url": "https://portafolioerp.com/#nomina",
+            "description": "Nómina electrónica DIAN, liquidaciones definitivas y archivo bancario para pago masivo.",
+            "publisher": { "@id": "https://portafolioerp.com/#organization" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "item": {
+            "@type": "SoftwareApplication",
             "name": "Portafolio POS",
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Web",
@@ -217,7 +256,7 @@
         },
         {
           "@type": "ListItem",
-          "position": 2,
+          "position": 5,
           "item": {
             "@type": "SoftwareApplication",
             "name": "Máximo PH",
@@ -272,6 +311,55 @@
     </script>
 
     <!-- ============================================
+         JSON-LD 6: SITE NAVIGATION — Sitelinks
+         Señala a Google las 5 secciones principales
+         ============================================ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Navegación principal de Portafolio ERP",
+      "itemListElement": [
+        {
+          "@type": "SiteNavigationElement",
+          "position": 1,
+          "name": "Facturación",
+          "description": "Facturación electrónica DIAN con causación automática y validación en tiempo real.",
+          "url": "https://portafolioerp.com/#facturacion"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 2,
+          "name": "Contabilidad",
+          "description": "Contabilidad completa con causación automática, reportes en tiempo real y medios magnéticos.",
+          "url": "https://portafolioerp.com/#contabilidad"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 3,
+          "name": "Nómina",
+          "description": "Nómina electrónica DIAN, liquidaciones definitivas y archivo bancario para pago masivo.",
+          "url": "https://portafolioerp.com/#nomina"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 4,
+          "name": "POS",
+          "description": "Punto de venta web integrado con inventario y facturación electrónica DIAN.",
+          "url": "https://pos.portafolioerp.com"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 5,
+          "name": "Máximo PH",
+          "description": "Software líder en propiedad horizontal para administración de conjuntos y edificios.",
+          "url": "https://maximoph.co"
+        }
+      ]
+    }
+    </script>
+
+    <!-- ============================================
          ANTI-FLASH DE TEMA (evita parpadeo)
          ============================================ -->
     <script>
@@ -286,7 +374,6 @@
             }
         })();
     </script>
-
 
     <link href="assets/css/sistema/landing-page.css" rel="stylesheet" />
 </head>
