@@ -286,7 +286,7 @@
             }
         })();
     </script>
-    
+
 
     <link href="assets/css/sistema/landing-page.css" rel="stylesheet" />
 </head>
@@ -308,6 +308,7 @@
                 <a href="#contabilidad" class="nav-link">Contabilidad</a>
                 <a href="#nomina" class="nav-link">Nómina</a>
                 <a href="#pos" class="nav-link">POS</a>
+                <a href="#maximo-ph" class="nav-link">Máximo PH</a>
 
                 <div class="nav-actions">
                     <a href="/login" class="btn btn-outline">
@@ -720,18 +721,7 @@
                                 </svg>
                             </a>
                         </div>
-
-                        <div class="module-visual scale-in">
-                            <div class="module-visual-images">
-                                <img src="https://app.portafolioerp.com/img/facturacion-1.png"
-                                    alt="Ventana de facturación electrónica" class="module-visual-img" loading="lazy"
-                                    width="650" height="650"
-                                    onerror="this.style.display='none'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
-                                <img src="https://app.portafolioerp.com/img/facturacion-2.png"
-                                    alt="Informes de facturación" class="module-visual-img secondary" loading="lazy"
-                                    width="650" height="650" onerror="this.style.display='none';">
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </section>
@@ -853,18 +843,6 @@
                                     <polyline points="12 5 19 12 12 19" />
                                 </svg>
                             </a>
-                        </div>
-
-                        <div class="module-visual scale-in">
-                            <div class="module-visual-images">
-                                <img src="https://app.portafolioerp.com/img/contabilidad-1.png"
-                                    alt="Ventana de contabilidad" class="module-visual-img" loading="lazy"
-                                    width="650" height="650"
-                                    onerror="this.style.display='none'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
-                                <img src="https://app.portafolioerp.com/img/contabilidad-2.png"
-                                    alt="Estados financieros" class="module-visual-img secondary" loading="lazy"
-                                    width="650" height="650" onerror="this.style.display='none';">
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -989,17 +967,6 @@
                             </a>
                         </div>
 
-                        <div class="module-visual scale-in">
-                            <div class="module-visual-images">
-                                <img src="https://app.portafolioerp.com/img/nomina-1.png"
-                                    alt="Ventana de nómina electrónica" class="module-visual-img" loading="lazy"
-                                    width="650" height="650"
-                                    onerror="this.style.display='none'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
-                                <img src="https://app.portafolioerp.com/img/nomina-2.png" alt="Liquidación de nómina"
-                                    class="module-visual-img secondary" loading="lazy" width="650" height="650"
-                                    onerror="this.style.display='none';">
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -1121,24 +1088,6 @@
                                     <polyline points="12 5 19 12 12 19" />
                                 </svg>
                             </a>
-                        </div>
-
-                        <div class="module-visual scale-in">
-                            <div class="module-visual-frame">
-                                <img src="https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/landing-page/pos-portafolioerp.png"
-                                    alt="Punto de Venta Portafolio ERP"
-                                    class="module-visual-single"
-                                    loading="lazy"
-                                    onerror="this.style.display='none'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='flex';">
-                            </div>
-
-                            <div class="module-visual-fallback" style="display:none;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <circle cx="9" cy="21" r="1" />
-                                    <circle cx="20" cy="21" r="1" />
-                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                                </svg>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -1270,18 +1219,6 @@
                             </a>
                         </div>
 
-                        <div class="module-visual scale-in">
-                            <!-- Sin imágenes ni fallback visible en móvil. Solo espacio reservado en desktop -->
-                            <div class="module-visual-images" style="display:none;">
-                                <img src="https://app.portafolioerp.com/img/maximo-ph-1.png"
-                                    alt="Maximo PH" class="module-visual-img" loading="lazy"
-                                    width="650" height="650"
-                                    onerror="this.style.display='none'; this.parentElement.parentElement.querySelector('.module-visual-fallback').style.display='grid';">
-                                <img src="https://app.portafolioerp.com/img/maximo-ph-2.png"
-                                    alt="Maximo PH" class="module-visual-img secondary" loading="lazy"
-                                    width="650" height="650" onerror="this.style.display='none';">
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -1563,23 +1500,55 @@
             const navLinks = document.querySelectorAll('.nav-link');
 
             function updateActiveNav() {
-                const scrollY = window.pageYOffset;
-                const sections = document.querySelectorAll('section[id]');
+                const headerOffset = (header ? header.offsetHeight : 0) + 80;
+                const viewportCenter = window.innerHeight / 2;
 
-                let currentId = '';
+                // Solo las secciones que están en el menú
+                const navLinks = document.querySelectorAll('.nav-link');
+                const sectionIds = Array.from(navLinks)
+                    .map(link => link.getAttribute('href'))
+                    .filter(h => h && h.startsWith('#'));
+
+                const sections = sectionIds
+                    .map(id => document.querySelector(id))
+                    .filter(Boolean);
+
+                if (sections.length === 0) return;
+
+                // Encontrar la sección cuyo centro está más cerca del centro del viewport
+                let activeId = sections[0].getAttribute('id');
+                let minDistance = Infinity;
+
                 sections.forEach(section => {
-                    const top = section.offsetTop - 150;
-                    const height = section.offsetHeight;
-                    if (scrollY >= top && scrollY < top + height) {
-                        currentId = section.getAttribute('id');
+                    const rect = section.getBoundingClientRect();
+                    const sectionCenter = rect.top + rect.height / 2;
+
+                    // Penalizar secciones por encima del header
+                    const adjustedCenter = sectionCenter + (headerOffset * 0.5);
+                    const distance = Math.abs(adjustedCenter - viewportCenter);
+
+                    // Solo considerar si la sección está visible (al menos parcialmente)
+                    const isVisible = rect.bottom > headerOffset && rect.top < window.innerHeight;
+
+                    if (isVisible && distance < minDistance) {
+                        minDistance = distance;
+                        activeId = section.getAttribute('id');
                     }
                 });
 
+                // Caso especial: cerca del final de la página → marcar la última sección visible
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+                    activeId = sections[sections.length - 1].getAttribute('id');
+                }
+
+                // Caso especial: arriba del todo → marcar la primera
+                if (window.scrollY < 100) {
+                    activeId = sections[0].getAttribute('id');
+                }
+
                 navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${currentId}`) {
-                        link.classList.add('active');
-                    }
+                    const href = link.getAttribute('href');
+                    link.classList.toggle('active', href === `#${activeId}`);
                 });
             }
 
