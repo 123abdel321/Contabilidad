@@ -296,12 +296,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         });
         
         Route::controller(SuscripcionController::class)->group(function () {
-            // Route::get('suscripcion-consumo-actual', 'consumoActualGet');
+            Route::get('suscripcion-consumo-actual', 'consumoActualGet');
             
             //COMPONENTES
-            // Route::get('suscripcion-componentes', 'componentesGet');
-            // Route::post('suscripcion-componentes', 'componentesPost');
-            // Route::get('suscripcion-combos', 'combosGet');
+            Route::get('suscripcion-componentes', 'componentesGet');
+            Route::post('suscripcion-componentes', 'componentesPost');
+            Route::get('suscripcion-combos', 'combosGet');
             // //PAGOS
             Route::get('suscripcion-pagos', 'pagosGet');
         });

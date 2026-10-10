@@ -18,9 +18,20 @@
                             </select>
                         </div>
 
+                        <div class="form-group col-12" id="grupoCantidad" style="display: none;">
+                            <label for="cantidad_componente_suscripcion" class="form-control-label">Cantidad</label>
+                            <input name="cantidad_componente_suscripcion" id="cantidad_componente_suscripcion" type="number" class="form-control form-control-sm text-align-right" onfocus="this.select();" value="1" min="1">
+                            <small class="text-muted" id="rangoCantidad"></small>
+                        </div>
+
                         <div class="form-group col-12">
-                            <label for="precio_componente_suscripcion" class="form-control-label">Precio componente</label>
-                            <input name="precio_componente_suscripcion" id="precio_componente_suscripcion"type="number" class="form-control form-control-sm text-align-right" onfocus="this.select();" value="0" disabled>
+                            <label for="precio_componente_suscripcion" class="form-control-label">Precio unitario</label>
+                            <input name="precio_componente_suscripcion" id="precio_componente_suscripcion" type="number" class="form-control form-control-sm text-align-right" onfocus="this.select();" value="0" disabled>
+                        </div>
+
+                        <div class="form-group col-12">
+                            <label for="descuento_componente_suscripcion" class="form-control-label">Descuento unitario ($)</label>
+                            <input name="descuento_componente_suscripcion" id="descuento_componente_suscripcion" type="number" class="form-control form-control-sm text-align-right" onfocus="this.select();" value="0" disabled>
                         </div>
 
                         <div class="form-group col-12">
@@ -29,8 +40,8 @@
                         </div>
 
                         <div class="form-group col-12">
-                            <label for="descuento_componente_suscripcion" class="form-control-label">Descuento</label>
-                            <input name="descuento_componente_suscripcion" id="descuento_componente_suscripcion"type="number" class="form-control form-control-sm text-align-right" onfocus="this.select();" value="0" disabled>
+                            <label class="form-control-label">Total estimado (referencia)</label>
+                            <input id="total_estimado_componente_suscripcion" type="text" class="form-control form-control-sm text-align-right" value="$ 0" disabled>
                         </div>
 
                     </div>  
@@ -38,8 +49,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn bg-gradient-danger btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                <button id="saveComponentes"type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
-                <button id="updateComponentes"type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button id="saveComponentes" type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
+                <button id="updateComponentes" type="button" class="btn bg-gradient-success btn-sm">Guardar</button>
                 <button id="saveComponentesLoading" class="btn btn-success btn-sm ms-auto" style="display:none; float: left;" disabled>
                     Cargando
                     <i class="fas fa-spinner fa-spin"></i>

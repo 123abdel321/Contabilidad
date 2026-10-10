@@ -1,4 +1,3 @@
-
 <div class="row" style="padding: 4px;">
     <div class="row" style="padding: 4px;">
 
@@ -16,16 +15,14 @@
     </div>
 </div>
 
-<table id="componentesSuscripcionTable" class="table table-bordered display responsive" width="100%">
+<table id="pagosSuscripcionTable" class="table table-bordered display responsive" width="100%">
     <thead style="background-color: #7ea1ff2b;">
         <tr>
-            <th style="border-radius: 15px 0px 0px 0px !important;">Componente</th>
-            <th>Precio</th>
-            <th>Cantidad</th>
-            <th>Inicio suscripción</th>
-            <th>Proximo pago</th>
-            <th>Descuento</th>
-            <th style="border-radius: 0px 15px 0px 0px !important;">Acciones</th>
+            <th style="border-radius: 15px 0px 0px 0px !important;">Usuario</th>
+            <th>Detalle</th>
+            <th>Valor</th>
+            <th>Estado</th>
+            <th style="border-radius: 0px 15px 0px 0px !important;">Fecha</th>
         </tr>
     </thead>
 </table>
