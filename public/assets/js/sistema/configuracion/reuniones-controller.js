@@ -418,7 +418,7 @@ function reloadReuniones() {
     setTimeout(function(){
         $("#reloadReunionesIconNormal").show();
         $("#reloadReunionesIconLoading").hide();
-    },500);
+    },1000);
 
     calendarioReuniones.refetchEvents();
     reuniones_table.ajax.reload();

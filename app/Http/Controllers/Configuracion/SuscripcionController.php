@@ -724,9 +724,10 @@ class SuscripcionController extends Controller
                         ? Carbon::parse($c->fecha_siguiente_cobro)->startOfDay()
                         : null;
 
-                    $esVencido = $fechaVencimiento && $fechaVencimiento->lt($hoy);
-                    $esNuevo   = !$fechaVencimiento;
-                    $esActivo  = $fechaVencimiento && $fechaVencimiento->gte($hoy);
+                    $esVencido           = $fechaVencimiento && $fechaVencimiento->lt($hoy);
+                    $esPorVencerMismoMes = $fechaVencimiento && !$esVencido && $fechaVencimiento->isSameMonth($hoy);
+                    $esNuevo             = !$fechaVencimiento;
+                    $esActivo            = $fechaVencimiento && !$esVencido && !$esPorVencerMismoMes;
 
                     if ($esActivo) {
                         // ═══════════════════════════════════════════════════
@@ -747,6 +748,18 @@ class SuscripcionController extends Controller
 
                         $c->fecha_inicio_suscripcion = $fechaInicioCiclo->format('Y-m-d');
                         $c->fecha_siguiente_cobro    = $nuevaFechaCobro->format('Y-m-d');
+                    } elseif ($esPorVencerMismoMes) {
+                        // ═══════════════════════════════════════════════════
+                        // CASO 4: POR VENCER EN EL MISMO MES
+                        // fecha_inicio_suscripcion = hoy
+                        // fecha_siguiente_cobro = día 1 del mes siguiente + (N-1) meses
+                        // ═══════════════════════════════════════════════════
+                        $c->fecha_inicio_suscripcion = $hoy->format('Y-m-d');
+
+                        $primerDiaMesSiguiente = $hoy->copy()->startOfMonth()->addMonth();
+                        $nuevaFechaCobro = $primerDiaMesSiguiente->copy()->addMonthsNoOverflow($meses - 1);
+
+                        $c->fecha_siguiente_cobro = $nuevaFechaCobro->format('Y-m-d');
                     } else {
                         // ═══════════════════════════════════════════════════
                         // CASO 3: NUEVO
