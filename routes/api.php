@@ -304,6 +304,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('suscripcion-combos', 'combosGet');
             // //PAGOS
             Route::get('suscripcion-pagos', 'pagosGet');
+            Route::get('suscripcion-pagos-resumen', 'pagosResumenGet');
+            Route::post('suscripcion/wompi/pagar', 'wompiPagar');
+            Route::get('suscripcion/wompi/acceptance-token', 'wompiAcceptanceToken');
+            Route::get('suscripcion/wompi/descuentos',    'wompiDescuentosGet');
+            Route::post('suscripcion/wompi/preview-pago', 'wompiPreviewPago');
+            Route::post('suscripcion/wompi/firma-integridad', 'wompiFirmaIntegridad');
+            Route::post('suscripcion/wompi/crear-pago-pendiente', 'wompiCrearPagoPendiente');
+            Route::post('suscripcion/wompi/reconciliar', 'wompiReconciliarPago');
         });
         
         //IMPUESTOS

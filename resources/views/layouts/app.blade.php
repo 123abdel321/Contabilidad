@@ -223,6 +223,8 @@
     <!-- QUILL -->
     <script src="assets/js/sistema/quill.min.js"></script>
 
+    <script src="https://checkout.wompi.co/widget.js"></script>
+
     <!-- FILEPOND -->
     <script src="{{ asset('assets/js/plugins/filepond.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/filepond-plugin-image-transform.min.js') }}"></script>

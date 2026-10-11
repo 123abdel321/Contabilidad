@@ -1,6 +1,11 @@
 var suscripcion_componentes_table = null;
 var suscripcion_pagos_table = null;
 var $comboComponenteSuscripcion = null;
+var pagosDescuentos = [];
+var pagosMesesActuales = 1;
+var pagosDesgloseActual = null;
+var pagosPendingId = null;
+var pagosProcesando = false;
 
 function suscripcionInit() {
     cargarTablasComponentes();
@@ -158,25 +163,59 @@ function cargarTablasComponentes() {
             headers: headers,
             url: base_url + 'suscripcion-pagos',
             data: function (d) {
-                d.fecha_desde = $('#fecha_desde_estado_cuenta_pagos').val();
-                d.fecha_hasta = $('#fecha_hasta_estado_cuenta_pagos').val();
-                d.estado = $('#estado_estado_cuenta_pagos').val();
+                delete d.columns;
             }
         },
         columns: [
-            { "data": 'usuario.username' },
-            { "data": 'detalle_json' },
-            { "data": 'valor', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
             {
-                "data": function (row, type, set) {
-                    if (row.estado == 1) return '<span class="badge rounded-pill bg-success">Confirmado</span>';
-                    if (row.estado == 2) return '<span class="badge rounded-pill bg-warning">Pendiente</span>';
-                    if (row.estado == 0) return '<span class="badge rounded-pill bg-danger">Rechazado</span>';
-                    return;
+                "data": 'created_at',
+                render: function (data) {
+                    if (!data) return '';
+                    var d = new Date(data);
+                    var dia = ("0" + d.getDate()).slice(-2);
+                    var mes = ("0" + (d.getMonth() + 1)).slice(-2);
+                    var anio = d.getFullYear();
+                    return dia + '/' + mes + '/' + anio;
                 }
             },
-            { "data": 'updated_at' },
-        ]
+            { "data": 'usuario.username' },
+            {
+                "data": 'valor',
+                render: $.fn.dataTable.render.number(',', '.', 2, '$ '),
+                className: 'dt-body-right'
+            },
+            {
+                "data": function (row) {
+                    try {
+                        var detalle = typeof row.detalle_json === 'string'
+                            ? JSON.parse(row.detalle_json)
+                            : (row.detalle_json || {});
+                        return detalle.meses || '—';
+                    } catch (e) {
+                        return '—';
+                    }
+                },
+                className: 'dt-body-center'
+            },
+            {
+                "data": function (row) {
+                    if (row.estado == 1) return '<span class="badge rounded-pill bg-success">Aprobado</span>';
+                    if (row.estado == 2) return '<span class="badge rounded-pill bg-warning">Pendiente</span>';
+                    if (row.estado == 0) return '<span class="badge rounded-pill bg-danger">Rechazado</span>';
+                    return '';
+                },
+                className: 'dt-body-center'
+            },
+            {
+                "data": function (row) {
+                    return `<button type="button" class="btn badge bg-gradient-info ver-detalle-pago" data-id="${row.id}" style="margin-bottom: 0rem !important; min-width: 100px;">
+                                <i class="fa-solid fa-eye"></i>&nbsp; Ver detalle
+                            </button>`;
+                },
+                className: 'dt-body-center'
+            },
+        ],
+
     });
 
     if (suscripcion_componentes_table) {
@@ -430,12 +469,436 @@ function recalcularTotalEstimado() {
 }
 
 $('button[data-bs-target="#pagos_suscripcion"]').on('shown.bs.tab', function () {
+    $('#cards-componentes').hide();
+    $('#cards-pagos').show();
+
     if (suscripcion_pagos_table) {
         suscripcion_pagos_table.columns.adjust().draw(false);
     }
+
+    cargarResumenPagos();
 });
+
 $('button[data-bs-target="#componentes_suscripcion"]').on('shown.bs.tab', function () {
+    $('#cards-pagos').hide();
+    $('#cards-componentes').show();
+
     if (suscripcion_componentes_table) {
         suscripcion_componentes_table.columns.adjust().draw(false);
     }
 });
+
+// ============================================================
+// PAGOS — Resumen cards
+// ============================================================
+
+function cargarResumenPagos() {
+    $.ajax({
+        url: base_url + 'suscripcion-pagos-resumen',
+        method: 'GET',
+        headers: headers,
+        dataType: 'json',
+    }).done(function (res) {
+        if (!res.success) return;
+
+        var d = res.data;
+
+        // 1. Estado suscripción
+        var estadoHtml = '';
+        if (d.estado_suscripcion === 'activa') {
+            estadoHtml = '<span class="badge rounded-pill bg-success">Activa</span>';
+        } else if (d.estado_suscripcion === 'por_vencer') {
+            estadoHtml = '<span class="badge rounded-pill bg-warning">Por vencer</span>';
+        } else if (d.estado_suscripcion === 'vencida') {
+            estadoHtml = '<span class="badge rounded-pill bg-danger">Vencida</span>';
+        } else {
+            estadoHtml = '<span class="badge rounded-pill bg-secondary">Sin suscripción</span>';
+        }
+        $('#pagosEstadoSuscripcion').html(estadoHtml);
+
+        // 2. Próximo cobro
+        $('#pagosProximoCobro').text(formatearMoneda(d.monto_siguiente_pago || 0));
+        $('#pagosProximoCobroFecha').text(d.fecha_siguiente_pago ? 'Fecha: ' + d.fecha_siguiente_pago : '');
+
+        // 3. Último pago
+        if (d.ultimo_pago) {
+            $('#pagosUltimoPago').text(formatearMoneda(d.ultimo_pago.valor || 0));
+            $('#pagosUltimoPagoFecha').text('Fecha: ' + (d.ultimo_pago.fecha || ''));
+        } else {
+            $('#pagosUltimoPago').text('$ 0');
+            $('#pagosUltimoPagoFecha').text('Sin pagos');
+        }
+
+        // 4. Total pagado año
+        $('#pagosTotalAnio').text(formatearMoneda(d.total_pagado_anio || 0));
+    });
+}
+
+// ============================================================
+// PAGOS — Botón "Pagar ahora"
+// ============================================================
+
+$(document).on('click', '#pagosSuscripcionCreate', function () {
+    pagosMesesActuales = 1;
+    $('#pagosFormMeses').val(1);
+
+    // Cargar descuentos disponibles
+    $.ajax({
+        url: base_url + 'suscripcion/wompi/descuentos',
+        method: 'GET',
+        headers: headers,
+        dataType: 'json',
+    }).done(function (res) {
+        if (res.success) {
+            pagosDescuentos = res.data || [];
+            renderizarDescuentosRapidos();
+        }
+    });
+
+    // Calcular preview inicial
+    calcularPreviewPago();
+
+    $('#pagosSuscripcionFormModal').modal('show');
+});
+
+// ============================================================
+// PAGOS — Refrescar
+// ============================================================
+
+$(document).on('click', '#refrescarPagosSuscripcion', function () {
+    if (suscripcion_pagos_table) {
+        suscripcion_pagos_table.ajax.reload();
+    }
+    cargarResumenPagos();
+});
+
+// ============================================================
+// PAGOS — Ver detalle
+// ============================================================
+
+$(document).on('click', '.ver-detalle-pago', function () {
+    var id = $(this).data('id');
+    var row = getDataById(id, suscripcion_pagos_table);
+
+    if (!row) return;
+
+    // Encabezado
+    var fecha = row.created_at ? new Date(row.created_at) : null;
+    var fechaStr = fecha
+        ? ("0" + fecha.getDate()).slice(-2) + '/' +
+          ("0" + (fecha.getMonth() + 1)).slice(-2) + '/' +
+          fecha.getFullYear()
+        : '—';
+
+    $('#detallePagoFecha').text(fechaStr);
+    $('#detallePagoUsuario').text(row.usuario ? row.usuario.username : '—');
+
+    // Parsear detalle_json
+    var detalle = {};
+    try {
+        detalle = typeof row.detalle_json === 'string'
+            ? JSON.parse(row.detalle_json)
+            : (row.detalle_json || {});
+    } catch (e) {
+        detalle = {};
+    }
+
+    $('#detallePagoMetodo').text(detalle.metodo_pago || '—');
+    $('#detallePagoReferencia').text(detalle.wompi_transaction_id || '—');
+
+    // Estado
+    var estadoHtml = '';
+    if (row.estado == 1) estadoHtml = '<span class="badge rounded-pill bg-success">Aprobado</span>';
+    else if (row.estado == 2) estadoHtml = '<span class="badge rounded-pill bg-warning">Pendiente</span>';
+    else if (row.estado == 0) estadoHtml = '<span class="badge rounded-pill bg-danger">Rechazado</span>';
+    $('#detallePagoEstado').html(estadoHtml);
+
+    // Tabla de componentes
+    var html = '';
+    var total = 0;
+
+    if (detalle.componentes && detalle.componentes.length > 0) {
+        detalle.componentes.forEach(function (c) {
+            var precio = parseFloat(c.precio) || 0;
+            var cant = parseInt(c.cantidad) || 1;
+            var subtotal = precio * cant;
+            total += subtotal;
+
+            html += '<tr>' +
+                '<td>' + (c.nombre || '—') + '</td>' +
+                '<td class="text-end">' + cant + '</td>' +
+                '<td class="text-end">' + formatearMoneda(precio) + '</td>' +
+                '<td class="text-end">' + formatearMoneda(subtotal) + '</td>' +
+            '</tr>';
+        });
+    } else {
+        html = '<tr><td colspan="4" class="text-center text-muted">Sin componentes</td></tr>';
+    }
+
+    $('#detallePagoComponentes').html(html);
+
+    // Total: usar el valor del pago si existe, sino la suma
+    var totalFinal = parseFloat(row.valor) || total;
+    $('#detallePagoTotal').text(formatearMoneda(totalFinal));
+
+    $('#pagoDetalleModal').modal('show');
+});
+
+// ============================================================
+// WOMPI - Pago con tarjeta
+// ============================================================
+
+var wompiAcceptanceToken = null;
+
+$(document).on('click', '#pagosFormPagarBtn', function () {
+    if (!pagosDesgloseActual || pagosDesgloseActual.total <= 0) {
+        agregarToast('error', 'Error', 'Monto inválido');
+        return;
+    }
+
+    var btn = $(this);
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Procesando...');
+
+    $('#pagosSuscripcionFormModal').modal('hide');
+
+    setTimeout(function () {
+        btn.prop('disabled', false).html('<i class="fa-solid fa-credit-card"></i>&nbsp; Pagar con tarjeta');
+        abrirWidgetWompi(btn);
+    }, 400);
+});
+
+function abrirWidgetWompi(btn) {
+    if (pagosProcesando) {
+        agregarToast('info', 'En proceso', 'Ya hay un pago en proceso.');
+        return;
+    }
+
+    if (typeof WidgetCheckout === 'undefined') {
+        btn.prop('disabled', false).html('<i class="fa-solid fa-credit-card"></i>&nbsp; Pagar con tarjeta');
+        agregarToast('error', 'Error', 'El widget de Wompi no está cargado.');
+        return;
+    }
+
+    var montoCents = Math.round(pagosDesgloseActual.total * 100);
+
+    if (montoCents <= 0) {
+        btn.prop('disabled', false).html('<i class="fa-solid fa-credit-card"></i>&nbsp; Pagar con tarjeta');
+        agregarToast('error', 'Error', 'Monto inválido');
+        return;
+    }
+
+    pagosProcesando = true;
+
+    $.ajax({
+        url: base_url + 'suscripcion/wompi/crear-pago-pendiente',
+        method: 'POST',
+        data: JSON.stringify({
+            meses: pagosMesesActuales,
+        }),
+        headers: headers,
+        dataType: 'json',
+    }).done(function (resPendiente) {
+        if (!resPendiente.success) {
+            pagosProcesando = false;
+            btn.prop('disabled', false).html('<i class="fa-solid fa-credit-card"></i>&nbsp; Pagar con tarjeta');
+            agregarToast('error', 'Error', resPendiente.message || 'No se pudo crear el pago pendiente');
+            return;
+        }
+
+        pagosPendingId = resPendiente.pago_id;
+        var referencia = resPendiente.reference;
+
+        $.ajax({
+            url: base_url + 'suscripcion/wompi/firma-integridad',
+            method: 'POST',
+            data: JSON.stringify({
+                reference: referencia,
+                amount_in_cents: montoCents,
+            }),
+            headers: headers,
+            dataType: 'json',
+        }).done(function (resFirma) {
+            if (!resFirma.success) {
+                pagosProcesando = false;
+                btn.prop('disabled', false).html('<i class="fa-solid fa-credit-card"></i>&nbsp; Pagar con tarjeta');
+                agregarToast('error', 'Error', resFirma.message || 'No se pudo generar la firma');
+                return;
+            }
+
+            try {
+                var checkout = new WidgetCheckout({
+                    currency: 'COP',
+                    amountInCents: montoCents,
+                    reference: referencia,
+                    publicKey: 'pub_test_OotfUWWYb4mROOAPONcTs2Uh2CAJQ1ZK',
+                    signature: { integrity: resFirma.signature },
+                });
+
+                checkout.open(function (result) {
+                    var transaction = result.transaction;
+                    console.log('transaction: ', transaction);
+
+                    if (transaction.status === 'APPROVED') {
+                        reconciliarPago(transaction, referencia, btn);
+                    } else {
+                        pagosProcesando = false;
+                        btn.prop('disabled', false).html('<i class="fa-solid fa-credit-card"></i>&nbsp; Pagar con tarjeta');
+                        agregarToast('error', 'Pago rechazado', 'La transacción no fue aprobada.');
+                        $('#pagosSuscripcionFormModal').modal('show');
+                    }
+                });
+            } catch (e) {
+                pagosProcesando = false;
+                btn.prop('disabled', false).html('<i class="fa-solid fa-credit-card"></i>&nbsp; Pagar con tarjeta');
+                agregarToast('error', 'Error', 'No se pudo abrir el widget: ' + e.message);
+            }
+        }).fail(function () {
+            pagosProcesando = false;
+            btn.prop('disabled', false).html('<i class="fa-solid fa-credit-card"></i>&nbsp; Pagar con tarjeta');
+            agregarToast('error', 'Error', 'Error de conexión al generar la firma');
+        });
+    }).fail(function () {
+        pagosProcesando = false;
+        btn.prop('disabled', false).html('<i class="fa-solid fa-credit-card"></i>&nbsp; Pagar con tarjeta');
+        agregarToast('error', 'Error', 'Error de conexión al crear el pago pendiente');
+    });
+}
+
+// ============================================================
+// PAGOS — Preview y selector de meses
+// ============================================================
+
+function renderizarDescuentosRapidos() {
+    var html = '<small class="text-muted d-block mb-1">Promociones:</small>';
+    pagosDescuentos.forEach(function (d) {
+        if (d.meses <= 1) return;
+        html += `<button type="button" class="btn btn-sm btn-outline-info me-1 mb-1 btn-descuento-rapido" data-meses="${d.meses}">
+                    ${d.meses} meses · ${d.descuento_porcentaje}% off
+                </button>`;
+    });
+    $('#pagosFormDescuentosRapidos').html(html);
+}
+
+$(document).on('click', '.btn-descuento-rapido', function () {
+    var meses = parseInt($(this).data('meses'));
+    pagosMesesActuales = meses;
+    $('#pagosFormMeses').val(meses);
+    calcularPreviewPago();
+});
+
+$(document).on('click', '#btnSumarMes', function () {
+    pagosMesesActuales = Math.min(24, pagosMesesActuales + 1);
+    $('#pagosFormMeses').val(pagosMesesActuales);
+    calcularPreviewPago();
+});
+
+$(document).on('click', '#btnRestarMes', function () {
+    pagosMesesActuales = Math.max(1, pagosMesesActuales - 1);
+    $('#pagosFormMeses').val(pagosMesesActuales);
+    calcularPreviewPago();
+});
+
+$(document).on('change', '#pagosFormMeses', function () {
+    var v = parseInt($(this).val()) || 1;
+    v = Math.max(1, Math.min(24, v));
+    pagosMesesActuales = v;
+    $(this).val(v);
+    calcularPreviewPago();
+});
+
+function calcularPreviewPago() {
+    $('#pagosFormDesglose').html('<div class="text-center text-muted small"><i class="fas fa-spinner fa-spin"></i> Calculando...</div>');
+
+    $.ajax({
+        url: base_url + 'suscripcion/wompi/preview-pago',
+        method: 'POST',
+        data: JSON.stringify({ meses: pagosMesesActuales }),
+        headers: headers,
+        dataType: 'json',
+    }).done(function (res) {
+        if (!res.success) {
+            $('#pagosFormDesglose').html('<div class="text-danger small">' + (res.message || 'Error') + '</div>');
+            return;
+        }
+
+        var d = res.data;
+        pagosDesgloseActual = d;
+
+        // Total y ahorro
+        $('#pagosFormMonto').text(formatearMoneda(d.total));
+        if (d.descuento > 0) {
+            $('#pagosFormAhorro').html('<i class="fas fa-gift"></i> Ahorras ' + formatearMoneda(d.descuento) + ' (' + d.porcentaje + '%)');
+        } else {
+            $('#pagosFormAhorro').text('');
+        }
+
+        // Desglose
+        var html = '';
+        d.detalle_meses.forEach(function (item) {
+            if (item.monto > 0) {
+                html += '<div class="d-flex justify-content-between small mb-1">' +
+                    '<span>' + item.label + '</span>' +
+                    '<span>' + formatearMoneda(item.monto) + '</span>' +
+                '</div>';
+            }
+        });
+
+        html += '<hr class="my-2">';
+        html += '<div class="d-flex justify-content-between small mb-1"><span>Subtotal</span><span>' + formatearMoneda(d.subtotal) + '</span></div>';
+
+        if (d.descuento > 0) {
+            html += '<div class="d-flex justify-content-between small mb-1 text-success"><span>Descuento ' + d.porcentaje + '%</span><span>− ' + formatearMoneda(d.descuento) + '</span></div>';
+        }
+
+        html += '<hr class="my-2">';
+        html += '<div class="d-flex justify-content-between font-weight-bold"><span>TOTAL</span><span>' + formatearMoneda(d.total) + '</span></div>';
+
+        $('#pagosFormDesglose').html(html);
+    }).fail(function () {
+        $('#pagosFormDesglose').html('<div class="text-danger small">Error de conexión</div>');
+    });
+}
+
+function reconciliarPago(transaction, referencia, btn) {
+    if (!pagosPendingId) {
+        pagosProcesando = false;
+        agregarToast('error', 'Error', 'No hay pago pendiente para reconciliar');
+        return;
+    }
+
+    $.ajax({
+        url: base_url + 'suscripcion/wompi/reconciliar',
+        method: 'POST',
+        data: JSON.stringify({
+            pago_id:           pagosPendingId,
+            transaction_id:    transaction.id,
+            reference:         referencia,
+            payment_source_id: transaction.payment_source_id || null,
+        }),
+        headers: headers,
+        dataType: 'json',
+    }).done(function (res) {
+        pagosProcesando = false;
+        btn.prop('disabled', false).html('<i class="fa-solid fa-credit-card"></i>&nbsp; Pagar con tarjeta');
+
+        if (res.success) {
+            if (res.estado === 1) {
+                agregarToast('exito', 'Pago exitoso', 'Tu suscripción ha sido activada.');
+            } else if (res.estado === 0) {
+                agregarToast('error', 'Pago rechazado', 'La transacción fue rechazada.');
+            } else {
+                agregarToast('info', 'Pago pendiente', 'La transacción está siendo procesada.');
+            }
+
+            suscripcion_pagos_table.ajax.reload();
+            cargarResumenPagos();
+        } else {
+            agregarToast('error', 'Error', res.message || 'No se pudo reconciliar el pago');
+        }
+    }).fail(function (err) {
+        pagosProcesando = false;
+        btn.prop('disabled', false).html('<i class="fa-solid fa-credit-card"></i>&nbsp; Pagar con tarjeta');
+        var msg = err.responseJSON ? err.responseJSON.message : 'Error de conexión';
+        agregarToast('error', 'Error', msg);
+    });
+}
