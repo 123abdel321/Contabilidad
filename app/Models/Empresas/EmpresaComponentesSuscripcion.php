@@ -34,4 +34,13 @@ class EmpresaComponentesSuscripcion extends Model
     {
         return $this->hasMany("App\Models\Empresas\ComponentesMenu", "id_componente", "id_componente");
     }
+
+    public function suscripcion()
+    {
+        return $this->belongsTo(
+            "App\Models\Empresas\EmpresaSuscripcion",
+            "id_empresa_suscripcion",
+            "id"
+        );
+    }
 }

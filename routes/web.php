@@ -149,8 +149,7 @@ Route::get('/test-auxiliar-pdf', function() {
 
 Auth::routes();
 
-Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
-Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
+Route::get('/register', [SuscripcionController::class, 'registerIndex'])->middleware('guest')->name('register');
 Route::get('/login', [LoginController::class, 'show'])->middleware('guest')->name('login');
 Route::get('/login-direct', [LoginController::class, 'loginDirectoGet'])->name('login-direct-get');
 Route::post('/login-direct', [LoginController::class, 'loginDirectoPost'])->name('login-direct-post');
@@ -161,6 +160,8 @@ Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('gue
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
 Route::get('/recibos-print', [RecibosController::class, 'showPdfPublic'])->name('recibos-pdf');
 // Route::get('/documento-print', [DocumentoController::class, 'showPdfPublic']);
+Route::get('/pagar', [SuscripcionController::class, 'pagoPublicoIndex'])->name('pago-publico');
+
 
 //PDF POS
 Route::prefix('pos')->controller(PosController::class)->group(function () {

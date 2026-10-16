@@ -96,6 +96,10 @@ use App\Http\Controllers\Configuracion\SuscripcionController;
 Route::post('login', 'App\Http\Controllers\ApiController@login');
 Route::post('register', 'App\Http\Controllers\ApiController@register');
 Route::post('register-api-token', 'App\Http\Controllers\InstaladorController@createEmpresaApiToken');
+
+// REGISTRO PÚBLICO — FASE 1
+Route::post('register-crear-cuenta',   'App\Http\Controllers\Configuracion\SuscripcionController@registerCrearCuenta');
+
 Route::post('public-event', function (Request $request) {
     event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
     return event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));
@@ -111,12 +115,22 @@ Route::prefix('pos')->controller(PosController::class)->group(function () {
     Route::post('login', 'login');
 });
 
+Route::controller(SuscripcionController::class)->group(function () {
+    Route::get('pago-publico/info/{token}',      'pagoPublicoInfo');
+    Route::post('pago-publico/preview',          'pagoPublicoPreview');
+    Route::post('pago-publico/crear-pago',       'pagoPublicoCrearPago');
+    Route::post('pago-publico/firma-integridad', 'pagoPublicoFirmaIntegridad');
+    Route::post('pago-publico/reconciliar',      'pagoPublicoReconciliar');
+    Route::get('suscripcion/componentes-arbol', 'componentesArbolGet');
+});
+
 Route::group(['middleware' => ['auth:sanctum']], function() {
 
     //EMPRESA
     Route::get("empresa","App\Http\Controllers\ApiController@getEmpresas");
     Route::get("usuario-accion","App\Http\Controllers\ApiController@getUsuario");
     Route::post("empresa","App\Http\Controllers\InstaladorController@createEmpresa");
+    
     Route::post("seleccionar-empresa","App\Http\Controllers\ApiController@setEmpresa");
     
     Route::controller(EmpresaController::class)->group(function () {
@@ -134,6 +148,18 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     //ANIO CERRADO
     Route::get("anio-cerrado","App\Http\Controllers\Capturas\DocumentoGeneralController@getAnioCerrado");
+
+    Route::controller(SuscripcionController::class)->group(function () {
+        Route::post('register-verificar-codigo',    'registerVerificarCodigo');
+        Route::post('register-reenviar-codigo',    'registerReenviarCodigo');
+        Route::post('register-cargar-rut',    'registerCargarRut');
+        Route::post('register-crear-empresa', 'registerCrearEmpresa');
+        Route::get('register-mi-progreso',    'registerMiProgreso');
+        Route::post('suscripcion/registro/confirmar', 'registroConfirmar');
+        Route::post('suscripcion/registro/preview-pago', 'registroPreviewPago');
+        Route::post('suscripcion/wompi/firma-integridad', 'wompiFirmaIntegridad');
+        Route::post('suscripcion/wompi/reconciliar', 'wompiReconciliarPago');
+    });
     
     //EMPRESA SELECCIONADA
     Route::group(['middleware' => ['clientconnection']], function() {
@@ -309,9 +335,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::get('suscripcion/wompi/acceptance-token', 'wompiAcceptanceToken');
             Route::get('suscripcion/wompi/descuentos',    'wompiDescuentosGet');
             Route::post('suscripcion/wompi/preview-pago', 'wompiPreviewPago');
-            Route::post('suscripcion/wompi/firma-integridad', 'wompiFirmaIntegridad');
             Route::post('suscripcion/wompi/crear-pago-pendiente', 'wompiCrearPagoPendiente');
-            Route::post('suscripcion/wompi/reconciliar', 'wompiReconciliarPago');
         });
         
         //IMPUESTOS

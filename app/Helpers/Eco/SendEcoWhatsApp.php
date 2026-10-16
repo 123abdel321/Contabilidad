@@ -42,7 +42,7 @@ class SendEcoWhatsApp extends AbstractEcoSender
     {
         return [
             "phone" => $this->phone,
-            "plantilla_id" => $this->plantilla_id,
+            "plantilla" => $this->plantilla_id,
             "contexto" => $this->contexto,
             "filter_metadata" => $this->filterData,
             "parameters" => $this->parameters,

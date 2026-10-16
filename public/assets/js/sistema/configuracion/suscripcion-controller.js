@@ -1,6 +1,7 @@
+var $comboComponenteSuscripcion = null;
+var $comboOpcionSuscripcion = null;
 var suscripcion_componentes_table = null;
 var suscripcion_pagos_table = null;
-var $comboComponenteSuscripcion = null;
 var pagosDescuentos = [];
 var pagosMesesActuales = 1;
 var pagosDesgloseActual = null;
@@ -235,26 +236,29 @@ function cargarTablasComponentes() {
             $("#fecha_componente_suscripcion").val(data.fecha_siguiente_cobro);
 
             if (data.componente) {
-                var dataComponente = {
-                    id: data.componente.id,
-                    text: data.componente.nombre + ' - ' + data.componente.precio
-                };
-                var newOption = new Option(dataComponente.text, dataComponente.id, false, false);
-                $comboComponenteSuscripcion.append(newOption).val(dataComponente.id).trigger('change');
+                var padre = data.componente;
 
-                // Mostrar cantidad si es tipo 1
-                if (parseInt(data.componente.tipo) === 1) {
-                    $("#grupoCantidad").show();
-                    $("#cantidad_componente_suscripcion").val(data.cantidad || 1);
+                // 🔑 Si el componente es un hijo, cargar el PADRE en el combo principal
+                var idPadre = padre.id_padre;
+                var idParaSeleccionar = idPadre ? idPadre : padre.id;
+                var textoPadre = idPadre
+                    ? (padre.nombre + ' (opción)')
+                    : (padre.nombre + ' - ' + padre.precio);
 
-                    let min = parseInt(data.componente.rango_desde) || 1;
-                    let max = parseInt(data.componente.rango_hasta) || 999999;
-                    $("#cantidad_componente_suscripcion").attr('min', min).attr('max', max);
-                    $("#rangoCantidad").text('Rango permitido: ' + min + ' - ' + max);
-                } else {
-                    $("#grupoCantidad").hide();
-                    $("#cantidad_componente_suscripcion").val(1);
-                    $("#rangoCantidad").text('');
+                // Si es hijo, buscar el nombre del padre real
+                if (idPadre && window.__componentesCache && window.__componentesCache[idPadre]) {
+                    var padreReal = window.__componentesCache[idPadre];
+                    textoPadre = padreReal.nombre + ' - ' + padreReal.precio;
+                }
+
+                var newOption = new Option(textoPadre, idParaSeleccionar, false, false);
+                $comboComponenteSuscripcion.append(newOption).val(idParaSeleccionar).trigger('change');
+
+                // Después del trigger, si es hijo, seleccionar la opción correspondiente
+                if (idPadre) {
+                    setTimeout(function () {
+                        $comboOpcionSuscripcion.val(padre.id).trigger('change');
+                    }, 100);
                 }
             }
 
@@ -285,33 +289,49 @@ function formatearMoneda(valor) {
 }
 
 function cargarCombosComponentes() {
+    // Combo principal de componentes
     $comboComponenteSuscripcion = $('#id_componente_suscripcion').select2({
         theme: 'bootstrap-5',
         delay: 250,
         dropdownParent: $('#componentesSuscripcionFormModal'),
         language: {
-            noResults: function () {
-                createNewNit = true;
-                return "No hay resultado";
-            },
-            searching: function () {
-                createNewNit = false;
-                return "Buscando..";
-            },
-            inputTooShort: function () {
-                return "Por favor introduce 1 o más caracteres";
-            }
+            noResults: function () { return "No hay resultado"; },
+            searching: function () { return "Buscando.."; },
+            inputTooShort: function () { return "Por favor introduce 1 o más caracteres"; }
         },
         ajax: {
             url: 'api/suscripcion-combos',
             headers: headers,
             dataType: 'json',
             processResults: function (data) {
-                return {
-                    results: data.data
-                };
+                // 🔑 Guardar TODOS los datos (incluyendo hijos) en un cache
+                window.__componentesCache = {};
+                (data.data || []).forEach(function (item) {
+                    window.__componentesCache[item.id] = item;
+                });
+
+                // 🔑 El select2 solo muestra el `text`
+                var results = (data.data || []).map(function (item) {
+                    return {
+                        id: item.id,
+                        text: item.text,
+                        data: item,   // guardamos todo el objeto
+                    };
+                });
+
+                return { results: results };
             }
         }
+    });
+
+    // Combo de opciones (hijos)
+    $comboOpcionSuscripcion = $('#id_opcion_suscripcion').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#componentesSuscripcionFormModal'),
+        placeholder: 'Selecciona una opción',
+        language: {
+            noResults: function () { return "No hay resultado"; },
+        },
     });
 }
 
@@ -325,6 +345,8 @@ function clearFormComponentesSuscripcion() {
     $("#textComponentesCreate").show();
 
     $("#id_componente_suscripcion").val("").trigger('change');
+    $("#id_opcion_suscripcion").val(null).trigger('change');
+    $("#grupoOpcion").hide();
     $("#cantidad_componente_suscripcion").val(1);
     $("#grupoCantidad").hide();
     $("#rangoCantidad").text('');
@@ -390,9 +412,17 @@ function guardarComponenteSuscripcion() {
 }
 
 function getDataComponentes() {
+    var idComponente = $("#id_componente_suscripcion").val();
+
+    // 🔑 Si hay una opción seleccionada (hijo), enviar el id del hijo
+    var idOpcion = $("#id_opcion_suscripcion").val();
+    if (idOpcion) {
+        idComponente = idOpcion;
+    }
+
     return {
         id: $("#id_componentes_up").val(),
-        id_componente: $("#id_componente_suscripcion").val(),
+        id_componente: idComponente,
         cantidad: $("#cantidad_componente_suscripcion").val(),
         precio: $("#precio_componente_suscripcion").val(),
         fecha_inicio: $("#fecha_componente_suscripcion").val(),
@@ -423,31 +453,71 @@ $("#id_componente_suscripcion").on('change', function (event) {
     if (data.length <= 0) return;
 
     data = data[0];
-    $("#precio_componente_suscripcion").val(data.precio);
+    var item = data.data || null;
 
-    if (parseInt(data.tipo) === 1) {
-        // Tipo cantidad (ej: Maximo PH)
-        $("#grupoCantidad").show();
+    if (!item) return;
 
-        let min = parseInt(data.rango_desde) || 1;
-        let max = parseInt(data.rango_hasta) || 999999;
+    // Resetear campos
+    $("#grupoOpcion").hide();
+    $("#grupoCantidad").hide();
+    $("#rangoCantidad").text('');
+    $("#precio_componente_suscripcion").val(0);
+    $("#descuento_componente_suscripcion").val(0);
+    $("#id_opcion_suscripcion").val(null).trigger('change');
 
-        $("#cantidad_componente_suscripcion")
-            .attr('min', min)
-            .attr('max', max);
+    if (parseInt(item.tipo) === 1) {
+        // ═══════════════════════════════════════════════════
+        // 🔑 COMPONENTE TIPO 1 → Mostrar selector de opciones (hijos)
+        // ═══════════════════════════════════════════════════
+        $("#grupoOpcion").show();
 
-        // Si el valor actual está fuera de rango, ajustar al mínimo
-        let actual = parseInt($("#cantidad_componente_suscripcion").val()) || 0;
-        if (actual < min) {
-            $("#cantidad_componente_suscripcion").val(min);
-        }
+        // Cargar los hijos en el combo de opciones
+        var opciones = item.hijos || [];
 
-        $("#rangoCantidad").text('Rango permitido: ' + min + ' - ' + max);
+        $comboOpcionSuscripcion.empty().append('<option></option>');
+        opciones.forEach(function (hijo) {
+            var precioFormateado = formatearMoneda(hijo.precio);
+            var textoOpcion = hijo.text + ' — ' + precioFormateado;
+
+            var opt = new Option(textoOpcion, hijo.id, false, false);
+            $(opt).data('precio', hijo.precio);
+            $(opt).data('rango_desde', hijo.rango_desde);
+            $(opt).data('rango_hasta', hijo.rango_hasta);
+            $comboOpcionSuscripcion.append(opt);
+        });
+        $comboOpcionSuscripcion.val(null).trigger('change');
     } else {
-        // Tipo bandera
-        $("#grupoCantidad").hide();
-        $("#cantidad_componente_suscripcion").val(1);
-        $("#rangoCantidad").text('');
+        // ═══════════════════════════════════════════════════
+        // COMPONENTE TIPO 0 → Precio fijo directo
+        // ═══════════════════════════════════════════════════
+        $("#precio_componente_suscripcion").val(item.precio);
+        $("#grupoOpcion").hide();
+    }
+
+    recalcularTotalEstimado();
+});
+
+$("#id_opcion_suscripcion").on('change', function () {
+    let data = $(this).select2('data');
+    if (data.length <= 0) {
+        $("#precio_componente_suscripcion").val(0);
+        recalcularTotalEstimado();
+        return;
+    }
+
+    data = data[0];
+    var idOpcion = data.id;
+
+    // Buscar el hijo en el cache para obtener su precio
+    var itemPadre = window.__componentesCache ? Object.values(window.__componentesCache).find(function (p) {
+        return p.hijos && p.hijos.some(function (h) { return h.id == idOpcion; });
+    }) : null;
+
+    if (itemPadre) {
+        var hijo = itemPadre.hijos.find(function (h) { return h.id == idOpcion; });
+        if (hijo) {
+            $("#precio_componente_suscripcion").val(hijo.precio);
+        }
     }
 
     recalcularTotalEstimado();
@@ -474,6 +544,17 @@ $('button[data-bs-target="#pagos_suscripcion"]').on('shown.bs.tab', function () 
 
     if (suscripcion_pagos_table) {
         suscripcion_pagos_table.columns.adjust().draw(false);
+    }
+
+    cargarResumenPagos();
+});
+
+$('button[data-bs-target="#componentes_suscripcion"]').on('shown.bs.tab', function () {
+    $('#cards-componentes').show();
+    $('#cards-pagos').hide();
+
+    if (suscripcion_componentes_table) {
+        suscripcion_componentes_table.columns.adjust().draw(false);
     }
 
     cargarResumenPagos();

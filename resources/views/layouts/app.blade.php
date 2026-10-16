@@ -54,19 +54,88 @@
             @yield('content')
         @else
             @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
-                <div class="min-height-100 bg-dark position-absolute w-100 fondo-sistema" onclick="closeMenu()">
-                    
-                </div>
+                <div class="min-height-100 bg-dark position-absolute w-100 fondo-sistema" onclick="closeMenu()"></div>
             @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
                 <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
                     <span class="mask bg-primary opacity-6"></span>
                 </div>
             @endif
+
             @include('layouts.navbars.auth.sidenav', ['menus', $menus])
             @include('layouts.navbars.auth.topnav')
+
+            {{-- BANNER DE ESTADO RESTRINGIDO --}}
+            @if (!empty($estadoRestringido) && $estadoRestringido && $menuSuscripcion)
+                @php
+                    $estadoTexto = match ($empresa->estado) {
+                        \App\Models\Empresas\Empresa::ESTADO_INACTIVO  => 'Inactiva',
+                        \App\Models\Empresas\Empresa::ESTADO_RETIRADO  => 'Retirada',
+                        \App\Models\Empresas\Empresa::ESTADO_INSTALANDO => 'En proceso de instalación',
+                        default => 'Sin estado',
+                    };
+                @endphp
+
+                
+                
+                <div class="container-fluid px-4" id="banner-estado-restringido" role="status" aria-live="polite">
+                    <div class="card bg-dark border border-secondary border-opacity-25 shadow-none mt-3 mb-3 border-radius-xl">
+
+                        {{-- Contenido --}}
+                        <div class="card-body p-4 pb-3">
+                            <div class="d-flex align-items-start gap-3">
+
+                                <div class="icon icon-shape icon-md bg-warning bg-opacity-25 text-center border-radius-md flex-shrink-0">
+                                    <i class="fas fa-credit-card" aria-hidden="true"></i>
+                                </div>
+
+                                <div>
+                                    <h6 class="mb-1 text-white fw-bold">
+                                        Suscripción pendiente de activación
+                                    </h6>
+
+                                    <p class="text-sm text-white opacity-8 mb-2">
+                                        Algunas funciones de tu empresa están restringidas hasta que regularices tu suscripción.
+                                    </p>
+
+                                    <div class="d-flex align-items-center flex-wrap gap-2">
+                                        <span class="text-xs text-white opacity-6">Estado de la cuenta</span>
+                                        <span class="badge badge-sm bg-warning bg-opacity-25">
+                                            {{ $estadoTexto }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <hr class="horizontal light my-0">
+
+                        {{-- Pie --}}
+                        <div class="card-footer bg-transparent border-0 px-4 py-3">
+                            <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+
+                                <span class="text-xs text-white opacity-8">
+                                    Gestiona tu plan para recuperar el acceso normal.
+                                </span>
+
+                                <button type="button"
+                                        class="btn btn-sm btn-primary mb-0 px-4 text-nowrap"
+                                        onclick="abrirVistaDesdeBanner(@js($menuSuscripcion->url), @js($menuSuscripcion->nombre), @js($menuSuscripcion->icon))">
+                                    Gestionar suscripción
+                                    <i class="fas fa-arrow-right ms-2" aria-hidden="true"></i>
+                                </button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            @endif
+
             <div id="contenerdores-views" class="tab-content clearfix" onclick="closeMenu()">
-                <main class="tab-pane main-content border-radius-lg change-view active" style="margin-left: 5px;" id="containner-dashboard">
-                </main>
+                <main class="tab-pane main-content border-radius-lg change-view active" style="margin-left: 5px;" id="containner-dashboard"></main>
             </div>
             <br/>
             @include('components.fixed-plugin')
@@ -182,9 +251,7 @@
     </div>
 
     <!-- CHAT IA -->
-    @if($esDios)
-        <!-- @include('components.ia-chat') -->
-    @endif
+    <!-- @include('components.ia-chat') -->
 
     @include('pages.capturas.nit-detail')
     @include('pages.capturas.nit-form-general')
@@ -194,7 +261,32 @@
     @include('layouts.footers.footer')
 
     <script>
-        var version_app = '<?php echo config('app.version'); ?>';
+        var version_app = '{{ config('app.version') }}';
+        var estadoRestringido = {{ !empty($estadoRestringido) && $estadoRestringido ? 'true' : 'false' }};
+
+        // Ocultar banner al interactuar con cualquier menú, tab o botón de navegación
+        document.addEventListener('click', function (e) {
+            var banner = document.getElementById('banner-estado-restringido');
+            if (!banner) return;
+
+            // 1) Click en el botón "Ir a pagar" -> ocultar
+            if (e.target.closest('#banner-estado-restringido button')) {
+                banner.style.display = 'none';
+                return;
+            }
+
+            // 2) Click en cualquier menú, tab o botón de navegación -> ocultar
+            if (
+                e.target.closest('.nav-link') ||
+                e.target.closest('.button-side-nav') ||
+                e.target.closest('.seleccionar-view') ||
+                e.target.closest('.nav-padre') ||
+                e.target.closest('#footer-navigation') ||
+                e.target.closest('#sidenav-collapse-main')
+            ) {
+                banner.style.display = 'none';
+            }
+        });
     </script>
 
     <!--   Core JS Files   -->
@@ -250,16 +342,12 @@
     <script src="assets/js/sistema/moment.min.js"></script>
     <script src="assets/js/sistema/daterangepicker.min.js"></script>
     <!-- IA CHAT -->
-    @if($esDios)
     <!-- <script src="assets/js/sistema/iaChat.js"></script> -->
-    @endif
 
     <script src="assets/js/sistema/sistema.js?v={{ config('app.version') }}"></script>
     <script src="assets/js/sistema/nitGenerales.js?v={{ config('app.version') }}"></script>
     <script src="assets/js/sistema/tab-manager.js?v={{ config('app.version') }}"></script>
     <script src="assets/js/sistema/visorAdjuntos.js?v={{ config('app.version') }}"></script>
-
-
     <!-- <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js" rel="stylesheet"></script> -->
     
     @stack('js')

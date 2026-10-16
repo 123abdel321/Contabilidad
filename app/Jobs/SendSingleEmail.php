@@ -26,7 +26,7 @@ class SendSingleEmail implements ShouldQueue
     public $maxExceptions = 1;
 
     public function __construct(
-        public Empresa $empresa,
+        public ?Empresa $empresa,
         public string $email,
         public array $emailData,
         public array $filterData,
@@ -38,12 +38,17 @@ class SendSingleEmail implements ShouldQueue
     public function handle()
     {
         try {
-            copyDBConnection('sam', 'sam');
-            setDBInConnection('sam', $this->empresa->token_db);
+            if ($this->empresa) {
+                copyDBConnection('sam', 'sam');
+                setDBInConnection('sam', $this->empresa->token_db);
+            }
 
             $htmlContent = View::make($this->view, $this->emailData)->render();
             
-            $subject = $this->emailData['asunto'] ?? 'Notificación de ' . $this->empresa->razon_social;
+            $subject = $this->emailData['asunto']
+            ?? ($this->empresa
+                ? 'Notificación de ' . $this->empresa->razon_social
+                : 'Portafolio ERP');
             
             $attachments = [];
             
@@ -105,7 +110,7 @@ class SendSingleEmail implements ShouldQueue
             $metadata = array_merge($this->emailData, [
                 'contexto' => $this->view,
                 'envio_id' => '',
-                'empresa_token' => $this->empresa->token_db,
+                'empresa_token' => $this->empresa?->token_db ?? '',
             ]);
 
             $sendEcoEmail = new SendEcoEmail(

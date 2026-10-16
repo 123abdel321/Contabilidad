@@ -364,7 +364,7 @@ setTimeout(function(){
     $(".fondo-sistema").css('background-image', 'url(' +bucketUrl + localStorage.getItem("fondo_sistema")+ ')');
 },200);
 
-if (localStorage.getItem("empresa_logo") == 'null') {
+if (localStorage.getItem("empresa_logo") == 'null' || !localStorage.getItem("empresa_logo")) {
     $("#side_main_logo").attr('src', '/img/logo_contabilidad.png');
 } else{ 
     $("#side_main_logo").attr('src', bucketUrl+localStorage.getItem("empresa_logo"));
@@ -978,23 +978,29 @@ function selectMenu(menu) {
 
     if (menu == 'facturacion') {
         nombre = 'Facturación';
-        
         tipoMenu = 2;
     } else if (menu == 'contabilidad') {
         nombre = 'Contabilidad';
-        
         tipoMenu = 1;
     } else if (menu == 'nomina') {
         nombre = 'Nomina';
-
         tipoMenu = 3;
+    }
+
+    // 🔒 Estado restringido: solo mostrar los menús que vienen del backend (Empresa + Suscripción)
+    if (typeof estadoRestringido !== 'undefined' && estadoRestringido) {
+        hideAllMenus();
+        showAllMenus(); // muestra TODO lo que esté en el DOM (solo vendrán los 2 del backend)
+        // Ocultamos el dropdown de tipos de menú porque no aplica
+        $('#dropdownTiposMenu').closest('.dropdown').hide();
+        return;
     }
 
     hideAllMenus();
 
-    var elements = document.getElementsByClassName('tipo_menu_'+tipoMenu);
+    var elements = document.getElementsByClassName('tipo_menu_' + tipoMenu);
 
-    if (elements.length) { //SHOW ELEMENTS
+    if (elements.length) {
         for (let index = 0; index < elements.length; index++) {
             const element = elements[index];
             element.style.display = 'block';
@@ -1055,6 +1061,24 @@ function hideAllMenus() {
         }
     }
 }
+
+// function showAllMenus() {
+//     ['tipo_menu_0', 'tipo_menu_1', 'tipo_menu_2', 'tipo_menu_3'].forEach(function (cls) {
+//         var items = document.getElementsByClassName(cls);
+//         for (let index = 0; index < items.length; index++) {
+//             // items[index].style.display = 'block';
+//         }
+//     });
+// }
+
+// function hideAllMenus() {
+//     ['tipo_menu_0', 'tipo_menu_1', 'tipo_menu_2', 'tipo_menu_3'].forEach(function (cls) {
+//         var items = document.getElementsByClassName(cls);
+//         for (let index = 0; index < items.length; index++) {
+//             // items[index].style.display = 'none';
+//         }
+//     });
+// }
 
 function formatNumber(n) {
     // format number 1000000 to 1,234,567
@@ -1343,6 +1367,27 @@ function cargasFechasGenerales(
 
     formatoFecha(start, end, input);
 }
+
+function abrirVistaDesdeBanner(id, nombre, icon) {
+    if ($('#containner-' + id).length === 0) {
+        generateView(id, nombre, icon);
+    }
+    seleccionarView(id, nombre);
+    // NO llamamos a sidenav-main-2.click() para no abrir el menú lateral
+}
+
+// Mostrar el banner al volver al dashboard (solo si aplica el estado restringido)
+document.addEventListener('click', function (e) {
+    if (!estadoRestringido) return;
+
+    var banner = document.getElementById('banner-estado-restringido');
+    if (!banner) return;
+
+    // Click en el tab de Inicio (footer-navigation)
+    if (e.target.closest('#tab-dashboard')) {
+        banner.style.display = '';
+    }
+});
 
 // En tu archivo principal o en un lugar global
 // $(document).ajaxError(function(event, xhr, settings, error) {

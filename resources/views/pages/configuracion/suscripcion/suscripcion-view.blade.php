@@ -216,18 +216,18 @@
 
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="tab-porta-15px nav-link active" id="componentes-suscripcion-tab" data-bs-toggle="tab" data-bs-target="#componentes_suscripcion" type="button" role="tab" aria-controls="componentes_suscripcion" aria-selected="true">Componentes</button>
+                        <button class="tab-porta-15px nav-link active" id="pagos-suscripcion-tab" data-bs-toggle="tab" data-bs-target="#pagos_suscripcion" type="button" role="tab" aria-controls="pagos_suscripcion" aria-selected="false">Pagos</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="tab-porta-15px nav-link" id="pagos-suscripcion-tab" data-bs-toggle="tab" data-bs-target="#pagos_suscripcion" type="button" role="tab" aria-controls="pagos_suscripcion" aria-selected="false">Pagos</button>
+                        <button class="tab-porta-15px nav-link" id="componentes-suscripcion-tab" data-bs-toggle="tab" data-bs-target="#componentes_suscripcion" type="button" role="tab" aria-controls="componentes_suscripcion" aria-selected="true">Componentes</button>
                     </li>
                 </ul>
 
                 <div class="tab-content" style="background-color: white; border-top-right-radius: 10px;">
-                    <div class="tab-pane fade show active" id="componentes_suscripcion" role="tabpanel" aria-labelledby="componentes-suscripcion-tab">
+                    <div class="tab-pane fade show" id="componentes_suscripcion" role="tabpanel" aria-labelledby="componentes-suscripcion-tab">
                         @include('pages.configuracion.suscripcion.componentes.componentes-table')
                     </div>
-                    <div class="tab-pane fade show" id="pagos_suscripcion" role="tabpanel" aria-labelledby="pagos-suscripcion-tab">
+                    <div class="tab-pane fade show active" id="pagos_suscripcion" role="tabpanel" aria-labelledby="pagos-suscripcion-tab">
                         @include('pages.configuracion.suscripcion.pagos.pagos-table')
                     </div>
                 </div>

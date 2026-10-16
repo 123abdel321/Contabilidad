@@ -298,4 +298,54 @@ trait BegDocumentHelpersTrait
         return rtrim(strtr(base64_encode($compressed), '+/', '-_'), '=');
     }
 
+	/**
+	 * Enviar correo genérico usando el API de correos con token por defecto.
+	 *
+	 * @param string $to          Email destino
+	 * @param string $subject     Asunto
+	 * @param string $view        Vista blade (ej: 'emails.registro.verificacion')
+	 * @param array  $data        Datos para la vista
+	 * @param string|null $file   Archivo adjunto (opcional)
+	 * @param string|null $token  Token por defecto (si es null, se lee del .env)
+	 */
+	public function sendGenericEmail(
+		string $to,
+		string $subject,
+		string $view,
+		array $data = [],
+		string $filePath = '',
+		string $token = null
+	): bool
+	{
+		$token = $token ?: config('services.eco.email_token');
+
+		if (!$token) {
+			\Log::warning('sendGenericEmail: no hay token configurado');
+			return false;
+		}
+
+		$filterData = [
+			'email' => $to,
+			'nombre_completo' => $data['nombre_completo'] ?? '',
+		];
+
+		$emailData = array_merge($data, ['asunto' => $subject]);
+
+		try {
+			SendSingleEmail::dispatch(
+				null,          // 🔑 Empresa null
+				$to,
+				$emailData,
+				$filterData,
+				$filePath,
+				$token,
+				$view
+			);
+			return true;
+		} catch (\Exception $e) {
+			\Log::error('sendGenericEmail error: ' . $e->getMessage());
+			return false;
+		}
+	}
+
 }

@@ -31,11 +31,11 @@
     <!-- SELECT 2 -->
     <link href="assets/css/sistema/select2.min.css" rel="stylesheet" />
     <link href="assets/css/sistema/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+
+    <link id="pagestyle" href="assets/css/login.css" rel="stylesheet" />
+    <link id="pagestyle" href="assets/css/register.css" rel="stylesheet" />
     
     <style>
-        /* ... MANTÉN todos tus estilos existentes de select2, datatable, toasts, etc. ... */
-        
-        /* Añade esto al final para resetear el body cuando se muestra el login */
         body {
             margin: 0;
             padding: 0;
@@ -46,9 +46,8 @@
 
 <body class="{{ $class ?? '' }}">
 
-    @guest
-        @yield('content')
-    @endguest
+    {{-- 🔑 El content SIEMPRE se renderiza, logueado o no --}}
+    @yield('content')
 
     <!-- Core JS Files -->
     <script src="assets/js/core/popper.min.js"></script>
@@ -75,135 +74,11 @@
     <!-- sweetalert2 -->
     <script src="assets/js/sistema/sweetalert2.all.min.js"></script>
 
-    <script>
-        const host = window.location.host;
-        let base_url, base_web;
+    <!-- WOMPI -->
+    <script src="https://checkout.wompi.co/widget.js"></script>
 
-        if (host.includes("app.portafolioerp.com")) {
-            base_url = "https://app.portafolioerp.com/api/";
-            base_web = "https://app.portafolioerp.com/";
-        } else if (host.includes("test.portafolioerp.com")) {
-            base_url = "https://test.portafolioerp.com/api/";
-            base_web = "https://test.portafolioerp.com/";
-        } else if (host.includes("localhost:8000")) {
-            base_url = 'http://localhost:8000/api/';
-            base_web = 'http://localhost:8000/';
-        }
-
-        $("#button-login").click(function(event){
-            sendDataLogin();
-        });
-
-        function changePassWord(event) {
-            if (event.keyCode == 13) {
-                sendDataLogin();
-            }
-        }
-
-        function sendDataLogin() {
-            localStorage.setItem("auth_token", "");
-            localStorage.setItem("empresa_nombre", "");
-            localStorage.setItem("empresa_logo", "");
-            localStorage.setItem("notificacion_code", "");
-            localStorage.setItem("fondo_sistema", "");
-
-            $('#error-login').hide();
-            $("#button-login-loading").show();
-            $("#button-login").hide();
-
-            $.ajax({
-                url: base_web + 'login',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                method: 'POST',
-                data: {
-                    "email": $('#email_login').val(),
-                    "password": $('#password_login').val(),
-                },
-                dataType: 'json',
-            }).done((res) => {
-                $("#button-login-loading").hide();
-                $("#button-login").show();
-
-                if (res.success) {
-                    localStorage.setItem("auth_token", res.token_type + ' ' + res.access_token);
-                    localStorage.setItem("empresa_nombre", res.empresa.razon_social);
-                    localStorage.setItem("empresa_logo", res.empresa.logo);
-                    localStorage.setItem("notificacion_code", res.notificacion_code);
-                    localStorage.setItem("fondo_sistema", res.fondo_sistema);
-
-                    var itemMenuActiveIn = localStorage.getItem("item_active_menu");
-                    if (itemMenuActiveIn == 0 || itemMenuActiveIn == 1 || itemMenuActiveIn == 2 || itemMenuActiveIn == 3) {
-                        // mantener
-                    } else {
-                        localStorage.setItem("item_active_menu", 'contabilidad');
-                    }
-
-                    window.location.href = '/home';
-                } else {
-                    $('#error-login').show();
-                }
-            }).fail((err) => {
-                $("#button-login-loading").hide();
-                $("#button-login").show();
-                $('#error-login').show();
-
-                if (err.status == 419) {
-                    window.location.href = '/home';
-                }
-            });
-        }
-
-        function loginDirecto() {
-            var searchParams = new URLSearchParams(window.location.search);
-
-            if (!searchParams.get('email') || !searchParams.get('code_login')) {
-                return;
-            }
-
-            $.ajax({
-                url: base_web + 'login-direct',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                method: 'POST',
-                data: {
-                    "email": searchParams.get('email'),
-                    "code_login": searchParams.get('code_login'),
-                },
-                dataType: 'json',
-            }).done((res) => {
-                $("#button-login-loading").hide();
-                $("#button-login").show();
-
-                if (res.success) {
-                    localStorage.setItem("auth_token", res.token_type + ' ' + res.access_token);
-                    localStorage.setItem("empresa_nombre", res.empresa.razon_social);
-                    localStorage.setItem("empresa_logo", res.empresa.logo);
-                    localStorage.setItem("notificacion_code", res.notificacion_code);
-                    localStorage.setItem("fondo_sistema", res.fondo_sistema);
-
-                    var itemMenuActiveIn = localStorage.getItem("item_active_menu");
-                    if (itemMenuActiveIn == 0 || itemMenuActiveIn == 1 || itemMenuActiveIn == 2 || itemMenuActiveIn == 3) {
-                        // mantener
-                    } else {
-                        localStorage.setItem("item_active_menu", 'contabilidad');
-                    }
-
-                    window.location.href = '/home';
-                } else {
-                    $('#error-login').show();
-                }
-            }).fail((err) => {
-                $("#button-login-loading").hide();
-                $("#button-login").show();
-                $('#error-login').show();
-            });
-        }
-
-        loginDirecto();
-    </script>
-
+    <!-- SISTEMA -->
+    <script src="assets/js/login.js"></script>
+    
 </body>
 </html>

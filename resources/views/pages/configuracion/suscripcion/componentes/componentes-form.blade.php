@@ -18,6 +18,13 @@
                             </select>
                         </div>
 
+                        {{-- 🔑 NUEVO: Selector de opciones (hijos) --}}
+                        <div class="form-group col-12" id="grupoOpcion" style="display: none;">
+                            <label for="id_opcion_suscripcion">Opción</label>
+                            <select name="id_opcion_suscripcion" id="id_opcion_suscripcion" class="form-control form-control-sm" style="width: 100%; font-size: 13px;">
+                            </select>
+                        </div>
+
                         <div class="form-group col-12" id="grupoCantidad" style="display: none;">
                             <label for="cantidad_componente_suscripcion" class="form-control-label">Cantidad</label>
                             <input name="cantidad_componente_suscripcion" id="cantidad_componente_suscripcion" type="number" class="form-control form-control-sm text-align-right" onfocus="this.select();" value="1" min="1">

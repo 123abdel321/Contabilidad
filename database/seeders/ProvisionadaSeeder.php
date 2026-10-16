@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use DB;
 use Illuminate\Database\Seeder;
 
-use Database\Seeders\Provisionada\NitsSeeder;
+// use Database\Seeders\Provisionada\NitsSeeder;
 use Database\Seeders\Provisionada\BodegasSeeder;
 use Database\Seeders\Provisionada\FamiliasSeeder;
 use Database\Seeders\Provisionada\ImpuestosSeeder;
@@ -39,7 +39,7 @@ class ProvisionadaSeeder extends Seeder
     {
         DB::statement('SET foreign_key_checks = 0');
 
-        $this->call(NitsSeeder::class);
+        // $this->call(NitsSeeder::class);
         $this->call(BodegasSeeder::class);
         $this->call(FamiliasSeeder::class);
         $this->call(ImpuestosSeeder::class);
@@ -52,7 +52,7 @@ class ProvisionadaSeeder extends Seeder
         $this->call(NomConceptosSeeder::class);
         $this->call(TipoImpuestosSeeder::class);
         $this->call(TipoDocumentosSeeder::class);
-        $this->call(AdministradorasSeeder::class);
+        // $this->call(AdministradorasSeeder::class);
         $this->call(TiposFormasPagosSeeder::class);
         $this->call(ExogenaFormatosProvisionalSeeder::class);
         $this->call(ExogenaFormatoColumnasProvisionalSeeder::class);

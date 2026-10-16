@@ -38,7 +38,8 @@ class User extends Authenticatable
         'telefono',
         'created_by',
         'updated_by',
-        'fondo_sistema'
+        'fondo_sistema',
+        'codigo_verificacion',
     ];
 
     protected $appends = ['nombre_completo'];

@@ -92,9 +92,10 @@ class ProcessProvisionedDatabase implements ShouldQueue
 
 			info('Base de datos generada: ' . $this->dbName);
 
-			if ($this->idEmpresa) {
-				$this->instalarEmpresa($this->idEmpresa);
-			}
+			$this->instalarEmpresa($empresa);
+
+			$empresa->estado = 1;
+			$empresa->save();
 			
 			return $this->dbName;
 		} catch (Exception $exception) {
@@ -104,14 +105,10 @@ class ProcessProvisionedDatabase implements ShouldQueue
 		}
     }
 
-	private function instalarEmpresa($idEmpresa)
+	private function instalarEmpresa($empresa)
 	{
-		$empresa = Empresa::find($idEmpresa);
 
 		if ($empresa->token_db) return;
-
-		$empresa->estado = 1;
-		$empresa->save();
 
 		if ($this->tokenUsuario) {
 			$usuario = User::where('remember_token', $this->tokenUsuario)->first();
@@ -134,13 +131,11 @@ class ProcessProvisionedDatabase implements ShouldQueue
 			'primer_nombre' => $empresa->primer_nombre,
 			'otros_nombres' => $empresa->otros_nombres,
 			'razon_social' => $empresa->razon_social,
-			'direccion' => 'NINGUNA',
-			'email' => 'CONSUMIDOR@FINAL.COM',
+			'direccion' => $empresa->direccion ?: 'NINGUNA',
+			'email' => $empresa->email ?: 'CONSUMIDOR@FINAL.COM',
 			'telefono_1' => $empresa->telefono,
-			// 'id_ciudad' => $request->get('id_ciudad'),
-			// 'observaciones' => $request->get('observaciones'),
-			'created_by' => '',
-			'updated_by' => '',
+			'created_by' => $empresa->id_usuario_owner,
+			'updated_by' => $empresa->id_usuario_owner,
 		]);
 	}
 
