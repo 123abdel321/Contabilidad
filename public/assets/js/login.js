@@ -864,7 +864,7 @@ function peAbrirWidgetRegistro(pagoId, referencia, monto, btn, textoOriginal) {
                 currency: 'COP',
                 amountInCents: montoCents,
                 reference: referencia,
-                publicKey: 'pub_test_OotfUWWYb4mROOAPONcTs2Uh2CAJQ1ZK',
+                publicKey: PP_WOMPI_PUBLIC_KEY,
                 signature: { integrity: resFirma.signature },
             });
 

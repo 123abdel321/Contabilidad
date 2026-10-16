@@ -335,6 +335,7 @@
 <script>
     var PE_MODE = '{{ $mode ?? "login" }}';   // 'login' o 'register'
     var PE_STEP = {{ $step ?? 1 }};           // 1, 2, 3 o 4
+    var PP_WOMPI_PUBLIC_KEY  = '{{ config("services.wompi.public_key") }}';
 </script>
 
 @endsection

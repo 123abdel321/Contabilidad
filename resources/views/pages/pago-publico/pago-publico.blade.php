@@ -56,6 +56,15 @@
                         {{-- ─────────── COLUMNA IZQUIERDA ─────────── --}}
                         <div class="pp-col-left">
 
+                            {{-- 🔑 ESTADO DE LA SUSCRIPCIÓN --}}
+                            <div id="pp-estado-badge" class="pp-estado-badge" style="display: none; margin-bottom: 1rem;">
+                                <div class="pp-estado-icon" id="pp-estado-icon"></div>
+                                <div class="pp-estado-texto">
+                                    <div class="pp-estado-titulo" id="pp-estado-titulo">—</div>
+                                    <div class="pp-estado-subtitulo" id="pp-estado-subtitulo">—</div>
+                                </div>
+                            </div>
+
                             {{-- Suscripción actual --}}
                             <div id="pp-bloque-actual" style="display: none; margin-bottom: 1.5rem;">
                                 <div class="pp-actual-header">
@@ -97,7 +106,7 @@
                             {{-- Botón pagar --}}
                             <button class="pe-login-submit pp-btn-pagar-full" id="pp-btn-pagar">
                                 <i class="fas fa-credit-card" style="margin-right: 0.5rem;"></i>
-                                Pagar ahora
+                                <span id="pp-btn-pagar-texto">Pagar ahora</span>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 0.5rem;">
                                     <line x1="5" y1="12" x2="19" y2="12"/>
                                     <polyline points="12 5 19 12 12 19"/>
@@ -107,7 +116,7 @@
 
                         {{-- ─────────── COLUMNA DERECHA ─────────── --}}
                         <div class="pp-col-right">
-                            <p class="pp-section-title">➕ Agregar módulos (opcional)</p>
+                            <p class="pp-section-title" id="pp-seccion-titulo">➕ Agregar módulos (opcional)</p>
                             <div id="pp-arbol-componentes" class="pp-arbol">
                                 <div class="text-center text-muted small">
                                     <i class="fas fa-spinner fa-spin"></i> Cargando...
@@ -139,6 +148,7 @@
 
 <script>
     window.PP_TOKEN = '{{ $token }}';
+    window.PP_WOMPI_PUBLIC_KEY  = '{{ config("services.wompi.public_key") }}';
 </script>
 <script src="{{ asset('assets/js/sistema/pago-publico.js') }}"></script>
 

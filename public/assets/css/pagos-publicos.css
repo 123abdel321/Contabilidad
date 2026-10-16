@@ -411,3 +411,62 @@
     align-items: center;
     gap: 0.5rem;
 }
+
+/* 🔑 Badge de estado de suscripción */
+.pp-estado-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    background: rgba(2, 6, 23, 0.35);
+}
+
+.pp-estado-badge.al-dia {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(22, 163, 74, 0.05));
+    border-color: rgba(34, 197, 94, 0.35);
+}
+
+.pp-estado-badge.vencida {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(185, 28, 28, 0.05));
+    border-color: rgba(239, 68, 68, 0.35);
+}
+
+.pp-estado-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1rem;
+}
+
+.pp-estado-badge.al-dia .pp-estado-icon {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+}
+
+.pp-estado-badge.vencida .pp-estado-icon {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+}
+
+.pp-estado-texto {
+    flex: 1;
+    min-width: 0;
+}
+
+.pp-estado-titulo {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 0.15rem;
+}
+
+.pp-estado-subtitulo {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}

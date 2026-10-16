@@ -18,6 +18,7 @@
     }
 
     const TOKEN = window.PP_TOKEN;
+    const WOMPI_PUBLIC_KEY = window.PP_WOMPI_PUBLIC_KEY;
 
     let ppInfo          = null;
     let ppComponentes   = [];
@@ -73,12 +74,13 @@
                 }
 
                 ppInfo = res.data;
-                ppIdsContratados = ppInfo.ids_contratados || []; 
+                ppIdsContratados = ppInfo.ids_contratados || [];
 
                 document.getElementById('pp-empresa-nombre').textContent = ppInfo.empresa.razon_social;
                 document.getElementById('pp-empresa-nit').textContent = 'NIT: ' + (ppInfo.empresa.nit || '—');
 
                 renderComponentesActuales(ppInfo.componentes_actuales || []);
+                renderEstadoSuscripcion();
 
                 if (ppInfo.tiene_suscripcion) {
                     document.getElementById('pp-bloque-actual').style.display = 'block';
@@ -86,7 +88,6 @@
 
                 showState('pay');
 
-                // 🔑 Cálculo inicial (para que no muestre $0)
                 calcularTotales();
 
                 cargarArbolComponentes();
@@ -97,6 +98,72 @@
                 showState('error');
                 console.error(err);
             });
+    }
+
+    function renderEstadoSuscripcion() {
+        const badge    = document.getElementById('pp-estado-badge');
+        const icon     = document.getElementById('pp-estado-icon');
+        const titulo   = document.getElementById('pp-estado-titulo');
+        const subtitulo = document.getElementById('pp-estado-subtitulo');
+        const btnTexto = document.getElementById('pp-btn-pagar-texto');
+        const secTitulo = document.getElementById('pp-seccion-titulo');
+
+        const estado = ppInfo.estado_suscripcion || 'sin_suscripcion';
+
+        if (estado === 'sin_suscripcion') {
+            badge.style.display = 'none';
+            btnTexto.textContent = 'Pagar ahora';
+            return;
+        }
+
+        badge.style.display = 'flex';
+        badge.classList.remove('al-dia', 'vencida');
+
+        if (estado === 'al_dia') {
+            badge.classList.add('al-dia');
+            icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+            titulo.textContent = 'Tu suscripción está al día';
+
+            // Calcular hasta cuándo está cubierto
+            let subtituloTxt = '';
+            if (ppInfo.fecha_proximo_cobro) {
+                const fecha = new Date(ppInfo.fecha_proximo_cobro + 'T00:00:00');
+                const fechaFmt = fecha.toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' });
+                subtituloTxt = 'Cubierto hasta el ' + fechaFmt;
+            }
+
+            // Días restantes
+            if (ppInfo.dias_restantes !== null) {
+                if (ppInfo.dias_restantes === 0) {
+                    subtituloTxt += ' · Vence hoy';
+                } else if (ppInfo.dias_restantes > 0) {
+                    subtituloTxt += ' · ' + ppInfo.dias_restantes + ' día(s) restante(s)';
+                }
+            }
+
+            subtitulo.textContent = subtituloTxt;
+            btnTexto.textContent = 'Extender suscripción';
+            secTitulo.textContent = '➕ Agregar módulos (opcional)';
+
+        } else if (estado === 'vencida') {
+            badge.classList.add('vencida');
+            icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            titulo.textContent = 'Tu suscripción está vencida';
+
+            let subtituloTxt = '';
+            if (ppInfo.fecha_proximo_cobro) {
+                const fecha = new Date(ppInfo.fecha_proximo_cobro + 'T00:00:00');
+                const fechaFmt = fecha.toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' });
+                subtituloTxt = 'Venció el ' + fechaFmt;
+            }
+            if (ppInfo.dias_restantes !== null && ppInfo.dias_restantes < 0) {
+                subtituloTxt += ' · ' + Math.abs(ppInfo.dias_restantes) + ' día(s) en mora';
+            }
+
+            subtitulo.textContent = subtituloTxt;
+            btnTexto.textContent = 'Pagar y reactivar';
+            secTitulo.textContent = '➕ Agregar módulos (opcional)';
+        }
     }
 
     function renderComponentesActuales(comp) {
@@ -268,7 +335,12 @@
                 html += '<div style="display:flex; justify-content:space-between; font-size:0.8125rem; color:#22c55e;"><span>Descuento ' + res.data.porcentaje + '%</span><span>− ' + fmt(res.data.descuento) + '</span></div>';
             }
             html += '<hr style="border-color: rgba(148,163,184,0.15); margin: 0.5rem 0;">';
-            html += '<div style="display:flex; justify-content:space-between; font-weight:700;"><span>TOTAL</span><span>' + fmt(res.data.total) + '</span></div>';
+
+            // 🔑 CAMBIO AQUÍ: la etiqueta del TOTAL cambia según si está al día
+            const esAlDia = ppInfo && ppInfo.estado_suscripcion === 'al_dia';
+            html += '<div style="display:flex; justify-content:space-between; font-weight:700;">' +
+                    '<span>' + (esAlDia ? 'TOTAL A EXTENDER' : 'TOTAL') + '</span>' +
+                    '<span>' + fmt(res.data.total) + '</span></div>';
 
             const el = document.getElementById('pp-desglose-pago');
             el.innerHTML = html;
@@ -338,7 +410,7 @@
                     currency: 'COP',
                     amountInCents: montoCents,
                     reference: reference,
-                    publicKey: 'pub_test_OotfUWWYb4mROOAPONcTs2Uh2CAJQ1ZK',
+                    publicKey: WOMPI_PUBLIC_KEY,
                     signature: { integrity: resFirma.signature },
                 });
 
@@ -375,7 +447,7 @@
         .then(res => {
             if (res.success && res.estado === 1) {
                 showState('success');
-                // setTimeout(() => window.location.href = '/login', 4000);
+                setTimeout(() => window.location.href = '/login', 4000);
             } else {
                 alertPago('error', res.message || 'Pago no confirmado.');
                 btn.disabled = false; btn.innerHTML = original;
