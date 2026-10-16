@@ -55,7 +55,7 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
                     $nuevoMail.='@'.$razon_social[0].'.com';
                 }
 
-                if (!empty($this->actualizar_valores)) {
+                if ($this->actualizar_valores) {
                     $nit = Nits::where('numero_documento', $row['numero_documento'])->first();
                     if (!$nit) {
                         $estado = 1;
@@ -65,17 +65,21 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
                             ->where('email', $row['email'])
                             ->first();
 
-                        // if ($row['email'] && $nitsConMismoCorreo) {
-                        //     $estado = 1;
-                        //     $observacionMala.= 'El email: '.$nitsConMismoCorreo->email.', ya esta en uso por el documento: '.$nitsConMismoCorreo->numero_documento.'!<br>';
-                        // }
+                        if ($row['email'] && $nitsConMismoCorreo) {
+                            $estado = 1;
+                            $observacionMala.= 'El email: '.$nitsConMismoCorreo->email.', ya esta en uso por el documento: '.$nitsConMismoCorreo->numero_documento.'!<br>';
+                        }
                         
                     }
                 }
             } else {
+                continue;
                 $estado = 1;
                 $observacionMala.= 'El numero de documento: '.$row['numero_documento'].', es obligatorio!<br>';
-                continue;
+            }
+
+            if ($estado) {
+                dd($observacionMala);
             }
 
             NitsImport::create([
@@ -95,7 +99,7 @@ class ImportNits implements ToCollection, WithHeadingRow, WithProgressBar
                 'observaciones' => $row['observaciones'],
                 'email_1' => $row['email_1'],
                 'email_2' => $row['email_2'],
-                'estado' => $this->actualizar_valores ? 1 : 0,
+                'estado' => $this->actualizar_valores == true ? 3 : $estado,
                 'observacion' => $observacionMala,
             ]);
         }

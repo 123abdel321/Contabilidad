@@ -44,8 +44,8 @@ function importnitsInit() {
             {"data":'observaciones'},
             {"data":'email_1'},
             {"data":'email_2'},
-            {"data":'erroes'},
-            {"data":'total_erroes'}
+            {"data":'errores'},
+            {"data":'total_errores'}
         ]
     });
 
