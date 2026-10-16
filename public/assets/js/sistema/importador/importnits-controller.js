@@ -12,40 +12,39 @@ function importnitsInit() {
         serverSide: true,
         fixedHeader: true,
         deferLoading: 0,
-        initialLoad: false,
         language: lenguajeDatatable,
         sScrollX: "100%",
-        ajax:  {
+        ajax: {
             type: "GET",
             headers: headers,
             url: base_url + 'nits-cache-import',
         },
-        'rowCallback': function(row, data, index){
-            if (data.total_erroes) {
+        rowCallback: function (row, data, index) {
+            $('td', row).css('background-color', '');
+            if (data.total_errores && parseInt(data.total_errores) > 0) {
                 $('td', row).css('background-color', '#ff00005e');
-                return;
             }
         },
         columns: [
-            {"data":'id'},
-            {"data":'tipo_documento'},
-            {"data":'numero_documento'},
-            {"data":'digito_verificacion'},
-            {"data":'primer_nombre'},
-            {"data":'otros_nombres'},
-            {"data":'primer_apellido'},
-            {"data":'segundo_apellido'},
-            {"data":'razon_social'},
-            {"data":'direccion'},
-            {"data":'email'},
-            {"data":'telefono_1'},
-            {"data":'plazo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data":'cupo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right'},
-            {"data":'observaciones'},
-            {"data":'email_1'},
-            {"data":'email_2'},
-            {"data":'errores'},
-            {"data":'total_errores'}
+            { "data": 'id' },
+            { "data": 'tipo_documento' },
+            { "data": 'numero_documento' },
+            { "data": 'digito_verificacion' },
+            { "data": 'primer_nombre' },
+            { "data": 'otros_nombres' },
+            { "data": 'primer_apellido' },
+            { "data": 'segundo_apellido' },
+            { "data": 'razon_social' },
+            { "data": 'direccion' },
+            { "data": 'email' },
+            { "data": 'telefono_1' },
+            { "data": 'plazo', render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
+            { "data": 'cupo',  render: $.fn.dataTable.render.number(',', '.', 2, ''), className: 'dt-body-right' },
+            { "data": 'observaciones' },
+            { "data": 'email_1' },
+            { "data": 'email_2' },
+            { "data": 'errores' },
+            { "data": 'total_errores' }
         ]
     });
 

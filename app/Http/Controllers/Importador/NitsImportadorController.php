@@ -77,66 +77,78 @@ class NitsImportadorController extends Controller
         }
     }
 
-    public function generate (Request $request)
+    public function generate(Request $request)
     {
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length");
+        $draw            = $request->get('draw');
+        $start           = (int) $request->get('start', 0);
+        $rowperpage      = (int) $request->get('length', 20);
+        $order_arr       = $request->get('order', []);
+        $columnName_arr  = $request->get('columns', []);
+        $search_arr      = $request->get('search', []);
 
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
-        $search_arr = $request->get('search');
+        // Columna y dirección de ordenamiento
+        $columnIndex     = $order_arr[0]['column'] ?? 0;
+        $columnName      = $columnName_arr[$columnIndex]['data'] ?? 'id';
+        $columnSortOrder = $order_arr[0]['dir'] ?? 'asc';
+        $searchValue     = $search_arr['value'] ?? '';
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+        // Query base
+        $query = NitsImport::query();
 
-        $nitsImportados = NitsImport::orderBy($columnName,$columnSortOrder)
-            ->where('numero_documento', 'like', '%' .$searchValue . '%')
-            ->orWhere('primer_nombre', 'like', '%' .$searchValue . '%')
-            ->orWhere('otros_nombres', 'like', '%' .$searchValue . '%')
-            ->orWhere('primer_apellido', 'like', '%' .$searchValue . '%')
-            ->orWhere('segundo_apellido', 'like', '%' .$searchValue . '%')
-            ->orWhere('razon_social', 'like', '%' .$searchValue . '%')
-            ->orWhere('direccion', 'like', '%' .$searchValue . '%')
-            ->orWhere('email', 'like', '%' .$searchValue . '%')
-            ->orWhere('telefono_1', 'like', '%' .$searchValue . '%')
-            ->orWhere('plazo', 'like', '%' .$searchValue . '%')
-            ->orWhere('cupo', 'like', '%' .$searchValue . '%')
-            ->orWhere('observaciones', 'like', '%' .$searchValue . '%');
-            
-        $nitsImportadosTotals = $nitsImportados->get();
+        // Búsqueda global
+        if ($searchValue !== '') {
+            $query->where(function ($q) use ($searchValue) {
+                $q->where('numero_documento', 'like', '%' . $searchValue . '%')
+                ->orWhere('primer_nombre',   'like', '%' . $searchValue . '%')
+                ->orWhere('otros_nombres',   'like', '%' . $searchValue . '%')
+                ->orWhere('primer_apellido', 'like', '%' . $searchValue . '%')
+                ->orWhere('segundo_apellido','like', '%' . $searchValue . '%')
+                ->orWhere('razon_social',    'like', '%' . $searchValue . '%')
+                ->orWhere('direccion',       'like', '%' . $searchValue . '%')
+                ->orWhere('email',           'like', '%' . $searchValue . '%')
+                ->orWhere('telefono_1',      'like', '%' . $searchValue . '%')
+                ->orWhere('plazo',           'like', '%' . $searchValue . '%')
+                ->orWhere('cupo',            'like', '%' . $searchValue . '%')
+                ->orWhere('observaciones',   'like', '%' . $searchValue . '%');
+            });
+        }
 
-        $cuentasPaginate = $nitsImportados->skip($start)
-            ->take($rowperpage);
+        // Total para el paginador
+        $totalRecords = (clone $query)->count();
 
-        $dataNistValidar = $cuentasPaginate->get();
+        // Orden + paginación
+        $dataNits = $query
+            ->orderBy($columnName, $columnSortOrder)
+            ->skip($start)
+            ->take($rowperpage)
+            ->get();
 
-        if (count($dataNistValidar)) {
-            foreach ($dataNistValidar as $dataNit) {
-                // $errores = $this->getErrores($dataNit);
-                // $dataNit->observacion = $errores;
-                // $dataNit->estado = $errores ? 0 : 1;
-                // $dataNit->save();
+        // ── Enriquecer cada fila ──
+        foreach ($dataNits as $nit) {
+            // ID visual
+            $nit->id = $nit->id + 1;
 
-                // $this->rowErrors = 0;
-                $dataNit->id = $dataNit->id + 1;
-                // $dataNit->errores = $this->getErrores($dataNit);
-                $dataNit->tipo_documento = $this->tipoDocumento($dataNit->tipo_documento);
-                // $dataNit->total_errores = $this->rowErrors;
+            // Tipo de documento legible
+            $nit->tipo_documento = $this->tipoDocumento($nit->tipo_documento);
+
+            // 🔑 Errores ya guardados en la columna `observacion` durante el import
+            if ((int) $nit->estado === 1 && !empty($nit->observacion)) {
+                $nit->errores       = $nit->observacion;
+                $nit->total_errores = substr_count($nit->observacion, '<br/>');
+            } else {
+                $nit->errores       = '';
+                $nit->total_errores = 0;
             }
         }
 
         return response()->json([
-            'success'=>	true,
-            'draw' => $draw,
-            'iTotalRecords' => $nitsImportadosTotals->count(),
-            'iTotalDisplayRecords' => $nitsImportadosTotals->count(),
-            'data' => $dataNistValidar,
-            'perPage' => $rowperpage,
-            'message'=> 'Nits excel generado con exito!'
+            'success'               => true,
+            'draw'                  => (int) $draw,
+            'iTotalRecords'         => $totalRecords,
+            'iTotalDisplayRecords'  => $totalRecords,
+            'data'                  => $dataNits,
+            'perPage'               => $rowperpage,
+            'message'               => 'Nits cargados con éxito.',
         ]);
     }
     
@@ -152,7 +164,7 @@ class NitsImportadorController extends Controller
 
     public function actualizar (Request $request)
     {
-        $nitsImportados = NitsImport::get();
+        $nitsImportados = NitsImport::where('estado', '!=', 1)->get();
         $erroresTotales = [];
 
         try {
