@@ -347,6 +347,75 @@ class SuscripcionController extends Controller
         }
     }
 
+    public function componentesDelete(Request $request)
+    {
+        $rules = [
+            'id' => 'required|integer',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->messages);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'data'    => [],
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        try {
+            DB::connection('clientes')->beginTransaction();
+
+            $user      = $request->user();
+            $idEmpresa = $user->id_empresa;
+
+            $empresaComponente = EmpresaComponentesSuscripcion::where('id', $request->get('id'))
+                ->where('id_empresa', $idEmpresa)
+                ->first();
+
+            if (!$empresaComponente) {
+                throw new Exception('Componente de suscripción no encontrado.');
+            }
+
+            $suscripcion = EmpresaSuscripcion::where('id_empresa', $idEmpresa)
+                ->where('estado', '1')
+                ->first();
+
+            if (!$suscripcion) {
+                throw new Exception('No se encontró una suscripción activa para esta empresa.');
+            }
+
+            // 🔑 Eliminar el componente
+            $empresaComponente->delete();
+
+            // 🔑 Recalcular el precio total de la suscripción
+            $totalComponentes = 0;
+            foreach ($suscripcion->componentes()->get() as $c) {
+                $cant = max(1, (int) ($c->cantidad ?? 1));
+                $desc = (float) ($c->descuento ?? 0);
+                $totalComponentes += ((float) $c->precio - $desc) * $cant;
+            }
+            $suscripcion->precio = $totalComponentes;
+            $suscripcion->save();
+
+            DB::connection('clientes')->commit();
+
+            return response()->json([
+                'success' => true,
+                'data'    => '',
+                'message' => 'Componente eliminado con éxito!',
+            ]);
+
+        } catch (Exception $e) {
+            DB::connection('clientes')->rollback();
+            return response()->json([
+                'success' => false,
+                'data'    => [],
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
     // ============================================================
     // PAGOS SUSCRIPCION
     // ============================================================
@@ -823,26 +892,26 @@ class SuscripcionController extends Controller
                         // ═══════════════════════════════════════════════════
                         // CASO 4: POR VENCER EN EL MISMO MES
                         // fecha_inicio_suscripcion = hoy
-                        // fecha_siguiente_cobro = día 1 del mes siguiente + (N-1) meses
+                        // fecha_siguiente_cobro = último día del mes actual + (N-1) meses
                         // ═══════════════════════════════════════════════════
                         $c->fecha_inicio_suscripcion = $hoy->format('Y-m-d');
 
-                        $primerDiaMesSiguiente = $hoy->copy()->startOfMonth()->addMonth();
-                        $nuevaFechaCobro = $primerDiaMesSiguiente->copy()->addMonthsNoOverflow($meses - 1);
-
-                        $c->fecha_siguiente_cobro = $nuevaFechaCobro->format('Y-m-d');
+                        $c->fecha_siguiente_cobro = $hoy->copy()
+                            ->endOfMonth()
+                            ->addMonthsNoOverflow($meses - 1)
+                            ->format('Y-m-d');
                     } else {
                         // ═══════════════════════════════════════════════════
                         // CASO 3: NUEVO
                         // fecha_inicio_suscripcion = hoy
-                        // fecha_siguiente_cobro = día 1 del mes siguiente + (N-1) meses
+                        // fecha_siguiente_cobro = último día del mes actual + (N-1) meses
                         // ═══════════════════════════════════════════════════
                         $c->fecha_inicio_suscripcion = $hoy->format('Y-m-d');
 
-                        $primerDiaMesSiguiente = $hoy->copy()->startOfMonth()->addMonth();
-                        $nuevaFechaCobro = $primerDiaMesSiguiente->copy()->addMonthsNoOverflow($meses - 1);
-
-                        $c->fecha_siguiente_cobro = $nuevaFechaCobro->format('Y-m-d');
+                        $c->fecha_siguiente_cobro = $hoy->copy()
+                            ->endOfMonth()
+                            ->addMonthsNoOverflow($meses - 1)
+                            ->format('Y-m-d');
                     }
 
                     $c->save();
@@ -1777,168 +1846,106 @@ class SuscripcionController extends Controller
         ];
     }
 
-    public function calcularDesglosePago($idEmpresa, $idEmpresaSuscripcion, $meses)
+    /**
+     * CÁLCULO ÚNICO DEL DESGLOSE DE PAGO.
+     * Sirve para: registro nuevo, módulo suscripción, link público con/sin extras.
+     *
+     * Reglas:
+     *  - NUEVO   (sin fecha_siguiente_cobro) → proporcional desde hoy hasta fin de mes + (N-1) meses.
+     *  - VENCIDO (fecha_siguiente_cobro < hoy) → N meses completos.
+     *  - AL DÍA  (fecha_siguiente_cobro >= hoy) → N meses completos.
+     *
+     * @param int|null    $idEmpresa
+     * @param int|null    $idEmpresaSuscripcion
+     * @param int         $meses
+     * @param float       $precioExtraMensual  Precio mensual de componentes NUEVOS que se están agregando.
+     */
+    public function calcularDesglosePago($idEmpresa, $idEmpresaSuscripcion, $meses, $precioExtraMensual = 0)
     {
-        $meses = max(1, (int) $meses);
         $hoy   = Carbon::now()->startOfDay();
+        $meses = max(1, (int) $meses);
 
-        $componentes = EmpresaComponentesSuscripcion::with('componente')
-            ->where('id_empresa', $idEmpresa)
-            ->where('id_empresa_suscripcion', $idEmpresaSuscripcion)
-            ->has('componente')
-            ->get();
+        // ── 1) Precio mensual base + próxima fecha de cobro ──
+        $precioMensualTotal = 0;
+        $fechaProximoCobro  = null;
 
-        if ($componentes->isEmpty()) {
+        if ($idEmpresa && $idEmpresaSuscripcion) {
+            $componentes = EmpresaComponentesSuscripcion::where('id_empresa', $idEmpresa)
+                ->where('id_empresa_suscripcion', $idEmpresaSuscripcion)
+                ->has('componente')
+                ->get();
+
+            foreach ($componentes as $c) {
+                $cant = max(1, (int) ($c->cantidad ?? 1));
+                $desc = (float) ($c->descuento ?? 0);
+                $precioMensualTotal += ((float) $c->precio - $desc) * $cant;
+            }
+
+            $fechaProximoCobro = $componentes->min('fecha_siguiente_cobro');
+        }
+
+        // Sumar extras (módulos nuevos que se están comprando en este pago)
+        $precioMensualTotal += (float) $precioExtraMensual;
+
+        if ($precioMensualTotal <= 0) {
             return [
-                'monto_mes_actual'  => 0,
-                'monto_meses_extra' => 0,
-                'subtotal'          => 0,
-                'descuento'         => 0,
-                'porcentaje'        => 0,
-                'total'             => 0,
-                'meses'             => $meses,
-                'detalle_meses'     => [],
+                'estado'             => 'vacio',
+                'monto_mes_actual'   => 0,
+                'monto_meses_extra'  => 0,
+                'subtotal'           => 0,
+                'descuento'          => 0,
+                'porcentaje'         => 0,
+                'total'              => 0,
+                'meses'              => $meses,
+                'precio_mensual'     => 0,
+                'dias_del_mes'       => 0,
+                'dias_restantes'     => 0,
+                'detalle_meses'      => [],
             ];
         }
 
-        $precioMensualTotal = 0;
-
-        foreach ($componentes as $c) {
-            $cant = max(1, (int) ($c->cantidad ?? 1));
-            $desc = (float) ($c->descuento ?? 0);
-            $precioMensualTotal += ((float) $c->precio - $desc) * $cant;
-        }
-
-        $suscripcion = EmpresaSuscripcion::where('id_empresa', $idEmpresa)
-            ->where('estado', '1')
-            ->first();
-
-        $fechaProximoCobro = null;
-        if ($suscripcion) {
-            $fechaProximoCobro = EmpresaComponentesSuscripcion::where('id_empresa', $idEmpresa)
-                ->where('id_empresa_suscripcion', $suscripcion->id)
-                ->has('componente')
-                ->min('fecha_siguiente_cobro');
-        }
-
-        // 🔑 Determinar el caso
-        $esVencido           = false;
-        $esPorVencerMismoMes = false;
-        $esActivo            = false;
-        $esNuevo             = true;
-
+        // ── 2) Determinar estado ──
+        $estado = 'nuevo';
         if ($fechaProximoCobro) {
-            $fechaVencimiento = Carbon::parse($fechaProximoCobro)->startOfDay();
-
-            if ($fechaVencimiento->lt($hoy)) {
-                $esVencido = true;
-                $esNuevo   = false;
-            } elseif ($fechaVencimiento->isSameMonth($hoy)) {
-                $esPorVencerMismoMes = true;
-                $esNuevo             = false;
-            } else {
-                $esActivo = true;
-                $esNuevo  = false;
-            }
+            $estado = Carbon::parse($fechaProximoCobro)->startOfDay()->lt($hoy)
+                ? 'vencido'
+                : 'al_dia';
         }
 
-        if ($esActivo) {
-            // ═══════════════════════════════════════════════════
-            // CASO 2: ACTIVO (vence en mes futuro) → paga meses completos
-            // ═══════════════════════════════════════════════════
-            $montoMesActual  = round($precioMensualTotal, 2);
-            $montoMesesExtra = round($precioMensualTotal * ($meses - 1), 2);
+        // ── 3) Calcular montos según estado ──
+        $diasDelMes    = 30;
+        $diasRestantes = 30;
 
-            $diasDelMes    = 30;
-            $diasRestantes = 30;
-
-            $labelMesActual = 'Mes completo';
-        } elseif ($esVencido) {
-            // ═══════════════════════════════════════════════════
-            // CASO 1: VENCIDO
-            // El ciclo viejo ya cerró → cobramos proporcional
-            // del MES SIGUIENTE al vencimiento hasta hoy
-            // ═══════════════════════════════════════════════════
-            $fechaVencimiento = Carbon::parse($fechaProximoCobro)->startOfDay();
-
-            // 🔑 El nuevo ciclo arranca el día 1 del mes siguiente al vencimiento
-            $inicioNuevoCiclo = $fechaVencimiento->copy()->startOfMonth()->addMonth();
-
-            // 🔑 Días del mes natural del nuevo ciclo
-            $primerDiaDelMes = $inicioNuevoCiclo->copy()->startOfMonth();
-            $ultimoDiaDelMes = $inicioNuevoCiclo->copy()->endOfMonth();
-            $diasDelMes      = $primerDiaDelMes->diffInDays($ultimoDiaDelMes) + 1;
-
-            // 🔑 VENCIDO → siempre cobra el mes completo (no proporcional)
-            $diasTranscurridos = $diasDelMes;
-
-            $factorMesActual = $diasDelMes > 0 ? ($diasTranscurridos / $diasDelMes) : 1;
-            $montoMesActual  = round($precioMensualTotal * $factorMesActual, 2);
-
-            $mesesExtra      = $meses - 1;
-            $montoMesesExtra = round($precioMensualTotal * $mesesExtra, 2);
-
-            $diasRestantes  = $diasTranscurridos;
-            $labelMesActual = 'Mes actual (' . $diasTranscurridos . '/' . $diasDelMes . ' días)';
-        } elseif ($esPorVencerMismoMes) {
-            // ═══════════════════════════════════════════════════
-            // CASO 4: POR VENCER EN EL MISMO MES
-            // Cobra desde hoy hasta fin de mes (proporcional)
-            // ═══════════════════════════════════════════════════
-            $fechaInicioCiclo = $hoy->copy();
-            $fechaFinCiclo    = $hoy->copy()->endOfMonth();
-
-            $primerDiaDelMes = $hoy->copy()->startOfMonth();
-            $ultimoDiaDelMes = $hoy->copy()->endOfMonth();
-            $diasDelMes      = $primerDiaDelMes->diffInDays($ultimoDiaDelMes) + 1;
-
-            $diasRestantes = $fechaInicioCiclo->diffInDays($fechaFinCiclo) + 1;
+        if ($estado === 'nuevo') {
+            $diasDelMes    = $hoy->copy()->startOfMonth()->diffInDays($hoy->copy()->endOfMonth()) + 1;
+            $diasRestantes = $hoy->diffInDays($hoy->copy()->endOfMonth()) + 1;
             if ($diasRestantes < 1) $diasRestantes = 1;
             if ($diasRestantes > $diasDelMes) $diasRestantes = $diasDelMes;
 
-            $factorMesActual = $diasRestantes / $diasDelMes;
-            $montoMesActual  = round($precioMensualTotal * $factorMesActual, 2);
-
-            $mesesExtra      = $meses - 1;
-            $montoMesesExtra = round($precioMensualTotal * $mesesExtra, 2);
-
-            $labelMesActual = 'Mes actual (' . $diasRestantes . '/' . $diasDelMes . ' días)';
+            $factor          = $diasRestantes / $diasDelMes;
+            $montoMesActual  = round($precioMensualTotal * $factor, 2);
+            $montoMesesExtra = round($precioMensualTotal * ($meses - 1), 2);
+            $labelMesActual  = 'Mes actual (' . $diasRestantes . '/' . $diasDelMes . ' días)';
         } else {
-            // ═══════════════════════════════════════════════════
-            // CASO 3: NUEVO (sin fecha_siguiente_cobro)
-            // Cobra desde hoy hasta día 1 del mes siguiente
-            // ═══════════════════════════════════════════════════
-            $fechaInicioCiclo = $hoy->copy();
-            $fechaFinCiclo    = $hoy->copy()->startOfMonth()->addMonth();
-
-            $primerDiaDelMes = $hoy->copy()->startOfMonth();
-            $ultimoDiaDelMes = $hoy->copy()->endOfMonth();
-            $diasDelMes      = $primerDiaDelMes->diffInDays($ultimoDiaDelMes) + 1;
-
-            $diasRestantes = $fechaInicioCiclo->diffInDays($fechaFinCiclo);
-            if ($diasRestantes < 1) $diasRestantes = 1;
-
-            $factorMesActual = $diasRestantes / $diasDelMes;
-            $montoMesActual  = round($precioMensualTotal * $factorMesActual, 2);
-
-            $mesesExtra      = $meses - 1;
-            $montoMesesExtra = round($precioMensualTotal * $mesesExtra, 2);
-
-            $labelMesActual = 'Mes actual (' . $diasRestantes . '/' . $diasDelMes . ' días)';
+            // VENCIDO y AL DÍA → N meses completos
+            $montoMesActual  = round($precioMensualTotal, 2);
+            $montoMesesExtra = round($precioMensualTotal * ($meses - 1), 2);
+            $labelMesActual  = $estado === 'vencido' ? 'Mes actual (completo)' : 'Mes completo';
         }
 
         $subtotal = round($montoMesActual + $montoMesesExtra, 2);
 
+        // ── 4) Descuento ──
         $descuentoRow = \App\Models\Empresas\DescuentoSuscripcion::where('meses', $meses)
             ->where('activo', 1)
             ->first();
 
         $porcentaje = $descuentoRow ? (float) $descuentoRow->descuento_porcentaje : 0;
         $descuento  = round($subtotal * ($porcentaje / 100), 2);
-
-        $total = round($subtotal - $descuento, 2);
+        $total      = round($subtotal - $descuento, 2);
 
         return [
+            'estado'             => $estado,
             'monto_mes_actual'   => $montoMesActual,
             'monto_meses_extra'  => $montoMesesExtra,
             'subtotal'           => $subtotal,
@@ -1950,14 +1957,8 @@ class SuscripcionController extends Controller
             'dias_del_mes'       => $diasDelMes,
             'dias_restantes'     => $diasRestantes,
             'detalle_meses'      => [
-                [
-                    'label' => $labelMesActual,
-                    'monto' => $montoMesActual,
-                ],
-                [
-                    'label' => ($meses - 1) . ' mes(es) completo(s)',
-                    'monto' => $montoMesesExtra,
-                ],
+                ['label' => $labelMesActual, 'monto' => $montoMesActual],
+                ['label' => ($meses - 1) . ' mes(es) completo(s)', 'monto' => $montoMesesExtra],
             ],
         ];
     }
@@ -2182,70 +2183,18 @@ class SuscripcionController extends Controller
         }
 
         try {
-            $meses = (int) $request->get('meses');
-            $hoy   = Carbon::now()->startOfDay();
-
-            // 🔑 Calcular el precio mensual total (suma de componentes)
-            $precioMensualTotal = 0;
+            $meses  = (int) $request->get('meses');
+            $precio = 0;
             foreach ($request->get('componentes') as $c) {
-                $precioMensualTotal += (float) $c['precio'];
+                $precio += (float) $c['precio'];
             }
 
-            // 🔑 Como es NUEVO (empresa no existe), siempre aplica CASO 3: proporcional desde hoy
-            $fechaInicioCiclo = $hoy->copy();
-            $fechaFinCiclo    = $hoy->copy()->startOfMonth()->addMonth();
-
-            $primerDiaDelMes = $hoy->copy()->startOfMonth();
-            $ultimoDiaDelMes = $hoy->copy()->endOfMonth();
-            $diasDelMes      = $primerDiaDelMes->diffInDays($ultimoDiaDelMes) + 1;
-
-            $diasRestantes = $fechaInicioCiclo->diffInDays($fechaFinCiclo);
-            if ($diasRestantes < 1) $diasRestantes = 1;
-
-            $factorMesActual = $diasRestantes / $diasDelMes;
-            $montoMesActual  = round($precioMensualTotal * $factorMesActual, 2);
-
-            $mesesExtra      = $meses - 1;
-            $montoMesesExtra = round($precioMensualTotal * $mesesExtra, 2);
-
-            $subtotal = round($montoMesActual + $montoMesesExtra, 2);
-
-            // 🔑 Buscar descuento
-            $descuentoRow = \App\Models\Empresas\DescuentoSuscripcion::where('meses', $meses)
-                ->where('activo', 1)
-                ->first();
-
-            $porcentaje = $descuentoRow ? (float) $descuentoRow->descuento_porcentaje : 0;
-            $descuento  = round($subtotal * ($porcentaje / 100), 2);
-
-            $total = round($subtotal - $descuento, 2);
+            $desglose = $this->calcularDesglosePago(null, null, $meses, $precio);
 
             return response()->json([
                 'success' => true,
-                'data'    => [
-                    'monto_mes_actual'   => $montoMesActual,
-                    'monto_meses_extra'  => $montoMesesExtra,
-                    'subtotal'           => $subtotal,
-                    'descuento'          => $descuento,
-                    'porcentaje'         => $porcentaje,
-                    'total'              => $total,
-                    'meses'              => $meses,
-                    'precio_mensual'     => round($precioMensualTotal, 2),
-                    'dias_del_mes'       => $diasDelMes,
-                    'dias_restantes'     => $diasRestantes,
-                    'detalle_meses'      => [
-                        [
-                            'label' => 'Mes actual (' . $diasRestantes . '/' . $diasDelMes . ' días)',
-                            'monto' => $montoMesActual,
-                        ],
-                        [
-                            'label' => $mesesExtra . ' mes(es) completo(s)',
-                            'monto' => $montoMesesExtra,
-                        ],
-                    ],
-                ],
+                'data'    => $desglose,
             ]);
-
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
@@ -2331,23 +2280,16 @@ class SuscripcionController extends Controller
     public function pagoPublicoInfo(Request $request, $token)
     {
         try {
-            
             $link = app(\App\Http\Services\SuscripcionPagoLinkService::class)
                 ->buscarPorToken($token);
 
             if (!$link) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Link inválido o expirado.',
-                ], 404);
+                return response()->json(['success' => false, 'message' => 'Link inválido o expirado.'], 404);
             }
 
             $empresa = $link->empresa;
             if (!$empresa) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Empresa no encontrada.',
-                ], 404);
+                return response()->json(['success' => false, 'message' => 'Empresa no encontrada.'], 404);
             }
 
             $suscripcion = EmpresaSuscripcion::where('id_empresa', $empresa->id)
@@ -2365,20 +2307,50 @@ class SuscripcionController extends Controller
                         $cant = max(1, (int) ($c->cantidad ?? 1));
                         $desc = (float) ($c->descuento ?? 0);
                         return [
-                            'id'              => $c->id,
-                            'id_componente'   => $c->id_componente,
-                            'nombre'          => $c->componente->nombre ?? 'N/A',
-                            'cantidad'        => $cant,
-                            'precio'          => (float) $c->precio,
-                            'descuento'       => $desc,
-                            'precio_mensual'  => (($c->precio - $desc) * $cant),
+                            'id'                    => $c->id,
+                            'id_componente'         => $c->id_componente,
+                            'nombre'                => $c->componente->nombre ?? 'N/A',
+                            'cantidad'              => $cant,
+                            'precio'                => (float) $c->precio,
+                            'descuento'             => $desc,
+                            'precio_mensual'        => (($c->precio - $desc) * $cant),
                             'fecha_siguiente_cobro' => $c->fecha_siguiente_cobro,
                         ];
                     });
             }
 
-            // 🔑 IDs de componentes que ya tiene (para excluirlos del árbol)
             $idsContratados = $componentesActuales->pluck('id_componente')->toArray();
+
+            // 🔑 Estado global de la suscripción
+            $hoy = Carbon::now()->startOfDay();
+            $fechaProximoCobro = null;
+            $estadoSuscripcion = 'sin_suscripcion';
+            $diasRestantes = null;
+            $precioMensual = 0;
+
+            if ($suscripcion) {
+                $fechaProximoCobro = EmpresaComponentesSuscripcion::where('id_empresa', $empresa->id)
+                    ->where('id_empresa_suscripcion', $suscripcion->id)
+                    ->has('componente')
+                    ->min('fecha_siguiente_cobro');
+
+                foreach ($componentesActuales as $c) {
+                    $precioMensual += $c['precio_mensual'];
+                }
+
+                if ($fechaProximoCobro) {
+                    $fechaCobro    = Carbon::parse($fechaProximoCobro)->startOfDay();
+                    $diasRestantes = $hoy->diffInDays($fechaCobro, false);
+
+                    if ($diasRestantes < 0) {
+                        $estadoSuscripcion = 'vencida';
+                    } else {
+                        $estadoSuscripcion = 'al_dia';
+                    }
+                } else {
+                    $estadoSuscripcion = 'al_dia';
+                }
+            }
 
             $nombreCliente = $empresa->razon_social
                 ?: trim("{$empresa->primer_nombre} {$empresa->otros_nombres} {$empresa->primer_apellido} {$empresa->segundo_apellido}");
@@ -2394,15 +2366,17 @@ class SuscripcionController extends Controller
                     'tiene_suscripcion'    => (bool) $suscripcion,
                     'id_suscripcion'       => $suscripcion->id ?? null,
                     'componentes_actuales' => $componentesActuales,
-                    'ids_contratados'      => $idsContratados,   // ← NUEVO
+                    'ids_contratados'      => $idsContratados,
+                    // 🔑 NUEVOS campos para el estado visual
+                    'estado_suscripcion'   => $estadoSuscripcion,       // 'al_dia' | 'vencida' | 'sin_suscripcion'
+                    'fecha_proximo_cobro'  => $fechaProximoCobro,
+                    'dias_restantes'       => $diasRestantes,
+                    'precio_mensual'       => round($precioMensual, 2),
                 ],
             ]);
 
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 422);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
         }
     }
 
@@ -2435,9 +2409,7 @@ class SuscripcionController extends Controller
             $link = app(\App\Http\Services\SuscripcionPagoLinkService::class)
                 ->buscarPorToken($request->get('token'));
 
-            if (!$link) {
-                throw new Exception('Link inválido o expirado.');
-            }
+            if (!$link) throw new Exception('Link inválido o expirado.');
 
             $empresa     = $link->empresa;
             $meses       = (int) $request->get('meses');
@@ -2445,81 +2417,22 @@ class SuscripcionController extends Controller
                 ->where('estado', '1')
                 ->first();
 
-            // 🔑 Desglose base: componentes actuales (o 0 si no hay suscripción)
-            $desglose = null;
-
-            if ($suscripcion) {
-                $desglose = $this->calcularDesglosePago($empresa->id, $suscripcion->id, $meses);
-            } else {
-                // Sin suscripción → trata como NUEVO con precio 0
-                $desglose = [
-                    'monto_mes_actual'  => 0,
-                    'monto_meses_extra' => 0,
-                    'subtotal'          => 0,
-                    'descuento'         => 0,
-                    'porcentaje'        => 0,
-                    'total'             => 0,
-                    'meses'             => $meses,
-                    'precio_mensual'    => 0,
-                    'dias_del_mes'      => 0,
-                    'dias_restantes'    => 0,
-                    'detalle_meses'     => [],
-                ];
+            // Sumar precio de los extras
+            $precioExtra = 0;
+            foreach ($request->get('componentes_extra', []) as $c) {
+                $precioExtra += (float) $c['precio'];
             }
 
-            // 🔑 Componentes extra (nuevos que quiere agregar el cliente)
-            $extra = $request->get('componentes_extra', []);
-            $precioExtraMensual = 0;
-            foreach ($extra as $c) {
-                $precioExtraMensual += (float) $c['precio'];
-            }
+            $desglose = $this->calcularDesglosePago(
+                $empresa->id,
+                $suscripcion->id ?? null,
+                $meses,
+                $precioExtra
+            );
 
-            // Proporcional de los extras (mismo criterio que el desglose base)
-            $diasDelMes    = $desglose['dias_del_mes'] ?: 30;
-            $diasRestantes = $desglose['dias_restantes'] ?: 30;
-            $factor = $diasDelMes > 0 ? ($diasRestantes / $diasDelMes) : 1;
-
-            $extraMesActual  = round($precioExtraMensual * $factor, 2);
-            $extraMesesExtra = round($precioExtraMensual * ($meses - 1), 2);
-
-            // 🔑 Recombinar
-            $montoMesActual   = round($desglose['monto_mes_actual'] + $extraMesActual, 2);
-            $montoMesesExtra  = round($desglose['monto_meses_extra'] + $extraMesesExtra, 2);
-            $subtotal         = round($montoMesActual + $montoMesesExtra, 2);
-
-            // Descuento se recalcula sobre el subtotal final
-            $descuentoRow = \App\Models\Empresas\DescuentoSuscripcion::where('meses', $meses)
-                ->where('activo', 1)
-                ->first();
-            $porcentaje = $descuentoRow ? (float) $descuentoRow->descuento_porcentaje : 0;
-            $descuento  = round($subtotal * ($porcentaje / 100), 2);
-            $total      = round($subtotal - $descuento, 2);
-
-            return response()->json([
-                'success' => true,
-                'data'    => [
-                    'monto_mes_actual'   => $montoMesActual,
-                    'monto_meses_extra'  => $montoMesesExtra,
-                    'subtotal'           => $subtotal,
-                    'descuento'          => $descuento,
-                    'porcentaje'         => $porcentaje,
-                    'total'              => $total,
-                    'meses'              => $meses,
-                    'precio_mensual'     => round($desglose['precio_mensual'] + $precioExtraMensual, 2),
-                    'dias_del_mes'       => $diasDelMes,
-                    'dias_restantes'     => $diasRestantes,
-                    'detalle_meses'      => [
-                        ['label' => 'Mes actual', 'monto' => $montoMesActual],
-                        ['label' => ($meses - 1) . ' mes(es) extra', 'monto' => $montoMesesExtra],
-                    ],
-                ],
-            ]);
-
+            return response()->json(['success' => true, 'data' => $desglose]);
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 422);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
         }
     }
 
@@ -2563,55 +2476,29 @@ class SuscripcionController extends Controller
                 ->where('estado', '1')
                 ->first();
 
-            // 🔑 Recalcular con la misma función
-            $desglose = null;
-            if ($suscripcion) {
-                $desglose = $this->calcularDesglosePago($idEmpresa, $suscripcion->id, $meses);
-            } else {
-                $desglose = [
-                    'monto_mes_actual'  => 0,
-                    'monto_meses_extra' => 0,
-                    'subtotal'          => 0,
-                    'descuento'         => 0,
-                    'porcentaje'        => 0,
-                    'total'             => 0,
-                    'precio_mensual'    => 0,
-                    'dias_del_mes'      => 30,
-                    'dias_restantes'    => 30,
-                    'meses'             => $meses,
-                    'detalle_meses'     => [],
-                ];
-            }
-
             $extra = $request->get('componentes_extra', []);
+
+            // 🔑 Precio mensual de los componentes EXTRA (nuevos)
             $precioExtraMensual = 0;
             foreach ($extra as $c) {
                 $precioExtraMensual += (float) $c['precio'];
             }
 
-            $factor = $desglose['dias_del_mes'] > 0
-                ? $desglose['dias_restantes'] / $desglose['dias_del_mes']
-                : 1;
+            // 🔑 CÁLCULO ÚNICO — el desglose ya incluye base + extras
+            $desglose = $this->calcularDesglosePago(
+                $idEmpresa,
+                $suscripcion->id ?? null,
+                $meses,
+                $precioExtraMensual
+            );
 
-            $extraMesActual  = round($precioExtraMensual * $factor, 2);
-            $extraMesesExtra = round($precioExtraMensual * ($meses - 1), 2);
-
-            $montoMesActual  = round($desglose['monto_mes_actual'] + $extraMesActual, 2);
-            $montoMesesExtra = round($desglose['monto_meses_extra'] + $extraMesesExtra, 2);
-            $subtotal        = round($montoMesActual + $montoMesesExtra, 2);
-
-            $descuentoRow = \App\Models\Empresas\DescuentoSuscripcion::where('meses', $meses)
-                ->where('activo', 1)
-                ->first();
-            $porcentaje = $descuentoRow ? (float) $descuentoRow->descuento_porcentaje : 0;
-            $descuento  = round($subtotal * ($porcentaje / 100), 2);
-            $monto      = round($subtotal - $descuento, 2);
+            $monto = (float) $desglose['total'];
 
             if ($monto <= 0) {
                 throw new Exception('El monto a pagar es 0.');
             }
 
-            // Armar detalle de componentes (los actuales + los extra)
+            // ── Armar detalle de componentes (actuales + extra) para guardar en el JSON ──
             $detalleComponentes = [];
 
             if ($suscripcion) {
@@ -2647,20 +2534,13 @@ class SuscripcionController extends Controller
                 ];
             }
 
-            // Referencia única para Wompi
+            // ── Referencia única para Wompi ──
             $reference = 'PUB_' . $idEmpresa . '_' . time() . '_' . rand(1000, 9999);
 
             $detalleJson = json_encode([
                 'componentes' => $detalleComponentes,
                 'meses'       => $meses,
-                'desglose'    => [
-                    'monto_mes_actual'  => $montoMesActual,
-                    'monto_meses_extra' => $montoMesesExtra,
-                    'subtotal'          => $subtotal,
-                    'descuento'         => $descuento,
-                    'porcentaje'        => $porcentaje,
-                    'total'             => $monto,
-                ],
+                'desglose'    => $desglose,   // 🔑 ya viene todo calculado
                 'reference'   => $reference,
                 'token_link'  => $request->get('token'),
             ]);

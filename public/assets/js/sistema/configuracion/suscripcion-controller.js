@@ -265,6 +265,42 @@ function cargarTablasComponentes() {
             recalcularTotalEstimado();
             $("#componentesSuscripcionFormModal").modal('show');
         });
+
+        suscripcion_componentes_table.on('click', '.drop-componente-suscripcion', function () {
+            var id = this.id.split('_')[1];
+            var data = getDataById(id, suscripcion_componentes_table);
+
+            Swal.fire({
+                title: `Eliminar componente de: ${data.componente.nombre}?`,
+                text: "No se podrá revertir!",
+                type: 'warning',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Borrar!',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.value){
+                    $.ajax({
+                        url: base_url + 'suscripcion-componentes',
+                        method: 'DELETE',
+                        data: JSON.stringify({id: id}),
+                        headers: headers,
+                        dataType: 'json',
+                    }).done((res) => {
+                        if(res.success){
+                            suscripcion_componentes_table.ajax.reload();
+                            agregarToast('exito', 'Eliminación exitosa', 'Componente eliminado con exito!', true );
+                        } else {
+                            agregarToast('error', 'Eliminación errada', res.message);
+                        }
+                    }).fail((res) => {
+                        agregarToast('error', 'Eliminación errada', res.message);
+                    });
+                }
+            })
+        });
     }
 
     suscripcion_pagos_table.ajax.reload();

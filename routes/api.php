@@ -327,6 +327,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             //COMPONENTES
             Route::get('suscripcion-componentes', 'componentesGet');
             Route::post('suscripcion-componentes', 'componentesPost');
+            Route::delete('suscripcion-componentes', 'componentesDelete');
             Route::get('suscripcion-combos', 'combosGet');
             // //PAGOS
             Route::get('suscripcion-pagos', 'pagosGet');
