@@ -1043,14 +1043,9 @@ class SuscripcionController extends Controller
 
     public function registerIndex(Request $request)
     {
-        // 🔑 Si NO está logueado, mandarlo al login
-        if (!Auth::check()) {
-            return redirect('/login');
-        }
-
         return view('auth.login', [
             'mode' => 'register',
-            'step' => (int) $request->get('step', 1),
+            'step' => max(1, (int) $request->get('step', 1)),
         ]);
     }
 
