@@ -16,5 +16,6 @@ class VerifyCsrfToken extends Middleware
         'api/pos/*',
         'api/pedido',
         'api/pedido/*',
+        'api/wompi/webhook*',
     ];
 }

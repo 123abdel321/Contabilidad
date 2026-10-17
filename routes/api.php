@@ -81,6 +81,7 @@ use App\Http\Controllers\Configuracion\EmpresaController;
 use App\Http\Controllers\Configuracion\UsuariosController;
 use App\Http\Controllers\Configuracion\ReunionesController;
 use App\Http\Controllers\Configuracion\SuscripcionController;
+use App\Http\Controllers\Configuracion\WompiWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +100,7 @@ Route::post('register-api-token', 'App\Http\Controllers\InstaladorController@cre
 
 // REGISTRO PÚBLICO — FASE 1
 Route::post('register-crear-cuenta',   'App\Http\Controllers\Configuracion\SuscripcionController@registerCrearCuenta');
+Route::post('wompi/webhook', [WompiWebhookController::class, 'handle'])->name('wompi.webhook');
 
 Route::post('public-event', function (Request $request) {
     event(new PrivateMessage(['mensaje' => 'hola mundo', 'id_usuario' => 1]));

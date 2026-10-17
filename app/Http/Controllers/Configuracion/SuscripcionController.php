@@ -834,8 +834,8 @@ class SuscripcionController extends Controller
             }
 
             $pago->save();
-            if ($estadoPago === 1 && $empresa->estado != 1) {
-            // if ($estadoPago === 1 && $estadoAnterior !== 1) {
+            
+            if ($estadoPago === 1 && $estadoAnterior !== 1) {
                 $suscripcion = EmpresaSuscripcion::where('id_empresa', $idEmpresa)
                     ->where('estado', '1')
                     ->first();
@@ -2647,13 +2647,14 @@ class SuscripcionController extends Controller
             $detalle['wompi_status']         = $estadoWompi;
             $detalle['metodo_pago']          = $data['payment_method']['type'] ?? 'Tarjeta';
 
+            $estadoAnterior = (int) $pago->estado;
+
             $pago->detalle_json = json_encode($detalle);
             $pago->estado       = $estadoPago;
             if (!empty($data['id'])) $pago->token_db = $data['id'];
             $pago->save();
 
-            // Si fue aprobado → avanzar fechas + crear componentes nuevos
-            if ($estadoPago === 1) {
+            if ($estadoPago === 1 && $estadoAnterior !== 1) {
                 $suscripcion = EmpresaSuscripcion::where('id_empresa', $idEmpresa)
                     ->where('estado', '1')
                     ->first();
