@@ -656,6 +656,7 @@ class ProductosController extends Controller
             ->with([
                 'familia.cuenta_compra.impuesto',
                 'familia.cuenta_compra_retencion.impuesto',
+                'familia.cuenta_compra_retencion_nodeclarante.impuesto',
                 'familia.cuenta_compra_devolucion.impuesto',
                 'familia.cuenta_compra_iva.impuesto',
                 'familia.cuenta_compra_descuento.impuesto',

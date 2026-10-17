@@ -26,6 +26,7 @@ class FacFamilias extends Model
         'id_cuenta_venta_devolucion_iva',
         'id_cuenta_compra',
         'id_cuenta_compra_retencion',
+        'id_cuenta_compra_retencion_nodeclarante',
         'id_cuenta_compra_devolucion',
         'id_cuenta_compra_iva',
         'id_cuenta_compra_impuestos',
@@ -80,6 +81,11 @@ class FacFamilias extends Model
     public function cuenta_compra_retencion()
     {
         return $this->belongsTo(PlanCuentas::class, "id_cuenta_compra_retencion");
+    }
+
+    public function cuenta_compra_retencion_nodeclarante()
+    {
+        return $this->belongsTo(PlanCuentas::class, "id_cuenta_compra_retencion_nodeclarante");
     }
 
     public function cuenta_compra_devolucion()

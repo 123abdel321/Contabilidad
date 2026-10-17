@@ -61,4 +61,11 @@ class FacCompras extends Model
 	{
 		return $this->hasMany('App\Models\Sistema\FacCompraDetalles', 'id_compra');
 	}
+
+    public function pagos()
+	{
+		return $this->hasMany(FacCompraPagos::class, 'id_compra');
+	}
+
+
 }

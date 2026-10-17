@@ -2,7 +2,7 @@ var fecha = null;
 var compra_table = null;
 var idCompraProducto = 0;
 var guardarCompra = false;
-var $comboClienteCompras = null;
+var $comboProveedorCompras = null;
 var createNewNit = false;
 var $comboVendedorCompras = null;
 var retencionesCompras = [];
@@ -146,7 +146,7 @@ function cargarTablasCompras() {
                             var query = {
                                 q: params.term,
                                 id_bodega: $("#id_bodega_compra").val(),
-                                id_cliente: $("#id_cliente_compra").val(),
+                                id_cliente: $("#id_proveedor_compra").val(),
                                 captura: 'compra',
                                 _type: 'query'
                             }
@@ -362,10 +362,10 @@ function cargarFechasCompras() {
 }
 
 function cargarCombosCompras() {
-    $comboClienteCompras = $('#id_cliente_compra').select2({
+    $comboProveedorCompras = $('#id_proveedor_compra').select2({
         theme: 'bootstrap-5',
         delay: 250,
-        dropdownCssClass: 'custom-id_cliente_compra',
+        dropdownCssClass: 'custom-id_proveedor_compra',
         language: {
             noResults: function() {
                 createNewNit = true;
@@ -471,38 +471,6 @@ function cargarCombosCompras() {
         }
     });
 
-    $('#id_tipo_documento_compra_nit').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#nitCompraFormModal'),
-        delay: 250,
-        ajax: {
-            url: 'api/nit/combo-tipo-documento',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
-    $('#id_ciudad_compra_nit').select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $('#nitCompraFormModal'),
-        delay: 250,
-        ajax: {
-            url: 'api/ciudades',
-            headers: headers,
-            dataType: 'json',
-            processResults: function (data) {
-                return {
-                    results: data.data
-                };
-            }
-        }
-    });
-
     if(primeraComprobanteCompra){
         var dataResolucion = {
             id: primeraComprobanteCompra.id,
@@ -523,34 +491,44 @@ function cargarCombosCompras() {
         $comboBodegaCompra.val(dataBodega.id).trigger('change');
     }
 
-    $('#id_cliente_compra').on('select2:close', function(event) {
-        var data = $(this).select2('data');
-        if(data.length){
-            procesarCambioClienteCompra(data[0]);
-            // loadAnticiposClienteCompras();
-            // clearFormasPagoCompra();
-            // responsabilidadesCompra = getResponsabilidades(data[0].id_responsabilidades);
-            // actualizarInfoRetencionCompras();
-        }
-    });
-    
-    $('#id_comprobante_compra').on('select2:close', function(event) {
-        var data = $(this).select2('data');
-        if(data.length){
-            document.getElementById('iniciarCapturaCompra').click();
-        }
-    });
-
     if (!primeraBodegaCompra || !primeraBodegaCompra.length) {
         agregarToast('warning', 'Sin bodegas asignadas', '', true);
     }
 
+    $comboProveedorCompras.on('select2:close', function(event) {
+        console.log('comboProveedorCompras select2:close');
+        
+        var dataNit = $('#id_proveedor_compra').select2('data');
+
+        if (dataNit && dataNit.length) {
+            dataNit = dataNit[0];
+            responsabilidadesCompra = getResponsabilidades(dataNit.id_responsabilidades);
+            actualizarInfoRetencionCompras();
+        }
+    });
+
     setTimeout(function(){
-        $comboClienteCompras.select2("open");
+        $comboProveedorCompras.select2("open");
     },10);
 }
 
-function procesarCambioClienteCompra(data) {
+$(document).on('change', '#id_proveedor_compra', function () {
+    var data = $(this).select2('data');
+    if(!data.length){
+        return;
+    }
+
+    procesarCambioProveedorCompra(data[0]);
+
+    setTimeout(function(){
+        $('#documento_referencia_compra').focus().select();
+    },10);
+
+    loadAnticiposProveedorCompras();
+});
+
+function procesarCambioProveedorCompra(data) {
+    
     if (!data) {
         $("#btn_ver_cliente_compra").hide();
         return;
@@ -568,7 +546,6 @@ function procesarCambioClienteCompra(data) {
     responsabilidadesCompra = getResponsabilidades(data.id_responsabilidades);
     clearFormasPagoCompra();
     changeRetencionCompras();
-    loadAnticiposClienteCompras();
 }
 
 function changeRetencionCompras() {
@@ -593,9 +570,9 @@ function openModalNewNitCompra() {
                 text: dataNit.numero_documento + ' - ' + dataNit.nombre_completo
             };
             var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
-            $comboClienteCompras.append(newOption).val(dataCliente.id).trigger('change');
+            $comboProveedorCompras.append(newOption).val(dataCliente.id).trigger('change');
 
-            procesarCambioClienteCompra(dataNit);
+            procesarCambioProveedorCompra(dataNit);
             
             agregarToast('exito', 'Creación exitosa', 'Cliente creado con éxito!', true);
             document.getElementById('iniciarCapturaCompra').click();
@@ -604,7 +581,7 @@ function openModalNewNitCompra() {
 }
 
 function openModalViewNitCompra() {
-    var data = $('#id_cliente_compra').select2('data');
+    var data = $('#id_proveedor_compra').select2('data');
 
     if (!data.length) {
         agregarToast('warning', 'Sin cliente', 'Selecciona un cliente primero');
@@ -615,7 +592,7 @@ function openModalViewNitCompra() {
 }
 
 function openModalEditNitCompra() {
-    var data = $('#id_cliente_compra').select2('data');
+    var data = $('#id_proveedor_compra').select2('data');
     if (!data.length) {
         agregarToast('warning', 'Sin cliente', 'Selecciona un cliente primero');
         return;
@@ -625,7 +602,7 @@ function openModalEditNitCompra() {
         id: data[0].id,
         onUpdate: function (dataNit) {
 
-            var $sel = $('#id_cliente_compra');
+            var $sel = $('#id_proveedor_compra');
             var optText = dataNit.numero_documento + ' - ' + dataNit.nombre_completo;
 
             $sel.find("option[value='" + dataNit.id + "']").remove();
@@ -633,7 +610,7 @@ function openModalEditNitCompra() {
             $sel.append(newOption);
             $sel.val(dataNit.id).trigger('change');
 
-            procesarCambioClienteCompra(dataNit);
+            procesarCambioProveedorCompra(dataNit);
             agregarToast('exito', 'Edición exitosa', 'Cliente actualizado con éxito!', true);
         }
     });
@@ -707,17 +684,17 @@ function focusVDescuentoCompra (idRow) {
     },80);
 }
 
-function loadAnticiposClienteCompras() {
+function loadAnticiposProveedorCompras() {
     totalAnticiposDisponibles = 0;
     $('#input-anticipos-compra').hide();
     $('#compra_anticipo_disp_view').hide();
     $('#saldo_anticipo_compra').val(0);
     $('#compra_anticipo_disp').text('0.00');
 
-    if(!$('#id_cliente_compra').val()) return;
+    if(!$('#id_proveedor_compra').val()) return;
 
     let data = {
-        id_nit: $('#id_cliente_compra').val(),
+        id_nit: $('#id_proveedor_compra').val(),
         id_tipo_cuenta: [8]
     }
 
@@ -965,6 +942,7 @@ function totalValoresCompras() {
         total = ivaIncluidoCompras ? valorBruto : valorBruto + iva;
         retencion = calcularRetencionCompras(valorBruto, total);
 
+
         if (retencion) {
             total = total - retencion;
         }
@@ -998,7 +976,7 @@ function calcularRetencionCompras(valorBruto, total) {
 
     retencion = 0;
 
-    if (responsabilidadesCompra.includes('7')) {
+    if (calculaRetencionCompra) {
         [base, porcentaje] = obtenerDatosRetencionCompra(valorBruto);
     
         if (total >= base && porcentaje) {
@@ -1054,8 +1032,8 @@ function actualizarInfoRetencionCompras() {
     let valorSubtotal = new Intl.NumberFormat('ja-JP').format(subtotal);
     let responsableRetencion = '';
 
-    if (responsabilidadesCompra.includes('7')) {
-        responsableRetencion = `<b class='titulo-popover'>Con responsablidad:</b> 07 => Calcula retención en la fuente`;
+    if (calculaRetencionCompra) {
+        responsableRetencion = `<b class='titulo-popover'>Con permiso:</b> Calcula retención en la fuente`;
     } else {
         responsableRetencion = `<b class='titulo-popover'>Sin responsablidad:</b> 07 => No calcula retención en la fuente`;
     }
@@ -1095,9 +1073,20 @@ function changeProductoCompra (idRow) {
         $('#compra_iva_porcentaje_'+idRow).val(stringToNumberFloat(data.familia.cuenta_compra_iva.impuesto.porcentaje));
         $('#compra_iva_porcentaje_text_'+idRow).text(stringToNumberFloat(data.familia.cuenta_compra_iva.impuesto.porcentaje)+'%');
     }
-
-    if (data.familia.cuenta_compra_retencion && data.familia.cuenta_compra_retencion.impuesto) {
-
+    console.log('data.familia: ',data.familia);
+    if (!responsabilidadesCompra.includes('5') && data.familia.cuenta_compra_retencion_nodeclarante && data.familia.cuenta_compra_retencion_nodeclarante.impuesto) {
+        var existe = retencionesCompras.findIndex(item => item.id_retencion == data.familia.cuenta_compra_retencion_nodeclarante.impuesto.id);
+        if (!existe || existe < 0) {
+            retencionesCompras.push({
+                cuenta: data.familia.cuenta_compra_retencion_nodeclarante.cuenta,
+                nombre: data.familia.cuenta_compra_retencion_nodeclarante.nombre,
+                id_retencion: data.familia.cuenta_compra_retencion_nodeclarante.impuesto.id,
+                porcentaje: parseFloat(data.familia.cuenta_compra_retencion_nodeclarante.impuesto.porcentaje),
+                base: parseFloat(data.familia.cuenta_compra_retencion_nodeclarante.impuesto.base),
+                total_uvt: parseFloat(data.familia.cuenta_compra_retencion_nodeclarante.impuesto.total_uvt)
+            })
+        }
+    } else if (data.familia.cuenta_compra_retencion && data.familia.cuenta_compra_retencion.impuesto) {
         var existe = retencionesCompras.findIndex(item => item.id_retencion == data.familia.cuenta_compra_retencion.impuesto.id);
         if (!existe || existe < 0) {
             retencionesCompras.push({
@@ -1208,7 +1197,7 @@ function cancelarCompra() {
     cargarFechasCompras();
 
     setTimeout(function(){
-        $comboClienteCompras.select2("open");
+        $comboProveedorCompras.select2("open");
     },10);
 }
 
@@ -1408,7 +1397,7 @@ function saveCompra() {
         pagos: getComprasPagos(),
         productos: getProductosCompra(),
         id_bodega: $("#id_bodega_compra").val(),
-        id_proveedor: $("#id_cliente_compra").val(),
+        id_proveedor: $("#id_proveedor_compra").val(),
         fecha_manual: $("#fecha_manual_compra").val(),
         id_comprobante: $("#id_comprobante_compra").val(),
         documento_referencia: $("#documento_referencia_compra").val(),
@@ -1447,11 +1436,11 @@ function saveCompra() {
             }
 
             setTimeout(function(){
-                $('#id_cliente_compra').focus();
-                $comboClienteCompras.select2("open");
+                $('#id_proveedor_compra').focus();
+                $comboProveedorCompras.select2("open");
             },10);
 
-            loadAnticiposClienteCompras();
+            loadAnticiposProveedorCompras();
             disabledFormasPagoCompra();
             cargarFechasCompras();
 
@@ -1678,8 +1667,8 @@ $(document).on('click', '#saveNitCompra', function () {
                     text: res.data.numero_documento + ' - ' + res.data.nombre_completo
                 };
                 var newOption = new Option(dataCliente.text, dataCliente.id, false, false);
-                $comboClienteCompras.append(newOption).trigger('change');
-                $comboClienteCompras.val(dataCliente.id).trigger('change');
+                $comboProveedorCompras.append(newOption).trigger('change');
+                $comboProveedorCompras.val(dataCliente.id).trigger('change');
 
                 agregarToast('exito', 'Creación exitosa', 'Cedula nit creada con exito!', true);
 
@@ -1706,15 +1695,6 @@ $(document).on('click', '#crearCapturaCompra', function () {
     validateSaveCompra();
 });
 
-$('#id_cliente_compra').on('select2:close', function(event) {
-    var data = $(this).select2('data');
-    if(data.length){
-        setTimeout(function(){
-            $('#documento_referencia_compra').focus();
-        },10);
-    }
-});
-
 $("#fecha_manual_compra").on('keydown', function(event) {
     if(event.keyCode == 13){
         event.preventDefault();
@@ -1726,13 +1706,17 @@ $("#fecha_manual_compra").on('keydown', function(event) {
 });
 
 function buscarFacturaCompra(event) {
+    var botonPrecionado = event.key.length == 1 ? event.key : '';
+    var documento_referencia = $('#documento_referencia_compra').val()+''+botonPrecionado;
+
+    if (event.keyCode == 13 && documento_referencia) {
+        document.getElementById('iniciarCapturaCompra').click();
+        return;
+    }
 
     if (validarFacturaCompra) {
         validarFacturaCompra.abort();
     }
-
-    var botonPrecionado = event.key.length == 1 ? event.key : '';
-    var documento_referencia = $('#documento_referencia_compra').val()+''+botonPrecionado;
 
     if (event.key == 'Backspace') documento_referencia = documento_referencia.slice(0, -1);
     if (!documento_referencia) return;
@@ -1755,14 +1739,9 @@ function buscarFacturaCompra(event) {
         }).done((res) => {
             validarFacturaCompra = null;
             $('#documento_referencia_compra_loading').hide();
-            if(res.data == 0 || !res.data){
+            if(!res.data){
                 $('#documento_referencia_compra').removeClass("is-invalid");
                 $('#documento_referencia_compra').addClass("is-valid");
-                
-                calcularCompraPagos();
-                clearFormasPagoCompra();
-                document.getElementById('iniciarCapturaCompra').click();
-
             }else {
                 $('#documento_referencia_compra').removeClass("is-valid");
                 $('#documento_referencia_compra').addClass("is-invalid");
@@ -1798,11 +1777,11 @@ $(document).on('keydown', '.custom-compra_producto .select2-search__field', func
     }
 });
 
-$(document).on('keydown', '.custom-id_cliente_compra .select2-search__field', function (event) {
+$(document).on('keydown', '.custom-id_proveedor_compra .select2-search__field', function (event) {
     if (event.keyCode == 13){
         openModalNewNitCompras();
         var documentoBuscado = $('.select2-search__field').val();
-        $comboClienteCompras.select2('close');
+        $comboProveedorCompras.select2('close');
         $("#numero_documento_compra_nit").val(documentoBuscado);
     }
 });

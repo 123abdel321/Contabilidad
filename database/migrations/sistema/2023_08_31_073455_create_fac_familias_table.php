@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('id_cuenta_venta_impuestos')->nullable();
             $table->integer('id_cuenta_compra')->nullable();
             $table->integer('id_cuenta_compra_retencion')->nullable();
+            $table->integer('id_cuenta_compra_retencion_nodeclarante')->nullable();
             $table->integer('id_cuenta_compra_devolucion')->nullable();
             $table->integer('id_cuenta_compra_iva')->nullable();
             $table->integer('id_cuenta_compra_descuento')->nullable();

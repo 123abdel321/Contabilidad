@@ -927,12 +927,10 @@ function peReconciliarRegistro(pagoId, transaction, referencia, btn, textoOrigin
         peShowScreen('login');
     }
 
-    // Si el modo es register + step 3, precargar datos
     if (PE_MODE === 'register' && PE_STEP === 3) {
         peCargarProgresoYIrAlPaso3();
     }
 
-    // Si el modo es register + step 4, cargar árbol
     if (PE_MODE === 'register' && PE_STEP === 4) {
         peGoStep(4);
         cargarArbolComponentes();

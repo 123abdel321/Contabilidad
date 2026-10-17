@@ -11,6 +11,7 @@ use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 class VentasPdf extends AbstractMakePdf
 {
     public $venta;
+    public $empresa;
     public $claveUrl;
     public $tipoEmpresion;
 

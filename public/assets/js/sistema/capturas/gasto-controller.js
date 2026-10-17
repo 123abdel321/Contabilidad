@@ -160,6 +160,7 @@ function cargarCombosGasto() {
             dataNit = dataNit[0];
             sumarAIU = dataNit.sumar_aiu ? true : false;
             responsabilidadesGasto = getResponsabilidades(dataNit.id_responsabilidades);
+
             if (dataNit.porcentaje_reteica) {
                 porcentajeReteica = parseFloat(dataNit.porcentaje_reteica);
                 columnValReteIca.visible(true);
@@ -813,21 +814,19 @@ function changeConceptoGasto(idGasto) {
                 total_uvt: parseFloat(data.cuenta_retencion_declarante.impuesto.total_uvt),
             });
         }
-    } else {
+    } else if (data.cuenta_retencion && data.cuenta_retencion.impuesto) {
 
-        if (data.cuenta_retencion && data.cuenta_retencion.impuesto) {
-            var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion.impuesto.id);
+        var existe = retencionesGasto.findIndex(item => item.id_retencion == data.cuenta_retencion.impuesto.id);
 
-            if (!existe || existe < 0) {
-                retencionesGasto.push({
-                    cuenta: data.cuenta_retencion.cuenta,
-                    nombre: data.cuenta_retencion.nombre,
-                    id_retencion: data.cuenta_retencion.impuesto.id,
-                    porcentaje: parseFloat(data.cuenta_retencion.impuesto.porcentaje),
-                    base: parseFloat(data.cuenta_retencion.impuesto.base),
-                    total_uvt: parseFloat(data.cuenta_retencion.impuesto.total_uvt),
-                });
-            }
+        if (!existe || existe < 0) {
+            retencionesGasto.push({
+                cuenta: data.cuenta_retencion.cuenta,
+                nombre: data.cuenta_retencion.nombre,
+                id_retencion: data.cuenta_retencion.impuesto.id,
+                porcentaje: parseFloat(data.cuenta_retencion.impuesto.porcentaje),
+                base: parseFloat(data.cuenta_retencion.impuesto.base),
+                total_uvt: parseFloat(data.cuenta_retencion.impuesto.total_uvt),
+            });
         }
     }
 
@@ -1790,7 +1789,7 @@ $(document).on('change', '#id_nit_gasto', function () {
 });
 
 function procesarCambioNitGasto(data) {
-    console.log('procesarCambioNitGasto: ',data);
+    
     if (!data) {
         $("#btn_ver_cliente_gasto").hide();
         return;

@@ -35,10 +35,12 @@ class CompraController extends Controller
     use BegConsecutiveTrait;
     use BegDocumentHelpersTrait;
 
+    protected $tipoRetencion = 'cuenta_compra_retencion';
     protected $nit = null;
     protected $bodega = null;
 	protected $messages = null;
     protected $compraData = [];
+    protected $retenciones = [];
     protected $totalesPagos = [
         'total_efectivo' => 0,
         'total_otrospagos' => 0,
@@ -197,10 +199,16 @@ class CompraController extends Controller
         }
 
         try {
-            
+
             DB::connection('sam')->beginTransaction();
-            //CREAR FACTURA COMPRAR
-            $this->nit = $this->findProveedor($request->get('id_proveedor'));
+
+            $this->proveedor = $this->findProveedor($request->get('id_proveedor'));
+            $responsabilidades = $this->getResponsabilidades($this->proveedor->id_responsabilidades);
+
+            if (!in_array('5', $responsabilidades)) {
+                $this->tipoRetencion = 'cuenta_compra_retencion_nodeclarante';
+            }
+
             $compra = $this->createFacturaCompra($request);
             $enviarFacturaElectronica = false;
             
@@ -225,7 +233,7 @@ class CompraController extends Controller
                 FacCompraDetalles::create([
                     'id_compra' => $compra->id,
                     'id_cuenta_compra' => $productoDb->familia->id_cuenta_compra,
-                    'id_cuenta_compra_retencion' => $productoDb->familia->id_cuenta_compra_retencion,
+                    'id_cuenta_compra_retencion' => $this->totalesFactura['id_cuenta_rete_fuente'],
                     'id_cuenta_compra_iva' => $productoDb->familia->id_cuenta_compra_iva,
                     'id_cuenta_compra_descuento' => $productoDb->familia->id_cuenta_compra_descuento,
                     'id_producto' => $producto->id_producto,
@@ -273,7 +281,7 @@ class CompraController extends Controller
                             "id_cuenta" => $cuentaRecord->id,
                             "id_nit" => $cuentaRecord->exige_nit ? $compra->id_proveedor : null,
                             "id_centro_costos" => $cuentaRecord->exige_centro_costos ? $compra->id_centro_costos : null,
-                            "concepto" => 'COMPRA: '.$cuentaRecord->exige_concepto ? $this->nit->nombre_nit.' - '.$compra->documento_referencia : null,
+                            "concepto" => 'COMPRA: '.$cuentaRecord->exige_concepto ? $this->proveedor->nombre_nit.' - '.$compra->documento_referencia : null,
                             "documento_referencia" => $cuentaRecord->exige_documento_referencia ? $compra->documento_referencia : null,
                             "debito" => $cuentaRecord->naturaleza_compras == PlanCuentas::DEBITO ? $producto->{$keyTotalItem} : 0,
                             "credito" => $cuentaRecord->naturaleza_compras == PlanCuentas::CREDITO ? $producto->{$keyTotalItem} : 0,
@@ -329,7 +337,7 @@ class CompraController extends Controller
                         "id_cuenta" => $cuentaRetencion->id,
                         "id_nit" => $cuentaRetencion->exige_nit ? $compra->id_proveedor : null,
                         "id_centro_costos" => $cuentaRetencion->exige_centro_costos ? $compra->id_centro_costos : null,
-                        "concepto" => 'TOTAL: '.$cuentaRetencion->exige_concepto ? $this->nit->nombre_nit.' - '.$compra->documento_referencia : null,
+                        "concepto" => 'TOTAL: '.$cuentaRetencion->exige_concepto ? $this->proveedor->nombre_nit.' - '.$compra->documento_referencia : null,
                         "documento_referencia" => $cuentaRetencion->exige_documento_referencia ? $compra->documento_referencia : null,
                         "debito" => $cuentaRetencion->naturaleza_compras == PlanCuentas::DEBITO ? $this->totalesFactura['total_rete_fuente'] : 0,
                         "credito" => $cuentaRetencion->naturaleza_compras == PlanCuentas::CREDITO ? $this->totalesFactura['total_rete_fuente'] : 0,
@@ -556,11 +564,18 @@ class CompraController extends Controller
         }
 
         $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-        $data = (new ComprasPdf($empresa, $factura))->buildPdf()->getData();
-        
+
+        // $data = (new ComprasPdf($empresa, $factura))->buildPdf()->getData();
         // return view('pdf.facturacion.compras', $data);
+
+        $claveUrl = $this->generarClavePDF(
+            $empresa->id,
+            $factura->comprobante->id,
+            $factura->consecutivo,
+            $factura->fecha_manual
+        );
  
-        return (new ComprasPdf($empresa, $factura))
+        return (new ComprasPdf($empresa, $factura, $claveUrl))
             ->buildPdf()
             ->showPdf();
     }
@@ -644,6 +659,14 @@ class CompraController extends Controller
         }
     }
 
+    private function getResponsabilidades($id_responsabilidades)
+    {
+        if ($id_responsabilidades) {
+            return explode(",", $id_responsabilidades);
+        }
+        return [];
+    }
+
     private function addFormaPago($documentoReferencia, $formaPago, $pagoItem, $compra, $valor, $saldo)
     {
         FacCompraPagos::create([
@@ -659,7 +682,7 @@ class CompraController extends Controller
             'id_cuenta' => $formaPago->cuenta->id,
             'id_nit' => $formaPago->cuenta->exige_nit ? $compra->id_proveedor : null,
             'id_centro_costos' => $formaPago->cuenta->exige_centro_costos ? $compra->id_centro_costos : null,
-            'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $this->nit->nombre_nit.' - '.$compra->documento_referencia : null,
+            'concepto' => 'TOTAL: '.$formaPago->cuenta->exige_concepto ? $this->proveedor->nombre_nit.' - '.$compra->documento_referencia : null,
             'documento_referencia' => $formaPago->cuenta->exige_documento_referencia ? $compra->documento_referencia : null,
             'debito' => $valor,
             'credito' => $valor,
@@ -699,41 +722,86 @@ class CompraController extends Controller
         return $compra;
     }
 
-    private function calcularTotales ($productos)
+    private function calcularTotales($productos)
     {
+        // Una sola carga para todos los productos (antes: 1 query por línea)
+        $productosDb = $this->cargarProductosDb($productos);
+
+        // PASO 1: elegir la retención de mayor porcentaje
+        $this->seleccionarRetencionAplicableProductos($productos, $productosDb);
+        
+        // PASO 2: calcular y acumular por producto
         foreach ($productos as $producto) {
-            $producto = (object)$producto;
-
-
-            $productoDb = FacProductos::where('id', $producto->id_producto)
-                ->with(
-                    'familia.cuenta_compra',
-                    'familia.cuenta_compra_retencion.impuesto',
-                    'familia.cuenta_compra_iva.impuesto',
-                    'familia.cuenta_compra_descuento'
-                )
-                ->first();
-            
-            $cuentaRetencion = $productoDb->familia->cuenta_compra_retencion;
-            if ($cuentaRetencion && $cuentaRetencion->impuesto) {
-                $impuesto = $cuentaRetencion->impuesto;
-                if (floatval($impuesto->porcentaje) > $this->totalesFactura['porcentaje_rete_fuente']) {
-                    $this->totalesFactura['porcentaje_rete_fuente'] = floatval($impuesto->porcentaje);
-                    $this->totalesFactura['tope_retencion'] = floatval($impuesto->base);
-                    $this->totalesFactura['id_cuenta_rete_fuente'] = $cuentaRetencion->id;
-                }
-            }
-            $subtotal = $producto->cantidad * $producto->costo;
-            $this->totalesFactura['subtotal']+= $subtotal;
-            $this->totalesFactura['total_iva']+= $producto->iva_valor;
-            $this->totalesFactura['total_descuento']+= $producto->descuento_valor;
-            $this->totalesFactura['total_factura']+= $subtotal - $producto->descuento_valor + $producto->iva_valor;
+            $this->acumularTotalesProducto($this->calcularProducto((object)$producto));
         }
 
-        if ($this->totalesFactura['total_factura'] > $this->totalesFactura['tope_retencion'] && $this->totalesFactura['porcentaje_rete_fuente'] > 0) {
-            $total_rete_fuente = ($this->totalesFactura['subtotal'] * $this->totalesFactura['porcentaje_rete_fuente']) / 100;
-            $this->totalesFactura['total_rete_fuente'] = $total_rete_fuente;
-            $this->totalesFactura['total_factura']-= $total_rete_fuente;
+        // PASO 3: aplicar retención final
+        $this->aplicarRetencionProductos();
+    }
+
+    private function cargarProductosDb($productos)
+    {
+        $ids = [];
+        foreach ($productos as $p) {
+            $ids[] = ((object)$p)->id_producto;
+        }
+
+        return FacProductos::with([
+            'familia.cuenta_compra',
+            'familia.cuenta_compra_retencion.impuesto',
+            'familia.cuenta_compra_retencion_nodeclarante.impuesto',
+            'familia.cuenta_compra_iva.impuesto',
+            'familia.cuenta_compra_descuento',
+        ])->whereIn('id', array_unique($ids))->get()->keyBy('id');
+    }
+
+    private function seleccionarRetencionAplicableProductos($productos, $productosDb): void
+    {
+        foreach ($productos as $producto) {
+            $productoDb = $productosDb[((object)$producto)->id_producto] ?? null;
+            if (!$productoDb) continue;
+
+            $cuentaRetencion = $productoDb->familia?->{$this->tipoRetencion};
+            if (!$cuentaRetencion || !$cuentaRetencion->impuesto) continue;
+
+            $impuesto = $cuentaRetencion->impuesto;
+            if (floatval($impuesto->porcentaje) > $this->totalesFactura['porcentaje_rete_fuente']) {
+                $this->totalesFactura['porcentaje_rete_fuente'] = floatval($impuesto->porcentaje);
+                $this->totalesFactura['tope_retencion']         = floatval($impuesto->base);
+                $this->totalesFactura['id_cuenta_rete_fuente']  = $cuentaRetencion->id;
+            }
+        }
+    }
+
+    private function calcularProducto(object $producto): object
+    {
+        $subtotal = $producto->cantidad * $producto->costo;
+
+        return (object)[
+            'subtotal'    => $subtotal,
+            'iva'         => $producto->iva_valor,
+            'descuento'   => $producto->descuento_valor,
+            'total_linea' => $subtotal - $producto->descuento_valor + $producto->iva_valor,
+        ];
+    }
+
+    private function acumularTotalesProducto(object $calculo): void
+    {
+        $this->totalesFactura['subtotal']        += $calculo->subtotal;
+        $this->totalesFactura['total_iva']       += $calculo->iva;
+        $this->totalesFactura['total_descuento'] += $calculo->descuento;
+        $this->totalesFactura['total_factura']   += $calculo->total_linea;
+    }
+
+    private function aplicarRetencionProductos(): void
+    {
+        $aplica = $this->totalesFactura['total_factura'] > $this->totalesFactura['tope_retencion']
+            && $this->totalesFactura['porcentaje_rete_fuente'] > 0;
+
+        if ($aplica) {
+            $rete = ($this->totalesFactura['subtotal'] * $this->totalesFactura['porcentaje_rete_fuente']) / 100;
+            $this->totalesFactura['total_rete_fuente'] = $rete;
+            $this->totalesFactura['total_factura']    -= $rete;
         } else {
             $this->totalesFactura['id_cuenta_rete_fuente'] = null;
         }

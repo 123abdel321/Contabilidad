@@ -14,6 +14,7 @@
             <th>Cta. costos</th>
             <th>Cta. compra</th>
             <th>Cta. compra retención</th>
+            <th>Cta. compra retención no declarante</th>
             <th>Cta. compra devolución venta</th>
             <th>Cta. compra iva</th>
             <th>Cta. compra impuestos</th>

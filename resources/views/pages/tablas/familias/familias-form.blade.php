@@ -121,6 +121,12 @@
                                     </div>
 
                                     <div class="form-group col-12 col-sm-6 col-md-6">
+                                        <label for="id_cuenta_compra_retencion_nodeclarante">Retención no declarante</label>
+                                        <select name="id_cuenta_compra_retencion_nodeclarante" id="id_cuenta_compra_retencion_nodeclarante" class="form-control form-control-sm">
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-12 col-sm-6 col-md-6">
                                         <label for="id_cuenta_compra_devolucion">Devolución compra</label>
                                         <select name="id_cuenta_compra_devolucion" id="id_cuenta_compra_devolucion" class="form-control form-control-sm">
                                         </select>

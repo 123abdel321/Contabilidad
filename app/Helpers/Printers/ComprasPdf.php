@@ -2,69 +2,70 @@
 
 namespace App\Helpers\Printers;
 
-use Illuminate\Support\Carbon;
-//MODELS
+use App\Pdf\Documents\CompraPdf as CompraDocumentBuilder;
 use App\Models\Empresas\Empresa;
 use App\Models\Sistema\FacCompras;
+use App\Http\Controllers\Traits\BegDocumentHelpersTrait;
 
-class ComprasPdf extends AbstractPrinterPdf
+class ComprasPdf extends AbstractMakePdf   // ⚠️ ver nota abajo
 {
     public $compra;
-	public $empresa;
-	public $tipoEmpresion;
+    public $empresa;
+    public $claveUrl;
+    public $tipoEmpresion;
 
-    public function __construct(Empresa $empresa, FacCompras $compra)
-	{
-		parent::__construct($empresa);
+    use BegDocumentHelpersTrait;
 
-		copyDBConnection('sam', 'sam');
+    public function __construct(Empresa $empresa, FacCompras $compra, string $claveUrl)
+    {
+        parent::__construct($empresa);
+
+        copyDBConnection('sam', 'sam');
         setDBInConnection('sam', $empresa->token_db);
 
-		$this->compra = $compra;
-		$this->empresa = $empresa;
-		$this->tipoEmpresion = $this->compra->comprobante->tipo_impresion;
-	}
+        $this->compra      = $compra;
+        $this->empresa     = $empresa;
+        $this->claveUrl    = $claveUrl;
+        $this->tipoEmpresion = $this->compra->comprobante->tipo_impresion;
+    }
 
     public function view()
-	{
-		return 'pdf.facturacion.compras';
-	}
+    {
+        return 'pdf.plantilla';   // igual que ventas
+    }
 
     public function name()
-	{
-		return 'compra_'.uniqid();
-	}
+    {
+        return 'compra_' . uniqid();
+    }
 
     public function paper()
-	{
-		if ($this->tipoEmpresion == 1) return 'landscape';
-		if ($this->tipoEmpresion == 2) return 'portrait';
+    {
+        if ($this->tipoEmpresion == 1) return 'landscape';
+        if ($this->tipoEmpresion == 2) return 'portrait';
+        return '';
+    }
 
-		return '';
-	}
-
-	public function formatPaper()
-	{
-		// if ($this->tipoEmpresion == 1) return [0, 0, 396, 612];
-		return 'A4';
-	}
+    public function formatPaper()
+    {
+        return 'A4';
+    }
 
     public function data()
     {
-        $this->compra->load([
-            'proveedor',
-            'comprobante',
-            'detalles'
-        ]);
+        return CompraDocumentBuilder::build($this->compra, $this->empresa, $this->claveUrl);
+    }
 
-        return [
-			'empresa' => $this->empresa,
-			'proveedor' => $this->compra->proveedor,
-			'factura' => $this->compra,
-			'productos' => $this->compra->detalles,
-			'observacion' => $this->compra->observacion,
-			'fecha_pdf' => Carbon::now()->format('Y-m-d H:i:s'),
-			'total_factura' => number_format($this->compra->total_factura)
-		];
+    public function buildPdf()
+    {
+        $this->view    = $this->view();
+        $this->name    = $this->name();
+        $this->data    = $this->data();
+        $this->paper   = $this->paper();
+        $this->formato = $this->formatPaper();
+
+        $this->generatePdf();
+
+        return $this;
     }
 }

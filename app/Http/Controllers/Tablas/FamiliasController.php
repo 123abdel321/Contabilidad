@@ -58,6 +58,7 @@ class FamiliasController extends Controller
                 'cuenta_venta_devolucion_iva.impuesto',
                 'cuenta_compra.impuesto',
                 'cuenta_compra_retencion.impuesto',
+                'cuenta_compra_retencion_nodeclarante.impuesto',
                 'cuenta_compra_devolucion.impuesto',
                 'cuenta_compra_iva.impuesto',
                 'cuenta_compra_impuestos.impuesto',
@@ -76,7 +77,7 @@ class FamiliasController extends Controller
                 'updated_by'
             );
             
-        $familiasTotals = $familias->get();
+        $familiasTotals = $familias->where('id',2)->get();
 
         $familiasPaginate = $familias->skip($start)
             ->take($rowperpage);
@@ -106,6 +107,7 @@ class FamiliasController extends Controller
             'id_cuenta_venta_devolucion_iva' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_retencion' => 'nullable|exists:sam.plan_cuentas,id',
+            'id_cuenta_compra_retencion_nodeclarante' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_devolucion' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_iva' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_impuestos' => 'nullable|exists:sam.plan_cuentas,id',
@@ -143,6 +145,7 @@ class FamiliasController extends Controller
                 'id_cuenta_costos' => $request->get('id_cuenta_costos'),
                 'id_cuenta_compra' => $request->get('id_cuenta_compra'),
                 'id_cuenta_compra_retencion' => $request->get('id_cuenta_compra_retencion'),
+                'id_cuenta_compra_retencion_nodeclarante' => $request->get('id_cuenta_compra_retencion_nodeclarante'),
                 'id_cuenta_compra_devolucion' => $request->get('id_cuenta_compra_devolucion'),
                 'id_cuenta_compra_iva' => $request->get('id_cuenta_compra_iva'),
                 'id_cuenta_compra_impuestos' => $request->get('id_cuenta_compra_impuestos'),
@@ -163,6 +166,7 @@ class FamiliasController extends Controller
                 'cuenta_venta_devolucion_iva',
                 'cuenta_compra',
                 'cuenta_compra_retencion',
+                'cuenta_compra_retencion_nodeclarante',
                 'cuenta_compra_devolucion',
                 'cuenta_compra_iva',
                 'cuenta_compra_descuento',
@@ -204,6 +208,7 @@ class FamiliasController extends Controller
             'id_cuenta_venta_devolucion_iva' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_retencion' => 'nullable|exists:sam.plan_cuentas,id',
+            'id_cuenta_compra_retencion_nodeclarante' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_devolucion' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_iva' => 'nullable|exists:sam.plan_cuentas,id',
             'id_cuenta_compra_impuestos' => 'nullable|exists:sam.plan_cuentas,id',
@@ -242,6 +247,7 @@ class FamiliasController extends Controller
                     'id_cuenta_costos' => $request->get('id_cuenta_costos'),
                     'id_cuenta_compra' => $request->get('id_cuenta_compra'),
                     'id_cuenta_compra_retencion' => $request->get('id_cuenta_compra_retencion'),
+                    'id_cuenta_compra_retencion_nodeclarante' => $request->get('id_cuenta_compra_retencion_nodeclarante'),
                     'id_cuenta_compra_devolucion' => $request->get('id_cuenta_compra_devolucion'),
                     'id_cuenta_compra_iva' => $request->get('id_cuenta_compra_iva'),
                     'id_cuenta_compra_impuestos' => $request->get('id_cuenta_compra_impuestos'),
@@ -262,6 +268,7 @@ class FamiliasController extends Controller
                     'cuenta_venta_devolucion_iva',
                     'cuenta_compra',
                     'cuenta_compra_retencion',
+                    'cuenta_compra_retencion_nodeclarante',
                     'cuenta_compra_devolucion',
                     'cuenta_compra_iva',
                     'cuenta_compra_descuento',
@@ -334,6 +341,7 @@ class FamiliasController extends Controller
                 'cuenta_venta_devolucion_iva',
                 'cuenta_compra',
                 'cuenta_compra_retencion',
+                'cuenta_compra_retencion_nodeclarante',
                 'cuenta_compra_devolucion',
                 'cuenta_compra_iva',
                 'cuenta_compra_impuestos.impuesto',
