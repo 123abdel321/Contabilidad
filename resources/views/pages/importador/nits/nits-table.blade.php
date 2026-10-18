@@ -1,7 +1,8 @@
 <table id="importNits" class="table-import-nits table table-bordered display responsive" width="100%">
     <thead>
         <tr>
-            <th style="border-radius: 15px 0px 0px 0px !important;">Row</th>
+            <th style="border-radius: 15px 0px 0px 0px !important;">Fila</th>
+            <th>Acción</th>
             <th>Tipo documento</th>
             <th>Documento</th>
             <th>D.V</th>
@@ -9,10 +10,11 @@
             <th>Otros nombres</th>
             <th>Primer apellido</th>
             <th>Segundo apellido</th>
-            <th>Razon social</th>
+            <th>Razón social</th>
             <th>Dirección</th>
+            <th>Ciudad</th>
             <th>Email</th>
-            <th>Telefono</th>
+            <th>Teléfono</th>
             <th>Plazo</th>
             <th>Cupo</th>
             <th>Observación</th>

@@ -23,6 +23,8 @@ class NitsImport extends Model
         'segundo_apellido',
         'razon_social',
         'direccion',
+        'ciudad',
+        'id_ciudad',
         'email',
         'telefono_1',
         'plazo',

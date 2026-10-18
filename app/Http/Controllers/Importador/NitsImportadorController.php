@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Importador;
 
 use DB;
+use Exception;
 use Illuminate\Http\Request;
 use App\Imports\ImportNits;
 use App\Http\Controllers\Controller;
@@ -10,40 +11,42 @@ use Illuminate\Support\Facades\Validator;
 //MODELS
 use App\Models\Sistema\Nits;
 use App\Models\Empresas\Empresa;
+use App\Models\Empresas\Ciudades;
 use App\Models\Sistema\NitsImport;
-use App\Models\Sistema\FacProductos;
 use App\Models\Sistema\TipoDocumentos;
 
 class NitsImportadorController extends Controller
 {
     protected $messages = null;
-    protected $rowErrors = 0;
 
     public function __construct()
-	{
-		$this->messages = [
+    {
+        $this->messages = [
             'required' => 'El campo :attribute es requerido.',
         ];
-	}
+    }
 
-	public function index ()
+    public function index()
     {
         return view('pages.importador.nits.nits-view');
     }
 
-    public function importar (Request $request)
+    /* ============================================================
+       PASO 2 — Cargar Excel a tabla temporal
+       ============================================================ */
+    public function importar(Request $request)
     {
         $rules = [
             'file_import_nits' => 'required|mimes:xlsx'
         ];
-        
+
         $validator = Validator::make($request->all(), $rules, $this->messages);
 
-		if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$validator->errors()
+                "message" => $validator->errors()
             ], 422);
         }
 
@@ -54,7 +57,7 @@ class NitsImportadorController extends Controller
             NitsImport::truncate();
 
             $empresa = Empresa::where('token_db', $request->user()['has_empresa'])->first();
-            $actualizarValores = $request->has('actualizar_valores') ? true : false;
+            $actualizarValores = $request->has('actualizar_valores');
 
             $import = new ImportNits($empresa->razon_social, $actualizarValores);
             $import->import($file);
@@ -62,21 +65,26 @@ class NitsImportadorController extends Controller
             DB::commit();
 
             return response()->json([
-                'success'=>	true,
+                'success' => true,
                 'data' => [],
-                'message'=> 'Cédulas nits cargadas con exito!'
+                'message' => $actualizarValores
+                    ? 'Cédulas/NITs cargados en modo ACTUALIZAR. Revisa la tabla antes de procesar.'
+                    : 'Cédulas/NITs cargados en modo CREAR. Revisa la tabla antes de procesar.'
             ]);
 
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-
+        } catch (Exception $e) {
+            DB::rollback();
             return response()->json([
-                'success'=>	false,
-                'data' => $e->failures(),
-                'message'=> 'Error al cargar cédulas nits'
-            ]);
+                'success' => false,
+                'data' => [],
+                'message' => 'Error al cargar cédulas/NITs: ' . $e->getMessage()
+            ], 422);
         }
     }
 
+    /* ============================================================
+       DataTable server-side
+       ============================================================ */
     public function generate(Request $request)
     {
         $draw            = $request->get('draw');
@@ -86,239 +94,242 @@ class NitsImportadorController extends Controller
         $columnName_arr  = $request->get('columns', []);
         $search_arr      = $request->get('search', []);
 
-        // Columna y dirección de ordenamiento
         $columnIndex     = $order_arr[0]['column'] ?? 0;
-        $columnName      = $columnName_arr[$columnIndex]['data'] ?? 'id';
+        $columnDataRaw   = $columnName_arr[$columnIndex]['data'] ?? 'id';
         $columnSortOrder = $order_arr[0]['dir'] ?? 'asc';
+
+        // ── Mapa: nombre lógico del DataTable → columna real de BD ──
+        // Las columnas 0 y 1 son virtuales ("function") y no se pueden ordenar en SQL.
+        // El resto usa el mismo nombre que la columna de `nits_imports`.
+        $columnasOrdenables = [
+            'id'                  => 'id',
+            'tipo_documento'      => 'tipo_documento',
+            'numero_documento'    => 'numero_documento',
+            'digito_verificacion' => 'digito_verificacion',
+            'primer_nombre'       => 'primer_nombre',
+            'otros_nombres'       => 'otros_nombres',
+            'primer_apellido'     => 'primer_apellido',
+            'segundo_apellido'    => 'segundo_apellido',
+            'razon_social'        => 'razon_social',
+            'direccion'           => 'direccion',
+            'ciudad_display'      => 'ciudad',
+            'email'               => 'email',
+            'telefono_1'          => 'telefono_1',
+            'plazo'               => 'plazo',
+            'cupo'                => 'cupo',
+            'observaciones'       => 'observaciones',
+            'email_1'             => 'email_1',
+            'email_2'             => 'email_2',
+            'errores'             => 'observacion',
+            'total_errores'       => 'observacion',
+        ];
+
+        // Si el DataTable manda "function" o algo no mapeado, ordenamos por `id` por defecto
+        $columnName = $columnasOrdenables[$columnDataRaw] ?? 'id';
         $searchValue     = $search_arr['value'] ?? '';
 
-        // Query base
         $query = NitsImport::query();
 
-        // Búsqueda global
         if ($searchValue !== '') {
             $query->where(function ($q) use ($searchValue) {
                 $q->where('numero_documento', 'like', '%' . $searchValue . '%')
-                ->orWhere('primer_nombre',   'like', '%' . $searchValue . '%')
-                ->orWhere('otros_nombres',   'like', '%' . $searchValue . '%')
-                ->orWhere('primer_apellido', 'like', '%' . $searchValue . '%')
-                ->orWhere('segundo_apellido','like', '%' . $searchValue . '%')
-                ->orWhere('razon_social',    'like', '%' . $searchValue . '%')
-                ->orWhere('direccion',       'like', '%' . $searchValue . '%')
-                ->orWhere('email',           'like', '%' . $searchValue . '%')
-                ->orWhere('telefono_1',      'like', '%' . $searchValue . '%')
-                ->orWhere('plazo',           'like', '%' . $searchValue . '%')
-                ->orWhere('cupo',            'like', '%' . $searchValue . '%')
-                ->orWhere('observaciones',   'like', '%' . $searchValue . '%');
+                  ->orWhere('primer_nombre',   'like', '%' . $searchValue . '%')
+                  ->orWhere('otros_nombres',   'like', '%' . $searchValue . '%')
+                  ->orWhere('primer_apellido', 'like', '%' . $searchValue . '%')
+                  ->orWhere('segundo_apellido','like', '%' . $searchValue . '%')
+                  ->orWhere('razon_social',    'like', '%' . $searchValue . '%')
+                  ->orWhere('direccion',       'like', '%' . $searchValue . '%')
+                  ->orWhere('email',           'like', '%' . $searchValue . '%')
+                  ->orWhere('telefono_1',      'like', '%' . $searchValue . '%')
+                  ->orWhere('plazo',           'like', '%' . $searchValue . '%')
+                  ->orWhere('cupo',            'like', '%' . $searchValue . '%')
+                  ->orWhere('observaciones',   'like', '%' . $searchValue . '%');
             });
         }
 
-        // Total para el paginador
         $totalRecords = (clone $query)->count();
 
-        // Orden + paginación
+        // Primero los que tienen errores (para que el usuario los vea)
         $dataNits = $query
+            ->orderByRaw('CASE WHEN estado IN (1,3) THEN 0 ELSE 1 END ASC')
             ->orderBy($columnName, $columnSortOrder)
             ->skip($start)
             ->take($rowperpage)
             ->get();
 
-        // ── Enriquecer cada fila ──
         foreach ($dataNits as $nit) {
-            // ID visual
             $nit->id = $nit->id + 1;
-
-            // Tipo de documento legible
             $nit->tipo_documento = $this->tipoDocumento($nit->tipo_documento);
 
-            // 🔑 Errores ya guardados en la columna `observacion` durante el import
-            if ((int) $nit->estado === 1 && !empty($nit->observacion)) {
-                $nit->errores       = $nit->observacion;
-                $nit->total_errores = substr_count($nit->observacion, '<br/>');
-            } else {
-                $nit->errores       = '';
-                $nit->total_errores = 0;
-            }
+            $estado = (int) $nit->estado;
+            $nit->accion = in_array($estado, [0, 1], true) ? 'crear' : 'actualizar';
+
+            // 👇 NUEVO: mostrar ciudad resuelta o el texto con error
+            $nit->ciudad_display = $nit->id_ciudad
+                ? optional(Ciudades::find($nit->id_ciudad))->nombre_completo
+                : $nit->ciudad;
+
+            $nit->errores       = $nit->observacion ?? '';
+            $nit->total_errores = $nit->observacion
+                ? substr_count($nit->observacion, '<br/>')
+                : 0;
         }
 
         return response()->json([
-            'success'               => true,
-            'draw'                  => (int) $draw,
-            'iTotalRecords'         => $totalRecords,
-            'iTotalDisplayRecords'  => $totalRecords,
-            'data'                  => $dataNits,
-            'perPage'               => $rowperpage,
-            'message'               => 'Nits cargados con éxito.',
+            'success'              => true,
+            'draw'                 => (int) $draw,
+            'iTotalRecords'        => $totalRecords,
+            'iTotalDisplayRecords' => $totalRecords,
+            'data'                 => $dataNits,
+            'perPage'              => $rowperpage,
+            'message'              => 'NITs cargados con éxito.',
         ]);
-    }
-    
-    public function exportar (Request $request)
-    {
-        return response()->json([
-            'success'=>	true,
-            'url' => 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/import/importador_nits.xlsx',
-            'message'=> 'Url generada con exito'
-        ]);
-        
     }
 
-    public function actualizar (Request $request)
+    public function exportar(Request $request)
     {
-        $nitsImportados = NitsImport::where('estado', '!=', 1)->get();
-        $erroresTotales = [];
+        return response()->json([
+            'success' => true,
+            'url' => 'https://porfaolioerpbucket.nyc3.digitaloceanspaces.com/import/Importador%20de%20Cedulas_Nits.xlsx',
+            'message' => 'Url generada con exito'
+        ]);
+    }
+
+    /* ============================================================
+       PASO 3 — Ejecutar creación / actualización
+       AQUÍ NO SE VALIDA NADA (todo ya se validó en el Import).
+       Solo se ejecuta la acción correspondiente según `estado`.
+       ============================================================ */
+    public function actualizar(Request $request)
+    {
+        // Solo filas válidas: 0 = Crear OK, 2 = Actualizar OK
+        $nitsValidos = NitsImport::whereIn('estado', [0, 2])->get();
+
+        if (!count($nitsValidos)) {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'message' => 'No hay NITs válidos para procesar. Corrige los errores primero.'
+            ], 422);
+        }
 
         try {
             DB::connection('sam')->beginTransaction();
 
-            if (count($nitsImportados)) {
-                
-                foreach ($nitsImportados as $nit) {
-                    if ($nit->estado == 3) {
-                        $nitExistente = Nits::where('numero_documento', $nit->numero_documento)->first();
-                        if ($nit->primer_nombre || $nit->otros_nombres || $nit->primer_apellido || $nit->segundo_apellido || $nit->razon_social) {
-                            $nitExistente->primer_nombre = $nit->primer_nombre;
-                            $nitExistente->otros_nombres = $nit->otros_nombres;
-                            $nitExistente->primer_apellido = $nit->primer_apellido;
-                            $nitExistente->segundo_apellido = $nit->segundo_apellido;
-                            $nitExistente->razon_social = $nit->razon_social;
-                        }
-                        if ($nit->email) $nitExistente->email = $nit->email;
-                        if ($nit->email_1) $nitExistente->email_1 = $nit->email_1;
-                        if ($nit->email_2) $nitExistente->email_2 = $nit->email_2;
-                        if ($nit->telefono_1) $nitExistente->telefono_1 = $nit->telefono_1;
-                        if ($nit->observaciones) $nitExistente->observaciones = $nit->observaciones;
-                        
-                        $nitExistente->save();
-                    } else {
-                        $idTipoDocumento = TipoDocumentos::where('codigo', $nit->tipo_documento)->first();
-                        $this->rowErrors = 0;
-                        $errores = $this->getErrores($nit);
+            $creados = 0;
+            $actualizados = 0;
+            $omitidos = 0;
 
-                        if ($this->rowErrors) {
-                            $erroresTotales[] = $errores;
-                            continue;
-                        }
-    
-                        Nits::create([
-                            'id_tipo_documento' => $idTipoDocumento->id,
-                            'id_vendedor' => $nit->id_vendedor,
-                            'numero_documento' => $nit->numero_documento,
-                            'tipo_contribuyente' => $idTipoDocumento->id == 6 ? 1 : 2,
-                            'primer_apellido' => $nit->primer_apellido,
-                            'segundo_apellido' => $nit->segundo_apellido,
-                            'primer_nombre' => $nit->primer_nombre,
-                            'otros_nombres' => $nit->otros_nombres,
-                            'razon_social' => $nit->razon_social,
-                            'direccion' => $nit->direccion,
-                            'email' => $nit->email,
-                            'telefono_1' => $nit->telefono_1,
-                            'observaciones' => $nit->observaciones,
-                            'email_1' => $nit->email_1,
-                            'email_2' => $nit->email_2,
-                            'plazo' => $nit->plazo,
-                            'cupo' => $nit->cupo,
-                            'created_by' => request()->user()->id,
-                            'updated_by' => request()->user()->id,
-                        ]);
+            foreach ($nitsValidos as $nit) {
+                if ((int) $nit->estado === 2) {
+                    // ══════════ ACTUALIZAR ══════════
+                    $nitExistente = Nits::where('numero_documento', $nit->numero_documento)->first();
+
+                    if (!$nitExistente) {
+                        $omitidos++;
+                        continue;
                     }
-                }
 
-                NitsImport::where('estado', '!=', 1)->delete();
-    
-                DB::connection('sam')->commit();
+                    $nitExistente->primer_nombre    = $nit->primer_nombre;
+                    $nitExistente->otros_nombres    = $nit->otros_nombres;
+                    $nitExistente->primer_apellido  = $nit->primer_apellido;
+                    $nitExistente->segundo_apellido = $nit->segundo_apellido;
+                    $nitExistente->razon_social     = $nit->razon_social;
+                    $nitExistente->direccion        = $nit->direccion;
+
+                    // 👇 NUEVO: solo sobreescribe si vino ciudad resuelta
+                    if ($nit->id_ciudad) {
+                        $nitExistente->id_ciudad = $nit->id_ciudad;
+                    }
+
+                    if ($nit->email)         $nitExistente->email         = $nit->email;
+                    if ($nit->email_1)       $nitExistente->email_1       = $nit->email_1;
+                    if ($nit->email_2)       $nitExistente->email_2       = $nit->email_2;
+                    if ($nit->telefono_1)    $nitExistente->telefono_1    = $nit->telefono_1;
+                    if ($nit->observaciones) $nitExistente->observaciones = $nit->observaciones;
+
+                    $nitExistente->updated_by = $request->user()->id;
+                    $nitExistente->save();
+
+                    $actualizados++;
+
+                } else {
+                    // ══════════ CREAR ══════════
+                    $tipoDocumento = TipoDocumentos::where('codigo', $nit->tipo_documento)->first();
+
+                    if (!$tipoDocumento) {
+                        $omitidos++;
+                        continue;
+                    }
+
+                    if (Nits::where('numero_documento', $nit->numero_documento)->exists()) {
+                        $omitidos++;
+                        continue;
+                    }
+
+                    Nits::create([
+                        'id_tipo_documento'  => $tipoDocumento->id,
+                        'id_ciudad'          => $nit->id_ciudad,
+                        'numero_documento'   => $nit->numero_documento,
+                        'digito_verificacion'=> $nit->digito_verificacion,
+                        'tipo_contribuyente' => $tipoDocumento->id == 6 ? 1 : 2,
+                        'primer_nombre'      => $nit->primer_nombre,
+                        'otros_nombres'      => $nit->otros_nombres,
+                        'primer_apellido'    => $nit->primer_apellido,
+                        'segundo_apellido'   => $nit->segundo_apellido,
+                        'razon_social'       => $nit->razon_social,
+                        'direccion'          => $nit->direccion,
+                        'email'              => $nit->email,
+                        'telefono_1'         => $nit->telefono_1,
+                        'observaciones'      => $nit->observaciones,
+                        'email_1'            => $nit->email_1,
+                        'email_2'            => $nit->email_2,
+                        'plazo'              => $nit->plazo,
+                        'cupo'               => $nit->cupo,
+                        'created_by'         => $request->user()->id,
+                        'updated_by'         => $request->user()->id,
+                    ]);
+
+                    $creados++;
+                }
             }
 
+            // Borrar solo las filas procesadas (las que tenían error quedan para que las veas)
+            NitsImport::whereIn('estado', [0, 2])->delete();
+
+            DB::connection('sam')->commit();
+
             return response()->json([
-                'success'=>	true,
-                'data' => [],
-                'message'=> 'Productos precios actualizados con exito!'
+                'success' => true,
+                'data' => [
+                    'creados' => $creados,
+                    'actualizados' => $actualizados,
+                    'omitidos' => $omitidos,
+                ],
+                'message' => "Procesados: {$creados} creados, {$actualizados} actualizados, {$omitidos} omitidos."
             ]);
 
         } catch (Exception $e) {
             DB::connection('sam')->rollback();
             return response()->json([
-                "success"=>false,
+                "success" => false,
                 'data' => [],
-                "message"=>$e->getMessage()
+                "message" => $e->getMessage()
             ], 422);
         }
     }
 
-    private function getErrores($dataNit)
-    {
-        $errores = '';
-        if ($dataNit->estado == 3) {//ACTUALIZAR NITS
-            if ($dataNit->numero_documento) {
-                $nit = Nits::where('numero_documento', $dataNit->numero_documento)->first();
-                if (!$nit) {
-                    $this->rowErrors+= 1;
-                    $errores.= 'El numero de documento: '.$dataNit->numero_documento.', no fue encontrado!<br>';
-                } else {
-
-                    $nitsConMismoCorreo = Nits::where('numero_documento', '!=', $dataNit->numero_documento)
-                        ->where('email', $dataNit->email)
-                        ->first();
-
-                    if ($dataNit->email && $nitsConMismoCorreo) {
-                        $this->rowErrors+= 1;
-                        $errores.= 'El email: '.$dataNit->email.', ya esta en uso por el documento: '.$nitsConMismoCorreo->numero_documento.'!<br>';
-                    }
-                }
-            } else {
-                $this->rowErrors+= 1;
-                $errores.='El numero de documento es requerido <br/>';
-            }
-        } else {//CREAR NITS
-            //VALIDAR TIPO DE DOCUMENTO
-            if ($dataNit->tipo_documento) {
-                $existe = TipoDocumentos::where('codigo', $dataNit->tipo_documento);
-                if (!$existe->count()) {
-                    $this->rowErrors+= 1;
-                    $errores.='El código tipo de documento no existe <br/>';
-                }
-            } else {
-                $this->rowErrors+= 1;
-                $errores.='El tipo de documento es requerido <br/>';
-            }
-            //VALIDAR NUMERO DOCUMENTO
-            if ($dataNit->numero_documento) {
-                $existe = Nits::where('numero_documento', $dataNit->numero_documento);
-                if ($existe->count()) {
-                    // $this->rowErrors+= 1;
-                    // $errores.='El numero de documento: '.$dataNit->numero_documento.' debe ser unico <br/>';
-                }
-            } else {
-                $this->rowErrors+= 1;
-                $errores.='El numero de documento es requerido <br/>';
-            }
-            //VALIDAR EMAIL
-            if ($dataNit->email) {
-                $existe = Nits::where('email', $dataNit->email);
-                if ($existe->count()) {
-                    $this->rowErrors+= 1;
-                    $errores.='El email: '.$dataNit->email.' debe ser unico <br/>';
-                }
-            } else {
-                // $this->rowErrors+= 1;
-                // $errores.='El email es requerido <br/>';
-            }
-            //VALIDAR NOMBRES
-            if (!$dataNit->razon_social && !$dataNit->primer_nombre) {
-                // $this->rowErrors+= 1;
-                // $errores.='La razon social o el primero nombre son requerido <br/>';
-            }
-        }
-
-        return $errores;
-    }
-
+    /* ============================================================
+       Helpers
+       ============================================================ */
     private function tipoDocumento($tipoDocumento)
     {
         if ($tipoDocumento) {
-            $tipoDocumento = TipoDocumentos::where('codigo', $tipoDocumento)->first();
-            return $tipoDocumento->codigo. ' - ' .$tipoDocumento->nombre;
+            $tipo = TipoDocumentos::where('codigo', $tipoDocumento)->first();
+            if ($tipo) {
+                return $tipo->codigo . ' - ' . $tipo->nombre;
+            }
         }
         return $tipoDocumento;
     }
-
 }

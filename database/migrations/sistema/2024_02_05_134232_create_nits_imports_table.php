@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('segundo_apellido', 100)->nullable();
             $table->string('razon_social', 100)->nullable();
             $table->string('direccion', 100)->nullable();
+            $table->string('ciudad', 300)->nullable();
+            $table->unsignedBigInteger('id_ciudad')->nullable();
             $table->string('email', 100)->nullable();
             $table->string('telefono_1', 100)->nullable();
             $table->string('plazo', 100)->nullable();

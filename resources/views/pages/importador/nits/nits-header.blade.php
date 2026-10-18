@@ -1,62 +1,108 @@
 <div class="accordion" id="accordionRental">
     <div class="accordion-item">
         <h5 class="accordion-header" id="filtrosNitsImport">
-            <button class="accordion-button border-bottom font-weight-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                Para importar cédulas/nits sigue estos pasos:
-                <i class="collapse-close fa fa-plus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
-                <i class="collapse-open fa fa-minus text-xs pt-1 position-absolute end-0 me-3" aria-hidden="true"></i>
+            <button class="accordion-button border-bottom font-weight-bold text-dark bg-light collapsed py-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                <div class="d-flex align-items-center w-100">
+                    <i class="fas fa-id-card me-2 text-primary fs-6"></i>
+                    <span class="fw-bold fs-6">Importador de Cédulas / NITs</span>
+                </div>
             </button>
         </h5>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="filtrosNitsImport" data-bs-parent="#accordionRental" >
-            <div class="accordion-body text-sm" style="padding: 0 !important;">
-                <br>
-                <div>
-                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" >
-                        <b>1.</b> Descarga la plantilla para cargar cédulas/nits. Cada plantilla contiene máximo 500 registros &nbsp;
-                        <span id="descargarPlantillaNits" href="javascript:void(0)" class="btn badge bg-gradient-info" style="min-width: 40px; margin-right: 3px; margin-bottom: 0px !important;">
-                            <i class="fas fa-download" style="font-size: 17px;"></i>
-                            <b style="vertical-align: text-top;">Descargar plantilla</b>
-                        </span>
-                    </p>
-                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" ><b>2.</b> Realiza los cambios en cada archivo y guárdalo en formato Excel (.xlsx)</p>
-                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" ><b>3.</b> Adjunta el archivo y haz click en "Cargar plantilla"</p>
-                    <p style="font-size: 14px !important; margin-bottom: 0px; color: black;" ><b>4.</b> Valida los registros que seran cargados y haz click en "Cargar cédulas/nits"</p>
-                </div>
-                <br>
-                <div class="row">
-                    <form id="form-importador-nits" enctype="multipart/form-data">
-                        {{ csrf_field() }}
-                        <div class="row">
-                            <div class="col-6">
-                                <input class="form-control form-control-sm" id="file_import_nits" name="file_import_nits" type="file" style="box-shadow: 0px 0px 0px rgba(50, 50, 93, 0.1), 2px 2px 2px rgb(0 0 0 / 57%); font-size: 15px; color: black; font-weight: bold;">
-                            </div>
-                            <div class="form-check form-switch col-4">
-                                <input class="form-check-input" type="checkbox" name="actualizar_valores" id="actualizar_valores" style="height: 20px;">
-                                <label class="form-check-label" for="actualizar_valores">
-                                    Actualizar datos nits
-                                </label>
+
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="filtrosNitsImport" data-bs-parent="#accordionRental">
+            <div class="accordion-body p-3 bg-white">
+
+                <form id="form-importador-nits" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {{ csrf_field() }}
+
+                    <div class="row g-2 align-items-center">
+                        {{-- COLUMNA IZQUIERDA: archivo + checkbox --}}
+                        <div class="col-12 col-lg-6">
+                            <div class="border-dashed border-2 rounded p-2 bg-light">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="far fa-file-excel text-success me-2"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <label for="file_import_nits" class="form-label fw-semibold text-dark small mb-1">Seleccionar archivo Excel</label>
+                                        <input class="form-control form-control-sm" id="file_import_nits" name="file_import_nits" type="file" accept=".xlsx,.xls" required>
+                                        <div class="invalid-feedback small">Selecciona un archivo Excel válido.</div>
+                                        <p class="text-muted x-small mb-0 mt-1">Formatos: .xlsx, .xls · Máx. 500 registros</p>
+                                    </div>
+                                </div>
+
+                                <hr class="my-2">
+
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="actualizar_valores" id="actualizar_valores">
+                                    <label class="form-check-label fw-semibold text-dark small" for="actualizar_valores">
+                                        <i class="fas fa-sync-alt text-warning me-1"></i>
+                                        Actualizar datos de NITs existentes
+                                    </label>
+                                    <div class="text-muted x-small mt-1">
+                                        <b>Activado:</b> se actualizan los NITs existentes.<br>
+                                        <b>Desactivado:</b> se crean NITs nuevos (los duplicados se marcan como error).
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <br/>
-                        <div class="col-12">
-                            <button id="cargarPlantillaNits" href="javascript:void(0)" class="btn btn-sm badge bg-gradient-success">
-                                <i class="far fa-file-excel" style="font-size: 17px;"></i>&nbsp;
-                                <b style="vertical-align: text-top;">Cargar plantilla</b>
-                            </button>
-                            <!-- <button type="button" class="btn btn-light btn-sm" id="reloadImportadorNits" style="padding: 8px;">
-                                <i class="fas fa-sync-alt"></i>
-                            </button> -->
-                            <button id="actualizarPlantillaNits" href="javascript:void(0)" class="btn btn-sm badge bg-gradient-primary" style="float: right; display: none;">
-                                <i class="fas fa-upload" style="font-size: 17px;"></i>&nbsp;
-                                <b style="vertical-align: text-top;">Cargar nits</b>
-                            </button>&nbsp;
-                            <button id="cargarPlantillaNitsLoagind" class="btn btn-sm badge bg-gradient-primary" style="display:none; float: left;" disabled>
-                                <i class="fas fa-spinner fa-spin" style="font-size: 17px;"></i>&nbsp;
-                                <b style="vertical-align: text-top;">Cargando</b>
-                            </button>
+
+                        {{-- COLUMNA DERECHA: pasos 1-2-3 --}}
+                        <div class="col-12 col-lg-6">
+                            <div class="row g-2">
+
+                                {{-- PASO 1 --}}
+                                <div class="col-12 d-flex align-items-center">
+                                    <div style="min-width: 200px;">
+                                        <button type="button" class="btn btn-primary btn-sm btn-bg-danger" id="descargarPlantillaNits" style="width: 200px;">
+                                            <i class="fas fa-download" style="margin-right: 5px; font-size: 15px;"></i>&nbsp;
+                                            Descargar Excel
+                                        </button>
+                                    </div>
+                                    <div class="ms-3">
+                                        <p class="mb-0 text-muted small"><strong>Paso 1:</strong> Obtén el formato oficial para importar tus cédulas/NITs.</p>
+                                    </div>
+                                </div>
+
+                                {{-- PASO 2 --}}
+                                <div class="col-12 d-flex align-items-center">
+                                    <div style="min-width: 200px;">
+                                        <button type="button" class="btn btn-primary btn-sm btn-bg-excel" id="cargarPlantillaNits" style="width: 200px;" disabled>
+                                            <i class="far fa-file-excel" style="margin-right: 5px; font-size: 15px;"></i>&nbsp;
+                                            Cargar plantilla
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm btn-bg-excel-loading" id="cargarPlantillaNitsLoading" style="display: none; width: 200px;" disabled>
+                                            <b style="opacity: 0.3; text-transform: capitalize;">Cargar plantilla</b>
+                                            <i style="position: absolute; color: white; font-size: 15px; margin-left: -48px;" class="fas fa-spinner fa-spin"></i>
+                                        </button>
+                                    </div>
+                                    <div class="ms-3">
+                                        <p class="mb-0 text-muted small"><strong>Paso 2:</strong> Carga el archivo con los datos de tus cédulas/NITs.</p>
+                                    </div>
+                                </div>
+
+                                {{-- PASO 3 --}}
+                                <div class="col-12 d-flex align-items-center">
+                                    <div style="min-width: 200px;">
+                                        <button type="button" class="btn btn-primary btn-sm btn-bg-info" id="actualizarPlantillaNits" style="width: 200px;" disabled>
+                                            <i class="fas fa-upload" style="margin-right: 5px; font-size: 15px;"></i>&nbsp;
+                                            Cargar NITs
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm btn-bg-info-loading" id="actualizarPlantillaNitsLoading" style="display: none; width: 200px;" disabled>
+                                            <b style="opacity: 0.3; text-transform: capitalize;">Cargar NITs</b>
+                                            <i style="position: absolute; color: white; font-size: 15px; margin-left: -55px;" class="fas fa-spinner fa-spin"></i>
+                                        </button>
+                                    </div>
+                                    <div class="ms-3">
+                                        <p class="mb-0 text-muted small"><strong>Paso 3:</strong> Inicia el proceso de creación/actualización de NITs.</p>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
